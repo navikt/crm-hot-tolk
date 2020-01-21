@@ -1,0 +1,38 @@
+{
+	"orgName": "NAV HOT",
+	"edition": "Enterprise",
+	"adminEmail": "fakeemail@nav.no.scratchorg",
+	"features": [
+		"Sites",
+		"ForceComPlatform",
+		"Communities",
+		"CustomerCommunity",
+		"CustomerCommunityPlus",
+		"PersonAccounts",
+		"ProcessBuilder",
+		"API",
+		"ServiceCloud",
+		"LiveAgent",
+		"LightningServiceConsole",
+		"ContactsToMultipleAccounts"
+	],
+	"country": "NO",
+	"language": "en_US",
+	"settings": {
+		"communitiesSettings": {
+			"enableNetworksEnabled": true
+		},
+		"lightningExperienceSettings": {
+			"enableS1DesktopEnabled": true
+		},
+		"omniChannelSettings": {
+			"enableOmniChannel": true
+		},
+		"liveAgentSettings": {
+			"enableLiveAgent": true
+		},
+		"languageSettings": {
+			"enableTranslationWorkbench": true
+		}
+	}
+}

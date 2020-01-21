@@ -4,6 +4,10 @@
 
 # Salesforce cache
 .sfdx/
+.localdevserver/
+
+# LWC VSCode autocomplete
+**/lwc/jsconfig.json
 
 # Logs
 logs
@@ -11,14 +15,6 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Project files
-.idea/
-.vscode/
-.IlluminatedCloud/
-*.zip
-*.iml
-*.md
 
 # Dependency directories
 node_modules/
@@ -34,7 +30,3 @@ Thumbs.db
 ehthumbs.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
-force-app/main/default/lwc/.eslintrc.json
-*.bat
-
-force-app/main/default/profiles/Trial Customer Portal User.profile-meta.xml
