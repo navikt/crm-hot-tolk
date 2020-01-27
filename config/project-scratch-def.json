@@ -34,6 +34,18 @@
 		},
 		"languageSettings": {
 			"enableTranslationWorkbench": true
+		},
+		"fieldServiceSettings": {
+			"fieldServiceOrgPref": true,
+			"doesShareSaParentWoWithAr": false,
+			"doesShareSaWithAr": false,
+			"enableWorkOrders": true,
+			"isGeoCodeSyncEnabled": false,
+			"isLocationHistoryEnabled": false,
+			"fieldServiceNotificationsOrgPref": false,
+			"serviceAppointmentsDueDateOffsetOrgValue": 7,
+			"workOrderLineItemSearchFields": "Subject",
+			"workOrderSearchFields": "Subject"
 		}
 	}
 }
