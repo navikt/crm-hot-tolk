@@ -157,7 +157,7 @@
     <label>Request</label>
     <nameField>
         <displayFormat>HOT-R-{00000000}</displayFormat>
-        <label>Request Number</label>
+        <label>Request ID Number</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
