@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>User__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The person requesting the interpreter service.</description>
+    <externalId>false</externalId>
+    <label>User</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Requests</relationshipLabel>
+    <relationshipName>Requests</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>
