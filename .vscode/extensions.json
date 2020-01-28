@@ -1,8 +1,28 @@
 {
-  "recommendations": [
-    "salesforce.salesforcedx-vscode",
-    "redhat.vscode-xml",
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
-  ]
+	"recommendations": [
+		"salesforce.salesforcedx-vscode",
+		"aaron-bond.better-comments",
+		"aeschli.vscode-css-formatter",
+		"ChakrounAnas.turbo-console-log",
+		"chuckjonas.apex-pmd",
+		"CoenraadS.bracket-pair-colorizer-2",
+		"dbaeumer.vscode-eslint",
+		"donjayamanne.githistory",
+		"eamodio.gitlens",
+		"ecmel.vscode-html-css",
+		"geddski.macros",
+		"hnw.vscode-auto-open-markdown-preview",
+		"humao.rest-client",
+		"IBM.output-colorizer",
+		"LaurentTreguier.uncrustify",
+		"letrieu.turbo-console-log-fork",
+		"mohsen1.prettify-json",
+		"redhat.vscode-xml",
+		"siegebell.prettify-symbols-mode",
+		"VignaeshRamA.sfdx-package-xml-generator",
+		"xabikos.JavaScriptSnippets",
+		"shan.code-settings-sync",
+		"nik-creation.lwc-salesforce",
+		"teamastra.sfdx-vs-test-class-generator",
+	]
 }

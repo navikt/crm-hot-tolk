@@ -1,0 +1,148 @@
+{
+	// Place your snippets for apex here. Each snippet is defined under a snippet name and has a prefix, body and 
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+	// same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+	"Print to console": {
+		"prefix": [
+			"log",
+			"system.debug",
+			"System.debug",
+			"System.Debug"
+		],
+		"body": [
+			"System.debug('$1');"
+		],
+		"description": "Log output to console"
+	},
+	"Print variable to console": {
+		"prefix": [
+			"log var"
+		],
+		"body": [
+			"System.debug('${1:var}: ' + $1);",
+		],
+		"description": "Log output to console"
+	},
+	"for_loop": {
+		"prefix": "for",
+		"body": [
+			"for(${1:Object} ${2:var} : ${3:Source}) {",
+			"\t$0",
+			"}"
+		],
+		"description": "For objects"
+	},
+	"List_Apex": {
+		"prefix": [
+			"list<",
+			"List<"
+		],
+		"body": [
+			"List<${1:Object}> ${2:var} = new List<${1}>();"
+		],
+		"description": "List of sObjects"
+	},
+	"Set_Apex": {
+		"prefix": [
+			"set<",
+			"Set<"
+		],
+		"body": [
+			"Set<${1:Object}> ${2:var} = new Set<${1}>();"
+		],
+		"description": "Set of sObjects"
+	},
+	"Map_Apex": {
+		"prefix": [
+			"map<",
+			"Map<"
+		],
+		"body": [
+			"Map<${1:Object}, ${2:Object}> ${3:var} = new Map<${1}, ${2}>();"
+		],
+		"description": "Map of sObjects"
+	},
+	"if_cond_Apex": {
+		"prefix": "if",
+		"body": [
+			"if ($1) {\n    $0\n}"
+		],
+		"description": "if statement for apex"
+	},
+	"soql_Apex": {
+		"prefix": "soql",
+		"body": [
+			"List<${1:SObject}> ${1:SObject}s = [SELECT Id, ${3:fields} FROM ${1:SObject} WHERE ${4:field} ${5:= value}];"
+		],
+		"description": "SOQL query assignment to List variable"
+	},
+	"assertEquals": {
+		"prefix": [
+			"assertEquals",
+			"AssertEquals",
+			"System.AssertEquals",
+			"system.assertEquals"
+		],
+		"body": [
+			"System.assertEquals(${1:expected}, ${2:actual}, ${3:message});"
+		],
+		"description": "Creates a default assertEquals"
+	},
+	"CreateEmptyTestMethod": {
+		"prefix": [
+			"Create empty test method",
+			"private static void"
+		],
+		"body": [
+			"@isTest",
+			"private without sharing class ${1:method}Test {",
+			"\t@isTest",
+			"\tprivate static void test${2:Function}() {",
+			"\t\t$0",
+			"\t\tTest.StartTest();",
+			"\t\t${1}.${2}();",
+			"\t\tTest.StopTest();",
+			"\t}",
+			"}"
+		],
+		"description": "Creates a default, empty test method and function"
+	},
+	"createEmptyTestFunction": {
+		"prefix": [
+			"Create empty test function",
+			"private static void"
+		],
+		"body": [
+			"@isTest",
+			"private static void test${1:Function}() {",
+			"\t$0",
+			"\tTest.StartTest();",
+			"\t${2:Method}.${1}();",
+			"\tTest.StopTest();",
+			"}"
+		],
+		"description": "Creates a default, empty test method and function"
+	},
+	"createEmptyFunction": {
+		"prefix": [
+			"Create empty function",
+			"public static"
+		],
+		"body": [
+			"${1|public,private|} static ${2:void} ${3:functionName}(${4:parameters}) {",
+			"\t$0",
+			"}"
+		],
+		"description": "Creates a default, empty test method and function"
+	},
+}
