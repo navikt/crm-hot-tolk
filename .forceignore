@@ -1,16 +1,70 @@
-# List files or directories below to ignore them when running force:source:push, force:source:pull, and force:source:status
-# More information: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_exclude_source.htm
-#
-
-package.xml
-
+# Profiles (some are needed for deploying the community to scratch orgs)
+**/profiles/*
+!**/REMOVE_*/profiles/*
+**/profilePasswordPolicies/*
+**/profileSessionSettings/*
 # LWC configuration files
 **/jsconfig.json
 **/.eslintrc.json
-
 # LWC Jest
 **/__tests__/**
 
-# Profiles
 
-**.profile
+# bug with pushing app switching, do not upload
+**/AppSwitcher.appMenu*
+
+# community classes
+#          **/classes/ChangePasswordController.cls
+#          **/classes/ChangePasswordControllerTest.cls
+#          **/classes/CommunitiesLandingController.cls
+#          **/classes/CommunitiesLandingControllerTest.cls
+**/classes/CommunitiesLoginController.cls
+**/classes/CommunitiesLoginControllerTest.cls
+**/classes/CommunitiesSelfRegConfirmController.cls
+**/classes/CommunitiesSelfRegConfirmControllerTest.cls
+**/classes/CommunitiesSelfRegController.cls
+**/classes/CommunitiesSelfRegControllerTest.cls
+**/classes/ForgotPasswordController.cls
+**/classes/ForgotPasswordControllerTest.cls
+**/classes/LightningForgotPasswordController.cls
+**/classes/LightningForgotPasswordControllerTest.cls
+**/classes/LightningLoginFormController.cls
+**/classes/LightningLoginFormControllerTest.cls
+**/classes/LightningSelfRegisterController.cls
+**/classes/LightningSelfRegisterControllerTest.cls
+**/classes/SiteLoginController.cls
+**/classes/SiteLoginControllerTest.cls
+**/classes/SiteRegisterController.cls
+**/classes/SiteRegisterControllerTest.cls
+**/pages/AnswersHome.page
+**/pages/ForgotPasswordConfirm.page
+**/pages/CommunitiesSelfRegConfirm.page
+**/pages/SiteRegisterConfirm.page
+**/pages/BandwidthExceeded.page
+**/pages/IdeasHome.page
+**/pages/CommunitiesTemplate.page
+**/pages/SiteTemplate.page
+#          **/pages/ChangePassword.page
+**/pages/InMaintenance.page
+**/pages/Exception.page
+**/pages/StdExceptionTemplate.page
+#          **/pages/CommunitiesLanding.page
+**/pages/MyProfilePage.page
+**/pages/FileNotFound.page
+**/pages/Unauthorized.page
+**/pages/CommunitiesLogin.page
+**/pages/SiteLogin.page
+**/pages/ForgotPassword.page
+**/pages/UnderConstruction.page
+**/pages/CommunitiesSelfReg.page
+**/pages/SiteRegister.page
+**/aura/forgotPassword
+**/aura/loginForm
+**/aura/selfRegister
+**/aura/setExpId
+**/aura/
+**/components/SiteFooter.component
+**/components/SiteHeader.component
+**/components/SiteLogin.component
+**/components/SitePoweredBy.component
+**/navigationMenus/*
