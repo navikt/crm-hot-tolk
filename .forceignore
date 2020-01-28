@@ -68,3 +68,7 @@
 **/components/SiteLogin.component
 **/components/SitePoweredBy.component
 **/navigationMenus/*
+
+# Flexipages
+**flexipages/
+**flexipages/LightningService_UtilityBar.flexipage-meta.xml
