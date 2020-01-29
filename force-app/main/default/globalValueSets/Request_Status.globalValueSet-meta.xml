@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Received</fullName>
+        <default>true</default>
+        <label>Received</label>
+    </customValue>
+    <customValue>
+        <fullName>Pending</fullName>
+        <default>false</default>
+        <label>Pending</label>
+    </customValue>
+    <customValue>
+        <fullName>Assigned</fullName>
+        <default>false</default>
+        <label>Assigned</label>
+    </customValue>
+    <customValue>
+        <fullName>Declined</fullName>
+        <default>false</default>
+        <label>Declined</label>
+    </customValue>
+    <masterLabel>Request Status</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>
