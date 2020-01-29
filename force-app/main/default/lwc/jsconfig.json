@@ -2,7 +2,14 @@
     "compilerOptions": {
         "experimentalDecorators": true,
         "baseUrl": ".",
-        "paths": {}
+        "paths": {
+            "c/hot_createRequestForm": [
+                "hot_createRequestForm/hot_createRequestForm.js"
+            ],
+            "c/hot_requestList": [
+                "hot_requestList/hot_requestList.js"
+            ]
+        }
     },
     "include": [
         "**/*",
