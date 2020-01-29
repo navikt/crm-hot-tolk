@@ -20,6 +20,11 @@
         <default>false</default>
         <label>Declined</label>
     </customValue>
+    <customValue>
+        <fullName>Completed</fullName>
+        <default>false</default>
+        <label>Completed</label>
+    </customValue>
     <masterLabel>Request Status</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>
