@@ -1,0 +1,10 @@
+<template>
+	<lightning-card title="CreateRequestRecord" icon-name="standard:record">
+		<div class="slds-m-around_medium">
+			<lightning-input label="RecordId" disabled value={recordId}></lightning-input>
+			<lightning-input label="User Name" onchange={handleUserNameChange} class="slds-m-bottom_x-small">
+			</lightning-input>
+			<lightning-button label="Create Request" variant="brand" onclick={createRequest}></lightning-button>
+		</div>
+	</lightning-card>
+</template>
