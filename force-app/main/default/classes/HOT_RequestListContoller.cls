@@ -2,6 +2,6 @@ public with sharing class HOT_RequestListContoller {
 
 	@AuraEnabled(cacheable = true)
 	public static List<HOT_Request__c> getRequestList() {
-		return [SELECT Id, Name, UserName__c FROM HOT_Request__c];
+		return [SELECT UserName__c, Name, AssigmentInformation__c, Status__c FROM HOT_Request__c];
 	}
 }

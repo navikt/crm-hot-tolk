@@ -3,18 +3,23 @@ import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequest
 console.log('RequestList:Start');
 export default class RequestList extends LightningElement {
 	@track columns = [{
-		label: 'Record Id',
-		fieldName: 'Id',
+		label: 'Request Id',
+		fieldName: 'Name',
 		type: 'id'
 	},
 	{
-		label: 'Request Number',
-		fieldName: 'Name',
+		label: 'User Name',
+		fieldName: 'UserName__c',
 		type: 'text'
 	},
 	{
-		label: 'User name',
-		fieldName: 'UserName__c',
+		label: 'Assignment Information',
+		fieldName: 'AssigmentInformation__c',
+		type: 'text'
+	},
+	{
+		label: 'Status',
+		fieldName: 'Status__c',
 		type: 'text'
 	}
 
