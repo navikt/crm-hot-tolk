@@ -1,6 +1,7 @@
 {
 	"orgName": "NAV HOT",
 	"edition": "Enterprise",
+	"release": "Preview",
 	"adminEmail": "fakeemail@nav.no.scratchorg",
 	"features": [
 		"Sites",
@@ -14,8 +15,8 @@
 		"ServiceCloud",
 		"LiveAgent",
 		"LightningServiceConsole",
-    "ContactsToMultipleAccounts",
-    "FieldService"
+		"ContactsToMultipleAccounts",
+		"FieldService"
 	],
 	"country": "NO",
 	"language": "en_US",
