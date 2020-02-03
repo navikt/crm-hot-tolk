@@ -1,10 +1,29 @@
 <template>
-	<lightning-card title="CreateRequestRecord" icon-name="standard:record">
-		<div class="slds-m-around_medium">
-			<lightning-input label="RecordId" disabled value={recordId}></lightning-input>
-			<lightning-input label="User Name" onchange={handleUserNameChange} class="slds-m-bottom_x-small">
-			</lightning-input>
-			<lightning-button label="Create Request" variant="brand" onclick={createRequest}></lightning-button>
-		</div>
-	</lightning-card>
+	<lightning-record-edit-form object-api-name="HOT_Request__c">
+		<lightning-messages>
+		</lightning-messages>
+		<lightning-input-field field-name="UserName__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="PersonalNumber__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="UserEmail__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="UserPhone__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="AssigmentInformation__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="StartTime__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="EndTime__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="MeetingLocation__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="InterpretationLocation__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="AdditionalInformation__c">
+		</lightning-input-field>
+		<lightning-button class="slds-m-top_small" type="submit" label="Submit request" onclick={handleSuccess}>
+		</lightning-button>
+	</lightning-record-edit-form>
+
 </template>
