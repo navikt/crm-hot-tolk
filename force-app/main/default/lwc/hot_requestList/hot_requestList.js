@@ -18,6 +18,32 @@ export default class RequestList extends LightningElement {
 		type: 'text'
 	},
 	{
+		label: 'Start Time',
+		fieldName: 'StartTime__c',
+		type: 'date',
+		typeAttributes: {
+			day: 'numeric',
+			month: 'numeric',
+			year: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: false
+		},
+	},
+	{
+		label: 'End Time',
+		fieldName: 'EndTime__c',
+		type: 'date',
+		typeAttributes: {
+			day: 'numeric',
+			month: 'numeric',
+			year: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: false
+		},
+	},
+	{
 		label: 'Status',
 		fieldName: 'Status__c',
 		type: 'text'
@@ -28,7 +54,6 @@ export default class RequestList extends LightningElement {
 	@track requests;
 	@track error;
 	wiredRequestsResult;
-
 	@wire(getRequestList)
 	wiredRequest(result) {
 		console.log('RequestList:result: ' + result);
