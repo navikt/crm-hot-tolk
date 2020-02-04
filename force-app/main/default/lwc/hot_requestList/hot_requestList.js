@@ -47,6 +47,11 @@ export default class RequestList extends LightningElement {
 		label: 'Status',
 		fieldName: 'Status__c',
 		type: 'text'
+	},
+	{
+		label: 'Account',
+		fieldName: 'Account__c',
+		type: 'text'
 	}
 
 	];
