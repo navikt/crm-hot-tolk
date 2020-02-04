@@ -1,21 +1,27 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import REQUEST_OBJECT from '@salesforce/schema/HOT_Request__c'
-import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Name';
-import USER_NAME from '@salesforce/schema/HOT_Request__c.UserName__c';
-import PERSONAL_NUMBER from '@salesforce/schema/HOT_Request__c.PersonalNumber__c';
-import USER_EMAIL from '@salesforce/schema/HOT_Request__c.UserEmail__c';
-import USER_PHONE from '@salesforce/schema/HOT_Request__c.UserPhone__c';
-import ASSIGNMENT_INFORMATION from '@salesforce/schema/HOT_Request__c.AssigmentInformation__c';
-import START_TIME from '@salesforce/schema/HOT_Request__c.StartTime__c';
-import END_TIME from '@salesforce/schema/HOT_Request__c.EndTime__c';
-import MEETING_LOCATION from '@salesforce/schema/HOT_Request__c.MeetingLocation__c';
-import INTERPRETATION_LOCATION from '@salesforce/schema/HOT_Request__c.InterpretationLocation__c';
-import ADDITIONAL_INFORMATION from '@salesforce/schema/HOT_Request__c.AdditionalInformation__c';
+
+import getUserDetails from '@salesforce/apex/UserInfoDetails.getUserDetails';
+import Id from '@salesforce/user/Id';
 
 export default class RecordFormCreateExample extends LightningElement {
-	// objectApiName is "Account" when this component is placed on an account record page
-	fields = [REQUEST_ID, USER_NAME, PERSONAL_NUMBER, USER_EMAIL, USER_PHONE, ASSIGNMENT_INFORMATION, START_TIME, END_TIME, MEETING_LOCATION, INTERPRETATION_LOCATION, ADDITIONAL_INFORMATION];
+
+	userId = Id;
+	@track error;
+	@track user;
+	@wire(getUserDetails, {
+		recId: '$userId'
+	})
+	wiredUser({
+		error,
+		data
+	}) {
+		if (data) {
+			this.user = data;
+		} else if (error) {
+			this.error = error;
+		}
+	}
 
 	handleSuccess(event) {
 		const evt = new ShowToastEvent({
@@ -24,4 +30,17 @@ export default class RecordFormCreateExample extends LightningElement {
 		});
 		this.dispatchEvent(evt);
 	}
+	handleSubmit(event) {
+		event.preventDefault(); // stop the form from submitting
+		const fields = event.detail.fields;
+		console.log(JSON.stringify(fields));
+
+		fields.UserName__c = "vegard";
+		fields.UserPhone__c = "12345678";
+		fields.PersonalNumber__c = "01019512345";
+		fields.UserEmail__c = "vegard@test.no"//user.Email;
+		this.template.querySelector('lightning-record-edit-form').submit(fields);
+	}
+
+
 }
