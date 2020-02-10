@@ -3,11 +3,10 @@
     <fullName>MeetingPostalCode__c</fullName>
     <externalId>false</externalId>
     <label>Meeting Postal Code</label>
-    <precision>4</precision>
+    <length>10</length>
     <required>false</required>
-    <scale>0</scale>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
-    <type>Number</type>
+    <type>Text</type>
     <unique>false</unique>
 </CustomField>

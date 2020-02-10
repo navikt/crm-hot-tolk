@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>INT_Ident__c</fullName>
-    <externalId>false</externalId>
+    <caseSensitive>false</caseSensitive>
+    <description>National identity from TPS or organization number from Enhetsregisteret</description>
+    <externalId>true</externalId>
     <label>Ident</label>
-    <precision>11</precision>
+    <length>40</length>
     <required>false</required>
-    <scale>0</scale>
     <trackTrending>false</trackTrending>
-    <type>Number</type>
-    <unique>false</unique>
+    <type>Text</type>
+    <unique>true</unique>
 </CustomField>
