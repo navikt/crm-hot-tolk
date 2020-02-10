@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <customValue>
-        <fullName>Received</fullName>
+        <fullName>Open</fullName>
         <default>true</default>
-        <label>Received</label>
+        <label>Open</label>
     </customValue>
     <customValue>
-        <fullName>Pending</fullName>
+        <fullName>Apporved</fullName>
         <default>false</default>
-        <label>Pending</label>
+        <label>Apporved</label>
+    </customValue>
+    <customValue>
+        <fullName>Reserved</fullName>
+        <default>false</default>
+        <label>Reserved</label>
     </customValue>
     <customValue>
         <fullName>Assigned</fullName>
@@ -16,14 +21,53 @@
         <label>Assigned</label>
     </customValue>
     <customValue>
+        <fullName>Partially Covered</fullName>
+        <default>false</default>
+        <label>Partially Covered</label>
+    </customValue>
+    <customValue>
+        <fullName>Under Process</fullName>
+        <default>false</default>
+        <label>Under Process</label>
+    </customValue>
+    <customValue>
+        <fullName>Not Covered</fullName>
+        <default>false</default>
+        <label>Not Covered</label>
+    </customValue>
+    <customValue>
+        <fullName>Canceled</fullName>
+        <default>false</default>
+        <label>Canceled</label>
+    </customValue>
+    <customValue>
         <fullName>Declined</fullName>
         <default>false</default>
         <label>Declined</label>
     </customValue>
     <customValue>
+        <fullName>Received</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Received</label>
+    </customValue>
+    <customValue>
         <fullName>Completed</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Completed</label>
+    </customValue>
+    <customValue>
+        <fullName>Awarded</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Awarded</label>
+    </customValue>
+    <customValue>
+        <fullName>Pending</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Pending</label>
     </customValue>
     <masterLabel>Request Status</masterLabel>
     <sorted>false</sorted>
