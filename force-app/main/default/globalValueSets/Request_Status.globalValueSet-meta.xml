@@ -46,16 +46,9 @@
         <label>Declined</label>
     </customValue>
     <customValue>
-        <fullName>Received</fullName>
+        <fullName>Covered</fullName>
         <default>false</default>
-        <isActive>false</isActive>
-        <label>Received</label>
-    </customValue>
-    <customValue>
-        <fullName>Completed</fullName>
-        <default>false</default>
-        <isActive>false</isActive>
-        <label>Completed</label>
+        <label>Covered</label>
     </customValue>
     <customValue>
         <fullName>Awarded</fullName>
@@ -68,6 +61,18 @@
         <default>false</default>
         <isActive>false</isActive>
         <label>Pending</label>
+    </customValue>
+    <customValue>
+        <fullName>Received</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Received</label>
+    </customValue>
+    <customValue>
+        <fullName>Completed</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Completed</label>
     </customValue>
     <masterLabel>Request Status</masterLabel>
     <sorted>false</sorted>
