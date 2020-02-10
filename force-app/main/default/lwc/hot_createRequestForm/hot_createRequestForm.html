@@ -1,29 +1,36 @@
 <template>
+	<h1 class="slds-text-heading_large">Interpretation order form</h1>
+	<lightning-messages>
+	</lightning-messages>
 	<lightning-record-edit-form object-api-name="HOT_Request__c" onsubmit={handleSubmit}>
 		<lightning-messages>
 		</lightning-messages>
-		<lightning-input-field if:true={user} field-name="UserName__c" value={user.Name}>
-		</lightning-input-field>
-		<lightning-input-field field-name="PersonalNumber__c">
-		</lightning-input-field>
-		<lightning-input-field field-name="UserEmail__c">
-		</lightning-input-field>
-		<lightning-input-field field-name="UserPhone__c">
-		</lightning-input-field>
 		<lightning-input-field field-name="AssigmentInformation__c">
 		</lightning-input-field>
+		<h1 class="slds-text-heading_small">Assignment time</h1>
 		<lightning-input-field field-name="StartTime__c">
 		</lightning-input-field>
 		<lightning-input-field field-name="EndTime__c">
 		</lightning-input-field>
-		<lightning-input-field field-name="MeetingLocation__c">
+		<h1 class="slds-text-heading_small">Interpretation Location</h1>
+		<lightning-input-field field-name="InterpretationAddress__c">
 		</lightning-input-field>
-		<lightning-input-field field-name="InterpretationLocation__c">
+		<lightning-input-field field-name="InterpretationPostalCode__c">
 		</lightning-input-field>
+		<lightning-input-field field-name="InterpretationPostalCity__c">
+		</lightning-input-field>
+		<h1 class="slds-text-heading_small">Meeting Location</h1>
+		<lightning-input-field field-name="MeetingAddress__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="MeetingPostalCode__c">
+		</lightning-input-field>
+		<lightning-input-field field-name="MeetingPostalCity__c">
+		</lightning-input-field>
+		<h1 class="slds-text-heading_small">Additional Information</h1>
 		<lightning-input-field field-name="AdditionalInformation__c">
 		</lightning-input-field>
-		<lightning-button title="Submit Request" class="slds-m-top_small" type="submit" label="Submit request"
-			onclick={handleSuccess}>
+		<lightning-button title="Submit Request" class="slds-m-top_small" type="submit" variant="brand"
+			label="Submit request" onclick={handleSuccess}>
 		</lightning-button>
 	</lightning-record-edit-form>
 </template>
