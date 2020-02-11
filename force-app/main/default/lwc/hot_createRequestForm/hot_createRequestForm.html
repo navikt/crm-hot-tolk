@@ -27,19 +27,24 @@
 		</div>
 		</br>
 		<h1 class="slds-text-heading_small">Meeting Location</h1>
-		<lightning-input-field field-name="MeetingAddress__c">
-		</lightning-input-field>
-		<div class="slds-grid slds-gutters">
-			<div class="slds-col slds-size_1-of-3">
-				<lightning-input-field field-name="MeetingPostalCode__c">
-				</lightning-input-field>
+		<lightning-input type="toggle" label="Is Meeting Location the same as Interpreter Location?"
+			name="sameLocationToggle" checked onchange={toggled}></lightning-input>
+
+		<template if:false={sameLocation}>
+			<lightning-input-field field-name="MeetingAddress__c">
+			</lightning-input-field>
+			<div class="slds-grid slds-gutters">
+				<div class="slds-col slds-size_1-of-3">
+					<lightning-input-field field-name="MeetingPostalCode__c">
+					</lightning-input-field>
+				</div>
+				<div class="slds-col slds-size_2-of-3">
+					<lightning-input-field field-name="MeetingPostalCity__c">
+					</lightning-input-field>
+				</div>
 			</div>
-			<div class="slds-col slds-size_2-of-3">
-				<lightning-input-field field-name="MeetingPostalCity__c">
-				</lightning-input-field>
-			</div>
-		</div>
-		</br>
+			</br>
+		</template>
 		<lightning-input-field field-name="AdditionalInformation__c">
 		</lightning-input-field>
 		<lightning-button title="Submit Request" class="slds-m-top_small" type="submit" variant="brand"

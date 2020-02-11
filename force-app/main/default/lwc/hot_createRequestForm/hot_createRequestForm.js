@@ -1,23 +1,23 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-import getUserDetails from '@salesforce/apex/UserInfoDetails.getUserDetails';
+import getPersonDetails from '@salesforce/apex/UserInfoDetails.getPersonDetails';
 import Id from '@salesforce/user/Id';
 
 export default class RecordFormCreateExample extends LightningElement {
 
-	userId = Id;
+	usrId = Id;
 	@track error;
-	@track user;
-	@wire(getUserDetails, {
-		recId: '$userId'
+	@track person;
+	@wire(getPersonDetails, {
+		userId: '$usrId'
 	})
-	wiredUser({
+	wiredPerson({
 		error,
 		data
 	}) {
 		if (data) {
-			this.user = data;
+			this.person = data;
 		} else if (error) {
 			this.error = error;
 		}
@@ -35,12 +35,23 @@ export default class RecordFormCreateExample extends LightningElement {
 		const fields = event.detail.fields;
 		console.log(JSON.stringify(fields));
 
-		fields.UserName__c = "vegard";
-		fields.UserPhone__c = "12345678";
-		fields.PersonalNumber__c = "01019512345";
-		fields.UserEmail__c = "vegard@test.no"//user.Email;
+		fields.UserName__c = this.person.Name;
+		fields.PersonalNumber__c = this.person.INT_Ident__c;
+		fields.UserPhone__c = this.person.INT_Phone__c;
+		fields.UserEmail__c = this.person.INT_Email__c;
 		this.template.querySelector('lightning-record-edit-form').submit(fields);
 	}
 
+	//Tracking checkbox-value. If false --> Show user meeting location input
+	@track sameLocation = true;
 
+	toggled(event) {
+		// Query the DOM
+		const checked = Array.from(this.template.querySelectorAll('lightning-input'))
+			//filters
+			.filter(element => element.checked).map(element => element.label);
+		console.log(checked);
+		this.sameLocation = event.target.checked;
+	}
 }
+
