@@ -1,7 +1,7 @@
 <template>
 	<div style="height: 500px;">
 		<lightning-datatable key-field="Name" data={requests} columns={columns} hide-checkbox-column="true"
-			sorted-by="Name">
+			sorted-by="Name" onrowaction={handleRowAction}>
 		</lightning-datatable>
 	</div>
 </template>
