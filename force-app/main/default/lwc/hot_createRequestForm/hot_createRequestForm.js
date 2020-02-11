@@ -2,16 +2,12 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import getPersonDetails from '@salesforce/apex/UserInfoDetails.getPersonDetails';
-import Id from '@salesforce/user/Id';
 
 export default class RecordFormCreateExample extends LightningElement {
 
-	usrId = Id;
 	@track error;
 	@track person;
-	@wire(getPersonDetails, {
-		userId: '$usrId'
-	})
+	@wire(getPersonDetails)
 	wiredPerson({
 		error,
 		data

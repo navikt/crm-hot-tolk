@@ -1,5 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
+
 console.log('RequestList:Start');
 export default class RequestList extends LightningElement {
 	@track columns = [{
@@ -8,13 +9,18 @@ export default class RequestList extends LightningElement {
 		type: 'id'
 	},
 	{
-		label: 'User Name',
-		fieldName: 'UserName__c',
+		label: 'Assignment Information',
+		fieldName: 'AssigmentInformation__c',
 		type: 'text'
 	},
 	{
-		label: 'Assignment Information',
-		fieldName: 'AssigmentInformation__c',
+		label: 'Interpretation Address',
+		fieldName: 'InterpretationAddress__C',
+		type: 'text'
+	},
+	{
+		label: 'Meeting Address',
+		fieldName: 'MeetingAddress__C',
 		type: 'text'
 	},
 	{
@@ -28,7 +34,7 @@ export default class RequestList extends LightningElement {
 			hour: '2-digit',
 			minute: '2-digit',
 			hour12: false
-		},
+		}
 	},
 	{
 		label: 'End Time',
@@ -41,19 +47,13 @@ export default class RequestList extends LightningElement {
 			hour: '2-digit',
 			minute: '2-digit',
 			hour12: false
-		},
+		}
 	},
 	{
 		label: 'Status',
 		fieldName: 'Status__c',
 		type: 'text'
-	},
-	{
-		label: 'Account',
-		fieldName: 'Account__c',
-		type: 'text'
 	}
-
 	];
 
 	@track requests;
@@ -71,4 +71,5 @@ export default class RequestList extends LightningElement {
 			this.requests = undefined;
 		}
 	}
+
 }
