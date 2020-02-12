@@ -24,6 +24,7 @@ export default class RecordFormCreateExample extends LightningElement {
 			title: "Request created",
 			variant: "success"
 		});
+		//window.scrollTo(0, 0);
 		this.dispatchEvent(evt);
 	}
 	handleSubmit(event) {
