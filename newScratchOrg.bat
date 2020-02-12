@@ -3,3 +3,4 @@ call sfdx force:package:install --package 04t2o000001MxPAAA0  -k navcrm --wait 1
 call sfdx force:package:install --package 04t2o000001MxQhAAK  -k navcrm --wait 10 --publishwait 10
 call sfdx force:source:push
 call sfdx force:user:permset:assign --permsetname HOT_admin
+if %2==imp call sfdx force:data:tree:import --plan data-source/data-import-plan.json
