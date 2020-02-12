@@ -163,6 +163,10 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
+        <tab>Person__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>standard-WorkOrder</tab>
         <visibility>Visible</visibility>
     </tabSettings>
