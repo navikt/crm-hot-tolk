@@ -1,0 +1,13 @@
+{
+	"records": [
+		{
+			"attributes": {
+				"type": "Person__c",
+				"referenceId": "Person__cRef1"
+			},
+			"Name": "Test User",
+			"INT_Ident__c": "24129512345",
+			"INT_Phone__c": "41447899"
+		}
+	]
+}
