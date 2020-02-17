@@ -15,6 +15,10 @@
                 <behavior>Required</behavior>
                 <field>Status__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ExternalRequestStatus__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

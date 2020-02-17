@@ -9,6 +9,7 @@ public with sharing class HOT_RequestListContoller {
 		//return [SELECT Name, AssigmentInformation__c, InterpretationAddress__c, MeetingAddress__c, StartTime__c, Duration__c, Status__c FROM HOT_Request__c WHERE Account__c = : user.AccountId];
 
 		//Gets ALL requests
+
 		return [SELECT Name, AssigmentInformation__c, InterpretationAddress__c, MeetingAddress__c, StartTime__c, Duration__c, EndTime__c, Status__c FROM HOT_Request__c];
 	}
 }
