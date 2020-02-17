@@ -8,9 +8,9 @@
 		<lightning-input-field field-name="AssigmentInformation__c">
 		</lightning-input-field>
 		<h1 class="slds-text-heading_small">Time and place</h1>
-		<lightning-input-field field-name="StartTime__c">
+		<lightning-input-field field-name="StartTime__c" onchange={handleChange}>
 		</lightning-input-field>
-		<lightning-input-field field-name="EndTime__c">
+		<lightning-input-field field-name="EndTime__c" value={startTime}>
 		</lightning-input-field>
 		</br>
 		<lightning-input-field field-name="MeetingAddress__c">

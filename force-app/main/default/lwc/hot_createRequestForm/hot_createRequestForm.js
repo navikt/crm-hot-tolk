@@ -7,6 +7,7 @@ export default class RecordFormCreateExample extends LightningElement {
 
 	@track error;
 	@track person;
+	@track startTime;
 	@wire(getPersonDetails)
 	wiredPerson({
 		error,
@@ -17,6 +18,9 @@ export default class RecordFormCreateExample extends LightningElement {
 		} else if (error) {
 			this.error = error;
 		}
+	}
+	handleChange(event) {
+		this.startTime = event.detail.value;
 	}
 
 	handleSuccess(event) {
