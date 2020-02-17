@@ -1,67 +1,63 @@
 import { LightningElement, wire, track } from 'lwc';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
-const actions = [
+import cancelAppointment from '@salesforce/apex/EditRequestRecord.cancelAppointment';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { updateRecord } from 'lightning/uiRecordApi';
+import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
+import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
+import ADDRESS from '@salesforce/schema/HOT_Request__c.MeetingAddress__c';
+var actions = [
 	{ label: 'Cancel Order', name: 'delete' },
-	{ label: 'New Order', name: 'clone_order' },
+	{ label: 'Copy Order', name: 'clone_order' },
 ];
-console.log('RequestList:Start');
 export default class RequestList extends LightningElement {
 
-	@track columns = [{
-		label: 'Request Id',
-		fieldName: 'Name',
-		type: 'id'
-	},
-	{
-		label: 'Assignment Information',
-		fieldName: 'AssigmentInformation__c',
-		type: 'text'
-	},
-	{
-		label: 'Interpretation Address',
-		fieldName: 'InterpretationAddress__C',
-		type: 'text'
-	},
-	{
-		label: 'Meeting Address',
-		fieldName: 'MeetingAddress__C',
-		type: 'text'
-	},
-	{
-		label: 'Start Time',
-		fieldName: 'StartTime__c',
-		type: 'date',
-		typeAttributes: {
-			day: 'numeric',
-			month: 'numeric',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false
-		}
-	},
-	{
-		label: 'End Time',
-		fieldName: 'EndTime__c',
-		type: 'date',
-		typeAttributes: {
-			day: 'numeric',
-			month: 'numeric',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false
-		}
-	},
-	{
-		label: 'Status',
-		fieldName: 'Status__c',
-		type: 'text'
-	},
-	{
-		type: 'action',
-		typeAttributes: { rowActions: actions },
-	},
+	@track columns = [
+		{
+			label: 'Start Time',
+			fieldName: 'StartTime__c',
+			type: 'date',
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+		{
+			label: 'End Time',
+			fieldName: 'EndTime__c',
+			type: 'date',
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+		{
+			label: 'Meeting Address',
+			fieldName: 'MeetingAddress__C',
+			type: 'text'
+		},
+		{
+			label: 'Assignment Information',
+			fieldName: 'AssigmentInformation__c',
+			type: 'text'
+		},
+		{
+			label: 'Status',
+			fieldName: 'Status__c',
+			type: 'text'
+		},
+		{
+			type: 'action',
+			typeAttributes: { rowActions: actions },
+		},
 	];
 
 	@track requests;
@@ -84,6 +80,8 @@ export default class RequestList extends LightningElement {
 	handleRowAction(event) {
 		const actionName = event.detail.action.name;
 		const row = event.detail.row;
+		console.log(JSON.stringify(row));
+
 		switch (actionName) {
 			case 'delete':
 				this.cancelOrder(row);
@@ -95,31 +93,10 @@ export default class RequestList extends LightningElement {
 		}
 	}
 
-	cancelOrder(row) {
-		const { id } = row;
-		const index = this.findRowIndexById(id);
-		if (index !== -1) {
-			if (this.data[index].status__c == "Canceled" || this.data[index].status__c == "Open") {
-				this.data[index].status__c = "Canceled";
-				//Signaling to User that they were successfull in canceling their Interpretation Order
-				const evt = new ShowToastEvent({
-					title: "Order was canceled",
-					variant: "success"
-				});
-			}
-			else {
-				const evt = new ShowToastEvent({
-					title: "Order cant be canceled",
-					variant: "error"
-				})
-			}
-			this.dispatchEvent(evt);
-		}
-	}
-	findRowIndexById(id) {
+	findRowIndexById(Id) {
 		let ret = -1;
-		this.data.some((row, index) => {
-			if (row.id === id) {
+		this.requests.some((row, index) => {
+			if (row.Id === Id) {
 				ret = index;
 				return true;
 			}
@@ -127,9 +104,59 @@ export default class RequestList extends LightningElement {
 		});
 		return ret;
 	}
+
+	cancelOrder(row) {
+		const { Id } = row;
+		const index = this.findRowIndexById(Id);
+		if (index != -1) {
+			if (this.requests[index].Status__c == "Open") {
+				//cancelAppointment(Id);
+				const fields = {};
+				fields[REQUEST_ID.fieldApiName] = Id;
+				fields[STATUS.fieldApiName] = "Canceled";
+				fields[ADDRESS.fieldApiName] = "Canceled";
+				const recordInput = { fields };
+				updateRecord(recordInput)
+					.then(() => {
+						this.dispatchEvent(
+							new ShowToastEvent({
+								title: 'Success',
+								message: 'Contact updated',
+								variant: 'success'
+							})
+						);
+						// Display fresh data in the form
+						return refreshApex(this.contact);
+					})
+					.catch(error => {
+						this.dispatchEvent(
+							new ShowToastEvent({
+								title: 'Error creating record',
+								message: error.body.message,
+								variant: 'error'
+							})
+						);
+					});
+			}
+			const evt = new ShowToastEvent({
+				title: "Order was canceled",
+				variant: "success"
+			});
+			//this.dispatchEvent(evt);
+		}
+		else {
+			const evt = new ShowToastEvent({
+				title: "Order can not be canceled",
+				variant: "error"
+			});
+			//this.dispatchEvent(evt);
+		}
+	}
+
 	cloneOrder(row) {
-		const { id } = row;
-		const index = this.findRowIndexById(id);
+		const rows = this.requests;
+		const index = rows.indexOf(row);
+		console.log(index);
 		if (index !== -1) {
 
 			const evt = new ShowToastEvent({
