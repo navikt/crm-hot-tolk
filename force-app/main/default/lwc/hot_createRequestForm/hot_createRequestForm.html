@@ -7,39 +7,38 @@
 		</lightning-messages>
 		<lightning-input-field field-name="AssigmentInformation__c">
 		</lightning-input-field>
+		<h1 class="slds-text-heading_small">Time and place</h1>
 		<lightning-input-field field-name="StartTime__c">
 		</lightning-input-field>
 		<lightning-input-field field-name="EndTime__c">
 		</lightning-input-field>
 		</br>
-		<h1 class="slds-text-heading_small">Interpretation Location</h1>
-		<lightning-input-field field-name="InterpretationAddress__c">
+		<lightning-input-field field-name="MeetingAddress__c">
 		</lightning-input-field>
 		<div class="slds-grid slds-gutters">
 			<div class="slds-col slds-size_1-of-3">
-				<lightning-input-field field-name="InterpretationPostalCode__c">
+				<lightning-input-field field-name="MeetingPostalCode__c">
 				</lightning-input-field>
 			</div>
 			<div class="slds-col slds-size_2-of-3">
-				<lightning-input-field field-name="InterpretationPostalCity__c">
+				<lightning-input-field field-name="MeetingPostalCity__c">
 				</lightning-input-field>
 			</div>
 		</div>
 		</br>
-		<h1 class="slds-text-heading_small">Meeting Location</h1>
 		<lightning-input type="toggle" label="Is Meeting Location the same as Interpreter Location?"
 			name="sameLocationToggle" checked onchange={toggled}></lightning-input>
 
 		<template if:false={sameLocation}>
-			<lightning-input-field field-name="MeetingAddress__c">
+			<lightning-input-field field-name="InterpretationAddress__c">
 			</lightning-input-field>
 			<div class="slds-grid slds-gutters">
 				<div class="slds-col slds-size_1-of-3">
-					<lightning-input-field field-name="MeetingPostalCode__c">
+					<lightning-input-field field-name="InterpretationPostalCode__c">
 					</lightning-input-field>
 				</div>
 				<div class="slds-col slds-size_2-of-3">
-					<lightning-input-field field-name="MeetingPostalCity__c">
+					<lightning-input-field field-name="InterpretationPostalCity__c">
 					</lightning-input-field>
 				</div>
 			</div>
