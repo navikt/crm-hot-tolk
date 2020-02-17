@@ -1,6 +1,5 @@
 import { LightningElement, wire, track } from 'lwc';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
-import cancelAppointment from '@salesforce/apex/EditRequestRecord.cancelAppointment';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { updateRecord } from 'lightning/uiRecordApi';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
