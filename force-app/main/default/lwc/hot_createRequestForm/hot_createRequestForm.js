@@ -5,6 +5,8 @@ import getPersonDetails from '@salesforce/apex/UserInfoDetails.getPersonDetails'
 
 export default class RecordFormCreateExample extends LightningElement {
 
+	@api clone;
+
 	@track error;
 	@track person;
 	@track startTime;

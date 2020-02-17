@@ -1,10 +1,10 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { updateRecord } from 'lightning/uiRecordApi';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
-import ADDRESS from '@salesforce/schema/HOT_Request__c.MeetingAddress__c';
+
 var actions = [
 	{ label: 'Cancel Order', name: 'delete' },
 	{ label: 'Copy Order', name: 'clone_order' },
@@ -113,7 +113,6 @@ export default class RequestList extends LightningElement {
 				const fields = {};
 				fields[REQUEST_ID.fieldApiName] = Id;
 				fields[STATUS.fieldApiName] = "Canceled";
-				fields[ADDRESS.fieldApiName] = "Canceled";
 				const recordInput = { fields };
 				updateRecord(recordInput)
 					.then(() => {
@@ -153,11 +152,13 @@ export default class RequestList extends LightningElement {
 	}
 
 	cloneOrder(row) {
-		const rows = this.requests;
-		const index = rows.indexOf(row);
+		const { Id } = row;
+		const index = this.findRowIndexById(Id);
 		console.log(index);
-		if (index !== -1) {
+		console.log(JSON.stringify(row));
 
+		if (index != -1) {
+			//clone = this.requests[index];
 			const evt = new ShowToastEvent({
 				title: "Cloning Order",
 				variant: "success"
