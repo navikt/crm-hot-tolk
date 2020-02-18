@@ -7,6 +7,8 @@ export default class RecordFormCreateExample extends LightningElement {
 
 	@api clone;
 
+	@track submitted = false;
+
 	@track error;
 	@track person;
 	@track startTime;
@@ -32,6 +34,7 @@ export default class RecordFormCreateExample extends LightningElement {
 		});
 		//window.scrollTo(0, 0);
 		this.dispatchEvent(evt);
+		this.submitted = true;
 	}
 	handleSubmit(event) {
 		event.preventDefault(); // stop the form from submitting
@@ -63,6 +66,13 @@ export default class RecordFormCreateExample extends LightningElement {
 			.filter(element => element.checked).map(element => element.label);
 		console.log(checked);
 		this.sameLocation = event.target.checked;
+	}
+
+	handleBack(event) {
+		this.submitted = false;
+	}
+	goToMyRequests(event) {
+
 	}
 }
 

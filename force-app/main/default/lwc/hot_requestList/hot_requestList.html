@@ -1,4 +1,7 @@
 <template>
+	<lightning-button title="New Requests" class="slds-m-top-small" variant="brand" label="New Requests"
+		onclick={goToNewRequests}>
+	</lightning-button>
 	<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
 		onrowaction={handleRowAction}>
 	</lightning-datatable>
