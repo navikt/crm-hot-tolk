@@ -69,5 +69,8 @@
 **/components/SitePoweredBy.component
 **/navigationMenus/*
 
+# Workflows
+**/workflows/*
+
 # Flexipages
 **flexipages/LightningService_UtilityBar.flexipage-meta.xml

@@ -1,0 +1,26 @@
+[
+	{
+		"sobject": "Account",
+		"saveRefs": true,
+		"resolveRefs": false,
+		"files": [
+			"data-files/accounts.json"
+		]
+	},
+	{
+		"sobject": "HOT_Request__c",
+		"saveRefs": true,
+		"resolveRefs": false,
+		"files": [
+			"data-files/requests.json"
+		]
+	},
+	{
+		"sobject": "Person__c",
+		"saveRefs": true,
+		"resolveRefs": false,
+		"files": [
+			"data-files/persons.json"
+		]
+	}
+]

@@ -5,8 +5,11 @@ import getPersonDetails from '@salesforce/apex/UserInfoDetails.getPersonDetails'
 
 export default class RecordFormCreateExample extends LightningElement {
 
+	@api clone;
+
 	@track error;
 	@track person;
+	@track startTime;
 	@wire(getPersonDetails)
 	wiredPerson({
 		error,
@@ -18,12 +21,16 @@ export default class RecordFormCreateExample extends LightningElement {
 			this.error = error;
 		}
 	}
+	handleChange(event) {
+		this.startTime = event.detail.value;
+	}
 
 	handleSuccess(event) {
 		const evt = new ShowToastEvent({
 			title: "Request created",
 			variant: "success"
 		});
+		//window.scrollTo(0, 0);
 		this.dispatchEvent(evt);
 	}
 	handleSubmit(event) {
@@ -36,6 +43,14 @@ export default class RecordFormCreateExample extends LightningElement {
 		fields.UserPhone__c = this.person.INT_Phone__c;
 		fields.UserEmail__c = this.person.INT_Email__c;
 		this.template.querySelector('lightning-record-edit-form').submit(fields);
+	}
+	handleAbort(event) {
+		const evt = new ShowToastEvent({
+			title: "Form was aborted",
+			variant: "warning"
+		});
+		window.scrollTo(0, 0);
+		this.dispatchEvent(evt);
 	}
 
 	//Tracking checkbox-value. If false --> Show user meeting location input

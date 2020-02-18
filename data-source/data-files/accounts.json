@@ -1,0 +1,28 @@
+{
+	"records": [
+		{
+			"attributes": {
+				"type": "Account",
+				"referenceId": "AccountRef1"
+			},
+			"LastName": "Skywalker",
+			"RecordTypeId": "0121j000000uW5xAAE"
+		},
+		{
+			"attributes": {
+				"type": "Account",
+				"referenceId": "AccountRef2"
+			},
+			"LastName": "Vader",
+			"RecordTypeId": "0121j000000uW5xAAE"
+		},
+		{
+			"attributes": {
+				"type": "Account",
+				"referenceId": "AccountRef3"
+			},
+			"LastName": "Binks",
+			"RecordTypeId": "0121j000000uW5xAAE"
+		}
+	]
+}

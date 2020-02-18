@@ -1,67 +1,63 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
-const actions = [
-	{ label: 'Show details', name: 'show_details' },
-	{ label: 'Delete', name: 'delete' },
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { updateRecord } from 'lightning/uiRecordApi';
+import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
+import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
+import { refreshApex } from '@salesforce/apex';
+
+var actions = [
+	{ label: 'Cancel Order', name: 'delete' },
+	{ label: 'Copy Order', name: 'clone_order' },
 ];
-console.log('RequestList:Start');
 export default class RequestList extends LightningElement {
 
-	@track columns = [{
-		label: 'Request Id',
-		fieldName: 'Name',
-		type: 'id'
-	},
-	{
-		label: 'Assignment Information',
-		fieldName: 'AssigmentInformation__c',
-		type: 'text'
-	},
-	{
-		label: 'Interpretation Address',
-		fieldName: 'InterpretationAddress__C',
-		type: 'text'
-	},
-	{
-		label: 'Meeting Address',
-		fieldName: 'MeetingAddress__C',
-		type: 'text'
-	},
-	{
-		label: 'Start Time',
-		fieldName: 'StartTime__c',
-		type: 'date',
-		typeAttributes: {
-			day: 'numeric',
-			month: 'numeric',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false
-		}
-	},
-	{
-		label: 'End Time',
-		fieldName: 'EndTime__c',
-		type: 'date',
-		typeAttributes: {
-			day: 'numeric',
-			month: 'numeric',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false
-		}
-	},
-	{
-		label: 'Status',
-		fieldName: 'Status__c',
-		type: 'text'
-	},
-	{
-		type: 'action',
-		typeAttributes: { rowActions: actions },
-	},
+	@track columns = [
+		{
+			label: 'Start Time',
+			fieldName: 'StartTime__c',
+			type: 'date',
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+		{
+			label: 'End Time',
+			fieldName: 'EndTime__c',
+			type: 'date',
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+		{
+			label: 'Meeting Address',
+			fieldName: 'MeetingAddress__C',
+			type: 'text'
+		},
+		{
+			label: 'Assignment Information',
+			fieldName: 'AssigmentInformation__c',
+			type: 'text'
+		},
+		{
+			label: 'Status',
+			fieldName: 'Status__c',
+			type: 'text'
+		},
+		{
+			type: 'action',
+			typeAttributes: { rowActions: actions },
+		},
 	];
 
 	@track requests;
@@ -84,37 +80,87 @@ export default class RequestList extends LightningElement {
 	handleRowAction(event) {
 		const actionName = event.detail.action.name;
 		const row = event.detail.row;
+		console.log(JSON.stringify(row));
+
 		switch (actionName) {
 			case 'delete':
-				this.deleteRow(row);
+				this.cancelOrder(row);
 				break;
-			case 'show_details':
-				this.showRowDetails(row);
+			case 'clone_order':
+				this.cloneOrder(row);
 				break;
 			default:
 		}
 	}
 
-	deleteRow(row) {
-		const { id } = row;
-		const index = this.findRowIndexById(id);
-		if (index !== -1) {
-			this.data = this.data
-				.slice(0, index)
-				.concat(this.data.slice(index + 1));
-		}
-	}
-
-	findRowIndexById(id) {
+	findRowIndexById(Id) {
 		let ret = -1;
-		this.data.some((row, index) => {
-			if (row.id === id) {
+		this.requests.some((row, index) => {
+			if (row.Id === Id) {
 				ret = index;
 				return true;
 			}
 			return false;
 		});
 		return ret;
+	}
+
+	cancelOrder(row) {
+		const { Id } = row;
+		const index = this.findRowIndexById(Id);
+		if (index != -1) {
+			if (this.requests[index].Status__c == "Open") {
+				const fields = {};
+				fields[REQUEST_ID.fieldApiName] = Id;
+				fields[STATUS.fieldApiName] = "Canceled";
+				const recordInput = { fields };
+				updateRecord(recordInput)
+					.then(() => {
+						this.dispatchEvent(
+							new ShowToastEvent({
+								title: 'Success',
+								message: 'Order was canceled',
+								variant: 'success'
+							})
+						);
+						// Display fresh data in the form
+						console.log('Trying to refresh');
+						refreshApex(this.wiredRequestsResult);
+					})
+					.catch(error => {
+						this.dispatchEvent(
+							new ShowToastEvent({
+								title: 'An error oocured canceling the appointment',
+								message: error.body.message,
+								variant: 'error'
+							})
+						);
+					});
+			}
+			else {
+				const evt = new ShowToastEvent({
+					title: "Order can not be canceled",
+					variant: "error"
+				});
+				this.dispatchEvent(evt);
+			}
+		}
+	}
+
+	cloneOrder(row) {
+		const { Id } = row;
+		const index = this.findRowIndexById(Id);
+		console.log(index);
+		console.log(JSON.stringify(row));
+
+		if (index != -1) {
+			//clone = this.requests[index];
+			const evt = new ShowToastEvent({
+				title: "Cloning Order",
+				variant: "success"
+			});
+			this.dispatchEvent(evt);
+		}
 	}
 
 }

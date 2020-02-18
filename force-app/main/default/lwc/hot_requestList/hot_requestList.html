@@ -1,7 +1,5 @@
 <template>
-	<div style="height: 500px;">
-		<lightning-datatable key-field="Name" data={requests} columns={columns} hide-checkbox-column="true"
-			sorted-by="Name" onrowaction={handleRowAction}>
-		</lightning-datatable>
-	</div>
+	<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
+		onrowaction={handleRowAction}>
+	</lightning-datatable>
 </template>

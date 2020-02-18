@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+	<customValue>
+		<fullName>Open</fullName>
+		<default>true</default>
+		<label>Åpen</label>
+	</customValue>
+	<customValue>
+		<fullName>Apporved</fullName>
+		<default>false</default>
+		<label>Godkjent</label>
+	</customValue>
+	<customValue>
+		<fullName>Reserved</fullName>
+		<default>false</default>
+		<label>Reservert</label>
+	</customValue>
+	<customValue>
+		<fullName>Assigned</fullName>
+		<default>false</default>
+		<label>Tildelt</label>
+	</customValue>
+	<customValue>
+		<fullName>Partially Covered</fullName>
+		<default>false</default>
+		<label>Delvis dekket</label>
+	</customValue>
+	<customValue>
+		<fullName>Under Process</fullName>
+		<default>false</default>
+		<label>Pågår</label>
+	</customValue>
+	<customValue>
+		<fullName>Not Covered</fullName>
+		<default>false</default>
+		<label>Udekket</label>
+	</customValue>
+	<customValue>
+		<fullName>Canceled</fullName>
+		<default>false</default>
+		<label>Avlyst</label>
+	</customValue>
+	<customValue>
+		<fullName>Declined</fullName>
+		<default>false</default>
+		<label>Avslått</label>
+	</customValue>
+	<customValue>
+		<fullName>Covered</fullName>
+		<default>false</default>
+		<label>Dekket</label>
+	</customValue>
+	<masterLabel>Interpreter Status</masterLabel>
+	<sorted>false</sorted>
+</GlobalValueSet>

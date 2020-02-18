@@ -1,0 +1,20 @@
+{
+	"records": [
+		{
+			"attributes": {
+				"type": "HOT_Request__c",
+				"referenceId": "HOT_Request__cRef1"
+			},
+			"AssigmentInformation__c": "Dette er en test for å sjekke om man kan imortere data",
+			"UserPhone__c": "41447899"
+		},
+		{
+			"attributes": {
+				"type": "HOT_Request__c",
+				"referenceId": "HOT_Request__cRef2"
+			},
+			"AssigmentInformation__c": "Dette er test 2 for å sjekke om man kan imortere data",
+			"UserPhone__c": "91919191"
+		}
+	]
+}
