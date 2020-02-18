@@ -46,8 +46,10 @@
 		</template>
 		<lightning-input-field field-name="AdditionalInformation__c">
 		</lightning-input-field>
-		<lightning-button title="Submit Request" class="slds-m-top_small" type="submit" variant="brand"
+		<lightning-button title="Submit Request" class="slds-m-left_x-small" type="submit" variant="brand"
 			label="Submit request" onclick={handleSuccess}>
 		</lightning-button>
+		<lightning-button title="Abort Request" variant="base" label="Cancel" onclick={handleAbort}
+			class="slds-m-left_x-small"></lightning-button>
 	</lightning-record-edit-form>
 </template>
