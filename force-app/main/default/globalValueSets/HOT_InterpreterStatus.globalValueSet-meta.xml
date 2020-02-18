@@ -50,6 +50,6 @@
 		<default>false</default>
 		<label>Dekket</label>
 	</customValue>
-	<masterLabel>Request Status</masterLabel>
+	<masterLabel>Interpreter Status</masterLabel>
 	<sorted>false</sorted>
 </GlobalValueSet>
