@@ -3,21 +3,24 @@
 		{
 			"attributes": {
 				"type": "Account",
-				"referenceId": "AccountRef1"
+				"referenceId": "AccountRef1",
+				"IsPersonAccount": "true"
 			},
 			"Name": "Vegard Mjelde"
 		},
 		{
 			"attributes": {
 				"type": "Account",
-				"referenceId": "AccountRef2"
+				"referenceId": "AccountRef2",
+				"IsPersonAccount": "true"
 			},
 			"Name": "Carl Fosli"
 		},
 		{
 			"attributes": {
 				"type": "Account",
-				"referenceId": "AccountRef3"
+				"referenceId": "AccountRef3",
+				"IsPersonAccount": "true"
 			},
 			"Name": "Dan Wu"
 		}
