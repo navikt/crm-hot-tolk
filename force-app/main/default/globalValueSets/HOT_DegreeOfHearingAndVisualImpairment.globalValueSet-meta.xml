@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Hearing impaired or deaf</fullName>
+        <default>false</default>
+        <label>Hearing impaired or deaf</label>
+    </customValue>
+    <customValue>
+        <fullName>Deafblind</fullName>
+        <default>false</default>
+        <label>Deafblind</label>
+    </customValue>
+    <masterLabel>Degree of Hearing and Visual Impairment</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

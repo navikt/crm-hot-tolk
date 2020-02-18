@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customApplications>
+        <label><!-- HoT --></label>
+        <name>HOT</name>
+    </customApplications>
+    <customLabels>
+        <label><!-- Errors_CannotFindTriggerHandlerClass --></label>
+        <name>Errors_CannotFindTriggerHandlerClass</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Errors_DuplicateTriggerHandlerClass --></label>
+        <name>Errors_DuplicateTriggerHandlerClass</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Errors_InvalidSettingConfiguration --></label>
+        <name>Errors_InvalidSettingConfiguration</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Error when selecting a cross-object fieldsset is not allowed and attempted. --></label>
+        <name>fflib_QueryFactory_crossobject_fieldsets_not_allowed_error</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Error when selecting a field set for a different sobject type. --></label>
+        <name>fflib_QueryFactory_fieldset_wrong_sobject_error</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Presented when attempting to nest subqueries. --></label>
+        <name>fflib_QueryFactory_recursive_subquery_error</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Presented when attempting to create a subquery from an invalid relationship. --></label>
+        <name>fflib_QueryFactory_subquery_invalid_relationship</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- fflib_security_error_field_not_insertable --></label>
+        <name>fflib_security_error_field_not_insertable</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- fflib_security_error_field_not_readable --></label>
+        <name>fflib_security_error_field_not_readable</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- fflib_security_error_field_not_updateable --></label>
+        <name>fflib_security_error_field_not_updateable</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- fflib_security_error_object_not_deletable --></label>
+        <name>fflib_security_error_object_not_deletable</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- fflib_security_error_object_not_insertable --></label>
+        <name>fflib_security_error_object_not_insertable</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- fflib_security_error_object_not_readable --></label>
+        <name>fflib_security_error_object_not_readable</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- fflib_security_error_object_not_updateable --></label>
+        <name>fflib_security_error_object_not_updateable</name>
+    </customLabels>
+    <flowDefinitions>
+        <flows>
+            <fullName>Create_Request_Test1-1</fullName>
+            <screens>
+                <fields>
+                    <name>text1</name>
+                </fields>
+                <name>Order_Form</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>ferdig</name>
+                </fields>
+                <name>finish</name>
+            </screens>
+        </flows>
+        <fullName>Create_Request_Test1</fullName>
+    </flowDefinitions>
+    <quickActions>
+        <label><!-- LogACall --></label>
+        <name>LogACall</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewAccount --></label>
+        <name>NewAccount</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewCase --></label>
+        <name>NewCase</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewContact --></label>
+        <name>NewContact</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewEvent --></label>
+        <name>NewEvent</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewGroup --></label>
+        <name>NewGroup</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewLead --></label>
+        <name>NewLead</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewNote --></label>
+        <name>NewNote</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewOpportunity --></label>
+        <name>NewOpportunity</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewTask --></label>
+        <name>NewTask</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- SendEmail --></label>
+        <name>SendEmail</name>
+    </quickActions>
+</Translations>
