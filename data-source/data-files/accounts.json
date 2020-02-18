@@ -3,26 +3,26 @@
 		{
 			"attributes": {
 				"type": "Account",
-				"referenceId": "AccountRef1",
-				"IsPersonAccount": "true"
+				"referenceId": "AccountRef1"
 			},
-			"Name": "Vegard Mjelde"
+			"LastName": "Vegard Mjelde",
+			"RecordTypeId": "0121j000000uW5xAAE"
 		},
 		{
 			"attributes": {
 				"type": "Account",
-				"referenceId": "AccountRef2",
-				"IsPersonAccount": "true"
+				"referenceId": "AccountRef2"
 			},
-			"Name": "Carl Fosli"
+			"LastName": "Carl Fosli",
+			"RecordTypeId": "0121j000000uW5xAAE"
 		},
 		{
 			"attributes": {
 				"type": "Account",
-				"referenceId": "AccountRef3",
-				"IsPersonAccount": "true"
+				"referenceId": "AccountRef3"
 			},
-			"Name": "Dan Wu"
+			"LastName": "Dan Wu",
+			"RecordTypeId": "0121j000000uW5xAAE"
 		}
 	]
 }

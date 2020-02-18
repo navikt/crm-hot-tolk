@@ -8,14 +8,6 @@
 		]
 	},
 	{
-		"sobject": "Contacts",
-		"saveRefs": true,
-		"resolveRefs": true,
-		"files": [
-			"data-files/contacts.json"
-		]
-	},
-	{
 		"sobject": "HOT_Request__c",
 		"saveRefs": true,
 		"resolveRefs": false,
