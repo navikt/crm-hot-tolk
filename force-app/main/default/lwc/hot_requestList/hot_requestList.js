@@ -4,6 +4,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { updateRecord } from 'lightning/uiRecordApi';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
+import { refreshApex } from '@salesforce/apex';
 
 var actions = [
 	{ label: 'Cancel Order', name: 'delete' },
@@ -109,7 +110,6 @@ export default class RequestList extends LightningElement {
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
 			if (this.requests[index].Status__c == "Open") {
-				//cancelAppointment(Id);
 				const fields = {};
 				fields[REQUEST_ID.fieldApiName] = Id;
 				fields[STATUS.fieldApiName] = "Canceled";
@@ -119,35 +119,31 @@ export default class RequestList extends LightningElement {
 						this.dispatchEvent(
 							new ShowToastEvent({
 								title: 'Success',
-								message: 'Contact updated',
+								message: 'Order was canceled',
 								variant: 'success'
 							})
 						);
 						// Display fresh data in the form
-						return refreshApex(this.contact);
+						console.log('Trying to refresh');
+						refreshApex(this.wiredRequestsResult);
 					})
 					.catch(error => {
 						this.dispatchEvent(
 							new ShowToastEvent({
-								title: 'Error creating record',
+								title: 'An error oocured canceling the appointment',
 								message: error.body.message,
 								variant: 'error'
 							})
 						);
 					});
 			}
-			const evt = new ShowToastEvent({
-				title: "Order was canceled",
-				variant: "success"
-			});
-			//this.dispatchEvent(evt);
-		}
-		else {
-			const evt = new ShowToastEvent({
-				title: "Order can not be canceled",
-				variant: "error"
-			});
-			//this.dispatchEvent(evt);
+			else {
+				const evt = new ShowToastEvent({
+					title: "Order can not be canceled",
+					variant: "error"
+				});
+				this.dispatchEvent(evt);
+			}
 		}
 	}
 
