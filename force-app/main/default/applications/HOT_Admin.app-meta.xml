@@ -9,7 +9,7 @@
 	<formFactors>Large</formFactors>
 	<isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
 	<isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
-	<label>HoT</label>
+	<label>HoT Admin</label>
 	<navType>Standard</navType>
 	<profileActionOverrides>
 		<actionName>View</actionName>
@@ -24,7 +24,12 @@
 	<tabs>HOT_Request__c</tabs>
 	<tabs>standard-WorkOrder</tabs>
 	<tabs>standard-ServiceAppointment</tabs>
+	<tabs>standard-WorkType</tabs>
+	<tabs>standard-ServiceTerritory</tabs>
+	<tabs>standard-OperatingHours</tabs>
+	<tabs>standard-ServiceResource</tabs>
+	<tabs>standard-report</tabs>
 	<tabs>standard-Dashboard</tabs>
 	<uiType>Lightning</uiType>
-	<utilityBar>HoT_UtilityBar</utilityBar>
+	<utilityBar>HoT_Admin_UtilityBar</utilityBar>
 </CustomApplication>
