@@ -1,0 +1,51 @@
+name: Deploy Command
+on:
+  repository_dispatch:
+    types: [deploy-command]
+jobs:
+  deployCommand:
+    runs-on: ubuntu-latest
+    steps:
+      # Install Salesforce CLI
+      - name: Install Salesforce CLI
+        run: |
+          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+          mkdir sfdx-cli
+          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+          ./sfdx-cli/install
+
+      # Store secret for production
+      - name: 'Populate auth file with PROD_SFDX_URL secret'
+        if: github.event.client_payload.slash_command.arg1 == 'prod'
+        shell: bash
+        run: 'echo ${{ secrets.PROD_SFDX_URL }} > ./SFDX_AUTH_URL.txt'
+
+      # Store secret for preprod
+      - name: 'Populate auth file with PREPROD_SFDX_URL secret'
+        if: github.event.client_payload.slash_command.arg1 == 'preprod'
+        shell: bash
+        run: 'echo ${{ secrets.PREPROD_SFDX_URL }} > ./SFDX_AUTH_URL.txt'
+
+      # Authenticate org as installation target
+      - name: 'Authenticate deployment org'
+        run: 'sfdx force:auth:sfdxurl:store -f ./SFDX_AUTH_URL.txt -a targetOrg -s'
+
+      # Remove auth file
+      - name: 'Remove auth files'
+        run: |
+          rm -f ./SFDX_AUTH_URL.txt
+
+      # Install package in production
+      - name: 'Install package in target org'
+        run: 'sfdx force:package:install --package ${{ github.event.client_payload.slash_command.arg2 }} -w 10 -b 10 -u targetOrg -r'
+
+      # Add a hooray reaction to comment on success
+      - name: 'Add success reaction'
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          reaction-type: hooray
+
+
+
