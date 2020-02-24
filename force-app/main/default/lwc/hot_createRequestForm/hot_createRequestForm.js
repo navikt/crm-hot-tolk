@@ -2,12 +2,10 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getPersonDetails from '@salesforce/apex/UserInfoDetails.getPersonDetails';
 import { NavigationMixin } from 'lightning/navigation';
-import { CurrentPageReference } from 'lightning/navigation';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 
-	@wire(CurrentPageReference)
-	pageRef;
+	@track reRender = false;
 
 	@track sameLocation = true;
 	@track submitted = false;
@@ -15,6 +13,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track error;
 	@track person;
 	@track startTime;
+	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingAddress__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
 	@wire(getPersonDetails)
 	wiredPerson({
 		error,
@@ -76,26 +75,26 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.submitted = false;
 	}
 
+	connectedCallback() {
+		let testURL = window.location.href;
+		let newURL = new URL(testURL).searchParams;
+		if (JSON.parse(newURL.get("fieldValues")) != null) {
+			this.fieldValues = JSON.parse(newURL.get("fieldValues"));
+			console.log("Field Values: " + newURL.get("fieldValues"));
+			console.log("fieldValues.Name: " + JSON.stringify(this.fieldValues.Name));
+			this.reRender = true;
+
+		}
+
+	}
+
 	goToMyRequests() {
-		console.log('going to my requests');
 		this[NavigationMixin.Navigate]({
-			type: 'standard__navItemPage',
+			type: 'comm__namedPage',
 			attributes: {
-				apiName: 'MyRequests__c'
+				pageName: 'mine-bestillinger'
 			}
 		});
-		console.log('Should have navigated');
-	}
-	navigateToWebPage() {
-		// Navigate to a URL
-		this[NavigationMixin.Navigate]({
-			type: 'standard__webPage',
-			attributes: {
-				url: 'http://salesforce.com'
-			}
-		},
-			true // Replaces the current page in your browser history with the URL
-		);
 	}
 }
 

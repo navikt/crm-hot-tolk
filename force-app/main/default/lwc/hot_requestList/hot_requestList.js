@@ -6,14 +6,13 @@ import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
-import { CurrentPageReference } from 'lightning/navigation';
 
 
 var actions = [
 	{ label: 'Cancel Order', name: 'delete' },
 	{ label: 'Copy Order', name: 'clone_order' },
 ];
-export default class RequestList extends LightningElement {
+export default class RequestList extends NavigationMixin(LightningElement) {
 
 	@track columns = [
 		{
@@ -62,6 +61,8 @@ export default class RequestList extends LightningElement {
 			typeAttributes: { rowActions: actions },
 		},
 	];
+
+
 
 	@track requests;
 	@track error;
@@ -153,17 +154,30 @@ export default class RequestList extends LightningElement {
 	cloneOrder(row) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
-		console.log(index);
-		console.log(JSON.stringify(row));
 
 		if (index != -1) {
-			//clone = this.requests[index];
-			const evt = new ShowToastEvent({
-				title: "Cloning Order",
-				variant: "success"
+			//Here we should get the entire record from salesforce, to get entire meeting address.
+			let clone = this.requests[index];
+			console.log(JSON.stringify(clone));
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'ny-bestilling'
+				},
+				state: {
+					fieldValues: JSON.stringify(clone),
+				}
 			});
-			this.dispatchEvent(evt);
 		}
+	}
+
+	goToNewRequest() {
+		this[NavigationMixin.Navigate]({
+			type: 'comm__namedPage',
+			attributes: {
+				pageName: 'ny-bestilling'
+			},
+		});
 	}
 
 }
