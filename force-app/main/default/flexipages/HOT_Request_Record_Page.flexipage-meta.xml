@@ -94,6 +94,17 @@
     <flexiPageRegions>
         <componentInstances>
             <componentInstanceProperties>
+                <name>lookupFieldName</name>
+                <value>Person__c</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>updateQuickActionName</name>
+                <value>Person__c.Update_Person</value>
+            </componentInstanceProperties>
+            <componentName>console:relatedRecord</componentName>
+        </componentInstances>
+        <componentInstances>
+            <componentInstanceProperties>
                 <name>parentFieldApiName</name>
                 <value>HOT_Request__c.Id</value>
             </componentInstanceProperties>
