@@ -16,7 +16,7 @@
 			<valueName>Open</valueName>
 		</valueSettings>
 		<valueSettings>
-			<controllingFieldValue>Apporved</controllingFieldValue>
+			<controllingFieldValue>Approved</controllingFieldValue>
 			<controllingFieldValue>Reserved</controllingFieldValue>
 			<controllingFieldValue>Partially Covered</controllingFieldValue>
 			<controllingFieldValue>Declined</controllingFieldValue>
