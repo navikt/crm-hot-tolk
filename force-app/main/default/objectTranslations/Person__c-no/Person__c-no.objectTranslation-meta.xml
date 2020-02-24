@@ -34,21 +34,25 @@
     <layouts>
         <layout>Person Layout</layout>
         <sections>
+            <label><!-- Annet --></label>
+            <section>Annet</section>
+        </sections>
+        <sections>
             <label><!-- Custom Links --></label>
             <section>Custom Links</section>
         </sections>
         <sections>
-            <label><!-- HoT - Annet --></label>
-            <section>HoT - Annet</section>
+            <label><!-- Har vedtak på --></label>
+            <section>Har vedtak på</section>
         </sections>
         <sections>
-            <label><!-- HoT - Har vedtak på --></label>
-            <section>HoT - Har vedtak på</section>
-        </sections>
-        <sections>
-            <label><!-- HoT - Tolkemetoder --></label>
-            <section>HoT - Tolkemetoder</section>
+            <label><!-- Tolkemetoder --></label>
+            <section>Tolkemetoder</section>
         </sections>
     </layouts>
     <nameFieldLabel><!-- Person Name --></nameFieldLabel>
+    <quickActions>
+        <label><!-- Update Person --></label>
+        <name>Update_Person</name>
+    </quickActions>
 </CustomObjectTranslation>

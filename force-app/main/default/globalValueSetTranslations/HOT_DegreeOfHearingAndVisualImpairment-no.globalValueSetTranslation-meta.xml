@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <GlobalValueSetTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <valueTranslation>
-        <masterLabel>Deafblind</masterLabel>
-        <translation>Døvblind</translation>
-    </valueTranslation>
-    <valueTranslation>
-        <masterLabel>Hearing impaired or deaf</masterLabel>
-        <translation>Hørselshemmet eller døv</translation>
-    </valueTranslation>
+	<valueTranslation>
+		<masterLabel>Deafblind</masterLabel>
+		<translation>Døvblind</translation>
+	</valueTranslation>
+	<valueTranslation>
+		<masterLabel>Hearing impaired or deaf</masterLabel>
+		<translation>Hørselshemmet/døv</translation>
+	</valueTranslation>
 </GlobalValueSetTranslation>
