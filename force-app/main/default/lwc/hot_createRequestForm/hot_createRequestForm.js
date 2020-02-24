@@ -1,11 +1,13 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
 import getPersonDetails from '@salesforce/apex/UserInfoDetails.getPersonDetails';
+import { CurrentPageReference } from 'lightning/navigation';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class RecordFormCreateExample extends LightningElement {
+export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 
-	@api clone;
+	@wire(CurrentPageReference)
+	pageRef;
 
 	@track submitted = false;
 
@@ -34,6 +36,7 @@ export default class RecordFormCreateExample extends LightningElement {
 		});
 		//window.scrollTo(0, 0);
 		this.dispatchEvent(evt);
+		this.goToMyRequests();
 		this.submitted = true;
 	}
 	handleSubmit(event) {
@@ -47,6 +50,7 @@ export default class RecordFormCreateExample extends LightningElement {
 		fields.UserEmail__c = this.person.INT_Email__c;
 		this.template.querySelector('lightning-record-edit-form').submit(fields);
 	}
+
 	handleAbort(event) {
 		const evt = new ShowToastEvent({
 			title: "Form was aborted",
@@ -71,8 +75,16 @@ export default class RecordFormCreateExample extends LightningElement {
 	handleBack(event) {
 		this.submitted = false;
 	}
-	goToMyRequests(event) {
 
+	goToMyRequests(component, event, helper) {
+		console.log('going to my requests');
+		this[NavigationMixin.Navigate]({
+			type: 'comm__objectPage',
+			attributes: {
+				objectApiName: 'MyRequests__c',
+				actionName: 'goToMyRequests',
+			},
+		});
 	}
 }
 

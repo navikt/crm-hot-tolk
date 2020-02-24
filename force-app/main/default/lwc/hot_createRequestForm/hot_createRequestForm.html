@@ -55,6 +55,8 @@
 		</lightning-record-edit-form>
 	</template>
 	<template if:true={submitted}>
+		<lightning-navigation id="navId">
+		</lightning-navigation>
 		<h1 class="slds-text-heading_medium">Bestilling er opprettet!</h1>
 		<lightning-button title="Go to My Requests" class="slds-m-top-small" variant="brand" label="Go to My Requests"
 			onclick={goToMyRequests}>
@@ -63,4 +65,5 @@
 		<lightning-button title="Back" variant="base" label="Back" onclick={handleBack} class="slds-m-top-small">
 		</lightning-button>
 	</template>
+
 </template>
