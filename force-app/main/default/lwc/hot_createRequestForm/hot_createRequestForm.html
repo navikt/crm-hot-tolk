@@ -6,7 +6,7 @@
 		<lightning-record-edit-form object-api-name="HOT_Request__c" onsubmit={handleSubmit} density="comfy">
 			<lightning-messages>
 			</lightning-messages>
-			<lightning-input-field field-name="AssigmentInformation__c">
+			<lightning-input-field field-name="Subject__c">
 			</lightning-input-field>
 			<h1 class="slds-text-heading_small">Time and place</h1>
 			<lightning-input-field field-name="StartTime__c" onchange={handleChange}>
@@ -45,7 +45,7 @@
 				</div>
 				</br>
 			</template>
-			<lightning-input-field field-name="AdditionalInformation__c">
+			<lightning-input-field field-name="Description__c">
 			</lightning-input-field>
 			<lightning-button title="Submit Request" class="slds-m-left_x-small" type="submit" variant="brand"
 				label="Submit request" onclick={handleSuccess}>

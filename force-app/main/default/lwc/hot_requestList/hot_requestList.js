@@ -5,6 +5,9 @@ import { updateRecord } from 'lightning/uiRecordApi';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import { refreshApex } from '@salesforce/apex';
+import { NavigationMixin } from 'lightning/navigation';
+import { CurrentPageReference } from 'lightning/navigation';
+
 
 var actions = [
 	{ label: 'Cancel Order', name: 'delete' },
@@ -45,8 +48,8 @@ export default class RequestList extends LightningElement {
 			type: 'text'
 		},
 		{
-			label: 'Assignment Information',
-			fieldName: 'AssigmentInformation__c',
+			label: 'Subject',
+			fieldName: 'Subject__c',
 			type: 'text'
 		},
 		{
