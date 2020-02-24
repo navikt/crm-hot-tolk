@@ -6,7 +6,8 @@
 				"referenceId": "HOT_Request__cRef1"
 			},
 			"Subject__c": "Dette er en test for å sjekke om man kan imortere data",
-			"UserPhone__c": "41451899"
+			"UserPhone__c": "41451899",
+			"Person__c": "Person__cRef1"
 		},
 		{
 			"attributes": {
@@ -14,7 +15,8 @@
 				"referenceId": "HOT_Request__cRef2"
 			},
 			"Subject__c": "Dette er test 2 for å sjekke om man kan imortere data",
-			"UserPhone__c": "91919191"
+			"UserPhone__c": "91919191",
+			"Person__c": "Person__cRef2"
 		}
 	]
 }

@@ -1,10 +1,10 @@
 [
 	{
-		"sobject": "Account",
+		"sobject": "Person__c",
 		"saveRefs": true,
 		"resolveRefs": false,
 		"files": [
-			"data-files/accounts.json"
+			"data-files/persons.json"
 		]
 	},
 	{
@@ -13,14 +13,6 @@
 		"resolveRefs": false,
 		"files": [
 			"data-files/requests.json"
-		]
-	},
-	{
-		"sobject": "Person__c",
-		"saveRefs": true,
-		"resolveRefs": false,
-		"files": [
-			"data-files/persons.json"
 		]
 	}
 ]
