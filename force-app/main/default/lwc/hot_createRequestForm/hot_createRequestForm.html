@@ -6,9 +6,9 @@
 		<lightning-record-edit-form object-api-name="HOT_Request__c" onsubmit={handleSubmit} density="comfy">
 			<lightning-messages>
 			</lightning-messages>
-			<lightning-input-field field-name="Subject__c" value={fieldValues.Subject__c}>
+			<lightning-input-field field-name="Subject__c" value={fieldValues.Subject__c} title="Subject">
 			</lightning-input-field>
-			<h1 class="slds-text-heading_small">Time and place</h1>
+			<h2 class="slds-text-heading_small">Time and place</h2>
 			<lightning-input-field field-name="StartTime__c" onchange={handleChange}>
 			</lightning-input-field>
 			<lightning-input-field field-name="EndTime__c" value={startTime}>
@@ -52,19 +52,18 @@
 			<lightning-button title="Submit Request" class="slds-m-left_x-small" type="submit" variant="brand"
 				label="Submit request" onclick={handleSuccess}>
 			</lightning-button>
-			<lightning-button title="Abort Request" variant="base" label="Cancel" onclick={handleAbort}
+			<lightning-button title="Abort Request" variant="base" label="Cancel" onclick={goHome}
 				class="slds-m-left_x-small"></lightning-button>
 		</lightning-record-edit-form>
 	</template>
+
 	<template if:true={submitted}>
-		<lightning-navigation id="navId">
-		</lightning-navigation>
 		<h1 class="slds-text-heading_medium">Bestilling er opprettet!</h1>
 		<lightning-button title="Go to My Requests" class="slds-m-top-small" variant="brand" label="Go to My Requests"
 			onclick={goToMyRequests}>
 		</lightning-button>
 		</br>
-		<lightning-button title="Back" variant="base" label="Back" onclick={handleBack} class="slds-m-top-small">
+		<lightning-button title="Back" variant="base" label="Back" onclick={goHome} class="slds-m-top-small">
 		</lightning-button>
 	</template>
 

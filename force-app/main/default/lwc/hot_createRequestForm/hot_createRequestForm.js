@@ -96,5 +96,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 		});
 	}
+	goHome() {
+		this[NavigationMixin.Navigate]({
+			type: 'comm__namedPage',
+			attributes: {
+				pageName: 'hjem'
+			}
+		});
+	}
 }
 

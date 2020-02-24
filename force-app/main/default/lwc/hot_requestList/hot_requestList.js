@@ -179,5 +179,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			},
 		});
 	}
+	goHome() {
+		this[NavigationMixin.Navigate]({
+			type: 'comm__namedPage',
+			attributes: {
+				pageName: 'hjem'
+			}
+		});
+	}
 
 }
