@@ -1,14 +1,15 @@
 <template>
 	<template if:false={submitted}>
-		<h1 class="slds-text-heading_large">Interpretation order form</h1>
 		<lightning-messages>
 		</lightning-messages>
 		<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsubmit={handleSuccess}>
 			<lightning-messages>
 			</lightning-messages>
-			<lightning-input-field field-name="Subject__c" value={fieldValues.Subject__c} title="Subject">
+			<lightning-input-field field-name="Subject__c" value={fieldValues.Subject__c} title="Subject"
+				variant="label-hidden">
 			</lightning-input-field>
-			<h2 class="slds-text-heading_small">Time and place</h2>
+			<lightning-input-field field-name="Description__c" value={fieldValues.Description__c}>
+			</lightning-input-field>
 			<lightning-input-field field-name="StartTime__c" onchange={handleChange}>
 			</lightning-input-field>
 			<lightning-input-field field-name="EndTime__c" value={startTime}>
@@ -50,8 +51,6 @@
 				</br>
 			</template>
 
-			<lightning-input-field field-name="Description__c" value={fieldValues.Description__c}>
-			</lightning-input-field>
 			<lightning-button title="Submit Request" class="slds-m-left_x-small" type="submit" variant="brand"
 				label="Submit request" onclick={handleSubmit}>
 			</lightning-button>
