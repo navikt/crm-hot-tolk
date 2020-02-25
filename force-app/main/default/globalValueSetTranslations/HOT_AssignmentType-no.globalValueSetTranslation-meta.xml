@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSetTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <valueTranslation>
+        <masterLabel>Education</masterLabel>
+        <translation>Utdanning</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Health Services</masterLabel>
+        <translation>Helsetjenester</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Image Interpreter</masterLabel>
+        <translation>Bildetolking</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Interpreter at Work</masterLabel>
+        <translation>Tolk på arbeidsplass</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Other Economical Provider</masterLabel>
+        <translation>Annen betaler</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Private</masterLabel>
+        <translation>Dagligliv</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Work</masterLabel>
+        <translation>Arbeidsliv</translation>
+    </valueTranslation>
+</GlobalValueSetTranslation>

@@ -38,15 +38,15 @@
             <section>Custom Links</section>
         </sections>
         <sections>
-            <label><!-- Dispatcher Section --></label>
+            <label>Formidler</label>
             <section>Dispatcher Section</section>
         </sections>
         <sections>
-            <label><!-- Order Information --></label>
+            <label>Bestilling</label>
             <section>Order Information</section>
         </sections>
         <sections>
-            <label><!-- User Section --></label>
+            <label>Bruker</label>
             <section>User Section</section>
         </sections>
     </layouts>
