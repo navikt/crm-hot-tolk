@@ -1,0 +1,1 @@
+call sfdx force:package:version:create -f config/project-scratch-def.json -k navcrm -p crm-hot
