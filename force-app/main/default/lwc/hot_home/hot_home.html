@@ -2,25 +2,18 @@
 	<div>
 		<h1 class="tolk-hode">Tolketjenesten</h1>
 	</div>
-
-	<div class="slds-grid slds-gutters tolk-home">
-		<div class="slds-col slds-size_1-of-3">
-			<div onclick={goToNewRequest} style="cursor: pointer; background-color:red">
-				<h2 class="slds-text-heading_small">New Request</h2>
-				<p>Fill in a form, and order interpreter.</p>
-			</div>
+	<div class="slds-grid slds-gutters">
+		<div class="slds-col slds-size_1-of-3 tolk-home-navigation-boxes" onclick={goToNewRequest}>
+			<h2 class="slds-text-heading_small">BESTILLE TOLK</h2>
+			<p>Her kan du bestille tolk for døve, deøvblinde og hørselshemmede.</p>
 		</div>
-		<div class="slds-col slds-size_1-of-3">
-			<div onclick={goToMyRequests} style="cursor: pointer; background-color:blue">
-				<h2 class="slds-text-heading_small">My Requests</h2>
-				<p>Se en oversikt over dine bestillinger av tolk.</p>
-			</div>
+		<div class="slds-col slds-size_1-of-3 tolk-home-navigation-boxes" onclick={goToMyRequests}>
+			<h2 class="slds-text-heading_small">MINE BESTILLINGER</h2>
+			<p>Her finner du oversikt over alle oppdrag du har bestilt, og du kan se status på oppdragene.</p>
 		</div>
-		<div class="slds-col slds-size_1-of-3">
-			<div onclick={goToKnowledgebank} style="cursor: pointer; background-color:green">
-				<h2 class="slds-text-heading_small">Kunnskapsbanken</h2>
-				<p>Les om tolketjenestens tilbud.</p>
-			</div>
+		<div class="slds-col slds-size_1-of-3 tolk-home-navigation-boxes" onclick={goToKnowledgebank}>
+			<h2 class="slds-text-heading_small">KUNNSKAPSBANKEN</h2>
+			<p>Her finner du fagstoff og artikler om tolking.</p>
 		</div>
 	</div>
 </template>

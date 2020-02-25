@@ -640,8 +640,11 @@
 	color: #3e3832;
 }
 
-.tolk-home {
-	background-color: #0ca9e1;
+.tolk-home-navigation-boxes {
+	background-color: #C40000;
+	min-height: 100px;
+	text-align: center;
+	cursor: pointer;
 }
 
 .tolk-hode {
@@ -649,4 +652,6 @@
 	text-align: center;
 	font-size: 2rem;
 	font-weight: 600;
+	margin-bottom: 20px;
+	margin-top: 20px;
 }
