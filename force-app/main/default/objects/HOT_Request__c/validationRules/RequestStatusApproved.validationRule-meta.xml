@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RequestStatusApproved</fullName>
+    <active>true</active>
+    <description>number of Interpreters or method or End/Start Time can&#39;t be blank when status is approved.</description>
+    <errorConditionFormula>ISPICKVAL(Status__c ,&quot;Approved&quot;) &amp;&amp;  (ISBLANK(InterpretationMethod__c)  ||      ISBLANK(NumberOfInterpreters__c) || ISBLANK( EndTime__c) ||  ISBLANK( StartTime__c)   )</errorConditionFormula>
+    <errorMessage>Please Fill up number of Interpreters, Interpretation Method, Start Time, End Time</errorMessage>
+</ValidationRule>
