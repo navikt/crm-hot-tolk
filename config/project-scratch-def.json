@@ -21,6 +21,9 @@
 	"country": "NO",
 	"language": "en_US",
 	"settings": {
+		"experienceBundleSettings": {
+			"enableExperienceBundleMetadata": true
+		},
 		"communitiesSettings": {
 			"enableNetworksEnabled": true
 		},

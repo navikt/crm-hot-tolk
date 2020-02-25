@@ -3,56 +3,52 @@
     <caseValues>
         <article>None</article>
         <plural>false</plural>
-        <value><!-- Person --></value>
+        <value><!-- Request --></value>
     </caseValues>
     <caseValues>
         <article>Indefinite</article>
         <plural>false</plural>
-        <value><!-- Person --></value>
+        <value><!-- Request --></value>
     </caseValues>
     <caseValues>
         <article>Definite</article>
         <plural>false</plural>
-        <value><!-- Person --></value>
+        <value><!-- Request --></value>
     </caseValues>
     <caseValues>
         <article>None</article>
         <plural>true</plural>
-        <value><!-- Person --></value>
+        <value><!-- Request --></value>
     </caseValues>
     <caseValues>
         <article>Indefinite</article>
         <plural>true</plural>
-        <value><!-- Person --></value>
+        <value><!-- Request --></value>
     </caseValues>
     <caseValues>
         <article>Definite</article>
         <plural>true</plural>
-        <value><!-- Person --></value>
+        <value><!-- Request --></value>
     </caseValues>
     <gender><!-- Neuter --></gender>
     <layouts>
-        <layout>Person Layout</layout>
-        <sections>
-            <label><!-- Annet --></label>
-            <section>Annet</section>
-        </sections>
+        <layout>Request Layout</layout>
         <sections>
             <label><!-- Custom Links --></label>
             <section>Custom Links</section>
         </sections>
         <sections>
-            <label><!-- Har vedtak på --></label>
-            <section>Har vedtak på</section>
+            <label>Formidler</label>
+            <section>Dispatcher Section</section>
         </sections>
         <sections>
-            <label><!-- Tolkemetoder --></label>
-            <section>Tolkemetoder</section>
+            <label>Bestilling</label>
+            <section>Order Information</section>
+        </sections>
+        <sections>
+            <label>Bruker</label>
+            <section>User Section</section>
         </sections>
     </layouts>
-    <nameFieldLabel><!-- Person Numer --></nameFieldLabel>
-    <quickActions>
-        <label><!-- Update Person --></label>
-        <name>Update_Person</name>
-    </quickActions>
+    <nameFieldLabel><!-- Request ID Number --></nameFieldLabel>
 </CustomObjectTranslation>

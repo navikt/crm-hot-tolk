@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSetTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <valueTranslation>
+        <masterLabel>Assigned</masterLabel>
+        <translation>Tildelt</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Canceled</masterLabel>
+        <translation>Avlyst</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Covered</masterLabel>
+        <translation>Dekket</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Not Covered</masterLabel>
+        <translation>Udekket</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Open</masterLabel>
+        <translation>Åpen</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Under Process</masterLabel>
+        <translation>Pågår</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Under Treatment</masterLabel>
+        <translation>Under behandling</translation>
+    </valueTranslation>
+</GlobalValueSetTranslation>

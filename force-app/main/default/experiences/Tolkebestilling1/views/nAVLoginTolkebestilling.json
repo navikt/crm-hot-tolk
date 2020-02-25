@@ -1,0 +1,93 @@
+{
+  "appPageId" : "25ab60ed-7cb3-40fd-ab57-fdb8e2e9381b",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "8d3ff555-2f01-466f-b99d-600d32479910",
+  "label" : "NAVLoginTolkebestilling",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgb(255,255,255)",
+        "backgroundOverlay" : "rgba(255,255,255,0.7)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "f912df1f-1bc6-47ed-9579-86f0b6b1cb47",
+          "columns" : [ {
+            "UUID" : "4c1a1afa-0b2d-49d9-abfa-705dfb0c5030",
+            "columnName" : "Column 1",
+            "columnKey" : "1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "f912df1f-1bc6-47ed-9579-86f0b6b1cb47",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "salesforceIdentity:communityLogo2",
+          "id" : "bfff3342-4aed-45b0-8efe-14cfaf45fc33",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : {
+            "forgotPasswordLabel" : "Forgot your password?",
+            "forgotPasswordUrl" : "/ForgotPassword",
+            "loginButtonLabel" : "Log in",
+            "passwordLabel" : "Password",
+            "selfRegisterLabel" : "Not a member?",
+            "selfRegisterUrl" : "/SelfRegister",
+            "startUrl" : "",
+            "usernameLabel" : "Username"
+          },
+          "componentName" : "salesforceIdentity:loginForm2",
+          "id" : "085532ed-3e8d-43cc-bf60-f8c86a65d5f9",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : {
+            "richTextValue" : "<p><a href=\"/ForgotPassword\" target=\"_self\">Forgot Password?</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"/SelfRegister\" target=\"_self\">Register</a></p>"
+          },
+          "componentName" : "forceCommunity:richTextInline",
+          "id" : "13e62acf-a22f-4636-89e5-7821fdbedce8",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "4c1a1afa-0b2d-49d9-abfa-705dfb0c5030",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "90b7775b-baf5-4b66-a282-38007ce62de8",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "description" : "",
+        "metaTags" : "",
+        "title" : ""
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "35c88f94-18b4-4153-b743-970aa460af25",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "26eece06-38df-4583-b7cc-03299d41f3c3",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Login",
+  "type" : "view",
+  "viewType" : "login-home"
+}

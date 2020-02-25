@@ -156,8 +156,9 @@
     <externalSharingModel>Private</externalSharingModel>
     <label>Person</label>
     <nameField>
-        <label>Person Name</label>
-        <type>Text</type>
+        <displayFormat>P-{0000000}</displayFormat>
+        <label>Person Numer</label>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Persons</pluralLabel>
     <searchLayouts/>
