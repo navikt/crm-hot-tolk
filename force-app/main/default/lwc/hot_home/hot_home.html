@@ -1,11 +1,26 @@
 <template>
-	<lightning-button title="New Request" class="slds-m-top-large" variant="brand" label="New Request"
-		onclick={goToNewRequest}>
-	</lightning-button>
-	<lightning-button title="My Requests" class="slds-m-top-large" variant="brand" label="My Requests"
-		onclick={goToMyRequests}>
-	</lightning-button>
-	<lightning-button title="Kunnskapsbanken" class="slds-m-top-large" variant="brand" label="Kunnskapsbanken"
-		onclick={goToKnowledgebank}>
-	</lightning-button>
+	<div>
+		<h1 class="tolk-hode">Tolketjenesten</h1>
+	</div>
+
+	<div class="slds-grid slds-gutters tolk-home">
+		<div class="slds-col slds-size_1-of-3">
+			<div onclick={goToNewRequest} style="cursor: pointer; background-color:red">
+				<h2 class="slds-text-heading_small">New Request</h2>
+				<p>Fill in a form, and order interpreter.</p>
+			</div>
+		</div>
+		<div class="slds-col slds-size_1-of-3">
+			<div onclick={goToMyRequests} style="cursor: pointer; background-color:blue">
+				<h2 class="slds-text-heading_small">My Requests</h2>
+				<p>Se en oversikt over dine bestillinger av tolk.</p>
+			</div>
+		</div>
+		<div class="slds-col slds-size_1-of-3">
+			<div onclick={goToKnowledgebank} style="cursor: pointer; background-color:green">
+				<h2 class="slds-text-heading_small">Kunnskapsbanken</h2>
+				<p>Les om tolketjenestens tilbud.</p>
+			</div>
+		</div>
+	</div>
 </template>

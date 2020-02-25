@@ -1,0 +1,652 @@
+.hodefot .knapp-hoved .spinner-knapp:after, .hodefot .knapp-fare .spinner-knapp:after, .hodefot .knapp:hover .spinner-knapp:after {
+	border-top-color: #fff;
+	border-left-color: #fff;
+	border-bottom-color: rgba(255, 255, 255, 0.25);
+	border-right-color: rgba(255, 255, 255, 0.25)
+}
+
+.hodefot .contrast .knapp, .hodefot .contrast .knapp-hoved, .hodefot .contrast .knapp-fare {
+	color: #ffc40d;
+	border-color: #fff
+}
+
+.hodefot .contrast .knapp:hover, .hodefot .contrast .knapp-hoved:hover, .hodefot .contrast .knapp-fare:hover {
+	text-decoration: underline;
+	border: 2px solid #ffc40d
+}
+
+.hodefot .contrast .knapp:focus:hover, .hodefot .contrast .knapp-hoved:focus:hover, .hodefot .contrast .knapp-fare:focus:hover {
+	color: #ffc40d
+}
+
+.hodefot .contrast .knapp:active, .hodefot .contrast .knapp-hoved:active, .hodefot .contrast .knapp-fare:active {
+	color: #ffc40d
+}
+
+.hodefot .contrast .knapp:focus, .hodefot .contrast .knapp-hoved:focus, .hodefot .contrast .knapp-fare:focus {
+	box-shadow: 0 0 0 3px #ffbd66
+}
+
+.hodefot .contrast .knapp.er-inaktiv, .hodefot .contrast .knapp-hoved.er-inaktiv, .hodefot .contrast .knapp-fare.er-inaktiv {
+	border-color: gray;
+	color: gray
+}
+
+.hodefot .contrast .knapp.er-inaktiv:active, .hodefot .contrast .knapp-hoved.er-inaktiv:active, .hodefot .contrast .knapp-fare.er-inaktiv:active, .hodefot .contrast .knapp.er-inaktiv:hover, .hodefot .contrast .knapp-hoved.er-inaktiv:hover, .hodefot .contrast .knapp-fare.er-inaktiv:hover {
+	text-decoration: none;
+	color: gray;
+	border-color: gray
+}
+
+.hodefot .contrast .knapp .spinner-knapp:after, .hodefot .contrast .knapp-fare .spinner-knapp:after, .hodefot .contrast .knapp-hoved .spinner-knapp:after {
+	border-top-color: #fff;
+	border-left-color: #fff;
+	border-bottom-color: rgba(255, 255, 255, 0.25);
+	border-right-color: rgba(255, 255, 255, 0.25)
+}
+
+.hodefot .contrast .knapp-liten.knapp-spinner {
+	padding-right: 3rem
+}
+
+.hodefot .contrast .knapp-spinner, .hodefot .contrast .knapp-stor.knapp-spinner {
+	padding-right: 3rem
+}
+
+.hodefot .service-notification {
+	text-align: center;
+	border-bottom: 1px solid #b7b1a9;
+	padding: 10px 0
+}
+
+.hodefot .service-notification h2 {
+	display: inline-block;
+	margin: 0 14px 0 0;
+	text-transform: none;
+	font-size: 1.0625rem;
+	color: #c30000;
+	font-weight: 600
+}
+
+.hodefot .service-notification a {
+	display: inline-block;
+	position: relative;
+	font-size: 1.0625rem
+}
+
+.hodefot .service-notification a:first-of-type {
+	margin-right: 32px
+}
+
+@media (max-width:47.99rem) {
+	.hodefot .service-notification {
+		padding: 0 15px
+	}
+	.hodefot .service-notification h2 {
+		line-height: 1.7
+	}
+}
+
+.hodefot .submenu-logg-inn {
+	text-align: center;
+	margin-top: 10rem;
+	font-size: .875rem;
+	padding-left: 120px;
+	padding-right: 120px
+}
+
+.hodefot .submenu-logg-inn .decorated {
+	margin-bottom: 1rem
+}
+
+.hodefot a.locked {
+	background: url('../../img/navno/globalmenuDittNav/ikon_las_svart.png') no-repeat 1% 50%;
+	background-size: 0.9rem
+}
+
+.hodefot a.locked:hover:before {
+	border: none
+}
+
+.hodefot a.locked:focus {
+	background-image: url('../../img/navno/globalmenuDittNav/ikon_las_svart.png')
+}
+
+.hodefot a.locked:focus:before {
+	border: none
+}
+
+.hodefot .secLevelUpgradeInfo {
+	margin-top: 2rem;
+	text-align: center
+}
+
+.hodefot .secLevelUpgradeInfo .secLevel2Info, .hodefot .secLevelUpgradeInfo .secLevel3Info {
+	display: inline-block
+}
+
+.hodefot .secLevelUpgradeInfo span {
+	padding-left: 1.7rem;
+	background: transparent url('../../img/navno/globalmenuDittNav/ikon_las_svart.png') no-repeat 0 48%;
+	background-size: 1.1rem;
+	padding-bottom: 1rem;
+	padding-top: 1rem;
+	margin-right: .5rem
+}
+
+.hodefot .secLevelUpgradeInfo .logginninfo {
+	outline: none;
+	border: 0;
+	display: inline-block;
+	background: transparent url('../../img/navno/globalmenuDittNav/sporsmaalstegn.png') no-repeat;
+	background-size: 1.3rem;
+	width: 24px;
+	height: 24px;
+	vertical-align: middle
+}
+
+.hodefot .secLevelUpgradeInfo .logginninfo:hover {
+	background-image: url('../../img/navno/globalmenuDittNav/sporsmaalstegn_hover.png')
+}
+
+.hodefot .siteheader .panel-negativ {
+	position: absolute;
+	z-index: 9;
+	width: 350px;
+	padding: 10px;
+	color: #ccc
+}
+
+.hodefot .siteheader .panel-negativ:before {
+	content: "";
+	position: absolute;
+	height: 0;
+	width: 0;
+	right: 20px;
+	border: 10px solid transparent;
+	border-top-color: #3e3832;
+	top: 100%
+}
+
+.hodefot .siteheader .panel-negativ .lukk {
+	margin-bottom: 2rem
+}
+
+.hodefot .siteheader .panel-negativ .lukk button {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	width: 32px;
+	height: 32px;
+	border: 0;
+	background: transparent url('../../img/navno/globalmenuDittNav/kryss_blaa.png') no-repeat
+}
+
+.hodefot .siteheader .panel-negativ .lukk button:hover {
+	background-image: url('../../img/navno/globalmenuDittNav/kryss_blaa_hover.png')
+}
+
+.hodefot .tilbaketilgruppe {
+	padding: 2px 0 2px 0px;
+	position: relative;
+	font-size: .875rem
+}
+
+.hodefot .tilbaketilgruppe .tilbaketittel {
+	color: black;
+	position: absolute;
+	bottom: 28px;
+	margin-left: 8px
+}
+
+.hodefot .tilbaketilgruppe .home-link {
+	text-decoration: none;
+	display: inline-block;
+	color: #0067c5
+}
+
+.hodefot .tilbaketilgruppe .home-link .tilbaketilforsidelink {
+	position: absolute;
+	margin-left: 8px
+}
+
+.hodefot .tilbaketilgruppe .home-link:before {
+	display: inline-block;
+	content: "";
+	width: 46px;
+	height: 60px;
+	background: transparent url('../../img/navno/gfx/mainmenu/hjem_sort.png') no-repeat 66% 20%;
+	background-size: 55%
+}
+
+.hodefot .tilbaketilgruppe .home-link.dittnav:before {
+	display: inline-block;
+	content: "";
+	width: 46px;
+	height: 60px;
+	background: url('../../img/navno/globalmenuDittNav/person_graa.png') no-repeat 0 0;
+	background-size: 90%
+}
+
+.hodefot .tilbaketilgruppe .home-link.dittnav:hover:before {
+	background: url('../../img/navno/globalmenuDittNav/person_blaa.png') no-repeat 0 0;
+	background-size: 90%
+}
+
+.hodefot .tilbaketilgruppe .home-link.dittnav:active {
+	outline: none
+}
+
+.hodefot .tilbaketilgruppe .home-link.dittnav:active:before {
+	background: url('../../img/navno/globalmenuDittNav/person_svart.png') no-repeat 0 0;
+	background-size: 90%
+}
+
+.hodefot .tilbaketilgruppe .home-link:hover:before {
+	display: inline-block;
+	content: "";
+	width: 46px;
+	height: 60px;
+	background: transparent url('../../img/navno/gfx/mainmenu/hjem_blaa.png') no-repeat 66% 20%;
+	background-size: 55%
+}
+
+.hodefot .tilbaketilgruppe .home-link:active, .hodefot .tilbaketilgruppe .home-link:focus {
+	outline: none;
+	background-color: transparent
+}
+
+.hodefot .tilbaketilgruppe .home-link:active .tilbaketilforsidelink, .hodefot .tilbaketilgruppe .home-link:focus .tilbaketilforsidelink {
+	background-color: #ffbd66;
+	box-shadow: 0 0 0 3px #ffbd66
+}
+
+@media (max-width:768px) {
+	.hodefot a.lenke-fremhevet {
+		color: #0ca9e1
+	}
+	.hodefot a.locked {
+		background: url('../../img/navno/globalmenuDittNav/ikon_las_hvit.png') no-repeat 1% 50%
+	}
+	.hodefot a.locked:hover, .hodefot a.locked:active, .hodefot a.locked:focus {
+		background-image: url('../../img/navno/globalmenuDittNav/ikon_las_hvit.png');
+		color: #0ca9e1
+	}
+	.hodefot .secLevelUpgradeInfo {
+		display: none
+	}
+	.hodefot .submenu-logg-inn {
+		margin-top: 1rem;
+		padding-left: 0px;
+		padding-right: 0px
+	}
+	.hodefot .accessible-megamenu-panel .tilbaketilgruppe .home-link.dittnav:before {
+		background: transparent url('../../img/navno/globalmenuDittNav/person_hvit.png') no-repeat 42% 30%;
+		background-size: 62%
+	}
+	.hodefot .accessible-megamenu-panel .tilbaketilgruppe .home-link.dittnav:hover:before, .hodefot .accessible-megamenu-panel .tilbaketilgruppe .home-link.dittnav:active:before, .hodefot .accessible-megamenu-panel .tilbaketilgruppe .home-link.dittnav:focus:before {
+		background-image: url('../../img/navno/globalmenuDittNav/person_blaa.png')
+	}
+	.hodefot .menu-link-list a:focus {
+		box-shadow: none
+	}
+}
+
+.hodefot .sitelogo-small img {
+	max-width: 70%
+}
+
+.hodefot .nav {
+	margin: 0;
+	list-style: none
+}
+
+.hodefot .nav a {
+	display: block
+}
+
+.hodefot .nav a:hover, .hodefot .nav a:focus {
+	text-decoration: none
+}
+
+.hodefot .siteheader .dropdown>a {
+	outline-offset: -1px
+}
+
+.hodefot .siteheader .navbar {
+	position: relative
+}
+
+.hodefot .siteheader .navbar li {
+	display: inline-block
+}
+
+.hodefot .siteheader .navbar .nav {
+	padding: 0
+}
+
+.hodefot .siteheader .navbar .dropdown-menu>li {
+	display: block;
+	position: relative
+}
+
+.hodefot .site-coltrols-toolbar {
+	display: none
+}
+
+.hodefot .site-coltrols-toolbar .settings .nav {
+	margin-left: -1.5625em
+}
+
+.hodefot .sitelogo-large {
+	display: none
+}
+
+@media (min-width:48.0625rem) {
+	.hodefot .link-btn {
+		border: none;
+		text-decoration: none;
+		background: none;
+		color: #0067c5;
+		cursor: pointer;
+		outline: none;
+		border: 1px solid rgba(0, 0, 0, 0)
+	}
+	.hodefot .link-btn:focus {
+		box-shadow: 0 0 0 2px #ffbd66
+	}
+	.hodefot .settings a, .hodefot .settings .link-btn {
+		font-size: .75rem;
+		color: #fff;
+		padding: .75rem 22px;
+		text-decoration: none;
+		line-height: normal
+	}
+	.hodefot .site-controls-toolbar {
+		display: block;
+		background: #3e3832
+	}
+	.hodefot .site-controls-toolbar .settings {
+		display: inline-block;
+		width: 50%
+	}
+	.hodefot .text-size-tooltip, .hodefot .login-tooltip, .hodefot .logout-tooltip {
+		padding: 16px 24px;
+		position: absolute;
+		background-color: #000;
+		color: #fff;
+		z-index: 9;
+		text-align: left
+	}
+	.hodefot .text-size-tooltip span.arrow, .hodefot .login-tooltip span.arrow, .hodefot .logout-tooltip span.arrow {
+		border-bottom: 9px solid #000;
+		border-left: 6px solid transparent;
+		border-right: 6px solid transparent;
+		content: "";
+		display: inline-block;
+		height: 0;
+		width: 0;
+		vertical-align: top;
+		position: absolute;
+		top: -8px
+	}
+	.hodefot .text-size-tooltip {
+		width: 30rem;
+		top: 2.5rem
+	}
+	.hodefot .text-size-tooltip span.arrow {
+		right: 85%
+	}
+	.hodefot .text-size-tooltip p {
+		font-size: 1.875rem;
+		font-weight: bold;
+		margin: 0
+	}
+	.hodefot .sitelogo-large {
+		display: block
+	}
+	.hodefot .sitelogo-small {
+		display: none
+	}
+}
+
+@media (min-width:60em) {
+	.hodefot .site-coltrols-toolbar {
+		text-align: center
+	}
+	.hodefot .site-coltrols-toolbar .settings .nav {
+		margin-left: 0
+	}
+	.hodefot .text-size-tooltip {
+		right: -11rem
+	}
+	.hodefot .text-size-tooltip span.arrow {
+		right: 48%
+	}
+}
+
+.hodefot .sitelogo {
+	text-align: center;
+	padding: 15px 0 18px;
+	background-color: #fff;
+	border-bottom: 1px solid #b7b1a9
+}
+
+.hodefot .sitelogo a {
+	text-decoration: none;
+	display: inline-block
+}
+
+.hodefot .dropup, .hodefot .dropdown {
+	position: relative
+}
+
+.hodefot .dropdown-toggle:active, .hodefot .open .dropdown-toggle {
+	outline: 0
+}
+
+.hodefot .caret {
+	display: inline-block;
+	width: 0;
+	height: 0;
+	vertical-align: top;
+	border-top: 4px solid #fff;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+	content: ""
+}
+
+.hodefot .dropdown .caret {
+	margin-top: 0.375rem;
+	margin-left: 0.25rem
+}
+
+.hodefot .dropdown-menu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1000;
+	display: block;
+	float: left;
+	text-align: left;
+	width: 100%;
+	padding: 5px 0;
+	margin: 0;
+	list-style: none;
+	background-color: #7f756c;
+	-webkit-background-clip: padding-box;
+	-moz-background-clip: padding;
+	background-clip: padding-box
+}
+
+.hodefot .dropdown-menu.pull-right {
+	right: 0;
+	left: auto
+}
+
+.hodefot .dropdown-menu .divider {
+	height: 1px;
+	margin: 9px 1px;
+	overflow: hidden;
+	background-color: #7f756c;
+	border-bottom: 1px solid #000
+}
+
+.hodefot .dropdown-menu>li>a {
+	display: block;
+	padding: 0.25em 0 0.25em 27px;
+	clear: both;
+	font-weight: normal;
+	line-height: 20px;
+	color: #fff;
+	white-space: nowrap
+}
+
+.hodefot .dropdown-menu>li>a:hover, .hodefot .dropdown-menu>li>a:focus, .hodefot .dropdown-submenu:hover>a, .hodefot .dropdown-submenu:focus>a {
+	text-decoration: none;
+	color: #0067c5
+}
+
+.hodefot .dropdown-menu>li.active>a {
+	color: #0067c5
+}
+
+.hodefot .dropdown-menu>li.active>a:after {
+	border: 2px solid #0067c5;
+	border-radius: 50% 50% 50% 50%;
+	content: " ";
+	left: 13%;
+	top: 40%;
+	float: left;
+	position: absolute;
+	text-align: left;
+	text-decoration: none;
+	outline: 0
+}
+
+.hodefot .dropdown-menu>.disabled>a, .hodefot .dropdown-menu>.disabled>a:hover, .hodefot .dropdown-menu>.disabled>a:focus {
+	color: #7f756c
+}
+
+.hodefot .open>.dropdown-menu {
+	display: block
+}
+
+.hodefot .dropdown-submenu {
+	position: relative
+}
+
+@media (min-width:48.0625rem) {
+	.hodefot .login-container {
+		width: 40%
+	}
+}
+
+@media (min-width:60em) {
+	.hodefot .login-container {
+		width: 30%
+	}
+}
+
+.hodefot .site-coltrols-toolbar .login-container p span, .hodefot .site-coltrols-toolbar .login-container p a {
+	font-size: 1em
+}
+
+.btn-auth {
+	min-height: 1.25rem!important;
+}
+
+.hodefot .login-container .knapp.btn-logout {
+	background-color: #0CA9E0;
+	border: none;
+}
+
+.hodefot .login-container .knapp {
+	font-family: Modus, Arial, sans-serif;
+	font-weight: bold;
+	padding: 4px 15px;
+	white-space: nowrap;
+	font-size: .75rem;
+	color: #333;
+	letter-spacing: normal;
+	line-height: 1.42857143;
+	background-color: #d1d1d1;
+	border: none;
+	border-radius: 0;
+}
+
+.hodefot .knapp+.knapp {
+	margin-left: .5rem;
+}
+
+.hodefot .site-coltrols-toolbar .login-container {
+	position: absolute;
+	top: 0;
+	right: 0.9375em;
+	height: 100%;
+}
+
+@media (min-width: 60em) .hodefot .login-container {
+	width: 30%;
+}
+
+@media (min-width: 48.0625rem) .hodefot .login-container {
+	width: 40%;
+}
+
+@media (min-width: 60em) .hodefot .site-coltrols-toolbar {
+	text-align: center;
+}
+
+.col-md-12 {
+	position: relative;
+	min-height: 1px;
+	padding-left: .46875rem;
+	padding-right: .46875rem;
+}
+
+@media (min-width: 48.0625rem) .col-md-12 {
+	width: 100%;
+	padding-left: .9375rem;
+	padding-right: .9375rem;
+}
+
+@media (min-width: 48.0625rem) .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+	padding-left: .9375rem;
+	padding-right: .9375rem;
+}
+
+@media (min-width: 48.0625rem) .col-md-12 {
+	width: 100%;
+}
+
+.hodefot .login-details {
+	width: 70%;
+	float: left;
+	padding-left: 25px;
+	cursor: pointer;
+	color: #fff;
+	font-style: italic;
+}
+
+.pagewrapper {
+	min-height: 100%;
+	height: auto;
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+	line-height: 1.42857143;
+	color: #3e3832;
+}
+
+.tolk-home {
+	background-color: #0ca9e1;
+}
+
+.tolk-hode {
+	background-color: #DADE99;
+	text-align: center;
+	font-size: 2rem;
+	font-weight: 600;
+}
