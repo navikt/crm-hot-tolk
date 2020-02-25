@@ -5,18 +5,14 @@
 				"type": "Person__c",
 				"referenceId": "Person__cRef1"
 			},
-			"Name": "Test User",
-			"INT_Ident__c": "24129512345",
-			"INT_Phone__c": "1313133131"
+			"Name": "Test User"
 		},
 		{
 			"attributes": {
 				"type": "Person__c",
 				"referenceId": "Person__cRef2"
 			},
-			"Name": "Best Esur",
-			"INT_Ident__c": "4141414141414",
-			"INT_Phone__c": "20202020202"
+			"Name": "Best Esur"
 		}
 	]
 }
