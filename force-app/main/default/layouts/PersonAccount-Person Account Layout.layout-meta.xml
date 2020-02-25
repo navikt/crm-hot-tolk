@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
-    <excludeButtons>DataDotComAccountInsights</excludeButtons>
-    <excludeButtons>DataDotComClean</excludeButtons>
-    <excludeButtons>DataDotComCompanyHierarchy</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
     <layoutSections>
         <customLabel>false</customLabel>
@@ -84,13 +81,16 @@
     <quickActionList/>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>Status__c</fields>
+        <fields>Subject__c</fields>
+        <fields>StartTime__c</fields>
         <relatedList>HOT_Request__c.Account__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>Name</fields>
-        <fields>Subject</fields>
-        <fields>Priority</fields>
         <fields>Status</fields>
+        <fields>Subject</fields>
+        <fields>WorkType</fields>
         <relatedList>WorkOrders</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
