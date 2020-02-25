@@ -44,10 +44,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		const fields = event.detail.fields;
 		console.log(JSON.stringify(fields));
 
-		fields.UserName__c = this.person.Name;
-		fields.PersonalNumber__c = this.person.INT_Ident__c;
-		fields.UserPhone__c = this.person.INT_Phone__c;
-		fields.UserEmail__c = this.person.INT_Email__c;
+		//fields.UserName__c = ??
+		//fields.PersonalNumber__c = ??
+		//fields.UserPhone__c = ??
+		//fields.UserEmail__c = ??
 		if (this.sameLocation) {
 			fields.InterpretationAddress__c = fields.MeetingAddress__c;
 			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
