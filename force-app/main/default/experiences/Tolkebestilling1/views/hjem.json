@@ -1,0 +1,133 @@
+{
+	"appPageId": "8f77b51d-918d-481a-bb7c-5054997c949c",
+	"componentName": "siteforce:dynamicLayout",
+	"id": "fe7b4b14-899d-4ce4-bed7-347ec98598d8",
+	"label": "Hjem",
+	"regions": [
+		{
+			"components": [
+				{
+					"componentAttributes": {
+						"background": "background: rgb(218,222,153)",
+						"backgroundOverlay": "rgba(0,0,0,0.5)",
+						"contentAreaWidth": 100,
+						"sectionConfig": {
+							"UUID": "a1f62484-43d1-4846-8f92-27b93584be94",
+							"columns": [
+								{
+									"UUID": "59ffa907-780c-4f63-86c8-1b0ae3f66dba",
+									"columnName": "Column 1",
+									"columnKey": "1",
+									"columnWidth": "12",
+									"seedComponents": []
+								}
+							]
+						},
+						"sectionHeight": 99
+					},
+					"componentName": "forceCommunity:section",
+					"id": "a1f62484-43d1-4846-8f92-27b93584be94",
+					"regions": [
+						{
+							"components": [
+								{
+									"componentAttributes": {
+										"bannerText": "",
+										"bannerTextWithKnowledge": "Explore other <a href=\"javascript:void(0)\" class=\"headlineArticles\">articles</a> and <a href=\"javascript:void(0)\" class=\"headlineDiscussions\">discussions</a> on this topic.",
+										"bannerTextWithoutKnowledge": "Explore other <a href=\"javascript:void(0)\" class=\"headlineDiscussions\">discussions</a> on this topic.",
+										"pageType": "",
+										"showSubTopics": true,
+										"title": "Tolketjenesten",
+										"uniqueNameOrId": ""
+									},
+									"componentName": "forceCommunity:headline",
+									"id": "861de2b7-71f8-4519-ba66-7af1599efa23",
+									"renderPriority": "NEUTRAL",
+									"renditionMap": {},
+									"type": "component"
+								}
+							],
+							"id": "59ffa907-780c-4f63-86c8-1b0ae3f66dba",
+							"regionLabel": "Column 1",
+							"regionName": "1",
+							"renditionMap": {},
+							"type": "region"
+						}
+					],
+					"renderPriority": "NEUTRAL",
+					"renditionMap": {},
+					"type": "component"
+				},
+				{
+					"componentAttributes": {
+						"background": "background: rgb(233,231,233)",
+						"backgroundOverlay": "rgba(0,0,0,0.5)",
+						"contentAreaWidth": 100,
+						"sectionConfig": {
+							"UUID": "b3f6e64a-ddcb-4f3b-8189-9dfd299c4fc8",
+							"columns": [
+								{
+									"UUID": "188a586a-1373-4481-a0aa-42f9fafd7d9b",
+									"columnName": "Column 1",
+									"columnKey": "1",
+									"columnWidth": "12",
+									"seedComponents": []
+								}
+							]
+						},
+						"sectionHeight": 300
+					},
+					"componentName": "forceCommunity:section",
+					"id": "b3f6e64a-ddcb-4f3b-8189-9dfd299c4fc8",
+					"regions": [
+						{
+							"components": [
+								{
+									"componentAttributes": {},
+									"componentName": "c:hot_home",
+									"id": "2336da54-1d5f-4a30-a924-1b48d1f56676",
+									"renderPriority": "NEUTRAL",
+									"renditionMap": {},
+									"type": "component"
+								}
+							],
+							"id": "188a586a-1373-4481-a0aa-42f9fafd7d9b",
+							"regionLabel": "Column 1",
+							"regionName": "1",
+							"renditionMap": {},
+							"type": "region"
+						}
+					],
+					"renderPriority": "NEUTRAL",
+					"renditionMap": {},
+					"type": "component"
+				}
+			],
+			"id": "e692a62f-230d-43d9-aae7-ee82b3016d6a",
+			"regionName": "content",
+			"type": "region"
+		},
+		{
+			"components": [
+				{
+					"componentAttributes": {
+						"description": "",
+						"metaTags": "",
+						"title": "Hjem"
+					},
+					"componentName": "forceCommunity:seoAssistant",
+					"id": "01d5e093-4a43-459b-9b29-77334777b15d",
+					"renderPriority": "NEUTRAL",
+					"renditionMap": {},
+					"type": "component"
+				}
+			],
+			"id": "c9c2dbb3-5eb0-4060-b49b-c8a1bf21452e",
+			"regionName": "sfdcHiddenRegion",
+			"type": "region"
+		}
+	],
+	"themeLayoutType": "Inner",
+	"type": "view",
+	"viewType": "custom-hjem"
+}

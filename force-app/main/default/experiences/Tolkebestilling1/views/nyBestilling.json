@@ -1,0 +1,92 @@
+{
+  "appPageId" : "8f77b51d-918d-481a-bb7c-5054997c949c",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "313b1cae-11b2-42ce-8df9-db3f58909759",
+  "label" : "Ny Bestilling",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "8b6e950d-1221-4a4c-a239-5386c0a70369",
+          "columns" : [ {
+            "UUID" : "a190543c-8a49-489d-afb8-4d4686420fe7",
+            "columnName" : "Column 1",
+            "columnKey" : "1",
+            "columnWidth" : "4",
+            "seedComponents" : [ ]
+          }, {
+            "UUID" : "58cc4a9d-a767-4c21-b099-88622dae121a",
+            "columnName" : "Column 2",
+            "columnKey" : "6b913",
+            "columnWidth" : "4",
+            "seedComponents" : [ ]
+          }, {
+            "UUID" : "b148a5c4-d8d2-481e-a0c0-f7692285f8e8",
+            "columnName" : "Column 3",
+            "columnKey" : "6988f",
+            "columnWidth" : "4",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "8b6e950d-1221-4a4c-a239-5386c0a70369",
+      "regions" : [ {
+        "id" : "a190543c-8a49-489d-afb8-4d4686420fe7",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      }, {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:hot_createRequestForm",
+          "id" : "c6db12af-7e0e-4ae5-8dcf-1744ce686cc5",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "58cc4a9d-a767-4c21-b099-88622dae121a",
+        "regionLabel" : "Column 2",
+        "regionName" : "6b913",
+        "renditionMap" : { },
+        "type" : "region"
+      }, {
+        "id" : "b148a5c4-d8d2-481e-a0c0-f7692285f8e8",
+        "regionLabel" : "Column 3",
+        "regionName" : "6988f",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "e755102d-4d77-4a62-aad0-ce96647820d4",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "description" : "",
+        "metaTags" : "",
+        "title" : "Ny Bestilling"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "c9e9f930-e65a-44f0-a7e6-cb629c8629b3",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "853e2870-c84b-4e01-aa8f-42aae05d080c",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-ny-bestilling"
+}

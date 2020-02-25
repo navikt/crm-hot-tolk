@@ -1,0 +1,65 @@
+{
+  "appPageId" : "8f77b51d-918d-481a-bb7c-5054997c949c",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "id" : "a8fee187-87e0-4020-9699-3b45b3f3497d",
+  "label" : "Record Detail",
+  "regions" : [ {
+    "id" : "9a2cb3ea-f221-4bc2-b7f1-57de1e4ba39c",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "recordId" : "{!recordId}"
+      },
+      "componentName" : "forceCommunity:recordHeadline",
+      "id" : "4167585d-dda7-4a80-9170-294b66257457",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "detailsTabLabel" : "Details",
+        "discussionsTabLabel" : "Feed",
+        "recordId" : "{!recordId}",
+        "relatedTabLabel" : "Related",
+        "tab1Type" : "details",
+        "tab2Type" : "related",
+        "tab3Type" : "chatter",
+        "tab4Type" : "none",
+        "timelineTabLabel" : "Activity"
+      },
+      "componentName" : "forceCommunity:recordHomeTabs",
+      "id" : "0d0a2ec2-da33-4e76-99db-73720b81dce4",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "c592335c-7bf5-412f-838a-58858f3cc1f7",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "ac4be294-471a-4045-ad88-62cf6281a569",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "description" : "",
+        "metaTags" : "",
+        "title" : "{!Record._Object}: {!Record._Title}"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "ec648960-a1f8-4e7e-875a-722777670c0c",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "4416d275-7d46-4824-a2b5-d05389903e34",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "detail"
+}
