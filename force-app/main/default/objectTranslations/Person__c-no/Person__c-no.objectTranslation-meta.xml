@@ -50,7 +50,7 @@
             <section>Tolkemetoder</section>
         </sections>
     </layouts>
-    <nameFieldLabel><!-- Person Name --></nameFieldLabel>
+    <nameFieldLabel><!-- Person Numer --></nameFieldLabel>
     <quickActions>
         <label><!-- Update Person --></label>
         <name>Update_Person</name>
