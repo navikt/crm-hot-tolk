@@ -5,7 +5,7 @@ import { NavigationMixin } from 'lightning/navigation';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 
-	@track reRender = false;
+	@track reRender = 0;
 
 	@track sameLocation = true;
 	@track submitted = false;
@@ -48,26 +48,19 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		fields.PersonalNumber__c = this.person.INT_Ident__c;
 		fields.UserPhone__c = this.person.INT_Phone__c;
 		fields.UserEmail__c = this.person.INT_Email__c;
+		if (this.sameLocation) {
+			fields.InterpretationAddress__c = fields.MeetingAddress__c;
+			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
+			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
+		}
 		this.template.querySelector('lightning-record-edit-form').submit(fields);
-		console.log('Submitted');
 	}
-
-	handleAbort(event) {
-		const evt = new ShowToastEvent({
-			title: "Form was aborted",
-			variant: "warning"
-		});
-		window.scrollTo(0, 0);
-		this.dispatchEvent(evt);
-	}
-
 
 	toggled(event) {
 		// Query the DOM
 		const checked = Array.from(this.template.querySelectorAll('lightning-input'))
 			//filters
 			.filter(element => element.checked).map(element => element.label);
-		console.log(checked);
 		this.sameLocation = event.target.checked;
 	}
 
@@ -80,14 +73,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		let newURL = new URL(testURL).searchParams;
 		if (JSON.parse(newURL.get("fieldValues")) != null) {
 			this.fieldValues = JSON.parse(newURL.get("fieldValues"));
-			console.log("Field Values: " + newURL.get("fieldValues"));
-			console.log("fieldValues.Name: " + JSON.stringify(this.fieldValues.Name));
-			this.reRender = true;
+			this.sameLocation = this.fieldValues.MeetingAddress__c == this.fieldValues.InterpretationAddress__c;
 
 		}
-
 	}
 
+	//Navigation functions
 	goToMyRequests() {
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',

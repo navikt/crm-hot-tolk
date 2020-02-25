@@ -6,6 +6,7 @@ import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
+import HOT_Request__c from '@salesforce/schema/WorkOrder.HOT_Request__c';
 
 
 var actions = [
@@ -43,7 +44,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		},
 		{
 			label: 'Meeting Address',
-			fieldName: 'MeetingAddress__C',
+			fieldName: 'MeetingAddress__c',
 			type: 'text'
 		},
 		{
@@ -154,7 +155,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	cloneOrder(row) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
-
 		if (index != -1) {
 			//Here we should get the entire record from salesforce, to get entire meeting address.
 			let clone = this.requests[index];

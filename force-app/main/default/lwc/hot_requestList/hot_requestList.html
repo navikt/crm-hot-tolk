@@ -1,8 +1,8 @@
 <template>
-	<lightning-button title="Back to home" variant="base" label="Back" onclick={goHome} class="slds-m-left_x-small">
-	</lightning-button>
 	<lightning-button title="New Request" class="slds-m-top-small" variant="brand" label="New Request"
 		onclick={goToNewRequest}>
+	</lightning-button>
+	<lightning-button title="Back to home" variant="base" label="Back" onclick={goHome} class="slds-m-left_x-small">
 	</lightning-button>
 	<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
 		onrowaction={handleRowAction}>

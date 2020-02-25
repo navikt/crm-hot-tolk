@@ -10,6 +10,7 @@ public with sharing class HOT_RequestListContoller {
 
 		//Gets ALL requests
 
-		return [SELECT Name, Subject__c, InterpretationAddress__c, MeetingAddress__c, StartTime__c, Duration__c, EndTime__c, Status__c FROM HOT_Request__c];
+		return [SELECT Name, Subject__c, StartTime__c, EndTime__c, MeetingAddress__c, MeetingPostalCode__c, MeetingPostalCity__c, InterpretationAddress__c,
+		        InterpretationPostalCode__c, InterpretationPostalCity__c, Description__c, Status__c FROM HOT_Request__c];
 	}
 }
