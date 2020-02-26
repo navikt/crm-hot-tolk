@@ -640,18 +640,26 @@
 	color: #3e3832;
 }
 
+.typo-systemtittel {
+	margin: 0;
+	font-family: 'Source Sans Pro', Arial, sans-serif;
+	font-size: 1.375rem;
+	line-height: 1.625rem;
+	font-weight: 600;
+}
+
 .tolk-home-navigation-boxes {
-	background-color: #C40000;
+	background-color: #fff;
 	min-height: 100px;
 	text-align: center;
 	cursor: pointer;
 }
 
-.tolk-hode {
+.hovedbanner-tolk {
 	background-color: #DADE99;
+	border-color: rgb(181, 189, 51);
+	padding: 1rem 1.5rem 1rem 1.5rem;
+	border-bottom-width: 4px;
+	border-bottom-style: solid;
 	text-align: center;
-	font-size: 2rem;
-	font-weight: 600;
-	margin-bottom: 20px;
-	margin-top: 20px;
 }

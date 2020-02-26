@@ -1,11 +1,17 @@
 <template>
+
+	<div class="hovedbanner-tolk">
+		<h1 class="typo-systemtittel">Bestille tolketjenester</h1>
+	</div>
+	</br>
 	<template if:false={submitted}>
 		<lightning-messages>
 		</lightning-messages>
 		<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsubmit={handleSubmit}>
 			<lightning-messages>
 			</lightning-messages>
-			<lightning-input-field field-name="Subject__c" value={fieldValues.Subject__c} title="hei" label="Hallo">
+			<lightning-input-field class="tolk-skjema" field-name="Subject__c" value={fieldValues.Subject__c}
+				title="hei">
 			</lightning-input-field>
 			<lightning-input-field field-name="Description__c" value={fieldValues.Description__c}>
 			</lightning-input-field>
