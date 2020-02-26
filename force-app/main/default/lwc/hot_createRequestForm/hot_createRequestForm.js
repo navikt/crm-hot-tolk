@@ -2,6 +2,10 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getPersonDetails from '@salesforce/apex/UserInfoDetails.getPersonDetails';
 import { NavigationMixin } from 'lightning/navigation';
+import { getRecord } from 'lightning/uiRecordApi';
+import USER_ID from '@salesforce/user/Id';
+import ACCOUNT_ID from '@salesforce/schema/User.AccountId';
+
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 
@@ -10,10 +14,18 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track sameLocation = true;
 	@track submitted = false;
 	//comment
+
+	@wire(getRecord, {
+		recordId: USER_ID,
+		fields: [ACCOUNT_ID]
+	}) UserId
+	AccountId = UserId.AccountId;
+
+
 	@track error;
 	@track person;
 	@track startTime;
-	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingAddress__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
+	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
 	@wire(getPersonDetails)
 	wiredPerson({
 		error,
@@ -29,31 +41,36 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.startTime = event.detail.value;
 	}
 
+	handleSubmit(event) {
+
+		event.preventDefault(); // stop the form from submitting
+
+		//Handle submit-old
+		const fields = event.detail.fields;
+		console.log(JSON.stringify(fields));
+
+		//console.log(AccountId);
+		fields.Account__c = this.AccountId;
+		if (true) {
+			fields.InterpretationStreet__c = fields.MeetingStreet__c;
+			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
+			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
+		}
+
+		this.template.querySelector('lightning-record-edit-form').submit(fields);
+		this.goToMyRequests();
+	}
+
 	handleSuccess(event) {
+		//HandleSuccess old
 		const evt = new ShowToastEvent({
 			title: "Request created",
 			variant: "success"
 		});
 		//window.scrollTo(0, 0);
 		this.dispatchEvent(evt);
-		this.goToMyRequests();
 		//this.submitted = true;
-	}
-	handleSubmit(event) {
-		event.preventDefault(); // stop the form from submitting
-		const fields = event.detail.fields;
-		console.log(JSON.stringify(fields));
 
-		//fields.UserName__c = ??
-		//fields.PersonalNumber__c = ??
-		//fields.UserPhone__c = ??
-		//fields.UserEmail__c = ??
-		if (this.sameLocation) {
-			fields.InterpretationAddress__c = fields.MeetingAddress__c;
-			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
-			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
-		}
-		this.template.querySelector('lightning-record-edit-form').submit(fields);
 	}
 
 	toggled(event) {
@@ -73,7 +90,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		let newURL = new URL(testURL).searchParams;
 		if (JSON.parse(newURL.get("fieldValues")) != null) {
 			this.fieldValues = JSON.parse(newURL.get("fieldValues"));
-			this.sameLocation = this.fieldValues.MeetingAddress__c == this.fieldValues.InterpretationAddress__c;
+			this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
 
 		}
 	}
@@ -96,4 +113,3 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		});
 	}
 }
-

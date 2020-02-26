@@ -2,11 +2,10 @@
 	<template if:false={submitted}>
 		<lightning-messages>
 		</lightning-messages>
-		<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsubmit={handleSuccess}>
+		<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsubmit={handleSubmit}>
 			<lightning-messages>
 			</lightning-messages>
-			<lightning-input-field field-name="Subject__c" value={fieldValues.Subject__c} title="Subject"
-				variant="label-hidden">
+			<lightning-input-field field-name="Subject__c" value={fieldValues.Subject__c} title="hei" label="Hallo">
 			</lightning-input-field>
 			<lightning-input-field field-name="Description__c" value={fieldValues.Description__c}>
 			</lightning-input-field>
@@ -15,7 +14,7 @@
 			<lightning-input-field field-name="EndTime__c" value={startTime}>
 			</lightning-input-field>
 			</br>
-			<lightning-input-field field-name="MeetingAddress__c" value={fieldValues.MeetingAddress__c}>
+			<lightning-input-field field-name="MeetingStreet__c" value={fieldValues.MeetingStreet__c}>
 			</lightning-input-field>
 			<div class="slds-grid slds-gutters">
 				<div class="slds-col slds-size_1-of-3">
@@ -33,8 +32,7 @@
 				name="sameLocationToggle" onchange={toggled} checked={sameLocation}></lightning-input>
 
 			<template if:false={sameLocation}>
-				<lightning-input-field field-name="InterpretationAddress__c"
-					value={fieldValues.InterpretationAddress__c}>
+				<lightning-input-field field-name="InterpretationStreet__c" value={fieldValues.InterpretationStreet__c}>
 				</lightning-input-field>
 				<div class="slds-grid slds-gutters">
 					<div class="slds-col slds-size_1-of-3">
@@ -52,7 +50,7 @@
 			</template>
 
 			<lightning-button title="Submit Request" class="slds-m-left_x-small" type="submit" variant="brand"
-				label="Submit request" onclick={handleSubmit}>
+				label="Submit request" onclick={handleSuccess}>
 			</lightning-button>
 			<lightning-button title="Abort Request" variant="base" label="Cancel" onclick={goHome}
 				class="slds-m-left_x-small"></lightning-button>
