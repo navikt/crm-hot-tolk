@@ -34,7 +34,7 @@
         <dataType>Boolean</dataType>
         <expression>true</expression>
     </formulas>
-    <interviewLabel>WorkOrder_Initiator_c-1_InterviewLabel</interviewLabel>
+    <interviewLabel>WorkOrder_Initiator_c-2_InterviewLabel</interviewLabel>
     <label>WorkOrder Initiator</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -316,42 +316,6 @@
             <field>HOT_NumberOfInterpreters__c</field>
             <value>
                 <elementReference>myVariable_current.HOT_NumberOfInterpreters__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <processMetadataValues>
-                <name>dataType</name>
-                <value>
-                    <stringValue>Number</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>isRequired</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideLabel</name>
-                <value>
-                    <stringValue>User Mobile</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideReferenceTo</name>
-                <value>
-                    <stringValue/>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>rightHandSideType</name>
-                <value>
-                    <stringValue>Reference</stringValue>
-                </value>
-            </processMetadataValues>
-            <field>HOT_UserMobile__c</field>
-            <value>
-                <elementReference>myVariable_current.HOT_Request__r.UserPhone__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

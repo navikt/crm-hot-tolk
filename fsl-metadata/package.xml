@@ -12,7 +12,6 @@
 		<members>WorkOrderLineItem.HOT_InterpretationPostalCity__c</members>
 		<members>WorkOrderLineItem.HOT_InterpretationPostalCode__c</members>
 		<members>WorkOrderLineItem.Status</members>
-		<members>WorkOrderLineItem.HOT_UserMobile__c</members>
 		<members>ServiceAppointment.Status</members>
 		<members>ServiceAppointment.HOT_InterpretationPostalCity__c</members>
 		<members>ServiceAppointment.HOT_InterpretationStreet__c</members>
