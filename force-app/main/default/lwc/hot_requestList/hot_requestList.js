@@ -63,14 +63,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		},
 	];
 
-
-
+	@track rerender;
 	@track requests;
 	@track error;
 	wiredRequestsResult;
+
 	@wire(getRequestList)
 	wiredRequest(result) {
-		console.log('RequestList:result: ' + result);
+		//console.log('RequestList length: ' + JSON.stringify(result.data.size()));
 		this.wiredRequestsResult = result;
 		if (result.data) {
 			this.requests = result.data;
@@ -79,7 +79,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			this.error = result.error;
 			this.requests = undefined;
 		}
+		console.log('RequestList:result: ' + JSON.stringify(this.requests));
+
 	}
+
 
 	//Handle Row Action
 	handleRowAction(event) {
@@ -109,6 +112,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		});
 		return ret;
 	}
+
 
 	cancelOrder(row) {
 		const { Id } = row;
