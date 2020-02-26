@@ -14,7 +14,7 @@
 			<lightning-input-field field-name="EndTime__c" value={startTime}>
 			</lightning-input-field>
 			</br>
-			<lightning-input-field field-name="MeetingAddress__c" value={fieldValues.MeetingAddress__c}>
+			<lightning-input-field field-name="MeetingStreet__c" value={fieldValues.MeetingStreet__c}>
 			</lightning-input-field>
 			<div class="slds-grid slds-gutters">
 				<div class="slds-col slds-size_1-of-3">
@@ -32,8 +32,7 @@
 				name="sameLocationToggle" onchange={toggled} checked={sameLocation}></lightning-input>
 
 			<template if:false={sameLocation}>
-				<lightning-input-field field-name="InterpretationAddress__c"
-					value={fieldValues.InterpretationAddress__c}>
+				<lightning-input-field field-name="InterpretationStreet__c" value={fieldValues.InterpretationStreet__c}>
 				</lightning-input-field>
 				<div class="slds-grid slds-gutters">
 					<div class="slds-col slds-size_1-of-3">

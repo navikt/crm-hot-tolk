@@ -25,7 +25,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track error;
 	@track person;
 	@track startTime;
-	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingAddress__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
+	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
 	@wire(getPersonDetails)
 	wiredPerson({
 		error,
@@ -52,7 +52,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		//console.log(AccountId);
 		fields.Account__c = this.AccountId;
 		if (true) {
-			fields.InterpretationAddress__c = fields.MeetingAddress__c;
+			fields.InterpretationStreet__c = fields.MeetingStreet__c;
 			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
 			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 		}
@@ -90,7 +90,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		let newURL = new URL(testURL).searchParams;
 		if (JSON.parse(newURL.get("fieldValues")) != null) {
 			this.fieldValues = JSON.parse(newURL.get("fieldValues"));
-			this.sameLocation = this.fieldValues.MeetingAddress__c == this.fieldValues.InterpretationAddress__c;
+			this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
 
 		}
 	}
@@ -113,4 +113,3 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		});
 	}
 }
-

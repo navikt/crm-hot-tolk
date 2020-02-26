@@ -50,7 +50,7 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
-		<field>HOT_Request__c.InterpretationAddress__c</field>
+		<field>HOT_Request__c.InterpretationStreet__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -75,7 +75,7 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
-		<field>HOT_Request__c.MeetingAddress__c</field>
+		<field>HOT_Request__c.MeetingStreet__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>

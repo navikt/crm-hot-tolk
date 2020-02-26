@@ -44,7 +44,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		},
 		{
 			label: 'Meeting Address',
-			fieldName: 'MeetingAddress__c',
+			fieldName: 'MeetingStreet__c',
 			type: 'text'
 		},
 		{
