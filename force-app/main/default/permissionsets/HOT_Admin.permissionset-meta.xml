@@ -359,11 +359,6 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
-		<field>WorkOrder.EntitlementId</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
 		<editable>false</editable>
 		<field>WorkOrder.GrandTotal</field>
 		<readable>true</readable>
@@ -404,11 +399,6 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
-		<field>WorkOrder.IsStopped</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
 		<editable>false</editable>
 		<field>WorkOrder.LineItemCount</field>
 		<readable>true</readable>
@@ -421,16 +411,6 @@
 	<fieldPermissions>
 		<editable>true</editable>
 		<field>WorkOrder.MaintenancePlanId</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>true</editable>
-		<field>WorkOrder.MilestoneStatus</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>true</editable>
-		<field>WorkOrder.MilestoneStatusIcon</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -480,27 +460,12 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
-		<field>WorkOrder.ServiceContractId</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>true</editable>
 		<field>WorkOrder.ServiceReportLanguage</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
 		<field>WorkOrder.ServiceTerritoryId</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>true</editable>
-		<field>WorkOrder.SlaExitDate</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>true</editable>
-		<field>WorkOrder.SlaStartDate</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -516,11 +481,6 @@
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>WorkOrder.StatusCategory</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>true</editable>
-		<field>WorkOrder.StopStartDate</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
