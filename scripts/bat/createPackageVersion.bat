@@ -6,6 +6,8 @@ call move force-app\main\default\experiences temp
 call move force-app\main\default\siteDotComSites temp
 call move force-app\main\default\sites temp
 call move force-app\main\default\pages temp
+call move force-app\main\default\staticresources temp
+call move force-app\main\default\translations temp
 call move force-app\main\default\classes\ChangePasswordController* temp
 call move force-app\main\default\classes\CommunitiesLandingController* temp
 call move force-app\main\default\classes\MyProfilePageController* temp
@@ -21,6 +23,8 @@ call move temp\experiences force-app\main\default\experiences
 call move temp\siteDotComSites force-app\main\default\siteDotComSites
 call move temp\sites force-app\main\default\sites
 call move temp\pages force-app\main\default\pages
+call move temp\staticresources force-app\main\default\staticresources
+call move temp\translations force-app\main\default\translations
 call move temp\ChangePasswordController* force-app\main\default\classes
 call move temp\CommunitiesLandingController* force-app\main\default\classes
 call move temp\MyProfilePageController* force-app\main\default\classes
