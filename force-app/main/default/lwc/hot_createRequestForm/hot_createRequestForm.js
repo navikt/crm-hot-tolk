@@ -13,14 +13,14 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track sameLocation = true;
 	@track submitted = false;
-	//comment
 
-	@wire(getRecord, {
-		recordId: USER_ID,
-		fields: [ACCOUNT_ID]
-	}) UserId
-	AccountId = UserId.AccountId;
-
+	/*
+		@wire(getRecord, {
+			recordId: USER_ID,
+			fields: [ACCOUNT_ID]
+		}) UserId
+		AccountId = UserId.AccountId;
+	*/
 
 	@track error;
 	@track person;
@@ -50,7 +50,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		console.log(JSON.stringify(fields));
 
 		//console.log(AccountId);
-		fields.Account__c = this.AccountId;
+		//fields.Account__c = this.AccountId;
 		if (true) {
 			fields.InterpretationStreet__c = fields.MeetingStreet__c;
 			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
