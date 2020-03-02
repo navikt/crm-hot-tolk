@@ -38,5 +38,11 @@
 		<members>WorkOrderLineItem_Processor_c</members>
 		<name>Flow</name>
 	</types>
+	<types>
+		<members>WorkOrderStatus</members>
+		<members>WorkOrderLineItemStatus</members>
+		<members>ServiceAppointmentStatus</members>
+		<name>standardValueSets</name>
+	</types>
 	<version>48.0</version>
 </Package>
