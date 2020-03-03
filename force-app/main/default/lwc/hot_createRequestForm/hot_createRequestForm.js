@@ -22,6 +22,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		AccountId = UserId.AccountId;
 	*/
 
+	@track value = 'yes';
+
+	get options() {
+		return [
+			{ label: 'Ja', value: 'yes' },
+			{ label: 'Nei', value: 'no' },
+		];
+	}
+
 	@track error;
 	@track person;
 	@track startTime;
@@ -62,36 +71,31 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	handleSuccess(event) {
-		//HandleSuccess old
-		const evt = new ShowToastEvent({
-			title: "Request created",
-			variant: "success"
-		});
-		//window.scrollTo(0, 0);
-		this.dispatchEvent(evt);
-		//this.submitted = true;
-
+		this.submitted = !this.submitted;
+		//hehehe
 	}
 
-	toggled(event) {
-		// Query the DOM
-		const checked = Array.from(this.template.querySelectorAll('lightning-input'))
-			//filters
-			.filter(element => element.checked).map(element => element.label);
-		this.sameLocation = event.target.checked;
+	toggled() {
+		this.sameLocation = !this.sameLocation;
 	}
 
 	handleBack(event) {
 		this.submitted = false;
 	}
 
+	previousPage;
 	connectedCallback() {
 		let testURL = window.location.href;
 		let newURL = new URL(testURL).searchParams;
+		if (JSON.parse(newURL.get("fromList")) != null) {
+			this.previousPage = 'mine-bestillinger'
+		}
+		else {
+			this.previousPage = 'hjem'
+		}
 		if (JSON.parse(newURL.get("fieldValues")) != null) {
 			this.fieldValues = JSON.parse(newURL.get("fieldValues"));
 			this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
-
 		}
 	}
 
@@ -108,7 +112,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',
 			attributes: {
-				pageName: 'hjem'
+				pageName: this.previousPage,
 			}
 		});
 	}

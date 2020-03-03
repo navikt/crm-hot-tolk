@@ -2,13 +2,14 @@
 	<div class="hovedbanner-tolk">
 		<h1 class="typo-systemtittel">Mine tolketjenester </h1>
 	</div>
-	</br>
-	<lightning-button title="New Request" class="slds-m-top-small" variant="brand" label="New Request"
-		onclick={goToNewRequest}>
-	</lightning-button>
-	<lightning-button title="Back to home" variant="base" label="Back" onclick={goHome} class="slds-m-left_x-small">
-	</lightning-button>
-	<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
-		onrowaction={handleRowAction}>
-	</lightning-datatable>
+	<div class="main-content liste">
+		<lightning-button title="Ny bestilling" class="slds-m-top-small" variant="brand" label="Ny bestilling"
+			onclick={goToNewRequest}>
+		</lightning-button>
+		<lightning-button title="Hjem" variant="base" label="Hjem" onclick={goHome} class="slds-m-left_x-small">
+		</lightning-button>
+		<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
+			onrowaction={handleRowAction}>
+		</lightning-datatable>
+	</div>
 </template>

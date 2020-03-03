@@ -45,7 +45,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		{
 			label: 'Meeting Address',
 			fieldName: 'MeetingStreet__c',
-			type: 'text'
+			type: 'text',
+			wrapText: true
 		},
 		{
 			label: 'Subject',
@@ -170,6 +171,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 				},
 				state: {
 					fieldValues: JSON.stringify(clone),
+					fromList: true,
 				}
 			});
 		}
@@ -181,6 +183,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			attributes: {
 				pageName: 'ny-bestilling'
 			},
+			state: {
+				fromList: true,
+			}
 		});
 	}
 	goHome() {

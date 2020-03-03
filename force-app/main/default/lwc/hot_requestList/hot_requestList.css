@@ -7,10 +7,7 @@
 	text-align: center;
 }
 
-.typo-systemtittel {
-	margin: 0;
-	font-family: 'Source Sans Pro', Arial, sans-serif;
-	font-size: 1.375rem;
-	line-height: 1.625rem;
-	font-weight: 600;
+.liste {
+	max-width: 1080px;
+	padding: 3.25rem 3.25rem 3.25rem 3.25rem;
 }
