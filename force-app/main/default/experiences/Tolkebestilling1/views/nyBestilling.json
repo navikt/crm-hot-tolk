@@ -6,7 +6,7 @@
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
-        "background" : "background: rgba(0,0,0,0)",
+        "background" : "background: rgba(255,255,255,0)",
         "backgroundOverlay" : "rgba(0,0,0,0.5)",
         "contentAreaWidth" : 100,
         "sectionConfig" : {
@@ -15,19 +15,7 @@
             "UUID" : "a190543c-8a49-489d-afb8-4d4686420fe7",
             "columnName" : "Column 1",
             "columnKey" : "1",
-            "columnWidth" : "4",
-            "seedComponents" : [ ]
-          }, {
-            "UUID" : "58cc4a9d-a767-4c21-b099-88622dae121a",
-            "columnName" : "Column 2",
-            "columnKey" : "6b913",
-            "columnWidth" : "4",
-            "seedComponents" : [ ]
-          }, {
-            "UUID" : "b148a5c4-d8d2-481e-a0c0-f7692285f8e8",
-            "columnName" : "Column 3",
-            "columnKey" : "6988f",
-            "columnWidth" : "4",
+            "columnWidth" : "12",
             "seedComponents" : [ ]
           } ]
         },
@@ -36,12 +24,6 @@
       "componentName" : "forceCommunity:section",
       "id" : "8b6e950d-1221-4a4c-a239-5386c0a70369",
       "regions" : [ {
-        "id" : "a190543c-8a49-489d-afb8-4d4686420fe7",
-        "regionLabel" : "Column 1",
-        "regionName" : "1",
-        "renditionMap" : { },
-        "type" : "region"
-      }, {
         "components" : [ {
           "componentAttributes" : { },
           "componentName" : "c:hot_createRequestForm",
@@ -50,15 +32,9 @@
           "renditionMap" : { },
           "type" : "component"
         } ],
-        "id" : "58cc4a9d-a767-4c21-b099-88622dae121a",
-        "regionLabel" : "Column 2",
-        "regionName" : "6b913",
-        "renditionMap" : { },
-        "type" : "region"
-      }, {
-        "id" : "b148a5c4-d8d2-481e-a0c0-f7692285f8e8",
-        "regionLabel" : "Column 3",
-        "regionName" : "6988f",
+        "id" : "a190543c-8a49-489d-afb8-4d4686420fe7",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
         "renditionMap" : { },
         "type" : "region"
       } ],

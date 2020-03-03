@@ -1,81 +1,68 @@
 {
-	"appPageId": "8f77b51d-918d-481a-bb7c-5054997c949c",
-	"componentName": "siteforce:dynamicLayout",
-	"id": "79dbe247-0f88-4300-a379-0581b6283e6d",
-	"label": "Mine Bestillinger",
-	"regions": [
-		{
-			"components": [
-				{
-					"componentAttributes": {
-						"background": "background: rgba(0,0,0,0)",
-						"backgroundOverlay": "rgba(0,0,0,0.5)",
-						"contentAreaWidth": 100,
-						"sectionConfig": {
-							"UUID": "057059c8-0f4e-42ee-913b-d5c43471d555",
-							"columns": [
-								{
-									"UUID": "0552720f-1014-44f1-9955-67f37fe4529f",
-									"columnName": "Column 1",
-									"columnKey": "1",
-									"columnWidth": "12",
-									"seedComponents": []
-								}
-							]
-						},
-						"sectionHeight": 300
-					},
-					"componentName": "forceCommunity:section",
-					"id": "057059c8-0f4e-42ee-913b-d5c43471d555",
-					"regions": [
-						{
-							"components": [
-								{
-									"componentAttributes": {},
-									"componentName": "c:hot_requestList",
-									"id": "2d1ec9d5-a990-4189-a535-7c65b3832821",
-									"renderPriority": "NEUTRAL",
-									"renditionMap": {},
-									"type": "component"
-								}
-							],
-							"id": "0552720f-1014-44f1-9955-67f37fe4529f",
-							"regionLabel": "Column 1",
-							"regionName": "1",
-							"renditionMap": {},
-							"type": "region"
-						}
-					],
-					"renderPriority": "NEUTRAL",
-					"renditionMap": {},
-					"type": "component"
-				}
-			],
-			"id": "1350ad6f-bbe2-47f4-acd8-8b2864f7a027",
-			"regionName": "content",
-			"type": "region"
-		},
-		{
-			"components": [
-				{
-					"componentAttributes": {
-						"description": "",
-						"metaTags": "",
-						"title": "Mine Bestillinger"
-					},
-					"componentName": "forceCommunity:seoAssistant",
-					"id": "b1f529d3-cc76-48bb-a70f-4a5b732af2ba",
-					"renderPriority": "NEUTRAL",
-					"renditionMap": {},
-					"type": "component"
-				}
-			],
-			"id": "f0787679-490c-49f2-bc6d-38650245d803",
-			"regionName": "sfdcHiddenRegion",
-			"type": "region"
-		}
-	],
-	"themeLayoutType": "Inner",
-	"type": "view",
-	"viewType": "custom-mine-bestillinger"
+  "appPageId" : "8f77b51d-918d-481a-bb7c-5054997c949c",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "79dbe247-0f88-4300-a379-0581b6283e6d",
+  "label" : "Mine Bestillinger",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "057059c8-0f4e-42ee-913b-d5c43471d555",
+          "columns" : [ {
+            "UUID" : "0552720f-1014-44f1-9955-67f37fe4529f",
+            "columnName" : "Column 1",
+            "columnKey" : "1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "057059c8-0f4e-42ee-913b-d5c43471d555",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:hot_requestList",
+          "id" : "2d1ec9d5-a990-4189-a535-7c65b3832821",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "0552720f-1014-44f1-9955-67f37fe4529f",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "1350ad6f-bbe2-47f4-acd8-8b2864f7a027",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "description" : "",
+        "metaTags" : "",
+        "title" : "Mine Bestillinger"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "b1f529d3-cc76-48bb-a70f-4a5b732af2ba",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "f0787679-490c-49f2-bc6d-38650245d803",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-mine-bestillinger"
 }
