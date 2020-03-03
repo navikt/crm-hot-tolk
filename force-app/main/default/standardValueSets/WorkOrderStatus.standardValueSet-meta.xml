@@ -1,47 +1,47 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <groupingStringEnum>WorkStatusCategory</groupingStringEnum>
-    <sorted>false</sorted>
-    <standardValue>
-        <fullName>New</fullName>
-        <default>true</default>
-        <label>New</label>
-        <groupingString>New</groupingString>
-    </standardValue>
-    <standardValue>
-        <fullName>In Progress</fullName>
-        <default>false</default>
-        <label>In Progress</label>
-        <groupingString>InProgress</groupingString>
-    </standardValue>
-    <standardValue>
-        <fullName>On Hold</fullName>
-        <default>false</default>
-        <label>On Hold</label>
-        <groupingString>OnHold</groupingString>
-    </standardValue>
-    <standardValue>
-        <fullName>Completed</fullName>
-        <default>false</default>
-        <label>Completed</label>
-        <groupingString>Completed</groupingString>
-    </standardValue>
-    <standardValue>
-        <fullName>Closed</fullName>
-        <default>false</default>
-        <label>Closed</label>
-        <groupingString>Closed</groupingString>
-    </standardValue>
-    <standardValue>
-        <fullName>Cannot Complete</fullName>
-        <default>false</default>
-        <label>Cannot Complete</label>
-        <groupingString>CannotComplete</groupingString>
-    </standardValue>
-    <standardValue>
-        <fullName>Canceled</fullName>
-        <default>false</default>
-        <label>Canceled</label>
-        <groupingString>Canceled</groupingString>
-    </standardValue>
+	<groupingStringEnum>WorkStatusCategory</groupingStringEnum>
+	<sorted>false</sorted>
+	<standardValue>
+		<fullName>Ny</fullName>
+		<default>true</default>
+		<label>Ny</label>
+		<groupingString>New</groupingString>
+	</standardValue>
+	<standardValue>
+		<fullName>Pågår</fullName>
+		<default>false</default>
+		<label>Pågår</label>
+		<groupingString>InProgress</groupingString>
+	</standardValue>
+	<standardValue>
+		<fullName>På venting</fullName>
+		<default>false</default>
+		<label>På venting</label>
+		<groupingString>OnHold</groupingString>
+	</standardValue>
+	<standardValue>
+		<fullName>Fullført</fullName>
+		<default>false</default>
+		<label>Fullført</label>
+		<groupingString>Completed</groupingString>
+	</standardValue>
+	<standardValue>
+		<fullName>Avsluttet</fullName>
+		<default>false</default>
+		<label>Avsluttet</label>
+		<groupingString>Closed</groupingString>
+	</standardValue>
+	<standardValue>
+		<fullName>Kan ikke fullføre</fullName>
+		<default>false</default>
+		<label>Kan ikke fullføre</label>
+		<groupingString>CannotComplete</groupingString>
+	</standardValue>
+	<standardValue>
+		<fullName>Avbrutt</fullName>
+		<default>false</default>
+		<label>Avbrutt</label>
+		<groupingString>Canceled</groupingString>
+	</standardValue>
 </StandardValueSet>
