@@ -1,46 +1,25 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-	<fullName>ExternalRequestStatus__c</fullName>
-	<externalId>false</externalId>
-	<label>External Request Status</label>
-	<required>false</required>
-	<trackHistory>false</trackHistory>
-	<trackTrending>false</trackTrending>
-	<type>Picklist</type>
-	<valueSet>
-		<controllingField>Status__c</controllingField>
-		<restricted>true</restricted>
-		<valueSetName>HOT_ExternalRequestStatus</valueSetName>
-		<valueSettings>
-			<controllingFieldValue>Open</controllingFieldValue>
-			<valueName>Open</valueName>
-		</valueSettings>
-		<valueSettings>
-			<controllingFieldValue>Approved</controllingFieldValue>
-			<controllingFieldValue>Reserved</controllingFieldValue>
-			<controllingFieldValue>Partially Covered</controllingFieldValue>
-			<controllingFieldValue>Declined</controllingFieldValue>
-			<valueName>Under Treatment</valueName>
-		</valueSettings>
-		<valueSettings>
-			<controllingFieldValue>Assigned</controllingFieldValue>
-			<valueName>Assigned</valueName>
-		</valueSettings>
-		<valueSettings>
-			<controllingFieldValue>Under Process</controllingFieldValue>
-			<valueName>Under Process</valueName>
-		</valueSettings>
-		<valueSettings>
-			<controllingFieldValue>Not Covered</controllingFieldValue>
-			<valueName>Not Covered</valueName>
-		</valueSettings>
-		<valueSettings>
-			<controllingFieldValue>Canceled</controllingFieldValue>
-			<valueName>Canceled</valueName>
-		</valueSettings>
-		<valueSettings>
-			<controllingFieldValue>Covered</controllingFieldValue>
-			<valueName>Covered</valueName>
-		</valueSettings>
-	</valueSet>
+    <fullName>ExternalRequestStatus__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(TEXT(Status__c),
+&quot;Open&quot;, &quot;Åpen&quot;,
+&quot;Approved&quot;, &quot;Under behandling&quot;,
+&quot;Reserved&quot;, &quot;Under behandling&quot;,
+&quot;Assigned&quot;, &quot;Tildelt&quot;,
+&quot;Partially Covered&quot;, &quot;Under behandling&quot;,
+&quot;Under Process&quot;, &quot;Pågår&quot;,
+&quot;Not Covered&quot;, &quot;Udekket&quot;,
+&quot;Canceled&quot;, &quot;Avlyst&quot;,
+&quot;Declined&quot;, &quot;Under behandling&quot;,
+&quot;Covered&quot;, &quot;Dekket&quot;,
+&quot;Ukjent&quot;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Status som vises for bruker på nav.no</inlineHelpText>
+    <label>External Request Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
 </CustomField>

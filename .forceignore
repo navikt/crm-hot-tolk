@@ -74,3 +74,17 @@
 
 # Flexipages
 **flexipages/LightningService_UtilityBar.flexipage-meta.xml
+
+# Community - temp
+# **/networks/*
+# **/documents/*
+# **/networkBranding/*
+# **/experiences/*
+# **/siteDotComSites/*
+# **/sites/*
+# **/pages/*
+# **/staticresources/*
+# **/translations/*
+# **/classes/ChangePasswordController*
+# **/classes/CommunitiesLandingController*
+# **/classes/MyProfilePageController*

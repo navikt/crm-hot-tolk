@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <groupingStringEnum>SvcApptStatusCategory</groupingStringEnum>
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Ingen</fullName>
+        <default>true</default>
+        <label>Ingen</label>
+        <groupingString>None</groupingString>
+    </standardValue>
+    <standardValue>
+        <fullName>Planlagt</fullName>
+        <default>false</default>
+        <label>Planlagt</label>
+        <groupingString>Scheduled</groupingString>
+    </standardValue>
+    <standardValue>
+        <fullName>Sendt</fullName>
+        <default>false</default>
+        <label>Sendt</label>
+        <groupingString>Dispatched</groupingString>
+    </standardValue>
+    <standardValue>
+        <fullName>Pågår</fullName>
+        <default>false</default>
+        <label>Pågår</label>
+        <groupingString>InProgress</groupingString>
+    </standardValue>
+    <standardValue>
+        <fullName>Kan ikke fullføre</fullName>
+        <default>false</default>
+        <label>Kan ikke fullføre</label>
+        <groupingString>CannotComplete</groupingString>
+    </standardValue>
+    <standardValue>
+        <fullName>Fullført</fullName>
+        <default>false</default>
+        <label>Fullført</label>
+        <groupingString>Completed</groupingString>
+    </standardValue>
+    <standardValue>
+        <fullName>Avbrutt</fullName>
+        <default>false</default>
+        <label>Avbrutt</label>
+        <groupingString>Canceled</groupingString>
+    </standardValue>
+</StandardValueSet>
