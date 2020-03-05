@@ -11,7 +11,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track reRender = 0;
 
-	@track sameLocation = true;
 	@track submitted = false;
 
 	/*
@@ -22,8 +21,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		AccountId = UserId.AccountId;
 	*/
 
-	@track value = 'yes';
-
+	@track sameLocation = true;
+	value = 'yes';
 	get options() {
 		return [
 			{ label: 'Ja', value: 'yes' },
@@ -51,28 +50,27 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	handleSubmit(event) {
-
 		event.preventDefault(); // stop the form from submitting
 
-		//Handle submit-old
 		const fields = event.detail.fields;
-		console.log(JSON.stringify(fields));
+		//console.log(JSON.stringify(fields));
 
 		//console.log(AccountId);
 		//fields.Account__c = this.AccountId;
-		if (true) {
+		if (this.sameLocation) {
 			fields.InterpretationStreet__c = fields.MeetingStreet__c;
 			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
 			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 		}
+		console.log(JSON.stringify(fields));
+
 
 		this.template.querySelector('lightning-record-edit-form').submit(fields);
-		this.goToMyRequests();
+		//this.document.getElementById("success-message").focus();
+		this.submitted = !this.submitted;
 	}
 
 	handleSuccess(event) {
-		this.submitted = !this.submitted;
-		//hehehe
 	}
 
 	toggled() {
@@ -108,6 +106,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 		});
 	}
+
 	goHome() {
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',

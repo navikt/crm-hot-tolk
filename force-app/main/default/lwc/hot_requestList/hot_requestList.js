@@ -45,8 +45,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		{
 			label: 'Meeting Address',
 			fieldName: 'MeetingStreet__c',
-			type: 'text',
-			wrapText: true
+			type: 'text'
 		},
 		{
 			label: 'Subject',
@@ -80,7 +79,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			this.error = result.error;
 			this.requests = undefined;
 		}
-		console.log('RequestList:result: ' + JSON.stringify(this.requests));
+		//console.log('RequestList:result: ' + JSON.stringify(this.requests));
 
 	}
 
@@ -89,7 +88,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	handleRowAction(event) {
 		const actionName = event.detail.action.name;
 		const row = event.detail.row;
-		console.log(JSON.stringify(row));
+		//console.log(JSON.stringify(row));
 
 		switch (actionName) {
 			case 'delete':
@@ -134,7 +133,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 							})
 						);
 						// Display fresh data in the form
-						console.log('Trying to refresh');
+						//console.log('Trying to refresh');
 						refreshApex(this.wiredRequestsResult);
 					})
 					.catch(error => {
@@ -163,7 +162,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		if (index != -1) {
 			//Here we should get the entire record from salesforce, to get entire meeting address.
 			let clone = this.requests[index];
-			console.log(JSON.stringify(clone));
+			//console.log(JSON.stringify(clone));
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {

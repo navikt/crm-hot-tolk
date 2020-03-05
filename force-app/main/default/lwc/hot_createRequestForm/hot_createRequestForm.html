@@ -64,7 +64,7 @@
 				value={fieldValues.Description__c}>
 			</lightning-input-field>
 
-			<div class="success-message">
+			<div class="button-container">
 				<lightning-button title="Send inn bestilling" class="slds-m-left_x-small tolk-skjema-knapp"
 					type="submit" variant="brand" label="Send inn" onclick={handleSuccess}>
 				</lightning-button>
@@ -74,14 +74,13 @@
 				</lightning-button>
 			</div>
 		</lightning-record-edit-form>
-		</br>
 	</div>
 
-	<div class="main-content success-message" if:true={submitted}>
+	<div class="main-content button-container" if:true={submitted}>
 		<lightning-icon icon-name="utility:success" alternative-text="Suksess" title="Suksess" variant="success"
 			size="large">
 		</lightning-icon>
-		<h2 class="nav-info-header">Bestillingen er sendt</h2>
+		<h2 class="nav-info-header" id="success-message">Bestillingen er sendt</h2>
 		<lightning-button title="Gå til mine bestillinger" class="slds-m-top-small" variant="brand" label="OK"
 			onclick={goToMyRequests}>
 		</lightning-button>

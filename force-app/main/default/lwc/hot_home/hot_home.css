@@ -15,12 +15,43 @@
 	text-align: center;
 }
 
+.home-content {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	text-align: center;
+}
+
+.velkommen-bruker {
+	font-size: 1.33rem;
+	padding: 3.25rem 3.25rem 3.25rem 2.25rem;
+	font-weight: bold;
+}
+
 .portal-linker {
 	font-size: 1.33rem;
 	max-width: 1080px;
-	padding: 3.25rem 6.5rem 3.25rem 6.5rem;
+	padding: 3.25rem 3.25rem 3.25rem 2.25rem;
 	display: flex;
-	align-items: stretch;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-content: space-between;
+}
+
+.tolk-portal-link {
+	color: #000;
+	background-color: #fff;
+	padding: 0 0.5rem 0 0.5rem;
+	text-align: center;
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 1.33rem;
+	width: 25%;
+	border-radius: 0.75rem;
+	margin-right: 1rem;
+	padding-left: 1rem;
+	height: auto;
 }
 
 .portal-link-illustration {
@@ -35,23 +66,7 @@
 	font-weight: bold;
 }
 
-.tolk-portal-link {
-	color: #000;
-	background-color: #fff;
-	padding: 0 0.5rem 0 0.5rem;
-	text-align: center;
-	cursor: pointer;
-	display: inline-block;
-	vertical-align: middle;
-	font-size: 1.33rem;
-	width: 30%;
-	border-radius: 0.75rem;
-	margin-right: 1rem;
-	padding-left: 1rem;
-	height: auto;
-}
-
 .tolk-portal-link:hover {
 	box-shadow: #b7b1a9 0 2px 1px 0;
-	color: #0067C5;
+	color: #0068C6;
 }
