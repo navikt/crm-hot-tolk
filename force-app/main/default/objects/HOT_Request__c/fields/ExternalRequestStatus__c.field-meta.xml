@@ -3,17 +3,17 @@
     <fullName>ExternalRequestStatus__c</fullName>
     <externalId>false</externalId>
     <formula>CASE(TEXT(Status__c),
-&quot;Open&quot;, &quot;Åpen&quot;,
-&quot;Approved&quot;, &quot;Under behandling&quot;,
-&quot;Reserved&quot;, &quot;Under behandling&quot;,
-&quot;Assigned&quot;, &quot;Tildelt&quot;,
-&quot;Partially Covered&quot;, &quot;Under behandling&quot;,
-&quot;Under Process&quot;, &quot;Pågår&quot;,
-&quot;Not Covered&quot;, &quot;Udekket&quot;,
-&quot;Canceled&quot;, &quot;Avlyst&quot;,
-&quot;Declined&quot;, &quot;Under behandling&quot;,
-&quot;Covered&quot;, &quot;Dekket&quot;,
-&quot;Ukjent&quot;)</formula>
+&quot;Åpen&quot;, &quot;Åpen&quot;,
+&quot;Godkjent&quot;, &quot;Under behandling&quot;,
+&quot;Reservert&quot;, &quot;Under behandling&quot;,
+&quot;Tildelt&quot;, &quot;Tildelt&quot;,
+&quot;Delvis dekket&quot;, &quot;Under behandling&quot;,
+&quot;Pågår&quot;, &quot;Pågår&quot;,
+&quot;Udekket&quot;, &quot;Udekket&quot;,
+&quot;Avlyst&quot;, &quot;Avlyst&quot;,
+&quot;Avslått&quot;, &quot;Under behandling&quot;,
+&quot;Dekket&quot;, &quot;Dekket&quot;,
+&quot;Under behandling&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <inlineHelpText>Status som vises for bruker på nav.no</inlineHelpText>
     <label>External Request Status</label>

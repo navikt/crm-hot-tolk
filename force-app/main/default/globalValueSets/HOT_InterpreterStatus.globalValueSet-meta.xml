@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <customValue>
-        <fullName>Open</fullName>
+        <fullName>Åpen</fullName>
         <default>true</default>
         <label>Åpen</label>
     </customValue>
     <customValue>
-        <fullName>Approved</fullName>
+        <fullName>Godkjent</fullName>
         <default>false</default>
         <label>Godkjent</label>
     </customValue>
     <customValue>
-        <fullName>Reserved</fullName>
+        <fullName>Reservert</fullName>
         <default>false</default>
         <label>Reservert</label>
     </customValue>
     <customValue>
-        <fullName>Assigned</fullName>
+        <fullName>Tildelt</fullName>
         <default>false</default>
         <label>Tildelt</label>
     </customValue>
     <customValue>
-        <fullName>Partially Covered</fullName>
-        <default>false</default>
-        <label>Delvis dekket</label>
-    </customValue>
-    <customValue>
-        <fullName>Under Process</fullName>
+        <fullName>Pågår</fullName>
         <default>false</default>
         <label>Pågår</label>
     </customValue>
     <customValue>
-        <fullName>Not Covered</fullName>
+        <fullName>Dekket</fullName>
+        <default>false</default>
+        <label>Dekket</label>
+    </customValue>
+    <customValue>
+        <fullName>Delvis dekket</fullName>
+        <default>false</default>
+        <label>Delvis dekket</label>
+    </customValue>
+    <customValue>
+        <fullName>Udekket</fullName>
         <default>false</default>
         <label>Udekket</label>
     </customValue>
     <customValue>
-        <fullName>Canceled</fullName>
+        <fullName>Avlyst</fullName>
         <default>false</default>
         <label>Avlyst</label>
     </customValue>
     <customValue>
-        <fullName>Declined</fullName>
+        <fullName>Avslått</fullName>
         <default>false</default>
         <label>Avslått</label>
-    </customValue>
-    <customValue>
-        <fullName>Covered</fullName>
-        <default>false</default>
-        <label>Dekket</label>
     </customValue>
     <masterLabel>Interpreter Status</masterLabel>
     <sorted>false</sorted>
