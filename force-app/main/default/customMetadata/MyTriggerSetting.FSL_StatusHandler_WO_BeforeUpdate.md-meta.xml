@@ -16,7 +16,7 @@
     </values>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">Oppdateres status fra Work Order til Request.</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Event__c</field>

@@ -33,9 +33,9 @@
         <groupingString>Completed</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Delvis fullføre</fullName>
+        <fullName>Delvis fullført</fullName>
         <default>false</default>
-        <label>Delvis fullføre</label>
+        <label>Delvis fullført</label>
         <groupingString>CannotComplete</groupingString>
     </standardValue>
     <standardValue>

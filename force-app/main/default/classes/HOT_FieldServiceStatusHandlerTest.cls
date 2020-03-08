@@ -10,19 +10,19 @@ private class HOT_FieldServiceStatusHandlerTest {
 		WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
 		insert workOrder;
 
+		workOrder.Status = 'Planlagt';
+		update workOrder;
+
+		request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+		System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
+
 		workOrder.Status = 'Fullført';
 		update workOrder;
 
 		request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
-		System.assertEquals('Covered', request.Status__c, 'Status on the request did not update to correct value');
-
-		workOrder.Status = 'Avbrutt';
-		update workOrder;
-
-		request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
-
-		System.assertEquals('Canceled', request.Status__c, 'Status on the request did not update to correct value');
+		System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
 	}
 	
 	@isTest
@@ -33,22 +33,50 @@ private class HOT_FieldServiceStatusHandlerTest {
 		insert request;
 		WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
 		insert workOrder;
-		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder);
-		insert workOrderLineItem;
+		WorkOrderLineItem workOrderLineItem_1 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+		insert workOrderLineItem_1;
+		WorkOrderLineItem workOrderLineItem_2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+		insert workOrderLineItem_2;
 
-		workOrderLineItem.Status = 'Covered';
-		update workOrderLineItem;
-
-		workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
-
-		System.assertEquals('Covered', workOrder.Status, 'Status on the work order did not update to correct value');
-
-		workOrderLineItem.Status = 'Canceled';
-		update workOrderLineItem;
+		workOrderLineItem_1.Status = 'Planlagt';
+		update workOrderLineItem_1;
 
 		workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+		System.assertEquals('Planlagt', workOrder.Status, 'Status on the work order did not update to correct value');
 
-		System.assertEquals('Canceled', workOrder.Status, 'Status on the work order did not update to correct value');
+		workOrderLineItem_2.Status = 'Sendt';
+		update workOrderLineItem_2;
+
+		workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+		System.assertEquals('Planlagt', workOrder.Status, 'Status on the work order did not update to correct value');
+
+		workOrderLineItem_2.Status = 'Kan ikke fullføre';
+		update workOrderLineItem_2;
+
+		workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+		System.assertEquals('Delvis fullført', workOrder.Status, 'Status on the work order did not update to correct value');
+
+		workOrderLineItem_2.Status = 'Delvis fullført';
+		update workOrderLineItem_2;
+
+		workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+		System.assertEquals('Delvis fullført', workOrder.Status, 'Status on the work order did not update to correct value');
+
+		workOrderLineItem_1.Status = 'Pågår';
+		update workOrderLineItem_1;
+		workOrderLineItem_2.Status = 'Pågår';
+		update workOrderLineItem_2;
+
+		workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+		System.assertEquals('Pågår', workOrder.Status, 'Status on the work order did not update to correct value');
+
+		workOrderLineItem_1.Status = 'Fullført';
+		update workOrderLineItem_1;
+		workOrderLineItem_2.Status = 'Fullført';
+		update workOrderLineItem_2;
+
+		workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+		System.assertEquals('Fullført', workOrder.Status, 'Status on the work order did not update to correct value');
 	}
 	
     @isTest
@@ -59,23 +87,53 @@ private class HOT_FieldServiceStatusHandlerTest {
 		insert request;
 		WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
 		insert workOrder;
-		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder);
+		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
 		insert workOrderLineItem;
-		ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
-		insert serviceAppointment;
+		ServiceAppointment serviceAppointment_1 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+		insert serviceAppointment_1;
+		ServiceAppointment serviceAppointment_2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+		insert serviceAppointment_2;
 
-		serviceAppointment.Status = 'Covered';
-		update serviceAppointment;
-
-		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
-
-		System.assertEquals('Covered', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
-
-		serviceAppointment.Status = 'Canceled';
-		update serviceAppointment;
+		serviceAppointment_1.Status = 'Planlagt';
+		update serviceAppointment_1;
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+		System.assertEquals('Planlagt', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
 
-		System.assertEquals('Canceled', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+		serviceAppointment_2.Status = 'Sendt';
+		update serviceAppointment_2;
+
+		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+		System.assertEquals('Planlagt', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+
+		serviceAppointment_1.Status = 'Kan ikke fullføre';
+		update serviceAppointment_1;
+
+		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+		System.assertEquals('Delvis fullført', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+
+		serviceAppointment_1.Status = 'Pågår';
+		update serviceAppointment_1;
+		serviceAppointment_2.Status = 'Pågår';
+		update serviceAppointment_2;
+
+		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+		System.assertEquals('Pågår', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+
+		serviceAppointment_1.Status = 'Fullført';
+		update serviceAppointment_1;
+		serviceAppointment_2.Status = 'Fullført';
+		update serviceAppointment_2;
+
+		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+		System.assertEquals('Fullført', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+
+		serviceAppointment_1.Status = 'Kan ikke fullføre';
+		update serviceAppointment_1;
+		serviceAppointment_2.Status = 'Kan ikke fullføre';
+		update serviceAppointment_2;
+
+		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+		System.assertEquals('Kan ikke fullføre', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
     }
 }

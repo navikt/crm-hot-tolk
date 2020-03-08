@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>FSL_StatusHandler_WOLI_BeforeUpdate</label>
+    <label>FSL_StatusHandler_WOLI_AfterUpdate</label>
     <protected>false</protected>
     <values>
         <field>Active__c</field>
@@ -20,7 +20,7 @@
     </values>
     <values>
         <field>Event__c</field>
-        <value xsi:type="xsd:string">BEFORE_UPDATE</value>
+        <value xsi:type="xsd:string">AFTER_UPDATE</value>
     </values>
     <values>
         <field>IsBypassAllowed__c</field>
