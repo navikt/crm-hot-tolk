@@ -27,16 +27,16 @@
         <groupingString>InProgress</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Kan ikke fullføre</fullName>
-        <default>false</default>
-        <label>Kan ikke fullføre</label>
-        <groupingString>CannotComplete</groupingString>
-    </standardValue>
-    <standardValue>
         <fullName>Fullført</fullName>
         <default>false</default>
         <label>Fullført</label>
         <groupingString>Completed</groupingString>
+    </standardValue>
+    <standardValue>
+        <fullName>Kan ikke fullføre</fullName>
+        <default>false</default>
+        <label>Kan ikke fullføre</label>
+        <groupingString>CannotComplete</groupingString>
     </standardValue>
     <standardValue>
         <fullName>Avbrutt</fullName>

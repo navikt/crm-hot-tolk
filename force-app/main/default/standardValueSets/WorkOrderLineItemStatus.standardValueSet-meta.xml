@@ -27,22 +27,10 @@
         <groupingString>InProgress</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>På venting</fullName>
-        <default>false</default>
-        <label>På venting</label>
-        <groupingString>OnHold</groupingString>
-    </standardValue>
-    <standardValue>
         <fullName>Fullført</fullName>
         <default>false</default>
         <label>Fullført</label>
         <groupingString>Completed</groupingString>
-    </standardValue>
-    <standardValue>
-        <fullName>Avsluttet</fullName>
-        <default>false</default>
-        <label>Avsluttet</label>
-        <groupingString>Closed</groupingString>
     </standardValue>
     <standardValue>
         <fullName>Delvis fullføre</fullName>
