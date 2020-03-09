@@ -71,6 +71,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	handleSuccess(event) {
+		successMessage.focus();
 	}
 
 	toggled() {
@@ -89,7 +90,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.previousPage = 'mine-bestillinger'
 		}
 		else {
-			this.previousPage = 'hjem'
+			this.previousPage = 'home'
 		}
 		if (JSON.parse(newURL.get("fieldValues")) != null) {
 			this.fieldValues = JSON.parse(newURL.get("fieldValues"));

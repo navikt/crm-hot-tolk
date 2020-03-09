@@ -191,7 +191,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',
 			attributes: {
-				pageName: 'hjem'
+				pageName: 'home'
 			}
 		});
 	}
