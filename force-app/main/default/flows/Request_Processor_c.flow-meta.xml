@@ -75,7 +75,7 @@
 				<leftValueReference>myVariable_current.Status__c</leftValueReference>
 				<operator>EqualTo</operator>
 				<rightValue>
-					<stringValue>Approved</stringValue>
+					<stringValue>Godkjent</stringValue>
 				</rightValue>
 			</conditions>
 			<conditions>
