@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_ServiceAppointment_Compact_Layout</fullName>
+    <fields>Subject</fields>
+    <fields>AppointmentNumber</fields>
+    <fields>Mobile_test__c</fields>
+    <fields>WorkTypeId</fields>
+    <fields>Status</fields>
+    <label>Service Appointment Compact Layout</label>
+</CompactLayout>

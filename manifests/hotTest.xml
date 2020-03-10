@@ -39,6 +39,12 @@
 		<name>Flow</name>
 	</types>
 	<types>
+		<members>ServiceAppointment.HOT_ServiceAppointment_Compact_Layout</members>
+		<members>WorkOrderLineItem.HOT_WorkOrderLineItem_Compact_Layout</members>
+		<members>WorkOrder.HOT_WorkOrder_Compact_Layout</members>
+		<name>CompactLayout</name>
+	</types>
+	<types>
 		<members>WorkOrderStatus</members>
 		<members>WorkOrderLineItemStatus</members>
 		<members>ServiceAppointmentStatus</members>
