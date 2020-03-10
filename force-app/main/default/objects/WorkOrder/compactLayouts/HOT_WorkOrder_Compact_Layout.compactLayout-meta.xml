@@ -3,7 +3,6 @@
     <fullName>HOT_WorkOrder_Compact_Layout</fullName>
     <fields>WorkOrderNumber</fields>
     <fields>Subject</fields>
-    <fields>Mobile_test__c</fields>
     <fields>Status</fields>
     <fields>OwnerId</fields>
     <label>Work Order Compact Layout</label>
