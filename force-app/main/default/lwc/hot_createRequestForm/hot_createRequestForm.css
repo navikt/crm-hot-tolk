@@ -8,14 +8,6 @@
 	min-height: 4rem;
 }
 
-.typo-systemtittel {
-	margin: 0;
-	font-family: "Source Sans Pro", Arial, sans-serif;
-	font-size: 2rem;
-	line-height: 1.625rem;
-	font-weight: 600;
-}
-
 .skjema {
 	font-size: 1.33rem;
 	max-width: 792px;
@@ -29,10 +21,6 @@
 }
 
 .tolk-skjema-input {
-	font-size: 1.33rem;
-}
-
-.tolk-skjema-knapp {
 	font-size: 1.33rem;
 }
 

@@ -17,7 +17,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	@track columns = [
 		{
-			label: 'Start Time',
+			label: 'Start tid',
 			fieldName: 'StartTime__c',
 			type: 'date',
 			typeAttributes: {
@@ -30,7 +30,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		},
 		{
-			label: 'End Time',
+			label: 'Slutt tid',
 			fieldName: 'EndTime__c',
 			type: 'date',
 			typeAttributes: {
@@ -43,12 +43,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		},
 		{
-			label: 'Meeting Address',
+			label: 'Oppmøtested',
 			fieldName: 'MeetingStreet__c',
 			type: 'text'
 		},
 		{
-			label: 'Subject',
+			label: 'Tema',
 			fieldName: 'Subject__c',
 			type: 'text'
 		},
@@ -118,10 +118,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
-			if (this.requests[index].Status__c == "Open") {
+			if (this.requests[index].Status__c == "Åpen") {
 				const fields = {};
 				fields[REQUEST_ID.fieldApiName] = Id;
-				fields[STATUS.fieldApiName] = "Canceled";
+				fields[STATUS.fieldApiName] = "Avlyst";
 				const recordInput = { fields };
 				updateRecord(recordInput)
 					.then(() => {
@@ -139,7 +139,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 					.catch(error => {
 						this.dispatchEvent(
 							new ShowToastEvent({
-								title: 'An error oocured canceling the appointment',
+								title: 'An error occured canceling the appointment',
 								message: error.body.message,
 								variant: 'error'
 							})
@@ -195,5 +195,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		});
 	}
+
 
 }

@@ -25,6 +25,15 @@
       "id" : "b3f6e64a-ddcb-4f3b-8189-9dfd299c4fc8",
       "regions" : [ {
         "components" : [ {
+          "componentAttributes" : {
+            "richTextValue" : "<p>DO NOT USE THIS</p>"
+          },
+          "componentName" : "forceCommunity:richTextInline",
+          "id" : "a6291b2e-9483-4390-9646-17ab47f5a526",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
           "componentAttributes" : { },
           "componentName" : "c:hot_home",
           "id" : "2336da54-1d5f-4a30-a924-1b48d1f56676",

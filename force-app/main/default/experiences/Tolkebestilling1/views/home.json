@@ -8,6 +8,14 @@
     "regionName" : "header",
     "type" : "region"
   }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:hot_home",
+      "id" : "bcaa600e-400d-429f-8c56-870c0ec5d1e2",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
     "id" : "6a5e56a4-2dc7-45bc-98db-188fc2e06992",
     "regionName" : "content",
     "type" : "region"

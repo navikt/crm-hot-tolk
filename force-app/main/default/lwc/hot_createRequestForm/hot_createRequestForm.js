@@ -64,14 +64,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 		console.log(JSON.stringify(fields));
 
-
 		this.template.querySelector('lightning-record-edit-form').submit(fields);
-		//this.document.getElementById("success-message").focus();
 		this.submitted = !this.submitted;
 	}
 
 	handleSuccess(event) {
-		successMessage.focus();
+
 	}
 
 	toggled() {
