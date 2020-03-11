@@ -10,8 +10,8 @@ import HOT_Request__c from '@salesforce/schema/WorkOrder.HOT_Request__c';
 
 
 var actions = [
-	{ label: 'Cancel Order', name: 'delete' },
-	{ label: 'Copy Order', name: 'clone_order' },
+	{ label: 'Avlys', name: 'delete' },
+	{ label: 'Dupliser', name: 'clone_order' },
 ];
 export default class RequestList extends NavigationMixin(LightningElement) {
 
@@ -20,6 +20,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			label: 'Start tid',
 			fieldName: 'StartTime__c',
 			type: 'date',
+			//sortable: true,
 			typeAttributes: {
 				day: 'numeric',
 				month: 'numeric',
@@ -33,6 +34,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			label: 'Slutt tid',
 			fieldName: 'EndTime__c',
 			type: 'date',
+			//sortable: true,
 			typeAttributes: {
 				day: 'numeric',
 				month: 'numeric',
@@ -45,17 +47,20 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		{
 			label: 'Oppmøtested',
 			fieldName: 'MeetingStreet__c',
-			type: 'text'
+			type: 'text',
+			//sortable: true,
 		},
 		{
 			label: 'Tema',
 			fieldName: 'Subject__c',
-			type: 'text'
+			type: 'text',
+			//sortable: true,
 		},
 		{
 			label: 'Status',
 			fieldName: 'Status__c',
-			type: 'text'
+			type: 'text',
+			//sortable: true,
 		},
 		{
 			type: 'action',
@@ -83,6 +88,45 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	}
 
+	@track defaultSortDirection = 'asc';
+	@track sortDirection = 'asc';
+	@track sortedBy = "StartTime__c";
+
+
+
+	sortBy(field, reverse, primer) {
+		const key = primer
+			? function (x) {
+				return primer(x[field]);
+			}
+			: function (x) {
+				return x[field];
+			};
+
+		return function (a, b) {
+			a = key(a);
+			b = key(b);
+			return reverse * ((a > b) - (b > a));
+		};
+	}
+
+	onHandleSort(event) {
+		console.log(JSON.stringify(event.detail));
+		const { fieldName: sortedBy, sortDirection } = event.detail;
+		const cloneData = [...this.requests];
+
+		cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
+		this.requests = cloneData;
+		this.sortDirection = sortDirection;
+		this.sortedBy = sortedBy;
+	}
+	/*connectedCallback() {
+			const { fieldName: sortedBy, sortDirection } = JSON.parse('{ "fieldName": "StartTime__c", "sortDirection": "asc" }');
+			const cloneData = [...this.requests];
+	
+			cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
+			this.requests = cloneData;
+		}*/
 
 	//Handle Row Action
 	handleRowAction(event) {
@@ -118,7 +162,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
-			if (this.requests[index].Status__c == "Åpen") {
+			if (this.requests[index].ExternalRequestStatus__c != "Avlyst" && this.requests[index].ExternalRequestStatus__c != "Dekket") {
 				const fields = {};
 				fields[REQUEST_ID.fieldApiName] = Id;
 				fields[STATUS.fieldApiName] = "Avlyst";

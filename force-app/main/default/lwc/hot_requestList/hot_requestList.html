@@ -11,7 +11,8 @@
 		</lightning-button>
 		</br>
 		<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
-			onrowaction={handleRowAction}>
+			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
+			onsort={onHandleSort} onrowaction={handleRowAction}>
 		</lightning-datatable>
 	</div>
 </template>
