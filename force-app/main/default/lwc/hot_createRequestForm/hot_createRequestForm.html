@@ -13,12 +13,12 @@
 				title="Hva trenger du tolk til?">
 			</lightning-input-field>
 			</br>
-			<lightning-input-field aria-hidden="true" class="tolk-skjema-input start-tid" field-name="StartTime__c"
+			<lightning-input type="datetime" class="tolk-skjema-input start-tid" name="StartTime__cf" date-style="short"
 				onchange={handleChange}>
-			</lightning-input-field>
-			<lightning-input-field aria-hidden="true" class="tolk-skjema-input slutt-tid" field-name="EndTime__c"
+			</lightning-input>
+			<lightning-input type="datetime" class="tolk-skjema-input slutt-tid" name="EndTime__cf" date-style="short"
 				value={startTime}>
-			</lightning-input-field>
+			</lightning-input>
 			</br>
 			<lightning-input-field class="tolk-skjema-input" field-name="MeetingStreet__c"
 				value={fieldValues.MeetingStreet__c}>
@@ -60,8 +60,8 @@
 				</div>
 			</div>
 			</br>
-			<lightning-input-field class="tolk-skjema-input" title="Tilleggsopplysninger" field-name="Description__c"
-				value={fieldValues.Description__c}>
+			<lightning-input-field class="tolk-skjema-input ikke-sensitiv-fritekst" title="Tilleggsopplysninger"
+				field-name="Description__c" value={fieldValues.Description__c}>
 			</lightning-input-field>
 
 			<div class="button-container">

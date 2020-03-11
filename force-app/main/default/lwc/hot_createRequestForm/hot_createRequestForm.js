@@ -53,8 +53,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		event.preventDefault(); // stop the form from submitting
 
 		const fields = event.detail.fields;
-		//console.log(JSON.stringify(fields));
-
+		console.log(JSON.stringify(fields));
+		fields.StartTime__c = this.template.querySelector('lightning-input.start-tid').value;
+		fields.EndTime__c = this.template.querySelector('lightning-input.slutt-tid').value;
 		//console.log(AccountId);
 		//fields.Account__c = this.AccountId;
 		if (this.sameLocation) {
