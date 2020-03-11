@@ -1,6 +1,7 @@
 public with sharing class HOT_FieldServiceStatusHandler extends MyTriggers {
 
 	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
+		System.debug('HOT_FieldServiceStatusHandler.onAfterUpdate()');
 		List<WorkOrder> changedStatusWorkOrders = new List<WorkOrder>();
 		List<WorkOrderLineItem> changedStatusWorkOrderLineItems = new List<WorkOrderLineItem>();
 		List<ServiceAppointment> changedStatusServiceAppointments = new List<ServiceAppointment>();
@@ -35,10 +36,12 @@ public with sharing class HOT_FieldServiceStatusHandler extends MyTriggers {
 	}
 
 	public override void onBeforeUpdate(Map<Id,sObject> triggerOldMap) {
+		System.debug('HOT_FieldServiceStatusHandler.onBeforeUpdate()');
 		List<WorkOrder> updateStatusWorkOrders = new List<WorkOrder>();
 		List<WorkOrderLineItem> updateStatusWorkOrderLineItems = new List<WorkOrderLineItem>();
 
 		for(SObject record : records) {
+			System.debug('record: ' + record);
 			if(record.getSObjectType() == Schema.WorkOrder.getSObjectType()
 				&& record.get('HOT_IsUpdateStatus__c') == true) {
 					updateStatusWorkOrders.add((WorkOrder)record);
@@ -71,7 +74,10 @@ public with sharing class HOT_FieldServiceStatusHandler extends MyTriggers {
 		List<HOT_Request__c> requestsToUpdate = new List<HOT_Request__c>();
 		for(WorkOrder workOrder : changedWorkOrders) {
 			if(statusMap.containsKey(workOrder.Status)) {
-				requestsToUpdate.add(new HOT_Request__c(Id = workOrder.HOT_Request__c, Status__c = statusMap.get(workOrder.Status)));
+				HOT_Request__c requestToAdd = new HOT_Request__c(Id = workOrder.HOT_Request__c, Status__c = statusMap.get(workOrder.Status)); 
+				if(!requestsToUpdate.contains(requestToAdd)) {
+					requestsToUpdate.add(requestToAdd);
+				}
 			}
 		}
 		update requestsToUpdate;
@@ -80,7 +86,10 @@ public with sharing class HOT_FieldServiceStatusHandler extends MyTriggers {
 	private static void updateWorkOrderStatus(List<WorkOrderLineItem> changedWorkOrderLineItems) {
 		List<WorkOrder> workOrdersToUpdate = new List<WorkOrder>();
 		for(WorkOrderLineItem workOrderLineItem : changedWorkOrderLineItems) {
-			workOrdersToUpdate.add(new WorkOrder(Id = workOrderLineItem.WorkOrderId, HOT_IsUpdateStatus__c = true));
+			WorkOrder workOrderToAdd = new WorkOrder(Id = workOrderLineItem.WorkOrderId, HOT_IsUpdateStatus__c = true);
+			if(!workOrdersToUpdate.contains(workOrderToAdd)) {
+				workOrdersToUpdate.add(workOrderToAdd);
+			}
 		}
 		update workOrdersToUpdate;
 	}
@@ -89,7 +98,10 @@ public with sharing class HOT_FieldServiceStatusHandler extends MyTriggers {
 		List<WorkOrderLineItem> workOrderLineItemsToUpdate = new List<WorkOrderLineItem>();
 		for(ServiceAppointment serviceAppointment : changedServiceAppointments) {
 			if(serviceAppointment.ParentRecordId.getSobjectType() == Schema.WorkOrderLineItem.getSObjectType()) {
-				workOrderLineItemsToUpdate.add(new WorkOrderLineItem(Id = serviceAppointment.ParentRecordId, HOT_IsUpdateStatus__c = true));
+				WorkOrderLineItem workOrderToAdd = new WorkOrderLineItem(Id = serviceAppointment.ParentRecordId, HOT_IsUpdateStatus__c = true);
+				if(!workOrderLineItemsToUpdate.contains(workOrderToAdd)) {
+					workOrderLineItemsToUpdate.add(workOrderToAdd);
+				}
 			}
 		}
 		update workOrderLineItemsToUpdate;
