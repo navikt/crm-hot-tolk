@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <decisions>
-        <name>isChangedDecision5_myRule_4_Account_c</name>
-        <label>isChangedDecision5_myRule_4_Account_c</label>
+        <name>isChangedDecision2_myRule_1_Account_c</name>
+        <label>isChangedDecision2_myRule_1_Account_c</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
@@ -10,7 +10,7 @@
         </defaultConnector>
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
-            <name>isChangedRule_5_myRule_4_Account_c</name>
+            <name>isChangedRule_2_myRule_1_Account_c</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>myVariable_old</leftValueReference>
@@ -29,7 +29,7 @@
             <connector>
                 <targetReference>myDecision</targetReference>
             </connector>
-            <label>isChangedRule_5_myRule_4_Account_c</label>
+            <label>isChangedRule_2_myRule_1_Account_c</label>
         </rules>
     </decisions>
     <decisions>
@@ -81,65 +81,7 @@
                         <stringValue>Boolean</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference>myVariable_current.Account__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>myRule_1_A1</targetReference>
-            </connector>
-            <label>Update Person on Request based on Account</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <processMetadataValues>
-            <name>index</name>
-            <value>
-                <numberValue>1.0</numberValue>
-            </value>
-        </processMetadataValues>
-        <name>myDecision3</name>
-        <label>myDecision3</label>
-        <locationX>50</locationX>
-        <locationY>0</locationY>
-        <defaultConnectorLabel>default</defaultConnectorLabel>
-        <rules>
-            <name>myRule_4</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <processMetadataValues>
-                    <name>inputDataType</name>
-                    <value>
-                        <stringValue>Boolean</stringValue>
-                    </value>
-                </processMetadataValues>
-                <processMetadataValues>
-                    <name>leftHandSideReferenceTo</name>
-                    <value>
-                        <stringValue>Account</stringValue>
-                    </value>
-                </processMetadataValues>
-                <processMetadataValues>
-                    <name>leftHandSideType</name>
-                    <value>
-                        <stringValue>ID</stringValue>
-                    </value>
-                </processMetadataValues>
-                <processMetadataValues>
-                    <name>operatorDataType</name>
-                    <value>
-                        <stringValue>String</stringValue>
-                    </value>
-                </processMetadataValues>
-                <processMetadataValues>
-                    <name>rightHandSideType</name>
-                    <value>
-                        <stringValue>Boolean</stringValue>
-                    </value>
-                </processMetadataValues>
-                <leftValueReference>isChangedRule_5_myRule_4_Account_c</leftValueReference>
+                <leftValueReference>isChangedRule_2_myRule_1_Account_c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -183,24 +125,69 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>myRule_4_A1</targetReference>
+                <targetReference>myRule_1_A1</targetReference>
             </connector>
             <label>Delete Person</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <processMetadataValues>
+            <name>index</name>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </processMetadataValues>
+        <name>myDecision3</name>
+        <label>myDecision3</label>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>default</defaultConnectorLabel>
+        <rules>
+            <name>myRule_4</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_myRule_4</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_4_A1</targetReference>
+            </connector>
+            <label>Update Person</label>
         </rules>
     </decisions>
     <formulas>
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue>[HOT_Request__c].Account__c.Person__c</stringValue>
+                <stringValue>[HOT_Request__c].Account__c.CRM_Person__c </stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_2_myRule_1_A1_2259653678</name>
+        <name>formula_5_myRule_4_A1_8594387979</name>
         <dataType>String</dataType>
-        <expression>{!myVariable_current.Account__r.Person__c}</expression>
+        <expression>{!myVariable_current.Account__r.CRM_Person__c}</expression>
     </formulas>
-    <interviewLabel>HOT_Request_Processor-1_InterviewLabel</interviewLabel>
-    <label>Request Processor</label>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>[HOT_Request__c].Account__c &lt;&gt; null &amp;&amp; (
+IsChanged([HOT_Request__c].Account__c)=true
+|| ISNEW()
+)</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_myRule_4</name>
+        <dataType>Boolean</dataType>
+        <expression>{!myVariable_current.Account__c} &lt;&gt; null &amp;&amp; (
+IsChanged({!myVariable_current.Account__c})=true
+|| ISNEW()
+)</expression>
+    </formulas>
+    <interviewLabel>Request_Processor_Update_Set_Account_and_Person-1_InterviewLabel</interviewLabel>
+    <label>Request Processor - Update - Set Account and Person</label>
     <processMetadataValues>
         <name>ObjectType</name>
         <value>
@@ -252,91 +239,8 @@
             <name>referenceTargetField</name>
         </processMetadataValues>
         <name>myRule_1_A1</name>
-        <label>Set Person</label>
-        <locationX>100</locationX>
-        <locationY>200</locationY>
-        <connector>
-            <targetReference>myDecision3</targetReference>
-        </connector>
-        <filters>
-            <processMetadataValues>
-                <name>implicit</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </processMetadataValues>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>myVariable_current.Id</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <processMetadataValues>
-                <name>dataType</name>
-                <value>
-                    <stringValue>ID</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>isRequired</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideLabel</name>
-                <value>
-                    <stringValue>Person</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideReferenceTo</name>
-                <value>
-                    <stringValue>Person__c</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>rightHandSideType</name>
-                <value>
-                    <stringValue>Formula</stringValue>
-                </value>
-            </processMetadataValues>
-            <field>Person__c</field>
-            <value>
-                <elementReference>formula_2_myRule_1_A1_2259653678</elementReference>
-            </value>
-        </inputAssignments>
-        <object>HOT_Request__c</object>
-    </recordUpdates>
-    <recordUpdates>
-        <processMetadataValues>
-            <name>evaluationType</name>
-            <value>
-                <stringValue>always</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>extraTypeInfo</name>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>isChildRelationship</name>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>reference</name>
-            <value>
-                <stringValue>[HOT_Request__c]</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>referenceTargetField</name>
-        </processMetadataValues>
-        <name>myRule_4_A1</name>
         <label>Set Person to NULL</label>
-        <locationX>400</locationX>
+        <locationX>100</locationX>
         <locationY>200</locationY>
         <filters>
             <processMetadataValues>
@@ -386,7 +290,87 @@
         </inputAssignments>
         <object>HOT_Request__c</object>
     </recordUpdates>
-    <startElementReference>isChangedDecision5_myRule_4_Account_c</startElementReference>
+    <recordUpdates>
+        <processMetadataValues>
+            <name>evaluationType</name>
+            <value>
+                <stringValue>always</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>extraTypeInfo</name>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>isChildRelationship</name>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>reference</name>
+            <value>
+                <stringValue>[HOT_Request__c]</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>referenceTargetField</name>
+        </processMetadataValues>
+        <name>myRule_4_A1</name>
+        <label>Set person</label>
+        <locationX>400</locationX>
+        <locationY>200</locationY>
+        <filters>
+            <processMetadataValues>
+                <name>implicit</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </processMetadataValues>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Person</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue>Person__c</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Formula</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>Person__c</field>
+            <value>
+                <elementReference>formula_5_myRule_4_A1_8594387979</elementReference>
+            </value>
+        </inputAssignments>
+        <object>HOT_Request__c</object>
+    </recordUpdates>
+    <startElementReference>isChangedDecision2_myRule_1_Account_c</startElementReference>
     <status>Active</status>
     <variables>
         <name>myVariable_current</name>

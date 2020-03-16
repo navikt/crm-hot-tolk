@@ -103,6 +103,48 @@
                 <elementReference>myVariable_current</elementReference>
             </value>
         </inputParameters>
+        <inputParameters>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>String</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Owner</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>maxOccurs</name>
+                <value>
+                    <numberValue>1.0</numberValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>objectType</name>
+                <value>
+                    <stringValue/>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Reference</stringValue>
+                </value>
+            </processMetadataValues>
+            <name>Owner</name>
+            <value>
+                <elementReference>myVariable_current.WorkOrder.OwnerId</elementReference>
+            </value>
+        </inputParameters>
     </actionCalls>
     <decisions>
         <processMetadataValues>
@@ -138,7 +180,7 @@
         <dataType>Boolean</dataType>
         <expression>true</expression>
     </formulas>
-    <interviewLabel>WorkOrderLineItem_Initiator_c-2_InterviewLabel</interviewLabel>
+    <interviewLabel>WorkOrderLineItem_Initiator_c-3_InterviewLabel</interviewLabel>
     <label>WorkOrderLineItem Initiator</label>
     <processMetadataValues>
         <name>ObjectType</name>
