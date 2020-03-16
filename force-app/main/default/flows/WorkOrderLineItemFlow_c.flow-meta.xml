@@ -82,6 +82,13 @@
                 <elementReference>VarWOLIInterStreet</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>VarSA.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Owner</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>SAcollection</targetReference>
         </connector>
@@ -243,6 +250,13 @@
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>Owner</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>VarSA</name>
         <dataType>SObject</dataType>
