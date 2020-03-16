@@ -3,7 +3,7 @@
 	<fullName>InterpretationStreet__c</fullName>
 	<description>The Location where the interpretation will take place.</description>
 	<externalId>false</externalId>
-	<label>Interpretation Address</label>
+	<label>Interpretation Street</label>
 	<length>255</length>
 	<required>false</required>
 	<trackHistory>false</trackHistory>

@@ -3,7 +3,7 @@
 	<fullName>MeetingStreet__c</fullName>
 	<description>The Location where the interpreter will meet the user.</description>
 	<externalId>false</externalId>
-	<label>Meeting Address</label>
+	<label>Meeting Street</label>
 	<length>255</length>
 	<required>false</required>
 	<trackHistory>false</trackHistory>
