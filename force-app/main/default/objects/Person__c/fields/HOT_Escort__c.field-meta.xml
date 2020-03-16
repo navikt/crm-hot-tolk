@@ -3,7 +3,7 @@
     <fullName>HOT_Escort__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <label>Ledsaging</label>
+    <label>Escort</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>
