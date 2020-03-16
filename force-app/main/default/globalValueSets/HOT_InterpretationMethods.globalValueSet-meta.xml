@@ -35,6 +35,11 @@
         <default>false</default>
         <label>Haptisk kommunikasjon</label>
     </customValue>
+    <customValue>
+        <fullName>Ledsaging</fullName>
+        <default>false</default>
+        <label>Ledsaging</label>
+    </customValue>
     <description>List of the interpretation methods</description>
     <masterLabel>Interpretation Methods</masterLabel>
     <sorted>false</sorted>
