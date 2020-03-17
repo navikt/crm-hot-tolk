@@ -27,7 +27,7 @@
         <componentInstances>
             <componentInstanceProperties>
                 <name>lookupFieldName</name>
-                <value>Person__c</value>
+                <value>CRM_Person__c</value>
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>updateQuickActionName</name>
