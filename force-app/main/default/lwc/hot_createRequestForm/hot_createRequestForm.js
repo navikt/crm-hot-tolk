@@ -1,6 +1,5 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getPersonDetails from '@salesforce/apex/UserInfoDetails.getPersonDetails';
 import { NavigationMixin } from 'lightning/navigation';
 import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
@@ -31,20 +30,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	@track error;
-	@track person;
 	@track startTime;
 	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
-	@wire(getPersonDetails)
-	wiredPerson({
-		error,
-		data
-	}) {
-		if (data) {
-			this.person = data;
-		} else if (error) {
-			this.error = error;
-		}
-	}
 	handleChange(event) {
 		this.startTime = event.detail.value;
 	}
