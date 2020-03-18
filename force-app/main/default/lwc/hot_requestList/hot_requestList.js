@@ -58,7 +58,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		},
 		{
 			label: 'Status',
-			fieldName: 'Status__c',
+			fieldName: 'ExternalRequestStatus__c',
 			type: 'text',
 			//sortable: true,
 		},
