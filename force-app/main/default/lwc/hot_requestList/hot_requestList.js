@@ -11,7 +11,7 @@ import HOT_Request__c from '@salesforce/schema/WorkOrder.HOT_Request__c';
 
 var actions = [
 	{ label: 'Avlys', name: 'delete' },
-	{ label: 'Dupliser', name: 'clone_order' },
+	{ label: 'Kopier', name: 'clone_order' },
 ];
 export default class RequestList extends NavigationMixin(LightningElement) {
 
