@@ -51,4 +51,8 @@
         </sections>
     </layouts>
     <nameFieldLabel><!-- Request ID Number --></nameFieldLabel>
+    <validationRules>
+        <errorMessage>Du må fylle ut feltene antall tolker, tolkemetode, start tid og slutt tid før du kan godkjenne tolkebestillingen.</errorMessage>
+        <name>RequestStatusApproved</name>
+    </validationRules>
 </CustomObjectTranslation>
