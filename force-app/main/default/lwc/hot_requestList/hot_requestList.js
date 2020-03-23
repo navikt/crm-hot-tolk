@@ -1,6 +1,5 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { updateRecord } from 'lightning/uiRecordApi';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
@@ -136,7 +135,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 		switch (actionName) {
 			case 'delete':
-				this.cancelOrder(row);
+				if (confirm("Er du sikker på at du vil avlyse bestillingen?")) {
+					this.cancelOrder(row);
+				}
 				break;
 			case 'clone_order':
 				this.cloneOrder(row);
@@ -169,33 +170,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 				const recordInput = { fields };
 				updateRecord(recordInput)
 					.then(() => {
-						this.dispatchEvent(
-							new ShowToastEvent({
-								title: 'Success',
-								message: 'Order was canceled',
-								variant: 'success'
-							})
-						);
 						// Display fresh data in the form
 						//console.log('Trying to refresh');
 						refreshApex(this.wiredRequestsResult);
 					})
 					.catch(error => {
-						this.dispatchEvent(
-							new ShowToastEvent({
-								title: 'An error occured canceling the appointment',
-								message: error.body.message,
-								variant: 'error'
-							})
-						);
+						alert("Kunne ikke avlyse bestilling.");
+
 					});
 			}
 			else {
-				const evt = new ShowToastEvent({
-					title: "Order can not be canceled",
-					variant: "error"
-				});
-				this.dispatchEvent(evt);
+				alert("Du kan ikke avlyse denne bestillingen");
+
 			}
 		}
 	}
