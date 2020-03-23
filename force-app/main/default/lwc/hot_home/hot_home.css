@@ -46,18 +46,10 @@
 	display: inline-block;
 	vertical-align: middle;
 	font-size: 1.33rem;
-	width: 25%;
+	width: 30%;
 	border-radius: 0.75rem;
 	margin-right: 1rem;
 	height: auto;
-}
-
-.portal-link-illustration {
-	background-color: #dade99;
-	border-radius: 0.75rem 0.75rem 0 0;
-	width: 100%;
-	height: 110px;
-	border-bottom: 4px solid rgb(181, 189, 51);
 }
 
 .panelMedBilde__panelOnPanel {
@@ -87,4 +79,18 @@
 .tolk-portal-link:hover {
 	box-shadow: #b7b1a9 0 2px 1px 0;
 	color: #0068C6;
+}
+
+.portal-link-illustration {
+	background-color: #dade99;
+	border-radius: 0.75rem 0.75rem 0 0;
+	width: 100%;
+	height: 210px;
+	border-bottom: 4px solid rgb(181, 189, 51);
+}
+
+.illustrasjon {
+	padding: 8px;
+	max-height: 100%;
+	width: 90%;
 }
