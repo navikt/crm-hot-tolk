@@ -10,28 +10,28 @@
 			<lightning-messages>
 			</lightning-messages>
 			<lightning-input-field class="tolk-skjema-input" field-name="Subject__c" value={fieldValues.Subject__c}
-				title="Hva trenger du tolk til?">
+				title="Hva trenger du tolk til?" required>
 			</lightning-input-field>
 			</br>
-			<lightning-input type="datetime" class="tolk-skjema-input start-tid" name="StartTime__cf" date-style="short"
-				onchange={handleChange}>
-			</lightning-input>
-			<lightning-input type="datetime" class="tolk-skjema-input slutt-tid" name="EndTime__cf" date-style="short"
-				value={startTime}>
-			</lightning-input>
+			<lightning-input-field class="tolk-skjema-input start-tid" field-name="StartTime__c" date-style="short"
+				onchange={handleChange} required>
+			</lightning-input-field>
+			<lightning-input-field class="tolk-skjema-input slutt-tid" field-name="EndTime__c" date-style="short"
+				value={startTime} required>
+			</lightning-input-field>
 			</br>
 			<lightning-input-field class="tolk-skjema-input" field-name="MeetingStreet__c"
-				value={fieldValues.MeetingStreet__c}>
+				value={fieldValues.MeetingStreet__c} required>
 			</lightning-input-field>
 			<div class="slds-grid slds-gutters">
 				<div class="slds-col slds-size_1-of-2">
 					<lightning-input-field class="tolk-skjema-input" title="Postnummer"
-						field-name="MeetingPostalCode__c" value={fieldValues.MeetingPostalCode__c}>
+						field-name="MeetingPostalCode__c" value={fieldValues.MeetingPostalCode__c} required>
 					</lightning-input-field>
 				</div>
 				<div class="slds-col slds-size_1-of-2">
 					<lightning-input-field class="tolk-skjema-input" title="Poststed" field-name="MeetingPostalCity__c"
-						value={fieldValues.MeetingPostalCity__c}>
+						value={fieldValues.MeetingPostalCity__c} required>
 					</lightning-input-field>
 				</div>
 			</div>
