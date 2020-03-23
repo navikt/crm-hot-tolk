@@ -8,7 +8,7 @@ public with sharing class HOT_RequestListContoller {
 		List<HOT_Request__c> requests = [SELECT Name, Subject__c, StartTime__c, EndTime__c, MeetingStreet__c, MeetingPostalCode__c, 
 		MeetingPostalCity__c, InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, 
 		Description__c, Status__c, ExternalRequestStatus__c, Account__c
-		FROM HOT_Request__c WHERE Account__c !=null AND Account__c = : user.AccountId ORDER BY StartTime__c ASC];
+		FROM HOT_Request__c WHERE Account__c !=null AND Account__c = : user.AccountId ORDER BY StartTime__c DESC];
 		return requests;
 	}
 }
