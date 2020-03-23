@@ -135,9 +135,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 		switch (actionName) {
 			case 'delete':
-				if (confirm("Er du sikker på at du vil avlyse bestillingen?")) {
-					this.cancelOrder(row);
-				}
+				this.cancelOrder(row);
 				break;
 			case 'clone_order':
 				this.cloneOrder(row);
@@ -164,20 +162,22 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
 			if (this.requests[index].ExternalRequestStatus__c != "Avlyst" && this.requests[index].ExternalRequestStatus__c != "Dekket") {
-				const fields = {};
-				fields[REQUEST_ID.fieldApiName] = Id;
-				fields[STATUS.fieldApiName] = "Avlyst";
-				const recordInput = { fields };
-				updateRecord(recordInput)
-					.then(() => {
-						// Display fresh data in the form
-						//console.log('Trying to refresh');
-						refreshApex(this.wiredRequestsResult);
-					})
-					.catch(error => {
-						alert("Kunne ikke avlyse bestilling.");
+				if (confirm("Er du sikker på at du vil avlyse bestillingen?")) {
+					const fields = {};
+					fields[REQUEST_ID.fieldApiName] = Id;
+					fields[STATUS.fieldApiName] = "Avlyst";
+					const recordInput = { fields };
+					updateRecord(recordInput)
+						.then(() => {
+							// Display fresh data in the form
+							//console.log('Trying to refresh');
+							refreshApex(this.wiredRequestsResult);
+						})
+						.catch(error => {
+							alert("Kunne ikke avlyse bestilling.");
 
-					});
+						});
+				}
 			}
 			else {
 				alert("Du kan ikke avlyse denne bestillingen");
