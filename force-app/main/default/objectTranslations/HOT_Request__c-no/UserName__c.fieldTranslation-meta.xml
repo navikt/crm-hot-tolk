@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <help><!-- Name of the user in need of interpreter --></help>
+    <help>Navn til brukeren av tolketjenesten</help>
     <label>Navn på bruker</label>
     <name>UserName__c</name>
 </CustomFieldTranslation>
