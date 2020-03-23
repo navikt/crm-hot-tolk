@@ -7,11 +7,11 @@
 &quot;Godkjent&quot;, &quot;Under behandling&quot;,
 &quot;Reservert&quot;, &quot;Under behandling&quot;,
 &quot;Tildelt&quot;, &quot;Tildelt&quot;,
-&quot;Delvis dekket&quot;, &quot;Under behandling&quot;,
+&quot;Delvis dekket&quot;, &quot;Delvis dekket&quot;,
 &quot;Pågår&quot;, &quot;Pågår&quot;,
 &quot;Udekket&quot;, &quot;Udekket&quot;,
 &quot;Avlyst&quot;, &quot;Avlyst&quot;,
-&quot;Avslått&quot;, &quot;Under behandling&quot;,
+&quot;Avslått&quot;, &quot;Avslått&quot;,
 &quot;Dekket&quot;, &quot;Dekket&quot;,
 &quot;Under behandling&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
