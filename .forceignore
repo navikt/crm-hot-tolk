@@ -88,3 +88,6 @@
 # **/classes/ChangePasswordController*
 # **/classes/CommunitiesLandingController*
 # **/classes/MyProfilePageController*
+
+# MyTriggers
+**/classes/MyTriggers*
