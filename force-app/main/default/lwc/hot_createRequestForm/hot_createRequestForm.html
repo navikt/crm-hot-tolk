@@ -6,11 +6,12 @@
 	<div class="main-content skjema" if:false={submitted}>
 		<lightning-messages>
 		</lightning-messages>
-		<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsubmit={handleSubmit}>
+		<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
+			onerror={handleError} onsubmit={handleSubmit}>
 			<lightning-messages>
 			</lightning-messages>
-			<lightning-input-field class="tolk-skjema-input" field-name="Subject__c" value={fieldValues.Subject__c}
-				title="Hva trenger du tolk til?" required>
+			<lightning-input-field class="tolk-skjema-input subject" field-name="Subject__c"
+				value={fieldValues.Subject__c} title="Hva trenger du tolk til?" required>
 			</lightning-input-field>
 			</br>
 			<lightning-input-field class="tolk-skjema-input start-tid" field-name="StartTime__c" date-style="short"
@@ -66,7 +67,7 @@
 
 			<div class="button-container">
 				<lightning-button title="Send inn bestilling" class="slds-m-left_x-small" type="submit" variant="brand"
-					label="SEND INN" onclick={handleSuccess}>
+					label="SEND INN" onclick={handleSubmit}>
 				</lightning-button>
 				</br>
 				<lightning-button title="Avbryt" variant="base" label="Avbryt" onclick={goHome}

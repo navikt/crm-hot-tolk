@@ -38,29 +38,40 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 	}
 
+	validateForm(event) {
+
+		const allValid = this.template.querySelectorAll('lightning-input-field').reportValidity();
+
+
+		console.log(JSON.stringify(allValid));
+		if (allValid) {
+			alert('All form entries look valid. Ready to submit!');
+		} else {
+			alert('Please update the invalid form entries and try again.');
+		}
+	}
+
 	handleSubmit(event) {
+		//this.validateForm(event);
 		event.preventDefault();
 
+
 		const fields = event.detail.fields;
-		console.log(JSON.stringify(fields));
-		//console.log(AccountId);
-		//fields.Account__c = this.AccountId;
 		if (this.sameLocation) {
 			fields.InterpretationStreet__c = fields.MeetingStreet__c;
 			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
 			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 		}
-		console.log("hei");
 		console.log(JSON.stringify(fields));
-
 		this.template.querySelector('lightning-record-edit-form').submit(fields);
-		{
-			this.submitted = !this.submitted;
-		}
+	}
+
+	handleError(event) {
+
 	}
 
 	handleSuccess(event) {
-
+		this.submitted = !this.submitted;
 	}
 
 	toggled() {
