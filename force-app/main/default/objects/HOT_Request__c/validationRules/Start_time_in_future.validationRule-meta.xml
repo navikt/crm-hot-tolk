@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Start_time_in_future</fullName>
-    <active>true</active>
-    <errorConditionFormula>StartTime__c&lt;NOW()</errorConditionFormula>
-    <errorDisplayField>StartTime__c</errorDisplayField>
-    <errorMessage>Du kan ikke bestille tolk i fortiden.</errorMessage>
+	<fullName>Start_time_in_future</fullName>
+	<active>true</active>
+	<errorConditionFormula>StartTime__c&lt;NOW()&amp;&amp; (ISCHANGED(StartTime__c)|| ISNEW() )</errorConditionFormula>
+	<errorDisplayField>StartTime__c</errorDisplayField>
+	<errorMessage>Du kan ikke bestille tolk i fortiden.</errorMessage>
 </ValidationRule>
