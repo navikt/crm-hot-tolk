@@ -22,10 +22,11 @@
 	text-align: center;
 }
 
-.velkommen-bruker {
+.portal-hilsen {
+	margin-top: 2rem;
 	font-size: 1.33rem;
-	padding: 3.25rem 3.25rem 3.25rem 2.25rem;
 	font-weight: bold;
+	text-align: center;
 }
 
 .portal-linker {
