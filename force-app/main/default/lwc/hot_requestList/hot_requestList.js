@@ -119,19 +119,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		this.sortDirection = sortDirection;
 		this.sortedBy = sortedBy;
 	}
-	/*connectedCallback() {
-			const { fieldName: sortedBy, sortDirection } = JSON.parse('{ "fieldName": "StartTime__c", "sortDirection": "asc" }');
-			const cloneData = [...this.requests];
-	
-			cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
-			this.requests = cloneData;
-		}*/
 
-	//Handle Row Action
 	handleRowAction(event) {
 		const actionName = event.detail.action.name;
 		const row = event.detail.row;
-		//console.log(JSON.stringify(row));
 
 		switch (actionName) {
 			case 'delete':
@@ -155,7 +146,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		});
 		return ret;
 	}
-
+	connectedCallback() {
+		refreshApex(this.wiredRequestsResult);
+	}
 
 	cancelOrder(row) {
 		const { Id } = row;
@@ -169,8 +162,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 					const recordInput = { fields };
 					updateRecord(recordInput)
 						.then(() => {
-							// Display fresh data in the form
-							//console.log('Trying to refresh');
 							refreshApex(this.wiredRequestsResult);
 						})
 						.catch(error => {
