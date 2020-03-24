@@ -85,12 +85,15 @@
 	background-color: #dade99;
 	border-radius: 0.75rem 0.75rem 0 0;
 	width: 100%;
-	height: 210px;
+	height: 130px;
 	border-bottom: 4px solid rgb(181, 189, 51);
+	padding-top: 4px;
+	position: relative;
 }
 
 .illustrasjon {
-	padding: 8px;
-	max-height: 100%;
-	width: 90%;
+	max-width: 80%;
+	position: absolute;
+	left: 20%;
+	bottom: 0;
 }
