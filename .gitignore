@@ -300,3 +300,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# MyTriggers
+force-app/main/default/classes/MyTriggers.cls
+force-app/main/default/classes/MyTriggers.cls-meta.xml
+
