@@ -38,6 +38,10 @@ private class HOT_FieldServiceStatusHandlerTest {
 		WorkOrderLineItem workOrderLineItem_2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
 		insert workOrderLineItem_2;
 
+		// Delete extra WorkOrderLineItem created by process to get full controll
+		List<WorkOrderLineItem> workOrderLineItemsToDelete = [SELECT Id FROM WorkOrderLineItem WHERE Id != :workOrderLineItem_1.Id AND Id != :workOrderLineItem_2.Id];
+		delete workOrderLineItemsToDelete;
+
 		workOrderLineItem_1.Status = 'Planlagt';
 		update workOrderLineItem_1;
 
@@ -94,23 +98,27 @@ private class HOT_FieldServiceStatusHandlerTest {
 		ServiceAppointment serviceAppointment_2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
 		insert serviceAppointment_2;
 
+		// Delete extra ServiceAppointments created by process to get full controll
+		List<ServiceAppointment> serviceAppointmentsToDelete = [SELECT Id FROM ServiceAppointment WHERE Id != :serviceAppointment_1.Id AND Id != :serviceAppointment_2.Id];
+		delete serviceAppointmentsToDelete;
+
 		serviceAppointment_1.Status = 'Planlagt';
 		update serviceAppointment_1;
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
-		System.assertEquals('Planlagt', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+		System.assertEquals('Planlagt', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
 
 		serviceAppointment_2.Status = 'Sendt';
 		update serviceAppointment_2;
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
-		System.assertEquals('Planlagt', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+		System.assertEquals('Planlagt', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
 
 		serviceAppointment_1.Status = 'Kan ikke fullføre';
 		update serviceAppointment_1;
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
-		System.assertEquals('Delvis fullført', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+		System.assertEquals('Delvis fullført', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
 
 		serviceAppointment_1.Status = 'Pågår';
 		update serviceAppointment_1;
@@ -118,7 +126,7 @@ private class HOT_FieldServiceStatusHandlerTest {
 		update serviceAppointment_2;
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
-		System.assertEquals('Pågår', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+		System.assertEquals('Pågår', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
 
 		serviceAppointment_1.Status = 'Fullført';
 		update serviceAppointment_1;
@@ -126,7 +134,7 @@ private class HOT_FieldServiceStatusHandlerTest {
 		update serviceAppointment_2;
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
-		System.assertEquals('Fullført', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+		System.assertEquals('Fullført', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
 
 		serviceAppointment_1.Status = 'Kan ikke fullføre';
 		update serviceAppointment_1;
@@ -134,6 +142,6 @@ private class HOT_FieldServiceStatusHandlerTest {
 		update serviceAppointment_2;
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
-		System.assertEquals('Kan ikke fullføre', workOrderLineItem.Status, 'Status on the service appointment did not update to correct value');
+		System.assertEquals('Kan ikke fullføre', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
     }
 }

@@ -7,8 +7,8 @@ public class HOT_TestDataFactory {
 		request.Status__c = 'Åpen';
 		request.NumberOfInterpreters__c = 1;
 		request.InterpretationMethod__c = workType.Id;
-		request.StartTime__c = Datetime.now();
-		request.EndTime__c = request.StartTime__c.addHours(1);
+		request.StartTime__c = Datetime.now().addHours(1);
+		request.EndTime__c = request.StartTime__c.addHours(2);
 		return request;
 	}
 	
@@ -17,8 +17,8 @@ public class HOT_TestDataFactory {
 		workOrder.HOT_Request__c = request.Id;
 		workOrder.Status = 'Ny';
 		workOrder.HOT_NumberOfInterpreters__c = 1;
-		workOrder.StartDate = Datetime.now();
-		workOrder.EndDate = workOrder.StartDate.addHours(1);
+		workOrder.StartDate = Datetime.now().addHours(1);
+		workOrder.EndDate = workOrder.StartDate.addHours(2);
 		workOrder.WorkTypeId = workType.Id;
 		return workOrder;
 	}
@@ -28,8 +28,8 @@ public class HOT_TestDataFactory {
 		workOrderLineItem.WorkOrderId = workOrder.Id;
 		workOrderLineItem.Status = 'Ny';
 		workOrderLineItem.HOT_NumberOfInterpreters__c = 1;
-		workOrderLineItem.StartDate = Datetime.now();
-		workOrderLineItem.EndDate = workOrderLineItem.StartDate.addHours(1);
+		workOrderLineItem.StartDate = Datetime.now().addHours(1);
+		workOrderLineItem.EndDate = workOrderLineItem.StartDate.addHours(2);
 		workOrderLineItem.WorkTypeId = workType.Id;
 		return workOrderLineItem;
 	}
@@ -38,8 +38,8 @@ public class HOT_TestDataFactory {
 		ServiceAppointment serviceAppointment = new ServiceAppointment();
 		serviceAppointment.ParentRecordId = workOrderLineItem.Id;
 		serviceAppointment.Status = 'Ingen';
-		serviceAppointment.EarliestStartTime = Datetime.now();
-		serviceAppointment.DueDate = serviceAppointment.EarliestStartTime.addHours(1);
+		serviceAppointment.EarliestStartTime = Datetime.now().addHours(1);
+		serviceAppointment.DueDate = serviceAppointment.EarliestStartTime.addHours(2);
 		return serviceAppointment;
 	}
 
