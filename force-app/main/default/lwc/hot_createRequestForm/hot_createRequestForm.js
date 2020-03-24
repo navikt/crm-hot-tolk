@@ -33,16 +33,16 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track startTime;
 	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
 	handleChange(event) {
-		this.startTime = event.detail.value;
+		if (this.startTime == null) {
+			this.startTime = event.detail.value;
+		}
 	}
 
 	handleSubmit(event) {
-		event.preventDefault(); // stop the form from submitting
+		event.preventDefault();
 
 		const fields = event.detail.fields;
 		console.log(JSON.stringify(fields));
-		fields.StartTime__c = this.template.querySelector('lightning-input.start-tid').value;
-		fields.EndTime__c = this.template.querySelector('lightning-input.slutt-tid').value;
 		//console.log(AccountId);
 		//fields.Account__c = this.AccountId;
 		if (this.sameLocation) {
@@ -50,10 +50,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
 			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 		}
+		console.log("hei");
 		console.log(JSON.stringify(fields));
 
 		this.template.querySelector('lightning-record-edit-form').submit(fields);
-		this.submitted = !this.submitted;
+		{
+			this.submitted = !this.submitted;
+		}
 	}
 
 	handleSuccess(event) {
