@@ -1,6 +1,6 @@
 @istest
 public class HOT_TestDataFactory {
-	
+		
 	public static HOT_Request__c createRequest(String subject, WorkType workType) {
 		HOT_Request__c request = new HOT_Request__c();
 		request.Subject__c = subject;
@@ -49,4 +49,40 @@ public class HOT_TestDataFactory {
 		workType.EstimatedDuration = 1;
 		return workType;
 	}
+
+	public static Account createAccount(boolean isPersonAccount) {
+		if(isPersonAccount){
+			String personAccountRecordTypeId = Schema.getGlobalDescribe().get('Account').getDescribe().getRecordTypeInfosByDeveloperName().get('PersonAccount').getRecordTypeId();
+			Account account = new Account(RecordTypeId = personAccountRecordTypeId, FirstName = 'Test', LastName = 'User', PersonEmail = 'HOT_testaccount@nav.hot.no');
+			
+			return account;
+		}
+		else{
+			return new Account(Name = 'Test AS');
+		}
+		
+	}
+	
+	public static Person__c createPerson(Account account) {
+		Person__c person = new Person__c(Account__c=account.Id);
+		return person;
+	}
+
+	public static User createUser(Profile ProfileID, Account account) {
+		User user = new User (
+			Username = 'HOT_testuser@nav.hot.no', 
+			LastName = 'user', 
+			Email = 'HOT_testuser@nav.hot.no', 
+			Alias = 'user', 
+			CommunityNickname = 'user', 
+			TimeZoneSidKey ='Europe/Paris', 
+			LocaleSidKey ='no_NO', 
+			EmailEncodingKey ='UTF-8', 
+			LanguageLocaleKey ='no',
+			ProfileId = profileID.id, 
+			ContactId=account.PersonContactId
+		);
+		return user;
+	}
+
 }

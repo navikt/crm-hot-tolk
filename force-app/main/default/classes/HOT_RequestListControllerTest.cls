@@ -2,18 +2,18 @@
 public class HOT_RequestListControllerTest{
 
 	@TestSetup static void testSetup() {
-		Profile profileID = [SELECT Id FROM Profile WHERE Name='Customer Community User' LIMIT 1];
-		String recordTypeId = Schema.getGlobalDescribe().get('Account').getDescribe().getRecordTypeInfosByName().get('Person Account').getRecordTypeId();
+		Profile communityProfile = [SELECT Id FROM Profile WHERE Name='Customer Community User' LIMIT 1];
 		
-		Account account01 = new Account(RecordTypeId = recordTypeId, FirstName = 'Test', LastName = 'User1', PersonEmail = 'testuser1Email@nav.hot.no');
-		Account account02 = new Account(RecordTypeId = recordTypeId, FirstName = 'Test', LastName = 'User2', PersonEmail = 'testuser2Email@nav.hot.no');
-		insert account01; insert account02;
-		List<Account> accounts = [SELECT Id, PersonContactId, FirstName, LastName, PersonEmail FROM Account];
-		Account account1 = accounts[0];
-		Account account2 = accounts[1];
+		Account account1 = HOT_TestDataFactory.createAccount(true);
+		account1.LastName='User1';
+		Account account2 = HOT_TestDataFactory.createAccount(true);
+		account2.LastName='User2';
+		insert account1; insert account2;
+		account1 = [SELECT Id, PersonContactId, FirstName, LastName, PersonEmail FROM Account WHERE LastName =: account1.LastName];
+		account2 = [SELECT Id, PersonContactId, FirstName, LastName, PersonEmail FROM Account WHERE LastName =: account2.LastName];
 		
-		Person__c person1 = new Person__c(Account__c=account1.Id);
-		Person__c person2 = new Person__c(Account__c=account2.Id);
+		Person__c person1 = HOT_TestDataFactory.createPerson(account1);
+		Person__c person2 = HOT_TestDataFactory.createPerson(account2);
 		insert person1; insert person2;
 
 		WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -25,49 +25,21 @@ public class HOT_RequestListControllerTest{
 		request2.Account__c=account2.Id;
 		insert request2;
 
-
-		User user1 = new User (
-			Username = 'testuser1.03162020@nav.hot.no', 
-			LastName = 'user1', 
-			Email = 'testuser1Email@nav.hot.no', 
-			Alias = 'user1', 
-			CommunityNickname = 'user1', 
-			TimeZoneSidKey ='Europe/Paris', 
-			LocaleSidKey ='no_NO', 
-			EmailEncodingKey ='UTF-8', 
-			ProfileId = profileID.id, 
-			LanguageLocaleKey ='no',
-			ContactId=account1.PersonContactId
-			//AccountId=account1.Id
-		);
-		
-		User user2 = new User (
-			Username = 'testuser2.03162020@nav.hot.no', 
-			LastName = 'user2', 
-			Email = 'testuser2Email@nav.hot.no', 
-			Alias = 'user2', 
-			CommunityNickname = 'user2', 
-			TimeZoneSidKey ='Europe/Paris', 
-			LocaleSidKey ='no_NO', 
-			EmailEncodingKey ='UTF-8', 
-			ProfileId = profileID.id, 
-			LanguageLocaleKey ='no',
-			ContactId=account2.PersonContactId
-			//AccountId=account2.Id
-		);
+		User user1 = HOT_TestDataFactory.createUser(communityProfile, account1);
+		user1.Alias = 'user1';
+		user1.Username = 'HOT_testuser1@nav.hot.no';
+		user1.CommunityNickname = 'user1';
+		User user2 = HOT_TestDataFactory.createUser(communityProfile, account2);
+		user2.Alias = 'user2';
+		user2.Username = 'HOT_testuser2@nav.hot.no';
+		user2.CommunityNickname = 'user2';
+		System.debug(account1);
+		System.debug(account2);
 		insert user1; 
 		insert user2;
-
-		/*
-		PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Community'];
-		PermissionSetAssignment perm1 = new PermissionSetAssignment(AssigneeId = user1.Id, PermissionSetId = ps.Id);
-		PermissionSetAssignment perm2 = new PermissionSetAssignment(AssigneeId = user2.Id, PermissionSetId = ps.Id);
-		insert perm1; insert perm2;
-		*/
-		
 	}
 
-	@isTest static void testMethod1(){
+	@isTest static void testgetRequestListForUser1(){
 		User user1 = [SELECT Id FROM User WHERE Alias=:'user1'];
 		
 		PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Community'];
@@ -76,12 +48,12 @@ public class HOT_RequestListControllerTest{
 		
 		System.runAs(user1){
 			List<HOT_Request__c> req1 = HOT_RequestListContoller.getRequestList();
-			System.assertEquals(req1.size(), 1);
-			System.assertEquals(req1[0].Subject__c, 'Subject 1');
+			System.assertEquals(req1.size(), 1, 'Was not able to select the request');
+			System.assertEquals(req1[0].Subject__c, 'Subject 1', 'Was not able to select the correct request');
 		}
 	}
 
-	@isTest static void testMethod2(){
+	@isTest static void testgetRequestListForUser2(){
 		User user2 = [SELECT Id FROM User WHERE Alias=:'user2'];
 		
 		PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Community'];
@@ -90,8 +62,8 @@ public class HOT_RequestListControllerTest{
 		
 		System.runAs(user2){
 			List<HOT_Request__c> req2 = HOT_RequestListContoller.getRequestList();
-			System.assertEquals(req2.size(), 1);
-			System.assertEquals(req2[0].Subject__c, 'Subject 2');
+			System.assertEquals(req2.size(), 1, 'Was not able to select the request');
+			System.assertEquals(req2[0].Subject__c, 'Subject 2', 'Was not able to select the correct request');
 		}
 	}
 }
