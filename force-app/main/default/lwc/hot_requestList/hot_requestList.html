@@ -1,14 +1,24 @@
 <template>
-	<div class="hovedbanner-tolk">
+	<div class="hovedbanner tolketjenesten">
 		<h1 class="typo-systemtittel">Mine tolketjenester </h1>
 	</div>
+
+	<lightning-breadcrumbs>
+		<lightning-breadcrumb label="Hjem" href="/tolketjenesten/s/">
+		</lightning-breadcrumb>
+		<lightning-breadcrumb label="Mine bestillinger" href="/tolketjenesten/s/mine-bestillinger">
+		</lightning-breadcrumb>
+	</lightning-breadcrumbs>
+
 	<div class="main-content liste">
-		<lightning-button title="Ny bestilling" class="slds-m-top-small" variant="brand" label="Ny bestilling"
-			onclick={goToNewRequest}>
-		</lightning-button>
-		<lightning-button title="Hjem" variant="base" label="Hjem" onclick={goHome}
-			class="slds-m-left_x-small back-button">
-		</lightning-button>
+		<div class="right-content">
+			<lightning-button title="Ny bestilling" class="slds-m-top-small right-button" variant="brand"
+				label="Ny bestilling" onclick={goToNewRequest}>
+			</lightning-button>
+		</div>
+		</br>
+		</br>
+		</br>
 		</br>
 		<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
 			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}

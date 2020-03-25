@@ -1,13 +1,3 @@
-.hovedbanner-tolk {
-	background-color: #DADE99;
-	border-color: rgb(181, 189, 51);
-	padding: 1rem 1.5rem 1rem 1.5rem;
-	border-bottom-width: 4px;
-	border-bottom-style: solid;
-	text-align: center;
-}
-
-.liste {
-	max-width: 1080px;
-	padding: 3.25rem 3.25rem 3.25rem 3.25rem;
+.dummyclass {
+	width: 100%;
 }

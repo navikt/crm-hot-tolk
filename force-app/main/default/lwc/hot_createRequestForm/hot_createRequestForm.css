@@ -1,29 +1,3 @@
-.hovedbanner-tolk {
-	background-color: #dade99;
-	border-color: rgb(181, 189, 51);
-	padding: 1rem 1.5rem 1rem 1.5rem;
-	border-bottom-width: 4px;
-	border-bottom-style: solid;
-	text-align: center;
-	min-height: 4rem;
-}
-
-.skjema {
-	font-size: 1.33rem;
-	max-width: 792px;
-	padding: 3.25rem 6.5rem 3.25rem 6.5rem;
-}
-
-.button-container {
-	text-align: center;
-	max-width: 792px;
-	padding: 3.25rem 6.5rem 3.25rem 6.5rem;
-}
-
-.tolk-skjema-input {
-	font-size: 1.33rem;
-}
-
-.nav-info-header {
-	font-size: 1.75rem;
+.dummyclass {
+	width: 100%;
 }

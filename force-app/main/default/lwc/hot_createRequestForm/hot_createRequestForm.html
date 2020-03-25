@@ -1,87 +1,103 @@
 <template>
 
-	<div class="hovedbanner-tolk">
+	<div class="hovedbanner tolketjenesten">
 		<h1 class="typo-systemtittel">Bestille tolketjenester</h1>
 	</div>
-	<div class="main-content skjema" if:false={submitted}>
-		<lightning-messages>
-		</lightning-messages>
-		<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
-			onerror={handleError} onsubmit={handleSubmit}>
+
+
+	<lightning-breadcrumbs>
+		<lightning-breadcrumb label="Hjem" href="/tolketjenesten/s/">
+		</lightning-breadcrumb>
+		<lightning-breadcrumb label="Ny bestilling" href="/tolketjenesten/s/ny-bestilling">
+		</lightning-breadcrumb>
+	</lightning-breadcrumbs>
+
+	<div class="main-content">
+		<div class="skjema" if:false={submitted}>
 			<lightning-messages>
 			</lightning-messages>
-			<lightning-input-field class="tolk-skjema-input subject" field-name="Subject__c"
-				value={fieldValues.Subject__c} title="Hva trenger du tolk til?" required>
-			</lightning-input-field>
-			</br>
-			<lightning-input-field class="tolk-skjema-input start-tid" field-name="StartTime__c" date-style="short"
-				onchange={handleChange} required>
-			</lightning-input-field>
-			<lightning-input-field class="tolk-skjema-input slutt-tid" field-name="EndTime__c" date-style="short"
-				value={startTime} onchange={handleChange} required>
-			</lightning-input-field>
-			</br>
-			<lightning-input-field class="tolk-skjema-input" field-name="MeetingStreet__c"
-				value={fieldValues.MeetingStreet__c} required>
-			</lightning-input-field>
-			<div class="slds-grid slds-gutters">
-				<div class="slds-col slds-size_1-of-2">
-					<lightning-input-field class="tolk-skjema-input" title="Postnummer"
-						field-name="MeetingPostalCode__c" value={fieldValues.MeetingPostalCode__c} required>
-					</lightning-input-field>
-				</div>
-				<div class="slds-col slds-size_1-of-2">
-					<lightning-input-field class="tolk-skjema-input" title="Poststed" field-name="MeetingPostalCity__c"
-						value={fieldValues.MeetingPostalCity__c} required>
-					</lightning-input-field>
-				</div>
-			</div>
-			</br>
-
-
-			<lightning-radio-group name="radioGroup" label="Er oppmøtested det samme som tolkested?" options={options}
-				value={value} type="radio" onchange={toggled}></lightning-radio-group>
-
-
-			<div if:false={sameLocation}>
-				<lightning-input-field class="tolk-skjema-input" title="Tolkeaddresse"
-					field-name="InterpretationStreet__c" value={fieldValues.InterpretationStreet__c}>
+			<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
+				onerror={handleError} onsubmit={handleSubmit}>
+				<lightning-messages>
+				</lightning-messages>
+				<lightning-input-field class="tolk-skjema-input" field-name="Subject__c" value={fieldValues.Subject__c}
+					title="Hva trenger du tolk til?" required>
+				</lightning-input-field>
+				</br>
+				<lightning-input-field class="tolk-skjema-input start-tid" field-name="StartTime__c" date-style="short"
+					onchange={handleChange} required>
+				</lightning-input-field>
+				<lightning-input-field class="tolk-skjema-input slutt-tid" field-name="EndTime__c" date-style="short"
+					value={startTime} onchange={handleChange} required>
+				</lightning-input-field>
+				</br>
+				<lightning-input-field class="tolk-skjema-input" field-name="MeetingStreet__c"
+					value={fieldValues.MeetingStreet__c} required>
 				</lightning-input-field>
 				<div class="slds-grid slds-gutters">
-					<div class="slds-col slds-size_1-of-2">
+					<div class="slds-col slds-size_2-of-5">
 						<lightning-input-field class="tolk-skjema-input" title="Postnummer"
-							field-name="InterpretationPostalCode__c" value={fieldValues.InterpretationPostalCode__c}>
+							field-name="MeetingPostalCode__c" value={fieldValues.MeetingPostalCode__c}>
 						</lightning-input-field>
 					</div>
-					<div class="slds-col slds-size_1-of-2">
+					<div class="slds-col slds-size_3-of-5">
 						<lightning-input-field class="tolk-skjema-input" title="Poststed"
-							field-name="InterpretationPostalCity__c" value={fieldValues.InterpretationPostalCity__c}>
+							field-name="MeetingPostalCity__c" value={fieldValues.MeetingPostalCity__c}>
 						</lightning-input-field>
 					</div>
 				</div>
-			</div>
-			</br>
-			<lightning-input-field class="tolk-skjema-input ikke-sensitiv-fritekst" title="Tilleggsopplysninger"
-				field-name="Description__c" value={fieldValues.Description__c}>
-			</lightning-input-field>
-
-			<div class="button-container">
-				<lightning-button title="Send inn bestilling" class="slds-m-left_x-small" type="submit" variant="brand"
-					label="SEND INN" onclick={handleSubmit}>
-				</lightning-button>
 				</br>
-				<lightning-button title="Avbryt" variant="base" label="Avbryt" onclick={goHome}
-					class="slds-m-left_x-small back-button">
-				</lightning-button>
-			</div>
-		</lightning-record-edit-form>
+
+
+				<lightning-radio-group class="nav-radio-button-group" name="radioGroup"
+					label="Er oppmøtested det samme som tolkested?" options={options} value={value} type="radio"
+					onchange={toggled}></lightning-radio-group>
+
+
+				<div if:false={sameLocation}>
+					<lightning-input-field class="tolk-skjema-input" title="Tolkeaddresse"
+						field-name="InterpretationStreet__c" value={fieldValues.InterpretationStreet__c}>
+					</lightning-input-field>
+					<div class="slds-grid slds-gutters">
+						<div class="slds-col slds-size_2-of-5">
+							<lightning-input-field class="tolk-skjema-input" title="Postnummer"
+								field-name="InterpretationPostalCode__c"
+								value={fieldValues.InterpretationPostalCode__c}>
+							</lightning-input-field>
+						</div>
+						<div class="slds-col slds-size_3-of-5">
+							<lightning-input-field class="tolk-skjema-input" title="Poststed"
+								field-name="InterpretationPostalCity__c"
+								value={fieldValues.InterpretationPostalCity__c}>
+							</lightning-input-field>
+						</div>
+					</div>
+				</div>
+				</br>
+				<lightning-input-field class="tolk-skjema-input ikke-sensitiv-fritekst" title="Tilleggsopplysninger"
+					field-name="Description__c" value={fieldValues.Description__c}>
+				</lightning-input-field>
+
+				<div class="button-container">
+					<lightning-button title="Send inn bestilling" class="slds-m-left_x-small" type="submit"
+						variant="brand" label="SEND INN" onclick={handleSubmit}>
+					</lightning-button>
+					</br>
+					<lightning-button title="Avbryt" variant="base" label="Avbryt" onclick={goHome}
+						class="slds-m-left_x-small back-button">
+					</lightning-button>
+				</div>
+			</lightning-record-edit-form>
+		</div>
 	</div>
 
-	<div class="main-content button-container" if:true={submitted}>
+	<div class="main-content" if:true={submitted}>
 		<lightning-icon icon-name="utility:success" alternative-text="Suksess" title="Suksess" variant="success"
 			size="large">
 		</lightning-icon>
-		<h2 class="nav-info-header" id="successMessage" tabindex="-1">Bestillingen er sendt</h2>
+		</br>
+		<h2 class="typo-undertittel" id="successMessage" tabindex="-1">Bestillingen er sendt</h2>
+		</br>
 		<lightning-button title="Gå til mine bestillinger" class="slds-m-top-small" variant="brand" label="OK"
 			onclick={goToMyRequests}>
 		</lightning-button>

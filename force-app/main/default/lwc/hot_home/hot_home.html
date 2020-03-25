@@ -1,40 +1,66 @@
 <template>
-	<div class="hovedbanner-tolk">
+	<div class="hovedbanner tolketjenesten">
 		<h1 class="typo-systemtittel">Tolketjenesten</h1>
 	</div>
 	<div class="portal-hilsen">
-		<h2 class="typo-systemtittel">Hei {name}</h2>
+		<h2 class="typo-undertittel">Hei {name}</h2>
 	</div>
 
-	<div class="home-content">
-		<div class="portal-linker">
-			<a class="tolk-portal-link" onclick={goToNewRequest}>
-				<div class="portal-link-illustration">
-					<img class="illustrasjon" src="/sfsites/c/resource/1584959871000/BestilleTolk"></img>
-				</div>
-				<div class="panel panelMedBilde__panelOnPanel">
-					<h2 class="portal-header">Bestille tolk</h2>
-					<p>Her kan du bestille tolk for døve, døvblinde og hørselshemmede.</p>
-				</div>
-			</a>
-			<a class="tolk-portal-link" onclick={goToMyRequests}>
-				<div class="portal-link-illustration">
-					<img class="illustrasjon" src="/sfsites/c/resource/1584959850000/MineBestillinger"></img>
-				</div>
-				<div class="panel panelMedBilde__panelOnPanel">
-					<h2 class="portal-header">Mine bestillinger</h2>
-					<p>Her finner du oversikt over alle dine bestillinger, og du kan se status på bestillingene.</p>
-				</div>
-			</a>
-			<a class="tolk-portal-link" onclick={goToKnowledgebank}>
-				<div class="portal-link-illustration">
-					<img class="illustrasjon" src="/sfsites/c/resource/1584957822000/Kunnskapsbanken"></img>
-				</div>
-				<div class="panel panelMedBilde__panelOnPanel">
-					<h2 class="portal-header">Kunnskapsbanken</h2>
-					<p>Her finner du fagstoff og artikler om tolking.</p>
-				</div>
-			</a>
+	<div class="informasjonstavle__body">
+		<div class="informasjonstavle__content">
+			<div class="informasjonstavle__bildepaneler">
+				<a class="panelMedBilde" onclick={goToNewRequest}>
+					<div class="tolketjenesten panelMedBilde__imageOnPanel">
+						<div class="panelMedBilde__svgContainer">
+							<img class="illustrasjon" src="/sfsites/c/resource/1584959871000/BestilleTolk"></img>
+						</div>
+					</div>
+					<div class="panel panelMedBilde__panelOnPanel">
+						<h2 class="typo-undertittel">Bestille tolk</h2>
+						<div>
+							<p class="typo-normal">
+								<span>
+									Her kan du bestille tolketjenesten for døve, døvblinde og hørselshemmede.</span>
+							</p>
+						</div>
+					</div>
+				</a>
+				<a class="panelMedBilde" onclick={goToMyRequests}>
+					<div class="tolketjenesten panelMedBilde__imageOnPanel">
+						<div class="panelMedBilde__svgContainer">
+							<img class="illustrasjon" src="/sfsites/c/resource/1584959850000/MineBestillinger"></img>
+						</div>
+					</div>
+					<div class="panel panelMedBilde__panelOnPanel">
+						<h2 class="typo-undertittel">Mine bestillinger</h2>
+						<div>
+							<p class="typo-normal">
+								<span>
+									Her finner du oversikt over alle dine bestillinger, og du kan
+									se status på bestillingene.
+								</span>
+							</p>
+						</div>
+					</div>
+				</a>
+				<a class="panelMedBilde" onclick={goToKnowledgebank}>
+					<div class="tolketjenesten panelMedBilde__imageOnPanel">
+						<div class="panelMedBilde__svgContainer">
+							<img class="illustrasjon" src="/sfsites/c/resource/1584957822000/Kunnskapsbanken"></img>
+						</div>
+					</div>
+					<div class="panel panelMedBilde__panelOnPanel">
+						<h2 class="typo-undertittel">Kunnskapsbanken</h2>
+						<div>
+							<p class="typo-normal">
+								<span>
+									Her finner du fagstoff og artikler om tolking.
+								</span>
+							</p>
+						</div>
+					</div>
+				</a>
+			</div>
 		</div>
 	</div>
 
