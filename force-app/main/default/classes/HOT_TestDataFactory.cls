@@ -64,7 +64,7 @@ public class HOT_TestDataFactory {
 	}
 	
 	public static Person__c createPerson(Account account) {
-		Person__c person = new Person__c(Account__c=account.Id);
+		Person__c person = new Person__c(CRM_Account__c=account.Id);
 		return person;
 	}
 

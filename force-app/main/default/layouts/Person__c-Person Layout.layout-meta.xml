@@ -8,7 +8,7 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Account__c</field>
+                <field>CRM_Account__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
