@@ -45,7 +45,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		this[NavigationMixin.Navigate]({
 			type: 'standard__webPage',
 			attributes: {
-				url: 'https://www.kunnskapsbanken.net/om-kommunikasjon-sprak-og-tolking/'
+				url: 'https://www.kunnskapsbanken.net/tolking/'
 			},
 		});
 	}
