@@ -75,6 +75,7 @@
         <profile>Admin</profile>
     </profileActionOverrides>
     <tabs>standard-Account</tabs>
+    <tabs>Person__c</tabs>
     <tabs>HOT_Request__c</tabs>
     <tabs>standard-WorkOrder</tabs>
     <tabs>standard-ServiceAppointment</tabs>

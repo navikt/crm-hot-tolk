@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>HOT_RequestListContoller</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.Account__c</field>
@@ -16,6 +20,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.Duration__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.EconomicalProvider__c</field>
         <readable>true</readable>
@@ -23,6 +32,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.EndTime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.ExternalRequestStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
