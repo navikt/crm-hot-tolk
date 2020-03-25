@@ -42,7 +42,7 @@ public class HOT_RequestListControllerTest{
 	@isTest static void testgetRequestListForUser1(){
 		User user1 = [SELECT Id FROM User WHERE Alias=:'user1'];
 		
-		PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Community'];
+		PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Bruker'];
 		PermissionSetAssignment perm1 = new PermissionSetAssignment(AssigneeId = user1.Id, PermissionSetId = ps.Id);
 		insert perm1;
 		
@@ -56,7 +56,7 @@ public class HOT_RequestListControllerTest{
 	@isTest static void testgetRequestListForUser2(){
 		User user2 = [SELECT Id FROM User WHERE Alias=:'user2'];
 		
-		PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Community'];
+		PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Bruker'];
 		PermissionSetAssignment perm2 = new PermissionSetAssignment(AssigneeId = user2.Id, PermissionSetId = ps.Id);
 		insert perm2;
 		
