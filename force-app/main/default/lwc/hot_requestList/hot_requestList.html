@@ -10,16 +10,12 @@
 		</lightning-breadcrumb>
 	</lightning-breadcrumbs>
 
-	<div class="main-content liste">
+	<div class="liste">
 		<div class="right-content">
 			<lightning-button title="Ny bestilling" class="slds-m-top-small right-button" variant="brand"
 				label="Ny bestilling" onclick={goToNewRequest}>
 			</lightning-button>
 		</div>
-		</br>
-		</br>
-		</br>
-		</br>
 		<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
 			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
 			onsort={onHandleSort} onrowaction={handleRowAction}>

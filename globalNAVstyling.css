@@ -153,14 +153,9 @@ span.slds-radio {
 	padding: 1rem 2rem 1rem 2rem;
 }
 
-@media (min-width: 800px) {
-	.slds-button_brand, .slds-button--brand {
+@media (max-width: 800px) {
+	lightning-button {
 		width: 100%;
-	}
-	.button-container {
-		text-align: center;
-		max-width: 792px;
-		padding: 1rem 2rem 1rem 2rem;
 	}
 }
 
@@ -382,14 +377,92 @@ lightning-input-field.ikke-sensitiv-fritekst>lightning-textarea>label:after {
 .liste {
 	max-width: 1080px;
 	padding: 3.25rem 3.25rem 3.25rem 3.25rem;
+	background-color: #fff !important;
+	font-family: "Source Sans Pro", Arial, sans-serif;
+	margin: 1rem auto 1rem auto;
+	border-radius: 0.5rem;
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
 }
 
-.right-content {
-	margin-bottom: 3rem;
+@media (min-width: 576px) {
+	.right-content {
+		margin-bottom: 1rem;
+		width: 100%;
+		display: flex;
+		align-items: flex-end;
+	}
+	.right-button>.slds-button_brand, .right-button>.slds-button--brand {
+		float: right;
+	}
 }
 
-.right-button {
-	float: right;
+@media (max-width: 576px) {
+	.right-content {
+		margin-bottom: 0;
+		width: 100%;
+	}
+	.slds-button_brand, .slds-button--brand {
+		width: 100%;
+	}
+	.liste {
+		padding: 1rem 1rem 1rem 1rem;
+		margin: 1rem auto 1rem auto;
+	}
+}
+
+@media (max-width: 576px) {
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr {
+		display: block;
+	}
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	tr {
+		margin: 0 0 1rem 0;
+	}
+	tr:nth-child(odd) {
+		background: #ccc;
+	}
+	td, th {
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50%;
+	}
+}
+
+@media (max-width: 576px) {
+	th:nth-of-type(1):before {
+		content: "Start tid";
+		font-weight: 600;
+	}
+	td:nth-of-type(1):before {
+		content: "Slutt tid";
+		font-weight: 600;
+	}
+	td:nth-of-type(2):before {
+		content: "Oppmøtested";
+		font-weight: 600;
+	}
+	td:nth-of-type(3):before {
+		content: "Tema";
+		font-weight: 600;
+	}
+	td:nth-of-type(4):before {
+		content: "Status";
+		font-weight: 600;
+	}
+	td:nth-of-type(5):before {
+		content: "";
+	}
 }
 
 /* Skjema */
@@ -415,12 +488,6 @@ div.skjema {
 	form {
 		padding: 0;
 	}
-}
-
-.button-container {
-	text-align: center;
-	max-width: 792px;
-	padding: 3.25rem 6.5rem 3.25rem 6.5rem;
 }
 
 .tolk-skjema-input {

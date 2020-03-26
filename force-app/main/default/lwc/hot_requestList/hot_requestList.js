@@ -181,7 +181,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
-			//Here we should get the entire record from salesforce, to get entire meeting address.
+			//Here we should get the entire record from salesforce, to get entire interpretation address.
 			let clone = this.requests[index];
 			//console.log(JSON.stringify(clone));
 			this[NavigationMixin.Navigate]({
@@ -216,6 +216,5 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		});
 	}
-
 
 }

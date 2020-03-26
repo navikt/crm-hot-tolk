@@ -1,9 +1,5 @@
 import { LightningElement, wire, track, api } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { NavigationMixin } from 'lightning/navigation';
-import { getRecord } from 'lightning/uiRecordApi';
-import USER_ID from '@salesforce/user/Id';
-import ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
@@ -38,21 +34,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 	}
 
-	validateForm(event) {
-
-		const allValid = this.template.querySelectorAll('lightning-input-field').reportValidity();
-
-
-		console.log(JSON.stringify(allValid));
-		if (allValid) {
-			alert('All form entries look valid. Ready to submit!');
-		} else {
-			alert('Please update the invalid form entries and try again.');
-		}
-	}
 
 	handleSubmit(event) {
-		//this.validateForm(event);
 		event.preventDefault();
 
 
