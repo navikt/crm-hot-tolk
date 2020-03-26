@@ -1,4 +1,4 @@
-public with sharing class HOT_RequestHandler extends MyTriggers {
+public without sharing class HOT_RequestHandler extends MyTriggers {
 	
 	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
 		List<HOT_Request__c> changedStatusRequests = new List<HOT_Request__c>();

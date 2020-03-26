@@ -1,4 +1,4 @@
-public with sharing class HOT_ServiceAppointmentStatusHandler extends MyTriggers {
+public without sharing class HOT_ServiceAppointmentStatusHandler extends MyTriggers {
 	
 	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
 		List<ServiceAppointment> changedStatusServiceAppointments = new List<ServiceAppointment>();

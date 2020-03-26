@@ -1,4 +1,4 @@
-public with sharing class HOT_WorkOrderLineItemStatusHandler extends MyTriggers {
+public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTriggers {
 	
 	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
 		List<WorkOrderLineItem> changedStatusWorkOrderLineItems = new List<WorkOrderLineItem>();
