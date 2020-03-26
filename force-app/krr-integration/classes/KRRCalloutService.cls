@@ -1,0 +1,50 @@
+public class KRRCalloutService {
+
+    public static List<Personer> doPersonOppslag(List<String> personIdentifikatorer) {
+        // Initialize request format
+        if (personIdentifikatorer.isEmpty()) return null;
+        PersonOppslagRequest requestBody = new PersonOppslagRequest();
+        requestBody.personidentifikatorer = personIdentifikatorer;
+
+        // Obtain access token from Maskinporten
+        String access_token = MaskinportenService.doMaskinportenJWTExchange('salesforce_krr').access_token;
+
+        // Initialize HttpRequest
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Kontaktregisteret_Oppslagstjenesten_REST');
+        req.setMethod('POST');
+        req.setHeader('Content-type', 'application/json;charset=UTF-8');
+        req.setHeader('Accept', '*/*');
+        req.setHeader('Authorization', 'Bearer ' + access_token);
+        req.setBody(JSON.serialize(requestBody));
+        HttpResponse res = new Http().send(req);
+        System.debug(res.getBody());
+        PersonOppslagResponse response = (PersonOppslagResponse) Json.deserialize(res.getBody(), PersonOppslagResponse.class);
+        return response.personer;
+    }
+
+    private class PersonOppslagRequest {
+        List<String> personidentifikatorer;
+    }
+
+    private class PersonOppslagResponse {
+        List<Personer> personer;
+    }
+
+    public class Personer {
+        public String personidentifikator;
+        String reservasjon;
+        String status;
+        String varslingsstatus;
+        public Kontaktinformasjon kontaktinformasjon;
+    }
+
+    public class Kontaktinformasjon {
+        public String epostadresse;
+        public Datetime epostadresse_oppdatert;
+        public Datetime epostadresse_sist_verifisert;
+        public String mobiltelefonnummer;
+        public Datetime mobiltelefonnummer_oppdatert;
+        public Datetime mobiltelefonnummer_sist_verifisert;
+    }
+}
