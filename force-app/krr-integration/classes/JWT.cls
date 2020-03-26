@@ -22,7 +22,7 @@ public class JWT {
         this.validFor = 10;
     }
 
-    public JWT(MaskinportenClients__mdt client) {
+    public JWT(Maskinportenclient__mdt client) {
         this('RS256');
         this.iss = client.Issuer__c;
         this.aud = client.Audience__c;

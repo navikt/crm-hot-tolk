@@ -2,13 +2,13 @@ public class MaskinportenService {
 
     public static MaskinportenResponse doMaskinportenJWTExchange(String clientDeveloperName) {
         // Find MaskinportenClient custom metadata record for the given client
-        List<MaskinportenClients__mdt> clients = [
+        List<Maskinportenclient__mdt> clients = [
                 SELECT Id, Endpoint__c, Audience__c, Issuer__c, KeyId__c, PrivateKey__c, Scopes__c
-                FROM MaskinportenClients__mdt
+                FROM Maskinportenclient__mdt
                 WHERE DeveloperName = :clientDeveloperName
         ];
         if (clients.isEmpty()) return null;
-        MaskinportenClients__mdt client = clients[0];
+        Maskinportenclient__mdt client = clients[0];
 
         // Initialize HttpRequest
         HttpRequest req = new HttpRequest();
