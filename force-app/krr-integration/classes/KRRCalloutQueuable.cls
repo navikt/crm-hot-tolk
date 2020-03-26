@@ -14,8 +14,8 @@ public with sharing class KRRCalloutQueuable implements Queueable, Database.Allo
 
 
         try {
-            Map<String, KontaktregisteretService.Personer> krrResponseByPersonalNumber = new Map<String, KontaktregisteretService.Personer>();
-            for (KontaktregisteretService.Personer person : KontaktregisteretService.doPersonOppslag(new List<String>(personIdByPersonalNumber.keySet()))) {
+            Map<String, KRRCalloutService.Personer> krrResponseByPersonalNumber = new Map<String, KRRCalloutService.Personer>();
+            for (KRRCalloutService.Personer person : KRRCalloutService.doPersonOppslag(new List<String>(personIdByPersonalNumber.keySet()))) {
                 krrResponseByPersonalNumber.put(person.personidentifikator, person);
             }
             List<Person__c> personsToUpdate = new List<Person__c>();

@@ -132,6 +132,26 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
+		<field>Person__c.INT_KRRIntegrationStatus__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Person__c.INT_LastUpdatedFromKRR__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Person__c.INT_Email__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Person__c.INT_MobilePhone__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
 		<field>Person__c.HOT_DailyLifeInterpreter__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
@@ -208,11 +228,6 @@
 	<fieldPermissions>
 		<editable>true</editable>
 		<field>Person__c.HOT_WritenInterpreting__c</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>true</editable>
-		<field>Person__c.INT_MunicipalityNumber__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
