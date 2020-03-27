@@ -11,6 +11,12 @@
             ],
             "c/hot_home": [
                 "hot_home/hot_home.js"
+            ],
+            "c/globalCommunityFooter": [
+                "globalCommunityFooter/globalCommunityFooter.js"
+            ],
+            "c/globalCommunityHeader": [
+                "globalCommunityHeader/globalCommunityHeader.js"
             ]
         }
     },
