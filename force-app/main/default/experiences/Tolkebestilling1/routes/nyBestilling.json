@@ -1,9 +1,0 @@
-{
-  "appPageId" : "8f77b51d-918d-481a-bb7c-5054997c949c",
-  "id" : "9b6aaf4c-a6d9-47ad-a20f-7fc9da55d53c",
-  "label" : "Ny Bestilling",
-  "pageAccess" : "UseParent",
-  "routeType" : "custom-ny-bestilling",
-  "type" : "route",
-  "urlPrefix" : "ny-bestilling"
-}

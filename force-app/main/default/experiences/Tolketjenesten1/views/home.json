@@ -9,11 +9,9 @@
     "type" : "region"
   }, {
     "components" : [ {
-      "componentAttributes" : {
-        "richTextValue" : "<div>     <p><span style='font-size: 48px;'>Let's get started!</span></p>     <ol>         <li><span style='font-size: 18px;'>Unfamiliar with Build Your Own? Click Take a Tour in the Help menu.</span></li>         <li><span style='font-size: 18px;'>Want to add more pages? Take a look at the Pages menu.</span></li>         <li><span style='font-size: 18px;'>Want more components on your page? Drag and drop components from the Components panel.</span></li>         <li><span style='font-size: 18px;'>Want your users to see your company logo? Head on over to the Branding panel.</span></li>         <li><span style='font-size: 18px;'>Refine the look of your community with a custom theme layout. See the Lightning Communities Developer Guide.</span></li>     </ol> </div>"
-      },
-      "componentName" : "forceCommunity:richTextInline",
-      "id" : "a0786ddb-70a5-41fc-8e1e-f16eac451b27",
+      "componentAttributes" : { },
+      "componentName" : "c:hot_home",
+      "id" : "4914f93c-85ff-447d-94f6-6469f4a60a3e",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
