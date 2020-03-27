@@ -1,8 +1,8 @@
-public with sharing class KRRCalloutQueuable implements Queueable, Database.AllowsCallouts {
+public with sharing class KrrCalloutQueuable implements Queueable, Database.AllowsCallouts {
 
     private List<HOT_Request__c> requests;
 
-    public KRRCalloutQueuable(List<HOT_Request__c> requests) {
+    public KrrCalloutQueuable(List<HOT_Request__c> requests) {
         this.requests = requests;
     }
 
@@ -15,7 +15,7 @@ public with sharing class KRRCalloutQueuable implements Queueable, Database.Allo
 
         try {
             Map<String, KRRCalloutService.Personer> krrResponseByPersonalNumber = new Map<String, KRRCalloutService.Personer>();
-            for (KRRCalloutService.Personer person : KRRCalloutService.doPersonOppslag(new List<String>(personIdByPersonalNumber.keySet()))) {
+            for (KRRCalloutService.Personer person : KrrCalloutService.doPersonOppslag(new List<String>(personIdByPersonalNumber.keySet()))) {
                 krrResponseByPersonalNumber.put(person.personidentifikator, person);
             }
             List<Person__c> personsToUpdate = new List<Person__c>();
@@ -25,7 +25,7 @@ public with sharing class KRRCalloutQueuable implements Queueable, Database.Allo
                     Person__c person = new Person__c();
                     person.Id = personIdByPersonalNumber.get(personalNumber);
                     person.INT_LastUpdatedFromKRR__c = System.now();
-                    person.INT_KRRIntegrationStatus__c = 'Completed';
+                    person.INT_KrrIntegrationStatus__c = 'Completed';
 
                     // Map contact information fields if they were returned by krr
                     if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon != null) {
@@ -41,13 +41,13 @@ public with sharing class KRRCalloutQueuable implements Queueable, Database.Allo
             }
             update personsToUpdate;
         } catch (Exception e) {
-            System.debug('Catching!');
+            System.debug('Exception: ' + e.getMessage());
             List<Person__c> personsToUpdate = new List<Person__c>();
             for (Id personId : personIdByPersonalNumber.values()) {
                 Person__c person = new Person__c();
                 person.Id = personId;
                 person.INT_LastUpdatedFromKRR__c = System.now();
-                person.INT_KRRIntegrationStatus__c = 'Failed';
+                person.INT_KrrIntegrationStatus__c = 'Failed';
                 personsToUpdate.add(person);
             }
             update personsToUpdate;

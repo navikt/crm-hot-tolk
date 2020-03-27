@@ -1,4 +1,4 @@
-public class KRRCalloutService {
+public class KrrCalloutService {
 
     public static List<Personer> doPersonOppslag(List<String> personIdentifikatorer) {
         // Initialize request format
@@ -7,11 +7,12 @@ public class KRRCalloutService {
         requestBody.personidentifikatorer = personIdentifikatorer;
 
         // Obtain access token from Maskinporten
-        String access_token = MaskinportenService.doMaskinportenJWTExchange('salesforce_krr').access_token;
+        String access_token = new MaskinportenService('salesforce_krr').doMaskinportenJWTExchange().access_token;
 
         // Initialize HttpRequest
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Kontaktregisteret_Oppslagstjenesten_REST');
+        String endpoint = Test.isRunningTest() ? 'https://difiKrrExampleEndpoint.no' : 'callout:Kontaktregisteret_Oppslagstjenesten_REST'; // Use sample endpoint for tests in order to be able to mock response
+        req.setEndpoint(endpoint);
         req.setMethod('POST');
         req.setHeader('Content-type', 'application/json;charset=UTF-8');
         req.setHeader('Accept', '*/*');

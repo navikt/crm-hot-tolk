@@ -15,7 +15,7 @@ public with sharing class HOT_RequestHandler extends MyTriggers {
             // Set related Person__c records "KRR Integration Status" field to 'Queued'
             List<Person__c> personsToUpdate = new List<Person__c>();
             for (Id personId : personIdsToUpdate) {
-                personsToUpdate.add(new Person__c(Id = personId, INT_KRRIntegrationStatus__c = 'Queued'));
+                personsToUpdate.add(new Person__c(Id = personId, INT_KrrIntegrationStatus__c = 'Queued'));
             }
             update personsToUpdate;
 

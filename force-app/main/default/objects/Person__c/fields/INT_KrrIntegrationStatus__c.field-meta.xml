@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>INT_KRRIntegrationStatus__c</fullName>
+    <fullName>INT_KrrIntegrationStatus__c</fullName>
     <externalId>false</externalId>
     <label>KRR Integration Status</label>
     <required>false</required>
