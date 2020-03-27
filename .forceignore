@@ -83,7 +83,6 @@
 # **/siteDotComSites/*
 # **/sites/*
 # **/pages/*
-# **/staticresources/*
 # **/translations/*
 # **/classes/ChangePasswordController*
 # **/classes/CommunitiesLandingController*
