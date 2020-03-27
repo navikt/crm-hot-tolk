@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Scopes__c</fullName>
+    <description>Whitespace-separated list of scopes</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Whitespace-separated list of scopes</inlineHelpText>
+    <label>Scopes</label>
+    <required>false</required>
+    <type>TextArea</type>
+</CustomField>
