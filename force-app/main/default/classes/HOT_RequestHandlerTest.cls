@@ -1,7 +1,5 @@
 @isTest
 private class HOT_RequestHandlerTest {
-
-
 	
 	@isTest
     private static void testStatusChangeOnReqestToAvlyst() {

@@ -1,4 +1,4 @@
-public with sharing class HOT_RequestHandler extends MyTriggers {
+public without sharing class HOT_RequestHandler extends MyTriggers {
 
     public override void onAfterInsert() {
         // Filter for relevant records to initiate callout to Kontakt og Reservasjonsregisteret (KRR)
