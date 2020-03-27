@@ -1,4 +1,20 @@
 /* PREPROD */
+.slds-p-horizontal_medium,
+.slds-p-horizontal--medium {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.forceCommunitySection .cb-section_column:only-child {
+  padding: 0 !important;
+}
+.slds-m-top_x-large,
+.slds-m-top--x-large {
+  margin-top: 0 !important;
+}
+.siteforceContentArea .comm-layout-column .ui-widget:not(:last-child),
+.siteforceContentArea .cb-section_column .ui-widget:not(:last-child) {
+  margin-bottom: 0 !important;
+}
 
 .slds-col--padded {
   padding-top: 0 !important;
@@ -7,10 +23,13 @@
   padding-bottom: 0 !important;
 }
 
+div.lightning-breadcrubs {
+  padding-left: 2rem !important;
+}
 .main-content {
   background-color: #fff !important;
   font-family: "Source Sans Pro", Arial, sans-serif;
-  margin: 1rem auto 1rem auto;
+  margin: 1rem;
   border-radius: 0.5rem;
   align-items: center;
   display: flex;
@@ -182,7 +201,7 @@ span.slds-radio {
   padding: 1rem 2rem 1rem 2rem;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 576px) {
   lightning-button {
     width: 100%;
   }
@@ -265,7 +284,7 @@ lightning-input-field.ikke-sensitiv-fritekst
   align-items: stretch;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 576px) {
   .informasjonstavle__bildepaneler {
     flex-direction: row;
     justify-content: space-between;
@@ -276,7 +295,7 @@ lightning-input-field.ikke-sensitiv-fritekst
   text-decoration: none;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 576px) {
   .panelMedBilde {
     flex: 1;
   }
@@ -291,7 +310,7 @@ lightning-input-field.ikke-sensitiv-fritekst
   margin: 1rem;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 576px) {
   .panelMedBilde__imageOnPanel {
     height: 135px;
     align-items: center;
@@ -319,7 +338,7 @@ lightning-input-field.ikke-sensitiv-fritekst
   float: left;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 576px) {
   .panelMedBilde__panelOnPanel {
     height: 100%;
     flex-direction: column;
@@ -332,7 +351,7 @@ lightning-input-field.ikke-sensitiv-fritekst
   justify-content: space-between;
   align-items: flex-start;
   border-radius: 0 0 4px 4px;
-  padding: 1rem 1.25rem 1.25rem;
+  padding: 1rem 1.66rem 1.25rem;
   color: black;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -351,7 +370,7 @@ lightning-input-field.ikke-sensitiv-fritekst
   width: 100%;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 576px) {
   .panelMedBilde__textOnPanel .typo-undertittel {
     padding-bottom: 0.5rem;
   }
@@ -370,7 +389,7 @@ lightning-input-field.ikke-sensitiv-fritekst
 .typo-undertittel {
   margin: 0;
   font-family: "Source Sans Pro", Arial, sans-serif;
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 1.5625rem;
   font-weight: 600;
 }
