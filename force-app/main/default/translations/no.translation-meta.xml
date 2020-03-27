@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Translations xmlns="http://soap.sforce.com/2006/04/metadata">
-	<customApplications>
-		<label>
-			<!-- HoT -->
-		</label>
-		<name>HOT</name>
-	</customApplications>
 	<customLabels>
 		<label>
 			<!-- Errors_CannotFindTriggerHandlerClass -->

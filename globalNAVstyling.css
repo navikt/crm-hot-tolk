@@ -391,8 +391,6 @@ lightning-input-field.ikke-sensitiv-fritekst>lightning-textarea>label:after {
 	.right-content {
 		margin-bottom: 1rem;
 		width: 100%;
-		display: flex;
-		align-items: flex-end;
 	}
 	.right-button>.slds-button_brand, .right-button>.slds-button--brand {
 		float: right;
