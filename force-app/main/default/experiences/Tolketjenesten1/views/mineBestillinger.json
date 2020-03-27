@@ -1,8 +1,8 @@
 {
-  "appPageId" : "8f77b51d-918d-481a-bb7c-5054997c949c",
+  "appPageId" : "25d3b486-5cf7-41c8-afa0-036d2204a4c5",
   "componentName" : "siteforce:dynamicLayout",
-  "id" : "79dbe247-0f88-4300-a379-0581b6283e6d",
-  "label" : "Mine Bestillinger",
+  "id" : "313e073b-1bb5-4fb0-a773-aceae3b14f5c",
+  "label" : "Mine bestillinger",
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
@@ -10,9 +10,9 @@
         "backgroundOverlay" : "rgba(0,0,0,0.5)",
         "contentAreaWidth" : 100,
         "sectionConfig" : {
-          "UUID" : "057059c8-0f4e-42ee-913b-d5c43471d555",
+          "UUID" : "2da5f019-7a2f-4d9b-bff6-610a380c0918",
           "columns" : [ {
-            "UUID" : "0552720f-1014-44f1-9955-67f37fe4529f",
+            "UUID" : "e0f850c2-9182-43fc-8e06-0f4392411089",
             "columnName" : "Column 1",
             "columnKey" : "1",
             "columnWidth" : "12",
@@ -22,17 +22,17 @@
         "sectionHeight" : 300
       },
       "componentName" : "forceCommunity:section",
-      "id" : "057059c8-0f4e-42ee-913b-d5c43471d555",
+      "id" : "2da5f019-7a2f-4d9b-bff6-610a380c0918",
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : { },
           "componentName" : "c:hot_requestList",
-          "id" : "2d1ec9d5-a990-4189-a535-7c65b3832821",
+          "id" : "294ea412-d57b-4e9b-9cc3-3949e01574bb",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         } ],
-        "id" : "0552720f-1014-44f1-9955-67f37fe4529f",
+        "id" : "e0f850c2-9182-43fc-8e06-0f4392411089",
         "regionLabel" : "Column 1",
         "regionName" : "1",
         "renditionMap" : { },
@@ -42,7 +42,7 @@
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "1350ad6f-bbe2-47f4-acd8-8b2864f7a027",
+    "id" : "aeb02367-1dbf-4c47-b782-b444856872cb",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -50,15 +50,15 @@
       "componentAttributes" : {
         "description" : "",
         "metaTags" : "",
-        "title" : "Mine Bestillinger"
+        "title" : "Mine bestillinger"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "b1f529d3-cc76-48bb-a70f-4a5b732af2ba",
+      "id" : "4474732e-5df7-49a4-b1b3-14c8c86c93ef",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "f0787679-490c-49f2-bc6d-38650245d803",
+    "id" : "7e78fa0e-c922-46e6-809b-978c2811bf08",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],

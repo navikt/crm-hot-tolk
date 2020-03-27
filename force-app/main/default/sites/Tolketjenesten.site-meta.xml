@@ -23,8 +23,8 @@
     <requireHttps>true</requireHttps>
     <requireInsecurePortalAccess>false</requireInsecurePortalAccess>
     <selfRegPage>CommunitiesSelfReg</selfRegPage>
-    <siteAdmin>test-xo9o5sk8xrpo@example.com</siteAdmin>
+    <siteAdmin>test-xu9olhvad6ry@example.com</siteAdmin>
     <siteType>ChatterNetwork</siteType>
-    <subdomain>data-momentum-3270-1707be8e5a3</subdomain>
+    <subdomain>velocity-nosoftware-4692-1711b808771</subdomain>
     <urlPathPrefix>tolketjenesten</urlPathPrefix>
 </CustomSite>

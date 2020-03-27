@@ -1,100 +1,119 @@
 {
-  "activeBrandingSetId" : "9b917879-ffe4-4b79-89af-0fbf7385b975",
-  "customCSS" : "",
-  "developerName" : "starter",
-  "id" : "6074442e-5c48-46f2-bad3-3fedf80936bc",
-  "label" : "Build Your Own",
-  "layouts" : {
-    "Inner" : "6c5b0529-3983-4f09-a880-9f76026b7f75",
-    "Login" : "b0ae31ef-a2fe-4ba2-8a1c-4b662721d500"
-  },
-  "type" : "theme",
-  "views" : [ {
-    "componentName" : "salesforceIdentity:loginBody2",
-    "id" : "b0ae31ef-a2fe-4ba2-8a1c-4b662721d500",
-    "label" : "Login",
-    "regions" : [ {
-      "id" : "d21facbf-4f70-44a3-9469-0468c6135f4d",
-      "regionName" : "header",
-      "type" : "region"
-    }, {
-      "id" : "235a799b-faf1-4997-a1fb-5f76a1da608f",
-      "regionName" : "content",
-      "type" : "region"
-    }, {
-      "id" : "d2387243-789c-4e00-9510-a53da5712f19",
-      "regionName" : "footer",
-      "type" : "region"
-    } ],
-    "type" : "view"
-  }, {
-    "componentName" : "siteforce:starterBody",
-    "id" : "6c5b0529-3983-4f09-a880-9f76026b7f75",
-    "label" : "Default",
-    "regions" : [ {
-      "components" : [ {
-        "componentAttributes" : {
-          "maxAutoCompleteResults" : 5,
-          "searchLabel" : "Search...",
-          "searchObjects" : [ {
-            "name" : "Account",
-            "isPublic" : true
-          } ]
-        },
-        "componentName" : "forceCommunity:globalSearchInput",
-        "id" : "d961b974-5975-4564-8224-c5b7b26baaeb",
-        "renderPriority" : "NEUTRAL",
-        "renditionMap" : { },
-        "type" : "component"
-      } ],
-      "id" : "d1508896-6261-4775-b280-8141f2cd80aa",
-      "regionName" : "search",
-      "type" : "region"
-    }, {
-      "components" : [ {
-        "componentAttributes" : {
-          "accountManagementLabel" : "Account Management",
-          "communityBuilderLabel" : "Experience Builder",
-          "communitySetupLabel" : "Salesforce Setup",
-          "contactSupportLabel" : "Contact Support",
-          "filterName" : "MyCases",
-          "homeLabel" : "Home",
-          "includeContactSupport" : true,
-          "includeMessages" : false,
-          "loginLabel" : "Login",
-          "logoutLabel" : "Logout",
-          "myAccountLabel" : "My Account",
-          "showAccountManagement" : false,
-          "showUserSettings" : true,
-          "userSettingsLabel" : "My Settings",
-          "viewProfileLabel" : "My Profile"
-        },
-        "componentName" : "selfService:userProfileMenu",
-        "id" : "808f0d66-7a50-4661-b24e-2289e5e2082b",
-        "renderPriority" : "NEUTRAL",
-        "renditionMap" : { },
-        "type" : "component"
-      } ],
-      "id" : "8a708be4-1dae-49e0-81f8-1471024e27df",
-      "regionName" : "profileMenu",
-      "type" : "region"
-    }, {
-      "components" : [ {
-        "componentAttributes" : {
-          "NavigationMenuEditorRefresh" : "",
-          "hideAppLauncher" : true,
-          "hideHomeText" : true
-        },
-        "componentName" : "forceCommunity:globalNavigation",
-        "id" : "106e5868-fa91-4ff8-b7ec-60aa20039834",
-        "renderPriority" : "NEUTRAL",
-        "renditionMap" : { },
-        "type" : "component"
-      } ],
-      "id" : "2f9789f0-041d-4640-98a5-753aa8d611ec",
-      "regionName" : "navBar",
-      "type" : "region"
-    } ],
-    "type" : "view"
-  } ]
+	"activeBrandingSetId": "9b917879-ffe4-4b79-89af-0fbf7385b975",
+	"customCSS": ".slds-col--padded {\n  padding-top: 0 !important;\n  padding-left: 0 !important;\n  padding-right: 0 !important;\n  padding-bottom: 0 !important;\n}\n\n.main-content {\n  background-color: #fff !important;\n  font-family: \"Source Sans Pro\", Arial, sans-serif;\n  margin: 1rem auto 1rem auto;\n  border-radius: 0.5rem;\n  align-items: center;\n  display: flex;\n  justify-content: center;\n  flex-direction: column;\n}\n\n.slds-form-element__label {\n  overflow-wrap: break-word;\n  word-wrap: break-word;\n  -webkit-hyphens: auto;\n  -ms-hyphens: auto;\n  hyphens: auto;\n  display: inline-block;\n  color: #696969;\n  font-size: 1rem !important;\n  padding-right: 0.5rem;\n  padding-top: 0.25rem;\n}\n\n.slds-textarea {\n  border-color: #78706a;\n  box-shadow: none;\n}\n\nlightning-timepicker > label.slds-form-element__label {\n  visibility: hidden;\n  position: relative;\n}\n\nlightning-timepicker > label.slds-form-element__label:before {\n  visibility: visible;\n  position: absolute;\n  top: 0;\n  left: 0;\n  content: \"Klokkeslett\";\n}\n\nlightning-timepicker > label.slds-form-element__label:after {\n  visibility: visible;\n  position: relative;\n  top: 0;\n  left: 0;\n  content: \" (tt:mm)\";\n}\n\nlightning-input-field.start-tid\n  > lightning-input\n  > lightning-datetimepicker\n  > div\n  > fieldset\n  > div\n  > div\n  > div\n  > lightning-datepicker\n  > div\n  > label:before {\n  content: \"Start \";\n}\n\nlightning-input-field.slutt-tid\n  > lightning-input\n  > lightning-datetimepicker\n  > div\n  > fieldset\n  > div\n  > div\n  > div\n  > lightning-datepicker\n  > div\n  > label:before {\n  content: \"Slutt \";\n}\n\nlightning-datepicker > div > label.slds-form-element__label:after {\n  content: \" (dd.mm.åååå)\";\n}\n\nlightning-datetimepicker > div > fieldset > legend.slds-form-element__legend {\n  display: none;\n}\n\n.slds-form-element__legend {\n  font-weight: normal;\n}\n\n.slds-input {\n  border-color: #78706a;\n  box-shadow: none;\n}\n\n.nav-radio-button-group .slds-form-element__control {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n}\n\n.nav-radio-button-group .slds-form-element__control .slds-radio {\n  font-size: 1rem;\n  width: 100%;\n  border: 1px solid #c6c2bf;\n  border-radius: 8px;\n  display: flex;\n  align-content: center;\n  justify-content: center;\n  height: 2.33rem;\n  margin-left: 1rem;\n  margin-right: 0;\n  padding-left: 2rem;\n  padding-right: 2rem;\n}\n\n.nav-radio-button-group .slds-form-element__control .slds-radio:first-child {\n  margin-left: 0;\n}\n\n.slds-radio [type=\"radio\"]:checked + .slds-radio_faux:after,\n.slds-radio [type=\"radio\"]:checked + .slds-radio--faux:after,\n.slds-radio [type=\"radio\"]:checked ~ .slds-radio_faux:after,\n.slds-radio [type=\"radio\"]:checked ~ .slds-radio--faux:after,\n.slds-radio [type=\"radio\"]:checked + .slds-radio__label .slds-radio_faux:after,\n.slds-radio\n  [type=\"radio\"]:checked\n  + .slds-radio__label\n  .slds-radio--faux:after {\n  width: 60%;\n  height: 60%;\n  content: \"\";\n  position: absolute;\n  top: 50%;\n  bottom: 50%;\n  transform: translate3d(-50%, -50%, 0);\n  border-radius: 50%;\n  background: #0067c5;\n}\n\n/*\n.slds-radio .slds-radio_faux, .slds-radio .slds-radio--faux {\n\twidth: 1.33rem;\n\theight: 1.33rem;\n}\n*/\n\nspan.slds-radio {\n  height: 1.16rem;\n  display: inline;\n}\n\n.slds-button_brand,\n.slds-button--brand {\n  padding-left: 3rem;\n  padding-right: 3rem;\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  text-align: center;\n  font-weight: 550;\n  vertical-align: middle;\n  justify-content: center;\n  border: 1px solid rgb(217, 219, 221);\n  transition: border 0.15s linear;\n  background-color: #0067c5;\n  border-color: #0067c5;\n  color: #ffffff;\n}\n\n.button-container {\n  text-align: center;\n  max-width: 792px;\n  padding: 1rem 2rem 1rem 2rem;\n}\n\n@media (max-width: 800px) {\n  lightning-button {\n    width: 100%;\n  }\n}\n\n.slds-button {\n  font-size: 1rem;\n}\n\n.back-button {\n  color: #0067c5;\n  text-decoration: underline;\n  text-decoration-color: #0067c5;\n}\n\n.slds-th__action-button {\n  display: none;\n}\n\n.slds-truncate {\n  font-size: 1rem;\n}\n\n.slds-button_icon-x-small,\n.slds-button--icon-x-small {\n  width: 1.35rem;\n  height: 1.35rem;\n  line-height: 0;\n  background-color: #fff;\n}\n\n.slds-input-has-icon_right .slds-input__icon {\n  top: 25%;\n}\n\n.typo-systemtittel {\n  margin: 0;\n  font-family: \"Source Sans Pro\", Arial, sans-serif;\n  font-size: 1.25rem;\n  line-height: 1.625rem;\n  font-weight: bold;\n}\n\nlightning-input-field.ikke-sensitiv-fritekst\n  > lightning-textarea\n  > label:after {\n  content: \" (ikke sensitiv informasjon)\";\n}\n\n.hovedbanner {\n  padding: 1rem 1.5rem 1rem 1.5rem;\n  border-bottom-width: 4px;\n  border-bottom-style: solid;\n  text-align: center;\n}\n\n.tolketjenesten {\n  background-color: #dade99;\n  border-bottom: 4px solid rgb(181, 189, 51);\n}\n\n/* Home */\n\n.informasjonstavle__body {\n  padding: 0 1rem;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n\n.informasjonstavle__content {\n  max-width: 800px;\n  width: 100%;\n  margin-top: 2rem;\n}\n\n.informasjonstavle__bildepaneler {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n}\n\n@media (min-width: 800px) {\n  .informasjonstavle__bildepaneler {\n    flex-direction: row;\n    justify-content: space-between;\n  }\n}\n\n.informasjonstavle a:link {\n  text-decoration: none;\n}\n\n@media (min-width: 800px) {\n  .panelMedBilde {\n    flex: 1;\n  }\n}\n\n.panelMedBilde {\n  color: black;\n  text-decoration: none;\n  border-radius: 4px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  margin: 1rem;\n}\n\n@media (min-width: 800px) {\n  .panelMedBilde__imageOnPanel {\n    height: 135px;\n    align-items: center;\n  }\n}\n\n.panelMedBilde__imageOnPanel {\n  border-radius: 4px 4px 0 0;\n  height: 100px;\n  width: 100%;\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  align-items: center;\n  justify-content: flex-end;\n}\n\n.panelMedBilde__svgContainer {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  align-items: center;\n  justify-content: flex-end;\n  height: 100%;\n  float: left;\n}\n\n@media (min-width: 800px) {\n  .panelMedBilde__panelOnPanel {\n    height: 100%;\n    flex-direction: column;\n  }\n}\n\n.panelMedBilde__panelOnPanel {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: flex-start;\n  border-radius: 0 0 4px 4px;\n  padding: 1rem 1.25rem 1.25rem;\n  color: black;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.panel {\n  background-color: #fff;\n  display: block;\n  padding: 1rem 1rem 1rem 1rem;\n  border-radius: 4px;\n}\n\n.panelMedBilde__textOnPanel {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n}\n\n@media (min-width: 800px) {\n  .panelMedBilde__textOnPanel .typo-undertittel {\n    padding-bottom: 0.5rem;\n  }\n}\n\n.panelMedBilde__textOnPanel .typo-undertittel {\n  padding-bottom: 0.5rem;\n}\n\n.panelMedBilde__textOnPanel .typo-undertittel,\n.panelMedBilde__textOnPanel .typo-normal {\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.typo-undertittel {\n  margin: 0;\n  font-family: \"Source Sans Pro\", Arial, sans-serif;\n  font-size: 1.25rem;\n  line-height: 1.5625rem;\n  font-weight: 600;\n}\n\n.panelMedBilde__textOnPanel .typo-undertittel,\n.panelMedBilde__textOnPanel .typo-normal {\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.panelMedBilde__textOnPanel .typo-normal {\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.typo-normal {\n  margin: 0;\n  font-family: \"Source Sans Pro\", Arial, sans-serif;\n  font-size: 1rem;\n  line-height: 1.375rem;\n  font-weight: 400;\n}\n\n/*home vegard */\n\n.portal-hilsen {\n  margin-top: 2rem;\n  font-size: 1.33rem;\n  font-weight: bold;\n  text-align: center;\n}\n\n.illustrasjon {\n  max-height: 90%;\n}\n\n/* Liste */\n\n.liste {\n  max-width: 1080px;\n  padding: 3.25rem 3.25rem 3.25rem 3.25rem;\n  background-color: #fff !important;\n  font-family: \"Source Sans Pro\", Arial, sans-serif;\n  margin: 1rem auto 1rem auto;\n  border-radius: 0.5rem;\n  align-items: center;\n  display: flex;\n  justify-content: center;\n  flex-direction: column;\n}\n\n@media (min-width: 576px) {\n  .right-content {\n    margin-bottom: 1rem;\n    width: 100%;\n  }\n  .right-button > .slds-button_brand,\n  .right-button > .slds-button--brand {\n    float: right;\n  }\n}\n\n@media (max-width: 576px) {\n  .right-content {\n    margin-bottom: 0;\n    width: 100%;\n  }\n  .slds-button_brand,\n  .slds-button--brand {\n    width: 100%;\n  }\n  .liste {\n    padding: 1rem 1rem 1rem 1rem;\n    margin: 1rem auto 1rem auto;\n  }\n}\n\n@media (max-width: 576px) {\n  /* Force table to not be like tables anymore */\n  table,\n  thead,\n  tbody,\n  th,\n  td,\n  tr {\n    display: block;\n  }\n  /* Hide table headers (but not display: none;, for accessibility) */\n  thead tr {\n    position: absolute;\n    top: -9999px;\n    left: -9999px;\n  }\n  tr {\n    margin: 0 0 1rem 0;\n    border-radius: 4px;\n  }\n  tr:nth-child(odd) {\n    background: #e9e7e7;\n  }\n\n  td,\n  th {\n    /* Behave  like a \"row\" */\n    border: none;\n    position: relative;\n    padding-left: 50%;\n    border-top: 0 transparent;\n    border-bottom: 1px solid rgb(212, 212, 212);\n  }\n\n  td:last-child {\n    border-bottom: 0 transparent;\n  }\n  /*\n  .slds-table_bordered tbody td,\n  .slds-table_bordered tbody th,\n  .slds-table--bordered tbody td,\n  .slds-table--bordered tbody th {\n    border-top: 0 transparent !important;\n    border-bottom: 0 transparent !important;\n  }\n\n  .slds-table_bordered,\n  .slds-table--bordered {\n    border-top: 0 transparent !important;\n    border-bottom: 0 transparent !important;\n  }\n  */\n}\n@media (max-width: 576px) {\n  th:nth-of-type(1):before {\n    content: \"Start tid\";\n    font-weight: 600;\n  }\n  td:nth-of-type(1):before {\n    content: \"Slutt tid\";\n    font-weight: 600;\n  }\n  td:nth-of-type(2):before {\n    content: \"Oppmøtested\";\n    font-weight: 600;\n  }\n  td:nth-of-type(3):before {\n    content: \"Tema\";\n    font-weight: 600;\n  }\n  td:nth-of-type(4):before {\n    content: \"Status\";\n    font-weight: 600;\n  }\n  td:nth-of-type(5):before {\n    content: \"\";\n  }\n}\n\n/* Skjema */\n\n.steg {\n  padding: 2rem 0 1rem;\n}\n\nform {\n  margin: 0;\n  padding: 4rem 2rem 1rem 2rem;\n}\n\ndiv.skjema {\n  padding: 0;\n  background-color: #fff;\n}\n\n@media (max-width: 576px) {\n  div.skjema {\n    padding: 2rem;\n  }\n  form {\n    padding: 0;\n  }\n}\n\n.tolk-skjema-input {\n  font-size: 1.33rem;\n}\n\n.nav-info-header {\n  font-size: 1.75rem;\n}\n\ndiv {\n  display: block;\n}\n\nhtml {\n  background-color: #efefef;\n}",
+	"developerName": "starter",
+	"id": "6074442e-5c48-46f2-bad3-3fedf80936bc",
+	"label": "Build Your Own",
+	"layouts": {
+		"Inner": "6c5b0529-3983-4f09-a880-9f76026b7f75",
+		"Login": "b0ae31ef-a2fe-4ba2-8a1c-4b662721d500"
+	},
+	"type": "theme",
+	"views": [
+		{
+			"componentName": "salesforceIdentity:loginBody2",
+			"id": "b0ae31ef-a2fe-4ba2-8a1c-4b662721d500",
+			"label": "Login",
+			"regions": [
+				{
+					"id": "d21facbf-4f70-44a3-9469-0468c6135f4d",
+					"regionName": "header",
+					"type": "region"
+				},
+				{
+					"id": "235a799b-faf1-4997-a1fb-5f76a1da608f",
+					"regionName": "content",
+					"type": "region"
+				},
+				{
+					"id": "d2387243-789c-4e00-9510-a53da5712f19",
+					"regionName": "footer",
+					"type": "region"
+				}
+			],
+			"type": "view"
+		},
+		{
+			"componentName": "siteforce:starterBody",
+			"id": "6c5b0529-3983-4f09-a880-9f76026b7f75",
+			"label": "Default",
+			"regions": [
+				{
+					"components": [
+						{
+							"componentAttributes": {
+								"maxAutoCompleteResults": 5,
+								"searchLabel": "Search...",
+								"searchObjects": [
+									{
+										"name": "Account",
+										"isPublic": true
+									}
+								]
+							},
+							"componentName": "forceCommunity:globalSearchInput",
+							"id": "d961b974-5975-4564-8224-c5b7b26baaeb",
+							"renderPriority": "NEUTRAL",
+							"renditionMap": {},
+							"type": "component"
+						}
+					],
+					"id": "d1508896-6261-4775-b280-8141f2cd80aa",
+					"regionName": "search",
+					"type": "region"
+				},
+				{
+					"components": [
+						{
+							"componentAttributes": {
+								"accountManagementLabel": "Account Management",
+								"communityBuilderLabel": "Experience Builder",
+								"communitySetupLabel": "Salesforce Setup",
+								"contactSupportLabel": "Contact Support",
+								"filterName": "MyCases",
+								"homeLabel": "Home",
+								"includeContactSupport": true,
+								"includeMessages": false,
+								"loginLabel": "Login",
+								"logoutLabel": "Logout",
+								"myAccountLabel": "My Account",
+								"showAccountManagement": false,
+								"showUserSettings": true,
+								"userSettingsLabel": "My Settings",
+								"viewProfileLabel": "My Profile"
+							},
+							"componentName": "selfService:userProfileMenu",
+							"id": "808f0d66-7a50-4661-b24e-2289e5e2082b",
+							"renderPriority": "NEUTRAL",
+							"renditionMap": {},
+							"type": "component"
+						}
+					],
+					"id": "8a708be4-1dae-49e0-81f8-1471024e27df",
+					"regionName": "profileMenu",
+					"type": "region"
+				},
+				{
+					"components": [
+						{
+							"componentAttributes": {
+								"NavigationMenuEditorRefresh": "",
+								"hideAppLauncher": true,
+								"hideHomeText": true
+							},
+							"componentName": "forceCommunity:globalNavigation",
+							"id": "106e5868-fa91-4ff8-b7ec-60aa20039834",
+							"renderPriority": "NEUTRAL",
+							"renditionMap": {},
+							"type": "component"
+						}
+					],
+					"id": "2f9789f0-041d-4640-98a5-753aa8d611ec",
+					"regionName": "navBar",
+					"type": "region"
+				}
+			],
+			"type": "view"
+		}
+	]
 }

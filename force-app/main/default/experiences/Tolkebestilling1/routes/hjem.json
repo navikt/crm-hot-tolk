@@ -1,9 +1,0 @@
-{
-  "appPageId" : "8f77b51d-918d-481a-bb7c-5054997c949c",
-  "id" : "44a6cc0e-ea42-4358-82ac-dc205c2021f7",
-  "label" : "Hjem",
-  "pageAccess" : "UseParent",
-  "routeType" : "custom-hjem",
-  "type" : "route",
-  "urlPrefix" : "hjem"
-}

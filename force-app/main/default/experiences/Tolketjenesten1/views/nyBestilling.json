@@ -1,18 +1,18 @@
 {
-  "appPageId" : "8f77b51d-918d-481a-bb7c-5054997c949c",
+  "appPageId" : "25d3b486-5cf7-41c8-afa0-036d2204a4c5",
   "componentName" : "siteforce:dynamicLayout",
-  "id" : "313b1cae-11b2-42ce-8df9-db3f58909759",
-  "label" : "Ny Bestilling",
+  "id" : "fc845936-ccd4-46e6-8a4f-389f08f5271a",
+  "label" : "Ny bestilling",
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
-        "background" : "background: rgba(255,255,255,0)",
+        "background" : "background: rgba(0,0,0,0)",
         "backgroundOverlay" : "rgba(0,0,0,0.5)",
         "contentAreaWidth" : 100,
         "sectionConfig" : {
-          "UUID" : "8b6e950d-1221-4a4c-a239-5386c0a70369",
+          "UUID" : "fc69a245-dee5-4de0-900e-d9218307dff0",
           "columns" : [ {
-            "UUID" : "a190543c-8a49-489d-afb8-4d4686420fe7",
+            "UUID" : "a6467229-eddf-4b5f-b158-806a3c76bb89",
             "columnName" : "Column 1",
             "columnKey" : "1",
             "columnWidth" : "12",
@@ -22,17 +22,17 @@
         "sectionHeight" : 300
       },
       "componentName" : "forceCommunity:section",
-      "id" : "8b6e950d-1221-4a4c-a239-5386c0a70369",
+      "id" : "fc69a245-dee5-4de0-900e-d9218307dff0",
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : { },
           "componentName" : "c:hot_createRequestForm",
-          "id" : "c6db12af-7e0e-4ae5-8dcf-1744ce686cc5",
+          "id" : "9b89f946-5611-44ad-8741-0383ae3df28b",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         } ],
-        "id" : "a190543c-8a49-489d-afb8-4d4686420fe7",
+        "id" : "a6467229-eddf-4b5f-b158-806a3c76bb89",
         "regionLabel" : "Column 1",
         "regionName" : "1",
         "renditionMap" : { },
@@ -42,7 +42,7 @@
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "e755102d-4d77-4a62-aad0-ce96647820d4",
+    "id" : "045fbc54-493c-47ff-ba95-61a60f065b32",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -50,15 +50,15 @@
       "componentAttributes" : {
         "description" : "",
         "metaTags" : "",
-        "title" : "Ny Bestilling"
+        "title" : "Ny bestilling"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "c9e9f930-e65a-44f0-a7e6-cb629c8629b3",
+      "id" : "82df4292-1a35-4e06-ac9a-87fbc1fbfa72",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "853e2870-c84b-4e01-aa8f-42aae05d080c",
+    "id" : "d072148a-a337-4206-8545-daead2c9a6c5",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],
