@@ -12,6 +12,7 @@ call move force-app\main\default\classes\ChangePasswordController* temp
 call move force-app\main\default\classes\CommunitiesLandingController* temp
 call move force-app\main\default\classes\MyProfilePageController* temp
 call move force-app\main\default\sharingSets temp
+call move force-app\main\default\roles temp
 
 call sfdx force:package:version:create -f config/project-scratch-def.json -k navcrm -p crm-hot
 :: for ($i=1; $i -le 100; $i++) {sfdx force:package:version:create:report -i XXX}
@@ -30,6 +31,7 @@ call move temp\ChangePasswordController* force-app\main\default\classes
 call move temp\CommunitiesLandingController* force-app\main\default\classes
 call move temp\MyProfilePageController* force-app\main\default\classes
 call move temp\sharingSets force-app\main\default\sharingSets
+call move temp\roles force-app\main\default\roles
 
 :: Innstaller pakken i PREPROD
 :: sfdx force:package:install -u carl.huseby.fosli@nav.no.preprod -p XXX -k navcrm --wait 10 --publishwait 10
