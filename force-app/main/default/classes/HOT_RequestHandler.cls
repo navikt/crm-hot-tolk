@@ -2,10 +2,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     public override void onAfterInsert() {
         // Filter for relevant records to initiate callout to Kontakt og Reservasjonsregisteret (KRR)
-        Set<Id> personIdsToUpdate = new Set<Id>();
-        List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
-        for (HOT_Request__c request : (List<HOT_Request__c>) records) {
-            if (request.PersonalNumber__c != null && request.Person__c != null) {
+		Set<Id> personIdsToUpdate = new Set<Id>();
+		List<HOT_Request__c> requests = [SELECT Id, Person__c, Person__r.CRM_Account__c, Person__r.CRM_Account__r.INT_PersonIdent__c FROM HOT_Request__c WHERE Id IN:records];
+		List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
+        for (HOT_Request__c request  : requests) {
+            if (request.Person__c != null && request.Person__r.CRM_Account__c != null && request.Person__r.CRM_Account__r.INT_PersonIdent__c != null) {
                 personIdsToUpdate.add(request.Person__c);
                 requestsToGetContactInformationFor.add(request);
             }

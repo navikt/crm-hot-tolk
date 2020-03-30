@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Sikkerhetstiltak</label>
+    <name>INT_SecurityMeasures__c</name>
+    <picklistValues>
+        <masterLabel>Fysisk utestengelse</masterLabel>
+        <translation><!-- Fysisk utestengelse --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Fysisk/telefonisk utestengelse</masterLabel>
+        <translation><!-- Fysisk/telefonisk utestengelse --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Telefonisk utestengelse</masterLabel>
+        <translation><!-- Telefonisk utestengelse --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>To ansatte i samtale</masterLabel>
+        <translation><!-- To ansatte i samtale --></translation>
+    </picklistValues>
+</CustomFieldTranslation>
