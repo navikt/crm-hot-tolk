@@ -459,6 +459,14 @@ label.mobile-toggler, button.mobile-toggler {
 	}
 }
 
+.hamburger-meny {
+	height: 0.5rem;
+	width: auto;
+	margin-top: 0.125rem;
+	margin-bottom: 0.25rem;
+	margin-right: 0.25rem;
+}
+
 ul {
 	display: block;
 	list-style-type: disc;
