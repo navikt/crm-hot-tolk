@@ -7,11 +7,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Contact.Email</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Contact.MobilePhone</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -559,10 +554,6 @@
     </recordTypeVisibilities>
     <tabSettings>
         <tab>standard-Account</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>standard-Contact</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
