@@ -20,4 +20,13 @@ export default class GlobalHeader extends LightningElement {
 	logo = LOGO;
 	idportenIkon = IDPORTEN_IKON;
 	searchButton = SEARCH_BUTTON;
+
+	toggleMobileMenu() {
+		var x = this.template.querySelector(".accessible-megamenu");
+		if (x.classList.contains('m-open')) {
+			x.classList.remove('m-open');
+		} else {
+			x.classList.add('m-open');
+		}
+	}
 }

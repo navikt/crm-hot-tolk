@@ -1,169 +1,143 @@
 /* PREPROD */
-.slds-p-horizontal_medium,
-.slds-p-horizontal--medium {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+
+.slds-p-horizontal_medium, .slds-p-horizontal--medium {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
 }
+
 .forceCommunitySection .cb-section_column:only-child {
-  padding: 0 !important;
+	padding: 0 !important;
 }
-.slds-m-top_x-large,
-.slds-m-top--x-large {
-  margin-top: 0 !important;
+
+.slds-m-top_x-large, .slds-m-top--x-large {
+	margin-top: 0 !important;
 }
-.siteforceContentArea .comm-layout-column .ui-widget:not(:last-child),
-.siteforceContentArea .cb-section_column .ui-widget:not(:last-child) {
-  margin-bottom: 0 !important;
+
+.siteforceContentArea .comm-layout-column .ui-widget:not(:last-child), .siteforceContentArea .cb-section_column .ui-widget:not(:last-child) {
+	margin-bottom: 0 !important;
 }
 
 .slds-col--padded {
-  padding-top: 0 !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  padding-bottom: 0 !important;
+	padding-top: 0 !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	padding-bottom: 0 !important;
 }
 
 div.lightning-breadcrubs {
-  padding-left: 2rem !important;
+	padding-left: 2rem !important;
 }
+
 .main-content {
-  background-color: #fff !important;
-  font-family: "Source Sans Pro", Arial, sans-serif;
-  margin: 1rem;
-  border-radius: 0.5rem;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
+	background-color: #fff !important;
+	font-family: "Source Sans Pro", Arial, sans-serif;
+	margin: 1rem;
+	border-radius: 0.5rem;
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
 }
 
 .slds-form-element__label {
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  -webkit-hyphens: auto;
-  -ms-hyphens: auto;
-  hyphens: auto;
-  display: inline-block;
-  color: #696969;
-  font-size: 1rem !important;
-  padding-right: 0.5rem;
-  padding-top: 0.25rem;
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	-webkit-hyphens: auto;
+	-ms-hyphens: auto;
+	hyphens: auto;
+	display: inline-block;
+	color: #696969;
+	font-size: 1rem !important;
+	padding-right: 0.5rem;
+	padding-top: 0.25rem;
 }
 
 .slds-textarea {
-  border-color: #78706a;
-  box-shadow: none;
+	border-color: #78706a;
+	box-shadow: none;
 }
 
-lightning-timepicker > label.slds-form-element__label {
-  visibility: hidden;
-  position: relative;
+lightning-timepicker>label.slds-form-element__label {
+	visibility: hidden;
+	position: relative;
 }
 
-lightning-timepicker > label.slds-form-element__label:before {
-  visibility: visible;
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: "Klokkeslett";
+lightning-timepicker>label.slds-form-element__label:before {
+	visibility: visible;
+	position: absolute;
+	top: 0;
+	left: 0;
+	content: "Klokkeslett";
 }
 
-lightning-timepicker > label.slds-form-element__label:after {
-  visibility: visible;
-  position: relative;
-  top: 0;
-  left: 0;
-  content: " (tt:mm)";
+lightning-timepicker>label.slds-form-element__label:after {
+	visibility: visible;
+	position: relative;
+	top: 0;
+	left: 0;
+	content: " (tt:mm)";
 }
 
-lightning-input-field.start-tid
-  > lightning-input
-  > lightning-datetimepicker
-  > div
-  > fieldset
-  > div
-  > div
-  > div
-  > lightning-datepicker
-  > div
-  > label:before {
-  content: "Start ";
+lightning-input-field.start-tid>lightning-input>lightning-datetimepicker>div>fieldset>div>div>div>lightning-datepicker>div>label:before {
+	content: "Start ";
 }
 
-lightning-input-field.slutt-tid
-  > lightning-input
-  > lightning-datetimepicker
-  > div
-  > fieldset
-  > div
-  > div
-  > div
-  > lightning-datepicker
-  > div
-  > label:before {
-  content: "Slutt ";
+lightning-input-field.slutt-tid>lightning-input>lightning-datetimepicker>div>fieldset>div>div>div>lightning-datepicker>div>label:before {
+	content: "Slutt ";
 }
 
-lightning-datepicker > div > label.slds-form-element__label:after {
-  content: " (dd.mm.åååå)";
+lightning-datepicker>div>label.slds-form-element__label:after {
+	content: " (dd.mm.åååå)";
 }
 
-lightning-datetimepicker > div > fieldset > legend.slds-form-element__legend {
-  display: none;
+lightning-datetimepicker>div>fieldset>legend.slds-form-element__legend {
+	display: none;
 }
 
 .slds-form-element__legend {
-  font-weight: normal;
+	font-weight: normal;
 }
 
 .slds-input {
-  border-color: #78706a;
-  box-shadow: none;
+	border-color: #78706a;
+	box-shadow: none;
 }
 
 .nav-radio-button-group .slds-form-element__control {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 }
 
 .nav-radio-button-group .slds-form-element__control .slds-radio {
-  font-size: 1rem;
-  width: 100%;
-  border: 1px solid #c6c2bf;
-  border-radius: 8px;
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  height: 2.33rem;
-  margin-left: 1rem;
-  margin-right: 0;
-  padding-left: 2rem;
-  padding-right: 2rem;
+	font-size: 1rem;
+	width: 100%;
+	border: 1px solid #c6c2bf;
+	border-radius: 8px;
+	display: flex;
+	align-content: center;
+	justify-content: center;
+	height: 2.33rem;
+	margin-left: 1rem;
+	margin-right: 0;
+	padding-left: 2rem;
+	padding-right: 2rem;
 }
 
 .nav-radio-button-group .slds-form-element__control .slds-radio:first-child {
-  margin-left: 0;
+	margin-left: 0;
 }
 
-.slds-radio [type="radio"]:checked + .slds-radio_faux:after,
-.slds-radio [type="radio"]:checked + .slds-radio--faux:after,
-.slds-radio [type="radio"]:checked ~ .slds-radio_faux:after,
-.slds-radio [type="radio"]:checked ~ .slds-radio--faux:after,
-.slds-radio [type="radio"]:checked + .slds-radio__label .slds-radio_faux:after,
-.slds-radio
-  [type="radio"]:checked
-  + .slds-radio__label
-  .slds-radio--faux:after {
-  width: 60%;
-  height: 60%;
-  content: "";
-  position: absolute;
-  top: 50%;
-  bottom: 50%;
-  transform: translate3d(-50%, -50%, 0);
-  border-radius: 50%;
-  background: #0067c5;
+.slds-radio [type="radio"]:checked+.slds-radio_faux:after, .slds-radio [type="radio"]:checked+.slds-radio--faux:after, .slds-radio [type="radio"]:checked~.slds-radio_faux:after, .slds-radio [type="radio"]:checked~.slds-radio--faux:after, .slds-radio [type="radio"]:checked+.slds-radio__label .slds-radio_faux:after, .slds-radio [type="radio"]:checked+.slds-radio__label .slds-radio--faux:after {
+	width: 60%;
+	height: 60%;
+	content: "";
+	position: absolute;
+	top: 50%;
+	bottom: 50%;
+	transform: translate3d(-50%, -50%, 0);
+	border-radius: 50%;
+	background: #0067c5;
 }
 
 /*
@@ -174,337 +148,321 @@ lightning-datetimepicker > div > fieldset > legend.slds-form-element__legend {
 */
 
 span.slds-radio {
-  height: 1.16rem;
-  display: inline;
+	height: 1.16rem;
+	display: inline;
 }
 
-.slds-button_brand,
-.slds-button--brand {
-  padding-left: 3rem;
-  padding-right: 3rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  text-align: center;
-  font-weight: 550;
-  vertical-align: middle;
-  justify-content: center;
-  border: 1px solid rgb(217, 219, 221);
-  transition: border 0.15s linear;
-  background-color: #0067c5;
-  border-color: #0067c5;
-  color: #ffffff;
+.slds-button_brand, .slds-button--brand {
+	padding-left: 3rem;
+	padding-right: 3rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	text-align: center;
+	font-weight: 550;
+	vertical-align: middle;
+	justify-content: center;
+	border: 1px solid rgb(217, 219, 221);
+	transition: border 0.15s linear;
+	background-color: #0067c5;
+	border-color: #0067c5;
+	color: #ffffff;
 }
 
 .button-container {
-  text-align: center;
-  max-width: 792px;
-  padding: 1rem 2rem 1rem 2rem;
+	text-align: center;
+	max-width: 792px;
+	padding: 1rem 2rem 1rem 2rem;
 }
 
 @media (max-width: 576px) {
-  lightning-button {
-    width: 100%;
-  }
+	lightning-button {
+		width: 100%;
+	}
 }
 
 .slds-button {
-  font-size: 1rem;
+	font-size: 1rem;
 }
 
 .back-button {
-  color: #0067c5;
-  text-decoration: underline;
-  text-decoration-color: #0067c5;
+	color: #0067c5;
+	text-decoration: underline;
+	text-decoration-color: #0067c5;
 }
 
 .slds-th__action-button {
-  display: none;
+	display: none;
 }
 
 .slds-truncate {
-  font-size: 1rem;
+	font-size: 1rem;
 }
 
-.slds-button_icon-x-small,
-.slds-button--icon-x-small {
-  width: 1.35rem;
-  height: 1.35rem;
-  line-height: 0;
-  background-color: #fff;
+.slds-button_icon-x-small, .slds-button--icon-x-small {
+	width: 1.35rem;
+	height: 1.35rem;
+	line-height: 0;
+	background-color: #fff;
 }
 
 .slds-input-has-icon_right .slds-input__icon {
-  top: 25%;
+	top: 25%;
 }
 
 .typo-systemtittel {
-  margin: 0;
-  font-family: "Source Sans Pro", Arial, sans-serif;
-  font-size: 1.25rem;
-  line-height: 1.625rem;
-  font-weight: bold;
+	margin: 0;
+	font-family: "Source Sans Pro", Arial, sans-serif;
+	font-size: 1.25rem;
+	line-height: 1.625rem;
+	font-weight: bold;
 }
 
-lightning-input-field.ikke-sensitiv-fritekst
-  > lightning-textarea
-  > label:after {
-  content: " (ikke sensitiv informasjon)";
+lightning-input-field.ikke-sensitiv-fritekst>lightning-textarea>label:after {
+	content: " (ikke sensitiv informasjon)";
 }
 
 .hovedbanner {
-  padding: 1rem 1.5rem 1rem 1.5rem;
-  border-bottom-width: 4px;
-  border-bottom-style: solid;
-  text-align: center;
+	padding: 1rem 1.5rem 1rem 1.5rem;
+	border-bottom-width: 4px;
+	border-bottom-style: solid;
+	text-align: center;
 }
 
 .tolketjenesten {
-  background-color: #dade99;
-  border-bottom: 4px solid rgb(181, 189, 51);
+	background-color: #dade99;
+	border-bottom: 4px solid rgb(181, 189, 51);
 }
 
 /* Home */
 
 .informasjonstavle__body {
-  padding: 0 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+	padding: 0 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .informasjonstavle__content {
-  max-width: 800px;
-  width: 100%;
-  margin-top: 2rem;
+	max-width: 800px;
+	width: 100%;
+	margin-top: 2rem;
 }
 
 .informasjonstavle__bildepaneler {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
 }
 
 @media (min-width: 576px) {
-  .informasjonstavle__bildepaneler {
-    flex-direction: row;
-    justify-content: space-between;
-  }
+	.informasjonstavle__bildepaneler {
+		flex-direction: row;
+		justify-content: space-between;
+	}
 }
 
 .informasjonstavle a:link {
-  text-decoration: none;
+	text-decoration: none;
 }
 
 @media (min-width: 576px) {
-  .panelMedBilde {
-    flex: 1;
-  }
+	.panelMedBilde {
+		flex: 1;
+	}
 }
 
 .panelMedBilde {
-  color: black;
-  text-decoration: none;
-  border-radius: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 1rem;
+	color: black;
+	text-decoration: none;
+	border-radius: 4px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin: 1rem;
 }
 
 @media (min-width: 576px) {
-  .panelMedBilde__imageOnPanel {
-    height: 135px;
-    align-items: center;
-  }
+	.panelMedBilde__imageOnPanel {
+		height: 135px;
+		align-items: center;
+	}
 }
 
 .panelMedBilde__imageOnPanel {
-  border-radius: 4px 4px 0 0;
-  height: 100px;
-  width: 100%;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
+	border-radius: 4px 4px 0 0;
+	height: 100px;
+	width: 100%;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-end;
 }
 
 .panelMedBilde__svgContainer {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  height: 100%;
-  float: left;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-end;
+	height: 100%;
+	float: left;
 }
 
 @media (min-width: 576px) {
-  .panelMedBilde__panelOnPanel {
-    height: 100%;
-    flex-direction: column;
-  }
+	.panelMedBilde__panelOnPanel {
+		height: 100%;
+		flex-direction: column;
+	}
 }
 
 .panelMedBilde__panelOnPanel {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  border-radius: 0 0 4px 4px;
-  padding: 1rem 1.66rem 1.25rem;
-  color: black;
-  overflow: hidden;
-  text-overflow: ellipsis;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-start;
+	border-radius: 0 0 4px 4px;
+	padding: 1rem 1.66rem 1.25rem;
+	color: black;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .panel {
-  background-color: #fff;
-  display: block;
-  padding: 1rem 1rem 1rem 1rem;
-  border-radius: 4px;
+	background-color: #fff;
+	display: block;
+	padding: 1rem 1rem 1rem 1rem;
+	border-radius: 4px;
 }
 
 .panelMedBilde__textOnPanel {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
 }
 
 @media (min-width: 576px) {
-  .panelMedBilde__textOnPanel .typo-undertittel {
-    padding-bottom: 0.5rem;
-  }
+	.panelMedBilde__textOnPanel .typo-undertittel {
+		padding-bottom: 0.5rem;
+	}
 }
 
 .panelMedBilde__textOnPanel .typo-undertittel {
-  padding-bottom: 0.5rem;
+	padding-bottom: 0.5rem;
 }
 
-.panelMedBilde__textOnPanel .typo-undertittel,
-.panelMedBilde__textOnPanel .typo-normal {
-  overflow: hidden;
-  text-overflow: ellipsis;
+.panelMedBilde__textOnPanel .typo-undertittel, .panelMedBilde__textOnPanel .typo-normal {
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .typo-undertittel {
-  margin: 0;
-  font-family: "Source Sans Pro", Arial, sans-serif;
-  font-size: 1rem;
-  line-height: 1.5625rem;
-  font-weight: 600;
+	margin: 0;
+	font-family: "Source Sans Pro", Arial, sans-serif;
+	font-size: 1rem;
+	line-height: 1.5625rem;
+	font-weight: 600;
 }
 
-.panelMedBilde__textOnPanel .typo-undertittel,
-.panelMedBilde__textOnPanel .typo-normal {
-  overflow: hidden;
-  text-overflow: ellipsis;
+.panelMedBilde__textOnPanel .typo-undertittel, .panelMedBilde__textOnPanel .typo-normal {
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .panelMedBilde__textOnPanel .typo-normal {
-  overflow: hidden;
-  text-overflow: ellipsis;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .typo-normal {
-  margin: 0;
-  font-family: "Source Sans Pro", Arial, sans-serif;
-  font-size: 1rem;
-  line-height: 1.375rem;
-  font-weight: 400;
+	margin: 0;
+	font-family: "Source Sans Pro", Arial, sans-serif;
+	font-size: 1rem;
+	line-height: 1.375rem;
+	font-weight: 400;
 }
 
 /*home vegard */
 
 .portal-hilsen {
-  margin-top: 2rem;
-  font-size: 1.33rem;
-  font-weight: bold;
-  text-align: center;
+	margin-top: 2rem;
+	font-size: 1.33rem;
+	font-weight: bold;
+	text-align: center;
 }
 
 .illustrasjon {
-  max-height: 90%;
+	max-height: 90%;
 }
 
 /* Liste */
 
 .liste {
-  max-width: 1080px;
-  padding: 3.25rem 3.25rem 3.25rem 3.25rem;
-  background-color: #fff !important;
-  font-family: "Source Sans Pro", Arial, sans-serif;
-  margin: 1rem auto 1rem auto;
-  border-radius: 0.5rem;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
+	max-width: 1080px;
+	padding: 3.25rem 3.25rem 3.25rem 3.25rem;
+	background-color: #fff !important;
+	font-family: "Source Sans Pro", Arial, sans-serif;
+	margin: 1rem auto 1rem auto;
+	border-radius: 0.5rem;
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
 }
 
 @media (min-width: 576px) {
-  .right-content {
-    margin-bottom: 1rem;
-    width: 100%;
-  }
-  .right-button > .slds-button_brand,
-  .right-button > .slds-button--brand {
-    float: right;
-  }
+	.right-content {
+		margin-bottom: 1rem;
+		width: 100%;
+	}
+	.right-button>.slds-button_brand, .right-button>.slds-button--brand {
+		float: right;
+	}
 }
 
 @media (max-width: 576px) {
-  .right-content {
-    margin-bottom: 0;
-    width: 100%;
-  }
-  .slds-button_brand,
-  .slds-button--brand {
-    width: 100%;
-  }
-  .liste {
-    padding: 1rem 1rem 1rem 1rem;
-    margin: 1rem auto 1rem auto;
-  }
+	.right-content {
+		margin-bottom: 0;
+		width: 100%;
+	}
+	.slds-button_brand, .slds-button--brand {
+		width: 100%;
+	}
+	.liste {
+		padding: 1rem 1rem 1rem 1rem;
+		margin: 1rem auto 1rem auto;
+	}
 }
 
 @media (max-width: 576px) {
-  /* Force table to not be like tables anymore */
-  table,
-  thead,
-  tbody,
-  th,
-  td,
-  tr {
-    display: block;
-  }
-  /* Hide table headers (but not display: none;, for accessibility) */
-  thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-  tr {
-    margin: 0 0 1rem 0;
-    border-radius: 4px;
-  }
-  tr:nth-child(odd) {
-    background: #e9e7e7;
-  }
-
-  td,
-  th {
-    /* Behave  like a "row" */
-    border: none;
-    position: relative;
-    padding-left: 50%;
-    border-top: 0 transparent;
-    border-bottom: 1px solid rgb(212, 212, 212);
-  }
-
-  td:last-child {
-    border-bottom: 0 transparent;
-  }
-  /*
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr {
+		display: block;
+	}
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	tr {
+		margin: 0 0 1rem 0;
+		border-radius: 4px;
+	}
+	tr:nth-child(odd) {
+		background: #e9e7e7;
+	}
+	td, th {
+		/* Behave  like a "row" */
+		border: none;
+		position: relative;
+		padding-left: 50%;
+		border-top: 0 transparent;
+		border-bottom: 1px solid rgb(212, 212, 212);
+	}
+	td:last-child {
+		border-bottom: 0 transparent;
+	}
+	/*
   .slds-table_bordered tbody td,
   .slds-table_bordered tbody th,
   .slds-table--bordered tbody td,
@@ -520,69 +478,70 @@ lightning-input-field.ikke-sensitiv-fritekst
   }
   */
 }
+
 @media (max-width: 576px) {
-  th:nth-of-type(1):before {
-    content: "Start tid";
-    font-weight: 600;
-  }
-  td:nth-of-type(1):before {
-    content: "Slutt tid";
-    font-weight: 600;
-  }
-  td:nth-of-type(2):before {
-    content: "Oppmøtested";
-    font-weight: 600;
-  }
-  td:nth-of-type(3):before {
-    content: "Tema";
-    font-weight: 600;
-  }
-  td:nth-of-type(4):before {
-    content: "Status";
-    font-weight: 600;
-  }
-  td:nth-of-type(5):before {
-    content: "";
-  }
+	th:nth-of-type(1):before {
+		content: "Start tid";
+		font-weight: 600;
+	}
+	td:nth-of-type(1):before {
+		content: "Slutt tid";
+		font-weight: 600;
+	}
+	td:nth-of-type(2):before {
+		content: "Oppmøtested";
+		font-weight: 600;
+	}
+	td:nth-of-type(3):before {
+		content: "Tema";
+		font-weight: 600;
+	}
+	td:nth-of-type(4):before {
+		content: "Status";
+		font-weight: 600;
+	}
+	td:nth-of-type(5):before {
+		content: "";
+	}
 }
 
 /* Skjema */
 
 .steg {
-  padding: 2rem 0 1rem;
+	padding: 2rem 0 1rem;
 }
 
 form {
-  margin: 0;
-  padding: 4rem 2rem 1rem 2rem;
+	margin: 0;
+	padding: 4rem 2rem 1rem 2rem;
 }
 
 div.skjema {
-  padding: 0;
-  background-color: #fff;
+	padding: 0;
+	background-color: #fff;
 }
 
 @media (max-width: 576px) {
-  div.skjema {
-    padding: 2rem;
-  }
-  form {
-    padding: 0;
-  }
+	div.skjema {
+		padding: 2rem;
+	}
+	form {
+		padding: 0;
+	}
 }
 
 .tolk-skjema-input {
-  font-size: 1.33rem;
+	font-size: 1.33rem;
 }
 
 .nav-info-header {
-  font-size: 1.75rem;
+	font-size: 1.75rem;
 }
 
 div {
-  display: block;
+	display: block;
 }
 
 html {
-  background-color: #efefef;
+	background-color: #efefef;
 }
