@@ -48,12 +48,6 @@ ehthumbs.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
 
-# SFDX
-**/profiles/*
-!**/REMOVE_*/profiles/*
-**/profilePasswordPolicies*
-**/profileSessionSettings*
-
 # ignore deployment temp files
 **/deployment_tmp*
 **/dummy-data/*.out/*

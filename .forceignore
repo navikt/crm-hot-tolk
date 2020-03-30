@@ -1,8 +1,9 @@
-# Profiles (some are needed for deploying the community to scratch orgs)
+# Profiles
 **/profiles/*
-!**/REMOVE_*/profiles/*
+!**/profiles/Admin.profile-meta.xml
 **/profilePasswordPolicies/*
 **/profileSessionSettings/*
+
 # LWC configuration files
 **/jsconfig.json
 **/.eslintrc.json
