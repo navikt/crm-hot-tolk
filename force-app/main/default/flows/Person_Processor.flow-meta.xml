@@ -118,10 +118,10 @@
             <connector>
                 <targetReference>myRule_1_A1</targetReference>
             </connector>
-            <label>Update from KRR</label>
+            <label>Update data from KRR</label>
         </rules>
     </decisions>
-    <interviewLabel>Person_Processor-2_InterviewLabel</interviewLabel>
+    <interviewLabel>Person_Processor-3_InterviewLabel</interviewLabel>
     <label>Person Processor</label>
     <processMetadataValues>
         <name>ObjectType</name>
