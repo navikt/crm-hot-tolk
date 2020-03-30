@@ -47,12 +47,21 @@
 
 					<nav class="topnav container" role="navigation" id="mainmenu" aria-labelledby="header-nav-heading"
 						tabindex="-1">
-						<h1 class="visuallyhidden" id="header-nav-heading">Hovedmeny</h1><input
-							id="no-js-toggle-mobile-mainmenu" type="checkbox" class="visuallyhidden mobile-toggler">
-						<label for="no-js-toggle-mobile-mainmenu" class="mobile-toggler toggle-mainmenu">Meny</label>
+						<h1 class="visuallyhidden" id="header-nav-heading">Hovedmeny</h1>
+						<input id="no-js-toggle-mobile-mainmenu" type="checkbox" class="visuallyhidden mobile-toggler">
+						<label for="toggle-mobile-mainmenu" class="mobile-toggler toggle-mainmenu">Meny</label>
 						<button type="button" id="toggle-mobile-mainmenu"
-							class="link-btn mobile-toggler toggle-mainmenu">Meny
+							class="link-btn mobile-toggler toggle-mainmenu" onclick={toggleMobileMenu}>Meny
 						</button>
+						<div class="login-container login-container-mobile">
+							<div id="login-details-mobile" class="login-details-mobile mobile-toggler">
+								<span class="name-container">
+									<img id="idporten-ikon-innlogging-mobile" alt="Innlogget via ID-porten"
+										src={idportenIkon}>
+									<span id="name-mobile">{currentUser}</span>
+								</span>
+							</div>
+						</div>
 						<ul class="accessible-megamenu" id="accessible-megamenu">
 							<li class="topnavitem">
 								<a href="https://www.nav.no/no/Person" role="button" data-ga="Meny">Person</a>

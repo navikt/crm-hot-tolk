@@ -4,6 +4,14 @@
   "id" : "7eb90fd7-cfb5-41c1-b5f7-11978229a08e",
   "label" : "Home",
   "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:globalCommunityHeader",
+      "id" : "67ad9473-16a5-4edb-b2f3-0a961bcaddcc",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
     "id" : "09e43856-c7d6-4787-b2f2-a31f7248937f",
     "regionName" : "header",
     "type" : "region"
@@ -20,6 +28,14 @@
     "regionName" : "content",
     "type" : "region"
   }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:globalCommunityFooter",
+      "id" : "5ee2c7d2-992f-4a64-b83c-df03122da353",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
     "id" : "554681ed-7b05-4f1e-8c7f-0f269a81609e",
     "regionName" : "footer",
     "type" : "region"

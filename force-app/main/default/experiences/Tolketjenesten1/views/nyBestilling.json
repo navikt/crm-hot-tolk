@@ -26,8 +26,22 @@
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : { },
+          "componentName" : "c:globalCommunityHeader",
+          "id" : "d8af7a92-d6c3-4a05-91f8-b47b028db8a7",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
           "componentName" : "c:hot_createRequestForm",
           "id" : "9b89f946-5611-44ad-8741-0383ae3df28b",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:globalCommunityFooter",
+          "id" : "d6fa9302-60ac-420e-9333-1cc81ef06874",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
