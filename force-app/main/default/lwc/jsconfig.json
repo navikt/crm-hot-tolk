@@ -17,6 +17,12 @@
             ],
             "c/globalCommunityHeader": [
                 "globalCommunityHeader/globalCommunityHeader.js"
+            ],
+            "c/hot_securityMeasuresWarningAccount": [
+                "hot_securityMeasuresWarningAccount/hot_securityMeasuresWarningAccount.js"
+            ],
+            "c/hot_securityMeasuresWarningRequest": [
+                "hot_securityMeasuresWarningRequest/hot_securityMeasuresWarningRequest.js"
             ]
         }
     },
