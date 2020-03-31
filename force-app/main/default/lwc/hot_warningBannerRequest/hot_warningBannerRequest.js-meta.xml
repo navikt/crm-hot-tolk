@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
 	<apiVersion>48.0</apiVersion>
-	<description>Warning banner for Security Measures</description>
+	<description>Warning banner for Security Measures and Reservations</description>
 	<isExposed>true</isExposed>
-	<masterLabel>Security Measures</masterLabel>
+	<masterLabel>Warning banner</masterLabel>
 	<targets>
 		<target>lightning__RecordPage</target>
 	</targets>
 	<targetConfigs>
 		<targetConfig targets="lightning__RecordPage">
 			<objects>
-				<object>Account</object>
+				<object>HOT_Request__c</object>
 			</objects>
 		</targetConfig>
 	</targetConfigs>

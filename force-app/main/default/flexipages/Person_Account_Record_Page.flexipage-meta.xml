@@ -17,7 +17,7 @@
             <componentName>force:highlightsPanel</componentName>
         </componentInstances>
         <componentInstances>
-            <componentName>hot_securityMeasuresWarningAccount</componentName>
+            <componentName>hot_warningBannerAccount</componentName>
         </componentInstances>
         <mode>Replace</mode>
         <name>header</name>
