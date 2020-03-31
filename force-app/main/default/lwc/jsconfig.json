@@ -18,11 +18,11 @@
             "c/globalCommunityHeader": [
                 "globalCommunityHeader/globalCommunityHeader.js"
             ],
-            "c/hot_securityMeasuresWarningAccount": [
-                "hot_securityMeasuresWarningAccount/hot_securityMeasuresWarningAccount.js"
+            "c/hot_warningBannerAccount": [
+                "hot_warningBannerAccount/hot_warningBannerAccount.js"
             ],
-            "c/hot_securityMeasuresWarningRequest": [
-                "hot_securityMeasuresWarningRequest/hot_securityMeasuresWarningRequest.js"
+            "c/hot_warningBannerRequest": [
+                "hot_warningBannerRequest/hot_warningBannerRequest.js"
             ]
         }
     },
