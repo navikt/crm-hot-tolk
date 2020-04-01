@@ -39,10 +39,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.startTime = tempTime.join("");
 			var first = parseFloat(tempTime[11]);
 			var second = parseFloat(tempTime[12]);
-			second = second + 1;
-			if (second == 10) {
+			second = (second + 1) % 10;
+			if (second == 0) {
 				first = first + 1;
-				second = 0;
 			}
 			tempTime[11] = first.toString();
 			tempTime[12] = second.toString();
