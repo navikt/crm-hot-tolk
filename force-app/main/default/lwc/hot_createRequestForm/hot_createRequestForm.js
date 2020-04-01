@@ -26,11 +26,27 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	@track error;
-	@track startTime;
 	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
+
+
+	@track startTime;
+	@track endTime;
 	handleChange(event) {
 		if (this.startTime == null) {
-			this.startTime = event.detail.value;
+			var tempTime = event.detail.value;
+			tempTime = tempTime.split("");
+			tempTime[14] = '0';
+			tempTime[15] = '0';
+			this.startTime = tempTime.join("");
+			var first = parseFloat(tempTime[11]);
+			var second = parseFloat(tempTime[12]);
+			second = second + 1;
+			if (second == 10) {
+				first = first + 1;
+			}
+			tempTime[11] = first.toString();
+			tempTime[12] = second.toString();
+			this.endTime = tempTime.join("");
 		}
 	}
 
