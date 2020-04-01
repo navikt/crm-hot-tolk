@@ -51,7 +51,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>HOT_Request__c.ExternalRequestStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -107,11 +107,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.PersonalNumber__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>HOT_Request__c.StartTime__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -133,6 +128,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.UserPhone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.Warning__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
