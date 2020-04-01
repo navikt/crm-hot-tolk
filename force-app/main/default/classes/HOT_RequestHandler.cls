@@ -1,45 +1,36 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
 
-    public override void onAfterInsert() {
-        // Filter for relevant records to initiate callout to Kontakt og Reservasjonsregisteret (KRR)
-        System.debug('HOT_RequestHandler.onAfterInsert() - START');
-        Set<Id> personIdsToUpdate = new Set<Id>();
-        List<HOT_Request__c> requests = [SELECT Id, Person__c, Person__r.CRM_Account__c, Person__r.CRM_Account__r.INT_PersonIdent__c FROM HOT_Request__c WHERE Id IN:records];
-        List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
-        System.debug('requests: ' + requests);
-        for (HOT_Request__c request  : requests) {
-            if (request.Person__c != null && request.Person__r.CRM_Account__c != null && request.Person__r.CRM_Account__r.INT_PersonIdent__c != null) {
+    public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
+        List<HOT_Request__c> changedStatusRequests = new List<HOT_Request__c>();
+		Set<Id> personIdsToUpdate = new Set<Id>();
+		List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
+
+        for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+			// Filter for relevant records with status updates
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
+                changedStatusRequests.add(request);
+			}
+			// Filter for relevant records to initiate callout to Kontakt og Reservasjonsregisteret (KRR)
+			if (request.Person__c != null && request.Person__c != triggerOldMap.get(request.Id).get('Person__c')) {
                 personIdsToUpdate.add(request.Person__c);
                 requestsToGetContactInformationFor.add(request);
             }
         }
-        System.debug('requestsToGetContactInformationFor: ' + requestsToGetContactInformationFor);
+        if (changedStatusRequests.size() > 0) {
+            updateChildRecords(changedStatusRequests);
+		}
+
         if (requestsToGetContactInformationFor.size() > 0) {
             // Set related Person__c records "KRR Integration Status" field to 'Queued'
             List<Person__c> personsToUpdate = new List<Person__c>();
-            for (Id personId : personIdsToUpdate) {
+			for (Id personId : personIdsToUpdate) {
                 personsToUpdate.add(new Person__c(Id = personId, INT_KrrIntegrationStatus__c = 'Queued'));
             }
-            System.debug('personsToUpdate: ' + personsToUpdate);
             update personsToUpdate;
 
             // Call out to KRR through Queuable Apex
             KRRCalloutQueuable krr = new KRRCalloutQueuable(requestsToGetContactInformationFor);
             System.enqueueJob(krr);
-        }
-    }
-
-    public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
-        List<HOT_Request__c> changedStatusRequests = new List<HOT_Request__c>();
-
-        for (SObject record : records) {
-            HOT_Request__c request = (HOT_Request__c) record;
-            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
-                changedStatusRequests.add(request);
-            }
-        }
-        if (changedStatusRequests.size() > 0) {
-            updateChildRecords(changedStatusRequests);
         }
     }
 

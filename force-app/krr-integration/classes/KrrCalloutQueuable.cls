@@ -9,7 +9,7 @@ public with sharing class KrrCalloutQueuable implements Queueable, Database.Allo
     public void execute(QueueableContext context) {
         Map<String, Id> personIdByPersonalNumber = new Map<String, Id>();
         for (HOT_Request__c request : requests) {
-            personIdByPersonalNumber.put(String.valueOf(request.Person__r.CRM_Account__r.INT_PersonIdent__c), request.Person__c);
+            personIdByPersonalNumber.put(String.valueOf(request.Person__r.Name), request.Person__c);
         }
 
 
