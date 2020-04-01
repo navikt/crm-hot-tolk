@@ -42,6 +42,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			second = second + 1;
 			if (second == 10) {
 				first = first + 1;
+				second = 0;
 			}
 			tempTime[11] = first.toString();
 			tempTime[12] = second.toString();
@@ -52,7 +53,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleSubmit(event) {
 		event.preventDefault();
-
 
 		const fields = event.detail.fields;
 		if (this.sameLocation) {
