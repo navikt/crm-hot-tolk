@@ -1,9 +1,9 @@
-public with sharing class KrrCalloutQueuable implements Queueable, Database.AllowsCallouts {
+public without sharing class KrrCalloutQueuable implements Queueable, Database.AllowsCallouts {
 
     private List<HOT_Request__c> requests;
 
     public KrrCalloutQueuable(List<HOT_Request__c> requests) {
-        this.requests = requests;
+        this.requests = [SELECT Id, Person__c, Person__r.Name FROM HOT_Request__c WHERE Id IN: requests];
     }
 
     public void execute(QueueableContext context) {
