@@ -3,10 +3,9 @@ import { NavigationMixin } from 'lightning/navigation';
 
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
-
 	@track reRender = 0;
 
-	@track submitted = false;
+	@track submitted = false; // if:false={submitted}
 
 	/*
 		@wire(getRecord, {
@@ -69,17 +68,22 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	}
 
+
+
 	handleSuccess(event) {
-		this.submitted = !this.submitted;
+		var x = this.template.querySelector(".submitted-true");
+		x.classList.remove('hidden');
+		this.template.querySelector(".h2-successMessage").focus();
+		x = this.template.querySelector(".submitted-false");
+		x.classList.add('hidden');
+
+
 	}
 
 	toggled() {
 		this.sameLocation = !this.sameLocation;
 	}
 
-	handleBack(event) {
-		this.submitted = false;
-	}
 
 	previousPage;
 	connectedCallback() {
