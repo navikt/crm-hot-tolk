@@ -12,8 +12,8 @@
 		</lightning-breadcrumb>
 	</lightning-breadcrumbs>
 
-	<div class="main-content">
-		<div class="skjema" if:false={submitted}>
+	<div class="main-content submitted-false">
+		<div class="skjema">
 			<lightning-messages>
 			</lightning-messages>
 			<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
@@ -91,12 +91,12 @@
 		</div>
 	</div>
 
-	<div class="main-content" if:true={submitted}>
+	<div class="main-content hidden submitted-true">
 		<lightning-icon icon-name="utility:success" alternative-text="Suksess" title="Suksess" variant="success"
 			size="large">
 		</lightning-icon>
 		</br>
-		<h2 class="typo-undertittel" id="successMessage" tabindex="-1">Bestillingen er sendt</h2>
+		<h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1">Bestillingen er sendt</h2>
 		</br>
 		<lightning-button title="Gå til mine bestillinger" class="slds-m-top-small" variant="brand" label="OK"
 			onclick={goToMyRequests}>
