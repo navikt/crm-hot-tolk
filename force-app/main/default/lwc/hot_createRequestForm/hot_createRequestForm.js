@@ -1,7 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
-
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
 
