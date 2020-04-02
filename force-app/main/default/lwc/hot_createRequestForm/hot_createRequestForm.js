@@ -46,6 +46,25 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			tempTime[12] = second.toString();
 			this.endTime = tempTime.join("");
 		}
+		else {
+			this.startTime = event.detail.value;
+		}
+		if (event.detail.value > this.endTime) {
+			var tempTime = event.detail.value;
+			tempTime = tempTime.split("");
+			var first = parseFloat(tempTime[11]);
+			var second = parseFloat(tempTime[12]);
+			second = (second + 1) % 10;
+			if (second == 0) {
+				first = first + 1;
+			}
+			tempTime[11] = first.toString();
+			tempTime[12] = second.toString();
+			this.endTime = tempTime.join("");
+		}
+	}
+	setEndTime(event) {
+		this.endTime = event.detail.value;
 	}
 
 
