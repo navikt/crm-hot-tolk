@@ -3,14 +3,15 @@
 		<h1 class="typo-systemtittel">Mine tolketjenester </h1>
 	</div>
 
-	<lightning-breadcrumbs>
-		<lightning-breadcrumb label="Hjem" href="/tolketjenesten/s/">
-		</lightning-breadcrumb>
-		<lightning-breadcrumb label="Mine bestillinger" href="/tolketjenesten/s/mine-bestillinger">
-		</lightning-breadcrumb>
-	</lightning-breadcrumbs>
-
-	<div class="liste">
+	<div class="brodsmulesti">
+		<lightning-breadcrumbs class="liste-max-width">
+			<lightning-breadcrumb label="Hjem" href="/tolketjenesten/s/">
+			</lightning-breadcrumb>
+			<lightning-breadcrumb label="Mine bestillinger" href="/tolketjenesten/s/mine-bestillinger">
+			</lightning-breadcrumb>
+		</lightning-breadcrumbs>
+	</div>
+	<div class="liste liste-max-width">
 		<div class="right-content">
 			<lightning-button title="Ny bestilling" class="slds-m-top-small right-button" variant="brand"
 				label="Ny bestilling" onclick={goToNewRequest}>

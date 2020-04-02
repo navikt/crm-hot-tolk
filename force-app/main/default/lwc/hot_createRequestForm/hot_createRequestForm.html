@@ -4,16 +4,16 @@
 		<h1 class="typo-systemtittel">Bestille tolketjenester</h1>
 	</div>
 
-
-	<lightning-breadcrumbs>
-		<lightning-breadcrumb label="Hjem" href="/tolketjenesten/s/">
-		</lightning-breadcrumb>
-		<lightning-breadcrumb label="Ny bestilling" href="/tolketjenesten/s/ny-bestilling">
-		</lightning-breadcrumb>
-	</lightning-breadcrumbs>
-
+	<div class="brodsmulesti">
+		<lightning-breadcrumbs class="skjema-max-width">
+			<lightning-breadcrumb label="Hjem" href="/tolketjenesten/s/">
+			</lightning-breadcrumb>
+			<lightning-breadcrumb label="Ny bestilling" href="/tolketjenesten/s/ny-bestilling">
+			</lightning-breadcrumb>
+		</lightning-breadcrumbs>
+	</div>
 	<div class="main-content submitted-false">
-		<div class="skjema">
+		<div class="skjema skjema-max-width">
 			<lightning-messages>
 			</lightning-messages>
 			<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}

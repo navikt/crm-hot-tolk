@@ -27,10 +27,6 @@
   padding-bottom: 0 !important;
 }
 
-div.lightning-breadcrubs {
-  padding-left: 2rem !important;
-}
-
 .main-content {
   background-color: #fff !important;
   font-family: "Source Sans Pro", Arial, sans-serif;
@@ -149,8 +145,8 @@ lightning-datetimepicker > div > fieldset > legend.slds-form-element__legend {
   padding-right: 0;
 }
 .nav-radio-button-group .slds-form-element__control .slds-radio_faux {
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1.5rem;
+  height: 1.5rem;
   margin-right: 0.75rem !important;
 }
 
@@ -171,8 +167,7 @@ lightning-datetimepicker > div > fieldset > legend.slds-form-element__legend {
   height: 65%;
   content: "";
   position: absolute;
-  top: 45%;
-  bottom: 55%;
+  justify-content: center;
   transform: translate3d(-50%, -50%, 0);
   border-radius: 50%;
   background: #0067c5;
@@ -278,7 +273,7 @@ lightning-input-field.ikke-sensitiv-fritekst
 /* Home */
 
 .informasjonstavle__body {
-  padding: 0 1rem;
+  padding: 0.5rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -287,7 +282,8 @@ lightning-input-field.ikke-sensitiv-fritekst
 .informasjonstavle__content {
   max-width: 800px;
   width: 100%;
-  margin-top: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .informasjonstavle__bildepaneler {
@@ -403,7 +399,7 @@ lightning-input-field.ikke-sensitiv-fritekst
   font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1rem;
   line-height: 1.5625rem;
-  font-weight: 600;
+  font-weight: bold;
 }
 
 .panelMedBilde__textOnPanel .typo-undertittel,
@@ -415,6 +411,10 @@ lightning-input-field.ikke-sensitiv-fritekst
 .panelMedBilde__textOnPanel .typo-normal {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.panelMedBilde:hover .panelMedBilde__panelOnPanel {
+  color: #0067c5;
+  cursor: pointer;
 }
 
 .typo-normal {
@@ -428,7 +428,7 @@ lightning-input-field.ikke-sensitiv-fritekst
 /*home vegard */
 
 .portal-hilsen {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   font-size: 1.33rem;
   font-weight: bold;
   text-align: center;
@@ -440,8 +440,12 @@ lightning-input-field.ikke-sensitiv-fritekst
 
 /* Liste */
 
-.liste {
+.liste-max-width {
   max-width: 1080px;
+  width: 100%;
+  padding: 0 3.25rem;
+}
+.liste {
   padding: 3.25rem 3.25rem 3.25rem 3.25rem;
   background-color: #fff !important;
   font-family: "Source Sans Pro", Arial, sans-serif;
@@ -568,9 +572,31 @@ form {
   padding: 4rem 2rem 1rem 2rem;
 }
 
+.skjema-max-width {
+  width: 100%;
+  max-width: 800px;
+  padding: 0 2rem;
+}
+
 div.skjema {
   padding: 0;
   background-color: #fff;
+}
+
+div.lightning-breadcrumbs {
+  padding-left: 2rem !important;
+  display: flex;
+  justify-content: left;
+}
+lightning-breadcrumb:last-child a {
+  font-weight: bold;
+  color: black;
+}
+
+.brodsmulesti {
+  margin: 1rem;
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 576px) {
@@ -596,4 +622,5 @@ div {
 
 html {
   background-color: #efefef;
+  justify-content: center;
 }
