@@ -126,7 +126,7 @@ lightning-datetimepicker > div > fieldset > legend.slds-form-element__legend {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 35%;
+  max-width: 200px;
 }
 
 .nav-radio-button-group .slds-form-element__control .slds-radio {
@@ -173,13 +173,6 @@ lightning-datetimepicker > div > fieldset > legend.slds-form-element__legend {
   background: #0067c5;
 }
 
-/*
-.slds-radio .slds-radio_faux, .slds-radio .slds-radio--faux {
-	width: 1.33rem;
-	height: 1.33rem;
-}
-*/
-
 span.slds-radio {
   height: 1.16rem;
   display: inline-block;
@@ -202,6 +195,11 @@ span.slds-radio {
   color: #ffffff;
 }
 
+.slds-button_brand:hover,
+.slds-button--brand:hover {
+  background-color: #3385d1;
+}
+
 .button-container {
   text-align: center;
   max-width: 792px;
@@ -222,6 +220,9 @@ span.slds-radio {
   color: #0067c5;
   text-decoration: underline;
   text-decoration-color: #0067c5;
+}
+.back-button:hover {
+  color: #3385d1;
 }
 
 .slds-th__action-button {
@@ -640,4 +641,9 @@ div {
 html {
   background-color: #efefef;
   justify-content: center;
+}
+
+.slds-notify_toast,
+.slds-notify--toast {
+  min-width: 10rem;
 }

@@ -17,12 +17,8 @@
 			<img class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
 		</div>
 		<div class="skjema skjema-max-width">
-			<lightning-messages>
-			</lightning-messages>
 			<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
 				onerror={handleError} onsubmit={handleSubmit}>
-				<lightning-messages>
-				</lightning-messages>
 				<lightning-input-field class="tolk-skjema-input" field-name="Subject__c" value={fieldValues.Subject__c}
 					title="Hva trenger du tolk til?" required>
 				</lightning-input-field>
@@ -82,6 +78,8 @@
 					field-name="Description__c" value={fieldValues.Description__c}>
 				</lightning-input-field>
 
+				<lightning-messages aria-live="assertive">
+				</lightning-messages>
 				<div class="button-container">
 					<lightning-button title="Send inn bestilling" class="slds-m-left_x-small" type="submit"
 						variant="brand" label="SEND INN" onclick={handleSubmit}>
