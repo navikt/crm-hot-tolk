@@ -12,6 +12,7 @@ call move force-app\main\default\classes\CommunitiesLandingController* temp
 call move force-app\main\default\classes\MyProfilePageController* temp
 call move force-app\main\default\sharingSets temp
 call move force-app\main\default\roles temp
+call move force-app\main\default\profiles temp
 call move force-app\krr-integration\customMetadata temp
 
 call sfdx force:package:version:create -f config/project-scratch-def.json -k navcrm -p crm-hot
@@ -31,6 +32,7 @@ call move temp\CommunitiesLandingController* force-app\main\default\classes
 call move temp\MyProfilePageController* force-app\main\default\classes
 call move temp\sharingSets force-app\main\default\sharingSets
 call move temp\roles force-app\main\default\roles
+call move temp\profiles force-app\main\default\profiles
 call move temp\customMetadata force-app\krr-integration\customMetadata
 
 :: Innstaller pakken i PREPROD
