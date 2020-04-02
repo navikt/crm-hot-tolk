@@ -9,6 +9,7 @@ public class HOT_TestDataFactory {
 		request.InterpretationMethod__c = workType.Id;
 		request.StartTime__c = Datetime.now().addHours(1);
 		request.EndTime__c = request.StartTime__c.addHours(2);
+		request.AssignmentType__c = 'Work';
 		return request;
 	}
 	
@@ -68,7 +69,13 @@ public class HOT_TestDataFactory {
 		return person;
 	}
 
-	public static User createUser(Profile ProfileID, Account account) {
+	public static User createUser(Profile ProfileId, Account account) {
+		User user = createUser(ProfileId);
+		user.ContactId=account.PersonContactId;
+		return user;
+	}
+
+	public static User createUser(Profile ProfileId) {
 		User user = new User (
 			Username = 'HOT_testuser@nav.hot.no', 
 			LastName = 'user', 
@@ -79,8 +86,7 @@ public class HOT_TestDataFactory {
 			LocaleSidKey ='no_NO', 
 			EmailEncodingKey ='UTF-8', 
 			LanguageLocaleKey ='no',
-			ProfileId = profileID.id, 
-			ContactId=account.PersonContactId
+			ProfileId = ProfileId.id
 		);
 		return user;
 	}
