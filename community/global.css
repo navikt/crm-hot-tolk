@@ -301,6 +301,7 @@ lightning-input-field.ikke-sensitiv-fritekst
 
 .informasjonstavle a:link {
   text-decoration: none;
+  text-decoration-color: #0067c5;
 }
 
 @media (min-width: 576px) {
@@ -562,6 +563,22 @@ lightning-input-field.ikke-sensitiv-fritekst
 }
 
 /* Skjema */
+
+.skjema-ikon-img {
+  height: 70%;
+  margin-top: 0.6rem;
+}
+
+.skjema-ikon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: 0 !important;
+  margin-top: -2rem;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
 
 .steg {
   padding: 2rem 0 1rem;
