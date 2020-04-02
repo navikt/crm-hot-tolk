@@ -30,11 +30,16 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track startTime;
 	@track endTime;
 	handleChange(event) {
+		var now = new Date();
+		var tempTime = event.detail.value;
+		tempTime = tempTime.split("");
+
+
 		if (this.startTime == null) {
-			var tempTime = event.detail.value;
-			tempTime = tempTime.split("");
-			tempTime[14] = '0';
-			tempTime[15] = '0';
+			if (tempTime[14] + tempTime[15] == now.getMinutes().toString()) {
+				tempTime[14] = '0';
+				tempTime[15] = '0';
+			}
 			this.startTime = tempTime.join("");
 			var first = parseFloat(tempTime[11]);
 			var second = parseFloat(tempTime[12]);
@@ -50,8 +55,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.startTime = event.detail.value;
 		}
 		if (event.detail.value > this.endTime) {
-			var tempTime = event.detail.value;
-			tempTime = tempTime.split("");
 			var first = parseFloat(tempTime[11]);
 			var second = parseFloat(tempTime[12]);
 			second = (second + 1) % 10;
