@@ -90,5 +90,4 @@ public class HOT_TestDataFactory {
 		);
 		return user;
 	}
-
 }
