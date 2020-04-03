@@ -38,6 +38,13 @@
   flex-direction: column;
 }
 
+@media (max-width: 600px) {
+  .main-content {
+    margin: 0;
+    margin-top: 2rem;
+  }
+}
+
 .slds-form-element__label {
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -115,6 +122,28 @@ lightning-datetimepicker > div > fieldset > legend.slds-form-element__legend {
 
 .slds-form-element__legend {
   font-weight: normal;
+}
+
+@media (max-width: 600px) {
+  .postnummer label {
+    left: -1000px;
+    visibility: hidden;
+    position: absolute;
+  }
+  .postnummer label:after {
+    visibility: visible;
+    position: absolute;
+    top: -23px;
+    left: 1000px;
+    content: "Postnr";
+  }
+  .postnummer {
+    top: 29px;
+  }
+}
+
+lightning-radio-group {
+  padding-left: 0.25rem;
 }
 
 .slds-input {
@@ -280,6 +309,13 @@ lightning-input-field.ikke-sensitiv-fritekst
   align-items: center;
 }
 
+@media (max-width: 600px) {
+  .informasjonstavle__body {
+    padding: 0;
+    padding-top: 0.5rem;
+  }
+}
+
 .informasjonstavle__content {
   max-width: 800px;
   width: 100%;
@@ -289,26 +325,19 @@ lightning-input-field.ikke-sensitiv-fritekst
 
 .informasjonstavle__bildepaneler {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-@media (min-width: 576px) {
+@media (max-width: 576px) {
   .informasjonstavle__bildepaneler {
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
   }
 }
 
 .informasjonstavle a:link {
   text-decoration: none;
   text-decoration-color: #0067c5;
-}
-
-@media (min-width: 576px) {
-  .panelMedBilde {
-    flex: 1;
-  }
 }
 
 .panelMedBilde {
@@ -318,6 +347,13 @@ lightning-input-field.ikke-sensitiv-fritekst
   overflow: hidden;
   text-overflow: ellipsis;
   margin: 1rem;
+  min-width: 200px;
+  flex: 1;
+}
+@media (max-width: 576px) {
+  .panelMedBilde {
+    margin: 20px;
+  }
 }
 
 @media (min-width: 576px) {
@@ -601,8 +637,8 @@ div.skjema {
   background-color: #fff;
 }
 
-div.lightning-breadcrumbs {
-  padding-left: 2rem !important;
+lightning-breadcrumbs {
+  padding-left: 2.25rem !important;
   display: flex;
   justify-content: left;
 }
@@ -619,7 +655,7 @@ lightning-breadcrumb:last-child a {
 
 @media (max-width: 576px) {
   div.skjema {
-    padding: 2rem;
+    padding: 1.25rem;
   }
   form {
     padding: 0;

@@ -3,9 +3,6 @@
         "experimentalDecorators": true,
         "baseUrl": ".",
         "paths": {
-            "c/hot_createRequestForm": [
-                "hot_createRequestForm/hot_createRequestForm.js"
-            ],
             "c/hot_requestList": [
                 "hot_requestList/hot_requestList.js"
             ],
@@ -23,6 +20,9 @@
             ],
             "c/hot_warningBannerRequest": [
                 "hot_warningBannerRequest/hot_warningBannerRequest.js"
+            ],
+            "c/hot_createRequestForm": [
+                "hot_createRequestForm/hot_createRequestForm.js"
             ]
         }
     },
