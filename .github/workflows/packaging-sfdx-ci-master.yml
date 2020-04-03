@@ -54,38 +54,23 @@ jobs:
       - name: "Create package version"
         id: package-version-create
         run: |
-          mv force-app/main/default/networks temp
-          mv force-app/main/default/documents temp
-          mv force-app/main/default/networkBranding temp
-          mv force-app/main/default/experiences temp
-          mv force-app/main/default/siteDotComSites temp
-          mv force-app/main/default/sites temp
-          mv force-app/main/default/pages temp
-          mv force-app/main/default/translations temp
-          mv force-app/main/default/classes/ChangePasswordController* temp
-          mv force-app/main/default/classes/CommunitiesLandingController* temp
-          mv force-app/main/default/classes/MyProfilePageController* temp
-          mv force-app/main/default/sharingSets temp
-          mv force-app/main/default/roles temp
-          mv force-app/main/default/profiles temp
-          mv force-app/krr-integration/customMetadata temp
+          rm -rf force-app/main/default/networks
+          mv -rf force-app/main/default/documents
+          mv -rf force-app/main/default/networkBranding
+          mv -rf force-app/main/default/experiences
+          mv -rf force-app/main/default/siteDotComSites
+          mv -rf force-app/main/default/sites
+          mv -rf force-app/main/default/pages
+          mv -rf force-app/main/default/translations
+          mv -rf force-app/main/default/classes/ChangePasswordController*
+          mv -rf force-app/main/default/classes/CommunitiesLandingController*
+          mv -rf force-app/main/default/classes/MyProfilePageController*
+          mv -rf force-app/main/default/sharingSets
+          mv -rf force-app/main/default/roles
+          mv -rf force-app/main/default/profiles
+          mv -rf force-app/krr-integration/customMetadata
           echo "::set-output name=result::$(sfdx force:package:version:create -f config/project-scratch-def.json -p $(cat sfdx-project.json | jq '.packageDirectories[0].package' -r) -k ${{ secrets.PACKAGE_KEY }} -w 20 --json | jq -c .)"
           echo "::set-output name=isSuccess::true"
-          mv temp/networks force-app/main/default/networks
-          mv temp/documents force-app/main/default/documents
-          mv temp/networkBranding force-app/main/default/networkBranding
-          mv temp/experiences force-app/main/default/experiences
-          mv temp/siteDotComSites force-app/main/default/siteDotComSites
-          mv temp/sites force-app/main/default/sites
-          mv temp/pages force-app/main/default/pages
-          mv temp/translations force-app/main/default/translations
-          mv temp/ChangePasswordController* force-app/main/default/classes
-          mv temp/CommunitiesLandingController* force-app/main/default/classes
-          mv temp/MyProfilePageController* force-app/main/default/classes
-          mv temp/sharingSets force-app/main/default/sharingSets
-          mv temp/roles force-app/main/default/roles
-          mv temp/profiles force-app/main/default/profiles
-          mv temp/customMetadata force-app/krr-integration/customMetadata
 
       # Extract data from package version create result
       - name: "Extract package:version:create result data"
