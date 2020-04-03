@@ -122,6 +122,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		if (JSON.parse(newURL.get("fieldValues")) != null) {
 			this.fieldValues = JSON.parse(newURL.get("fieldValues"));
 			this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
+			if (!this.sameLocation) {
+				this.value = 'no';
+			}
 		}
 	}
 
