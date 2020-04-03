@@ -34,9 +34,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		var tempTime = event.detail.value;
 		tempTime = tempTime.split("");
 
-
+		console.log(parseFloat(tempTime[14] + tempTime[15]));
+		console.log(now.getMinutes());
+		console.log(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes() <= 1);
 		if (this.startTime == null) {
-			if (tempTime[14] + tempTime[15] == now.getMinutes().toString()) {
+			if (Math.abs(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes()) <= 1) {
 				tempTime[14] = '0';
 				tempTime[15] = '0';
 			}
@@ -81,7 +83,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 		}
 		console.log(JSON.stringify(fields));
-		this.template.querySelector('lightning-record-edit-form').submit(fields);
+		if (fields) {
+			this.template.querySelector('lightning-record-edit-form').submit(fields);
+		}
 	}
 
 	handleError(event) {
