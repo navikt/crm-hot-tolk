@@ -68,6 +68,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		},
 	];
 
+
 	@track rerender;
 	@track requests;
 	@track allRequests;
@@ -118,7 +119,25 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	@track defaultSortDirection = 'asc';
 	@track sortDirection = 'asc';
-	@track sortedBy;
+	@track sortedBy = 'StartTime__c';
+
+	mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "asc"} ';
+	get sortingOptions() {
+		return [
+			{ label: 'Start tid stigende', value: '{"fieldName": "StartTime__c", "sortDirection": "asc"} ' },
+			{ label: 'Start tid synkende', value: '{"fieldName": "StartTime__c", "sortDirection": "desc"} ' },
+			{ label: 'Tema stigende', value: '{"fieldName": "Subject__c", "sortDirection": "asc"} ' },
+			{ label: 'Tema synkende', value: '{"fieldName": "Subject__c", "sortDirection": "desc"} ' },
+			{ label: 'Oppmøtested stigende', value: '{"fieldName": "MeetingStreet__c", "sortDirection": "asc"} ' },
+			{ label: 'Oppmøtested synkende', value: '{"fieldName": "MeetingStreet__c", "sortDirection": "desc"} ' },
+			{ label: 'Status stigende', value: '{"fieldName": "ExternalRequestStatus__c", "sortDirection": "asc"} ' },
+			{ label: 'Status synkende', value: '{"fieldName": "ExternalRequestStatus__c", "sortDirection": "desc"} ' },
+		];
+	}
+	handleMobileSorting(event) {
+		this.sortList(JSON.parse(event.detail.value));
+	}
+
 
 	sortBy(field, reverse, primer) {
 		const key = primer
@@ -130,14 +149,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			};
 
 		return function (a, b) {
-			a = key(a);
-			b = key(b);
+			a = key(a).toLowerCase();
+			b = key(b).toLowerCase();
 			return reverse * ((a > b) - (b > a));
 		};
 	}
 
 	onHandleSort(event) {
-		const { fieldName: sortedBy, sortDirection } = event.detail;
+		this.sortList(event.detail);
+	}
+
+	sortList(input) {
+		const { fieldName: sortedBy, sortDirection } = input;
 		const cloneData = [...this.allRequests];
 
 		cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
