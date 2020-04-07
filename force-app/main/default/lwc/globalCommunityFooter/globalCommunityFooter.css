@@ -87,30 +87,24 @@ a:active, a:hover {
 	padding-left: 0;
 }
 
-@media (max-width: 47.99rem) {
+@media(max-width: 576px) {
 	.hodefot .about-site ul li {
 		display: block;
+		position: relative;
+		padding-left: 30px;
 		padding: 0 !important;
 		margin-bottom: 10px;
 	}
 }
 
-@media(max-width:48rem) {
-	.hodefot .about-site ul li {
-		display: block;
-		position: relative;
-		padding-left: 30px;
-	}
-}
-
-@media (max-width: 47.99rem) {
+@media (max-width: 576px) {
 	.hodefot .about-site ul li:before {
 		left: 50%;
 		top: -6px;
 	}
 }
 
-@media (max-width: 47.99rem) {
+@media (max-width: 576px) {
 	.hodefot .about-site ul li>a {
 		padding: .5em 0;
 		font-size: 1em;

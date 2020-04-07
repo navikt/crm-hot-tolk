@@ -35,7 +35,7 @@
 	flex-direction: column;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 576px) {
 	.main-content {
 		margin: 0;
 		margin-top: 2rem;
@@ -101,7 +101,7 @@ lightning-datetimepicker>div>fieldset>legend.slds-form-element__legend {
 	font-weight: normal;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 576px) {
 	.postnummer label {
 		left: -1000px;
 		visibility: hidden;
@@ -275,7 +275,7 @@ lightning-input-field.ikke-sensitiv-fritekst>lightning-textarea>label:after {
 	align-items: center;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 576px) {
 	.informasjonstavle__body {
 		padding: 0;
 		padding-top: 0.5rem;
