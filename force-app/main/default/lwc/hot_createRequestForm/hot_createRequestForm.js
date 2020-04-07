@@ -1,18 +1,55 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
 
 	@track submitted = false; // if:false={submitted}
+	@track edit = false;
 
-	/*
-		@wire(getRecord, {
-			recordId: USER_ID,
-			fields: [ACCOUNT_ID]
-		}) UserId
-		AccountId = UserId.AccountId;
-	*/
+	@track recordId = null;
+	@track allRequests;
+	@track requests;
+	@track error;
+	wiredRequestsResult;
+
+	@wire(getRequestList)
+	wiredRequest(result) {
+		this.wiredRequestsResult = result;
+		if (result.data) {
+			this.allRequests = result.data;
+			this.filterRequests();
+			this.error = undefined;
+		} else if (result.error) {
+			this.error = result.error;
+			this.requests = undefined;
+		}
+	}
+	filterRequests() {
+		var tempRequests = [];
+		for (var i = 0; i < this.allRequests.length; i++) {
+			if (this.allRequests[i].ExternalRequestStatus__c != "Avlyst" &&
+				this.allRequests[i].ExternalRequestStatus__c != "Dekket" &&
+				this.allRequests[i].ExternalRequestStatus__c != "Udekket") {
+				tempRequests.push(this.allRequests[i]);
+			}
+		}
+		this.requests = tempRequests;
+	}
+
+	isDuplicate(fields) {
+		var isDuplicate = false;
+		for (var i = 0; i < this.requests.length; i++) {
+			if (this.requests[i].StartTime__c <= fields.StartTime__c && fields.StartTime__c <= this.requests[i].EndTime__c
+				||
+				fields.StartTime__c <= this.requests[i].StartTime__c && this.requests[i].StartTime__c <= fields.EndTime__c) {
+				isDuplicate = true;
+				break;
+			}
+		}
+		return isDuplicate;
+	}
 
 	@track sameLocation = true;
 	value = 'yes';
@@ -83,25 +120,33 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 		}
 		console.log(JSON.stringify(fields));
-		if (fields) {
-			this.template.querySelector('lightning-record-edit-form').submit(fields);
+		if (!this.isDuplicate(fields)) {
+			if (fields) {
+				this.template.querySelector('lightning-record-edit-form').submit(fields);
+			}
 		}
+		else {
+			alert("Du har allerede en bestilling i dette tidspunktet");
+		}
+
 	}
 
 	handleError(event) {
 
 	}
-
-
-
 	handleSuccess(event) {
 		var x = this.template.querySelector(".submitted-true");
 		x.classList.remove('hidden');
 		this.template.querySelector(".h2-successMessage").focus();
 		x = this.template.querySelector(".submitted-false");
 		x.classList.add('hidden');
+		this.recordId = event.detail.id;
 
-
+	}
+	handleUploadFinished(event) {
+		// Get the list of uploaded files
+		const uploadedFiles = event.detail.files;
+		alert(uploadedFiles.length + " filer ble lastet opp.");
 	}
 
 	toggled() {
@@ -110,23 +155,29 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 
 	previousPage;
+	editMode;
 	connectedCallback() {
 		let testURL = window.location.href;
 		let newURL = new URL(testURL).searchParams;
 		if (JSON.parse(newURL.get("fromList")) != null) {
-			this.previousPage = 'mine-bestillinger'
+			this.previousPage = 'mine-bestillinger';
 		}
 		else {
-			this.previousPage = 'home'
+			this.previousPage = 'home';
 		}
 		if (JSON.parse(newURL.get("fieldValues")) != null) {
+
 			this.fieldValues = JSON.parse(newURL.get("fieldValues"));
 			this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
 			if (!this.sameLocation) {
 				this.value = 'no';
 			}
+
+			this.recordId = this.fieldValues.Id;
+			this.edit = JSON.parse(newURL.get("edit")) != null;
 		}
 	}
+
 
 	//Navigation functions
 	goToMyRequests() {

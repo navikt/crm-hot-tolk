@@ -11,6 +11,7 @@ import HOT_Request__c from '@salesforce/schema/WorkOrder.HOT_Request__c';
 var actions = [
 	{ label: 'Avlys', name: 'delete' },
 	{ label: 'Kopier', name: 'clone_order' },
+	{ label: 'Rediger', name: 'edit_order' },
 ];
 export default class RequestList extends NavigationMixin(LightningElement) {
 
@@ -19,7 +20,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			label: 'Start tid',
 			fieldName: 'StartTime__c',
 			type: 'date',
-			//sortable: true,
+			sortable: true,
 			typeAttributes: {
 				day: 'numeric',
 				month: 'numeric',
@@ -33,7 +34,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			label: 'Slutt tid',
 			fieldName: 'EndTime__c',
 			type: 'date',
-			//sortable: true,
+			sortable: true,
 			typeAttributes: {
 				day: 'numeric',
 				month: 'numeric',
@@ -47,19 +48,19 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			label: 'Oppmøtested',
 			fieldName: 'MeetingStreet__c',
 			type: 'text',
-			//sortable: true,
+			sortable: true,
 		},
 		{
 			label: 'Tema',
 			fieldName: 'Subject__c',
 			type: 'text',
-			//sortable: true,
+			sortable: true,
 		},
 		{
 			label: 'Status',
 			fieldName: 'ExternalRequestStatus__c',
 			type: 'text',
-			//sortable: true,
+			sortable: true,
 		},
 		{
 			type: 'action',
@@ -69,29 +70,55 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	@track rerender;
 	@track requests;
+	@track allRequests;
 	@track error;
 	wiredRequestsResult;
 
 	@wire(getRequestList)
 	wiredRequest(result) {
-		//console.log('RequestList length: ' + JSON.stringify(result.data.size()));
 		this.wiredRequestsResult = result;
 		if (result.data) {
-			this.requests = result.data;
+			this.allRequests = result.data;
+			this.filterRequests();
+			this.showHideInactives();
 			this.error = undefined;
 		} else if (result.error) {
 			this.error = result.error;
-			this.requests = undefined;
+			this.allRequests = undefined;
 		}
-		//console.log('RequestList:result: ' + JSON.stringify(this.requests));
 
+	}
+
+	filterRequests() {
+		var tempRequests = [];
+		for (var i = 0; i < this.allRequests.length; i++) {
+			if (this.allRequests[i].ExternalRequestStatus__c != "Avlyst" &&
+				this.allRequests[i].ExternalRequestStatus__c != "Dekket" &&
+				this.allRequests[i].ExternalRequestStatus__c != "Udekket") {
+				tempRequests.push(this.allRequests[i]);
+			}
+		}
+		this.requests = tempRequests;
+	}
+
+	@track checked = false;
+	handleChecked(event) {
+		this.checked = event.detail.checked;
+		this.showHideInactives();
+	}
+
+	showHideInactives() {
+		if (this.checked) {
+			this.requests = this.allRequests;
+		}
+		else {
+			this.filterRequests();
+		}
 	}
 
 	@track defaultSortDirection = 'asc';
 	@track sortDirection = 'asc';
-	@track sortedBy = "StartTime__c";
-
-
+	@track sortedBy;
 
 	sortBy(field, reverse, primer) {
 		const key = primer
@@ -110,14 +137,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	}
 
 	onHandleSort(event) {
-		console.log(JSON.stringify(event.detail));
 		const { fieldName: sortedBy, sortDirection } = event.detail;
-		const cloneData = [...this.requests];
+		const cloneData = [...this.allRequests];
 
 		cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
-		this.requests = cloneData;
+		this.allRequests = cloneData;
 		this.sortDirection = sortDirection;
 		this.sortedBy = sortedBy;
+		this.showHideInactives();
 	}
 
 	handleRowAction(event) {
@@ -131,9 +158,16 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			case 'clone_order':
 				this.cloneOrder(row);
 				break;
+			case 'edit_order':
+				this.editOrder(row);
+				break;
 			default:
 		}
 	}
+	connectedCallback() {
+		refreshApex(this.wiredRequestsResult);
+	}
+
 
 	findRowIndexById(Id) {
 		let ret = -1;
@@ -146,10 +180,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		});
 		return ret;
 	}
-	connectedCallback() {
-		refreshApex(this.wiredRequestsResult);
-	}
-
 	cancelOrder(row) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
@@ -181,6 +211,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
+
 			//Here we should get the entire record from salesforce, to get entire interpretation address.
 			let clone = this.requests[index];
 			//console.log(JSON.stringify(clone));
@@ -197,6 +228,33 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 	}
 
+
+	editOrder(row) {
+		const { Id } = row;
+		const index = this.findRowIndexById(Id);
+		if (index != -1) {
+			if (this.requests[index].ExternalRequestStatus__c == "Åpen") {
+				//Here we should get the entire record from salesforce, to get entire interpretation address.
+				let clone = this.requests[index];
+				//console.log(JSON.stringify(clone));
+				this[NavigationMixin.Navigate]({
+					type: 'comm__namedPage',
+					attributes: {
+						pageName: 'ny-bestilling'
+					},
+					state: {
+						fieldValues: JSON.stringify(clone),
+						fromList: true,
+						edit: true,
+					}
+				});
+			}
+			else {
+				alert("Du kan ikke endre denne bestillingen");
+
+			}
+		}
+	}
 	goToNewRequest() {
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',
