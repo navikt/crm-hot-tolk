@@ -39,12 +39,14 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	isDuplicate(fields) {
-		var isDuplicate = false;
+		var isDuplicate = null;
 		for (var i = 0; i < this.requests.length; i++) {
-			if (this.requests[i].StartTime__c <= fields.StartTime__c && fields.StartTime__c <= this.requests[i].EndTime__c
+			if ((this.requests[i].StartTime__c <= fields.StartTime__c && fields.StartTime__c <= this.requests[i].EndTime__c
 				||
-				fields.StartTime__c <= this.requests[i].StartTime__c && this.requests[i].StartTime__c <= fields.EndTime__c) {
-				isDuplicate = true;
+				fields.StartTime__c <= this.requests[i].StartTime__c && this.requests[i].StartTime__c <= fields.EndTime__c)
+				&&
+				this.requests[i].Id != this.recordId) {
+				isDuplicate = i;
 				break;
 			}
 		}
@@ -120,15 +122,19 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 		}
 		console.log(JSON.stringify(fields));
-		if (!this.isDuplicate(fields)) {
-			if (fields) {
+		if (fields) {
+			const isDuplicate = this.isDuplicate(fields);
+			if (this.isDuplicate(fields) == null) {
 				this.template.querySelector('lightning-record-edit-form').submit(fields);
 			}
-		}
-		else {
-			alert("Du har allerede en bestilling i dette tidspunktet");
-		}
 
+			else {
+				if (confirm("Du har allerede en bestilling med temaet " + this.requests[isDuplicate].Subject__c +
+					"\nFortsette?")) {
+					this.template.querySelector('lightning-record-edit-form').submit(fields);
+				}
+			}
+		}
 	}
 
 	handleError(event) {
@@ -155,7 +161,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 
 	previousPage;
-	editMode;
 	connectedCallback() {
 		let testURL = window.location.href;
 		let newURL = new URL(testURL).searchParams;
