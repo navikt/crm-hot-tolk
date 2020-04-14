@@ -126,10 +126,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		return [
 			{ label: 'Start tid stigende', value: '{"fieldName": "StartTime__c", "sortDirection": "asc"} ' },
 			{ label: 'Start tid synkende', value: '{"fieldName": "StartTime__c", "sortDirection": "desc"} ' },
-			{ label: 'Tema stigende', value: '{"fieldName": "Subject__c", "sortDirection": "asc"} ' },
-			{ label: 'Tema synkende', value: '{"fieldName": "Subject__c", "sortDirection": "desc"} ' },
-			{ label: 'Oppmøtested stigende', value: '{"fieldName": "MeetingStreet__c", "sortDirection": "asc"} ' },
-			{ label: 'Oppmøtested synkende', value: '{"fieldName": "MeetingStreet__c", "sortDirection": "desc"} ' },
+			{ label: 'Tema A - Å', value: '{"fieldName": "Subject__c", "sortDirection": "asc"} ' },
+			{ label: 'Tema Å - A', value: '{"fieldName": "Subject__c", "sortDirection": "desc"} ' },
+			{ label: 'Oppmøtested A - Å', value: '{"fieldName": "MeetingStreet__c", "sortDirection": "asc"} ' },
+			{ label: 'Oppmøtested Å - A', value: '{"fieldName": "MeetingStreet__c", "sortDirection": "desc"} ' },
 			{ label: 'Status stigende', value: '{"fieldName": "ExternalRequestStatus__c", "sortDirection": "asc"} ' },
 			{ label: 'Status synkende', value: '{"fieldName": "ExternalRequestStatus__c", "sortDirection": "desc"} ' },
 		];
@@ -147,12 +147,25 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			: function (x) {
 				return x[field];
 			};
-
-		return function (a, b) {
-			a = key(a).toLowerCase();
-			b = key(b).toLowerCase();
-			return reverse * ((a > b) - (b > a));
-		};
+		if (field == 'ExternalRequestStatus__c') {
+			return function (a, b) {
+				a = key(a).toLowerCase();
+				b = key(b).toLowerCase();
+				a = a == "åpen" ? 0 : a == "under behandling" ? 1 : a == "tildelt" ? 2 : a == "pågår" ? 3 : a == "dekket" ?
+					4 : a == "delvis dekket" ? 5 : a == "udekket" ? 6 : a == "avlyst" ? 7 : a == "avslått" ? 8 : 9;
+				b = b == "åpen" ? 0 : b == "under behandling" ? 1 : b == "tildelt" ? 2 : b == "pågår" ? 3 : b == "dekket" ?
+					4 : b == "delvis dekket" ? 5 : b == "udekket" ? 6 : b == "avlyst" ? 7 : b == "avslått" ? 8 : 9;
+				return reverse * ((a > b) - (b > a));
+			};
+		}
+		else {
+			return function (a, b) {
+				a = key(a).toLowerCase();
+				b = key(b).toLowerCase();
+				console.log(b);
+				return reverse * ((a > b) - (b > a));
+			};
+		}
 	}
 
 	onHandleSort(event) {
