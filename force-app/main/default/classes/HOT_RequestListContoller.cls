@@ -11,4 +11,12 @@ public with sharing class HOT_RequestListContoller {
 		FROM HOT_Request__c WHERE Account__c !=null AND Account__c = : user.AccountId ORDER BY StartTime__c ASC];
 		return requests;
 	}
+
+	@AuraEnabled(cacheable = true)
+	public static List<HOT_Request__c> getRequestListFromAccountFromRequestId(Id recordId) {
+		HOT_Request__c currentRecord = [SELECT Id, Name, Account__c FROM HOT_Request__c WHERE Id = :recordId];
+		List<HOT_Request__c> requests = [SELECT Name, Id, StartTime__c, EndTime__c, Status__c, Account__c, ExternalRequestStatus__c
+		FROM HOT_Request__c WHERE Account__c !=null AND Account__c = : currentRecord.Account__c];
+		return requests;
+	}
 }
