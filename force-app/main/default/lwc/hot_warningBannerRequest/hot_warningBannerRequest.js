@@ -4,12 +4,13 @@ import securityMeasures from '@salesforce/schema/HOT_Request__c.Account__r.CRM_P
 import reservations from '@salesforce/schema/HOT_Request__c.Account__r.CRM_Person__r.HOT_Reservations__c';
 import START_TIME from '@salesforce/schema/HOT_Request__c.StartTime__c';
 import END_TIME from '@salesforce/schema/HOT_Request__c.EndTime__c';
-import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
+import ACCOUNT from '@salesforce/schema/HOT_Request__c.Account__c';
+import getRequestListFromAccountFromRequestId from '@salesforce/apex/HOT_RequestListContoller.getRequestListFromAccountFromRequestId';
 
 export default class Hot_warningBannerRequest extends LightningElement {
 	@api recordId;
 
-	@wire(getRecord, { recordId: "$recordId", fields: [securityMeasures, reservations, START_TIME, END_TIME] })
+	@wire(getRecord, { recordId: "$recordId", fields: [securityMeasures, reservations, START_TIME, END_TIME, ACCOUNT] })
 	record;
 
 	get securityMeasures() {
@@ -28,13 +29,13 @@ export default class Hot_warningBannerRequest extends LightningElement {
 		return getFieldValue(this.record.data, reservations) != null;
 	}
 
-
 	@track allRequests;
 	@track requests;
 	@track error;
 	wiredRequestsResult;
+	@api accountId;
 
-	@wire(getRequestList)
+	@wire(getRequestListFromAccountFromRequestId, { recordId: '$recordId' })
 	wiredRequest(result) {
 		this.wiredRequestsResult = result;
 		if (result.data) {
@@ -43,7 +44,7 @@ export default class Hot_warningBannerRequest extends LightningElement {
 			this.error = undefined;
 		} else if (result.error) {
 			this.error = result.error;
-			this.requests = undefined;
+			this.allRequests = undefined;
 		}
 	}
 	isActive = false;
@@ -61,11 +62,14 @@ export default class Hot_warningBannerRequest extends LightningElement {
 		}
 		this.requests = tempRequests;
 	}
-	duplicateRequests = [];
+
+	@track duplicateRequests = [];
 	isDuplicate() {
+
 		var duplicates = [];
 		var duplicateIds = [];
 		var duplicateLinks = []
+
 		if (this.requests && this.isActive) {
 
 			for (var i = 0; i < this.requests.length; i++) {
@@ -79,8 +83,7 @@ export default class Hot_warningBannerRequest extends LightningElement {
 					duplicateLinks.push("/lightning/r/HOT_Request__c/" + this.requests[i].Id + "/view");
 				}
 			}
-
-			if (JSON.stringify(duplicates) != "[]") {
+			if (duplicates.length > 0) {
 				this.duplicateRequests = duplicates;
 				var htmlLinks = "";
 				for (var i = 0; i < duplicates.length; i++) {
@@ -93,19 +96,20 @@ export default class Hot_warningBannerRequest extends LightningElement {
 				}
 
 				htmlLinks = "Brukeren har allerede tolkebestillinger i samme tidsrom:" + htmlLinks;
-				this.template.querySelector(".duplicate-links").innerHTML = htmlLinks;
-
-
+				console.log(this.template.querySelector(".duplicate-links"));
+				//this.template.querySelector(".duplicate-links").innerHTML = htmlLinks;
 			}
 		}
 		return duplicates;
 	}
 	get duplicates() {
+
 		var duplicates = this.isDuplicate();
 		return duplicates;
 	}
 	get getHasDuplicates() {
-		return this.duplicateRequests != [] && this.isActive;
+		var duplicates = this.isDuplicate();
+		return duplicates.length > 0 && this.isActive;
 	}
 
 }
