@@ -35,6 +35,7 @@ export default class Hot_warningBannerRequest extends LightningElement {
 	wiredRequestsResult;
 	@api accountId;
 
+
 	@wire(getRequestListFromAccountFromRequestId, { recordId: '$recordId' })
 	wiredRequest(result) {
 		this.wiredRequestsResult = result;
@@ -65,11 +66,6 @@ export default class Hot_warningBannerRequest extends LightningElement {
 
 	@track duplicateRequests = [];
 	isDuplicate() {
-
-		var duplicates = [];
-		var duplicateIds = [];
-		var duplicateLinks = []
-
 		if (this.requests && this.isActive) {
 
 			for (var i = 0; i < this.requests.length; i++) {
@@ -78,41 +74,18 @@ export default class Hot_warningBannerRequest extends LightningElement {
 					getFieldValue(this.record.data, START_TIME) <= this.requests[i].StartTime__c && this.requests[i].StartTime__c <= getFieldValue(this.record.data, END_TIME))
 					&&
 					this.requests[i].Id != this.recordId) {
-					duplicates.push(this.requests[i].Name);
-					duplicateIds.push(this.requests[i].Id);
-					duplicateLinks.push("/lightning/r/HOT_Request__c/" + this.requests[i].Id + "/view");
-				}
-			}
-			if (duplicates.length > 0) {
-				var htmlLinks = "";
-				for (var i = 0; i < duplicates.length; i++) {
-					if (i != duplicates.length - 1) {
-						htmlLinks = htmlLinks + " <a href=\"" + duplicateLinks[i] + "\">" + duplicates[i] + "</a>,";
-					}
-					else {
-						htmlLinks = htmlLinks + " <a href=\"" + duplicateLinks[i] + "\">" + duplicates[i] + "</a>";
-					}
-				}
 
-				htmlLinks = "Brukeren har allerede tolkebestillinger i samme tidsrom:" + htmlLinks;
-				this.duplicateRequests = duplicates;
+					var arr = { "Id": "/" + this.requests[i].Id, "Name": this.requests[i].Name };
+					this.duplicateRequests.push(arr);
+
+				}
 			}
 		}
-		return htmlLinks;
 	}
 	get getHasDuplicates() {
-		var htmlLinks = this.isDuplicate();
-		try {
-			return this.duplicateRequests.length > 0 && this.isActive;
-		} finally {
-			if (this.duplicateRequests.length > 0 && this.isActive) {
-				var x = this.template.querySelector(".duplicate-links");
-				console.log(x);
-				if (x != null) {
-					x.innerHTML = htmlLinks;
-				}
-			}
-		}
+		this.isDuplicate();
+		return this.duplicateRequests.length > 0 && this.isActive;
+
 	}
 
 }
