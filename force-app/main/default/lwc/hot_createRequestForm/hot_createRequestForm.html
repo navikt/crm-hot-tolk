@@ -100,6 +100,9 @@
 		</br>
 		<h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1">Bestillingen er sendt</h2>
 
+		<lightning-file-upload if:false={hide} label="Legg til filer" name="fileUploader" accept={acceptedFormat}
+			record-id={recordId} onuploadfinished={handleUploadFinished} multiple>
+		</lightning-file-upload>
 		</br>
 		<lightning-button title="Gå til mine bestillinger" class="slds-m-top-small" variant="brand" label="OK"
 			onclick={goToMyRequests}>
@@ -171,6 +174,10 @@
 				<lightning-input-field class="tolk-skjema-input ikke-sensitiv-fritekst" title="Tilleggsopplysninger"
 					field-name="Description__c" value={fieldValues.Description__c}>
 				</lightning-input-field>
+
+				<lightning-file-upload if:false={hide} label="Legg til filer" name="fileUploader"
+					accept={acceptedFormat} record-id={recordId} onuploadfinished={handleUploadFinished} multiple>
+				</lightning-file-upload>
 
 				<lightning-messages aria-live="assertive">
 				</lightning-messages>
