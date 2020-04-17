@@ -20,21 +20,26 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 		insert workOrder;
 		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem( workOrder, workType );
 		insert workOrderLineItem;
-		ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
-		insert serviceAppointment;
+		ServiceAppointment serviceAppointment_1 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
+		insert serviceAppointment_1;
+		ServiceAppointment serviceAppointment_2 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
+		insert serviceAppointment_2;
 
 		List<ServiceResource> serviceResources = [SELECT Id, RelatedRecordId FROM ServiceResource];
-		Set<Id> userIds = new Set<Id>();
-		for ( ServiceResource sr:serviceResources ) {
-			userIds.add( sr.RelatedRecordId );
-		}
-		Map<Id, Set<Id> > usersByServiceAppointment = new Map<Id, Set<Id> >();
-		usersByServiceAppointment.put( serviceAppointment.Id, userIds );
+
+		Map<Id, Id> serviceAppointmentsMap = new Map<Id, Id>();
+		serviceAppointmentsMap.put( 'a0C2o00001WJvIHEA1', serviceAppointment_1.Id );
+		serviceAppointmentsMap.put( 'a0C2o00001WJvIHEA2', serviceAppointment_2.Id );
+
+		Map<Id, Id> usersMap = new Map<Id, Id>();
+		usersMap.put( 'a0C2o00001WJvIHEA1', serviceResources[0].RelatedRecordId );
+		usersMap.put( 'a0C2o00001WJvIHEA2', serviceResources[0].RelatedRecordId );
 		Test.startTest();
-		HOT_ServiceAppointmentsSharingService.grantAccess( usersByServiceAppointment );
+		HOT_ServiceAppointmentsSharingService.grantAccess( serviceAppointmentsMap, usersMap );
 		Test.stopTest();
 
-		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment.Id AND RowCause = 'Manual'] );
+		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_1.Id AND RowCause = 'Manual'] );
+		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_2.Id AND RowCause = 'Manual'] );
 	}
 
 	@IsTest
@@ -51,12 +56,12 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 		insert serviceAppointment_1;
 		ServiceAppointment serviceAppointment_2 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
 		insert serviceAppointment_2;
+		ServiceAppointment serviceAppointment_3 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
+		insert serviceAppointment_3;
 
 		List<ServiceResource> serviceResources = [SELECT Id, RelatedRecordId FROM ServiceResource];
 		Set<Id> userIds = new Set<Id>();
-		for ( ServiceResource sr:serviceResources ) {
-			userIds.add( sr.RelatedRecordId );
-		}
+
 
 		List<ServiceAppointmentShare> shares = new List<ServiceAppointmentShare>();
 		shares.add( new ServiceAppointmentShare(
@@ -71,16 +76,29 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 						RowCause = 'Manual',
 						UserOrGroupId = serviceResources[0].RelatedRecordId
 						) );
+		shares.add( new ServiceAppointmentShare(
+						ParentId = serviceAppointment_3.Id,
+						AccessLevel = 'Edit',
+						RowCause = 'Manual',
+						UserOrGroupId = serviceResources[0].RelatedRecordId
+						) );
 		insert shares;
+		System.assertEquals( 3, [SELECT count() FROM ServiceAppointmentShare WHERE RowCause = 'Manual'] );
 
-		Map<Id, Set<Id> > usersByServiceAppointment = new Map<Id, Set<Id> >();
-		usersByServiceAppointment.put( serviceAppointment_1.Id, userIds );
+		Map<Id, Id> serviceAppointmentsMap = new Map<Id, Id>();
+		serviceAppointmentsMap.put( 'a0C2o00001WJvIHEA1', serviceAppointment_1.Id );
+		serviceAppointmentsMap.put( 'a0C2o00001WJvIHEA2', serviceAppointment_2.Id );
+
+		Map<Id, Id> usersMap = new Map<Id, Id>();
+		usersMap.put( 'a0C2o00001WJvIHEA1', serviceResources[0].RelatedRecordId );
+		usersMap.put( 'a0C2o00001WJvIHEA2', serviceResources[0].RelatedRecordId );
 		Test.startTest();
-		HOT_ServiceAppointmentsSharingService.removeAccessForSpecificUsers( usersByServiceAppointment );
+		HOT_ServiceAppointmentsSharingService.removeAccessForSpecificUsers( serviceAppointmentsMap, usersMap );
 		Test.stopTest();
-		//one manual share should be deleted. One left
+		//two manual shares should be deleted. One left
 		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE RowCause = 'Manual'] );
-		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_2.Id AND RowCause = 'Manual'] );
+		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE RowCause = 'Manual'] );
+		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_3.Id AND RowCause = 'Manual'] );
 	}
 
 	@IsTest

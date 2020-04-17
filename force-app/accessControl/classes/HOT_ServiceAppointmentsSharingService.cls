@@ -1,34 +1,28 @@
 public with sharing class HOT_ServiceAppointmentsSharingService {
 
-	public static void grantAccess( Map<Id, Set<Id> > usersByServiceAppointment ) {
+	public static void grantAccess( Map<Id, Id > serviceApppointmentByAssignment, Map<Id, Id> userByAssignment ) {
 
 		List<ServiceAppointmentShare> shares = new List<ServiceAppointmentShare>();
-		for ( Id serviceAppointmentId:usersByServiceAppointment.keySet() ) {
-			for ( Id userId:usersByServiceAppointment.get( serviceAppointmentId ) ) {
-				shares.add( new ServiceAppointmentShare(
-								ParentId = serviceAppointmentId,
-								AccessLevel = 'Edit',
-								RowCause = 'Manual',
-								UserOrGroupId = userId
-								) );
-			}
+		for ( Id assignmentId:serviceApppointmentByAssignment.keySet() ) {
+			shares.add( new ServiceAppointmentShare(
+							ParentId = serviceApppointmentByAssignment.get( assignmentId ),
+							AccessLevel = 'Edit',
+							RowCause = 'Manual',
+							UserOrGroupId = userByAssignment.get( assignmentId )
+							) );
 		}
 		insert shares;
 	}
 
-	public static void removeAccessForSpecificUsers( Map<Id, Set<Id> > usersByServiceAppointment ) {
+	public static void removeAccessForSpecificUsers( Map<Id, Id > serviceApppointmentByAssignment, Map<Id, Id> userByAssignment ) {
 		String soqlQuery = 'SELECT Id FROM ServiceAppointmentShare WHERE RowCause =\'Manual\' AND (';
-		for ( Id serviceAppointmentId:usersByServiceAppointment.keySet() ) {
-
-
-			for ( Id userId:usersByServiceAppointment.get( serviceAppointmentId ) ) {
-				soqlQuery += ' (UserOrGroupId=:userId AND ParentId=:serviceAppointmentId) OR';
-				System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE RowCause = 'Manual' AND ParentId = : serviceAppointmentId AND UserOrGroupId = : userId] );
-			}
+		for ( Id assignmentId:serviceApppointmentByAssignment.keySet() ) {
+			Id userId = userByAssignment.get( assignmentId );
+			Id serviceAppointmentId = serviceApppointmentByAssignment.get( assignmentId );
+			soqlQuery += ' (UserOrGroupId=\'' + userId + '\' AND ParentId=\'' + serviceAppointmentId + '\') OR';
 		}
 		soqlQuery = soqlQuery.removeEnd( 'OR' );
 		soqlQuery += ')';
-
 		List<ServiceAppointmentShare> serviceAppointmentShares = Database.query( (soqlQuery) );
 		delete serviceAppointmentShares;
 	}
