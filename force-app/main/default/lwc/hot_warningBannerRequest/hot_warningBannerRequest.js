@@ -102,13 +102,17 @@ export default class Hot_warningBannerRequest extends LightningElement {
 	}
 	get getHasDuplicates() {
 		var htmlLinks = this.isDuplicate();
-		var x = this.template.querySelector(".duplicate-links");
-		console.log(x);
-		if (x != null) {
-			x.innerHTML = htmlLinks;
+		try {
+			return this.duplicateRequests.length > 0 && this.isActive;
+		} finally {
+			if (this.duplicateRequests.length > 0 && this.isActive) {
+				var x = this.template.querySelector(".duplicate-links");
+				console.log(x);
+				if (x != null) {
+					x.innerHTML = htmlLinks;
+				}
+			}
 		}
-		console.log(this.duplicateRequests.length > 0 && this.isActive);
-		return this.duplicateRequests.length > 0 && this.isActive;
 	}
 
 }
