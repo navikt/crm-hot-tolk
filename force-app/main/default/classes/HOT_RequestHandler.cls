@@ -4,6 +4,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> changedStatusRequests = new List<HOT_Request__c>();
 		Set<Id> personIdsToUpdate = new Set<Id>();
 		List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
+        List<HOT_Request__c> finishedRequests = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
 			// Filter for relevant records with status updates
@@ -14,7 +15,13 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 			if (request.Person__c != null && request.Person__c != triggerOldMap.get(request.Id).get('Person__c')) {
                 personIdsToUpdate.add(request.Person__c);
                 requestsToGetContactInformationFor.add(request);
-            }
+			}
+			//Filter for relevant records to delete attached files (from finished requests)
+			if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') &&
+				 (request.Status__c == 'Avlyst' || request.Status__c == 'Avslått' || 
+				 request.Status__c == 'Dekket' || request.Status__c == 'Udekket')) {
+					finishedRequests.add(request);
+			}
         }
         if (changedStatusRequests.size() > 0) {
             updateChildRecords(changedStatusRequests);
@@ -31,7 +38,19 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             // Call out to KRR through Queuable Apex
             KRRCalloutQueuable krr = new KRRCalloutQueuable(requestsToGetContactInformationFor);
             System.enqueueJob(krr);
-        }
+		}
+		if (finishedRequests.size() > 0) {
+			for (HOT_Request__c request : finishedRequests) {
+				List<ContentDocumentLink> files = [Select Id, ContentDocumentId From ContentDocumentLink where LinkedEntityId=:request.Id];
+				List<Id> documentIds = new List<Id>();
+				for(ContentDocumentLink f :files){
+					documentIds.add(f.ContentDocumentId);
+				}
+				List<ContentDocument> relatedFiles = [Select id, Title From ContentDocument where Id in: documentIds];
+				delete relatedFiles;
+			}
+		}
+
     }
 
     private static void updateChildRecords(List<HOT_Request__c> changedRequests) {
