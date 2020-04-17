@@ -1,12 +1,16 @@
-import { LightningElement, wire, api } from "lwc";
+import { LightningElement, wire, api, track } from "lwc";
 import { getRecord, getFieldValue } from "lightning/uiRecordApi";
 import securityMeasures from '@salesforce/schema/HOT_Request__c.Account__r.CRM_Person__r.INT_SecurityMeasures__c';
 import reservations from '@salesforce/schema/HOT_Request__c.Account__r.CRM_Person__r.HOT_Reservations__c';
+import START_TIME from '@salesforce/schema/HOT_Request__c.StartTime__c';
+import END_TIME from '@salesforce/schema/HOT_Request__c.EndTime__c';
+import ACCOUNT from '@salesforce/schema/HOT_Request__c.Account__c';
+import getRequestListFromAccountFromRequestId from '@salesforce/apex/HOT_RequestListContoller.getRequestListFromAccountFromRequestId';
 
 export default class Hot_warningBannerRequest extends LightningElement {
 	@api recordId;
 
-	@wire(getRecord, { recordId: "$recordId", fields: [securityMeasures, reservations] })
+	@wire(getRecord, { recordId: "$recordId", fields: [securityMeasures, reservations, START_TIME, END_TIME, ACCOUNT] })
 	record;
 
 	get securityMeasures() {
@@ -80,7 +84,6 @@ export default class Hot_warningBannerRequest extends LightningElement {
 				}
 			}
 			if (duplicates.length > 0) {
-				this.duplicateRequests = duplicates;
 				var htmlLinks = "";
 				for (var i = 0; i < duplicates.length; i++) {
 					if (i != duplicates.length - 1) {
@@ -92,17 +95,20 @@ export default class Hot_warningBannerRequest extends LightningElement {
 				}
 
 				htmlLinks = "Brukeren har allerede tolkebestillinger i samme tidsrom:" + htmlLinks;
-				var x = this.template.querySelector(".duplicate-links");
-				if (x != null) {
-					x.innerHTML = htmlLinks;
-				}
+				this.duplicateRequests = duplicates;
 			}
 		}
-		return duplicates;
+		return htmlLinks;
 	}
 	get getHasDuplicates() {
-		var duplicates = this.isDuplicate();
-		return duplicates.length > 0 && this.isActive;
+		var htmlLinks = this.isDuplicate();
+		var x = this.template.querySelector(".duplicate-links");
+		console.log(x);
+		if (x != null) {
+			x.innerHTML = htmlLinks;
+		}
+		console.log(this.duplicateRequests.length > 0 && this.isActive);
+		return this.duplicateRequests.length > 0 && this.isActive;
 	}
 
 }
