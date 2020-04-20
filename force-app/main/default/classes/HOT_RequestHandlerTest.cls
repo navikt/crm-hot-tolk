@@ -32,6 +32,7 @@ private class HOT_RequestHandlerTest {
 		}
 	}
 
+	/*
 	@isTest
 	private static void testdeleteRelatedFiles(){
 		WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -55,4 +56,5 @@ private class HOT_RequestHandlerTest {
 		System.assertEquals(0, files.size(), 'Was not able to delete files');
 
 	}
+	*/
 }
