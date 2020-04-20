@@ -12,6 +12,7 @@ on:
 # Jobs to be executed
 jobs:
   packaging:
+    name: Create new package
     runs-on: ubuntu-latest
     steps:
       # Install Salesforce CLI
@@ -50,8 +51,8 @@ jobs:
           rm -f ./DEVHUB_SFDX_URL.txt
           rm -f ./INTEGRATION_SANDBOX_SFDX_URL.txt
 
-      # Create package version - removes files that can't be in the package
-      - name: "Create package version"
+      # Delete unpackagable
+      - name: "Delete unpackagable"
         id: package-version-create
         run: |
           rm -rf force-app/unpackagable
@@ -69,32 +70,72 @@ jobs:
       - name: "Install new package version into test org"
         if: steps.extract-data-package-version-create.outputs.isSuccess
         run: "sfdx force:package:install --package ${{ steps.extract-data-package-version-create.outputs.packageVersionId }} -w 10 -b 10 -u integration-sandbox -r -k ${{ secrets.PACKAGE_KEY }}"
-      # Update sfdx-project.json and README to use only latest package version
-      # - name: "Update sfdx-project.json and README"
-      #   if: success() || (failure() && steps.package-version-create.outputs.isSuccess)
-      #   id: packaging-updater
-      #   uses: muenzpraeger/github-action-sfdx-packaging-updater@master
-      #
-      # # Create commit message by extracting the latest version number from sfdx-project.json
-      # - name: "Build commit message"
-      #   if: success() || (failure() && steps.packaging-updater.outputs.isSuccess)
-      #   id: build-commit-message
-      #   run: echo "::set-output name=message::(CI) Update package version"
-      #
-      # # Remove auth files
-      # - name: "Remove auth files"
-      #   if: always()
-      #   run: |
-      #     rm -f ./DEVHUB_SFDX_URL.txt
-      #     rm -f ./INTEGRATION_SANDBOX_SFDX_URL.txt
-      #
-      # # Re-add changes back to source
-      # - name: "Add new package version, updated sfdx-project.json and README to source"
-      #   if: (success() || failure()) && steps.packaging-updater.outputs.isSuccess
-      #   uses: Automattic/action-commit-to-branch@master
-      #   with:
-      #     branch: "master"
-      #     commit_message: ${{steps.build-commit-message.outputs.message}}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #
+
+        # Fetch beta version number
+      - name: "Fetch beta version number"
+        if: success() || (failure() && steps.package-version-create.outputs.isSuccess)
+        id: packaging-updater
+        uses: muenzpraeger/github-action-sfdx-packaging-updater@master
+
+      # Set release variables
+      - name: "Set release fields"
+        if: success() || (failure() && steps.package-version-create.outputs.isSuccess)
+        id: release-fields
+        run: |
+          echo "::set-output name=tagName::v$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')-beta$(cat sfdx-project.json | jq '.packageAliases | keys_unsorted[-1]' -r | sed 's/.*-//')"
+          echo "::set-output name=releaseName::$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')-beta$(cat sfdx-project.json | jq '.packageAliases | keys_unsorted[-1]' -r | sed 's/.*-//')"
+          echo "::set-output name=bodyVersion::$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//') (beta $(cat sfdx-project.json | jq '.packageAliases | keys_unsorted[-1]' -r | sed 's/.*-//'))"
+          echo "::set-output name=bodyPackage::${{ steps.extract-data-package-version-create.outputs.packageVersionId }}"
+
+      # Generate changelog from commits
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v0.2.3
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create Github release - success
+      - name: "Create Release - Success"
+        if: success() && steps.package-version-create.outputs.isSuccess && steps.install-package-version-to-integration.outputs.isSuccess
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release-fields.outputs.tagName }}
+          release_name: ${{ steps.release-fields.outputs.releaseName }}
+          body: |
+            **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
+            **Package ID**: ${{ steps.release-fields.outputs.bodyPackage }}
+            **Author**: ${{ github.actor }}
+
+            ✅ Package Creation
+            ✅ Package Installation
+
+            ## Changelog
+
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: true
+
+      # Create Github release - failed
+      - name: "Create Release - Failed to install"
+        if: failure() && steps.package-version-create.outputs.isSuccess && !steps.install-package-version-to-integration.outputs.isSuccess
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release-fields.outputs.tagName }}
+          release_name: ${{ steps.release-fields.outputs.releaseName }}
+          body: |
+            ${{ steps.release-fields.outputs.bodyVersion }}
+            ${{ steps.release-fields.outputs.bodyPackage }}
+            **Author**: ${{ github.actor }}
+
+            ✅ Package Creation
+            ❌ Package Installation
+
+            ## Changelog
+
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: true
