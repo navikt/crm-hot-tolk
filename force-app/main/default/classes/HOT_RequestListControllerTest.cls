@@ -84,7 +84,7 @@ private class HOT_RequestListControllerTest{
 
 	@isTest
 	private static void dymmyTestgetRequestList(){
-		List<HOT_Request__c> req2 = HOT_RequestListContoller.getRequestList();
+		List<HOT_Request__c> req1 = HOT_RequestListContoller.getRequestList();
 		List<HOT_Request__c> req2 = HOT_RequestListContoller.getRequestListFromAccountFromRequestId('0000000000000');
 	}
 
