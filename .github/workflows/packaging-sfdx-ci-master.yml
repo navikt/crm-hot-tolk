@@ -54,21 +54,7 @@ jobs:
       - name: "Create package version"
         id: package-version-create
         run: |
-          rm -rf force-app/main/default/networks
-          rm -rf force-app/main/default/documents
-          rm -rf force-app/main/default/networkBranding
-          rm -rf force-app/main/default/experiences
-          rm -rf force-app/main/default/siteDotComSites
-          rm -rf force-app/main/default/sites
-          rm -rf force-app/main/default/pages
-          rm -rf force-app/main/default/translations
-          rm -rf force-app/main/default/classes/ChangePasswordController*
-          rm -rf force-app/main/default/classes/CommunitiesLandingController*
-          rm -rf force-app/main/default/classes/MyProfilePageController*
-          rm -rf force-app/main/default/sharingSets
-          rm -rf force-app/main/default/roles
-          rm -rf force-app/main/default/profiles
-          rm -rf force-app/main/krr-integration/customMetadata
+          rm -rf force-app/unpackagable
           echo "::set-output name=result::$(sfdx force:package:version:create -f config/project-scratch-def.json -p $(cat sfdx-project.json | jq '.packageDirectories[0].package' -r) -k ${{ secrets.PACKAGE_KEY }} -w 20 --json | jq -c .)"
           echo "::set-output name=isSuccess::true"
 
