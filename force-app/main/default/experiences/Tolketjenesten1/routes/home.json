@@ -1,6 +1,7 @@
 {
-  "appPageId" : "25d3b486-5cf7-41c8-afa0-036d2204a4c5",
-  "id" : "8a2d1ad5-919a-4824-837f-860a2e0d9ada",
+  "activeViewId" : "10f3ecb5-0a9b-46e7-a735-11aa674ce61e",
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "id" : "11b73e65-08c1-47f0-9a1c-38ed579ef149",
   "label" : "Home",
   "pageAccess" : "UseParent",
   "routeType" : "home",

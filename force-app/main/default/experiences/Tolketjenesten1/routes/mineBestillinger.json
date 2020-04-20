@@ -1,7 +1,8 @@
 {
-  "appPageId" : "25d3b486-5cf7-41c8-afa0-036d2204a4c5",
-  "id" : "675f8251-2260-4a5b-b290-df4fb01034b9",
-  "label" : "Mine bestillinger",
+  "activeViewId" : "0b06e578-0950-4b42-a9ea-7a617374053f",
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "id" : "b898b062-3394-4c7e-97cc-3a8c3b58b513",
+  "label" : "Mine Bestillinger",
   "pageAccess" : "UseParent",
   "routeType" : "custom-mine-bestillinger",
   "type" : "route",

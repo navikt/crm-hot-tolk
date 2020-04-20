@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ExperienceBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Tolketjenesten</label>
-    <type>ChatterNetworkPicasso</type>
+	<label>Tolketjenesten</label>
+	<type>ChatterNetworkPicasso</type>
 </ExperienceBundle>

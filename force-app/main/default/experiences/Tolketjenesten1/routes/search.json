@@ -1,6 +1,7 @@
 {
-  "appPageId" : "25d3b486-5cf7-41c8-afa0-036d2204a4c5",
-  "id" : "94dd69b5-8ea4-4d78-9cb5-7d37a842d3dc",
+  "activeViewId" : "b2a652ec-e7f0-4334-8879-7c9ae5f691b7",
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "id" : "4ee42ebc-8793-4672-a3f9-91a45280b9d7",
   "label" : "Search",
   "pageAccess" : "UseParent",
   "routeType" : "global-search",

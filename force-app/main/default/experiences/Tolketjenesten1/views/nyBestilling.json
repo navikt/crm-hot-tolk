@@ -1,7 +1,7 @@
 {
-  "appPageId" : "25d3b486-5cf7-41c8-afa0-036d2204a4c5",
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:dynamicLayout",
-  "id" : "fc845936-ccd4-46e6-8a4f-389f08f5271a",
+  "id" : "f8989ae0-09d2-44d2-b5ee-cd316904216b",
   "label" : "Ny bestilling",
   "regions" : [ {
     "components" : [ {
@@ -10,9 +10,9 @@
         "backgroundOverlay" : "rgba(0,0,0,0.5)",
         "contentAreaWidth" : 100,
         "sectionConfig" : {
-          "UUID" : "fc69a245-dee5-4de0-900e-d9218307dff0",
+          "UUID" : "166f0129-d1a2-43c8-a8af-5e9829e3cc1e",
           "columns" : [ {
-            "UUID" : "a6467229-eddf-4b5f-b158-806a3c76bb89",
+            "UUID" : "de83debd-ea70-4023-b172-ca6c3ac25ce3",
             "columnName" : "Column 1",
             "columnKey" : "1",
             "columnWidth" : "12",
@@ -22,31 +22,31 @@
         "sectionHeight" : 300
       },
       "componentName" : "forceCommunity:section",
-      "id" : "fc69a245-dee5-4de0-900e-d9218307dff0",
+      "id" : "166f0129-d1a2-43c8-a8af-5e9829e3cc1e",
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : { },
           "componentName" : "c:globalCommunityHeader",
-          "id" : "d8af7a92-d6c3-4a05-91f8-b47b028db8a7",
+          "id" : "3b11105b-c336-4200-af86-77cea93ec0ec",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         }, {
           "componentAttributes" : { },
           "componentName" : "c:hot_createRequestForm",
-          "id" : "9b89f946-5611-44ad-8741-0383ae3df28b",
+          "id" : "0cddd167-534c-4974-accb-21962c813929",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         }, {
           "componentAttributes" : { },
           "componentName" : "c:globalCommunityFooter",
-          "id" : "d6fa9302-60ac-420e-9333-1cc81ef06874",
+          "id" : "575f4e39-f8fb-4e14-8fbe-f551365ef32c",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         } ],
-        "id" : "a6467229-eddf-4b5f-b158-806a3c76bb89",
+        "id" : "de83debd-ea70-4023-b172-ca6c3ac25ce3",
         "regionLabel" : "Column 1",
         "regionName" : "1",
         "renditionMap" : { },
@@ -56,7 +56,7 @@
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "045fbc54-493c-47ff-ba95-61a60f065b32",
+    "id" : "2e8f9c6a-f954-4c33-823e-eba172da51b6",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -67,12 +67,11 @@
         "title" : "Ny bestilling"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "82df4292-1a35-4e06-ac9a-87fbc1fbfa72",
-      "renderPriority" : "NEUTRAL",
+      "id" : "5a2c1bc6-684a-4033-a457-b34a7ee947a8",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "d072148a-a337-4206-8545-daead2c9a6c5",
+    "id" : "bfda7b82-621e-4cfc-b9e0-1c6aa88e1e89",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],
