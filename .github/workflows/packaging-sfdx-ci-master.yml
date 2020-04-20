@@ -77,13 +77,13 @@ jobs:
 
         # Fetch beta version number
       - name: "Fetch beta version number"
-        if: success() || (failure() && steps.package-version-create.outputs.isSuccess)
+        if: success()
         id: packaging-updater
         uses: muenzpraeger/github-action-sfdx-packaging-updater@master
 
       # Set release variables
       - name: "Set release fields"
-        if: success() || (failure() && steps.package-version-create.outputs.isSuccess)
+        if: success()
         id: release-fields
         run: |
           echo "::set-output name=tagName::v$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')-beta$(cat sfdx-project.json | jq '.packageAliases | keys_unsorted[-1]' -r | sed 's/.*-//')"
@@ -98,9 +98,9 @@ jobs:
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
 
-      # Create Github release - success
-      - name: "Create Release - Success"
-        if: success() && steps.package-version-create.outputs.isSuccess && steps.install-package-version-to-integration.outputs.isSuccess
+      # Create Github release
+      - name: "Create Release"
+        if: success()
         uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -114,29 +114,6 @@ jobs:
 
             ✅ Package Creation
             ✅ Package Installation
-
-            ## Changelog
-
-            ${{ steps.changelog.outputs.changelog }}
-          draft: false
-          prerelease: true
-
-      # Create Github release - failed
-      - name: "Create Release - Failed to install"
-        if: failure() && steps.package-version-create.outputs.isSuccess && !steps.install-package-version-to-integration.outputs.isSuccess
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.release-fields.outputs.tagName }}
-          release_name: ${{ steps.release-fields.outputs.releaseName }}
-          body: |
-            ${{ steps.release-fields.outputs.bodyVersion }}
-            ${{ steps.release-fields.outputs.bodyPackage }}
-            **Author**: ${{ github.actor }}
-
-            ✅ Package Creation
-            ❌ Package Installation
 
             ## Changelog
 
