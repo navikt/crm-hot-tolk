@@ -13,7 +13,7 @@ call move force-app\main\default\classes\MyProfilePageController* temp
 call move force-app\main\default\sharingSets temp
 call move force-app\main\default\roles temp
 call move force-app\main\default\profiles temp
-call move force-app\krr-integration\customMetadata temp
+call move force-app\main\krr-integration\customMetadata temp
 
 call sfdx force:package:version:create -f config/project-scratch-def.json -k navcrm -p crm-hot
 :: for ($i=1; $i -le 100; $i++) {sfdx force:package:version:create:report -i XXX}
@@ -33,7 +33,7 @@ call move temp\MyProfilePageController* force-app\main\default\classes
 call move temp\sharingSets force-app\main\default\sharingSets
 call move temp\roles force-app\main\default\roles
 call move temp\profiles force-app\main\default\profiles
-call move temp\customMetadata force-app\krr-integration\customMetadata
+call move temp\customMetadata force-app\main\krr-integration\customMetadata
 
 :: Innstaller pakken i PREPROD
 :: sfdx force:package:install -u carl.huseby.fosli@nav.no.preprod -p XXX -k navcrm --wait 10 --publishwait 10
