@@ -7,7 +7,7 @@
     "components" : [ {
       "componentAttributes" : { },
       "componentName" : "c:globalCommunityHeader",
-      "id" : "f6e0c2a2-ed42-43fa-b767-1a807e1a5046",
+      "id" : "51a83c74-b2d8-4e9b-818a-626e97eb7f68",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -19,7 +19,7 @@
     "components" : [ {
       "componentAttributes" : { },
       "componentName" : "c:hot_home",
-      "id" : "0eb464ce-e05a-4ddc-bf17-b3de9d4b46a2",
+      "id" : "f259580c-129f-4691-af2a-3fa913ffa589",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -31,7 +31,7 @@
     "components" : [ {
       "componentAttributes" : { },
       "componentName" : "c:globalCommunityFooter",
-      "id" : "bacb07c9-7555-4d73-a891-fbe094d6c48d",
+      "id" : "8ca20f5c-1dba-4997-8753-7a8b673c6858",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
