@@ -90,7 +90,7 @@
 **/classes/CommunitiesLandingController*
 **/classes/MyProfilePageController*
 
-**\sharingSets\Field_Service.sharingSet-meta.xml
+**\sharingSets\HOT_RequestSharingSet.sharingSet-meta.xml
 
 # MyTriggers
 **/classes/MyTriggers*
