@@ -12,7 +12,6 @@
 		<objectField>CRM_Account__c</objectField>
 		<userField>Account</userField>
 	</accessMappings>
-	<name>Field Service</name>
-	<profiles>field service community user</profiles>
+	<name>HOT_RequestSharingSet</name>
 	<profiles>nav bruker</profiles>
 </SharingSet>
