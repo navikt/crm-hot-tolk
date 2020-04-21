@@ -23,8 +23,9 @@
     <requireHttps>true</requireHttps>
     <requireInsecurePortalAccess>false</requireInsecurePortalAccess>
     <selfRegPage>CommunitiesSelfReg</selfRegPage>
-    <siteAdmin>test-xu9olhvad6ry@example.com</siteAdmin>
+    <siteAdmin>vegard.aas.mjelde@nav.no</siteAdmin>
+    <siteGuestRecordDefaultOwner>vegard.aas.mjelde@nav.no</siteGuestRecordDefaultOwner>
     <siteType>ChatterNetwork</siteType>
-    <subdomain>velocity-nosoftware-4692-1711b808771</subdomain>
+    <subdomain>navdialog</subdomain>
     <urlPathPrefix>tolketjenesten</urlPathPrefix>
 </CustomSite>
