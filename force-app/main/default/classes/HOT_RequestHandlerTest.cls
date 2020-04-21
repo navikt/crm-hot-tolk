@@ -40,13 +40,25 @@ private class HOT_RequestHandlerTest {
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
 		insert request;
 
-		Attachment attach=new Attachment(Name='Unit Test Attachment');
-        Blob bodyBlob=Blob.valueOf('Unit Test Attachment Body');
-        attach.body=bodyBlob;
-        attach.parentId=request.id;
-		insert attach;
-		
+		ContentVersion contentVersion = new ContentVersion(
+		Title = 'Penguins',
+		PathOnClient = 'Penguins.jpg',
+		VersionData = Blob.valueOf('Test Content'),
+		IsMajorVersion = true
+		);
+		insert contentVersion;    
+		List<ContentDocument> documents = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument];
+		System.debug(documents.size());
+
+		//create ContentDocumentLink  record 
+		ContentDocumentLink cdl = New ContentDocumentLink();
+		cdl.LinkedEntityId = request.id;
+		cdl.ContentDocumentId = documents[0].Id;
+		cdl.shareType = 'V';
+		insert cdl;
+
 		List<ContentDocumentLink> files = [Select Id, ContentDocumentId From ContentDocumentLink where LinkedEntityId=:request.id];
+		System.debug(files.size());
 		System.assertEquals(1, files.size(), 'Was not able to add files');
 
 		request.Status__c = 'Avlyst';
@@ -57,4 +69,5 @@ private class HOT_RequestHandlerTest {
 
 	}
 	*/
+	
 }
