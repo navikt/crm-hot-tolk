@@ -1,0 +1,10 @@
+call sfdx force:package:install --package 04t2o000001MxsHAAS  -k navcrm --wait 10 --publishwait 10
+call sfdx force:package:install --package 04t2o000001MxphAAC  -k navcrm --wait 10 --publishwait 10
+call sfdx force:package:install --package 04t2o000001My1YAAS  -k navcrm --wait 10 --publishwait 10
+
+*CHANGE IN FILE*
+.\community\sites\Tolketjenesten.site-meta.xml
+	<siteAdmin>user@email.com</siteAdmin>
+	<siteGuestRecordDefaultOwner>user@email.com</siteGuestRecordDefaultOwner>
+
+*DEPLOY community-folder*
