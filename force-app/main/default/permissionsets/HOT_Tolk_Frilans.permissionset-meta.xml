@@ -500,6 +500,11 @@
 		<field>WorkOrderLineItem.WorkTypeId</field>
 		<readable>true</readable>
 	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>Person__c.HOT_SIPAddress__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
 	<hasActivationRequired>false</hasActivationRequired>
 	<label>HOT Tolk Frilans</label>
 	<license>Customer Community Plus</license>
