@@ -31,11 +31,11 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 		serviceAppointmentsMap.put( 'a0C2o00001WJvIHEA1', serviceAppointment_1.Id );
 		serviceAppointmentsMap.put( 'a0C2o00001WJvIHEA2', serviceAppointment_2.Id );
 
-		Map<Id, Id> usersMap = new Map<Id, Id>();
-		usersMap.put( 'a0C2o00001WJvIHEA1', serviceResources[0].RelatedRecordId );
-		usersMap.put( 'a0C2o00001WJvIHEA2', serviceResources[0].RelatedRecordId );
+		Map<Id, Id> resourceMap = new Map<Id, Id>();
+		resourceMap.put( 'a0C2o00001WJvIHEA1', serviceResources[0].Id );
+		resourceMap.put( 'a0C2o00001WJvIHEA2', serviceResources[0].Id );
 		Test.startTest();
-		HOT_ServiceAppointmentsSharingService.grantAccess( serviceAppointmentsMap, usersMap );
+		HOT_ServiceAppointmentsSharingService.grantAccess( serviceAppointmentsMap, resourceMap );
 		Test.stopTest();
 
 		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_1.Id AND RowCause = 'Manual'] );
@@ -90,8 +90,8 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 		serviceAppointmentsMap.put( 'a0C2o00001WJvIHEA2', serviceAppointment_2.Id );
 
 		Map<Id, Id> usersMap = new Map<Id, Id>();
-		usersMap.put( 'a0C2o00001WJvIHEA1', serviceResources[0].RelatedRecordId );
-		usersMap.put( 'a0C2o00001WJvIHEA2', serviceResources[0].RelatedRecordId );
+		usersMap.put( 'a0C2o00001WJvIHEA1', serviceResources[0].Id );
+		usersMap.put( 'a0C2o00001WJvIHEA2', serviceResources[0].Id );
 		Test.startTest();
 		HOT_ServiceAppointmentsSharingService.removeAccessForSpecificUsers( serviceAppointmentsMap, usersMap );
 		Test.stopTest();

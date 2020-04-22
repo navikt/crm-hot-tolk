@@ -110,4 +110,13 @@ public class HOT_TestDataFactory {
 
 		return resource;
 	}
+
+	public static AssignedResource createAssignedResource( Id serviceAppointmentId, Id serviceResourceId ) {
+		AssignedResource assignedResource = new AssignedResource(
+			ServiceAppointmentId = serviceAppointmentId,
+			ServiceResourceId = serviceResourceId
+			);
+
+		return assignedResource;
+	}
 }
