@@ -5,46 +5,11 @@
   "label" : "Register",
   "regions" : [ {
     "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "salesforceIdentity:communityLogo2",
-      "id" : "1489aa46-8a10-4914-ace7-8b8b69573e65",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
       "componentAttributes" : {
         "richTextValue" : "<div style=\"text-align: center;\">Join the community to receive personalized information and customer support.</div>"
       },
       "componentName" : "forceCommunity:richTextInline",
       "id" : "2afe7c89-df79-470a-89c7-3dcfe0997a91",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : {
-        "confirmPasswordLabel" : "Confirm Password",
-        "emailLabel" : "Email",
-        "extraFieldsFieldSet" : "",
-        "firstnameLabel" : "First Name",
-        "includePasswordField" : false,
-        "lastnameLabel" : "Last Name",
-        "passwordLabel" : "Create Password",
-        "regConfirmUrl" : "./CheckPasswordResetEmail",
-        "startUrl" : "",
-        "submitButtonLabel" : "Sign Up"
-      },
-      "componentName" : "salesforceIdentity:selfRegister2",
-      "id" : "00ff80c9-d05c-495b-a485-cd3784a4feec",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : {
-        "headerText" : "",
-        "showHeader" : false
-      },
-      "componentName" : "salesforceIdentity:socialLogin2",
-      "id" : "7d299f58-2120-448d-ba4b-3804d3a535e7",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"

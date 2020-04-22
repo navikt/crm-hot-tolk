@@ -4,49 +4,6 @@
   "id" : "7b7013d6-e3b5-4870-b998-416b6be542f1",
   "label" : "Login",
   "regions" : [ {
-    "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "salesforceIdentity:communityLogo2",
-      "id" : "dc58acb8-56d4-4549-bbb9-e5679062a192",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : {
-        "forgotPasswordLabel" : "Forgot your password?",
-        "forgotPasswordUrl" : "/ForgotPassword",
-        "loginButtonLabel" : "Log in",
-        "passwordLabel" : "Password",
-        "selfRegisterLabel" : "Not a member?",
-        "selfRegisterUrl" : "/SelfRegister",
-        "startUrl" : "",
-        "usernameLabel" : "Username"
-      },
-      "componentName" : "salesforceIdentity:loginForm2",
-      "id" : "da47e083-c9be-4b8f-a8d5-d73d2cd52a30",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : {
-        "headerText" : "",
-        "showHeader" : false
-      },
-      "componentName" : "salesforceIdentity:socialLogin2",
-      "id" : "021d7d4d-afa7-4367-b815-e579e8fbe828",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : {
-        "employeeLoginLinkLabel" : "Are you an employee? Login here"
-      },
-      "componentName" : "salesforceIdentity:employeeLoginLink2",
-      "id" : "155671d0-9183-4629-a29b-5d28b187abd9",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
     "id" : "ea2eb046-ce3d-4d39-9106-9d5a4be3b0b3",
     "regionName" : "content",
     "type" : "region"

@@ -1,7 +1,7 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:dynamicLayout",
-  "id" : "0b06e578-0950-4b42-a9ea-7a617374053f",
+  "id" : "8c86d6db-08f8-4fe5-b020-9e8171ede842",
   "label" : "Mine Bestillinger",
   "regions" : [ {
     "components" : [ {
@@ -10,9 +10,9 @@
         "backgroundOverlay" : "rgba(0,0,0,0.5)",
         "contentAreaWidth" : 100,
         "sectionConfig" : {
-          "UUID" : "302150cf-d640-4f17-834d-498d730739b8",
+          "UUID" : "c7eb756b-b2cc-46c2-a5c9-fa00a042cfd4",
           "columns" : [ {
-            "UUID" : "efc05f35-5436-4d8e-87c9-d350d34d7f5b",
+            "UUID" : "577fdae1-a460-4937-ad6b-5373c0406320",
             "columnName" : "Column 1",
             "columnKey" : "1",
             "columnWidth" : "12",
@@ -22,31 +22,31 @@
         "sectionHeight" : 300
       },
       "componentName" : "forceCommunity:section",
-      "id" : "302150cf-d640-4f17-834d-498d730739b8",
+      "id" : "c7eb756b-b2cc-46c2-a5c9-fa00a042cfd4",
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : { },
           "componentName" : "c:globalCommunityHeader",
-          "id" : "2c5fd61e-028c-4099-a8ea-afb77a749f05",
+          "id" : "fd696493-f5b3-4e87-a8a2-0ee847f309c2",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         }, {
           "componentAttributes" : { },
           "componentName" : "c:hot_requestList",
-          "id" : "a8b39969-1251-401a-b8dc-50595533a989",
+          "id" : "b295372d-b8e0-4832-ab6b-2d2f4ea50c68",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         }, {
           "componentAttributes" : { },
           "componentName" : "c:globalCommunityFooter",
-          "id" : "2927d7ad-142f-4f13-ad02-5b856a009702",
+          "id" : "762f5710-d213-4598-abc9-9e6c63b51ed3",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         } ],
-        "id" : "efc05f35-5436-4d8e-87c9-d350d34d7f5b",
+        "id" : "577fdae1-a460-4937-ad6b-5373c0406320",
         "regionLabel" : "Column 1",
         "regionName" : "1",
         "renditionMap" : { },
@@ -56,7 +56,7 @@
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "65d70569-4c0b-4b41-bfbd-9236a0e9f1e5",
+    "id" : "714f4153-a860-4328-ab03-6e303b392f49",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -67,11 +67,11 @@
         "title" : "Mine Bestillinger"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "9ae48cde-93c3-4a33-948d-392abb0d96c5",
+      "id" : "066446a0-b94a-42ec-b399-38629106b740",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "9dce5895-cf6e-4cec-a45d-593369df1856",
+    "id" : "320e50da-e480-4285-a564-2cf8be80f230",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],

@@ -1,8 +1,8 @@
 {
-  "activeViewId" : "f8989ae0-09d2-44d2-b5ee-cd316904216b",
+  "activeViewId" : "3b7c9dcb-e380-4622-ba40-bf1ab4a3ad5b",
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "id" : "3ee93f03-3b61-4ce6-a05c-8ea375a99668",
-  "label" : "Ny bestilling",
+  "id" : "e68fff3e-0f2d-44dd-9022-f860843aae55",
+  "label" : "Ny Bestilling",
   "pageAccess" : "UseParent",
   "routeType" : "custom-ny-bestilling",
   "type" : "route",
