@@ -10,3 +10,4 @@ call move temp\unpackagable force-app\unpackagable
 
 :: Innstaller pakken i PREPROD
 :: sfdx force:package:install -u carl.huseby.fosli@nav.no.preprod -p XXX -k navcrm --wait 10 --publishwait 10
+:: sfdx force:package:version:promote -p 04t...
