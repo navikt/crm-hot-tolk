@@ -23,8 +23,6 @@
 	<requireHttps>true</requireHttps>
 	<requireInsecurePortalAccess>false</requireInsecurePortalAccess>
 	<selfRegPage>CommunitiesSelfReg</selfRegPage>
-	<siteAdmin>fakeemail@nav.no.scratchorg</siteAdmin>
-	<siteGuestRecordDefaultOwner>fakeemail@nav.no.scratchorg</siteGuestRecordDefaultOwner>
 	<siteType>ChatterNetwork</siteType>
 	<subdomain>navdialog</subdomain>
 	<urlPathPrefix>tolketjenesten</urlPathPrefix>
