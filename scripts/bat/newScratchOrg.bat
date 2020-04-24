@@ -14,4 +14,4 @@ call sfdx force:source:push
 call sfdx force:user:permset:assign --permsetname HOT_admin
 
 :: Opprett testdata
-if %2==imp call sfdx force:data:tree:import --plan data-source/data-import-plan.json
+call sfdx force:data:tree:import --plan data-source/data-import-plan.json
