@@ -1,5 +1,5 @@
 # Unique name for this workflow
-name: Salesforce DX packaging
+name: Create and validate package
 
 # Definition when the workflow should run
 on:
