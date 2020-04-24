@@ -77,20 +77,20 @@
 **flexipages/LightningService_UtilityBar.flexipage-meta.xml
 
 # Community
-**/audience/*
-**/networks/*
-**/documents/*
-**/networkBranding/*
+#**/audience/*
+#**/networks/*
+#**/documents/*
+#**/networkBranding/*
 **/experiences/*
-**/siteDotComSites/*
-**/sites/*
-**/pages/*
-**/translations/*
-**/classes/ChangePasswordController*
-**/classes/CommunitiesLandingController*
-**/classes/MyProfilePageController*
-
-**\sharingSets\HOT_RequestSharingSet.sharingSet-meta.xml
+#**/siteDotComSites/*
+#**/sites/*
+#**/pages/*
+#**/translations/*
+#**/classes/ChangePasswordController*
+#**/classes/CommunitiesLandingController*
+#**/classes/MyProfilePageController*
+#
+#**\sharingSets\HOT_RequestSharingSet.sharingSet-meta.xml
 
 # MyTriggers
 **/classes/MyTriggers*

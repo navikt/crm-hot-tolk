@@ -25,14 +25,14 @@
 				</br>
 				<template iterator:it={times}>
 					<div class="informasjonstavle__bildepaneler" key={it.value.id}>
-						<lightning-input type="date" class="tolk-skjema-input date" date-style="short" value={date}
-							onchange={setDate} name={it.value.id} required>
+						<lightning-input type="date" class="tolk-skjema-input date" date-style="short"
+							onchange={setDate} name={it.value.id} value="" required>
 						</lightning-input>
 						<lightning-input style="margin-left: 2rem;" type="time" class="tolk-skjema-input start-tid"
-							value={startTime} onchange={setStartTime} name={it.value.id} required>
+							onchange={setStartTime} name={it.value.id} value="" required>
 						</lightning-input>
 						<lightning-input style="margin-left: 2rem;" type="time" class="tolk-skjema-input slutt-tid"
-							value={getEndTime} onchange={setEndTime} name={it.value.id} required>
+							onchange={setEndTime} name={it.value.id} value="" required>
 						</lightning-input>
 						<lightning-button variant="base" style="margin-top: 2rem;" icon-name="utility:close"
 							class="slds-m-left_x-small" onclick={removeTime} name={it.value.id}>

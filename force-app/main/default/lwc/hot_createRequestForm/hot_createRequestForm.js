@@ -74,21 +74,32 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		"id": 0, "date": null, "startTime": null, "endTime": null
 	}];
 	@track uniqueIdCounter = 1;
-	@track index = 0;
 
 	setDate(event) {
-		this.date = event.detail.value;
+		const index = this.getIndexById(event.target.name);
+		this.times[index].date = event.detail.value;
+
+
 		var now = new Date();
 		var tempTime = JSON.parse(JSON.stringify(now));
-		console.log(tempTime);
 		tempTime = tempTime.split("");
 
-		if (this.startTime == null) {
+		if (this.times[index].startTime == null) {
 			if (Math.abs(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes()) <= 1) {
 				tempTime[14] = '0';
 				tempTime[15] = '0';
 			}
-			this.startTime = tempTime.join("").substring(11, 23);
+
+			var first = parseFloat(tempTime[11]);
+			var second = parseFloat(tempTime[12]);
+			second = (second + 2) % 10;
+			if (second == 0 || second == 1) {
+				first = first + 1;
+			}
+			tempTime[11] = first.toString();
+			tempTime[12] = second.toString();
+
+			this.times[index].startTime = tempTime.join("").substring(11, 23);
 			var first = parseFloat(tempTime[11]);
 			var second = parseFloat(tempTime[12]);
 			second = (second + 1) % 10;
@@ -97,22 +108,16 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 			tempTime[11] = first.toString();
 			tempTime[12] = second.toString();
-			this.endTime = tempTime.join("").substring(11, 23);
+			this.times[index].endTime = tempTime.join("").substring(11, 23);
 		}
-	}
-	setEndTime(event) {
-		this.endTime = event.detail.value;
-	}
-	getEndTime(event) {
-		event.target.parentElement.querySelectorAll('.slutt-tid').forEach(function (e) {
-			e.value = this.endTime;
-		})
+		this.updateValues(event, index);
 	}
 	setStartTime(event) {
-		this.startTime = event.detail.value;
+		const index = this.getIndexById(event.target.name);
 		var tempTime = event.detail.value.split("");
+		this.times[index].startTime = event.detail.value;
 
-		if (event.detail.value > this.endTime) {
+		if (event.detail.value > this.times[index].endTime || this.times[index].endTime == null) {
 			var first = parseFloat(tempTime[0]);
 			var second = parseFloat(tempTime[1]);
 			second = (second + 1) % 10;
@@ -121,8 +126,26 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 			tempTime[0] = first.toString();
 			tempTime[1] = second.toString();
-			this.endTime = tempTime.join("");
+			this.times[index].endTime = tempTime.join("");
 		}
+		this.updateValues(event, index);
+	}
+
+	setEndTime(event) {
+		const index = this.getIndexById(event.target.name);
+		this.times[index].endTime = event.detail.value;
+		this.updateValues(event, index);
+	}
+
+
+	updateValues(event, index) {
+		console.log(JSON.stringify(this.times));
+		var elements = event.target.parentElement.querySelector('.start-tid');
+		elements.value = this.times[index].startTime;
+		elements = event.target.parentElement.querySelector('.date');
+		elements.value = this.times[index].date;
+		elements = event.target.parentElement.querySelector('.slutt-tid');
+		elements.value = this.times[index].endTime;
 	}
 
 	getIndexById(id) {
