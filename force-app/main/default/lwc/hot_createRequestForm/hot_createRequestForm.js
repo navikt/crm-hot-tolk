@@ -69,20 +69,26 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track startTime;
 	@track endTime;
-	handleChange(event) {
+	@track date;
+	@track times = [{
+		"id": 0, "date": null, "startTime": null, "endTime": null
+	}];
+	@track uniqueIdCounter = 1;
+	@track index = 0;
+
+	setDate(event) {
+		this.date = event.detail.value;
 		var now = new Date();
-		var tempTime = event.detail.value;
+		var tempTime = JSON.parse(JSON.stringify(now));
+		console.log(tempTime);
 		tempTime = tempTime.split("");
 
-		console.log(parseFloat(tempTime[14] + tempTime[15]));
-		console.log(now.getMinutes());
-		console.log(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes() <= 1);
 		if (this.startTime == null) {
 			if (Math.abs(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes()) <= 1) {
 				tempTime[14] = '0';
 				tempTime[15] = '0';
 			}
-			this.startTime = tempTime.join("");
+			this.startTime = tempTime.join("").substring(11, 23);
 			var first = parseFloat(tempTime[11]);
 			var second = parseFloat(tempTime[12]);
 			second = (second + 1) % 10;
@@ -91,25 +97,59 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 			tempTime[11] = first.toString();
 			tempTime[12] = second.toString();
-			this.endTime = tempTime.join("");
-		}
-		else {
-			this.startTime = event.detail.value;
-		}
-		if (event.detail.value > this.endTime) {
-			var first = parseFloat(tempTime[11]);
-			var second = parseFloat(tempTime[12]);
-			second = (second + 1) % 10;
-			if (second == 0) {
-				first = first + 1;
-			}
-			tempTime[11] = first.toString();
-			tempTime[12] = second.toString();
-			this.endTime = tempTime.join("");
+			this.endTime = tempTime.join("").substring(11, 23);
 		}
 	}
 	setEndTime(event) {
 		this.endTime = event.detail.value;
+	}
+	getEndTime(event) {
+		event.target.parentElement.querySelectorAll('.slutt-tid').forEach(function (e) {
+			e.value = this.endTime;
+		})
+	}
+	setStartTime(event) {
+		this.startTime = event.detail.value;
+		var tempTime = event.detail.value.split("");
+
+		if (event.detail.value > this.endTime) {
+			var first = parseFloat(tempTime[0]);
+			var second = parseFloat(tempTime[1]);
+			second = (second + 1) % 10;
+			if (second == 0) {
+				first = first + 1;
+			}
+			tempTime[0] = first.toString();
+			tempTime[1] = second.toString();
+			this.endTime = tempTime.join("");
+		}
+	}
+
+	getIndexById(id) {
+		var j = -1;
+		for (var i = 0; i < this.times.length; i++) {
+			if (this.times[i].id == id) {
+				j = i;
+			}
+		}
+		return j;
+	}
+
+	addTime(event) {
+		var newTime = {
+			"id": this.uniqueIdCounter, "date": null, "startTime": null, "endTime": null
+		};
+		this.times.push(newTime);
+		this.uniqueIdCounter += 1;
+	}
+
+	removeTime(event) {
+		if (this.times.length > 1) {
+			const index = this.getIndexById(event.target.name);
+			if (index != -1) {
+				this.times.splice(index, 1);
+			}
+		}
 	}
 
 
@@ -117,6 +157,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		event.preventDefault();
 
 		const fields = event.detail.fields;
+		fields.StartTime__c = DateTime.newInstance(this.date, this.startTime);
+		fields.EndTime__c = DateTime.newInstance(this.date, this.endTime);
+
 		if (this.sameLocation) {
 			fields.InterpretationStreet__c = fields.MeetingStreet__c;
 			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
