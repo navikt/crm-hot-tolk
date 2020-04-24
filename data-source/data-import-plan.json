@@ -2,15 +2,31 @@
 	{
 		"sobject": "Person__c",
 		"saveRefs": true,
-		"resolveRefs": false,
+		"resolveRefs": true,
 		"files": [
 			"data-files/persons.json"
 		]
 	},
 	{
+		"sobject": "Account",
+		"saveRefs": true,
+		"resolveRefs": true,
+		"files": [
+			"data-files/accounts.json"
+		]
+	},
+	{
+		"sobject": "WorkType",
+		"saveRefs": true,
+		"resolveRefs": true,
+		"files": [
+			"data-files/workTypes.json"
+		]
+	},
+	{
 		"sobject": "HOT_Request__c",
 		"saveRefs": true,
-		"resolveRefs": false,
+		"resolveRefs": true,
 		"files": [
 			"data-files/requests.json"
 		]

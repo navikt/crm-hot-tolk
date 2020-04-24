@@ -3,16 +3,32 @@
 		{
 			"attributes": {
 				"type": "Person__c",
-				"referenceId": "Person__cRef1"
+				"referenceId": "PersonRef1"
 			},
-			"Name": "Test User"
+			"Name": "12345678901",
+			"HOT_DailyLifeInterpreter__c": true,
+			"HOT_DegreeOfHearingAndVisualImpairment__c": "Hearing impaired or deaf",
+			"INT_SecurityMeasures__c": "Fysisk/telefonisk utestengelse"
 		},
 		{
 			"attributes": {
 				"type": "Person__c",
-				"referenceId": "Person__cRef2"
+				"referenceId": "PersonRef2"
 			},
-			"Name": "Best Esur"
+			"Name": "12345678902",
+			"HOT_DailyLifeInterpreter__c": true,
+			"HOT_WorkplaceInterpreter__c": true,
+			"HOT_DegreeOfHearingAndVisualImpairment__c": "Hearing impaired or deaf"
+		},
+		{
+			"attributes": {
+				"type": "Person__c",
+				"referenceId": "PersonRef3"
+			},
+			"Name": "12345678903",
+			"HOT_WorkplaceInterpreter__c": true,
+			"HOT_Reservations__c": "TEST",
+			"HOT_DegreeOfHearingAndVisualImpairment__c": "Hearing impaired or deaf"
 		}
 	]
 }

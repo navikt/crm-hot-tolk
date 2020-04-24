@@ -1,0 +1,13 @@
+{
+	"records": [
+		{
+			"attributes": {
+				"type": "WorkType",
+				"referenceId": "WorkTypeRef1"
+			},
+			"Name": "Tegnspråktolk",
+			"DurationType": "Hours",
+			"EstimatedDuration": 1
+		}
+	]
+}

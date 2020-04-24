@@ -5,24 +5,30 @@
 				"type": "Account",
 				"referenceId": "AccountRef1"
 			},
+			"FirstName": "Luke",
 			"LastName": "Skywalker",
-			"RecordTypeId": "0121j000000uW5xAAE"
+			"INT_PersonIdent__c": "12345678901",
+			"CRM_Person__c": "@PersonRef1"
 		},
 		{
 			"attributes": {
 				"type": "Account",
 				"referenceId": "AccountRef2"
 			},
+			"FirstName": "Darth",
 			"LastName": "Vader",
-			"RecordTypeId": "0121j000000uW5xAAE"
+			"INT_PersonIdent__c": "12345678902",
+			"CRM_Person__c": "@PersonRef2"
 		},
 		{
 			"attributes": {
 				"type": "Account",
 				"referenceId": "AccountRef3"
 			},
+			"FirstName": "Jar Jar",
 			"LastName": "Binks",
-			"RecordTypeId": "0121j000000uW5xAAE"
+			"INT_PersonIdent__c": "12345678902",
+			"CRM_Person__c": "@PersonRef3"
 		}
 	]
 }
