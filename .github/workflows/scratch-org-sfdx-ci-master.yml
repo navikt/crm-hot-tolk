@@ -1,11 +1,11 @@
 # Unique name for this workflow
-name: Salesforce DX (scratch org)
+name: Validate metadata
 
 # Definition when the workflow should run
 on:
   push:
     branches:
-      - master
+      - "*"
 
 # Jobs to be executed
 jobs:
@@ -21,41 +21,41 @@ jobs:
           ./sfdx-cli/install
 
       # Checkout the code in the pull request
-      - name: 'Checkout source code'
+      - name: "Checkout source code"
         uses: actions/checkout@v2
 
       # Store secret for dev hub
-      - name: 'Populate auth file with DEVHUB_SFDX_URL secret'
+      - name: "Populate auth file with DEVHUB_SFDX_URL secret"
         shell: bash
-        run: 'echo ${{ secrets.DEVHUB_SFDX_URL}} > ./DEVHUB_SFDX_URL.txt'
+        run: "echo ${{ secrets.DEVHUB_SFDX_URL}} > ./DEVHUB_SFDX_URL.txt"
 
       # Authenticate dev hub
-      - name: 'Authenticate Dev Hub'
-        run: 'sfdx force:auth:sfdxurl:store -f ./DEVHUB_SFDX_URL.txt -a devhub -d'
+      - name: "Authenticate Dev Hub"
+        run: "sfdx force:auth:sfdxurl:store -f ./DEVHUB_SFDX_URL.txt -a devhub -d"
 
       # Lint Aura components
-      - name: 'Lint Aura components'
-        run: 'sfdx force:lightning:lint force-app/main/default/aura --exit'
+      - name: "Lint Aura components"
+        run: "sfdx force:lightning:lint force-app/main/default/aura --exit"
 
       # Create scratch org
-      - name: 'Create scratch org'
-        run: 'sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1'
+      - name: "Create scratch org"
+        run: "sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1"
 
       # Install dependencies to scratch org
-      - name: 'Install dependencies'
+      - name: "Install dependencies"
         run: |
           echo y | sfdx plugins:install sfpowerkit # echo y to confirm installation
           sfdx sfpowerkit:package:dependencies:install -u scratch-org -v devhub -k "1:${{ secrets.PACKAGE_KEY }} 2:${{ secrets.PACKAGE_KEY }}"
-      
+
       # Deploy source to scratch org
-      - name: 'Push source to scratch org'
-        run: 'sfdx force:source:push'
+      - name: "Push source to scratch org"
+        run: "sfdx force:source:push"
 
       # Run Apex tests in scratch org
-      - name: 'Run Apex tests'
-        run: 'sfdx force:apex:test:run -c -r human -d ./tests/apex -w 20'
+      - name: "Run Apex tests"
+        run: "sfdx force:apex:test:run -c -r human -d ./tests/apex -w 20"
 
       # Housekeeping
-      - name: 'Delete scratch org'
+      - name: "Delete scratch org"
         if: always()
-        run: 'sfdx force:org:delete -p -u scratch-org'
+        run: "sfdx force:org:delete -p -u scratch-org"
