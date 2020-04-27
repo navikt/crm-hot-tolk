@@ -79,7 +79,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		const index = this.getIndexById(event.target.name);
 		this.times[index].date = event.detail.value;
 
-
 		var now = new Date();
 		var tempTime = JSON.parse(JSON.stringify(now));
 		tempTime = tempTime.split("");
