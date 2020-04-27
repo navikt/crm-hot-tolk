@@ -179,8 +179,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		event.preventDefault();
 
 		const fields = event.detail.fields;
-		fields.StartTime__c = DateTime.newInstance(this.date, this.startTime);
-		fields.EndTime__c = DateTime.newInstance(this.date, this.endTime);
+		fields.StartTime__c = this.times[0].date + "T" + this.times[0].startTime + "Z";
+		fields.EndTime__c = this.times[0].date + "T" + this.times[0].endTime + "Z";
 
 		if (this.sameLocation) {
 			fields.InterpretationStreet__c = fields.MeetingStreet__c;
