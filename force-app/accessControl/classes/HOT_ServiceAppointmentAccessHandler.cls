@@ -6,7 +6,7 @@ public with sharing class HOT_ServiceAppointmentAccessHandler extends MyTriggers
 		Set<Id> serviceAppointmentIds = new Set<Id> ();
 		for ( ServiceAppointment sa:(List<ServiceAppointment>) records ) {
 			ServiceAppointment s2 = (ServiceAppointment)  triggerOldMap.get( sa.Id );
-			if ( MyTriggers.hasChangedFields( fieldNamesToCheck, sa, triggerOldMap.get( sa.Id ) ) ) {
+			if ( completedStatuses.contains( sa.Status ) && MyTriggers.hasChangedFields( fieldNamesToCheck, sa, triggerOldMap.get( sa.Id ) ) ) {
 				serviceAppointmentIds.add( sa.Id );
 			}
 		}
