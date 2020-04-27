@@ -1,9 +1,0 @@
-{
-  "appPageId" : "25d3b486-5cf7-41c8-afa0-036d2204a4c5",
-  "id" : "675f8251-2260-4a5b-b290-df4fb01034b9",
-  "label" : "Mine bestillinger",
-  "pageAccess" : "UseParent",
-  "routeType" : "custom-mine-bestillinger",
-  "type" : "route",
-  "urlPrefix" : "mine-bestillinger"
-}

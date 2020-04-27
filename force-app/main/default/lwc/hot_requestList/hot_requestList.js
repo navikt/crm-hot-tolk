@@ -5,7 +5,6 @@ import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
-import HOT_Request__c from '@salesforce/schema/WorkOrder.HOT_Request__c';
 
 
 var actions = [
@@ -91,6 +90,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	}
 
 	filterRequests() {
+		console.log("Running filterRequests()");
 		var tempRequests = [];
 		for (var i = 0; i < this.allRequests.length; i++) {
 			if (this.allRequests[i].ExternalRequestStatus__c != "Avlyst" &&
@@ -100,6 +100,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		}
 		this.requests = tempRequests;
+		console.log("End of filterRequests()");
 	}
 
 	@track checked = false;
@@ -109,10 +110,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	}
 
 	showHideInactives() {
+		console.log("Running showHideInactives()");
 		if (this.checked) {
+			console.log("if true");
 			this.requests = this.allRequests;
 		}
 		else {
+			console.log("if false");
 			this.filterRequests();
 		}
 	}
@@ -139,22 +143,19 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	}
 
 
-	sortBy(field, reverse, primer) {
-		const key = primer
-			? function (x) {
-				return primer(x[field]);
-			}
-			: function (x) {
-				return x[field];
-			};
+	sortBy(field, reverse) {
+		const key = function (x) {
+			return x[field];
+		};
+		const valueStatus = ["åpen", "under behandling", "tildelt", "pågår", "dekket", "delvis dekket", "udekket", "avlyst", "avslått"];
 		if (field == 'ExternalRequestStatus__c') {
 			return function (a, b) {
 				a = key(a).toLowerCase();
 				b = key(b).toLowerCase();
-				a = a == "åpen" ? 0 : a == "under behandling" ? 1 : a == "tildelt" ? 2 : a == "pågår" ? 3 : a == "dekket" ?
-					4 : a == "delvis dekket" ? 5 : a == "udekket" ? 6 : a == "avlyst" ? 7 : a == "avslått" ? 8 : 9;
-				b = b == "åpen" ? 0 : b == "under behandling" ? 1 : b == "tildelt" ? 2 : b == "pågår" ? 3 : b == "dekket" ?
-					4 : b == "delvis dekket" ? 5 : b == "udekket" ? 6 : b == "avlyst" ? 7 : b == "avslått" ? 8 : 9;
+				a = valueStatus.indexOf(a);
+				b = valueStatus.indexOf(b);
+				console.log(a + ", " + b);
+				console.log(reverse * ((a > b) - (b > a)));
 				return reverse * ((a > b) - (b > a));
 			};
 		}
@@ -162,7 +163,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			return function (a, b) {
 				a = key(a).toLowerCase();
 				b = key(b).toLowerCase();
-				console.log(b);
+				console.log(a + ", " + b);
+				console.log(reverse * ((a > b) - (b > a)));
 				return reverse * ((a > b) - (b > a));
 			};
 		}
@@ -170,17 +172,20 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	onHandleSort(event) {
 		this.sortList(event.detail);
+		console.log("End of onHandleSort");
 	}
 
 	sortList(input) {
 		const { fieldName: sortedBy, sortDirection } = input;
-		const cloneData = [...this.allRequests];
-
+		let cloneData = [...this.allRequests];
+		//console.log("sortedBy: " + sortedBy + ", sortDirection: " + sortDirection);
 		cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
+
 		this.allRequests = cloneData;
 		this.sortDirection = sortDirection;
 		this.sortedBy = sortedBy;
 		this.showHideInactives();
+		console.log("End of sortList");
 	}
 
 	handleRowAction(event) {
@@ -250,7 +255,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 			//Here we should get the entire record from salesforce, to get entire interpretation address.
 			let clone = this.requests[index];
-			//console.log(JSON.stringify(clone));
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
@@ -272,7 +276,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			if (this.requests[index].ExternalRequestStatus__c == "Åpen") {
 				//Here we should get the entire record from salesforce, to get entire interpretation address.
 				let clone = this.requests[index];
-				//console.log(JSON.stringify(clone));
 				this[NavigationMixin.Navigate]({
 					type: 'comm__namedPage',
 					attributes: {

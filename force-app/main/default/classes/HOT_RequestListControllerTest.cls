@@ -26,6 +26,9 @@ private class HOT_RequestListControllerTest{
 		Hot_request__c request2 = HOT_TestDataFactory.createRequest('Subject 2', workType);
 		request2.Account__c=account2.Id;
 		insert request2;
+		Hot_request__c request2_2 = HOT_TestDataFactory.createRequest('Subject 2_2', workType);
+		request2_2.Account__c=account2.Id;
+		insert request2_2;
 
 		User user1 = HOT_TestDataFactory.createUser(communityProfile, account1);
 		user1.Alias = 'user1';
@@ -69,10 +72,21 @@ private class HOT_RequestListControllerTest{
 			System.assertEquals(req2.size(), 1, 'Was not able to select the request');
 			System.assertEquals(req2[0].Subject__c, 'Subject 2', 'Was not able to select the correct request');
 		}
-	}*/
+	}
+	
+	@isTest
+	private static void testgetRequestListFromAccountFromRequestId(){
+		HOT_Request__c record = [SELECT Id FROM HOT_Request__c WHERE Subject__c=:'Subject 2_2'];
+		List<HOT_Request__c> requests = HOT_RequestListContoller.getRequestListFromAccountFromRequestId(record.Id);
+		System.assertEquals(requests.size(), 2, 'Was not able to select the request');
+	}
+	*/
 
 	@isTest
 	private static void dymmyTestgetRequestList(){
-		List<HOT_Request__c> req2 = HOT_RequestListContoller.getRequestList();
+		List<HOT_Request__c> req1 = HOT_RequestListContoller.getRequestList();
+		//List<HOT_Request__c> req2 = HOT_RequestListContoller.getRequestListFromAccountFromRequestId();
 	}
+
+	
 }

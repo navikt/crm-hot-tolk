@@ -1,9 +1,0 @@
-{
-  "appPageId" : "25d3b486-5cf7-41c8-afa0-036d2204a4c5",
-  "id" : "f083922c-d9fb-417c-bebe-559d8fedbeef",
-  "label" : "Ny bestilling",
-  "pageAccess" : "UseParent",
-  "routeType" : "custom-ny-bestilling",
-  "type" : "route",
-  "urlPrefix" : "ny-bestilling"
-}

@@ -77,6 +77,7 @@
 **flexipages/LightningService_UtilityBar.flexipage-meta.xml
 
 # Community
+**/audience/*
 **/networks/*
 **/documents/*
 **/networkBranding/*
@@ -88,6 +89,8 @@
 **/classes/ChangePasswordController*
 **/classes/CommunitiesLandingController*
 **/classes/MyProfilePageController*
+
+**\sharingSets\HOT_RequestSharingSet.sharingSet-meta.xml
 
 # MyTriggers
 **/classes/MyTriggers*

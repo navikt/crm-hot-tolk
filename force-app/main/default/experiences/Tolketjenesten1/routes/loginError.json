@@ -1,8 +1,0 @@
-{
-  "appPageId" : "1eb66356-ba41-4649-93ec-507c2dd16203",
-  "id" : "d863febc-3ede-4ae0-b180-c7c7a373013a",
-  "label" : "Login Error",
-  "routeType" : "login-error",
-  "type" : "route",
-  "urlPrefix" : "error"
-}

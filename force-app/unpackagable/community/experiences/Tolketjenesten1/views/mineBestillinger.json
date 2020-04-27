@@ -1,0 +1,81 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "8c86d6db-08f8-4fe5-b020-9e8171ede842",
+  "label" : "Mine Bestillinger",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "c7eb756b-b2cc-46c2-a5c9-fa00a042cfd4",
+          "columns" : [ {
+            "UUID" : "577fdae1-a460-4937-ad6b-5373c0406320",
+            "columnName" : "Column 1",
+            "columnKey" : "1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "c7eb756b-b2cc-46c2-a5c9-fa00a042cfd4",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:globalCommunityHeader",
+          "id" : "fd696493-f5b3-4e87-a8a2-0ee847f309c2",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:hot_requestList",
+          "id" : "b295372d-b8e0-4832-ab6b-2d2f4ea50c68",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:globalCommunityFooter",
+          "id" : "762f5710-d213-4598-abc9-9e6c63b51ed3",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "577fdae1-a460-4937-ad6b-5373c0406320",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "714f4153-a860-4328-ab03-6e303b392f49",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "description" : "",
+        "metaTags" : "",
+        "title" : "Mine Bestillinger"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "066446a0-b94a-42ec-b399-38629106b740",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "320e50da-e480-4285-a564-2cf8be80f230",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-mine-bestillinger"
+}
