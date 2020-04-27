@@ -1,12 +1,17 @@
 public with sharing class HOT_ServiceAppointmentAccessHandler extends MyTriggers {
 
-	public virtual void onAfterUpdate( Map<Id, ServiceAppointment> triggerOldMap ) {
-		System.debug( 'Frode: start' );
+	public override void onAfterUpdate( Map<Id, SObject> triggerOldMap ) {
 		List<String> completedStatuses = new List<String> {'Fullført', 'Kan ikke fullføre', 'Avbrutt'};
+		List<String> fieldNamesToCheck = new String[] {'Status'};
 		Set<Id> serviceAppointmentIds = new Set<Id> ();
 		for ( ServiceAppointment sa:(List<ServiceAppointment>) records ) {
-			serviceAppointmentIds.add( sa.Id );
+			ServiceAppointment s2 = (ServiceAppointment)  triggerOldMap.get( sa.Id );
+			if ( MyTriggers.hasChangedFields( fieldNamesToCheck, sa, triggerOldMap.get( sa.Id ) ) ) {
+				serviceAppointmentIds.add( sa.Id );
+			}
 		}
-		HOT_ServiceAppointmentsSharingService.removeManualAccess( serviceAppointmentIds );
+		if ( serviceAppointmentIds.size() > 0 ) {
+			HOT_ServiceAppointmentsSharingService.removeManualAccess( serviceAppointmentIds );
+		}
 	}
 }

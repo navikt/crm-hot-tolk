@@ -31,7 +31,8 @@ private class HOT_ServiceAppointmentAccessHandlerTest {
 		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : userId AND ParentId = : serviceAppointment.Id AND RowCause = 'Manual'] );
 
 		Test.startTest();
-		serviceAppointment.Status = 'Fullført';
+		serviceAppointment = [SELECT Id, Status FROM ServiceAppointment LIMIT 1];
+		serviceAppointment.Status = 'Avbrutt';
 		update serviceAppointment;
 		Test.stopTest();
 		System.assertEquals( 0, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : userId AND ParentId = : serviceAppointment.Id AND RowCause = 'Manual'] );
