@@ -25,6 +25,7 @@
 }
 
 .main-content {
+	padding-bottom: 2rem;
 	font-family: "Source Sans Pro", Arial, sans-serif;
 	align-items: center;
 	display: flex;
@@ -633,6 +634,18 @@ lightning-breadcrumb:last-child a {
 	margin: 1rem;
 	display: flex;
 	justify-content: center;
+}
+
+.check-out-container {
+	padding: 1rem;
+	width: 100%;
+	max-width: 600px;
+	border-radius: 0.5rem;
+	background-color: #FFFFFF;
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
 }
 
 @media (max-width: 576px) {
