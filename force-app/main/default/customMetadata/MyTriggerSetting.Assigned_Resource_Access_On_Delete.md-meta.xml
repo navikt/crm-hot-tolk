@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>FSL_StatusHandler_SA_AfterUpdate</label>
+    <label>Assigned Resource Access On Delete</label>
     <protected>false</protected>
     <values>
         <field>Active__c</field>
@@ -12,15 +12,15 @@
     </values>
     <values>
         <field>Class__c</field>
-        <value xsi:type="xsd:string">HOT_ServiceAppointmentStatusHandler</value>
+        <value xsi:type="xsd:string">HOT_AssignedResourceAccessHandler</value>
     </values>
     <values>
         <field>Description__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">Remove access to Service Appointment for assigned service resource</value>
     </values>
     <values>
         <field>Event__c</field>
-        <value xsi:type="xsd:string">AFTER_UPDATE</value>
+        <value xsi:type="xsd:string">BEFORE_DELETE</value>
     </values>
     <values>
         <field>IsBypassAllowed__c</field>
@@ -36,6 +36,6 @@
     </values>
     <values>
         <field>sObject__c</field>
-        <value xsi:type="xsd:string">ServiceAppointment</value>
+        <value xsi:type="xsd:string">AssignedResource</value>
     </values>
 </CustomMetadata>
