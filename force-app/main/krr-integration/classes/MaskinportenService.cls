@@ -33,7 +33,6 @@ public class MaskinportenService {
 
         // Do callout, parse body, and return parsed response
         HttpResponse res = new Http().send(req);
-        System.debug(res.getBody());
         return (AuthResponse) Json.deserialize(res.getBody(), AuthResponse.class);
     }
 
