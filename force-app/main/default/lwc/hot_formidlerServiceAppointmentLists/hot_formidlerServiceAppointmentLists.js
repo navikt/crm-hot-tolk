@@ -2,8 +2,6 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getAllServiceAppointments from '@salesforce/apex/HOT_ServiceAppointmentListControllerAll.getAllServiceAppointments';
 import getMyServiceAppointments from '@salesforce/apex/HOT_ServiceAppointmentListControllerMy.getMyServiceAppointments';
 import { updateRecord } from 'lightning/uiRecordApi';
-import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
-import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
 
@@ -101,7 +99,7 @@ export default class Hot_formidlerServiceAppointmentLists extends NavigationMixi
 	@track sortDirection = 'asc';
 	@track sortedBy = 'SchedStartTime';
 
-	mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "asc"} ';
+	mobileSortingDefaultValue = '{"fieldName": "SchedStartTime", "sortDirection": "asc"} ';
 	get sortingOptions() {
 		return [
 			{ label: 'Start tid stigende', value: '{"fieldName": "SchedStartTime", "sortDirection": "asc"} ' },
