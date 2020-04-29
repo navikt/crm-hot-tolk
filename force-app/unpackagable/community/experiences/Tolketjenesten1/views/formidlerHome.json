@@ -1,0 +1,94 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:sldsTwoCol84SidebarFeaturedLayout",
+  "id" : "4f42cfb5-34fb-4b64-9bc6-99dafd8df8b8",
+  "label" : "FormidlerHome",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "richTextValue" : "<p style=\"text-align: center;\"><span style=\"font-size: 20px;\">Tolk: Fornavn Etternavn, Profilbilde,</span></p><p style=\"text-align: center;\">Sammendrag av egenskaper, tolkemetoder&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ENDRE-PROFIL-KNAPP</b></p><p style=\"text-align: center;\">Antall planlagte oppdrag: XX</p>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "e63f6ce0-2269-4baf-b952-72fd32b4c75a",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "ff3ed08c-7225-4831-bf28-a9d7c5ab2324",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "richTextValue" : "<p style=\"text-align: center;\"><span style=\"font-size: 18px;\">Nyheter fra formiddlere?</span></p>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "267e9825-b270-4ba7-8498-6b76743a7232",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "richTextValue" : "<p style=\"text-align: center;\"><span style=\"font-size: 20px;\">Kort liste over dagens, og morgendagens oppdrag</span></p><p style=\"text-align: center;\"><b style=\"font-size: 16px;\">Gå til \"Mine oppdrag\"</b></p>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "2653337e-c52a-44b1-8b94-9ba2a1ad75b2",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "c2de28f0-23eb-497b-88b2-424a187063ba",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "ca01526a-c6bc-4893-b0f9-92f6c080b1fb",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "description" : "",
+        "metaTags" : "",
+        "title" : "Home"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "068cb02f-6999-4988-91d4-f70d94c5cabb",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "2106ebd1-2528-4327-aac1-cdd2b61fb325",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "richTextValue" : "<p><span style=\"font-size: 16px;\">24 åpne oppdrag </span></p><p><b style=\"font-size: 16px;\">Gå til \"Bestille oppdrag\"</b></p><p><br></p><p><span style=\"font-size: 16px;\">2 nye meldinger fra formidler. (klikk for å gå til chatter)</span></p>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "edb58332-f808-4790-9612-db44965c2d11",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "0f97351e-6359-4bb4-a74a-fd6c2490bc7e",
+    "regionName" : "featured",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "richTextValue" : "<p><span style=\"font-size: 16px;\">Linker:</span></p><ul><li><span style=\"font-size: 14px;\">Nye oppdrag</span></li><li><span style=\"font-size: 14px;\">Mine oppdrag</span></li><li><span style=\"font-size: 14px;\">Chatter</span></li><li><i style=\"font-size: 14px;\">Oppgjør??</i></li><li><i style=\"font-size: 14px;\">Kalender??</i></li><li><span style=\"font-size: 14px;\">Kunnskapsbanken</span></li></ul>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "74da2765-c421-4d54-9f8c-7f121621c63b",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "9a863f96-72ce-40df-8f52-20422d2ecf4d",
+    "regionName" : "sidebar",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "home"
+}
