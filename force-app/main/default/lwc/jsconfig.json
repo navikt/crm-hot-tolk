@@ -23,6 +23,9 @@
             ],
             "c/hot_createRequestForm": [
                 "hot_createRequestForm/hot_createRequestForm.js"
+            ],
+            "c/hot_formidlerServiceAppointmentLists": [
+                "hot_formidlerServiceAppointmentLists/hot_formidlerServiceAppointmentLists.js"
             ]
         }
     },
