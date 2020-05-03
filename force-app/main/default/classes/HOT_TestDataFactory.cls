@@ -76,19 +76,19 @@ public class HOT_TestDataFactory {
 	}
 
 	public static User createUser( Profile ProfileId, Account account ) {
-		User user = createUser( ProfileId );
+		User user = createUser( 'User', ProfileId );
 		user.ContactId = account.PersonContactId;
 
 		return user;
 	}
 
-	public static User createUser( Profile ProfileId ) {
+	public static User createUser( String lastName, Profile ProfileId ) {
 		User user = new User (
-			Username = 'HOT_testuser@nav.hot.no',
-			LastName = 'user',
+			Username = 'HOT.' + lastName + '@nav.hot.no',
+			LastName = lastName,
 			Email = 'HOT_testuser@nav.hot.no',
-			Alias = 'user',
-			CommunityNickname = 'user',
+			Alias = lastName,
+			CommunityNickname = lastName,
 			TimeZoneSidKey = 'Europe/Paris',
 			LocaleSidKey = 'no_NO',
 			EmailEncodingKey = 'UTF-8',

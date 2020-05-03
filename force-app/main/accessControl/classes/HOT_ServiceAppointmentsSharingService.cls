@@ -1,4 +1,4 @@
-public with sharing class HOT_ServiceAppointmentsSharingService {
+public without sharing class HOT_ServiceAppointmentsSharingService {
 
 	public static void grantAccess( Map<Id, Id > apppointmentByAssignment, Map<Id, Id> resourceByAssignment ) {
 		Map<Id, Id> userIdyResourceId = getUserIdyResourceId( resourceByAssignment.values() );
@@ -12,7 +12,7 @@ public with sharing class HOT_ServiceAppointmentsSharingService {
 							UserOrGroupId = userIdyResourceId.get( resourceId )
 							) );
 		}
-		insert shares;
+		Database.insert( shares, false );
 	}
 
 	public static void removeAccessForSpecificUsers( Map<Id, Id > apppointmentByAssignment, Map<Id, Id> resourceByAssignment ) {
