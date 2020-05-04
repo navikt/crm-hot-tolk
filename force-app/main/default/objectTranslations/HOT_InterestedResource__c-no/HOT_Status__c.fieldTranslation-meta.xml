@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Status --></label>
+    <name>HOT_Status__c</name>
+    <picklistValues>
+        <masterLabel>Assigned</masterLabel>
+        <translation><!-- Assigned --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Interested</masterLabel>
+        <translation><!-- Interested --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not Assigned</masterLabel>
+        <translation><!-- Not Assigned --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Retracted Interest</masterLabel>
+        <translation><!-- Retracted Interest --></translation>
+    </picklistValues>
+</CustomFieldTranslation>
