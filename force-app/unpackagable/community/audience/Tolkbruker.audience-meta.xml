@@ -14,12 +14,4 @@
 	</criteria>
 	<formulaFilterType>AllCriteriaMatch</formulaFilterType>
 	<isDefaultAudience>false</isDefaultAudience>
-	<targets>
-		<target>
-			<groupName>11b73e65-08c1-47f0-9a1c-38ed579ef149</groupName>
-			<priority>1</priority>
-			<targetType>ExperienceVariation</targetType>
-			<targetValue>Home_Home_Page</targetValue>
-		</target>
-	</targets>
 </Audience>
