@@ -40,6 +40,7 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 
 		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_1.Id AND RowCause = 'Manual'] );
 		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_2.Id AND RowCause = 'Manual'] );
+		System.assertEquals( 1, [SELECT count() FROM WorkOrderShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : workOrder.Id AND RowCause = 'Manual'] );
 	}
 
 	@IsTest
