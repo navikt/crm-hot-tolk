@@ -68,6 +68,7 @@ public class HOT_TestDataFactory {
 		serviceResource.Name = 'Service Resource Name';
 		serviceResource.RelatedRecordId = userId;
 		serviceResource.IsActive = true;
+		serviceResource.ResourceType = 'T';
 		return serviceResource;
 	}
 
@@ -133,18 +134,6 @@ public class HOT_TestDataFactory {
 			);
 
 		return user;
-	}
-
-	public static ServiceResource createServiceResource( Id userId )
-	{
-		ServiceResource resource = new ServiceResource(
-			Name = 'Service Resource',
-			RelatedRecordId = userId,
-			IsActive = true,
-			ResourceType = 'T'
-			);
-
-		return resource;
 	}
 
 	public static AssignedResource createAssignedResource( Id serviceAppointmentId, Id serviceResourceId ) {
