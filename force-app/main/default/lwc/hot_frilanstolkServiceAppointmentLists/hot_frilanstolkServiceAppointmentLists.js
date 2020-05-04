@@ -1,7 +1,8 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getAllServiceAppointments from '@salesforce/apex/HOT_ServiceAppointmentListControllerAll.getAllServiceAppointments';
 import getMyServiceAppointments from '@salesforce/apex/HOT_ServiceAppointmentListControllerMy.getMyServiceAppointments';
-import { updateRecord } from 'lightning/uiRecordApi';
+import createServiceConnection from '@salesforce/apex/HOT_CreateServiceConnection.createServiceConnection';
+import { createRecord } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
 
@@ -10,7 +11,7 @@ var actions = [
 	{ label: 'Chat', name: 'chat' },
 ];
 
-export default class Hot_formidlerServiceAppointmentLists extends NavigationMixin(LightningElement) {
+export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMixin(LightningElement) {
 
 	@track columns = [
 		{
@@ -66,17 +67,17 @@ export default class Hot_formidlerServiceAppointmentLists extends NavigationMixi
 	];
 
 
-	@track serviceAppointments;
+	@track allServiceAppointments;
 	wiredServiceAppointmentsResult;
 	@wire(getAllServiceAppointments)
 	wiredRequest(result) {
 		this.wiredServiceAppointmentsResult = result;
 		if (result.data) {
-			this.serviceAppointments = result.data;
+			this.allServiceAppointments = result.data;
 			this.error = undefined;
 		} else if (result.error) {
 			this.error = result.error;
-			this.serviceAppointments = undefined;
+			this.allServiceAppointments = undefined;
 		}
 
 	}
@@ -163,8 +164,18 @@ export default class Hot_formidlerServiceAppointmentLists extends NavigationMixi
 	openChatter(row) {
 
 	}
-	sendOffer(event) {
 
+	@track selectedRows = [];
+	getSelectedName(event) {
+		console.log(JSON.stringify(event.detail.selectedRows));
+		this.selectedRows = event.detail.selectedRows;
+	}
+	sendOffer() {
+		if (this.selectedRows.length > 0) {
+			for (var i = 0; i < this.selectedRows.length; i++) {
+				HOT_CreateServiceConnection.createServiceConnection(this.selectedRows[i].AppointmentNumber);
+			}
+		}
 	}
 
 }

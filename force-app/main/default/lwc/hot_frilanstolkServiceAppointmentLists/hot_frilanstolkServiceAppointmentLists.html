@@ -44,9 +44,10 @@
 							value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
 						</lightning-combobox>
 					</div>
-					<lightning-datatable key-field="StartTime__c" data={allServiceAppointments} columns={columns}
+					<lightning-datatable key-field="StartTime__c" data={myServiceAppointments} columns={columns}
 						default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}
-						sorted-by={sortedBy} onsort={onHandleSort} onrowaction={handleRowAction}>
+						sorted-by={sortedBy} onsort={onHandleSort} onrowaction={handleRowAction}
+						onrowselection={getSelectedName}>
 					</lightning-datatable>
 				</div>
 			</lightning-tab>

@@ -24,8 +24,8 @@
             "c/hot_createRequestForm": [
                 "hot_createRequestForm/hot_createRequestForm.js"
             ],
-            "c/hot_formidlerServiceAppointmentLists": [
-                "hot_formidlerServiceAppointmentLists/hot_formidlerServiceAppointmentLists.js"
+            "c/hot_frilanstolkServiceAppointmentLists": [
+                "hot_frilanstolkServiceAppointmentLists/hot_frilanstolkServiceAppointmentLists.js"
             ]
         }
     },
