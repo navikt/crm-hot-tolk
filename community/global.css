@@ -614,6 +614,10 @@ lightning-input-field.ikke-sensitiv-fritekst
   position: relative;
 }
 
+.white-background {
+  background-color: #fff;
+}
+
 .steg {
   padding: 2rem 0 1rem;
 }
