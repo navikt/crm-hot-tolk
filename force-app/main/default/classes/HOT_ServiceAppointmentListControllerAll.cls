@@ -20,7 +20,7 @@ public without sharing class HOT_ServiceAppointmentListControllerAll {
 		WorkTypeId
 		FROM ServiceAppointment 
 		//WHERE released=:true AND Status =: 'Open'
-		WHERE WorkTypeId IN: ids
+		//WHERE WorkTypeId IN: ids
 		ORDER BY SchedStartTime ASC];
 
 		return serviceAppointments;
