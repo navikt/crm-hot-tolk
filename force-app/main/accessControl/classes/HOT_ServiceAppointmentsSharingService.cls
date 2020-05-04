@@ -1,18 +1,28 @@
 public without sharing class HOT_ServiceAppointmentsSharingService {
 
-	public static void grantAccess( Map<Id, Id > apppointmentByAssignment, Map<Id, Id> resourceByAssignment ) {
+	public static void grantAccess( Map<Id, Id > apppointmentIdByAssignment, Map<Id, Id> resourceByAssignment ) {
 		Map<Id, Id> userIdyResourceId = getUserIdyResourceId( resourceByAssignment.values() );
-		List<ServiceAppointmentShare> shares = new List<ServiceAppointmentShare>();
-		for ( Id assignmentId:apppointmentByAssignment.keySet() ) {
+		Map<Id, Id> woBySa = getWorkOrderIds( apppointmentIdByAssignment.values() );
+		List<ServiceAppointmentShare> serviceAppointmentShares = new List<ServiceAppointmentShare>();
+		List<WorkOrderShare> workOrderShares = new List<WorkOrderShare>();
+		for ( Id assignmentId:apppointmentIdByAssignment.keySet() ) {
 			Id resourceId = resourceByAssignment.get( assignmentId );
-			shares.add( new ServiceAppointmentShare(
-							ParentId = apppointmentByAssignment.get( assignmentId ),
-							AccessLevel = 'Edit',
-							RowCause = 'Manual',
-							UserOrGroupId = userIdyResourceId.get( resourceId )
-							) );
+			Id serviceAppointmentId = apppointmentIdByAssignment.get( assignmentId );
+			serviceAppointmentShares.add( new ServiceAppointmentShare(
+											  ParentId = serviceAppointmentId,
+											  AccessLevel = 'Edit',
+											  RowCause = 'Manual',
+											  UserOrGroupId = userIdyResourceId.get( resourceId )
+											  ) );
+			workOrderShares.add( new WorkOrderShare(
+									 ParentId = woBySa.get( serviceAppointmentId ),
+									 AccessLevel = 'Edit',
+									 RowCause = 'Manual',
+									 UserOrGroupId = userIdyResourceId.get( resourceId )
+									 ) );
 		}
-		Database.insert( shares, false );
+		Database.insert( serviceAppointmentShares, false );
+		Database.insert( workOrderShares, false );
 	}
 
 	public static void removeAccessForSpecificUsers( Map<Id, Id > apppointmentByAssignment, Map<Id, Id> resourceByAssignment ) {
@@ -42,5 +52,23 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
 		}
 
 		return userIdyResourceId;
+	}
+
+	private static Map<Id, Id> getWorkOrderIds( List<Id> serviceApponntmentIds ) {
+		Map<Id, Id> workOrderLineByServiceAppointment = new Map<Id, Id>();
+		for ( ServiceAppointment sa:[SELECT Id, ParentRecordId FROM ServiceAppointment WHERE Id in:serviceApponntmentIds] ) {
+			workOrderLineByServiceAppointment.put( sa.Id, sa.ParentRecordId );
+		}
+		Map<Id, Id> workOrderByLine = new Map<Id, Id>();
+		for ( WorkOrderLineItem woli:[SELECT Id,  WorkOrderId FROM WorkOrderLineItem WHERE Id in:workOrderLineByServiceAppointment.values()] ) {
+			workOrderByLine.put( woli.Id, woli.WorkOrderId );
+		}
+		Map<Id, Id> workOrderByServiceAppointment = new Map<Id, Id>();
+		for ( Id saId:serviceApponntmentIds ) {
+			Id woliId = workOrderLineByServiceAppointment.get( saId );
+			workOrderByServiceAppointment.put( saId, workOrderByLine.get( woliId ) );
+		}
+
+		return workOrderByServiceAppointment;
 	}
 }
