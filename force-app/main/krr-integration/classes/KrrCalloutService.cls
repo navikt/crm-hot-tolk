@@ -19,7 +19,6 @@ public class KrrCalloutService {
         req.setHeader('Authorization', 'Bearer ' + access_token);
         req.setBody(JSON.serialize(requestBody));
         HttpResponse res = new Http().send(req);
-        System.debug(res.getBody());
         PersonOppslagResponse response = (PersonOppslagResponse) Json.deserialize(res.getBody(), PersonOppslagResponse.class);
         return response.personer;
     }
