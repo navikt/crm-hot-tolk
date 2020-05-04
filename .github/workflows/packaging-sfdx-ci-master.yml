@@ -8,6 +8,7 @@ on:
       - master
     paths:
       - "force-app/**"
+      - "sfdx-project.json"
 
 # Jobs to be executed
 jobs:
