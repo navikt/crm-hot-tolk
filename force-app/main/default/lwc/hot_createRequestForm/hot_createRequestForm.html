@@ -93,20 +93,22 @@
 		</div>
 	</div>
 
-	<div class="main-content skjema hidden submitted-true skjema-max-width">
-		<lightning-icon icon-name="utility:success" alternative-text="Suksess" title="Suksess" variant="success"
-			size="large">
-		</lightning-icon>
-		</br>
-		<h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1">Bestillingen er sendt</h2>
+	<div class="main-content hidden submitted-true ">
+		<div class="main-content white-background skjema-max-width">
+			<lightning-icon icon-name="utility:success" alternative-text="Suksess" title="Suksess" variant="success"
+				size="large">
+			</lightning-icon>
+			</br>
+			<h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1">Bestillingen er sendt</h2>
 
-		<lightning-file-upload if:false={hide} label="Legg til filer" name="fileUploader" accept={acceptedFormat}
-			record-id={recordId} onuploadfinished={handleUploadFinished} multiple>
-		</lightning-file-upload>
-		</br>
-		<lightning-button title="Gå til mine bestillinger" class="slds-m-top-small" variant="brand" label="OK"
-			onclick={goToMyRequests}>
-		</lightning-button>
+			<lightning-file-upload if:false={hide} label="Legg til filer" name="fileUploader" accept={acceptedFormat}
+				record-id={recordId} onuploadfinished={handleUploadFinished} multiple>
+			</lightning-file-upload>
+			</br>
+			<lightning-button title="Gå til mine bestillinger" class="slds-m-top-small" variant="brand" label="OK"
+				onclick={goToMyRequests}>
+			</lightning-button>
+		</div>
 	</div>
 
 	<div if:true={edit} class="main-content submitted-false">
