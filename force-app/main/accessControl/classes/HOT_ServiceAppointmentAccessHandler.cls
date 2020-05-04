@@ -1,4 +1,4 @@
-public with sharing class HOT_ServiceAppointmentAccessHandler extends MyTriggers {
+public without sharing class HOT_ServiceAppointmentAccessHandler extends MyTriggers {
 
 	public override void onAfterUpdate( Map<Id, SObject> triggerOldMap ) {
 		List<String> completedStatuses = new List<String> {'Fullført', 'Kan ikke fullføre', 'Avbrutt'};
