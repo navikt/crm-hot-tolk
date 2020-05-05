@@ -38,6 +38,10 @@
                 <behavior>Edit</behavior>
                 <field>WorkTypeId</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HOT_NumberOfInterestedResources__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -208,6 +212,10 @@
         <fields>CreatedBy</fields>
         <fields>CreatedDate</fields>
         <relatedList>ServiceReportRelatedList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>HOT_InterestedResource__c.ServiceAppointment__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
