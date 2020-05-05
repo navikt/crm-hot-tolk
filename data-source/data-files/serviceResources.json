@@ -1,0 +1,12 @@
+{
+	"records": [
+		{
+			"attributes": {
+				"type": "ServiceResource",
+				"referenceId": "ServiceResourceRef1"
+			},
+			"Name": "Luke Resource Skywalker",
+			"RelatedRecordId": "@UserRef1"
+		}
+	]
+}

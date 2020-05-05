@@ -14,4 +14,5 @@ call sfdx force:source:push
 call sfdx force:user:permset:assign --permsetname HOT_admin
 
 :: Opprett testdata
+:: call sfdx force:data:tree:export -q "SELECT Id, Alias, FirstName, LastName, Email FROM User WHERE Email='fakeemail@nav.no.scratchorg'" -d data-source/data-files
 call sfdx force:data:tree:import --plan data-source/data-import-plan.json
