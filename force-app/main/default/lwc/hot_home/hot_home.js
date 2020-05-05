@@ -3,6 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import NAME_FIELD from '@salesforce/schema/User.FirstName';
+import checkAssignedPermissionSet from '@salesforce/apex/HOT_checkAssignedPermissionSet.checkAssignedPermissionSet'
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
 
@@ -23,31 +24,14 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 	}
 
-	goToMyRequests() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: 'mine-bestillinger'
-			}
-		});
-	}
-
-	goToNewRequest() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: 'ny-bestilling'
-			},
-		});
-	}
-
-	goToKnowledgebank() {
-		this[NavigationMixin.Navigate]({
-			type: 'standard__webPage',
-			attributes: {
-				url: 'https://www.kunnskapsbanken.net/tolking/'
-			},
-		});
+	@track isFrilans = false;
+	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Tolk_Frilans' })
+	//@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
+	wireIsFrilans({ error, data }) {
+		if (data) {
+			this.isFrilans = data;
+		}
+		console.log(this.isFrilans);
 	}
 
 }
