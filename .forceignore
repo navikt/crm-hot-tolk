@@ -85,12 +85,13 @@
 **/siteDotComSites/*
 **/sites/*
 **/pages/*
-**/translations/*
 **/classes/ChangePasswordController*
 **/classes/CommunitiesLandingController*
 **/classes/MyProfilePageController*
-
-**\sharingSets\HOT_RequestSharingSet.sharingSet-meta.xml
+**/sharingSets/HOT_RequestSharingSet.sharingSet-meta.xml
 
 # MyTriggers
 **/classes/MyTriggers*
+
+# Translations - bug
+**/translations/*
