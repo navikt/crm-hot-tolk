@@ -1,4 +1,4 @@
-public with sharing class HOT_ServiceAppointmentListControllerMy {
+public with sharing class HOT_MyServiceAppointmentListController {
 
 	@AuraEnabled(cacheable = true)
 	public static List<ServiceAppointment> getMyServiceAppointments() {
