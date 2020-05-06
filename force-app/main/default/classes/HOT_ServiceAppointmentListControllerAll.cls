@@ -14,14 +14,15 @@ public without sharing class HOT_ServiceAppointmentListControllerAll {
 		/*
 		List<Skill> skills = [SELECT Id FROM Skill WHERE Id IN: ids];
 		*/
-		List<ServiceAppointment> serviceAppointments = [SELECT AppointmentNumber,
-		Subject, SchedStartTime, SchedEndTime, Duration, 
-		Address, HOT_InterpretationStreet__c, HOT_InterpretationPostalCode__c, HOT_InterpretationPostalCity__c,
-		WorkTypeId
+		List<ServiceAppointment> serviceAppointments = [SELECT AppointmentNumber, ServiceTerritoryId,
+		EarliestStartTime, DueDate, 
+		Address, HOT_InterpretationStreet__c, HOT_InterpretationPostalCode__c,
+		HOT_WorkTypeName__c, HOT_NumberOfInterestedResources__c
+		, WorkType.Name //(SELECT Name FROM ServiceAppointment.WorkType)
 		FROM ServiceAppointment 
-		//WHERE released=:true AND Status =: 'Open'
+		//WHERE Frilase_Tolk__c =:true AND Status =: 'Open'
 		//WHERE WorkTypeId IN: ids
-		ORDER BY SchedStartTime ASC];
+		ORDER BY EarliestStartTime ASC];
 
 		return serviceAppointments;
 	}
