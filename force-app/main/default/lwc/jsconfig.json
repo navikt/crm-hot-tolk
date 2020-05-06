@@ -26,6 +26,12 @@
             ],
             "c/hot_frilanstolkServiceAppointmentLists": [
                 "hot_frilanstolkServiceAppointmentLists/hot_frilanstolkServiceAppointmentLists.js"
+            ],
+            "c/hot_allServiceAppointments": [
+                "hot_allServiceAppointments/hot_allServiceAppointments.js"
+            ],
+            "c/hot_myServiceAppointments": [
+                "hot_myServiceAppointments/hot_myServiceAppointments.js"
             ]
         }
     },
