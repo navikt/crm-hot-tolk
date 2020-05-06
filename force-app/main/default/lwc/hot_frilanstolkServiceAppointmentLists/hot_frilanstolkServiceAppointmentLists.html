@@ -13,44 +13,15 @@
 		<lightning-tabset active-tab-value="available">
 
 			<lightning-tab label="Mine oppdrag" value="my">
-				<div class="main-content">
-					<div class="right-content">
-						<lightning-input type="checkbox" style="width:50%;" label="Vis historiske oppdrag"
-							name="ShowAll" onchange={handleChecked}>
-						</lightning-input>
-						<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
-							value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
-						</lightning-combobox>
-					</div>
-					<lightning-datatable key-field="SchedStartTime" data={myServiceAppointments} columns={columns}
-						hide-checkbox-column="true" default-sort-direction={defaultSortDirection}
-						sorted-direction={sortDirection} sorted-by={sortedBy} onsort={onHandleSort}
-						onrowaction={handleRowAction}>
-					</lightning-datatable>
-				</div>
+				<c-hot_my-service-appointments item-name="myServiceAppointments">
+				</c-hot_my-service-appointments>
 			</lightning-tab>
 
 			<lightning-tab label="Ledige oppdrag" value="available">
-
-				<div class="main-content">
-					<div class="right-content">
-						<lightning-button title="Meld interesse" class="slds-m-top-small right-button" variant="brand"
-							label="Meld interesse" onclick={sendOffer}>
-						</lightning-button>
-						<lightning-input type="checkbox" style="width:50%;" label="Vis alle oppdrag" name="ShowAll"
-							onchange={handleChecked}>
-						</lightning-input>
-						<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
-							value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
-						</lightning-combobox>
-					</div>
-					<lightning-datatable key-field="StartTime__c" data={allServiceAppointments} columns={columns}
-						default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}
-						sorted-by={sortedBy} onsort={onHandleSort} onrowaction={handleRowAction}
-						onrowselection={getSelectedName}>
-					</lightning-datatable>
-				</div>
+				<c-hot_all-service-appointments item-name="allServiceAppointments">
+				</c-hot_all-service-appointments>
 			</lightning-tab>
+
 		</lightning-tabset>
 
 	</div>
