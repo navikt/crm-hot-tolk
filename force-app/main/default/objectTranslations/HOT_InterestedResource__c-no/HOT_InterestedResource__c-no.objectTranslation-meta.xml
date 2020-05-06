@@ -3,33 +3,33 @@
     <caseValues>
         <article>Definite</article>
         <plural>false</plural>
-        <value>Påmeldte Ressursen</value>
+        <value>Påmeldte ressursen</value>
     </caseValues>
     <caseValues>
         <article>Indefinite</article>
         <plural>false</plural>
-        <value>Påmeldt Ressurs</value>
+        <value>Påmeldt ressurs</value>
     </caseValues>
     <caseValues>
         <article>None</article>
         <plural>false</plural>
-        <value>Påmeldt Ressurs</value>
+        <value>Påmeldt ressurs</value>
     </caseValues>
     <caseValues>
         <article>Definite</article>
         <plural>true</plural>
-        <value>Påmeldte Ressursene</value>
+        <value>Påmeldte ressursene</value>
     </caseValues>
     <caseValues>
         <article>Indefinite</article>
         <plural>true</plural>
-        <value>Påmeldte Ressurser</value>
+        <value>Påmeldte ressurser</value>
     </caseValues>
     <caseValues>
         <article>None</article>
         <plural>true</plural>
-        <value>Påmeldte Ressurser</value>
+        <value>Påmeldte ressurser</value>
     </caseValues>
     <gender>Masculine</gender>
-    <nameFieldLabel>Påmeldt Ressurs</nameFieldLabel>
+    <nameFieldLabel>Påmeldt ressurs</nameFieldLabel>
 </CustomObjectTranslation>
