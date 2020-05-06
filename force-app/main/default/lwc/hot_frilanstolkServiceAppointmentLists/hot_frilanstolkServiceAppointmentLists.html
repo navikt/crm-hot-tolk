@@ -10,7 +10,7 @@
 	</div>
 
 	<div class="liste liste-max-width">
-		<lightning-tabset active-tab-value="my">
+		<lightning-tabset active-tab-value="available">
 
 			<lightning-tab label="Mine oppdrag" value="my">
 				<div class="main-content">
@@ -44,7 +44,7 @@
 							value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
 						</lightning-combobox>
 					</div>
-					<lightning-datatable key-field="StartTime__c" data={myServiceAppointments} columns={columns}
+					<lightning-datatable key-field="StartTime__c" data={allServiceAppointments} columns={columns}
 						default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}
 						sorted-by={sortedBy} onsort={onHandleSort} onrowaction={handleRowAction}
 						onrowselection={getSelectedName}>

@@ -16,7 +16,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 	@track columns = [
 		{
 			label: 'Start tid',
-			fieldName: 'SchedStartTime',
+			fieldName: 'EarliestStartTime',
 			type: 'date',
 			sortable: true,
 			typeAttributes: {
@@ -30,7 +30,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 		},
 		{
 			label: 'Slutt tid',
-			fieldName: 'SchedEndTime',
+			fieldName: 'DueDate',
 			type: 'date',
 			sortable: true,
 			typeAttributes: {
@@ -43,7 +43,19 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 			}
 		},
 		{
-			label: 'Sted',
+			label: 'Arbeidstype',
+			fieldName: 'HOT_WorkTypeName__c',
+			type: 'text',
+			sortable: true,
+		},/*
+		{
+			label: 'WorkType.Name',
+			fieldName: 'WorkType.Name',
+			type: 'text',
+			sortable: true,
+		},*/
+		{
+			label: 'Adresse',
 			fieldName: 'HOT_InterpretationStreet__c',
 			type: 'text',
 			sortable: true,
@@ -55,10 +67,11 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 			sortable: true,
 		},
 		{
-			label: 'Tema',
-			fieldName: 'Subject',
-			type: 'text',
+			label: 'Påmeldte',
+			fieldName: 'HOT_NumberOfInterestedResources__c',
+			type: 'number',
 			sortable: true,
+			cellAttributes: { alignment: 'left' }
 		},
 		{
 			type: 'action',
@@ -68,23 +81,25 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
 
 	@track allServiceAppointments;
-	wiredServiceAppointmentsResult;
+	wiredAllServiceAppointmentsResult;
 	@wire(getAllServiceAppointments)
-	wiredRequest(result) {
-		this.wiredServiceAppointmentsResult = result;
+	wiredAllServiceAppointments(result) {
+		this.wiredAllServiceAppointmentsResult = result;
 		if (result.data) {
 			this.allServiceAppointments = result.data;
 			this.error = undefined;
+			for (var i = 0; i < this.allServiceAppointments.length; i++) {
+				console.log(JSON.stringify(this.allServiceAppointments[i].WorkType.Name));
+			}
 		} else if (result.error) {
 			this.error = result.error;
 			this.allServiceAppointments = undefined;
 		}
-
 	}
 	@track myServiceAppointments;
 	wiredMyServiceAppointmentsResult;
 	@wire(getMyServiceAppointments)
-	wiredRequest(result) {
+	wiredMyServiceAppointments(result) {
 		this.wiredMyServiceAppointmentsResult = result;
 		if (result.data) {
 			this.myServiceAppointments = result.data;
@@ -122,8 +137,6 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 		return function (a, b) {
 			a = key(a).toLowerCase();
 			b = key(b).toLowerCase();
-			console.log(a + ", " + b);
-			console.log(reverse * ((a > b) - (b > a)));
 			return reverse * ((a > b) - (b > a));
 		};
 	}
