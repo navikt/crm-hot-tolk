@@ -1,6 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
-import getServiceResource from '@salesforce/apex/HOT_getServiceResource.getServiceResource';
+import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import createServiceConnection from '@salesforce/apex/HOT_CreateInterestedResource.createInterestedResource';
 import { refreshApex } from '@salesforce/apex';
 

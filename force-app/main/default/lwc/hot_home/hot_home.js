@@ -3,7 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import NAME_FIELD from '@salesforce/schema/User.FirstName';
-import checkAssignedPermissionSet from '@salesforce/apex/HOT_checkAssignedPermissionSet.checkAssignedPermissionSet'
+import checkAssignedPermissionSet from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSet'
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
 
