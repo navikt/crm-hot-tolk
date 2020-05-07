@@ -1,5 +1,5 @@
 @isTest
-private class TestHOT_OpenSAListController{
+private class HOT_OpenSAListControllerTest{
 
 	/*
 	@testSetup static void setup(){
