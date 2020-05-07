@@ -70,11 +70,11 @@ export default class Hot_allServiceAppointments extends LightningElement {
 			type: 'number',
 			sortable: true,
 			cellAttributes: { alignment: 'left' }
-		},
+		},/*
 		{
 			type: 'action',
 			typeAttributes: { rowActions: actions },
-		},
+		},*/
 	];
 	@track serviceResource;
 	@wire(getServiceResource)
