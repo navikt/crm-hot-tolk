@@ -2,9 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getAllServiceAppointments from '@salesforce/apex/HOT_AllServiceAppointmentListController.getAllServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_getServiceResource.getServiceResource';
 import createServiceConnection from '@salesforce/apex/HOT_CreateInterestedResource.createInterestedResource';
-import { createRecord } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
-import { NavigationMixin } from 'lightning/navigation';
 
 var actions = [
 	{ label: 'Detaljer', name: 'details' },
