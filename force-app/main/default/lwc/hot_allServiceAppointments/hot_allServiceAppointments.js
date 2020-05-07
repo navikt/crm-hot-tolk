@@ -141,24 +141,33 @@ export default class Hot_allServiceAppointments extends LightningElement {
 		const key = function (x) {
 			return x[field];
 		};
-
-		return function (a, b) {
-			a = key(a).toLowerCase();
-			b = key(b).toLowerCase();
-			return reverse * ((a > b) - (b > a));
-		};
+		if (field == 'HOT_NumberOfInterestedResources__c') {
+			return function (a, b) {
+				a = key(a);
+				b = key(b);
+				return reverse * ((a > b) - (b > a));
+			};
+		}
+		else {
+			return function (a, b) {
+				a = key(a).toLowerCase();
+				b = key(b).toLowerCase();
+				return reverse * ((a > b) - (b > a));
+			};
+		}
 	}
 	onHandleSort(event) {
 		this.sortList(event.detail);
 	}
 	sortList(input) {
 		const { fieldName: sortedBy, sortDirection } = input;
-		let cloneData = [...this.serviceAppointments];
+		let cloneData = [...this.allServiceAppointments];
 		cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
 
-		this.serviceAppointments = cloneData;
+		this.allServiceAppointments = cloneData;
 		this.sortDirection = sortDirection;
 		this.sortedBy = sortedBy;
+		this.filterServiceAppointments();
 	}
 
 	//Row action methods
