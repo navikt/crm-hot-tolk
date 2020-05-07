@@ -25,7 +25,7 @@ private class HOT_SAListControllerAllTest{
 	}
 
 	@isTest static void testMethod1() {
-		List<ServiceAppointment> serviceAppointments = HOT_ServiceAppointmentListControllerAll.getAllServiceAppointments();
+		List<ServiceAppointment> serviceAppointments = HOT_AllServiceAppointmentListController.getAllServiceAppointments();
 		System.debug(serviceAppointments);
 		//System.assertEquals(1, serviceAppointments.size());
 	}

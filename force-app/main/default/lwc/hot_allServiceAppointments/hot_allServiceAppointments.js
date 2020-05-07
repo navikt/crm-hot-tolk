@@ -1,5 +1,5 @@
 import { LightningElement, wire, track, api } from 'lwc';
-import getAllServiceAppointments from '@salesforce/apex/HOT_ServiceAppointmentListControllerAll.getAllServiceAppointments';
+import getAllServiceAppointments from '@salesforce/apex/HOT_AllServiceAppointmentListController.getAllServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_getServiceResource.getServiceResource';
 import createServiceConnection from '@salesforce/apex/HOT_CreateInterestedResource.createInterestedResource';
 import { createRecord } from 'lightning/uiRecordApi';
