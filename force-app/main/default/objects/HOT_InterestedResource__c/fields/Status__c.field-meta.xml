@@ -9,28 +9,6 @@
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>
-        <valueSetDefinition>
-            <sorted>false</sorted>
-            <value>
-                <fullName>Interested</fullName>
-                <default>false</default>
-                <label>Interested</label>
-            </value>
-            <value>
-                <fullName>Assigned</fullName>
-                <default>false</default>
-                <label>Assigned</label>
-            </value>
-            <value>
-                <fullName>Not Assigned</fullName>
-                <default>false</default>
-                <label>Not Assigned</label>
-            </value>
-            <value>
-                <fullName>Retracted Interest</fullName>
-                <default>false</default>
-                <label>Retracted Interest</label>
-            </value>
-        </valueSetDefinition>
+        <valueSetName>HOT_InterestedResourceStatus</valueSetName>
     </valueSet>
 </CustomField>
