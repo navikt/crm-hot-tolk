@@ -119,7 +119,7 @@ export default class Hot_allServiceAppointments extends LightningElement {
 			this.allServiceAppointmentsFiltered = this.allServiceAppointments;
 		}
 		else {
-			this.filterRequests();
+			this.filterServiceAppointments();
 		}
 	}
 
