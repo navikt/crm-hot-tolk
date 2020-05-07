@@ -5,7 +5,7 @@
 		<visible>true</visible>
 	</applicationVisibilities>
 	<classAccesses>
-		<apexClass>HOT_AllServiceAppointmentListController</apexClass>
+		<apexClass>HOT_OpenServiceAppointmentListController</apexClass>
 		<enabled>true</enabled>
 	</classAccesses>
 	<classAccesses>
