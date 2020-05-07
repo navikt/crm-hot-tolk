@@ -107,7 +107,7 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	filterServiceAppointments() {
 		var tempServiceAppointments = [];
 		for (var i = 0; i < this.allServiceAppointments.length; i++) {
-			if (this.allServiceAppointments[i].ServiceTerritoryId == this.serviceResource.Id) {
+			if (JSON.stringify(this.serviceResource.ServiceTerritories).includes(this.allServiceAppointments[i].ServiceTerritoryId)) {
 				tempServiceAppointments.push(this.allServiceAppointments[i]);
 			}
 		}
