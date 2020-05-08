@@ -3,7 +3,7 @@ public without sharing class HOT_CreateInterestedResources {
 	@AuraEnabled
     public static void createInterestedResources(List<String> appointmentNumbers) {
 
-		System.debug('createInterestedResource');
+		System.debug('createInterestedResources');
 		Id userId = UserInfo.getUserId();
 		ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId=:userId];
 		
