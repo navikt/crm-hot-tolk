@@ -1,7 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
-import createServiceConnection from '@salesforce/apex/HOT_CreateInterestedResource.createInterestedResource';
+import createInterestedResources from '@salesforce/apex/HOT_CreateInterestedResources.createInterestedResources';
 import { refreshApex } from '@salesforce/apex';
 
 var actions = [
@@ -201,19 +201,21 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	openChatter(row) {
 
 	}
-	selectedRows = []
+	selectedRows = [];
 	getSelectedName(event) {
-		console.log(JSON.stringify(event.detail.selectedRows));
 		this.selectedRows = event.detail.selectedRows;
 	}
 
 	sendInterest() {
-		if (this.selectedRows.length > 0) {
-			for (var i = 0; i < this.selectedRows.length; i++) {
-				HOT_CreateServiceConnection.createServiceConnection(this.selectedRows[i].AppointmentNumber);
-			}
+		let appointmentNumbers = [];
+		for (var i = 0; i < this.selectedRows.length; i++) {
+			appointmentNumbers.push(this.selectedRows[i].AppointmentNumber);
+		}
+		if (appointmentNumbers.length > 0) {
+			createInterestedResources({ appointmentNumbers });
 		}
 	}
+
 
 	isChecked = false;
 	@track checkBoxLabel = "Vis oppdrag fra alle regioner";
