@@ -13,7 +13,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		}
 		List<Skill> mySkills = [SELECT Id, MasterLabel FROM Skill WHERE Id IN: mySkillIds];
 
-		List<ServiceAppointment> serviceAppointments = [SELECT AppointmentNumber, ServiceTerritoryId,
+		List<ServiceAppointment> serviceAppointments = [SELECT Id, AppointmentNumber, ServiceTerritoryId,
 		EarliestStartTime, DueDate, 
 		Address, HOT_InterpretationStreet__c, HOT_InterpretationPostalCode__c,
 		HOT_WorkTypeName__c, HOT_NumberOfInterestedResources__c, WorkType.Id
@@ -45,7 +45,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
 
 	@AuraEnabled
-    public static void createInterestedResources(List<String> appointmentNumbers) {
+    public static void createInterestedResources(List<String> serviceAppointmentIds) {
 
 		System.debug('createInterestedResources');
 		Id userId = UserInfo.getUserId();
@@ -53,20 +53,29 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		
 		List<ServiceAppointment> serviceAppointments = [SELECT Id,
 		(SELECT Id, ServiceResource__c FROM ServiceAppointment.InterestedResources__r)
-		FROM ServiceAppointment WHERE AppointmentNumber IN: appointmentNumbers];
+		FROM ServiceAppointment WHERE Id IN: serviceAppointmentIds];
 		System.debug(serviceAppointments);
+
+		List<HOT_InterestedResource__c> existingInterestedResources = [SELECT Id, ServiceAppointment__c FROM HOT_InterestedResource__c 
+		WHERE ServiceResource__c =: serviceResource.Id];
+		
 		List<HOT_InterestedResource__c> interestedResources = new List<HOT_InterestedResource__c>();
 		for(ServiceAppointment sa: serviceAppointments){
-			List<HOT_InterestedResource__c> existingInterestedResources =
-			[SELECT Id FROM HOT_InterestedResource__c WHERE ServiceResource__c =: serviceResource.Id AND ServiceAppointment__c=:sa.Id];	
-			if(existingInterestedResources.size()==0){
+			Boolean isInterested=false;
+			for(HOT_InterestedResource__c eir: existingInterestedResources){
+				if(eir.ServiceAppointment__c == sa.Id){
+					isInterested=true;	
+				}
+			}
+			if(!isInterested){
 				interestedResources.add(new HOT_InterestedResource__c(ServiceAppointment__c=sa.Id, ServiceResource__c=serviceResource.Id));
 			}
 		}
 
-	if(interestedResources.size()>0){
-		insert interestedResources;
-	}		
+		if(interestedResources.size()>0){
+			insert interestedResources;
+		}	
+
     }
 }
 

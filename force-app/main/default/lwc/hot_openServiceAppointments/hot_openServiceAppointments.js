@@ -208,12 +208,12 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	}
 
 	sendInterest() {
-		let appointmentNumbers = [];
+		let serviceAppointmentIds = [];
 		for (var i = 0; i < this.selectedRows.length; i++) {
-			appointmentNumbers.push(this.selectedRows[i].AppointmentNumber);
+			serviceAppointmentIds.push(this.selectedRows[i].Id);
 		}
-		if (appointmentNumbers.length > 0) {
-			createInterestedResources({ appointmentNumbers });
+		if (serviceAppointmentIds.length > 0) {
+			createInterestedResources({ serviceAppointmentIds });
 		}
 	}
 
