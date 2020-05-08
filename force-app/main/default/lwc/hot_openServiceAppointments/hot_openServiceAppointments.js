@@ -1,7 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
-import createInterestedResources from '@salesforce/apex/HOT_CreateInterestedResources.createInterestedResources';
+import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 import { refreshApex } from '@salesforce/apex';
 
 var actions = [
@@ -204,6 +204,7 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	selectedRows = [];
 	getSelectedName(event) {
 		this.selectedRows = event.detail.selectedRows;
+		console.log(JSON.stringify(this.selectedRows));
 	}
 
 	sendInterest() {
