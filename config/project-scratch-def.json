@@ -45,6 +45,9 @@
 			"serviceAppointmentsDueDateOffsetOrgValue": 7,
 			"workOrderLineItemSearchFields": "Subject",
 			"workOrderSearchFields": "Subject"
+		},
+		"nameSettings": {
+			"enableMiddleName": true
 		}
 	}
 }
