@@ -130,6 +130,24 @@
 		<style>TwoColumnsLeftToRight</style>
 	</layoutSections>
 	<layoutSections>
+		<customLabel>true</customLabel>
+		<detailHeading>true</detailHeading>
+		<editHeading>true</editHeading>
+		<label>Frilanstolk</label>
+		<layoutColumns>
+			<layoutItems>
+				<behavior>Edit</behavior>
+				<field>HOT_DeadlineDate__c</field>
+			</layoutItems>
+			<layoutItems>
+				<behavior>Edit</behavior>
+				<field>HOT_IsReleasedToFreelance__c</field>
+			</layoutItems>
+		</layoutColumns>
+		<layoutColumns />
+		<style>TwoColumnsLeftToRight</style>
+	</layoutSections>
+	<layoutSections>
 		<customLabel>false</customLabel>
 		<detailHeading>true</detailHeading>
 		<editHeading>true</editHeading>
