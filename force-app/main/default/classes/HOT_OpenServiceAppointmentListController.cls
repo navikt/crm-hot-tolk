@@ -18,7 +18,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		Address, HOT_InterpretationStreet__c, HOT_InterpretationPostalCode__c,
 		HOT_WorkTypeName__c, HOT_NumberOfInterestedResources__c, WorkType.Id
 		FROM ServiceAppointment 
-		//WHERE Frilans_Tolk__c =:true AND Status =: 'Open'
+		WHERE HOT_IsReleasedToFreelance__c =:true AND Status =: 'Ingen'
 		ORDER BY EarliestStartTime ASC];
 
 		List<ServiceAppointment> serviceAppointmentsFiltered = new List<ServiceAppointment>();
