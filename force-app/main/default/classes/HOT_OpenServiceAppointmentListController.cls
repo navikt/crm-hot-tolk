@@ -14,11 +14,11 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		List<Skill> mySkills = [SELECT Id, MasterLabel FROM Skill WHERE Id IN: mySkillIds];
 
 		List<ServiceAppointment> serviceAppointments = [SELECT Id, AppointmentNumber, ServiceTerritoryId,
-		EarliestStartTime, DueDate, 
+		EarliestStartTime, DueDate, HOT_DeadlineDate__c,
 		Address, HOT_InterpretationStreet__c, HOT_InterpretationPostalCode__c,
 		HOT_WorkTypeName__c, HOT_NumberOfInterestedResources__c, WorkType.Id
 		FROM ServiceAppointment 
-		WHERE HOT_IsReleasedToFreelance__c =:true AND Status =: 'Ingen'
+		WHERE HOT_IsReleasedToFreelance__c =:true AND Status =: 'Ingen' AND HOT_DeadlineDate__c>=:DATE.TODAY()
 		ORDER BY EarliestStartTime ASC];
 
 		List<ServiceAppointment> serviceAppointmentsFiltered = new List<ServiceAppointment>();
