@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
 	<fullName>HOT_NumberOfInterpreters__c</fullName>
 	<externalId>false</externalId>
-	<defaultValue>0</defaultValue>
+	<defaultValue>1</defaultValue>
 	<label>Number Of Interpreters</label>
 	<precision>1</precision>
 	<required>false</required>
