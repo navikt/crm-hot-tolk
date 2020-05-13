@@ -1,14 +1,13 @@
 {
-	"records": [
-		{
-			"attributes": {
-				"type": "User",
-				"referenceId": "UserRef1"
-			},
-			"Alias": "UUser",
-			"FirstName": "User",
-			"LastName": "User",
-			"Email": "fakeemail@nav.no.scratchorg"
-		}
-	]
+    "records": [
+        {
+            "attributes": {
+                "type": "User",
+                "referenceId": "UserRef1"
+            },
+            "FirstName": "User",
+            "LastName": "User",
+            "Email": "fakeemail@nav.no.scratchorg"
+        }
+    ]
 }

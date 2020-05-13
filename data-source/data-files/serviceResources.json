@@ -5,7 +5,8 @@
 				"type": "ServiceResource",
 				"referenceId": "ServiceResourceRef1"
 			},
-			"Name": "Luke Resource Skywalker",
+			"Name": "Boba Fett",
+			"IsActive": true,
 			"RelatedRecordId": "@UserRef1"
 		}
 	]
