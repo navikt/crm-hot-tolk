@@ -26,9 +26,15 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 
 	@track isFrilans = false;
 	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Tolk_Frilans' })
-	//@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
 	wireIsFrilans({ error, data }) {
 		if (data) {
+			this.isFrilans = data;
+		}
+		console.log(this.isFrilans);
+	}
+	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
+	wireIsFrilans({ error, data }) {
+		if (data && !this.isFrilans) {
 			this.isFrilans = data;
 		}
 		console.log(this.isFrilans);
