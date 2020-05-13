@@ -1,5 +1,5 @@
 User user = [SELECT Id FROM User WHERE Email = 'fakeemail@nav.no.scratchorg'];
-Skill skill = [SELECT Id FROM Skill WHERE DeveloperName = 'HOT_Tegnspraktolk'];
+Skill skill = [SELECT Id FROM Skill WHERE DeveloperName = 'Tegnspraktolk'];
 
 ServiceResource serviceResource = new ServiceResource();
 serviceResource.Name = 'Boba Fett';
