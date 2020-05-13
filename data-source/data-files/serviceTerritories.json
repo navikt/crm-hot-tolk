@@ -8,6 +8,15 @@
 			"Name": "Naboo",
 			"OperatingHoursId": "@OperatingHoursRef1",
 			"IsActive": true
+		},
+		{
+			"attributes": {
+				"type": "ServiceTerritory",
+				"referenceId": "ServiceTerritoryRef2"
+			},
+			"Name": "Dagobah System",
+			"OperatingHoursId": "@OperatingHoursRef1",
+			"IsActive": true
 		}
 	]
 }
