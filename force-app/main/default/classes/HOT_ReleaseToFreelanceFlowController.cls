@@ -1,6 +1,6 @@
 public class HOT_ReleaseToFreelanceFlowController {
 	
-	public String getRecordId() {
+	public static String getRecordId() {
         return ApexPages.CurrentPage().getparameters().get('id');
 	}
 	
