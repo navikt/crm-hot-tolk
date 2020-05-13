@@ -68,7 +68,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 				}
 			}
 			if(!isInterested){
-				interestedResources.add(new HOT_InterestedResource__c(ServiceAppointment__c=sa.Id, ServiceResource__c=serviceResource.Id));
+				interestedResources.add(new HOT_InterestedResource__c(ServiceAppointment__c=sa.Id, ServiceResource__c=serviceResource.Id, Status__c='Interested'));
 			}
 		}
 
