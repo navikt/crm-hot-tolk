@@ -30,5 +30,21 @@
 		"files": [
 			"data-files/requests.json"
 		]
+	},
+	{
+		"sobject": "OperatingHours",
+		"saveRefs": true,
+		"resolveRefs": true,
+		"files": [
+			"data-files/operatingHours.json"
+		]
+	},
+	{
+		"sobject": "ServiceTerritory",
+		"saveRefs": true,
+		"resolveRefs": true,
+		"files": [
+			"data-files/serviceTerritories.json"
+		]
 	}
 ]

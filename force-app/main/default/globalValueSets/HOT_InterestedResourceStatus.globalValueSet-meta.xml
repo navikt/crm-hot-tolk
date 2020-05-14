@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Interested</fullName>
+        <default>false</default>
+        <label>Interested</label>
+    </customValue>
+    <customValue>
+        <fullName>Assigned</fullName>
+        <default>false</default>
+        <label>Assigned</label>
+    </customValue>
+    <customValue>
+        <fullName>Not Assigned</fullName>
+        <default>false</default>
+        <label>Not Assigned</label>
+    </customValue>
+    <customValue>
+        <fullName>Retracted Interest</fullName>
+        <default>false</default>
+        <label>Retracted Interest</label>
+    </customValue>
+    <masterLabel>Interested Resource Status</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

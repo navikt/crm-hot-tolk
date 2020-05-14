@@ -1,6 +1,8 @@
 # Profiles
 **/profiles/*
 !**/profiles/Admin.profile-meta.xml
+!**/profiles/NAV Bruker.profile-meta.xml
+!**/profiles/NAV Samhandler.profile-meta.xml
 **/profilePasswordPolicies/*
 **/profileSessionSettings/*
 
@@ -84,13 +86,17 @@
 **/experiences/*
 **/siteDotComSites/*
 **/sites/*
-**/pages/*
-**/translations/*
+**/community/pages/*
 **/classes/ChangePasswordController*
 **/classes/CommunitiesLandingController*
 **/classes/MyProfilePageController*
-
-**\sharingSets\HOT_RequestSharingSet.sharingSet-meta.xml
+**/sharingSets/HOT_RequestSharingSet.sharingSet-meta.xml
 
 # MyTriggers
 **/classes/MyTriggers*
+
+# Translations - bug
+**/translations/*
+
+# Installed Packages - beta
+**/installedPackages/*
