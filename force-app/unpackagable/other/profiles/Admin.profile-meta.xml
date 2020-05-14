@@ -30,6 +30,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_ReleaseToFreelanceFlowController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_ReleaseToFreelanceFlowControllerTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_RequestHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -516,6 +524,10 @@
         <object>HOT_Request__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <pageAccesses>
+        <apexPage>HOT_ReleaseToFreelance</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
     <tabVisibilities>
         <tab>HOT_InterestedResource__c</tab>
         <visibility>DefaultOn</visibility>
