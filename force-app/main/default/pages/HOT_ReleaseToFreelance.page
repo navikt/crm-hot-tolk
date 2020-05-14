@@ -1,0 +1,5 @@
+<apex:page controller="HOT_ReleaseToFreelanceFlowController">
+<flow:interview name="HOT_ReleaseToFreelance">
+<apex:param name="recordId" value="{!recordId}"/>
+</flow:interview>
+</apex:page>
