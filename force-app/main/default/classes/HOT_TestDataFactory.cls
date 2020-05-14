@@ -14,20 +14,6 @@ public class HOT_TestDataFactory {
 		return request;
 	}
 
-	public static HOT_Request__c createRequest( String subject, WorkType workType, Account account ) {
-		HOT_Request__c request = new HOT_Request__c();
-		request.Subject__c = subject;
-		request.Status__c = 'Åpen';
-		request.NumberOfInterpreters__c = 1;
-		request.InterpretationMethod__c = workType.Id;
-		request.StartTime__c = Datetime.now().addHours( 1 );
-		request.EndTime__c = request.StartTime__c.addHours( 2 );
-		request.AssignmentType__c = 'Work';
-		request.Account__c = account.Id;
-
-		return request;
-	}
-
 	public static WorkOrder createWorkOrder( HOT_Request__c request, WorkType workType ) {
 		WorkOrder workOrder = new WorkOrder();
 		workOrder.HOT_Request__c = request.Id;
@@ -83,9 +69,8 @@ public class HOT_TestDataFactory {
 
 	}
 
-	public static Person__c createPerson( Account account ) {
+	public static Person__c createPerson(  ) {
 		Person__c person = new Person__c();
-		person.CRM_Account__c = account.Id;
 		person.INT_Confidential__c = 'UGRADERT';
 		person.Name = '12345678901';
 		person.INT_LastName__c = 'Last';

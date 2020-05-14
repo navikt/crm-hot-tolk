@@ -17,8 +17,9 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 		List<SobjectWrapper> wrappers = new List<SobjectWrapper>();
 		Integer recordIndex = 0;
 		for ( HOT_Request__c request:(List<HOT_Request__c>)records ) {
-			SobjectWrapper personInfo = personInfoMap.get( request.Person__c );
+			SobjectWrapper personInfo = personInfoMap.get( request.Account__c );
 			String region = null;
+
 			if ( personInfo != null ) {
 				region = personInfo.Region;
 			}
@@ -30,17 +31,17 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 	}
 
 	private Map<Id, SobjectWrapper> getPersonsInfo() {
-		Set<Id> personIds = new Set<Id>();
+		Set<Id> accountIds = new Set<Id>();
 		for ( HOT_Request__c request : (List<HOT_Request__c>) records ) {
-			personIds.add( request.Person__c );
+			accountIds.add( request.Account__c );
 		}
-		Map<Id, SobjectWrapper> wrapperByPersonId = new Map<Id, SobjectWrapper>();
-		for ( Person__c per : [SELECT INT_RegionNumber__c FROM Person__c WHERE Id in:personIds] ) {
+		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
+		for ( Person__c per : [SELECT INT_RegionNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c in:accountIds] ) {
 			SobjectWrapper wrapper = new SobjectWrapper();
 			wrapper.Region = per.INT_RegionNumber__c;
-			wrapperByPersonId.put( per.Id, wrapper );
+			wrapperByAccountId.put( per.CRM_Account__c, wrapper );
 		}
 
-		return wrapperByPersonId;
+		return wrapperByAccountId;
 	}
 }
