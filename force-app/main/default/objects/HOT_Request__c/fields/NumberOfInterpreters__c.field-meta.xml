@@ -1,13 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>NumberOfInterpreters__c</fullName>
-    <externalId>false</externalId>
-    <label>Number of Interpreters</label>
-    <precision>1</precision>
-    <required>false</required>
-    <scale>0</scale>
-    <trackHistory>false</trackHistory>
-    <trackTrending>false</trackTrending>
-    <type>Number</type>
-    <unique>false</unique>
+	<fullName>NumberOfInterpreters__c</fullName>
+	<externalId>false</externalId>
+	<label>Number of Interpreters</label>
+	<defaultValue>1</defaultValue>
+	<precision>1</precision>
+	<required>false</required>
+	<scale>0</scale>
+	<trackHistory>false</trackHistory>
+	<trackTrending>false</trackTrending>
+	<type>Number</type>
+	<unique>false</unique>
 </CustomField>

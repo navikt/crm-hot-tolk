@@ -8,7 +8,7 @@
 			"Name": "12345678901",
 			"HOT_DailyLifeInterpreter__c": true,
 			"HOT_DegreeOfHearingAndVisualImpairment__c": "Hearing impaired or deaf",
-			"INT_SecurityMeasures__c": "Fysisk/telefonisk utestengelse"
+			"INT_SecurityMeasures__c": "FTUS"
 		},
 		{
 			"attributes": {

@@ -125,17 +125,28 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		console.log(JSON.stringify(fields));
 		if (fields) {
 			const isDuplicate = this.isDuplicate(fields);
-			if (this.isDuplicate(fields) == null) {
+			if (isDuplicate == null) {
 				this.template.querySelector('lightning-record-edit-form').submit(fields);
 			}
 
 			else {
-				if (confirm("Du har allerede en bestilling med temaet " + this.requests[isDuplicate].Subject__c +
-					"\nFortsette?")) {
+				if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
+					"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
+					"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
+					+ "\n\nFortsett?")) {
 					this.template.querySelector('lightning-record-edit-form').submit(fields);
 				}
 			}
 		}
+	}
+
+	formatDateTime(dateTime) {
+		const year = dateTime.substring(0, 4);
+		const month = dateTime.substring(5, 7);
+		const day = dateTime.substring(8, 10);
+
+		const time = dateTime.substring(11, 16);
+		return day + "." + month + "." + year + " " + time;
 	}
 
 	handleError(event) {

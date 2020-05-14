@@ -4,7 +4,7 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 	@TestSetup
 	static void makeData() {
 		Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-		User user = HOT_TestDataFactory.createUser( profile );
+		User user = HOT_TestDataFactory.createUser( 'user', profile );
 		insert user;
 		ServiceResource resource = HOT_TestDataFactory.createServiceResource( user.Id );
 		insert resource;
@@ -40,6 +40,7 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 
 		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_1.Id AND RowCause = 'Manual'] );
 		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_2.Id AND RowCause = 'Manual'] );
+		System.assertEquals( 1, [SELECT count() FROM WorkOrderShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : workOrder.Id AND RowCause = 'Manual'] );
 	}
 
 	@IsTest
