@@ -45,13 +45,13 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
 
 	@AuraEnabled
-    public static void createInterestedResources(List<String> serviceAppointmentIds) {
+    public static List<String> createInterestedResources(List<String> serviceAppointmentIds) {
 
 		System.debug('createInterestedResources');
 		Id userId = UserInfo.getUserId();
 		ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId=:userId];
 		
-		List<ServiceAppointment> serviceAppointments = [SELECT Id,
+		List<ServiceAppointment> serviceAppointments = [SELECT Id, AppointmentNumber,
 		(SELECT Id, ServiceResource__c FROM ServiceAppointment.InterestedResources__r)
 		FROM ServiceAppointment WHERE Id IN: serviceAppointmentIds];
 		System.debug(serviceAppointments);
@@ -60,6 +60,8 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		WHERE ServiceResource__c =: serviceResource.Id];
 		
 		List<HOT_InterestedResource__c> interestedResources = new List<HOT_InterestedResource__c>();
+		List<String> updatedServiceAppointmentNumbers = new List<String>();
+
 		for(ServiceAppointment sa: serviceAppointments){
 			Boolean isInterested=false;
 			for(HOT_InterestedResource__c eir: existingInterestedResources){
@@ -69,12 +71,15 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 			}
 			if(!isInterested){
 				interestedResources.add(new HOT_InterestedResource__c(ServiceAppointment__c=sa.Id, ServiceResource__c=serviceResource.Id, Status__c='Interested'));
+				updatedServiceAppointmentNumbers.add(sa.AppointmentNumber);
 			}
 		}
 
 		if(interestedResources.size()>0){
 			insert interestedResources;
 		}	
+		System.debug(updatedServiceAppointmentNumbers);
+		return updatedServiceAppointmentNumbers;
 
     }
 }

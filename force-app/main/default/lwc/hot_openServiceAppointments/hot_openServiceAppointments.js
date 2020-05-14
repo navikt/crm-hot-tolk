@@ -124,7 +124,7 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	}
 
 	connectedCallback() {
-		refreshApex(this.wiredServiceAppointmentsResult);
+		refreshApex(this.wiredAllServiceAppointmentsResult);
 	}
 
 	//Sorting methods
@@ -209,12 +209,47 @@ export default class Hot_allServiceAppointments extends LightningElement {
 
 	sendInterest() {
 		let serviceAppointmentIds = [];
+		let serviceAppointmentNumbers = [];
 		for (var i = 0; i < this.selectedRows.length; i++) {
 			serviceAppointmentIds.push(this.selectedRows[i].Id);
+			serviceAppointmentNumbers.push(this.selectedRows[i].AppointmentNumber);
 		}
 		if (serviceAppointmentIds.length > 0) {
-			createInterestedResources({ serviceAppointmentIds });
+			let updatedserviceAppointmentNumbers = createInterestedResources({ serviceAppointmentIds });
+			//console.log(JSON.stringify(updatedserviceAppointmentNumbers));
+			//alert(this.formatSignUpMessage(serviceAppointmentNumbers, updatedserviceAppointmentNumbers));
+			//refreshApex(this.wiredAllServiceAppointmentsResult);
 		}
+
+	}
+
+	formatSignUpMessage(all, updated) {
+		var duplicateSA = "";
+		var newSA = "";
+		console.log(all);
+		console.log(updated);
+		for (var i = 0; i < all.length; i++) {
+			console.log(updated.indexOf(all[i]) != -1);
+			if (updated.indexOf(all[i]) != -1) {
+				newSA = newSA + all[i] + "\n";
+			}
+			else {
+				duplicateSA = duplicateSA + all[i] + "\n";
+			}
+		}
+		var formatedMessage = "";
+		//console.log("newSA" + ": " + newSA);
+		//console.log("duplicateSA" + ": " + duplicateSA);
+
+		if (newSA != "") {
+			console.log("if (newSA != '')");
+			formatedMessage = "Du meldte deg på følgende oppdrag:\n" + newSA;
+		}
+		if (duplicateSA != "") {
+			console.log("if (duplicateSA != '')");
+			formatedMessage = formatedMessage + "Du har allerede meldt deg på følgende oppdrag:\n" + duplicateSA;
+		}
+		return formatedMessage;
 	}
 
 

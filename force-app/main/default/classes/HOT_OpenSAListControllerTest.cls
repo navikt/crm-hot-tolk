@@ -52,7 +52,7 @@ private class HOT_OpenSAListControllerTest{
 			serviceAppointmentIds.add(sa.Id);
 		}
 		
-		HOT_OpenServiceAppointmentListController.createInterestedResources(serviceAppointmentIds);
+		List<String> updatedSANumbers = HOT_OpenServiceAppointmentListController.createInterestedResources(serviceAppointmentIds);
 		
 		List<HOT_InterestedResource__c> interestedResources = [SELECT Id FROM HOT_InterestedResource__c];
 		System.assertNotEquals(0, interestedResources.size());
