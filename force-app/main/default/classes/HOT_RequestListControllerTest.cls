@@ -83,20 +83,9 @@ private class HOT_RequestListControllerTest{
 	*/
 
 	@isTest
-	private static void getRequestListTestMethodDummy(){
+	private static void dymmyTestgetRequestList(){
 		List<HOT_Request__c> req1 = HOT_RequestListContoller.getRequestList();
 		//List<HOT_Request__c> req2 = HOT_RequestListContoller.getRequestListFromAccountFromRequestId();
-	}
-
-	@isTest
-	private static void getRequestListFromAccountFromRequestIdDummy(){
-		WorkType workType = HOT_TestDataFactory.createWorkType();
-		insert workType;
-		Hot_request__c request1 = HOT_TestDataFactory.createRequest('Subject 1', workType);
-		insert request1;
-		HOT_Request__c req0 = [SELECT Id FROM HOT_Request__c];
-
-		List<HOT_Request__c> req1 = HOT_RequestListContoller.getRequestListFromAccountFromRequestId(req0.Id);
 	}
 
 	

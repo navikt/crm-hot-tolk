@@ -256,11 +256,6 @@ lightning-input-field.ikke-sensitiv-fritekst>lightning-textarea>label:after {
 	border-bottom: 4px solid rgb(181, 189, 51);
 }
 
-.frilanstolk {
-	background-color: rgb(181, 189, 51);
-	border-bottom: 4px solid #dade99;
-}
-
 /* Home */
 
 .informasjonstavle__body {
@@ -278,20 +273,20 @@ lightning-input-field.ikke-sensitiv-fritekst>lightning-textarea>label:after {
 }
 
 .informasjonstavle__content {
-	max-width: 801px;
+	max-width: 800px;
 	width: 100%;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
 }
 
 .informasjonstavle__bildepaneler {
-	display: grid;
-	grid-template-columns: repeat(3, 275px);
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 }
 
 @media (max-width: 576px) {
 	.informasjonstavle__bildepaneler {
-		display: flex;
 		flex-direction: column;
 	}
 }
@@ -309,16 +304,12 @@ lightning-input-field.ikke-sensitiv-fritekst>lightning-textarea>label:after {
 	text-overflow: ellipsis;
 	margin: 1rem;
 	min-width: 200px;
-	max-width: 235px;
 	flex: 1;
 }
 
 @media (max-width: 576px) {
 	.panelMedBilde {
-		max-width: 576px;
-		width: 100%;
-		margin: 0;
-		padding: 1rem;
+		margin: 20px;
 	}
 }
 
@@ -577,6 +568,10 @@ lightning-input-field.ikke-sensitiv-fritekst>lightning-textarea>label:after {
 	position: relative;
 }
 
+.white-background {
+	background-color: #fff;
+}
+
 .steg {
 	padding: 2rem 0 1rem;
 }
@@ -596,6 +591,10 @@ div.skjema {
 	border-radius: 0.5rem;
 	padding: 0 2rem;
 	background-color: #fff;
+}
+
+.white-background {
+	background-color: white;
 }
 
 lightning-breadcrumbs {
