@@ -7,7 +7,7 @@
 			"path": "force-app",
 			"default": true,
 			"package": "crm-hot",
-			"versionName": "ver 0.5",
+			"versionName": "ver 0.6",
 			"versionNumber": "0.5.0.NEXT",
 			"dependencies": [
 				{
