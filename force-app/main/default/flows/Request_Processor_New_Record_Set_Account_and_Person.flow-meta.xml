@@ -11,9 +11,6 @@
         <label>myDecision</label>
         <locationX>50</locationX>
         <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>myDecision4</targetReference>
-        </defaultConnector>
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
             <name>myRule_1</name>
@@ -98,34 +95,6 @@
             <label>Update Person and Account for Community User</label>
         </rules>
     </decisions>
-    <decisions>
-        <processMetadataValues>
-            <name>index</name>
-            <value>
-                <numberValue>1.0</numberValue>
-            </value>
-        </processMetadataValues>
-        <name>myDecision4</name>
-        <label>myDecision4</label>
-        <locationX>50</locationX>
-        <locationY>0</locationY>
-        <defaultConnectorLabel>default</defaultConnectorLabel>
-        <rules>
-            <name>myRule_5</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>formula_myRule_5</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>myRule_5_A1</targetReference>
-            </connector>
-            <label>Default values</label>
-        </rules>
-    </decisions>
     <formulas>
         <processMetadataValues>
             <name>originalFormula</name>
@@ -133,7 +102,7 @@
                 <stringValue>[HOT_Request__c].Owner:User.Contact.AccountId </stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_2_myRule_1_A1_0903409108</name>
+        <name>formula_2_myRule_1_A1_7283214642</name>
         <dataType>String</dataType>
         <expression>{!myVariable_current.Owner:User.Contact.AccountId}</expression>
     </formulas>
@@ -144,16 +113,11 @@
                 <stringValue>[HOT_Request__c].Owner:User.Contact.Account.CRM_Person__c </stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_3_myRule_1_A1_2457111488</name>
+        <name>formula_3_myRule_1_A1_2987402945</name>
         <dataType>String</dataType>
         <expression>{!myVariable_current.Owner:User.Contact.Account.CRM_Person__c}</expression>
     </formulas>
-    <formulas>
-        <name>formula_myRule_5</name>
-        <dataType>Boolean</dataType>
-        <expression>true</expression>
-    </formulas>
-    <interviewLabel>Request_Processor_New_Record_Set_Account_and_Person-2_InterviewLabel</interviewLabel>
+    <interviewLabel>Request_Processor_New_Record_Set_Account_and_Person-1_InterviewLabel</interviewLabel>
     <label>Request Processor - New Record - Set Account and Person</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -209,9 +173,6 @@
         <label>Set Account and owner</label>
         <locationX>100</locationX>
         <locationY>200</locationY>
-        <connector>
-            <targetReference>myDecision4</targetReference>
-        </connector>
         <filters>
             <processMetadataValues>
                 <name>implicit</name>
@@ -258,7 +219,7 @@
             </processMetadataValues>
             <field>Account__c</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_0903409108</elementReference>
+                <elementReference>formula_2_myRule_1_A1_7283214642</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -294,99 +255,13 @@
             </processMetadataValues>
             <field>Person__c</field>
             <value>
-                <elementReference>formula_3_myRule_1_A1_2457111488</elementReference>
-            </value>
-        </inputAssignments>
-        <object>HOT_Request__c</object>
-    </recordUpdates>
-    <recordUpdates>
-        <processMetadataValues>
-            <name>evaluationType</name>
-            <value>
-                <stringValue>always</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>extraTypeInfo</name>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>isChildRelationship</name>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>reference</name>
-            <value>
-                <stringValue>[HOT_Request__c]</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>referenceTargetField</name>
-        </processMetadataValues>
-        <name>myRule_5_A1</name>
-        <label>Set Owner</label>
-        <locationX>500</locationX>
-        <locationY>200</locationY>
-        <filters>
-            <processMetadataValues>
-                <name>implicit</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </processMetadataValues>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>myVariable_current.Id</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <processMetadataValues>
-                <name>dataType</name>
-                <value>
-                    <stringValue>ID</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>isRequired</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideLabel</name>
-                <value>
-                    <stringValue>Owner ID</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideReferenceTo</name>
-                <value>
-                    <stringValue>Group;User</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>rightHandSideLabel</name>
-                <value>
-                    <stringValue>queue_4719</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>rightHandSideType</name>
-                <value>
-                    <stringValue>Queue</stringValue>
-                </value>
-            </processMetadataValues>
-            <field>OwnerId</field>
-            <value>
-                <stringValue>00G3N000001q64uUAA</stringValue>
+                <elementReference>formula_3_myRule_1_A1_2987402945</elementReference>
             </value>
         </inputAssignments>
         <object>HOT_Request__c</object>
     </recordUpdates>
     <startElementReference>myDecision</startElementReference>
-    <status>Obsolete</status>
+    <status>Active</status>
     <variables>
         <name>myVariable_current</name>
         <dataType>SObject</dataType>
