@@ -17,6 +17,10 @@
 				{
 					"package": "crm-platform-access-control",
 					"versionNumber": "0.17.0.LATEST"
+				},
+				{
+					"package": "crm-community-base",
+					"versionNumber": "0.2.0.LATEST"
 				}
 			]
 		}
@@ -24,6 +28,7 @@
 	"packageAliases": {
 		"crm-platform-base": "0Ho2o0000008ORmCAM",
 		"crm-platform-access-control": "0Ho2o0000008OR3CAM",
-		"crm-hot": "0Ho2o0000008OSVCA2"
+		"crm-hot": "0Ho2o0000008OSVCA2",
+		"crm-community-base": "0Ho2o0000008OSzCAM"
 	}
 }
