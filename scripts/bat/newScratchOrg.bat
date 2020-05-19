@@ -7,6 +7,9 @@ call sfdx force:package:install --package 04t2o000001My9SAAS  -k navcrm --wait 1
 :: Installer crm-platform-access-control
 call sfdx force:package:install --package 04t2o000001My9NAAS  -k navcrm --wait 10 --publishwait 10
 
+:: Installer crm-community-base
+call sfdx force:package:install --package 04t2o000000OA4IAAW  -k navcrm --wait 10 --publishwait 10
+
 :: Dytt kildekoden til scratch org'en
 call sfdx force:source:push
 
