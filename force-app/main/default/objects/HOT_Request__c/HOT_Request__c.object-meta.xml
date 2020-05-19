@@ -164,7 +164,7 @@
     <nameField>
         <displayFormat>F-{000000}</displayFormat>
         <label>Request ID Number</label>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Requests</pluralLabel>
