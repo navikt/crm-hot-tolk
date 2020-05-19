@@ -1,0 +1,1156 @@
+<template>
+	<nav class="mobilmeny dynamic-header" id="mobilmeny-master" aria-label="Hovedmeny">
+		<div class="mobilmeny__content">
+			<div class="mobilmeny__elementer">
+				<div class="mobilmeny__venstre-kolonne">
+					<a href="https://www.nav.no" class="mobilmeny__logo">
+						<img class="mobil-nav-logo" src="/sfsites/c/resource/1589289905000/logo" alt="NAV-logo"></img>
+					</a>
+				</div>
+				<div class="mobilmeny__hoyre-kolonne">
+					<button onclick={onHandleClickVarsler} class="menylinje-knapp varselbjelle__knapp"
+						id="mobil-varsler-dropdown-knapp-id" aria-label="Varsler. Du har ingen varsler."
+						aria-pressed="false" aria-haspopup="true" aria-controls="varselbjelle" aria-expanded="false">
+						<div class="menylinje-knapp-visning varselbjelle__knapp-visning">
+							<div if:false={varslerPressed} class="varselbjelle-ikon">
+								<div class="varselbjelle-ikon__ring"></div>
+								<div class="varselbjelle-ikon__bell"></div>
+								<div class="varselbjelle-ikon__lip"></div>
+								<div class="varselbjelle-ikon__clapper"></div>
+								<div class="varselbjelle-ikon__ulest-sirkel varselbjelle-ikon__ulest-sirkel--hide">
+									<p class="typo-etikett-liten varselbjelle-ikon__ulest-antall">
+										0</p>
+								</div>
+							</div>
+							<div if:true={varslerPressed} class="varselbjelle-ikon varselbjelle-ikon--open">
+								<div class="varselbjelle-ikon__ring"></div>
+								<div class="varselbjelle-ikon__bell"></div>
+								<div class="varselbjelle-ikon__lip"></div>
+								<div class="varselbjelle-ikon__clapper"></div>
+								<div class="varselbjelle-ikon__ulest-sirkel varselbjelle-ikon__ulest-sirkel--hide">
+									<p class="typo-etikett-liten varselbjelle-ikon__ulest-antall">
+										0</p>
+								</div>
+							</div>
+							<h2 class="typo-undertittel varselbjelle__tekst">Varsler</h2>
+						</div>
+					</button>
+					<button class="menylinje-knapp mobilmeny__knapp" id="mobilmeny-knapp-id" aria-label="Hovedmenyknapp"
+						aria-pressed="false" aria-haspopup="true" aria-controls="mobilmeny" aria-expanded="false"
+						onclick={handleOnClickMenu}>
+						<div class="menylinje-knapp-visning mobilmeny__knapp-visning">
+							<div if:false={menuPressed} class="hamburger-ikon">
+								<span class="hamburger-ikon__topp"></span>
+								<span class="hamburger-ikon__midt"></span>
+								<span class="hamburger-ikon__bunn"></span>
+							</div>
+							<div if:true={menuPressed} class="hamburger-ikon hamburger-ikon--open">
+								<span class="hamburger-ikon__topp hamburger-ikon__topp--open"></span>
+								<span class="hamburger-ikon__midt hamburger-ikon__midt--open"></span>
+								<span class="hamburger-ikon__bunn hamburger-ikon__bunn--open"></span>
+							</div>
+							<h2 class="typo-undertittel">Meny</h2>
+						</div>
+					</button>
+					<div class="ekspanderbar__container mobilmeny">
+						<div class="ekspanderbar__innhold-wrapper ekspanderbar__menuheight ekspanderbar__innhold-wrapper--active"
+							id="mobilmeny">
+							<div class="ekspanderbar__innhold">
+								<div class="ekspanderbar__scroll-wrapper">
+									<section if:true={menuPressed} class="mobilmeny__startmeny mobilmeny__menuheight">
+										<form action="https://www.nav.no/sok" role="search" id="search-form"
+											aria-expanded="false" aria-haspopup="listbox"
+											aria-labelledby="downshift-1-label">
+											<div class="sok-container">
+												<div class="sok-input-resultat">
+													<div class="sok-input__tittel">
+														<h2 class="typo-systemtittel">Søk</h2>
+													</div>
+													<div class="sok-input-container">
+														<div class="skjemaelement sok-input">
+															<label class="skjemaelement__label"
+																for="07322159-8025-14599-29492-6280366309300">Søk</label>
+															<input name="ord" type="text"
+																class="skjemaelement__input input--fullbredde"
+																id="07322159-8025-14599-29492-6280366309300"
+																aria-autocomplete="list"
+																aria-labelledby="downshift-1-label" autocomplete="off"
+																placeholder="Søk på nav.no" aria-label="Søk"
+																tabindex="-1" value="">
+															<div role="alert" aria-live="assertive"></div>
+														</div>
+														<div class="sok-knapper__container">
+															<button type="submit"
+																class="sok-knapper__knapp sok-knapper__knapp-submit">
+																<div class="sok-knapper__ikon-container">
+																	<div class="sok-knapper__sok-circle">
+																	</div>
+																	<div class="sok-knapper__sok-line">
+																	</div>
+																</div>
+																<div class="sok-knapper__knapp-tekst">
+																	Søk</div>
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</form>
+										<div class="media-sm-mobil mobil-meny">
+											<div class="sok__bakgrunn"></div>
+										</div>
+										<div if:true={isPrivatPerson} class="mobilmeny__meny mobilmeny__meny--ingress">
+											<h2 class="typo-undertittel">Privatperson</h2>
+											<a href="https://www.nav.no" class="lenke" tabindex="-1">Til forsiden</a>
+										</div>
+										<div if:true={isArbeidsgiver} class="mobilmeny__meny mobilmeny__meny--ingress">
+											<h2 class="typo-undertittel">Arbeidsgiver</h2>
+											<a href="https://www.nav.no/no/bedrift" class="lenke" tabindex="-1">Til
+												forsiden</a>
+										</div>
+										<div if:true={isSamarbeidspartner}
+											class="mobilmeny__meny mobilmeny__meny--ingress">
+											<h2 class="typo-undertittel">Samarbeidspartner</h2>
+											<a href="https://www.nav.no/no/samarbeidspartner" class="lenke"
+												tabindex="-1">Til forsiden</a>
+										</div>
+										<ul if:true={isPrivatPerson} class="mobilmeny__meny mobilmeny__meny--mainlist">
+											<a class="lenke" onclick={onHandleUnderMeny1} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Arbeidssøker
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny2} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span class="mobilmeny__meny mobilmeny__meny--text-element">Syk
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny3} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Foreldre,
+															barn og familie
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny4} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Pensjon
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny5} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Sosiale
+															tjenester
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny6} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Hjelpemidler
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny7} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span class="mobilmeny__meny mobilmeny__meny--text-element">Til
+															eller fra Norge
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny8} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span class="mobilmeny__meny mobilmeny__meny--text-element">På
+															tvers
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+										</ul>
+										<ul if:true={isArbeidsgiver} class="mobilmeny__meny mobilmeny__meny--mainlist">
+											<a class="lenke" onclick={onHandleUnderMeny1} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Tjenester
+															og skjemaer
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny2} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Sykdom
+															og skade
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny3} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Rekruttere
+															og inkludere
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny4} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Permittere
+															og omstille
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+										</ul>
+										<ul if:true={isSamarbeidspartner}
+											class="mobilmeny__meny mobilmeny__meny--mainlist">
+											<a class="lenke" onclick={onHandleUnderMeny1} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Helsepersonell
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny2} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Kommuner
+															og fylker
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny3} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobilmeny__meny mobilmeny__meny--text-element">Tiltaksarrangører
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+											<a class="lenke" onclick={onHandleUnderMeny4} tabindex="-1">
+												<li class="mobilmeny__meny mobilmeny__meny--listItem">
+													<h2 class="typo-undertittel">
+														<span class="mobilmeny__meny mobilmeny__meny--text-element">På
+															tvers
+															<i
+																class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+														</span>
+													</h2>
+												</li>
+											</a>
+										</ul>
+										<ul class="mobil-arbeidsflate-valg">
+											<li class="mobil-arbeidsflate-valg__liste-element">
+												<a href="https://www.nav.no/person/dittnav/" class="lenke"
+													tabindex="-1">
+													<h2 class="typo-undertittel">
+														<span class="mobil-arbeidsflate-valg__lenke-tittel">Ditt
+															NAV</span>
+													</h2>
+													<p class="typo-normal">
+														<span class="bullet">Dine saker,
+															utbetalinger, meldinger, meldekort,
+															aktivitetsplan, personopplysninger
+															og flere tjenester</span>
+													</p>
+												</a>
+											</li>
+											<li class="mobil-arbeidsflate-valg__liste-element">
+												<a href="https://www.nav.no/no/bedrift" class="lenke" tabindex="-1">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobil-arbeidsflate-valg__lenke-tittel">Arbeidsgiver</span>
+													</h2>
+													<p class="typo-normal">
+														<span class="bullet">Dine sykmeldte,
+															rekruttering, digitale
+															skjemaer</span>
+													</p>
+												</a>
+											</li>
+											<li class="mobil-arbeidsflate-valg__liste-element">
+												<a href="https://www.nav.no/no/samarbeidspartner" class="lenke"
+													tabindex="-1">
+													<h2 class="typo-undertittel">
+														<span
+															class="mobil-arbeidsflate-valg__lenke-tittel">Samarbeidspartner</span>
+													</h2>
+													<p class="typo-normal">
+														<span class="bullet">Helsepersonell,
+															tiltaksarrangører, fylker og
+															kommuner</span>
+													</p>
+												</a>
+											</li>
+										</ul>
+									</section>
+
+									<div if:true={isPrivatPerson}>
+										<section if:true={isUnderMeny1}
+											class="mobilmeny__undermeny-innhold mobilmeny__menuheight">
+											<div class="mobilmeny__lukk-undermeny">
+												<h2
+													class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+													<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+														<i
+															class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+														til oversikt
+													</a>
+												</h2>
+											</div>
+											<h2 class="typo-systemtittel mobilmeny__undermeny-arbeidsflate">
+												Arbeidssøker</h2>
+											<ul class="mobilmeny__meny mobilmeny__meny--list">
+												<a href="https://veiledearbeidssoker.nav.no" class="lenke"
+													tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Arbeidsledig og jobbsøker
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/arbeid/dagpenger-ved-arbeidsloshet-og-permittering"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Dagpenger ved
+																arbeidsløshet og permittering
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/arbeid/oppfolging-og-tiltak-for-a-komme-i-jobb"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Oppfølging og tiltak for å
+																komme i jobb
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://tjenester.nav.no/veiledearbeidssoker/ung-lite-erfaring?sprak=nb"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Ungdom
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://veiledearbeidssoker.nav.no/veiviserarbeidssoker/?situasjon=mistet-jobben"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Jobbsøkertips
+															</span>
+														</h2>
+													</li>
+												</a>
+											</ul>
+											<div class="mobilmeny__blokk-divider">
+												<div class="mobilmeny__lukk-undermeny">
+													<h2
+														class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+														<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+															<i
+																class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+															til oversikt
+														</a>
+													</h2>
+												</div>
+											</div>
+										</section>
+										<section if:true={isUnderMeny2}
+											class="mobilmeny__undermeny-innhold mobilmeny__menuheight">
+											<div class="mobilmeny__lukk-undermeny">
+												<h2
+													class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+													<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+														<i
+															class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+														til oversikt
+													</a>
+												</h2>
+											</div>
+											<h2 class="typo-systemtittel mobilmeny__undermeny-arbeidsflate">
+												Syk</h2>
+											<ul class="mobilmeny__meny mobilmeny__meny--list">
+												<a href="https://www.nav.no/no/person/arbeid/sykmeldt-arbeidsavklaringspenger-og-yrkesskade"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Sykmelding og sykepenger
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/arbeid/arbeidsavklaringspenger"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Arbeidsavklaringspenger
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/pensjon/uforetrygd" class="lenke"
+													tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Uføretrygd
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/familie/grunn-og-hjelpestonad"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Grunn- og hjelpestønad
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/arbeid/yrkesskade-og-yrkessykdom"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Yrkesskade og yrkessykdom
+															</span>
+														</h2>
+													</li>
+												</a>
+											</ul>
+											<div class="mobilmeny__blokk-divider">
+												<div class="mobilmeny__lukk-undermeny">
+													<h2
+														class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+														<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+															<i
+																class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+															til oversikt
+														</a>
+													</h2>
+												</div>
+											</div>
+										</section>
+										<section if:true={isForeldreBarnFamilie}
+											class="mobilmeny__undermeny-innhold mobilmeny__menuheight">
+											<div class="mobilmeny__lukk-undermeny">
+												<h2
+													class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+													<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+														<i
+															class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+														til oversikt
+													</a>
+												</h2>
+											</div>
+											<h2 class="typo-systemtittel mobilmeny__undermeny-arbeidsflate">
+												Foreldre, barn og familie</h2>
+											<ul class="mobilmeny__meny mobilmeny__meny--list">
+												<a href="https://familie.nav.no/" class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Foreldrepenger,
+																svangerskapspenger og
+																engangsstønad
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/familie/barnetrygd-og-kontantstotte"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Barnetrygd og
+																kontantstøtte
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/familie/enslig-mor-eller-far"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Enslig mor eller far
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/familie/farskap-og-morskap"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Farskap og morskap
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/familie/barne-og-ektefellebidrag"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Barnebidrag
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/familie/sykdom-i-familien/nb/" class="lenke"
+													tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Sykdom i familien
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/familie/ytelser-ved-dodsfall"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Ytelser ved dødsfall
+															</span>
+														</h2>
+													</li>
+												</a>
+											</ul>
+											<div class="mobilmeny__blokk-divider">
+												<div class="mobilmeny__lukk-undermeny">
+													<h2
+														class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+														<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+															<i
+																class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+															til oversikt
+														</a>
+													</h2>
+												</div>
+											</div>
+										</section>
+										<section if:true={isPensjon}
+											class="mobilmeny__undermeny-innhold mobilmeny__menuheight">
+											<div class="mobilmeny__lukk-undermeny">
+												<h2
+													class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+													<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+														<i
+															class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+														til oversikt
+													</a>
+												</h2>
+											</div>
+											<h2 class="typo-systemtittel mobilmeny__undermeny-arbeidsflate">
+												Pensjon</h2>
+											<ul class="mobilmeny__meny mobilmeny__meny--list">
+												<a href="https://www.nav.no/no/person/pensjon/alderspensjon"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Alderspensjon
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/pensjon/hva-kan-jeg-fa-i-pensjon"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Logg inn Din pensjon
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/pensjon/avtalefestet-pensjon-afp"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Avtalefestet pensjon
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/pensjon/pensjonsopptjening-for-omsorgsarbeid"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Pensjonsopptjening for
+																omsorgsarbeid
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/pensjon/andre-pensjonsordninger"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Andre pensjonsordninger
+															</span>
+														</h2>
+													</li>
+												</a>
+											</ul>
+											<div class="mobilmeny__blokk-divider">
+												<div class="mobilmeny__lukk-undermeny">
+													<h2
+														class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+														<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+															<i
+																class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+															til oversikt
+														</a>
+													</h2>
+												</div>
+											</div>
+										</section>
+										<section if:true={isSosialeTjenester}
+											class="mobilmeny__undermeny-innhold mobilmeny__menuheight">
+											<div class="mobilmeny__lukk-undermeny">
+												<h2
+													class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+													<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+														<i
+															class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+														til oversikt
+													</a>
+												</h2>
+											</div>
+											<h2 class="typo-systemtittel mobilmeny__undermeny-arbeidsflate">
+												Sosiale tjenester</h2>
+											<ul class="mobilmeny__meny mobilmeny__meny--list">
+												<a href="https://tjenester.nav.no/veivisersosialhjelp/" class="lenke"
+													tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Økonomisk sosialhjelp
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/flere-tema/sosiale-tjenester/okonomisk-radgivning-og-gjeldsradgivning"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Økonomisk rådgivning og
+																gjeldsrådgivning
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/flere-tema/sosiale-tjenester/bolig"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Midlertidig botilbud og
+																bostøtte
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/flere-tema/sosiale-tjenester/nynorsk/kvalifiseringsprogrammet-kvp"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Kvalifiseringsprogrammet
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/flere-tema/sosiale-tjenester/generelle-rad-og-veiledning"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Opplysning, råd og
+																veiledning
+															</span>
+														</h2>
+													</li>
+												</a>
+											</ul>
+											<div class="mobilmeny__blokk-divider">
+												<div class="mobilmeny__lukk-undermeny">
+													<h2
+														class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+														<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+															<i
+																class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+															til oversikt
+														</a>
+													</h2>
+												</div>
+											</div>
+										</section>
+										<section if:true={isHjelpemidler}
+											class="mobilmeny__undermeny-innhold mobilmeny__menuheight">
+											<div class="mobilmeny__lukk-undermeny">
+												<h2
+													class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+													<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+														<i
+															class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+														til oversikt
+													</a>
+												</h2>
+											</div>
+											<h2 class="typo-systemtittel mobilmeny__undermeny-arbeidsflate">
+												Hjelpemidler</h2>
+											<ul class="mobilmeny__meny mobilmeny__meny--list">
+												<a href="https://www.nav.no/no/person/hjelpemidler/hva-har-du-vansker-med"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Hva har du vansker med?
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/hjelpemidler/hvor-trenger-du-hjelp"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Hvor trenger du hjelp?
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/hjelpemidler/tjenester-og-produkter"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Tjenester og produkter
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/hjelpemidler/hvordan-soke"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Hvordan søke om
+																hjelpemidler?
+															</span>
+														</h2>
+													</li>
+												</a>
+											</ul>
+										</section>
+										<section if:true={isTilEllerFraNorge}
+											class="mobilmeny__undermeny-innhold mobilmeny__menuheight">
+											<div class="mobilmeny__lukk-undermeny">
+												<h2
+													class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+													<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+														<i
+															class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+														til oversikt
+													</a>
+												</h2>
+											</div>
+											<h2 class="typo-systemtittel mobilmeny__undermeny-arbeidsflate">
+												Til eller fra Norge</h2>
+											<ul class="mobilmeny__meny mobilmeny__meny--list">
+												<a href="https://www.nav.no/no/person/flere-tema/arbeid-og-opphold-i-norge"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Arbeid og opphold i Norge
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/flere-tema/arbeid-og-opphold-i-utlandet"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Arbeid og opphold i
+																utlandet
+															</span>
+														</h2>
+													</li>
+												</a>
+											</ul>
+											<div class="mobilmeny__blokk-divider">
+												<div class="mobilmeny__lukk-undermeny">
+													<h2
+														class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+														<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+															<i
+																class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+															til oversikt
+														</a>
+													</h2>
+												</div>
+											</div>
+										</section>
+										<section if:true={isPaTvers}
+											class="mobilmeny__undermeny-innhold mobilmeny__menuheight">
+											<div class="mobilmeny__lukk-undermeny">
+												<h2
+													class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+													<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+														<i
+															class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+														til oversikt
+													</a>
+												</h2>
+											</div>
+											<h2 class="typo-systemtittel mobilmeny__undermeny-arbeidsflate">
+												På tvers</h2>
+											<ul class="mobilmeny__meny mobilmeny__meny--list">
+												<a href="https://www.nav.no/no/nav-og-samfunn/om-nav/saksbehandlingstider-i-nav"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Saksbehandlingstider
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/nav-og-samfunn/kontakt-nav/utbetalinger/utbetalinger"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Utbetalinger
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/arbeid/dagpenger-ved-arbeidsloshet-og-permittering/meldekort-hvordan-gjor-du-det"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Meldekort
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/nav-og-samfunn/kontakt-nav/oversikt-over-satser"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Satser
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/nav-og-samfunn/kontakt-nav/kurs-fra-nav"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Kurs fra NAV
+															</span>
+														</h2>
+													</li>
+												</a>
+												<a href="https://www.nav.no/no/person/flere-tema/innkreving-og-innbetaling"
+													class="lenke" tabindex="-1">
+													<li class="mobilmeny__meny mobilmeny__meny--listItem">
+														<h2 class="typo-undertittel">
+															<span
+																class="mobilmeny__meny mobilmeny__meny--text-element-undermeny">
+																<div class="mobilmeny__undermeny-chevron">
+																	<i
+																		class="nav-frontend-chevron chevronboks chevron--hoyre"></i>
+																</div>Innkreving og innbetaling
+															</span>
+														</h2>
+													</li>
+												</a>
+											</ul>
+											<div class="mobilmeny__blokk-divider">
+												<div class="mobilmeny__lukk-undermeny">
+													<h2
+														class="typo-undertittel mobilmeny__meny mobilmeny__meny--tilbakelenke">
+														<a onclick={onHandleBackToMenu} class="lenke" tabindex="-1">
+															<i
+																class="nav-frontend-chevron chevronboks chevron--venstre"></i>Tilbake
+															til oversikt
+														</a>
+													</h2>
+												</div>
+											</div>
+										</section>
+									</div>
+
+
+									<section if:true={varslerPressed}
+										class="mobilmeny__varsel-innhold mobilmeny__menuheight">
+										<h1 class="typo-innholdstittel mobilmeny__varseltittel">
+											Varsler</h1>
+										<div class="varsler-display-mobil-tablet">
+											<div class="media-sm-mobil mobil-meny">
+												<div class="nye-varsler-mobil-wrapper"></div>
+											</div>
+											<div class="panel nav-varsler">
+												<p class="text-center">Du har ingen varsler å
+													vise.</p>
+											</div>
+											<div class="media-tablet-desktop tablet-desktop-meny">
+											</div>
+										</div>
+									</section>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+</template>
