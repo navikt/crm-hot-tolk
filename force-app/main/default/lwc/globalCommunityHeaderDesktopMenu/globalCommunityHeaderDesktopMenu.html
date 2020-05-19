@@ -1,0 +1,1351 @@
+<template>
+	<nav class="desktopmeny dynamic-header" aria-label="Hovedmeny" id="hovedmeny">
+		<div class="desktopmeny__elementer">
+			<a href="https://www.nav.no" class="desktopmeny__nav-brand" id="desktop-header-logo-id">
+				<img src="/sfsites/c/resource/1589289905000/logo" alt="NAV-logo"></img>
+			</a>
+			<button class="menylinje-knapp desktop-hovedmeny__knapp" id="desktop-hovedmeny-knapp-id"
+				aria-label="Hovedmenyknapp" aria-pressed="false" aria-haspopup="true" aria-controls="desktop-hovedmeny"
+				aria-expanded="false" onclick={handleOnClickMenu}>
+				<div class="menylinje-knapp-visning desktop-hovedmeny__knapp-visning">
+					<div if:false={menuPressed} class="hamburger-ikon">
+						<span class="hamburger-ikon__topp"></span>
+						<span class="hamburger-ikon__midt"></span>
+						<span class="hamburger-ikon__bunn"></span>
+					</div>
+					<div if:true={menuPressed} class="hamburger-ikon hamburger-ikon--open">
+						<span class="hamburger-ikon__topp hamburger-ikon__topp--open"></span>
+						<span class="hamburger-ikon__midt hamburger-ikon__midt--open"></span>
+						<span class="hamburger-ikon__bunn hamburger-ikon__bunn--open"></span>
+					</div>
+					<h2 class="typo-undertittel">Meny</h2>
+				</div>
+			</button>
+			<div class="ekspanderbar__container desktop-hovedmeny">
+				<div if:true={menuPressed}
+					class="ekspanderbar__innhold-wrapper ekspanderbar__menuheight ekspanderbar__innhold-wrapper--active"
+					id="desktop-hovedmeny">
+					<div if:true={isPrivatPerson} class="ekspanderbar__innhold">
+						<div class="ekspanderbar__scroll-wrapper">
+							<div class="desktop-hovedmeny__dropdown">
+								<div class="desktop-hovedmeny__topp-seksjon">
+									<h2 class="typo-systemtittel desktop-hovedmeny__topp-seksjon-tittel">
+										Privatperson</h2>
+									<a href="https://www.nav.no" class="lenke desktop-hovedmeny__topp-seksjon-lenke"
+										id="desktop-hovedmeny_0_0_0">Til forsiden</a>
+								</div>
+								<div class="desktop-hovedmeny__hoved-seksjon">
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Arbeidssøker</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://veiledearbeidssoker.nav.no" class="chevronlenke"
+													id="desktop-hovedmeny_0_1_0" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Arbeidsledig og jobbsøker
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/arbeid/dagpenger-ved-arbeidsloshet-og-permittering"
+													class="chevronlenke" id="desktop-hovedmeny_0_1_1" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Dagpenger ved arbeidsløshet og
+													permittering
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/arbeid/oppfolging-og-tiltak-for-a-komme-i-jobb"
+													class="chevronlenke" id="desktop-hovedmeny_0_1_2_person"
+													tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Oppfølging og tiltak for å komme i
+													jobb
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://tjenester.nav.no/veiledearbeidssoker/ung-lite-erfaring?sprak=nb"
+													class="chevronlenke" id="desktop-hovedmeny_0_1_3" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Ungdom
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://veiledearbeidssoker.nav.no/veiviserarbeidssoker/?situasjon=mistet-jobben"
+													class="chevronlenke" id="desktop-hovedmeny_0_1_4" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Jobbsøkertips
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Syk</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/arbeid/sykmeldt-arbeidsavklaringspenger-og-yrkesskade"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_0_person"
+													tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Sykmelding og sykepenger
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/arbeid/arbeidsavklaringspenger"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_1" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Arbeidsavklaringspenger
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/pensjon/uforetrygd"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_2" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Uføretrygd
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/familie/grunn-og-hjelpestonad"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_3" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Grunn- og hjelpestønad
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/familie/sykdom-i-familien/nb/"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_4" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Sykdom i familien
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/arbeid/yrkesskade-og-yrkessykdom"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_5" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Yrkesskade og yrkessykdom
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Foreldre, barn og
+												familie</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://familie.nav.no/" class="chevronlenke"
+													id="desktop-hovedmeny_2_1_0" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Foreldrepenger, svangerskapspenger
+													og engangsstønad
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/familie/barnetrygd-og-kontantstotte"
+													class="chevronlenke" id="desktop-hovedmeny_2_1_1" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Barnetrygd og kontantstøtte
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/familie/enslig-mor-eller-far"
+													class="chevronlenke" id="desktop-hovedmeny_2_1_2" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Enslig mor eller far
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/familie/farskap-og-morskap"
+													class="chevronlenke" id="desktop-hovedmeny_2_1_3" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Farskap og morskap
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/familie/barne-og-ektefellebidrag"
+													class="chevronlenke" id="desktop-hovedmeny_2_1_4" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Barnebidrag
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/familie/ytelser-ved-dodsfall"
+													class="chevronlenke" id="desktop-hovedmeny_2_1_5" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Ytelser ved dødsfall
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Pensjon</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/pensjon/alderspensjon"
+													class="chevronlenke" id="desktop-hovedmeny_3_1_0_person"
+													tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Alderspensjon
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/pensjon/hva-kan-jeg-fa-i-pensjon"
+													class="chevronlenke" id="desktop-hovedmeny_3_1_1_person"
+													tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Logg inn Din pensjon
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/pensjon/avtalefestet-pensjon-afp"
+													class="chevronlenke" id="desktop-hovedmeny_3_1_2_person"
+													tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Avtalefestet pensjon
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/pensjon/pensjonsopptjening-for-omsorgsarbeid"
+													class="chevronlenke" id="desktop-hovedmeny_3_1_3" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Pensjonsopptjening for
+													omsorgsarbeid
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/pensjon/andre-pensjonsordninger"
+													class="chevronlenke" id="desktop-hovedmeny_3_1_4" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Andre pensjonsordninger
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Sosiale tjenester
+											</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://tjenester.nav.no/veivisersosialhjelp/"
+													class="chevronlenke" id="desktop-hovedmeny_4_1_0" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Økonomisk sosialhjelp
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/flere-tema/sosiale-tjenester/okonomisk-radgivning-og-gjeldsradgivning"
+													class="chevronlenke" id="desktop-hovedmeny_4_1_1" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Økonomisk rådgivning og
+													gjeldsrådgivning
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/flere-tema/sosiale-tjenester/bolig"
+													class="chevronlenke" id="desktop-hovedmeny_4_1_2" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Midlertidig botilbud og bostøtte
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/flere-tema/sosiale-tjenester/nynorsk/kvalifiseringsprogrammet-kvp"
+													class="chevronlenke" id="desktop-hovedmeny_4_1_3" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Kvalifiseringsprogrammet
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/flere-tema/sosiale-tjenester/generelle-rad-og-veiledning"
+													class="chevronlenke" id="desktop-hovedmeny_4_1_4" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Opplysning, råd og veiledning
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Hjelpemidler</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/hjelpemidler/hva-har-du-vansker-med"
+													class="chevronlenke" id="desktop-hovedmeny_5_1_0" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Hva har du vansker med?
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/hjelpemidler/hvor-trenger-du-hjelp"
+													class="chevronlenke" id="desktop-hovedmeny_5_1_1" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Hvor trenger du hjelp?
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/hjelpemidler/tjenester-og-produkter"
+													class="chevronlenke" id="desktop-hovedmeny_5_1_2" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Tjenester og produkter
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/hjelpemidler/hvordan-soke"
+													class="chevronlenke" id="desktop-hovedmeny_5_1_3" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Hvordan søke om hjelpemidler?
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Til eller fra Norge
+											</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/flere-tema/arbeid-og-opphold-i-norge"
+													class="chevronlenke" id="desktop-hovedmeny_6_1_0" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Arbeid og opphold i Norge
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/flere-tema/arbeid-og-opphold-i-utlandet"
+													class="chevronlenke" id="desktop-hovedmeny_6_1_1" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Arbeid og opphold i utlandet
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">På tvers</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/kontakt-nav/utbetalinger/utbetalinger"
+													class="chevronlenke" id="desktop-hovedmeny_7_1_0" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Utbetalinger
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/om-nav/saksbehandlingstider-i-nav"
+													class="chevronlenke" id="desktop-hovedmeny_7_1_1" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Saksbehandlingstider
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/kontakt-nav/oversikt-over-satser"
+													class="chevronlenke" id="desktop-hovedmeny_7_1_2" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Satser
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/kontakt-nav/kurs-fra-nav"
+													class="chevronlenke" id="desktop-hovedmeny_7_1_3" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Kurs fra NAV
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/person/flere-tema/innkreving-og-innbetaling"
+													class="chevronlenke" id="desktop-hovedmeny_7_1_4" tabindex="-1">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Innkreving og innbetaling
+												</a>
+											</li>
+										</ul>
+									</section>
+								</div>
+								<div class="desktop-hovedmeny__bunn-seksjon">
+									<a href="https://www.nav.no/person/dittnav/" id="desktop-hovedmeny_0_2_0"
+										class="lenkepanel desktop-hovedmeny__bunn-lenke lenkepanel--border">
+										<div class="desktop-hovedmeny__bunn-lenke-visning">
+											<h2 class="typo-undertittel lenkepanel__heading">
+												Ditt NAV</h2>
+											<ul class="desktop-hovedmeny__bunn-lenke-stikkord">
+
+												<li>
+													<p class="typo-undertekst">
+														<span class="bullet"></span>Dine
+														saker, utbetalinger, meldinger,
+														meldekort, aktivitetsplan,
+														personopplysninger og flere
+														tjenester
+													</p>
+												</li>
+
+											</ul>
+										</div>
+										<span class="lenkepanel__indikator"></span>
+									</a>
+									<a href="https://www.nav.no/no/bedrift" id="desktop-hovedmeny_1_2_0"
+										class="lenkepanel desktop-hovedmeny__bunn-lenke lenkepanel--border">
+										<div class="desktop-hovedmeny__bunn-lenke-visning">
+											<h2 class="typo-undertittel lenkepanel__heading">
+												Arbeidsgiver</h2>
+											<ul class="desktop-hovedmeny__bunn-lenke-stikkord">
+												<li>
+													<p class="typo-undertekst">
+														<span class="bullet"></span>Dine
+														sykmeldte, rekruttering, digitale
+														skjemaer
+													</p>
+
+												</li>
+											</ul>
+										</div>
+										<span class="lenkepanel__indikator"></span>
+									</a>
+									<a href="https://www.nav.no/no/samarbeidspartner" id="desktop-hovedmeny_2_2_0"
+										class="lenkepanel desktop-hovedmeny__bunn-lenke lenkepanel--border">
+										<div class="desktop-hovedmeny__bunn-lenke-visning">
+											<h2 class="typo-undertittel lenkepanel__heading">
+												Samarbeidspartner</h2>
+											<ul class="desktop-hovedmeny__bunn-lenke-stikkord">
+												<li>
+													<p class="typo-undertekst">
+														<span class="bullet"></span>Helsepersonell,
+														tiltaksarrangører, fylker og
+														kommuner
+													</p>
+												</li>
+
+											</ul>
+										</div>
+										<span class="lenkepanel__indikator"></span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div if:true={isArbeidsgiver} class="ekspanderbar__innhold">
+						<div class="ekspanderbar__scroll-wrapper">
+							<div class="desktop-hovedmeny__dropdown">
+								<div class="desktop-hovedmeny__topp-seksjon">
+									<h2 class="typo-systemtittel desktop-hovedmeny__topp-seksjon-tittel">
+										Arbeidsgiver</h2>
+									<a href="https://www.nav.no/no/bedrift"
+										class="lenke desktop-hovedmeny__topp-seksjon-lenke"
+										id="desktop-hovedmeny_1_0_0">Til forsiden</a>
+								</div>
+								<div class="desktop-hovedmeny__hoved-seksjon">
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Tjenester og
+												skjemaer</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/soknader/nb/bedrift" class="chevronlenke"
+													id="desktop-hovedmeny_0_1_0_bedrift" tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Skjemaer for arbeidsgivere
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/bedrift/tjenester-og-skjemaer/nav-og-altinn-tjenester"
+													class="chevronlenke" id="desktop-hovedmeny_0_1_1_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Altinn - refusjoner, søknader,
+													rapporter, foreldre-, omsorgs- og
+													pleiepenger m.m.
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/bedrift/tjenester-og-skjemaer/selvstendig-naringsdrivende-med-flere"
+													class="chevronlenke" id="desktop-hovedmeny_0_1_2_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Selvstendig næringsdrivende og
+													andre grupper
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/bedrift/tjenester-og-skjemaer/innkreving-og-innbetaling"
+													class="chevronlenke" id="desktop-hovedmeny_0_1_3_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Innkreving og innbetaling
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/bedrift/tjenester-og-skjemaer/aa-registeret-og-a-meldingen"
+													class="chevronlenke" id="desktop-hovedmeny_0_1_4_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Aa-registeret
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Sykdom og skade
+											</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/bedrift/oppfolging/sykmeldt-arbeidstaker"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_0_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Sykmeldt arbeidstaker
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/bedrift/tjenester-og-skjemaer/meld-yrkesskade-og-yrkessykdom"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_1_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Yrkesskade og yrkessykdom
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/bedrift/inkluderende-arbeidsliv/kontakt-nav-arbeidslivssenter"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_2_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Inkluderende arbeidsliv
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://tjenester.nav.no/veiviserarbeidsgiver/tilrettelegge"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_3_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Støtte ved tilrettelegging på
+													arbeidsplassen
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://arbeidsgiver.nav.no/sykefravarsstatistikk/"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_4_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Sykefraværsstatistikk
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/bedrift/oppfolging/har-du-ansatte-som-sliter-psykisk"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_5_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Har du ansatte som sliter psykisk?
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Rekruttere og
+												inkludere</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://arbeidsplassen.nav.no/bedrift" class="chevronlenke"
+													id="desktop-hovedmeny_2_1_0_bedrift" tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Annonser stilling eller finn
+													kandidater i CV-basen
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://tjenester.nav.no/veiviserarbeidsgiver/rekruttere-og-inkludere/arbeidstrening"
+													class="chevronlenke" id="desktop-hovedmeny_2_1_1_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Tilby arbeidstrening
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://tjenester.nav.no/veiviserarbeidsgiver/rekruttere-og-inkludere/ansette"
+													class="chevronlenke" id="desktop-hovedmeny_2_1_2_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Støtte ved ansettelser
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/bedrift/rekruttering/rekruttere-hjelp-og-selvhjelp"
+													class="chevronlenke" id="desktop-hovedmeny_2_1_3_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Ønsker du hjelp fra NAV til å
+													rekruttere?
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Permittere og
+												omstille</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://arbeidsgiver.nav.no/permittering/" class="chevronlenke"
+													id="desktop-hovedmeny_3_1_0_arbeidsgiver" tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Meld fra til NAV
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/bedrift/oppfolging/permittering-og-omstilling"
+													class="chevronlenke" id="desktop-hovedmeny_3_1_1_bedrift"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Permittering og omstilling
+												</a>
+											</li>
+										</ul>
+									</section>
+								</div>
+								<div class="desktop-hovedmeny__bunn-seksjon">
+									<a href="https://arbeidsgiver.nav.no/min-side-arbeidsgiver/"
+										id="desktop-hovedmeny_0_2_0_sf1"
+										class="lenkepanel desktop-hovedmeny__bunn-lenke lenkepanel--border">
+										<div class="desktop-hovedmeny__bunn-lenke-visning">
+											<h2 class="typo-undertittel lenkepanel__heading">
+												Min side - arbeidsgiver</h2>
+											<ul class="desktop-hovedmeny__bunn-lenke-stikkord">
+
+												<li>
+													<p class="typo-undertekst">
+														<span class="bullet"></span>Dine
+														sykmeldte, rekruttering, digitale
+														skjemaer
+													</p>
+												</li>
+
+											</ul>
+										</div>
+										<span class="lenkepanel__indikator"></span>
+									</a>
+									<a href="https://www.nav.no" id="desktop-hovedmeny_1_2_0_sf1"
+										class="lenkepanel desktop-hovedmeny__bunn-lenke lenkepanel--border">
+										<div class="desktop-hovedmeny__bunn-lenke-visning">
+											<h2 class="typo-undertittel lenkepanel__heading">
+												Privatperson</h2>
+											<ul class="desktop-hovedmeny__bunn-lenke-stikkord">
+												<li>
+													<p class="typo-undertekst">
+														<span class="bullet"></span>Dine
+														saker, utbetalinger, meldinger,
+														meldekort, aktivitetsplan,
+														personopplysninger og flere
+														tjenester
+													</p>
+												</li>
+
+											</ul>
+										</div>
+										<span class="lenkepanel__indikator"></span>
+									</a>
+									<a href="https://www.nav.no/no/samarbeidspartner" id="desktop-hovedmeny_2_2_0_sf1"
+										class="lenkepanel desktop-hovedmeny__bunn-lenke lenkepanel--border">
+										<div class="desktop-hovedmeny__bunn-lenke-visning">
+											<h2 class="typo-undertittel lenkepanel__heading">
+												Samarbeidspartner</h2>
+											<ul class="desktop-hovedmeny__bunn-lenke-stikkord">
+
+												<li>
+													<p class="typo-undertekst">
+														<span class="bullet"></span>Helsepersonell,
+														tiltaksarrangører, fylker og
+														kommuner
+													</p>
+												</li>
+
+											</ul>
+										</div>
+										<span class="lenkepanel__indikator"></span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div if:true={isSamarbeidspartner} class="ekspanderbar__innhold">
+						<div class="ekspanderbar__scroll-wrapper">
+							<div class="desktop-hovedmeny__dropdown">
+								<div class="desktop-hovedmeny__topp-seksjon">
+									<h2 class="typo-systemtittel desktop-hovedmeny__topp-seksjon-tittel">
+										Samarbeidspartner</h2>
+									<a href="https://www.nav.no/no/samarbeidspartner"
+										class="lenke desktop-hovedmeny__topp-seksjon-lenke"
+										id="desktop-hovedmeny_2_0_0">Til forsiden</a>
+								</div>
+								<div class="desktop-hovedmeny__hoved-seksjon">
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Helsepersonell</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/samarbeid/leger-og-andre-behandlere"
+													class="chevronlenke" id="desktop-hovedmeny_0_1_0_samarbeid"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Leger og andre behandlere
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/samarbeid/hjelpemidler"
+													class="chevronlenke" id="desktop-hovedmeny_0_1_1_samarbeid"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Hjelpemidler - for
+													samarbeidspartnere
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Kommuner og fylker
+											</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/samarbeid/for-kommunen"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_0_samarbeid"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>For kommunen
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/samarbeid/samarbeidsavtaler-pa%CC%8A-utdanningsomra%CC%8Adet"
+													class="chevronlenke" id="desktop-hovedmeny_1_1_1_samarbeid"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Samarbeidsavtaler på
+													utdanningsområdet
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">Tiltaksarrangører
+											</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/soknader/nb/bedrift" class="chevronlenke"
+													id="desktop-hovedmeny_2_1_0_bedrift_sf1" tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Skjema for
+													tiltaksarrangør/leverandør
+												</a>
+											</li>
+										</ul>
+									</section>
+									<section class="lenkeseksjon">
+										<div class="lenkeseksjon__tittel">
+											<h2 class="typo-undertittel">På tvers</h2>
+										</div>
+										<ul class="lenkeseksjon__lenker">
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/samarbeid/tilskudd-gjennom-nav"
+													class="chevronlenke" id="desktop-hovedmeny_3_1_0_samarbeid"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Tilskudd gjennom NAV
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/samarbeid/arbeid-og-psykisk-helse"
+													class="chevronlenke" id="desktop-hovedmeny_3_1_1_samarbeid"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Arbeid, psykisk helse og
+													samarbeidspartnere
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/samarbeid/arbeidslivskriminalitet-og-trygdesvindel"
+													class="chevronlenke" id="desktop-hovedmeny_3_1_2_samarbeid"
+													tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Arbeidslivskriminalitet og
+													trygdesvindel
+												</a>
+											</li>
+											<li style="position: relative;">
+												<a href="https://www.nav.no/no/nav-og-samfunn/om-nav/brukermedvirkning"
+													class="chevronlenke" id="desktop-hovedmeny_3_1_3_sf0" tabindex="0">
+													<div>
+														<i
+															class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+													</div>Brukermedvirkning
+												</a>
+											</li>
+										</ul>
+									</section>
+								</div>
+								<div class="desktop-hovedmeny__bunn-seksjon">
+									<a href="https://www.nav.no" id="desktop-hovedmeny_0_2_0_sf2"
+										class="lenkepanel desktop-hovedmeny__bunn-lenke lenkepanel--border">
+										<div class="desktop-hovedmeny__bunn-lenke-visning">
+											<h2 class="typo-undertittel lenkepanel__heading">
+												Privatperson</h2>
+											<ul class="desktop-hovedmeny__bunn-lenke-stikkord">
+
+												<li>
+													<p class="typo-undertekst">
+														<span class="bullet"></span>Dine
+														saker, utbetalinger, meldinger,
+														meldekort, aktivitetsplan,
+														personopplysninger og flere
+														tjenester
+													</p>
+												</li>
+											</ul>
+										</div>
+										<span class="lenkepanel__indikator"></span>
+									</a>
+									<a href="https://www.nav.no/no/bedrift" id="desktop-hovedmeny_1_2_0_sf2"
+										class="lenkepanel desktop-hovedmeny__bunn-lenke lenkepanel--border">
+										<div class="desktop-hovedmeny__bunn-lenke-visning">
+											<h2 class="typo-undertittel lenkepanel__heading">
+												Arbeidsgiver</h2>
+											<ul class="desktop-hovedmeny__bunn-lenke-stikkord">
+
+												<li>
+													<p class="typo-undertekst">
+														<span class="bullet"></span>Dine
+														sykmeldte, rekruttering, digitale
+														skjemaer
+													</p>
+												</li>
+
+											</ul>
+										</div>
+										<span class="lenkepanel__indikator"></span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<button class="menylinje-knapp desktop-sok-dropdown__knapp" id="desktop-sok-knapp" aria-label="Søkeknapp"
+				aria-pressed="false" aria-haspopup="true" aria-controls="desktop-sok-dropdown" aria-expanded="false"
+				onclick={handleOnClickSearch}>
+				<div class="menylinje-knapp-visning desktop-sok-dropdown__knapp-visning">
+					<div if:false={searchPressed} class="sok-meny-ikon">
+						<div class="sok-meny-ikon__circle"></div>
+						<div class="sok-meny-ikon__line"></div>
+						<div class="sok-meny-ikon__line-x"></div>
+					</div>
+					<div if:true={searchPressed} class="sok-meny-ikon sok-meny-ikon--open">
+						<div class="sok-meny-ikon__circle sok-meny-ikon__circle--open">
+						</div>
+						<div class="sok-meny-ikon__line sok-meny-ikon__line--open"></div>
+						<div class="sok-meny-ikon__line-x sok-meny-ikon__line-x--open">
+						</div>
+					</div>
+					<h2 class="typo-undertittel">Søk</h2>
+				</div>
+			</button>
+			<div class="ekspanderbar__container desktop-sok-dropdown">
+				<div if:true={searchPressed} class="ekspanderbar__container desktop-sok-dropdown">
+					<div class="ekspanderbar__innhold-wrapper ekspanderbar__innhold-wrapper--active ekspanderbar__menuheight"
+						id="desktop-sok-dropdown" style="max-height: 100rem;">
+						<div class="ekspanderbar__innhold">
+							<div class="ekspanderbar__scroll-wrapper">
+								<form action="https://www.nav.no/sok" role="search" id="search-form-desktop-sok-input"
+									aria-expanded="false" aria-haspopup="listbox" aria-labelledby="downshift-0-label">
+									<div class="sok-container">
+										<div class="sok-input-resultat">
+											<div class="sok-input__tittel">
+												<h2 class="typo-systemtittel">Søk</h2>
+											</div>
+											<div class="sok-input-container">
+												<div class="skjemaelement sok-input">
+													<label class="skjemaelement__label"
+														for="desktop-sok-input">Søk</label>
+													<input type="text" name="ord"
+														class="skjemaelement__input input--fullbredde"
+														id="desktop-sok-input" aria-autocomplete="list"
+														aria-labelledby="downshift-0-label" autocomplete="off"
+														placeholder="Søk på nav.no" aria-label="Søk" tabindex="0"
+														value="">
+													<div role="alert" aria-live="assertive">
+													</div>
+												</div>
+												<div class="sok-knapper__container">
+													<button type="submit"
+														class="sok-knapper__knapp sok-knapper__knapp-submit">
+														<div class="sok-knapper__ikon-container">
+															<div class="sok-knapper__sok-circle">
+															</div>
+															<div class="sok-knapper__sok-line">
+															</div>
+														</div>
+														<div class="sok-knapper__knapp-tekst">
+															Søk</div>
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+								<div class="media-sm-mobil mobil-meny">
+									<div class="sok__bakgrunn"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<span class="desktopmeny__spacer"></span>
+			<button onclick={onHandleClickVarsler} class="menylinje-knapp varselbjelle__knapp"
+				id="desktop-varsler-dropdown-knapp-id" aria-label="Varsler. Du har ingen varsler." aria-pressed="false"
+				aria-haspopup="true" aria-controls="varselbjelle" aria-expanded="false">
+				<div class="menylinje-knapp-visning varselbjelle__knapp-visning">
+					<div if:false={varslerPressed} class="varselbjelle-ikon">
+						<div class="varselbjelle-ikon__ring"></div>
+						<div class="varselbjelle-ikon__bell"></div>
+						<div class="varselbjelle-ikon__lip"></div>
+						<div class="varselbjelle-ikon__clapper"></div>
+						<div class="varselbjelle-ikon__ulest-sirkel varselbjelle-ikon__ulest-sirkel--hide">
+							<p class="typo-etikett-liten varselbjelle-ikon__ulest-antall">0
+							</p>
+						</div>
+					</div>
+					<div if:true={varslerPressed} class="varselbjelle-ikon varselbjelle-ikon--open">
+						<div class="varselbjelle-ikon__ring"></div>
+						<div class="varselbjelle-ikon__bell"></div>
+						<div class="varselbjelle-ikon__lip"></div>
+						<div class="varselbjelle-ikon__clapper"></div>
+						<div class="varselbjelle-ikon__ulest-sirkel varselbjelle-ikon__ulest-sirkel--hide">
+							<p class="typo-etikett-liten varselbjelle-ikon__ulest-antall">0
+							</p>
+						</div>
+					</div>
+					<h2 class="typo-undertittel varselbjelle__tekst">Varsler</h2>
+				</div>
+			</button>
+			<div class="ekspanderbar__container desktop-varsler-dropdown">
+				<div if:true={varslerPressed}
+					class="ekspanderbar__innhold-wrapper ekspanderbar__innhold-wrapper--active ekspanderbar__menuheight"
+					id="desktop-varsler-dropdown">
+					<div class="ekspanderbar__innhold">
+						<div class="ekspanderbar__scroll-wrapper">
+							<div class="varsler-display-desktop">
+								<h2 class="typo-systemtittel">Varsler</h2>
+								<div>
+									<p class="text-center">Du har ingen varsler å vise.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<button onclick={handleOnClickMinSide} class="menylinje-knapp desktop-minside-meny__knapp"
+				id="desktop-minside-meny-knapp-id" aria-label="Min side menyknapp" aria-pressed="false"
+				aria-haspopup="true" aria-controls="desktop-minside-meny" aria-expanded="false">
+				<div class="menylinje-knapp-visning desktop-minside-meny__knapp-visning">
+					<div class="minside-meny-ikon">
+						<div if:false={minSidePressed} class="hamburger-ikon">
+							<span class="hamburger-ikon__topp"></span>
+							<span class="hamburger-ikon__midt"></span>
+							<span class="hamburger-ikon__bunn"></span>
+						</div>
+						<div if:true={minSidePressed} class="hamburger-ikon hamburger-ikon--open">
+							<span class="hamburger-ikon__topp hamburger-ikon__topp--open"></span>
+							<span class="hamburger-ikon__midt hamburger-ikon__midt--open"></span>
+							<span class="hamburger-ikon__bunn hamburger-ikon__bunn--open"></span>
+						</div>
+						<div class="hode-kropp-ikon ">
+							<div class="hode-kropp-ikon__hode "></div>
+							<div class="hode-kropp-ikon__kropp "></div>
+						</div>
+					</div>
+					<div class="desktop-minside-meny__knapp-tekst">
+						<div class="desktop-minside-meny__knapp-tekst-topp ">Ditt NAV</div>
+						<div class="desktop-minside-meny__knapp-tekst-bunn ">{currentUser}
+						</div>
+					</div>
+				</div>
+			</button>
+			<div if:true={minSidePressed} class="ekspanderbar__container desktop-minside-meny">
+				<div class="ekspanderbar__innhold-wrapper ekspanderbar__innhold-wrapper--active ekspanderbar__menuheight"
+					id="desktop-minside-meny">
+					<div class="ekspanderbar__innhold">
+						<div class="ekspanderbar__scroll-wrapper">
+							<div class="desktop-minside-meny__topp-seksjon">
+								<div class="desktop-minside-meny__topp-seksjon-left">
+									<h2 class="typo-systemtittel desktop-minside-meny__topp-seksjon-tittel">
+										Ditt NAV</h2>
+									<a href="https://www.nav.no/person/dittnav/" class="lenke"
+										id="desktop-minside_0_0_0">Til
+										forsiden</a>
+								</div>
+								<div class="desktop-minside-meny__topp-seksjon-right">
+									<p class="typo-undertekst-bold">Logget inn:</p>
+									<div
+										class="desktop-minside-meny__brukernavn desktop-minside-meny__brukernavn desktop-minside-meny__brukernavn--open">
+										<p class="typo-normal">{currentUser}</p>
+									</div>
+								</div>
+							</div>
+							<div class="desktop-minside-meny__lenke-seksjoner">
+								<section class="lenkeseksjon">
+									<div class="lenkeseksjon__tittel">
+										<h2 class="typo-undertittel">Din oversikt</h2>
+									</div>
+									<ul class="lenkeseksjon__lenker">
+										<li style="position: relative;">
+											<a href="https://tjenester.nav.no/esso/saml2/jsp/spSSOInit.jsp?metaAlias=/sp&amp;idpEntityID=idporten.difi.no-v4&amp;NameIDFormat=transient&amp;goto=https://tjenester.nav.no/saksoversikt/&amp;AuthLevel=4"
+												class="chevronlenke" id="desktop-minside_0_1_0" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Dine saker
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://tjenester.nav.no/esso/saml2/jsp/spSSOInit.jsp?metaAlias=/sp&amp;idpEntityID=idporten.difi.no-v4&amp;NameIDFormat=transient&amp;goto=https://tjenester.nav.no/mininnboks/&amp;AuthLevel=4"
+												class="chevronlenke" id="desktop-minside_0_1_1" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Din innboks
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://tjenester.nav.no/utbetalingsoversikt/" class="chevronlenke"
+												id="desktop-minside_0_1_2" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Dine utbetalinger
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://www.nav.no/person/personopplysninger/#adresser"
+												class="chevronlenke" id="desktop-minside_0_1_3" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Endre kontonummer/adresse
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://www.nav.no/soknader" class="chevronlenke"
+												id="desktop-minside_0_1_4" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Send ny søknad
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://www.nav.no/ettersendelse" class="chevronlenke"
+												id="desktop-minside_0_1_5" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Ettersend vedlegg
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://www.nav.no/person/kontakt-oss/" class="chevronlenke"
+												id="desktop-minside_0_1_6" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Send beskjed til NAV
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://www.nav.no/person/personopplysninger" class="chevronlenke"
+												id="desktop-minside_0_1_7" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Personopplysninger
+											</a>
+										</li>
+									</ul>
+								</section>
+								<section class="lenkeseksjon">
+									<div class="lenkeseksjon__tittel">
+										<h2 class="typo-undertittel">Arbeid</h2>
+									</div>
+									<ul class="lenkeseksjon__lenker">
+										<li style="position: relative;">
+											<a href="https://arbeidssokerregistrering.nav.no/start" class="chevronlenke"
+												id="desktop-minside_1_1_0" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Registrer deg som arbeidssøker
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://www.nav.no/meldekort/" class="chevronlenke"
+												id="desktop-minside_1_1_1" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Send meldekort
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://arbeidsplassen.nav.no/stillinger" class="chevronlenke"
+												id="desktop-minside_1_1_2" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Finn ledige stillinger
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://arbeidsplassen.nav.no/minside" class="chevronlenke"
+												id="desktop-minside_1_1_3" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Din CV
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://arbeidsplassen.nav.no/stillinger/lagrede-sok"
+												class="chevronlenke" id="desktop-minside_1_1_4" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Dine lagrede søk
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://aktivitetsplan.nav.no" class="chevronlenke"
+												id="desktop-minside_1_1_5" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Din aktivitetsplan
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="http://nav.no/arbeid/dialog" class="chevronlenke"
+												id="desktop-minside_1_1_6" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Dialog med veilederen din
+											</a>
+										</li>
+									</ul>
+								</section>
+								<section class="lenkeseksjon">
+									<div class="lenkeseksjon__tittel">
+										<h2 class="typo-undertittel">Flere tjenester</h2>
+									</div>
+									<ul class="lenkeseksjon__lenker">
+										<li style="position: relative;">
+											<a href="https://tjenester.nav.no/pselv/publisering/dinpensjon.jsf?context=pensjon"
+												class="chevronlenke" id="desktop-minside_2_1_0" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Din pensjon
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://tjenester.nav.no/pselv/publisering/uforetrygd.jsf?context=ut"
+												class="chevronlenke" id="desktop-minside_2_1_1" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Din uføretrygd
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://tjenester.nav.no/sykefravaer/" class="chevronlenke"
+												id="desktop-minside_2_1_2" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Ditt sykefravær
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://foreldrepenger.nav.no" class="chevronlenke"
+												id="desktop-minside_2_1_3" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Dine foreldrepenger
+											</a>
+										</li>
+										<li style="position: relative;">
+											<a href="https://www.nav.no/person/pdl-fullmakt-ui" class="chevronlenke"
+												id="desktop-minside_2_1_4" tabindex="0">
+												<div>
+													<i
+														class="nav-frontend-chevron chevronboks chevronlenke__chevron chevron--hoyre"></i>
+												</div>Dine fullmakter
+											</a>
+										</li>
+									</ul>
+								</section>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<form class="login-knapp knapp--standard" action="https://loginservice.nav.no/slo">
+				<button class="knapp desktop-login-knapp login-knapp knapp--standard" type="submit"
+					id="desktop-login-knapp">
+					<h2 class="typo-undertittel">Logg ut</h2>
+				</button>
+			</form>
+		</div>
+	</nav>
+</template>

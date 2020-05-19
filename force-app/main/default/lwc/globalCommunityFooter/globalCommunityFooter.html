@@ -1,19 +1,286 @@
 <template>
-	<div class="hodefot">
-		<footer class="sitefooter no-menu" role="contentinfo">
-			<div class="container about-site"><a href="https://www.nav.no" data-ga="Footer/Link til NAV"
-					class="decorated">NAV</a>
-				<ul class="nav">
-					<li><a href="https://www.nav.no/person/kontakt-oss" data-ga="Footer">Kontakt oss</a></li>
-					<li><a href="https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Brukerstotte+nav+no/Tilgjengelighet"
-							data-ga="Footer">Tilgjengelighet</a></li>
-					<li><a href="https://www.nav.no/personvern" data-ga="Footer">Personvernerklæring - cookies</a></li>
-					<li><a href="https://www.nav.no/no/rss" data-ga="Footer">Nyheter som RSS</a></li>
-				</ul>
-				<div class="copyright">
-					<p>Arbeids- og velferdsetaten 2020</p>
-				</div>
+	<div if:false={menuPressed} id="footer-withmenu">
+		<div class="placeholder mobile-only" style="height: 40px; margin-bottom: 1rem;">
+			<div class="top-link-wrapper">
+				<button class="btn-sf" onclick={scrollToTop} id="top-scroll-link">
+					Til toppen
+					<span class="top-link-indicator"></span>
+				</button>
 			</div>
-		</footer>
+		</div>
+		<section id="decorator-footer" class="navno-dekorator" role="main">
+			<footer class="sitefooter" role="contentinfo">
+				<section class="menylinje-topp">
+					<div class="topp-kolonner">
+						<div class="menylenker-seksjon til-toppen">
+							<div class="til-toppen-innhold">
+								<button onclick={scrollToTop}
+									style="border: 0; background-color: transparent; color: #FFFFFF;"
+									class="lenke lenke-med-ikon lenke-med-ikon--venstrestiltIkon" role="button">
+									<span>Til toppen</span>
+									<div class="lenke-med-ikon__ikon">
+										<img class="til-toppen-img" src="/sfsites/c/resource/1589541552000/til_toppen"
+											alt="til toppen"></img>
+									</div>
+								</button>
+							</div>
+						</div>
+						<div class="menylenker-seksjon venstre">
+							<h2 id="venstrelenker-overskrift-kontakt" class="typo-undertittel menylenker-overskrift">
+								Kontakt</h2>
+							<ul aria-labelledby="venstrelenker-overskrift">
+								<li>
+									<p class="typo-normal">
+										<a href="https://www.nav.no/person/kontakt-oss/" class="lenke">Kontakt oss</a>
+									</p>
+								</li>
+								<li>
+									<p class="typo-normal">
+										<a href="https://www.nav.no/no/nav-og-samfunn/kontakt-nav/nav-i-ditt-fylke"
+											class="lenke">NAV i ditt fylke</a>
+									</p>
+								</li>
+								<li>
+									<p class="typo-normal">
+										<a href="https://www.nav.no/no/nav-og-samfunn/kontakt-nav/kurs-fra-nav"
+											class="lenke">Kurs fra NAV</a>
+									</p>
+								</li>
+								<li>
+									<p class="typo-normal">
+										<a href="https://www.nav.no/person/kontakt-oss/tilbakemeldinger"
+											class="lenke">Klage og tilbakemeldinger</a>
+									</p>
+								</li>
+								<li>
+									<p class="typo-normal">
+										<a href="https://lovdata.no/nav/" class="lenke">Lover og regler (lovdata.no)</a>
+									</p>
+								</li>
+							</ul>
+						</div>
+						<div class="menylenker-seksjon midt">
+							<h2 id="venstrelenker-overskrift-andresprak" class="typo-undertittel menylenker-overskrift">
+								Andre språk</h2>
+							<ul aria-labelledby="venstrelenker-overskrift">
+								<li>
+									<p class="typo-normal">
+										<a href="https://www.nav.no/en" class="lenke">English pages</a>
+									</p>
+								</li>
+								<li>
+									<p class="typo-normal">
+										<a href="https://www.nav.no/se" class="lenke">Sámegiel skovit</a>
+									</p>
+								</li>
+							</ul>
+						</div>
+						<div class="menylenker-seksjon hoyre">
+							<h2 id="venstrelenker-overskrift-navogsamfunn"
+								class="typo-undertittel menylenker-overskrift">NAV og samfunn</h2>
+							<ul aria-labelledby="venstrelenker-overskrift">
+								<li>
+									<p class="typo-normal">
+										<a href="https://www.nav.no/no/nav-og-samfunn/statistikk-analyse-og-fou"
+											class="lenke">Statistikk, analyse og FoU</a>
+									</p>
+								</li>
+								<li>
+									<p class="typo-normal">
+										<a href="https://www.nav.no/no/nav-og-samfunn/kontakt-nav/presse"
+											class="lenke">Presse</a>
+									</p>
+								</li>
+								<li>
+									<p class="typo-normal">
+										<a href="https://www.nav.no/no/nav-og-samfunn/om-nav/om-nav" class="lenke">Om
+											NAV</a>
+									</p>
+								</li>
+								<li>
+									<p class="typo-normal">
+										<a href="https://www.nav.no/no/nav-og-samfunn/om-nav/sok-jobb-i-nav"
+											class="lenke">Jobb i NAV</a>
+									</p>
+								</li>
+							</ul>
+						</div>
+						<div class="menylenker-seksjon arbeidsflate">
+							<div class="arbeidsflatevalg-innhold">
+								<ul class="arbeidsflatevalg"
+									aria-label="Gå til innhold for privatperson, arbeidsgiver eller samarbeidspartner">
+									<li if:false={isPrivatPerson}>
+										<a href="https://www.nav.no" class="lenkepanel lenkepanel--border">
+											<span class="typo-normal lenkepanel__heading">
+												<div class="arbeidsflatevalg-tekst">
+													<h2 class="typo-undertittel">Privatperson</h2>Dine saker,
+													utbetalinger, meldinger, meldekort, aktivitetsplan,
+													personopplysninger og flere tjenester
+												</div>
+											</span>
+											<span class="lenkepanel__indikator"></span>
+										</a>
+									</li>
+									<li if:false={isArbeidsgiver}>
+										<a href="https://www.nav.no/no/bedrift" class="lenkepanel lenkepanel--border">
+											<span class="typo-normal lenkepanel__heading">
+												<div class="arbeidsflatevalg-tekst">
+													<h2 class="typo-undertittel">Arbeidsgiver</h2>Tjenester, skjemaer,
+													rekruttering, inkludering, oppfølging sykmeldte, hjelpemidler,
+													selvstendig næringsdrivende m.m.
+												</div>
+											</span>
+											<span class="lenkepanel__indikator"></span>
+										</a>
+									</li>
+									<li if:false={isSamarbeidspartner}>
+										<a href="https://www.nav.no/no/samarbeidspartner"
+											class="lenkepanel lenkepanel--border">
+											<span class="typo-normal lenkepanel__heading">
+												<div class="arbeidsflatevalg-tekst">
+													<h2 class="typo-undertittel">Samarbeidspartner</h2>Leger/behandlere,
+													hjelpemidler, tilskudd, skjema tiltaksarrangører,
+													arbeidslivskriminalitet, for kommunen m.m.
+												</div>
+											</span>
+											<span class="lenkepanel__indikator"></span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="menylinje-bottom">
+					<div class="footer-bottom-content">
+						<div class="sitefooter__logo" style="width: 60px; height: 60px;">
+							<a href="https://www.nav.no" class="navbar-brand">
+								<img src="/sfsites/c/resource/1589463757000/logo_svart" alt="NAV-logo"></img>
+							</a>
+						</div>
+						<div class="footer-bottom-content__bottom-lenker">
+							<div>
+								<p class="typo-normal bottom-tekst">Arbeids- og velferdsetaten</p>
+								<ul class="bottom-lenke">
+									<li>
+										<p class="typo-normal">
+											<a href="https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten/personvern-og-sikkerhet-pa-nav.no"
+												class="lenke">Les mer om databeskyttelse og informasjonskapsler</a>
+										</p>
+									</li>
+								</ul>
+							</div>
+							<button style="border: 0;" onclick={onHandleClickDelSkjerm}
+								class="lenke footer-bottom-content__del-skjerm lenke-med-ikon" role="button">
+								<span>Del skjerm med veileder</span>
+								<div class="lenke-med-ikon__ikon">
+									<svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet"
+										xmlns="http://www.w3.org/2000/svg" version="1.0"
+										style="height: 24px; width: 24px;">
+										<g fill="none" stroke-miterlimit="10" stroke-linejoin="round">
+											<path stroke-linecap="round" d="M5 23.5h6M8 21.5v1.98"></path>
+											<path d="M.5 19.5h15"></path>
+											<path stroke-linecap="round"
+												d="M8.5 10.5v-2.75c0-2.071 1.678-3.75 3.75-3.75h1.75M10.5 8.5l-2 2-2-2M12.5 11.5h1.5c.828 0 1.5.671 1.5 1.5v7c0 .828-.672 1.5-1.5 1.5h-12c-.83 0-1.5-.672-1.5-1.5v-7c0-.829.67-1.5 1.5-1.5h1.5M13.001 8.119c.265.237.615.381.999.381h8c.828 0 1.5-.672 1.5-1.5v-5c0-.829-.672-1.5-1.5-1.5h-8M14.5 6.5h9M16.5 10.5h3M18 8.5v2M12.5 2.5l1.5 1.5-1.5 1.5">
+											</path>
+										</g>
+									</svg>
+								</div>
+							</button>
+							<div if:true={isDelSkjerm}
+								class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+								style="z-index: 9999;">
+								<div class="ReactModal__Content ReactModal__Content--after-open modal navno-dekorator delskjerm__modal"
+									tabindex="-1" role="dialog" aria-label="Skjermdeling">
+									<section>
+										<div class="delskjerm__header">
+											<img class="delskjerm__veileder"
+												src="/sfsites/c/resource/1589542877000/veileder" alt="Veileder">
+										</div>
+										<div class="delskjerm__content">
+											<h2 class="typo-undertittel">Del skjermen din med NAV</h2>
+											<div class="delskjerm__beskrivelse">
+												<p class="typo-normal">Gi veilederen du snakker med på telefon tilgang
+													til å se det du ser på nav.no.</p>
+												<div id="413604204-16368-7061-4927-068612165717828" class="lesMerPanel">
+													<div if:true={isSkjermdelingLesMer}
+														class="lesMerPanel__merContainer">
+														<div class="ReactCollapse--collapse" style="height: auto;">
+															<div class="ReactCollapse--content">
+																<div class="lesMerPanel__mer">
+																	<ul>
+																		<li>
+																			<p class="typo-normal">Når du deler skjerm
+																				med NAV kontaktsenter kan veilederen
+																				hjelpe deg med å finne fram på nav.no.
+																			</p>
+																		</li>
+																		<li>
+																			<p class="typo-normal">Veilederen ser kun
+																				det du ser på nav.no og kan ikke fylle
+																				inn opplysninger eller sende inn noe på
+																				dine vegne. </p>
+																		</li>
+																		<li>
+																			<p class="typo-normal">Det er du som
+																				godkjenner skjermdeling. Ingenting blir
+																				lagret.</p>
+																		</li>
+																	</ul>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="lesMerPanel__toggle">
+														<button if:false={isSkjermDelingLesMer}
+															onclick={onHandleClickSkjermdelingInfo} type="button"
+															aria-expanded="false" class="lesMerPanel__togglelink"
+															aria-controls="413604204-16368-7061-4927-068612165717828">
+															<i
+																class="nav-frontend-chevron chevronboks lesMerPanel__toggleChevron chevron--ned"></i>
+															<div class="lesMerPanel__toggleTekst">
+																<p class="typo-normal">Hva er skjermdeling?</p>
+															</div>
+														</button>
+														<button if:true={isSkjermDelingLesMer}
+															onclick={onHandleClickSkjermdelingInfo} type="button"
+															aria-expanded="false" class="lesMerPanel__togglelink"
+															aria-controls="413604204-16368-7061-4927-068612165717828">
+															<i
+																class="nav-frontend-chevron chevronboks lesMerPanel__toggleChevron chevron--opp"></i>
+															<div class="lesMerPanel__toggleTekst">
+																<p class="typo-normal">Lukk</p>
+															</div>
+														</button>
+													</div>
+												</div>
+											</div>
+											<div class="skjemaelement">
+												<label class="skjemaelement__label" for="code">Skriv inn koden du får
+													fra veilederen</label>
+												<input type="text" class="skjemaelement__input input--m" id="code"
+													name="code" maxlength="5" value="">
+												<div role="alert" aria-live="assertive"></div>
+											</div>
+											<div class="delskjerm__knapper">
+												<button onclick={functionalityNotSupported} class="knapp knapp--hoved"
+													type="submit">Start skjermdeling</button>
+												<button onclick={onHandleClickDelSkjerm} class="knapp knapp--flat"
+													type="submit">Avbryt</button>
+											</div>
+										</div>
+									</section>
+									<button onclick={onHandleClickDelSkjerm}
+										class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
+										aria-label="Lukk">
+										<span class="text-hide">Lukk</span>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			</footer>
+		</section>
 	</div>
 </template>

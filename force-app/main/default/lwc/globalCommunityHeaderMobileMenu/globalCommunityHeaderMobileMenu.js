@@ -52,7 +52,7 @@ window.addEventListener('scroll', () => {
 
 });
 
-export default class GlobalCommunityHeaderNew extends LightningElement {
+export default class GlobalCommunityHeaderMobileMenu extends LightningElement {
 
 
 	userId = ID;

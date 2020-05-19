@@ -1,96 +1,78 @@
-<!-- Global Header -->
 <template>
-	<div class="hodefot">
-		<header class="siteheader" role="banner">
-			<div class="site-coltrols-toolbar site-controls-toolbar">
-				<div class="container">
-					<div class="row navbar">
-						<div class="col-md-12">
-							<div class="settings">
-								<ul class="nav">
-									<li id="text-size-accessibility" tabindex="0">
-										<span class="link-btn"
-											aria-label="Hold Ctrl-tasten nede (Cmd-tasten på Mac). Trykk samtidig på + for å forstørre eller - for å forminske.">Skriftstørrelse</span>
-										<div class="text-size-tooltip tooltip-hidden">
-											<p>Hold Ctrl-tasten nede (Cmd-tasten på Mac). Trykk samtidig på + for å
-												forstørre eller - for å
-											</p>
-											<span class="arrow"></span>
-										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="login-container">
-								<div id="login-details" class="login-details">
-									<span class="name-container">
-										<img id="idporten-ikon-innlogging" alt="Innlogget via ID-porten"
-											src={idportenIkon}>
-										<span id="name">{currentUser}</span>
-									</span>
-								</div>
-								<div id="auth-btns" class="idporten">
-									<a id="logout" data-ga="Header" class="btn-auth knapp mini hoved btn-logout"
-										href="https://loginservice.nav.no/slo">Logg ut</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="sitelogo sitelogo-large">
-				<div class="container">
-					<a href="https://www.nav.no" title="Hjem" data-ga="Header/Logo"><img src={logo} alt="NAV-logo"></a>
-				</div>
-			</div>
-			<div class="topnavsection-wrapper">
-				<div class="topnavsection">
-
-					<nav class="topnav container" role="navigation" id="mainmenu" aria-labelledby="header-nav-heading"
-						tabindex="-1">
-						<h1 class="visuallyhidden" id="header-nav-heading">Hovedmeny</h1>
-						<input id="no-js-toggle-mobile-mainmenu" type="checkbox" class="visuallyhidden mobile-toggler">
-						<label for="toggle-mobile-mainmenu" class="mobile-toggler toggle-mainmenu"> Meny</label>
-						<button type="button" id="toggle-mobile-mainmenu"
-							class="link-btn mobile-toggler toggle-mainmenu" onclick={toggleMobileMenu}>
-							<img class="hamburger-meny" alt="Meny" src={hamburgerMenyIkon}>
-							Meny
-						</button>
-						<div class="login-container login-container-mobile">
-							<div id="login-details-mobile" class="login-details-mobile mobile-toggler">
-								<span class="name-container">
-									<img id="idporten-ikon-innlogging-mobile" alt="Innlogget via ID-porten"
-										src={idportenIkon}>
-									<span id="name-mobile">{currentUser}</span>
-								</span>
-							</div>
-						</div>
-						<ul class="accessible-megamenu" id="accessible-megamenu">
-							<li class="topnavitem">
-								<a href="https://www.nav.no/no/Person" role="button" data-ga="Meny">Person</a>
+	<div id="header-withmenu">
+		<section id="decorator-header" class="navno-dekorator" role="main">
+			<div class="head-wrapper">
+				<div class="head-container " id="stickyhead">
+					<nav id="site-skiplinks" class="site-skiplinks" aria-label="Hopp til innhold">
+						<ul>
+							<li>
+								<a href="#desktop-hovedmeny-knapp-id" class="visuallyhidden focusable"
+									id="hovedmenylenke">Gå til hovedmeny</a>
 							</li>
-							<li class="topnavitem"><a href="https://www.nav.no/no/Bedrift" role="button"
-									data-ga="Meny">Bedrift</a>
+							<li>
+								<a href="#maincontent" class="visuallyhidden focusable" id="hovedinnholdlenke">Gå til
+									hovedinnhold</a>
 							</li>
-							<li class="topnavitem"><a href="https://www.nav.no/no/NAV+og+samfunn" role="button"
-									data-ga="Meny">NAV og samfunn</a></li>
-							<li class="topnavitem"><a href="https://tjenester.nav.no/dittnav" role="button"
-									data-ga="Meny">Ditt NAV</a>
-							</li>
-							<li class="topnavitem mobile-toggler">
-								<div id="auth-btns-mobile" class="idporten">
-									<a id="logout-mobile" data-ga="Header" class="btn-auth knapp mini hoved btn-logout"
-										href="https://loginservice.nav.no/slo">Logg ut</a>
-								</div>
+							<li>
+								<a href="#" class="visuallyhidden focusable" id="soklenke">Gå til søk</a>
 							</li>
 						</ul>
 					</nav>
+					<header class="siteheader">
+						<div class="media-sm-mobil mobil-meny">
+							<c-global-community-header-mobile-menu item-name="mobile-menu">
+							</c-global-community-header-mobile-menu>
+						</div>
+						<div class="media-tablet-desktop tablet-desktop-meny">
+							<div class="header-z-wrapper">
+								<nav class="arbeidsflate" id="arbeidsflate" aria-label="Velg brukergruppe">
+									<ul class="arbeidsflate__topp-liste-rad" role="tablist">
+										<li role="tab" aria-selected="true" class="arbeidsflate__liste-element">
+											<a href="https://www.nav.no/no/person" class="arbeidsflate__lenke"
+												id="desktop-header-menylinje_0_0_0">
+												<div if:true={isPrivatPerson}
+													class="arbeidsflate__lenke-inner arbeidsflate__lenke-inner--active">
+													<p class="typo-undertekst">Privatperson</p>
+												</div>
+												<div if:false={isPrivatPerson} class="arbeidsflate__lenke-inner">
+													<p class="typo-undertekst">Privatperson</p>
+												</div>
+											</a>
+										</li>
+										<li role="tab" aria-selected="false" class="arbeidsflate__liste-element">
+											<a href="https://www.nav.no/no/bedrift" class="arbeidsflate__lenke"
+												id="desktop-header-menylinje_1_0_0">
+												<div if:true={isArbeidsgiver}
+													class="arbeidsflate__lenke-inner arbeidsflate__lenke-inner--active">
+													<p class="typo-undertekst">Arbeidsgiver</p>
+												</div>
+												<div if:false={isArbeidsgiver} class="arbeidsflate__lenke-inner">
+													<p class="typo-undertekst">Arbeidsgiver</p>
+												</div>
+											</a>
+										</li>
+										<li role="tab" aria-selected="false" class="arbeidsflate__liste-element">
+											<a href="https://www.nav.no/no/samarbeidspartner"
+												class="arbeidsflate__lenke" id="desktop-header-menylinje_2_0_0">
+												<div if:true={isSamarbeidspartner}
+													class="arbeidsflate__lenke-inner arbeidsflate__lenke-inner--active">
+													<p class="typo-undertekst">Samarbeidspartner</p>
+												</div>
+												<div if:false={isSamarbeidspartner} class="arbeidsflate__lenke-inner">
+													<p class="typo-undertekst">Samarbeidspartner</p>
+												</div>
+											</a>
+										</li>
+									</ul>
+								</nav>
+								<c-global-community-header-desktop-menu item-name="desktop-menu">
+								</c-global-community-header-desktop-menu>
+							</div>
+						</div>
+					</header>
+					<div class="meny-bakgrunn"></div>
 				</div>
 			</div>
-			<div id="varsler-display" class="varsler-display" aria-expanded="false"></div>
-			<div class="sitelogo sitelogo-small"><a href="https://www.nav.no" title="Hjem"><img src={logo}
-						alt="NAV-logo"></a>
-			</div>
-
-		</header>
+		</section>
 	</div>
 </template>

@@ -6,9 +6,6 @@
             "c/hot_requestList": [
                 "hot_requestList/hot_requestList.js"
             ],
-            "c/hot_home": [
-                "hot_home/hot_home.js"
-            ],
             "c/globalCommunityFooter": [
                 "globalCommunityFooter/globalCommunityFooter.js"
             ],
@@ -23,6 +20,18 @@
             ],
             "c/hot_createRequestForm": [
                 "hot_createRequestForm/hot_createRequestForm.js"
+            ],
+            "c/globalCommunityHeaderDesktopMenu": [
+                "globalCommunityHeaderDesktopMenu/globalCommunityHeaderDesktopMenu.js"
+            ],
+            "c/globalCommunityHeaderMobileMenu": [
+                "globalCommunityHeaderMobileMenu/globalCommunityHeaderMobileMenu.js"
+            ],
+            "c/pubsub": [
+                "pubsub/pubsub.js"
+            ],
+            "c/hot_home": [
+                "hot_home/hot_home.js"
             ]
         }
     },
