@@ -1,0 +1,10 @@
+{
+  "activeViewId" : null,
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "id" : "253a8f8d-fe68-409f-a416-c236166c3ca0",
+  "label" : "Oppdrag",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-mine-oppdrag",
+  "type" : "route",
+  "urlPrefix" : "oppdrag"
+}
