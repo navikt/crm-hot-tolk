@@ -10,7 +10,7 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
-        "richTextValue" : "<div style='text-align: center;'>Invalid Page</div>"
+        "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
       },
       "componentName" : "forceCommunity:richTextInline",
       "id" : "011b045a-87db-4d75-9742-e115d65813e2",
@@ -30,7 +30,7 @@
       "componentAttributes" : {
         "description" : "",
         "metaTags" : "",
-        "title" : "Error"
+        "title" : "Finnes ikke (404)"
       },
       "componentName" : "forceCommunity:seoAssistant",
       "id" : "29868b66-10de-4cc9-82ef-65b469cfa218",
