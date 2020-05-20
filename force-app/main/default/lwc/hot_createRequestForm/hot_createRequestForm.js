@@ -199,7 +199,21 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 
 	//Navigation functions
-	goToMyRequests() {
+	goToNewRequest(event) {
+		console.log("goToNewRequest");
+		if (!this.isProd) {
+			event.preventDefault();
+			console.log("is NOT prod");
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'ny-bestilling'
+				},
+			});
+		}
+	}
+
+	goToMyRequests(event) {
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',
 			attributes: {
@@ -207,13 +221,17 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 		});
 	}
-
-	goHome() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: this.previousPage,
-			}
-		});
+	goToHome(event) {
+		console.log("goToHome");
+		if (!this.isProd) {
+			event.preventDefault();
+			console.log("is NOT prod");
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'home'
+				},
+			});
+		}
 	}
 }

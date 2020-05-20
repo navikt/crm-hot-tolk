@@ -9,7 +9,7 @@
 	<div class="informasjonstavle__body">
 		<div class="informasjonstavle__content">
 			<div class="informasjonstavle__bildepaneler">
-				<a class="panelMedBilde" href="/tolketjenesten/s/ny-bestilling" onclick={formatURL}>
+				<a class="panelMedBilde" href="/s/ny-bestilling" onclick={goToNewRequest}>
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
 							<img if:false={isProd} class="illustrasjon"
@@ -28,7 +28,7 @@
 						</div>
 					</div>
 				</a>
-				<a class="panelMedBilde" href="/tolketjenesten/s/mine-bestillinger">
+				<a class="panelMedBilde" href="/s/mine-bestillinger" onclick={goToMyRequests}>
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
 							<img if:false={isProd} class="illustrasjon"

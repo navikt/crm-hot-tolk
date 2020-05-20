@@ -26,4 +26,47 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 
 	@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
 
+	goToMyRequests(event) {
+		console.log("goToMyRequests");
+		if (!this.isProd) {
+			event.preventDefault();
+			console.log("is NOT prod");
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'mine-bestillinger'
+				}
+			});
+		}
+	}
+
+	goToNewRequest(event) {
+		console.log("goToNewRequest");
+		if (!this.isProd) {
+			event.preventDefault();
+			console.log("is NOT prod");
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'ny-bestilling'
+				},
+			});
+		}
+	}
+	goToHome(event) {
+		console.log("goToHome");
+		if (!this.isProd) {
+			event.preventDefault();
+			console.log("is NOT prod");
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'home'
+				},
+			});
+		}
+	}
+
+
+
 }
