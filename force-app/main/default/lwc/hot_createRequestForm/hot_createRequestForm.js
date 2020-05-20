@@ -5,6 +5,8 @@ import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequest
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
 
+	@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
+
 	@track submitted = false; // if:false={submitted}
 	hide = true; //@track edit = false; When file-upload is ready, fix this.
 	acceptedFormat = '[.pdf, .png, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';

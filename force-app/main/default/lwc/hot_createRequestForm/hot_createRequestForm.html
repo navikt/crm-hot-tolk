@@ -14,7 +14,8 @@
 	</div>
 	<div if:false={edit} class="main-content submitted-false create-form">
 		<div class="skjema-ikon tolketjenesten">
-			<img class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
+			<img if:false={isProd} class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
+			<img if:true={isProd} class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
 		</div>
 		<div class="skjema skjema-max-width">
 			<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
@@ -113,7 +114,8 @@
 
 	<div if:true={edit} class="main-content submitted-false">
 		<div class="skjema-ikon tolketjenesten">
-			<img class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
+			<img if:false={isProd} class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
+			<img if:true={isProd} class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
 		</div>
 		<div class="skjema skjema-max-width">
 			<lightning-record-edit-form object-api-name="HOT_Request__c" record-id={recordId} density="comfy"

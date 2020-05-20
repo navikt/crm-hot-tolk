@@ -6,6 +6,7 @@ import NAME_FIELD from '@salesforce/schema/User.FirstName';
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
 
+
 	@track name;
 	@track error;
 	@wire(getRecord, {
@@ -23,31 +24,6 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 	}
 
-	goToMyRequests() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: 'mine-bestillinger'
-			}
-		});
-	}
-
-	goToNewRequest() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: 'ny-bestilling'
-			},
-		});
-	}
-
-	goToKnowledgebank() {
-		this[NavigationMixin.Navigate]({
-			type: 'standard__webPage',
-			attributes: {
-				url: 'https://www.kunnskapsbanken.net/tolking/'
-			},
-		});
-	}
+	@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
 
 }
