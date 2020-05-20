@@ -10,27 +10,10 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
-        "recordId" : "{!recordId}"
+        "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
       },
-      "componentName" : "forceCommunity:recordHeadline",
-      "id" : "27bb05d8-3037-4830-8703-ec295bdd41be",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : {
-        "detailsTabLabel" : "Details",
-        "discussionsTabLabel" : "Feed",
-        "recordId" : "{!recordId}",
-        "relatedTabLabel" : "Related",
-        "tab1Type" : "details",
-        "tab2Type" : "related",
-        "tab3Type" : "chatter",
-        "tab4Type" : "none",
-        "timelineTabLabel" : "Activity"
-      },
-      "componentName" : "forceCommunity:recordHomeTabs",
-      "id" : "27247cfb-ce77-4b56-b202-f1f0321ca711",
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "ca84fe11-9b74-4867-9861-a09ae491a0e9",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -47,7 +30,7 @@
       "componentAttributes" : {
         "description" : "",
         "metaTags" : "",
-        "title" : "{!Record._Object}: {!Record._Title}"
+        "title" : "Finnes ikke (404)"
       },
       "componentName" : "forceCommunity:seoAssistant",
       "id" : "23bd5084-41a5-4d9c-966c-1e0da559b399",
