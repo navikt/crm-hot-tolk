@@ -5,6 +5,8 @@ import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequest
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
 
+	@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
+
 	@track submitted = false; // if:false={submitted}
 	hide = true; //@track edit = false; When file-upload is ready, fix this.
 	acceptedFormat = '[.pdf, .png, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
@@ -197,7 +199,21 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 
 	//Navigation functions
-	goToMyRequests() {
+	goToNewRequest(event) {
+		console.log("goToNewRequest");
+		if (!this.isProd) {
+			event.preventDefault();
+			console.log("is NOT prod");
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'ny-bestilling'
+				},
+			});
+		}
+	}
+
+	goToMyRequests(event) {
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',
 			attributes: {
@@ -205,13 +221,17 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 		});
 	}
-
-	goHome() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: this.previousPage,
-			}
-		});
+	goToHome(event) {
+		console.log("goToHome");
+		if (!this.isProd) {
+			event.preventDefault();
+			console.log("is NOT prod");
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'home'
+				},
+			});
+		}
 	}
 }

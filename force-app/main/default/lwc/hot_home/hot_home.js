@@ -6,6 +6,7 @@ import NAME_FIELD from '@salesforce/schema/User.FirstName';
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
 
+
 	@track name;
 	@track error;
 	@wire(getRecord, {
@@ -23,31 +24,49 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 	}
 
-	goToMyRequests() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: 'mine-bestillinger'
-			}
-		});
+	@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
+
+	goToMyRequests(event) {
+		console.log("goToMyRequests");
+		if (!this.isProd) {
+			event.preventDefault();
+			console.log("is NOT prod");
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'mine-bestillinger'
+				}
+			});
+		}
 	}
 
-	goToNewRequest() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: 'ny-bestilling'
-			},
-		});
+	goToNewRequest(event) {
+		console.log("goToNewRequest");
+		if (!this.isProd) {
+			event.preventDefault();
+			console.log("is NOT prod");
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'ny-bestilling'
+				},
+			});
+		}
+	}
+	goToHome(event) {
+		console.log("goToHome");
+		if (!this.isProd) {
+			event.preventDefault();
+			console.log("is NOT prod");
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'home'
+				},
+			});
+		}
 	}
 
-	goToKnowledgebank() {
-		this[NavigationMixin.Navigate]({
-			type: 'standard__webPage',
-			attributes: {
-				url: 'https://www.kunnskapsbanken.net/tolking/'
-			},
-		});
-	}
+
 
 }

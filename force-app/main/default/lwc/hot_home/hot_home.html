@@ -9,10 +9,13 @@
 	<div class="informasjonstavle__body">
 		<div class="informasjonstavle__content">
 			<div class="informasjonstavle__bildepaneler">
-				<a class="panelMedBilde" href="/tolketjenesten/s/ny-bestilling">
+				<a class="panelMedBilde" href="/s/ny-bestilling" onclick={goToNewRequest}>
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
-							<img class="illustrasjon" src="/sfsites/c/resource/1584959871000/BestilleTolk"></img>
+							<img if:false={isProd} class="illustrasjon"
+								src="/sfsites/c/resource/1584959871000/BestilleTolk"></img>
+							<img if:true={isProd} class="illustrasjon"
+								src="/s/sfsites/c/resource/1584959871000/BestilleTolk"></img>
 						</div>
 					</div>
 					<div class="panel panelMedBilde__panelOnPanel">
@@ -25,10 +28,13 @@
 						</div>
 					</div>
 				</a>
-				<a class="panelMedBilde" href="/tolketjenesten/s/mine-bestillinger">
+				<a class="panelMedBilde" href="/s/mine-bestillinger" onclick={goToMyRequests}>
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
-							<img class="illustrasjon" src="/sfsites/c/resource/1584959850000/MineBestillinger"></img>
+							<img if:false={isProd} class="illustrasjon"
+								src="/sfsites/c/resource/1584959850000/MineBestillinger"></img>
+							<img if:true={isProd} class="illustrasjon"
+								src="/s/sfsites/c/resource/1584959850000/MineBestillinger"></img>
 						</div>
 					</div>
 					<div class="panel panelMedBilde__panelOnPanel">
@@ -46,7 +52,10 @@
 				<a class="panelMedBilde" href="https://www.kunnskapsbanken.net/tolking/">
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
-							<img class="illustrasjon" src="/sfsites/c/resource/1584957822000/Kunnskapsbanken"></img>
+							<img if:false={isProd} class="illustrasjon"
+								src="/sfsites/c/resource/1584957822000/Kunnskapsbanken"></img>
+							<img if:true={isProd} class="illustrasjon"
+								src="/s/sfsites/c/resource/1584957822000/Kunnskapsbanken"></img>
 						</div>
 					</div>
 					<div class="panel panelMedBilde__panelOnPanel">
