@@ -161,6 +161,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		x = this.template.querySelector(".submitted-false");
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
+		window.scrollTo(0, 0);
 
 	}
 	handleUploadFinished(event) {
@@ -200,10 +201,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	//Navigation functions
 	goToNewRequest(event) {
-		console.log("goToNewRequest");
 		if (!this.isProd) {
 			event.preventDefault();
-			console.log("is NOT prod");
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
@@ -222,10 +221,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		});
 	}
 	goToHome(event) {
-		console.log("goToHome");
 		if (!this.isProd) {
 			event.preventDefault();
-			console.log("is NOT prod");
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
@@ -233,5 +230,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				},
 			});
 		}
+	}
+	goToPrevousPage() {
+		this[NavigationMixin.Navigate]({
+			type: 'comm__namedPage',
+			attributes: {
+				pageName: this.previousPage
+			}
+		});
 	}
 }
