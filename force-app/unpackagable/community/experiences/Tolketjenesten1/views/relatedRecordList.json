@@ -4,26 +4,20 @@
   "id" : "0e92fadf-f28a-40c6-a147-35a6d396d726",
   "label" : "Related Record List",
   "regions" : [ {
-    "id" : "436093eb-2560-424c-a34a-344de93b554d",
-    "regionName" : "header",
-    "type" : "region"
-  }, {
     "components" : [ {
       "componentAttributes" : {
-        "customTitle" : "",
-        "parentRecordId" : "{!recordId}",
-        "relatedListName" : "{!relationshipApiName}",
-        "showBreadCrumbs" : true,
-        "showCustomTitle" : false,
-        "showManualRefreshButton" : true,
-        "showRowNumbers" : true
+        "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
       },
-      "componentName" : "forceCommunity:relatedList",
-      "id" : "8c2f2eb4-c888-4c61-ac3a-bc10d1a80f08",
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "baefa992-ae9e-4973-8d0a-efd7fbc0e874",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
+    "id" : "436093eb-2560-424c-a34a-344de93b554d",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
     "id" : "3196cdbc-63d0-4729-b7f9-935885fbf25d",
     "regionName" : "content",
     "type" : "region"
