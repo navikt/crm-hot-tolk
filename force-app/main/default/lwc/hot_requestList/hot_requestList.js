@@ -206,6 +206,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 	}
 	connectedCallback() {
+		window.scrollTo(0, 0);
 		refreshApex(this.wiredRequestsResult);
 	}
 
@@ -295,10 +296,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 	}
 	goToMyRequests(event) {
-		console.log("goToMyRequests");
 		if (!this.isProd) {
 			event.preventDefault();
-			console.log("is NOT prod");
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
@@ -314,13 +313,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			attributes: {
 				pageName: 'ny-bestilling'
 			},
+			state: {
+				fromList: true,
+			}
 		});
 	}
 	goToHome(event) {
-		console.log("goToHome");
 		if (!this.isProd) {
 			event.preventDefault();
-			console.log("is NOT prod");
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
