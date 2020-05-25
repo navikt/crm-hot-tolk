@@ -134,7 +134,20 @@ Status == &quot;Ingen&quot;</description>
         <fields>
             <name>Frist_dato</name>
             <dataType>Date</dataType>
+            <defaultValue>
+                <elementReference>CurrentServiceAppointment.SchedStartTime</elementReference>
+            </defaultValue>
             <fieldText>Frist dato</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>Tema</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>CurrentServiceAppointment.Subject</elementReference>
+            </defaultValue>
+            <fieldText>Tema</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
         </fields>
@@ -148,7 +161,7 @@ Status == &quot;Ingen&quot;</description>
             <targetReference>GetCurrentServiceAppointment</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>CurrentServiceAppointment</name>
         <dataType>SObject</dataType>
