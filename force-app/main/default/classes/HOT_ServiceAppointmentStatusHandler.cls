@@ -12,6 +12,7 @@ public without sharing class HOT_ServiceAppointmentStatusHandler extends MyTrigg
 		}
 		if(changedStatusServiceAppointments.size() > 0) {
 			updateWorkOrderLineItemStatus(changedStatusServiceAppointments);
+			updateInterestedResourceStatus(changedStatusServiceAppointments);
 		}
 	}
 
@@ -26,5 +27,18 @@ public without sharing class HOT_ServiceAppointmentStatusHandler extends MyTrigg
 			}
 		}
 		update workOrderLineItemsToUpdate;
+	}
+
+	private static void updateInterestedResourceStatus(List<ServiceAppointment> changedServiceAppointments) {
+		List<Id> serviceAppointmentIds = new List<Id>();
+		for(ServiceAppointment serviceAppointment : changedServiceAppointments) {
+			serviceAppointmentIds.add(serviceAppointment.Id);
+		}
+
+		List<HOT_InterestedResource__c> interestedResourcesToUpdate = [SELECT Id, Status__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__c IN: serviceAppointmentIds];
+		for(HOT_InterestedResource__c interestedResource:interestedResourcesToUpdate){
+			interestedResource.Status__c = 'Canceled';
+		}
+		update interestedResourcesToUpdate;
 	}
 }
