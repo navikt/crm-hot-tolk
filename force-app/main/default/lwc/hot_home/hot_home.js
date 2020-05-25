@@ -32,8 +32,9 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 		console.log(this.isFrilans);
 	}
+
 	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
-	wireIsFrilans({ error, data }) {
+	wireIsAdmin({ error, data }) {
 		if (data && !this.isFrilans) {
 			this.isFrilans = data;
 		}
