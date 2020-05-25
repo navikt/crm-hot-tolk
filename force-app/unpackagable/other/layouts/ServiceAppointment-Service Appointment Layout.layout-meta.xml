@@ -140,7 +140,7 @@
 				<field>HOT_DeadlineDate__c</field>
 			</layoutItems>
 			<layoutItems>
-				<behavior>Edit</behavior>
+				<behavior>Readonly</behavior>
 				<field>HOT_IsReleasedToFreelance__c</field>
 			</layoutItems>
 		</layoutColumns>
