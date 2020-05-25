@@ -1,4 +1,4 @@
-public with sharing class HOT_Utility {
+public without sharing class HOT_Utility {
 	
 	@AuraEnabled(cacheable = true)
     public static ServiceResource getServiceResource() {
