@@ -1,19 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <GlobalValueSetTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <valueTranslation>
-        <masterLabel>Assigned</masterLabel>
-        <translation>Tildelt</translation>
-    </valueTranslation>
-    <valueTranslation>
-        <masterLabel>Interested</masterLabel>
-        <translation>Påmeldt</translation>
-    </valueTranslation>
-    <valueTranslation>
-        <masterLabel>Not Assigned</masterLabel>
-        <translation>Ikke tildelt</translation>
-    </valueTranslation>
-    <valueTranslation>
-        <masterLabel>Retracted Interest</masterLabel>
-        <translation>Tilbaketrukket påmelding</translation>
-    </valueTranslation>
+	<valueTranslation>
+		<masterLabel>Assigned</masterLabel>
+		<translation>Tildelt</translation>
+	</valueTranslation>
+	<valueTranslation>
+		<masterLabel>Interested</masterLabel>
+		<translation>Påmeldt</translation>
+	</valueTranslation>
+	<valueTranslation>
+		<masterLabel>Not Assigned</masterLabel>
+		<translation>Ikke tildelt</translation>
+	</valueTranslation>
+	<valueTranslation>
+		<masterLabel>Retracted Interest</masterLabel>
+		<translation>Tilbaketrukket påmelding</translation>
+	</valueTranslation>
+	<valueTranslation>
+		<masterLabel>Canceled</masterLabel>
+		<translation>Avlyst</translation>
+	</valueTranslation>
 </GlobalValueSetTranslation>
