@@ -3,7 +3,7 @@
 	<fullName>HOT_IsEmployedInterpreter__c</fullName>
 	<defaultValue>true</defaultValue>
 	<externalId>false</externalId>
-	<label>IsEmployedInterpreter</label>
+	<label>Employed Interpreter</label>
 	<trackFeedHistory>false</trackFeedHistory>
 	<trackHistory>false</trackHistory>
 	<type>Checkbox</type>
