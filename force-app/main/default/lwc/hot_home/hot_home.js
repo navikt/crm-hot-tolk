@@ -49,7 +49,8 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 				},
 			});
 		}
-    
+	}
+
 	@track isFrilans = false;
 	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Tolk_Frilans' })
 	wireIsFrilans({ error, data }) {
@@ -65,7 +66,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 		console.log(this.isFrilans);
 	}
-    
+
 	goToHome(event) {
 		if (!this.isProd) {
 			event.preventDefault();
