@@ -163,7 +163,7 @@
     <nameField>
         <displayFormat>{000000}</displayFormat>
         <label>Interested Resource</label>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Interested Resources</pluralLabel>
