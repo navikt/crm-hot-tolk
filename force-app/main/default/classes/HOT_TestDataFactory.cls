@@ -56,11 +56,48 @@ public class HOT_TestDataFactory {
 		return workType;
 	}
 
-	public static Account createAccount( boolean isPersonAccount ) {
-		if ( isPersonAccount ) {
-			String personAccountRecordTypeId = Schema.getGlobalDescribe().get( 'Account' ).getDescribe().getRecordTypeInfosByDeveloperName().get( 'PersonAccount' ).getRecordTypeId();
-			Account account = new Account( RecordTypeId = personAccountRecordTypeId, FirstName = 'Test', LastName = 'User', PersonEmail = 'HOT_testaccount@nav.hot.no' );
+	public static WorkType createWorkType(String name) {
+		WorkType workType = new WorkType();
+		workType.Name = name;
+		workType.EstimatedDuration = 1;
+		return workType;
+	}
 
+	public static ServiceResource createServiceResource(Id userId){
+		ServiceResource serviceResource = new ServiceResource();
+		serviceResource.Name = 'Service Resource Name';
+		serviceResource.RelatedRecordId = userId;
+		serviceResource.IsActive = true;
+		serviceResource.ResourceType = 'T';
+		return serviceResource;
+	}
+
+	public static Skill createSkill(WorkType workType){
+		Skill skill = new Skill();
+		skill.MasterLabel = workType.Name;
+		return skill;
+	}
+
+	public static ServiceResourceSkill createServiceResourceSkill(ServiceResource serviceResource, Skill skill){
+		ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
+		serviceResourceSkill.ServiceResourceId = serviceResource.Id;
+		serviceResourceSkill.SkillId = skill.Id;
+		serviceResourceSkill.EffectiveStartDate = Date.today();
+		return serviceResourceSkill;
+	}
+
+	public static ServiceResourceSkill createServiceResourceSkill(ServiceResource serviceResource, WorkType workType){
+		ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
+		serviceResourceSkill.ServiceResourceId = serviceResource.Id;
+		serviceResourceSkill.SkillId = workType.Id;
+		serviceResourceSkill.EffectiveStartDate = Date.today();
+		return serviceResourceSkill;
+	}
+
+	public static Account createAccount(boolean isPersonAccount) {
+		if(isPersonAccount){
+			String personAccountRecordTypeId = Schema.getGlobalDescribe().get('Account').getDescribe().getRecordTypeInfosByDeveloperName().get('PersonAccount').getRecordTypeId();
+			Account account = new Account(RecordTypeId = personAccountRecordTypeId, FirstName = 'Test', LastName = 'User', PersonEmail = 'HOT_testaccount@nav.hot.no');
 			return account;
 		}
 		else{
@@ -101,18 +138,6 @@ public class HOT_TestDataFactory {
 			);
 
 		return user;
-	}
-
-	public static ServiceResource createServiceResource( Id userId )
-	{
-		ServiceResource resource = new ServiceResource(
-			Name = 'Service Resource',
-			RelatedRecordId = userId,
-			IsActive = true,
-			ResourceType = 'T'
-			);
-
-		return resource;
 	}
 
 	public static AssignedResource createAssignedResource( Id serviceAppointmentId, Id serviceResourceId ) {

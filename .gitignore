@@ -299,3 +299,4 @@ dmypy.json
 force-app/main/default/classes/MyTriggers.cls
 force-app/main/default/classes/MyTriggers.cls-meta.xml
 
+**/jsconfig.json

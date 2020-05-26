@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Profile xmlns="http://soap.sforce.com/2006/04/metadata">
 	<applicationVisibilities>
 		<application>HOT_Admin</application>
@@ -6,7 +6,35 @@
 		<visible>false</visible>
 	</applicationVisibilities>
 	<classAccesses>
+		<apexClass>HOT_AssignedResourceAccessHandler</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
+		<apexClass>HOT_AssignedResourceAccessHandlerTest</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
 		<apexClass>HOT_FieldServiceStatusHandlerTest</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
+		<apexClass>HOT_MyServiceAppointmentListController</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
+		<apexClass>HOT_OpenSAListControllerTest</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
+		<apexClass>HOT_OpenServiceAppointmentListController</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
+		<apexClass>HOT_ReleaseToFreelanceFlowController</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
+		<apexClass>HOT_ReleaseToFreelanceFlowControllerTest</apexClass>
 		<enabled>true</enabled>
 	</classAccesses>
 	<classAccesses>
@@ -30,7 +58,23 @@
 		<enabled>true</enabled>
 	</classAccesses>
 	<classAccesses>
+		<apexClass>HOT_ServiceAppointmentsSharingService</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
+		<apexClass>HOT_ServiceAppointmentsSharingSrvTest</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
 		<apexClass>HOT_TestDataFactory</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
+		<apexClass>HOT_Utility</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
+		<apexClass>HOT_UtilityTest</apexClass>
 		<enabled>true</enabled>
 	</classAccesses>
 	<classAccesses>
@@ -66,6 +110,21 @@
 		<enabled>true</enabled>
 	</classAccesses>
 	<custom>false</custom>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_InterestedResource__c.Comments__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_InterestedResource__c.Location__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_InterestedResource__c.Status__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>HOT_Request__c.Account__c</field>
@@ -317,6 +376,11 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_DeadlineDate__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>false</editable>
 		<field>ServiceAppointment.HOT_InterpretationPostalCity__c</field>
 		<readable>false</readable>
@@ -332,9 +396,24 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_NumberOfInterestedResources__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>false</editable>
 		<field>ServiceAppointment.HOT_Warning__c</field>
 		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_WorkTypeName__c</field>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -392,6 +471,9 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<layoutAssignments>
+		<layout>HOT_InterestedResource__c-Interested Resource Layout</layout>
+	</layoutAssignments>
+	<layoutAssignments>
 		<layout>HOT_Request__c-Request Layout</layout>
 	</layoutAssignments>
 	<layoutAssignments>
@@ -408,6 +490,9 @@
 		<layout>ServiceAppointment-Service Appointment Layout</layout>
 	</layoutAssignments>
 	<layoutAssignments>
+		<layout>ServiceResource-Service Resource Layout</layout>
+	</layoutAssignments>
+	<layoutAssignments>
 		<layout>WorkOrder-Work Order Layout</layout>
 	</layoutAssignments>
 	<layoutAssignments>
@@ -419,9 +504,26 @@
 		<allowEdit>true</allowEdit>
 		<allowRead>true</allowRead>
 		<modifyAllRecords>true</modifyAllRecords>
+		<object>HOT_InterestedResource__c</object>
+		<viewAllRecords>true</viewAllRecords>
+	</objectPermissions>
+	<objectPermissions>
+		<allowCreate>true</allowCreate>
+		<allowDelete>true</allowDelete>
+		<allowEdit>true</allowEdit>
+		<allowRead>true</allowRead>
+		<modifyAllRecords>true</modifyAllRecords>
 		<object>HOT_Request__c</object>
 		<viewAllRecords>true</viewAllRecords>
 	</objectPermissions>
+	<pageAccesses>
+		<apexPage>HOT_ReleaseToFreelance</apexPage>
+		<enabled>true</enabled>
+	</pageAccesses>
+	<tabVisibilities>
+		<tab>HOT_InterestedResource__c</tab>
+		<visibility>DefaultOn</visibility>
+	</tabVisibilities>
 	<tabVisibilities>
 		<tab>HOT_Request__c</tab>
 		<visibility>Hidden</visibility>

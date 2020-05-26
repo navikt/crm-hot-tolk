@@ -1,0 +1,28 @@
+<template>
+
+	<div class="brodsmulesti">
+		<lightning-breadcrumbs class="liste-max-width">
+			<lightning-breadcrumb label="Hjem" href="/tolketjenesten/s/">
+			</lightning-breadcrumb>
+			<lightning-breadcrumb label="Oppdrag" href="/tolketjenesten/s/mine-oppdrag">
+			</lightning-breadcrumb>
+		</lightning-breadcrumbs>
+	</div>
+
+	<div class="liste liste-max-width">
+		<lightning-tabset active-tab-value="open">
+
+			<lightning-tab label="Mine oppdrag" value="my">
+				<c-hot_my-service-appointments item-name="myServiceAppointments">
+				</c-hot_my-service-appointments>
+			</lightning-tab>
+
+			<lightning-tab label="Ledige oppdrag" value="open">
+				<c-hot_open-service-appointments item-name="openServiceAppointments">
+				</c-hot_open-service-appointments>
+			</lightning-tab>
+
+		</lightning-tabset>
+
+	</div>
+</template>
