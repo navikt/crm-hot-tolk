@@ -45,7 +45,7 @@ jobs:
       - name: "Install dependencies"
         run: |
           echo y | sfdx plugins:install sfpowerkit # echo y to confirm installation
-          sfdx sfpowerkit:package:dependencies:install -u scratch-org -v devhub -k "1:${{ secrets.PACKAGE_KEY }} 2:${{ secrets.PACKAGE_KEY }}"
+          sfdx sfpowerkit:package:dependencies:install -u scratch-org -v devhub -k "1:${{ secrets.PACKAGE_KEY }} 2:${{ secrets.PACKAGE_KEY }} 3:${{ secrets.PACKAGE_KEY }}"
 
       # Deploy source to scratch org
       - name: "Push source to scratch org"

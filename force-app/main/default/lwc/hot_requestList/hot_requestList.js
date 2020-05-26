@@ -206,6 +206,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 	}
 	connectedCallback() {
+		window.scrollTo(0, 0);
 		refreshApex(this.wiredRequestsResult);
 	}
 
@@ -294,6 +295,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		}
 	}
+	goToMyRequests(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'mine-bestillinger'
+				}
+			});
+		}
+	}
+
 	goToNewRequest() {
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',
@@ -305,13 +318,16 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		});
 	}
-	goHome() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: 'home'
-			}
-		});
+	goToHome(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'home'
+				},
+			});
+		}
 	}
 
 }

@@ -136,7 +136,7 @@
 	</fieldPermissions>
 	<hasActivationRequired>false</hasActivationRequired>
 	<label>HOT Tolk Bruker</label>
-	<license>Customer Community</license>
+	<license>Customer Community Login</license>
 	<objectPermissions>
 		<allowCreate>false</allowCreate>
 		<allowDelete>false</allowDelete>

@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-	<fullName>Status__c</fullName>
-	<externalId>false</externalId>
-	<label>Status</label>
-	<required>true</required>
-	<trackHistory>false</trackHistory>
-	<trackTrending>false</trackTrending>
-	<type>Picklist</type>
-	<valueSet>
-		<restricted>true</restricted>
-		<valueSetName>HOT_InterpreterStatus</valueSetName>
-	</valueSet>
+    <fullName>Status__c</fullName>
+    <externalId>false</externalId>
+    <label>Status</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>HOT_InterpreterStatus</valueSetName>
+    </valueSet>
 </CustomField>

@@ -7,6 +7,7 @@ import checkAssignedPermissionSet from '@salesforce/apex/HOT_Utility.checkAssign
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
 
+
 	@track name;
 	@track error;
 	@wire(getRecord, {
@@ -24,6 +25,31 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 	}
 
+	@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
+
+	goToMyRequests(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'mine-bestillinger'
+				}
+			});
+		}
+	}
+
+	goToNewRequest(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'ny-bestilling'
+				},
+			});
+		}
+    
 	@track isFrilans = false;
 	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Tolk_Frilans' })
 	wireIsFrilans({ error, data }) {
@@ -32,7 +58,6 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 		console.log(this.isFrilans);
 	}
-
 	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
 	wireIsAdmin({ error, data }) {
 		if (data && !this.isFrilans) {
@@ -40,5 +65,19 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 		console.log(this.isFrilans);
 	}
+    
+	goToHome(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'home'
+				},
+			});
+		}
+	}
+
+
 
 }
