@@ -12,6 +12,10 @@
         <apexClass>HOT_OpenServiceAppointmentListController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>HOT_ReleaseToFreelance</name>
+    </customPermissions>
     <description>Brukes av de som utvikler løsningene for HOT</description>
     <fieldPermissions>
         <editable>true</editable>
