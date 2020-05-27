@@ -26,6 +26,13 @@
                 <booleanValue>false</booleanValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_FreelanceSubject__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Emne</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>UpdateServiceAppointment</targetReference>
         </connector>
@@ -158,7 +165,7 @@ Status == &quot;Ingen&quot;</description>
     <recordDeletes>
         <name>DeleteAssignedResource</name>
         <label>DeleteAssignedResource</label>
-        <locationX>807</locationX>
+        <locationX>802</locationX>
         <locationY>626</locationY>
         <connector>
             <targetReference>Sett_frist_for_pamelding</targetReference>
@@ -196,6 +203,7 @@ Status == &quot;Ingen&quot;</description>
         <queriedFields>Status</queriedFields>
         <queriedFields>HOT_IsEmployedInterpreter__c</queriedFields>
         <queriedFields>EarliestStartTime</queriedFields>
+        <queriedFields>HOT_FreelanceSubject__c</queriedFields>
         <queriedFields>Subject</queriedFields>
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
