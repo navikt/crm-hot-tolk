@@ -16,6 +16,8 @@ public without sharing class HOT_ServiceAppointmentStatusHandler extends MyTrigg
 		}
 		if(changedStatusServiceAppointments.size() > 0) {
 			updateWorkOrderLineItemStatus(changedStatusServiceAppointments);
+		}
+		if(canceledServiceAppointments.size() > 0) {
 			updateInterestedResourceStatus(canceledServiceAppointments);
 		}
 	}
@@ -34,9 +36,8 @@ public without sharing class HOT_ServiceAppointmentStatusHandler extends MyTrigg
 	}
 
 	private static void updateInterestedResourceStatus(List<ServiceAppointment> canceledServiceAppointments) {
-		List<HOT_InterestedResource__c> interestedResourcesToUpdate = [SELECT Id, Status__c 
-		FROM HOT_InterestedResource__c WHERE ServiceAppointment__c IN: canceledServiceAppointments];
-		for(HOT_InterestedResource__c interestedResource:interestedResourcesToUpdate){
+		List<HOT_InterestedResource__c> interestedResourcesToUpdate = [SELECT Id, Status__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__c IN: canceledServiceAppointments];
+		for(HOT_InterestedResource__c interestedResource : interestedResourcesToUpdate){
 			if(interestedResource.Status__c == 'Interested' || interestedResource.Status__c == 'Assigned'){
 				interestedResource.Status__c = 'Canceled';
 			}
