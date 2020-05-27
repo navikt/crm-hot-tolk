@@ -93,6 +93,7 @@ public class HOT_TestDataFactory {
 		serviceResourceSkill.EffectiveStartDate = Date.today();
 		return serviceResourceSkill;
 	}
+	
 
 	public static Account createAccount(boolean isPersonAccount) {
 		if(isPersonAccount){
@@ -147,5 +148,14 @@ public class HOT_TestDataFactory {
 			);
 
 		return assignedResource;
+	}
+
+	public static HOT_InterestedResource__c createInterestedResource( Id serviceAppointmentId, Id serviceResourceId ) {
+		HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(
+			ServiceAppointment__c = serviceAppointmentId,
+			ServiceResource__c = serviceResourceId
+			);
+
+		return interestedResource;
 	}
 }
