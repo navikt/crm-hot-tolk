@@ -3,7 +3,7 @@
     <assignments>
         <name>AssignFieldValues</name>
         <label>AssignFieldValues</label>
-        <locationX>938</locationX>
+        <locationX>926</locationX>
         <locationY>124</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_DeadlineDate__c</assignToReference>
@@ -33,8 +33,8 @@
     <assignments>
         <name>RemoveAssignedResourceAssignment</name>
         <label>RemoveAssignedResourceAssignment</label>
-        <locationX>567</locationX>
-        <locationY>715</locationY>
+        <locationX>573</locationX>
+        <locationY>624</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
@@ -118,8 +118,8 @@ Status == &quot;Ingen&quot;</description>
     <decisions>
         <name>CheckChoice</name>
         <label>CheckChoice</label>
-        <locationX>557</locationX>
-        <locationY>544</locationY>
+        <locationX>563</locationX>
+        <locationY>453</locationY>
         <defaultConnector>
             <targetReference>OutScreen</targetReference>
         </defaultConnector>
@@ -158,10 +158,10 @@ Status == &quot;Ingen&quot;</description>
     <recordDeletes>
         <name>DeleteAssignedResource</name>
         <label>DeleteAssignedResource</label>
-        <locationX>671</locationX>
-        <locationY>717</locationY>
+        <locationX>807</locationX>
+        <locationY>626</locationY>
         <connector>
-            <targetReference>UpdateStatus</targetReference>
+            <targetReference>Sett_frist_for_pamelding</targetReference>
         </connector>
         <filters>
             <field>ServiceAppointmentId</field>
@@ -203,20 +203,10 @@ Status == &quot;Ingen&quot;</description>
     <recordUpdates>
         <name>UpdateServiceAppointment</name>
         <label>UpdateServiceAppointment</label>
-        <locationX>1066</locationX>
-        <locationY>124</locationY>
+        <locationX>1051</locationX>
+        <locationY>126</locationY>
         <connector>
             <targetReference>SuccessScreen</targetReference>
-        </connector>
-        <inputReference>CurrentServiceAppointment</inputReference>
-    </recordUpdates>
-    <recordUpdates>
-        <name>UpdateStatus</name>
-        <label>UpdateStatus</label>
-        <locationX>807</locationX>
-        <locationY>711</locationY>
-        <connector>
-            <targetReference>Sett_frist_for_pamelding</targetReference>
         </connector>
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
@@ -251,8 +241,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>OutScreen</name>
         <label>OutScreen</label>
-        <locationX>333</locationX>
-        <locationY>651</locationY>
+        <locationX>339</locationX>
+        <locationY>560</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -317,8 +307,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>1207</locationX>
-        <locationY>124</locationY>
+        <locationX>1185</locationX>
+        <locationY>129</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
