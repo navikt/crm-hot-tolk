@@ -72,7 +72,7 @@
 			</componentInstanceProperties>
 			<componentInstanceProperties>
 				<name>title</name>
-				<value>Påmeldte Ressurser</value>
+				<value>Intereserte Ressurser</value>
 			</componentInstanceProperties>
 			<componentName>flexipage:tab</componentName>
 		</componentInstances>
