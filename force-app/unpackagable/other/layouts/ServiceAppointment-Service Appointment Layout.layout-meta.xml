@@ -144,7 +144,12 @@
 				<field>HOT_IsReleasedToFreelance__c</field>
 			</layoutItems>
 		</layoutColumns>
-		<layoutColumns />
+		<layoutColumns>
+		    <layoutItems>
+			<behavior>Edit</behavior>
+			<field>HOT_FreelanceSubject__c</field>
+		    </layoutItems>
+		</layoutColumns>
 		<style>TwoColumnsLeftToRight</style>
 	</layoutSections>
 	<layoutSections>
