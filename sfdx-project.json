@@ -23,12 +23,34 @@
 					"versionNumber": "0.5.0.LATEST"
 				}
 			]
+		},
+		{
+			"path": "force-app",
+			"default": true,
+			"package": "crm-hot-dev",
+			"versionName": "ver 0.1",
+			"versionNumber": "0.1.0.NEXT",
+			"dependencies": [
+				{
+					"package": "crm-platform-base",
+					"versionNumber": "0.16.0.LATEST"
+				},
+				{
+					"package": "crm-platform-access-control",
+					"versionNumber": "0.17.0.LATEST"
+				},
+				{
+					"package": "crm-community-base",
+					"versionNumber": "0.5.0.LATEST"
+				}
+			]
 		}
 	],
 	"packageAliases": {
 		"crm-platform-base": "0Ho2o0000008ORmCAM",
 		"crm-platform-access-control": "0Ho2o0000008OR3CAM",
 		"crm-hot": "0Ho2o0000008OSVCA2",
-		"crm-community-base": "0Ho2o0000008OSzCAM"
+		"crm-community-base": "0Ho2o0000008OSzCAM",
+		"crm-hot-dev": "0Ho2o000000KylqCAC"
 	}
 }

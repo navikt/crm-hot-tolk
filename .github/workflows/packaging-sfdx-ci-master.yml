@@ -1,5 +1,5 @@
 # Unique name for this workflow
-name: Create and validate package
+name: Create and validate package - master
 
 # Definition when the workflow should run
 on:
