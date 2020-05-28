@@ -143,5 +143,32 @@ private class HOT_FieldServiceStatusHandlerTest {
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
 		System.assertEquals('Kan ikke fullføre', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
-    }
+	}
+	
+    @isTest
+    private static void testCanceledServiceAppointmentToInterestedResource(){
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+		WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+		insert workOrder;
+		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+		insert workOrderLineItem;
+		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+		insert serviceResource;
+		ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+		insert serviceAppointment;
+		HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(serviceAppointment.Id, serviceResource.Id);
+		insert interestedResource;
+
+		serviceAppointment.Status = 'Avbrutt';
+		update serviceAppointment;
+
+		interestedResource = [SELECT Id, Status__c, Name FROM HOT_InterestedResource__c WHERE ServiceAppointment__c=:serviceAppointment.Id];
+		System.assertEquals('Canceled', interestedResource.Status__c, 'Status on Interested Resource did not update to correct value');
+
+
+	}
+
 }

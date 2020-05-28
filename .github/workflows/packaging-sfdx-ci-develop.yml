@@ -1,0 +1,77 @@
+# Unique name for this workflow
+name: Create and validate package - develop
+
+# Definition when the workflow should run
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "force-app/**"
+      - "sfdx-project.json"
+
+# Jobs to be executed
+jobs:
+  packaging:
+    name: Create new package
+    runs-on: ubuntu-latest
+    steps:
+      # Install Salesforce CLI
+      - name: "Install Salesforce CLI"
+        run: |
+          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+          mkdir sfdx-cli
+          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+          ./sfdx-cli/install
+
+      # Checkout the code in the pull request
+      - name: "Checkout source code"
+        uses: actions/checkout@v2
+
+      # Store secret for dev hub
+      - name: "Populate auth file with DEVHUB_SFDX_URL secret"
+        shell: bash
+        run: "echo ${{ secrets.DEVHUB_SFDX_URL}} > ./DEVHUB_SFDX_URL.txt"
+
+      # Store secret for package target org installation
+      - name: "Populate auth file with DEVHOT_SFDX_URL secret"
+        shell: bash
+        run: "echo ${{ secrets.DEVHOT_SFDX_URL}} > ./DEVHOT_SFDX_URL.txt"
+
+      # Authenticate dev hub
+      - name: "Authenticate Dev Hub"
+        run: "sfdx force:auth:sfdxurl:store -f ./DEVHUB_SFDX_URL.txt -a devhub -d"
+
+      # Authenticate devhot sandbox
+      - name: "Authenticate package target org"
+        run: "sfdx force:auth:sfdxurl:store -f ./DEVHOT_SFDX_URL.txt -a devhot-sandbox -s"
+
+      # Remove auth files
+      - name: "Remove auth files"
+        run: |
+          rm -f ./DEVHUB_SFDX_URL.txt
+          rm -f ./DEVHOT_SFDX_URL.txt
+
+      # Delete unpackagable
+      - name: "Delete unpackagable"
+        run: |
+          rm -rf force-app/unpackagable
+
+      # Create package version
+      - name: "Create package version"
+        id: package-version-create
+        run: |
+          echo "::set-output name=result::$(sfdx force:package:version:create -f config/project-scratch-def.json -p crm-hot-dev -k ${{ secrets.PACKAGE_KEY }} -w 60 --json | jq -c .)"
+          echo "::set-output name=isSuccess::true"
+
+      # Extract data from package version create result
+      - name: "Extract package:version:create result data"
+        id: extract-data-package-version-create
+        uses: muenzpraeger/github-action-extract-sfdx-packaging-result@master
+        with:
+          json: ${{steps.package-version-create.outputs.result}}
+
+      # Install package version into DEVHOT sandbox
+      - name: "Install new package version into test org"
+        if: steps.extract-data-package-version-create.outputs.isSuccess
+        run: "sfdx force:package:install --package ${{ steps.extract-data-package-version-create.outputs.packageVersionId }} -w 60 -b 60 -u devhot-sandbox -r -k ${{ secrets.PACKAGE_KEY }}"
