@@ -8,25 +8,33 @@
 
 	<div if:true={isFrilans} class="informasjonstavle__body">
 		<div class="informasjonstavle__content">
-			<div class="informasjonstavle__bildepaneler">
-
-				<a class="panelMedBilde" href="/tolketjenesten/s/mine-oppdrag">
-					<div class="frilanstolk panelMedBilde__imageOnPanel">
-						<div class="panelMedBilde__svgContainer">
-							<img class="illustrasjon" src="/sfsites/c/resource/1584959850000/MineBestillinger"></img>
+			<div class="informasjonstavle__bildepaneler-single">
+				<a class="panelMedBilde panelMedBilde-single" href="/tolketjenesten/s/mine-oppdrag">
+					<div class="panelMedBilde__imageOnPanel-single">
+						<div class="panelMedBilde__svgContainer-single">
+							<img if:false={isProd} style="height: 60%;"
+								src="/sfsites/c/resource/1590665878000/OppdragIkon"></img>
+							<img if:true={isProd} style="height: 60%;"
+								src="/s/sfsites/c/resource/1590665878000/OppdragIkon"></img>
 						</div>
 					</div>
-					<div class="panel panelMedBilde__panelOnPanel">
+					<div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
 						<h2 class="typo-undertittel">Oppdrag</h2>
 						<div>
 							<p class="typo-normal">
 								<span>
-									Se oversikt over dine oppdrag, og åpne oppdrag som du kan melde interesse om.</span>
+									Se oversikt over dine oppdrag, og åpne oppdrag som du kan melde interesse
+									om.</span>
 							</p>
 						</div>
 					</div>
+					<div class="panelMedBilde__imageOnPanel-single">
+						<div class="panelMedBilde__svgContainer-single">
+							<img if:false={isProd} src="/sfsites/c/resource/1590666405000/rightArrow"></img>
+							<img if:true={isProd} src="/s/sfsites/c/resource/1590666405000/rightArrow"></img>
+						</div>
+					</div>
 				</a>
-
 			</div>
 		</div>
 	</div>
@@ -48,8 +56,7 @@
 						<h2 class="typo-undertittel">Bestille tolk</h2>
 						<div>
 							<p class="typo-normal">
-								<span>
-									Her kan du bestille tolketjenesten for døve, døvblinde og hørselshemmede.</span>
+								Her kan du bestille tolketjenesten for døve, døvblinde og hørselshemmede.
 							</p>
 						</div>
 					</div>
@@ -67,10 +74,8 @@
 						<h2 class="typo-undertittel">Mine bestillinger</h2>
 						<div>
 							<p class="typo-normal">
-								<span>
-									Her finner du oversikt over alle dine bestillinger, og du kan
-									se status på bestillingene.
-								</span>
+								Her finner du oversikt over alle dine bestillinger, og du kan se status på
+								bestillingene.
 							</p>
 						</div>
 					</div>
@@ -88,9 +93,7 @@
 						<h2 class="typo-undertittel">Kunnskapsbanken</h2>
 						<div>
 							<p class="typo-normal">
-								<span>
-									Her finner du fagstoff og artikler om tolking.
-								</span>
+								Her finner du fagstoff og artikler om tolking.
 							</p>
 						</div>
 					</div>
