@@ -147,7 +147,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		const month = dateTime.substring(5, 7);
 		const day = dateTime.substring(8, 10);
 
-		const time = dateTime.substring(11, 16);
+		var time = dateTime.substring(11, 16).split("");
+		time[1] = ((parseFloat(time[1]) + 2) % 10).toString();
+		time[0] = (parseFloat(time[0]) + ((parseFloat(time[1]) + 2) > 9) ? 1 : 0).toString();
+		time = time.join("");
 		return day + "." + month + "." + year + " " + time;
 	}
 
