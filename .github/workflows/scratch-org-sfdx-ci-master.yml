@@ -33,10 +33,6 @@ jobs:
       - name: "Authenticate Dev Hub"
         run: "sfdx force:auth:sfdxurl:store -f ./DEVHUB_SFDX_URL.txt -a devhub -d"
 
-      # Lint Aura components
-      - name: "Lint Aura components"
-        run: "sfdx force:lightning:lint force-app/main/default/aura --exit"
-
       # Create scratch org
       - name: "Create scratch org"
         run: "sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1"
@@ -53,7 +49,7 @@ jobs:
 
       # Run Apex tests in scratch org
       - name: "Run Apex tests"
-        run: "sfdx force:apex:test:run -c -r human -d ./tests/apex -w 20"
+        run: "sfdx force:apex:test:run -c -r human -d ./tests/apex -w 60"
 
       # Housekeeping
       - name: "Delete scratch org"
