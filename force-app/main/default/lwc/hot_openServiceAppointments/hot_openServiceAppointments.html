@@ -27,8 +27,8 @@
 
 					<template iterator:it={selectedRows}>
 
-						<lightning-record-edit-form key={it.value.Id} object-api-name="HOT_InterestedResource__c"
-							density="comfy">
+						<lightning-record-edit-form style="padding: 1rem;" key={it.value.Id}
+							object-api-name="HOT_InterestedResource__c" density="comfy">
 							<div>
 								<p class="typo-normal">{it.value.AppointmentNumber} {it.value.HOT_WorkTypeName__c}</p>
 								<p class="typo-normal">{it.value.EarliestStartTime} til {it.value.DueDate}</p>
