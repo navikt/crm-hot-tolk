@@ -201,25 +201,30 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	openChatter(row) {
 
 	}
-	selectedRows = [];
+	@track selectedRows = [];
 	getSelectedName(event) {
 		this.selectedRows = event.detail.selectedRows;
 		console.log(JSON.stringify(this.selectedRows));
 	}
 
+	@track isAddComments = false;
+	abortSendingInterest() {
+		this.isAddComments = false;
+	}
 	sendInterest() {
-		let serviceAppointmentIds = [];
-		let serviceAppointmentNumbers = [];
-		for (var i = 0; i < this.selectedRows.length; i++) {
-			serviceAppointmentIds.push(this.selectedRows[i].Id);
-			serviceAppointmentNumbers.push(this.selectedRows[i].AppointmentNumber);
+		if (this.selectedRows.length > 0) {
+			this.isAddComments = true;
 		}
-		if (serviceAppointmentIds.length > 0) {
-			let updatedserviceAppointmentNumbers = createInterestedResources({ serviceAppointmentIds });
-			//console.log(JSON.stringify(updatedserviceAppointmentNumbers));
-			//alert(this.formatSignUpMessage(serviceAppointmentNumbers, updatedserviceAppointmentNumbers));
-			//refreshApex(this.wiredAllServiceAppointmentsResult);
-		}
+	}
+	confirmSendingInterest() {
+		this.template.querySelectorAll("lightning-record-edit-form")
+			.forEach(element => {
+				element.submit();
+			}
+			);
+		this.isAddComments = false;
+		refreshApex(this.wiredAllServiceAppointmentsResult);
+
 
 	}
 
