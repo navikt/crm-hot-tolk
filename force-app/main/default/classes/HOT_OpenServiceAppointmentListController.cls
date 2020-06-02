@@ -26,11 +26,11 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		//and if the ServiceResource has already reported interest in the ServiceAppointment
 		List<ServiceAppointment> serviceAppointments = [SELECT 
 														Id, AppointmentNumber, ServiceTerritoryId,
-		EarliestStartTime, DueDate, HOT_DeadlineDate__c,
+		EarliestStartTime, DueDate, HOT_DeadlineDate__c, HOT_FreelanceSubject__c, HOT_DateTimeFormated__c, HOT_AddressFormated__c,
 														Address, HOT_InterpretationStreet__c, HOT_InterpretationPostalCode__c,
 		HOT_WorkTypeName__c, HOT_NumberOfInterestedResources__c, WorkType.Id
 														FROM ServiceAppointment 
-		WHERE HOT_IsReleasedToFreelance__c =:true AND Status =: 'Ingen' AND HOT_DeadlineDate__c>=:DATE.TODAY()
+		WHERE HOT_IsReleasedToFreelance__c = true AND Status = 'Ingen' AND HOT_DeadlineDate__c >= :DATE.TODAY()
 														AND Id NOT IN: interestedServiceAppointmentIds
 		ORDER BY EarliestStartTime ASC];
 

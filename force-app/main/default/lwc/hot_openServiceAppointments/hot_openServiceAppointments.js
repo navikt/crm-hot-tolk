@@ -5,7 +5,6 @@ import { refreshApex } from '@salesforce/apex';
 
 var actions = [
 	{ label: 'Detaljer', name: 'details' },
-	{ label: 'Chat', name: 'chat' },
 ];
 
 export default class Hot_allServiceAppointments extends LightningElement {
@@ -18,48 +17,20 @@ export default class Hot_allServiceAppointments extends LightningElement {
 			sortable: true,
 		},*/
 		{
-			label: 'Start tid',
-			fieldName: 'EarliestStartTime',
-			type: 'date',
-			sortable: true,
-			typeAttributes: {
-				day: 'numeric',
-				month: 'numeric',
-				year: 'numeric',
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false
-			}
-		},
-		{
-			label: 'Slutt tid',
-			fieldName: 'DueDate',
-			type: 'date',
-			sortable: true,
-			typeAttributes: {
-				day: 'numeric',
-				month: 'numeric',
-				year: 'numeric',
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false
-			}
-		},
-		{
-			label: 'Arbeidstype',
-			fieldName: 'HOT_WorkTypeName__c',
-			type: 'text',
+			label: 'Tid',
+			fieldName: 'HOT_DateTimeFormated__c',
+			type: 'Text',
 			sortable: true,
 		},
 		{
 			label: 'Adresse',
-			fieldName: 'HOT_InterpretationStreet__c',
+			fieldName: 'HOT_AddressFormated__c',
 			type: 'text',
 			sortable: true,
 		},
 		{
-			label: 'Postnr',
-			fieldName: 'HOT_InterpretationPostalCode__c',
+			label: 'Arbeidstype',
+			fieldName: 'HOT_WorkTypeName__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -69,11 +40,11 @@ export default class Hot_allServiceAppointments extends LightningElement {
 			type: 'number',
 			sortable: true,
 			cellAttributes: { alignment: 'left' }
-		},/*
+		},
 		{
 			type: 'action',
 			typeAttributes: { rowActions: actions },
-		},*/
+		},
 	];
 	@track serviceResource;
 	@wire(getServiceResource)
@@ -182,24 +153,30 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	handleRowAction(event) {
 		const actionName = event.detail.action.name;
 		const row = event.detail.row;
-
+		console.log(JSON.stringify(row));
 		switch (actionName) {
 			case 'details':
 				this.showDetails(row);
-				break;
-			case 'chat':
-				this.openChatter(row);
 				break;
 			default:
 		}
 	}
 
+	@track subject = "Ingen ytterligere informasjon";
+	@track isDetails = false;
 	showDetails(row) {
-
+		console.log("Showing details");
+		const { Id } = row;
+		if (row.HOT_FreelanceSubject__c) {
+			this.subject = row.HOT_FreelanceSubject__c;
+		}
+		this.isDetails = true;
 	}
-	openChatter(row) {
-
+	abortShowDetails() {
+		this.isDetails = false;
+		this.subject = "Ingen ytterligere informasjon";
 	}
+
 	@track selectedRows = [];
 	getSelectedName(event) {
 		this.selectedRows = event.detail.selectedRows;
@@ -224,36 +201,6 @@ export default class Hot_allServiceAppointments extends LightningElement {
 		this.isAddComments = false;
 		refreshApex(this.wiredAllServiceAppointmentsResult);
 
-
-	}
-
-	formatSignUpMessage(all, updated) {
-		var duplicateSA = "";
-		var newSA = "";
-		console.log(all);
-		console.log(updated);
-		for (var i = 0; i < all.length; i++) {
-			console.log(updated.indexOf(all[i]) != -1);
-			if (updated.indexOf(all[i]) != -1) {
-				newSA = newSA + all[i] + "\n";
-			}
-			else {
-				duplicateSA = duplicateSA + all[i] + "\n";
-			}
-		}
-		var formatedMessage = "";
-		//console.log("newSA" + ": " + newSA);
-		//console.log("duplicateSA" + ": " + duplicateSA);
-
-		if (newSA != "") {
-			console.log("if (newSA != '')");
-			formatedMessage = "Du meldte deg på følgende oppdrag:\n" + newSA;
-		}
-		if (duplicateSA != "") {
-			console.log("if (duplicateSA != '')");
-			formatedMessage = formatedMessage + "Du har allerede meldt deg på følgende oppdrag:\n" + duplicateSA;
-		}
-		return formatedMessage;
 	}
 
 

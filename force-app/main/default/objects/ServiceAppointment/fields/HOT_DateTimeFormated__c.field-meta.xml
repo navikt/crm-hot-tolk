@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+	<fullName>HOT_DateTimeFormated__c</fullName>
+	<externalId>false</externalId>
+	<formula>LEFT(TEXT(EarliestStartTime), 10)
+		+ &quot;, &quot; +
+		 MID(TEXT(EarliestStartTime), 11, 6) 
+		+ &quot; - &quot; +
+		 MID(TEXT(DueDate), 11, 6)</formula>
+	<formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+	<label>Time</label>
+	<required>false</required>
+	<trackHistory>false</trackHistory>
+	<type>Text</type>
+	<unique>false</unique>
+</CustomField>
