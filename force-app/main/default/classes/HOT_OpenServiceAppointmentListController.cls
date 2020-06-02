@@ -24,13 +24,14 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
 		//Getting ServiceAppointments, filtered by isRealeased, Status, 
 		//and if the ServiceResource has already reported interest in the ServiceAppointment
-		List<ServiceAppointment> serviceAppointments = [SELECT Id, AppointmentNumber, ServiceTerritoryId,
+		List<ServiceAppointment> serviceAppointments = [SELECT 
+														Id, AppointmentNumber, ServiceTerritoryId,
 		EarliestStartTime, DueDate, HOT_DeadlineDate__c,
-		Address, HOT_InterpretationStreet__c, HOT_InterpretationPostalCode__c,
+														Address, HOT_InterpretationStreet__c, HOT_InterpretationPostalCode__c,
 		HOT_WorkTypeName__c, HOT_NumberOfInterestedResources__c, WorkType.Id
-		FROM ServiceAppointment 
+														FROM ServiceAppointment 
 		WHERE HOT_IsReleasedToFreelance__c =:true AND Status =: 'Ingen' AND HOT_DeadlineDate__c>=:DATE.TODAY()
-		AND Id NOT IN: interestedServiceAppointmentIds
+														AND Id NOT IN: interestedServiceAppointmentIds
 		ORDER BY EarliestStartTime ASC];
 
 		//Getting the required Skills for each workType 
