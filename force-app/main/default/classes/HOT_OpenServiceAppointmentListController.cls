@@ -77,7 +77,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		List<HOT_InterestedResource__c> interestedResources = new List<Hot_InterestedResource__c>();
 		for(Integer i = 0; i < serviceAppointmentIds.size(); i++){
 			HOT_InterestedResource__c IR = new HOT_InterestedResource__c(ServiceAppointment__c = serviceAppointmentIds[i],
-				ServiceResource__c = serviceResource.Id, Comments__c = comments[i]);
+				ServiceResource__c = serviceResource.Id, Comments__c = comments[i], Status__c = 'Interested');
 			interestedResources.add(IR);
 		}
 		insert interestedResources;
