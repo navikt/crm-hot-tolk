@@ -46,6 +46,14 @@
                 <behavior>Edit</behavior>
                 <field>ServiceTerritoryId</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_AssignedResourceId__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HOT_AssignedServiceAppointmentFilter__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
