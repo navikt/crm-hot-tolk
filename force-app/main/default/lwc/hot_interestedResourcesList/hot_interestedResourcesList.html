@@ -1,0 +1,48 @@
+<template>
+	<div class="main-content">
+		<div class="right-content">
+			<lightning-button title="Meld interesse" class="slds-m-top-small right-button" variant="brand"
+				label="Tilbaketrekk interesse" onclick={retractInterest}>
+			</lightning-button>
+			<lightning-input type="checkbox" style="width:50%;" label={checkBoxLabel} name="toggleTerritory"
+				onchange={handleChecked}>
+			</lightning-input>
+			<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
+				value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
+			</lightning-combobox>
+		</div>
+		<lightning-datatable key-field="Id" data={interestedResourcesFiltered} columns={columns}
+			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
+			onsort={onHandleSort} onrowaction={handleRowAction} onrowselection={getSelectedName}>
+		</lightning-datatable>
+	</div>
+
+	<div if:true={isAddComments} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+		style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
+		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
+			tabindex="-1" role="dialog">
+			<section>
+				<div style="padding: 1rem;">
+					<h2 class="typo-undertittel">Emne</h2>
+					<p class="typo-normal">{subject}</p>
+					</br>
+					<div>
+						<h2 class="typo-undertittel">Diskusjon med formidler</h2>
+						<template iterator:it={prevComments}>
+							<p class="typo-normal" key={it.value}>{it.value}</p>
+						</template>
+					</div>
+					<lightning-input style="margin-bottom: 1rem;" class="newComment" type="text" name="newComment">
+					</lightning-input>
+					<lightning-button onclick={sendComment} class="slds-m-left_x-small" variant="brand" type="submit"
+						label="Send inn">
+					</lightning-button>
+
+				</div>
+			</section>
+			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeComments}>
+				<span class="text-hide">Lukk</span>
+			</button>
+		</div>
+	</div>
+</template>
