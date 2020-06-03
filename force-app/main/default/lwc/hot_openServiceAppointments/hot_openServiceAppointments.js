@@ -205,7 +205,7 @@ export default class Hot_allServiceAppointments extends LightningElement {
 			});
 		createInterestedResources({ serviceAppointmentIds, comments });
 		this.isAddComments = false;
-		//refreshApex(this.wiredAllServiceAppointmentsResult);
+		location.reload();
 
 	}
 
