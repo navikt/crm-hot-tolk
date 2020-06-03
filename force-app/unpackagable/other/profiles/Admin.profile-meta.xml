@@ -517,6 +517,9 @@
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
+        <object>HOT_Request__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
         <object>HOT_InterestedResource__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
