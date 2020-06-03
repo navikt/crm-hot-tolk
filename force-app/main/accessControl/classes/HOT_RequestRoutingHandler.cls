@@ -1,7 +1,17 @@
 public class HOT_RequestRoutingHandler extends MyTriggers {
 
 	public override void onBeforeInsert() {
-
+		
+		// Setter feltene Account__c og Person__c når den blir opprettet av en Community-bruker
+		User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c from User WHERE Id = :UserInfo.getUserId()];
+		for ( HOT_Request__c request:(List<HOT_Request__c>)records ) {
+			if(request.Account__c == null && currentUser.AccountId != null){
+				request.Account__c = currentUser.AccountId;
+				request.Person__c = currentUser.Account.CRM_Person__c;
+			}
+		}
+		
+		// Tildeler til kø basert på region
 		Map<Integer, ApexSharingRuleWrapper> ruleByByRequestId = RecordOwnerService.getQueuesAndNavUnits( getSobjectWrappers(), 'HOT_Request__c' );
 		Integer i = 0;
 		for ( HOT_Request__c request:(List<HOT_Request__c>)records ) {
