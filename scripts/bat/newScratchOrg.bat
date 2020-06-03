@@ -18,3 +18,4 @@ call sfdx force:user:permset:assign --permsetname HOT_admin
 
 :: Opprett testdata
 call sfdx force:data:tree:import --plan data-source/data-import-plan.json
+call sfdx force:apex:execute -f scripts/apex/createTestData.apex
