@@ -52,4 +52,18 @@ private class HOT_OpenSAListControllerTest{
 		System.assertEquals(0, 0);
 	}
 
+	@isTest static void createInterestedResourcesTestMethod() {
+		List<ServiceAppointment> serviceAppointments = [SELECT Id, AppointmentNumber FROM ServiceAppointment];
+		List<String> serviceAppointmentIds = new List<String>();
+		List<String> comments = new List<String>();
+		for(ServiceAppointment sa:serviceAppointments){
+			serviceAppointmentIds.add(sa.Id);
+			comments.add('Comment 1');
+		}
+		HOT_OpenServiceAppointmentListController.createInterestedResources(serviceAppointmentIds, comments);
+
+		List<HOT_InterestedResource__c> interestedResources = [SELECT Id FROM HOT_InterestedResource__c];
+		System.assertNotEquals(0, interestedResources.size());
+	}
+
 }

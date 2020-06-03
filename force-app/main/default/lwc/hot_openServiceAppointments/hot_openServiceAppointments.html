@@ -30,19 +30,14 @@
 						<lightning-record-edit-form style="padding: 1rem;" key={it.value.Id}
 							object-api-name="HOT_InterestedResource__c" density="comfy">
 							<div>
-								<p class="typo-normal">{it.value.AppointmentNumber} {it.value.HOT_WorkTypeName__c}</p>
-								<p class="typo-normal">{it.value.EarliestStartTime} til {it.value.DueDate}</p>
-								<p class="typo-normal">{it.value.HOT_InterpretationStreet__c},
-									{it.value.HOT_InterpretationPostalCode__c}
+								<p class="typo-normal">{it.value.HOT_WorkTypeName__c}</p>
+								<p class="typo-normal">{it.value.HOT_DateTimeFormated__c}</p>
+								<p class="typo-normal">{it.value.HOT_AddressFormated__c}
+								</p>
+								<p class="typo-normal">{it.value.HOT_FreelanceSubject__c}
 								</p>
 							</div>
 							<lightning-input-field field-name="Comments__c">
-							</lightning-input-field>
-							<lightning-input-field field-name="ServiceAppointment__c" value={it.value.Id}
-								style="display: none;">
-							</lightning-input-field>
-							<lightning-input-field field-name="ServiceResource__c" value={serviceResource.Id}
-								style="display: none;">
 							</lightning-input-field>
 
 						</lightning-record-edit-form>

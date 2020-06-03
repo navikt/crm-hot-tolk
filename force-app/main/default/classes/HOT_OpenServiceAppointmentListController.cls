@@ -16,7 +16,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
 		//Getting ServiceAppointments of interest
 		List<HOT_InterestedResource__c> interestedResources = [SELECT ServiceAppointment__c
-		FROM HOT_InterestedResource__c WHERE ServiceResource__c IN: serviceResource];
+		FROM HOT_InterestedResource__c WHERE ServiceResource__c IN :serviceResource];
 		List<Id> interestedServiceAppointmentIds = new List<Id>();
 		for(HOT_InterestedResource__c ir:interestedResources){
 			interestedServiceAppointmentIds.add(ir.ServiceAppointment__c);
@@ -65,6 +65,24 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 			}
 		}
 		return serviceAppointmentsFiltered;
+	}
+
+	
+	@AuraEnabled
+	//public static void createInterestedResources(List<String> serviceAppointmentIds) {
+	public static void createInterestedResources(List<String> serviceAppointmentIds, List<String> comments) {
+			
+		Id userId = UserInfo.getUserId();
+		ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId=:userId];
+		List<HOT_InterestedResource__c> interestedResources = new List<Hot_InterestedResource__c>();
+		for(Integer i = 0; i < serviceAppointmentIds.size(); i++){
+			HOT_InterestedResource__c IR = new HOT_InterestedResource__c(ServiceAppointment__c = serviceAppointmentIds[i],
+				ServiceResource__c = serviceResource.Id, Comments__c = comments[i]);
+			interestedResources.add(IR);
+		}
+		insert interestedResources;
+		
+				
 	}
 
 }

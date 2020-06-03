@@ -2,6 +2,8 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
+import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
+
 
 var actions = [
 	{ label: 'Detaljer', name: 'details' },
@@ -153,7 +155,6 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	handleRowAction(event) {
 		const actionName = event.detail.action.name;
 		const row = event.detail.row;
-		console.log(JSON.stringify(row));
 		switch (actionName) {
 			case 'details':
 				this.showDetails(row);
@@ -165,7 +166,6 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	@track subject = "Ingen ytterligere informasjon";
 	@track isDetails = false;
 	showDetails(row) {
-		console.log("Showing details");
 		const { Id } = row;
 		if (row.HOT_FreelanceSubject__c) {
 			this.subject = row.HOT_FreelanceSubject__c;
@@ -193,16 +193,21 @@ export default class Hot_allServiceAppointments extends LightningElement {
 		}
 	}
 	confirmSendingInterest() {
-		this.template.querySelectorAll("lightning-record-edit-form")
+
+		let serviceAppointmentIds = [];
+		let comments = [];
+		for (var i = 0; i < this.selectedRows.length; i++) {
+			serviceAppointmentIds.push(this.selectedRows[i].Id);
+		}
+		this.template.querySelectorAll("lightning-input-field")
 			.forEach(element => {
-				element.submit();
-			}
-			);
+				comments.push(element.value);
+			});
+		createInterestedResources({ serviceAppointmentIds, comments });
 		this.isAddComments = false;
-		refreshApex(this.wiredAllServiceAppointmentsResult);
+		//refreshApex(this.wiredAllServiceAppointmentsResult);
 
 	}
-
 
 	isChecked = false;
 	@track checkBoxLabel = "Vis oppdrag fra alle regioner";
