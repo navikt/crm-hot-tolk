@@ -3,8 +3,13 @@ import { NavigationMixin } from 'lightning/navigation';
 import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import NAME_FIELD from '@salesforce/schema/User.FirstName';
+import checkAssignedPermissionSet from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSet'
+import isProd from '@salesforce/apex/globalCommunityHeaderFooterController.isProd';
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
+
+	//@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
+	@wire(isProd) isProd;
 
 
 	@track name;
@@ -24,7 +29,6 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 	}
 
-	@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
 
 	goToMyRequests(event) {
 		console.log("goToMyRequests");
