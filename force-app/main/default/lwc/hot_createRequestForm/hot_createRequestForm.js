@@ -1,7 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
-import isProd from '@salesforce/apex/globalCommunityHeaderFooterController.isProd';
+import isProd from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
