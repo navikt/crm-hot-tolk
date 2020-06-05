@@ -31,10 +31,8 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 
 
 	goToMyRequests(event) {
-		console.log("goToMyRequests");
 		if (!this.isProd) {
 			event.preventDefault();
-			console.log("is NOT prod");
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
@@ -45,10 +43,8 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 	}
 
 	goToNewRequest(event) {
-		console.log("goToNewRequest");
 		if (!this.isProd) {
 			event.preventDefault();
-			console.log("is NOT prod");
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
@@ -57,11 +53,26 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 			});
 		}
 	}
+
+	@track isFrilans = false;
+	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Tolk_Frilans' })
+	wireIsFrilans({ error, data }) {
+		if (data) {
+			this.isFrilans = data;
+		}
+		console.log(this.isFrilans);
+	}
+	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
+	wireIsAdmin({ error, data }) {
+		if (data && !this.isFrilans) {
+			this.isFrilans = data;
+		}
+		console.log(this.isFrilans);
+	}
+
 	goToHome(event) {
-		console.log("goToHome");
 		if (!this.isProd) {
 			event.preventDefault();
-			console.log("is NOT prod");
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
