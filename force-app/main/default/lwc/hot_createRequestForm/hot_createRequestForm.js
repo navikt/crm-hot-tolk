@@ -6,13 +6,12 @@ import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterControll
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
 
-	//@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
+
 	@track isProd;
 	@track error;
 	@wire(isProdFunction)
 	wiredIsProd({ error, data }) {
 		this.isProd = data;
-		console.log("isProd: " + this.isProd);
 	}
 
 
@@ -85,9 +84,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		var tempTime = event.detail.value;
 		tempTime = tempTime.split("");
 
-		console.log(parseFloat(tempTime[14] + tempTime[15]));
-		console.log(now.getMinutes());
-		console.log(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes() <= 1);
 		if (this.startTime == null) {
 			if (Math.abs(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes()) <= 1) {
 				tempTime[14] = '0';
@@ -187,28 +183,65 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 
-	previousPage;
-	connectedCallback() {
-		let testURL = window.location.href;
-		let newURL = new URL(testURL).searchParams;
-		if (JSON.parse(newURL.get("fromList")) != null) {
-			this.previousPage = 'mine-bestillinger';
-		}
-		else {
-			this.previousPage = 'home';
-		}
-		if (JSON.parse(newURL.get("fieldValues")) != null) {
+	previousPage = 'home';
 
-			this.fieldValues = JSON.parse(newURL.get("fieldValues"));
-			this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
-			if (!this.sameLocation) {
-				this.value = 'no';
+	connectedCallback() {
+
+		let testURL = window.location.href;
+		console.log(testURL);
+		//var newURL = parseUri(testURL).searchParams;
+		//let newURL = new URL(testURL).searchParams;
+		//let newURL = "derp";
+		let params = testURL.split("?")[1];
+		console.log(params);
+
+		function parse_query_string(query) {
+			var vars = query.split("&");
+			var query_string = {};
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split("=");
+				var key = decodeURIComponent(pair[0]);
+				var value = decodeURIComponent(pair[1]);
+				// If first entry with this name
+				if (typeof query_string[key] === "undefined") {
+					query_string[key] = decodeURIComponent(value);
+					// If second entry with this name
+				} else if (typeof query_string[key] === "string") {
+					var arr = [query_string[key], decodeURIComponent(value)];
+					query_string[key] = arr;
+					// If third or later entry with this name
+				} else {
+					query_string[key].push(decodeURIComponent(value));
+				}
+			}
+			return query_string;
+		}
+
+		if (params != undefined) {
+			var parsed_params = parse_query_string(params);
+			console.log(parsed_params.fieldValues);
+
+			if (parsed_params.fromList != null) {
+				this.previousPage = 'mine-bestillinger';
 			}
 
-			this.recordId = this.fieldValues.Id;
-			this.edit = JSON.parse(newURL.get("edit")) != null;
+
+			if (parsed_params.fieldValues != null) {
+
+				this.fieldValues = JSON.parse(parsed_params.fieldValues);
+				console.log(JSON.stringify(this.fieldValues));
+				this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
+				if (!this.sameLocation) {
+					this.value = 'no';
+				}
+
+				this.recordId = this.fieldValues.Id;
+				this.edit = parsed_params.edit != null;
+			}
 		}
+
 	}
+
 
 
 	//Navigation functions
@@ -251,4 +284,5 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 		});
 	}
+
 }
