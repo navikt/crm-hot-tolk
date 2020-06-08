@@ -4,16 +4,21 @@ import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import NAME_FIELD from '@salesforce/schema/User.FirstName';
 import checkAssignedPermissionSet from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSet'
-import isProd from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
+import checkAssignedPermissionSetGroup from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSetGroup'
+import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
 
-	//@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
-	@wire(isProd) isProd;
+	@track isProd;
+	@track error;
+	@wire(isProdFunction)
+	wiredIsProd({ error, data }) {
+		this.isProd = data;
+		console.log("isProd: " + this.isProd);
+	}
 
 
 	@track name;
-	@track error;
 	@wire(getRecord, {
 		recordId: USER_ID,
 		fields: [NAME_FIELD]
@@ -55,19 +60,19 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 	}
 
 	@track isFrilans = false;
-	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Tolk_Frilans' })
+	@wire(checkAssignedPermissionSetGroup, { permissionSetGroupName: 'HOT_Tolk_Frilans_Gruppe' })
 	wireIsFrilans({ error, data }) {
 		if (data) {
 			this.isFrilans = data;
 		}
-		console.log(this.isFrilans);
+		console.log("isFrilans: " + this.isFrilans);
 	}
 	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
 	wireIsAdmin({ error, data }) {
 		if (data && !this.isFrilans) {
 			this.isFrilans = data;
 		}
-		console.log(this.isFrilans);
+		console.log("isAdmin: " + this.isFrilans);
 	}
 
 	goToHome(event) {
