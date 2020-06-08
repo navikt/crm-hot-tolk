@@ -1,13 +1,20 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
-import isProd from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
+import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
 
 	//@track isProd = window.location.toString().includes("tolkebestilling.nav.no/");
-	@wire(isProd) isProd;
+	@track isProd;
+	@track error;
+	@wire(isProdFunction)
+	wiredIsProd({ error, data }) {
+		this.isProd = data;
+		console.log("isProd: " + this.isProd);
+	}
+
 
 	@track submitted = false; // if:false={submitted}
 	hide = true; //@track edit = false; When file-upload is ready, fix this.
