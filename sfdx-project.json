@@ -7,8 +7,8 @@
 			"path": "force-app",
 			"default": true,
 			"package": "crm-hot",
-			"versionName": "ver 0.10",
-			"versionNumber": "0.10.0.NEXT",
+			"versionName": "ver 0.12",
+			"versionNumber": "0.12.0.NEXT",
 			"dependencies": [
 				{
 					"package": "crm-platform-base",
@@ -20,7 +20,7 @@
 				},
 				{
 					"package": "crm-community-base",
-					"versionNumber": "0.5.0.LATEST"
+					"versionNumber": "0.8.0.LATEST"
 				}
 			]
 		},
@@ -28,8 +28,8 @@
 			"path": "force-app",
 			"default": false,
 			"package": "crm-hot-dev",
-			"versionName": "ver 0.1",
-			"versionNumber": "0.1.0.NEXT",
+			"versionName": "ver 0.2",
+			"versionNumber": "0.2.0.NEXT",
 			"dependencies": [
 				{
 					"package": "crm-platform-base",
@@ -41,7 +41,7 @@
 				},
 				{
 					"package": "crm-community-base",
-					"versionNumber": "0.5.0.LATEST"
+					"versionNumber": "0.8.0.LATEST"
 				}
 			]
 		}
