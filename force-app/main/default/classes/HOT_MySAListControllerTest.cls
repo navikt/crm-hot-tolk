@@ -1,6 +1,6 @@
 @isTest (SeeAllData=true)
 private class HOT_MySAListControllerTest{
-
+/*
 	static void testSetup(){
 
 		//OperatingHours operatingHour = HOT_TestDataFactory.createOperatingHours();
@@ -47,5 +47,5 @@ private class HOT_MySAListControllerTest{
 		Map<String, List<ServiceAppointmentHistory>> historyMap = HOT_MyServiceAppointmentListController.getMyServiceAppointmentFieldHistories();
 		System.assertEquals(historyMap.get('Status')[0].get('CreatedById'), UserInfo.getUserId());
 		System.assertEquals(historyMap.get('HOT_TermsOfAgreements__c')[0].get('CreatedById'), UserInfo.getUserId());
-	}
+	}*/
 }
