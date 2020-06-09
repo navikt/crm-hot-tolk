@@ -30,21 +30,18 @@ public without sharing class HOT_MyServiceAppointmentListController {
 	@AuraEnabled(cacheable = true)
 	public static Map<String, List<ServiceAppointmentHistory>> getMyServiceAppointmentFieldHistories() {
 		List<String> Statuses = new List<String>{'Avbrutt', 'Fullført', 'Kan ikke fullføre'};
-		List<ServiceAppointmentHistory> statusHistories = 
-		[SELECT Id, ServiceAppointmentId, Field, CreatedById,
-		CreatedDate, NewValue
-		FROM ServiceAppointmentHistory 
-		WHERE Field = 'Status'
-		ORDER BY CreatedDate ASC];
+		List<ServiceAppointmentHistory> statusHistories = new List<ServiceAppointmentHistory>();
+		List<ServiceAppointmentHistory> allStatusHistories = 
+		[SELECT Id, ServiceAppointmentId, Field, CreatedById, CreatedDate, NewValue
+		FROM ServiceAppointmentHistory WHERE Field = 'Status' ORDER BY CreatedDate ASC];
+
 		List<ServiceAppointmentHistory> termsOfAgreementHistories = 
-		[SELECT Id, ServiceAppointmentId, Field, CreatedById,
-		CreatedDate, NewValue
-		FROM ServiceAppointmentHistory 
-		WHERE Field = 'HOT_TermsOfAgreement__c'
-		ORDER BY CreatedDate ASC];
-		for(ServiceAppointmentHistory sah:statusHistories){
+		[SELECT Id, ServiceAppointmentId, Field, CreatedById, CreatedDate, NewValue
+		FROM ServiceAppointmentHistory WHERE Field = 'HOT_TermsOfAgreement__c' ORDER BY CreatedDate ASC];
+
+		for(ServiceAppointmentHistory sah:allStatusHistories){
 			if(!Statuses.contains((String)sah.NewValue)){
-				statusHistories.remove(statusHistories.indexOf(sah));
+				statusHistories.add(sah);
 			}
 		}
 		Map<String, List<ServiceAppointmentHistory>> history = new Map<String, List<ServiceAppointmentHistory>>();
