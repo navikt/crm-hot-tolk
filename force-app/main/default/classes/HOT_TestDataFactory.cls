@@ -72,6 +72,27 @@ public class HOT_TestDataFactory {
 		return serviceResource;
 	}
 
+	public static OperatingHours createOperatingHours(){
+		OperatingHours operatingHours = new OperatingHours();
+		operatingHours.Name = 'Operating Hours Name';
+		return operatingHours;
+	}
+
+	public static ServiceTerritory createServiceTerritory(OperatingHours operatingHour){
+		ServiceTerritory serviceTerritory = new ServiceTerritory();
+		serviceTerritory.OperatingHoursId = operatingHour.Id;
+		serviceTerritory.IsActive = true;
+		serviceTerritory.Name = 'Service Territory Name';
+		return serviceTerritory;
+	}
+	public static ServiceTerritoryMember createServiceTerritoryMember(ServiceResource serviceResource, ServiceTerritory serviceTerritory){
+		ServiceTerritoryMember serviceTerritoryMember = new ServiceTerritoryMember();
+		serviceTerritoryMember.ServiceResourceId = serviceResource.Id;
+		serviceTerritoryMember.ServiceTerritoryId = serviceTerritory.Id;
+		serviceTerritoryMember.EffectiveStartDate = Datetime.now().addHours( -1 );
+		return serviceTerritoryMember;
+	}
+
 	public static Skill createSkill(WorkType workType){
 		Skill skill = new Skill();
 		skill.MasterLabel = workType.Name;
