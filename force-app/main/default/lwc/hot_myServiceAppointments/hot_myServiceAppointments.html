@@ -8,9 +8,90 @@
 				value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
 			</lightning-combobox>
 		</div>
-		<lightning-datatable key-field="AppointmentNumber" data={myServiceAppointments} columns={columns}
+		<lightning-datatable key-field="AppointmentNumber" data={myServiceAppointmentsFiltered} columns={columns}
 			hide-checkbox-column="true" default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}
 			sorted-by={sortedBy} onsort={onHandleSort} onrowaction={handleRowAction}>
 		</lightning-datatable>
 	</div>
+
+	<div if:true={isDetails} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+		style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
+		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
+			tabindex="-1" role="dialog">
+			<section>
+				<h2 class="typo-undertittel">Detaljer</h2>
+				<lightning-record-edit-form class="comment-form" record-id={recordId}
+					object-api-name="ServiceAppointment" density="comfy">
+
+					<lightning-output-field field-name="AppointmentNumber">
+					</lightning-output-field>
+					<lightning-output-field field-name="HOT_FreelanceSubject__c">
+					</lightning-output-field>
+					<lightning-output-field field-name="SchedStartTime">
+					</lightning-output-field>
+					<lightning-output-field field-name="SchedEndTime">
+					</lightning-output-field>
+					<lightning-output-field field-name="ActualStartTime">
+					</lightning-output-field>
+					<lightning-output-field field-name="ActualEndTime">
+					</lightning-output-field>
+					<lightning-output-field field-name="HOT_AddressFormated__c">
+					</lightning-output-field>
+					<lightning-output-field field-name="HOT_WorkTypeName__c">
+					</lightning-output-field>
+					<lightning-output-field field-name="HOT_HapticCommunication__c">
+					</lightning-output-field>
+					<lightning-output-field field-name="HOT_DegreeOfHearingAndVisualImpairment__c">
+					</lightning-output-field>
+					<p class="typo-normal">Oppdragstype</p>
+					<p class="typo-normal">{assignmentType}</p>
+
+					<div if:true={testing}>
+						<p class="typo-normal">Formidler</p>
+						<lightning-output-field field-name="User.Name" value={formidlerId}>
+						</lightning-output-field>
+						<p class="typo-normal">{formidlerId}</p>
+
+						<lightning-output-field field-name="Status">
+						</lightning-output-field>
+
+						<p class="typo-normal">Status endret</p>
+						<div style="display: flex; flex-direction: row;">
+							<p class="typo-normal">{statusHistoryUserId}</p>
+							<p class="typo-normal">{statusChangedDate}</p>
+						</div>
+					</div>
+
+
+
+					<p style="display: none;" class="typo-normal">Formidler</p>
+					<lightning-record-edit-form style="display: none;" class="sub-form" record-id={formidlerRecordId}
+						object-api-name="ServiceAppointmentHistory" density="comfy">
+						<lightning-output-field field-name="CreatedById">
+						</lightning-output-field>
+					</lightning-record-edit-form>
+
+					<lightning-output-field field-name="Status">
+					</lightning-output-field>
+
+
+					<p style="display: none;" class="typo-normal">Status endret</p>
+					<lightning-record-edit-form style="display: none;" class="sub-form"
+						record-id={statusHistoryRecordId} object-api-name="ServiceAppointmentHistory" density="comfy">
+						<lightning-output-field field-name="CreatedById">
+						</lightning-output-field>
+						<lightning-output-field field-name="CreatedDate">
+						</lightning-output-field>
+					</lightning-record-edit-form>
+
+
+				</lightning-record-edit-form>
+
+			</section>
+			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
+				<span class="text-hide">Lukk</span>
+			</button>
+		</div>
+	</div>
+
 </template>
