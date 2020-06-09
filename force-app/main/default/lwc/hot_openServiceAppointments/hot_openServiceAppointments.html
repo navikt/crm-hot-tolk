@@ -22,12 +22,12 @@
 		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
 			tabindex="-1" role="dialog">
 			<section>
-				<div style="padding: 1rem;">
+				<div>
 					<h2 class="typo-undertittel">Legg til kommentarer til oppdragene</h2>
 
 					<template iterator:it={selectedRows}>
 
-						<lightning-record-edit-form style="padding: 1rem;" key={it.value.Id}
+						<lightning-record-edit-form class="comment-form" key={it.value.Id}
 							object-api-name="HOT_InterestedResource__c" density="comfy">
 							<div>
 								<p class="typo-normal">{it.value.HOT_WorkTypeName__c}</p>
@@ -61,7 +61,7 @@
 		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
 			tabindex="-1" role="dialog">
 			<section>
-				<div style="padding: 1rem;">
+				<div>
 					<h2 class="typo-undertittel">Emne</h2>
 					<p class="typo-normal">{subject}</p>
 				</div>
