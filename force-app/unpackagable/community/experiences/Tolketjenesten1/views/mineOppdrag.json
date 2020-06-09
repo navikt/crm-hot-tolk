@@ -26,8 +26,29 @@
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : { },
+          "componentName" : "c:globalCommunityHeader",
+          "id" : "f14c6c48-0774-4b83-80f9-2a43f6e5157b",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:hot_tolketjenestenHovedBanner",
+          "id" : "652ba850-637b-4387-b666-8ceb830fef37",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
           "componentName" : "c:hot_frilanstolkServiceAppointmentLists",
           "id" : "4ae1e157-f1f1-4f0e-9f73-44e56027a162",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:globalCommunityFooter",
+          "id" : "a42f2172-073c-41a0-97be-ee00e98eba67",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"

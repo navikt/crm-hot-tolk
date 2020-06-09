@@ -33,6 +33,13 @@
           "type" : "component"
         }, {
           "componentAttributes" : { },
+          "componentName" : "c:hot_tolketjenestenHovedBanner",
+          "id" : "dd1f31c7-9a82-4871-b6d1-dd5acbfd79c0",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
           "componentName" : "c:hot_createRequestForm",
           "id" : "0526af07-0b38-4a36-b1d9-565000544c43",
           "renderPriority" : "NEUTRAL",
