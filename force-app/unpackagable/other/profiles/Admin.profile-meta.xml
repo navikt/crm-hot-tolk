@@ -26,6 +26,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_MySAListControllerTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_MyServiceAppointmentListController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -438,6 +442,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_HapticCommunication__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_InterpretationPostalCity__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -464,6 +473,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_NumberOfInterestedResources__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_TermsOfAgreement__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
