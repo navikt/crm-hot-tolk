@@ -158,6 +158,10 @@
 				<field>HOT_FreelanceSubject__c</field>
 			</layoutItems>
 			<layoutItems>
+				<behavior>Edit</behavior>
+				<field>HOT_TermsOfAgreement__c</field>
+			</layoutItems>
+			<layoutItems>
 				<behavior>Readonly</behavior>
 				<field>HOT_DegreeOfHearingAndVisualImpairment__c</field>
 			</layoutItems>
