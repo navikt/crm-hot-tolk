@@ -155,6 +155,10 @@
                 <behavior>Edit</behavior>
                 <field>HOT_FreelanceSubject__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_AssignmentType__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
