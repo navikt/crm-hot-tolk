@@ -87,23 +87,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
 		}
 	}
 
-
-	@track ServiceAppointmentHistories;
-	wiredServiceAppointmentFieldHistoryResult;
-	@wire(getMyServiceAppointmentFieldHistories)
-	wiredServiceAppointmentFieldHistories(result) {
-		console.log("wiredServiceAppointmentFieldHistorys");
-		this.wiredServiceAppointmentFieldHistoryResult = result;
-		if (result.data) {
-			this.ServiceAppointmentHistories = result.data;
-			this.error = undefined;
-			console.log(JSON.stringify(this.ServiceAppointmentHistories));
-		} else if (result.error) {
-			this.error = result.error;
-			this.ServiceAppointmentHistories = undefined;
-		}
-	}
-
 	assignmentTypes = {};
 	insertAssignemtType() {
 		console.log("insertAssignemtType");
@@ -214,27 +197,26 @@ export default class Hot_myServiceAppointments extends LightningElement {
 	showDetails(row) {
 		console.log("showDetails");
 		this.recordId = row.Id;
+		var serviceAppointmentId
 
+		var history = getMyServiceAppointmentFieldHistories({ serviceAppointmentId });
 		this.assignmentType = this.assignmentTypes[this.recordId];
-		console.log(this.assignmentType);
-
 		/*
-		for (var i = 0; i < this.ServiceAppointmentHistories.Status.length; i++) {
-			if (this.ServiceAppointmentHistories.Status[i].ServiceAppointmentId == this.recordId) {
-				this.statusHistoryRecordId = this.ServiceAppointmentHistories.Status[i].Id;
-				this.statusHistoryUserId = this.ServiceAppointmentHistories.Status[i].CreatedById;
-				this.statusChangedDate = this.ServiceAppointmentHistories.Status[i].CreatedDate;
+		for (var i = 0; i < history.Status.length; i++) {
+			if (history.Status[i].ServiceAppointmentId == this.recordId) {
+				this.statusHistoryRecordId = history.Status[i].Id;
+				this.statusHistoryUserId = history.Status[i].CreatedById;
+				this.statusChangedDate = history.Status[i].CreatedDate;
 			}
 		}
-		for (var i = 0; i < this.ServiceAppointmentHistories.HOT_TermsOfAgreement__c.length; i++) {
-			if (this.ServiceAppointmentHistories.HOT_TermsOfAgreement__c[i].ServiceAppointmentId == this.recordId) {
-				this.formidlerId = this.ServiceAppointmentHistories.HOT_TermsOfAgreement__c[i].CreatedById;
-				this.formidlerRecordId = this.ServiceAppointmentHistories.HOT_TermsOfAgreement__c[i].Id;
+		for (var i = 0; i < history.HOT_TermsOfAgreement__c.length; i++) {
+			if (history.HOT_TermsOfAgreement__c[i].ServiceAppointmentId == this.recordId) {
+				this.formidlerId = history.HOT_TermsOfAgreement__c[i].CreatedById;
+				this.formidlerRecordId = history.HOT_TermsOfAgreement__c[i].Id;
 				console.log(this.formidlerId);
 			}
 		}
 		*/
-
 		this.isDetails = true;
 
 	}

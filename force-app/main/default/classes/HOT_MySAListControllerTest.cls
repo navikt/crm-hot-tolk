@@ -44,7 +44,8 @@ private class HOT_MySAListControllerTest{
 
 	@isTest static void getMyServiceAppointmentFieldHistories() {
 		testSetup();
-		Map<String, List<ServiceAppointmentHistory>> historyMap = HOT_MyServiceAppointmentListController.getMyServiceAppointmentFieldHistories();
+		List<ServiceAppointment> assignedAppointments = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+		Map<String, List<ServiceAppointmentHistory>> historyMap = HOT_MyServiceAppointmentListController.getMyServiceAppointmentFieldHistories(assignedAppointments[0].Id);
 		System.assertEquals(historyMap.get('Status')[0].get('CreatedById'), UserInfo.getUserId());
 		System.assertEquals(historyMap.get('HOT_TermsOfAgreements__c')[0].get('CreatedById'), UserInfo.getUserId());
 	}*/
