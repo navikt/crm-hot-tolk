@@ -3,13 +3,20 @@
     <assignments>
         <name>Assign_new_values_Avlyst</name>
         <label>Assign new values - Avlyst</label>
-        <locationX>902</locationX>
-        <locationY>290</locationY>
+        <locationX>1008</locationX>
+        <locationY>285</locationY>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Cancel_Comment</elementReference>
+            </value>
+        </assignmentItems>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>New_status</elementReference>
+                <stringValue>Ingen</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -140,7 +147,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Assign_new_values_Avlyst</targetReference>
+                <targetReference>Set_Cancel_Comment</targetReference>
             </connector>
             <label>Avlyst</label>
         </rules>
@@ -194,6 +201,27 @@
         <locationY>285</locationY>
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
+    <screens>
+        <name>Set_Cancel_Comment</name>
+        <label>Set Cancel Comment</label>
+        <locationX>809</locationX>
+        <locationY>285</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Assign_new_values_Avlyst</targetReference>
+        </connector>
+        <fields>
+            <name>Cancel_Comment</name>
+            <dataType>String</dataType>
+            <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <screens>
         <name>Set_status</name>
         <label>Set status</label>
