@@ -51,7 +51,14 @@ private class HOT_MySAListControllerTest{
 	}*/
 
 	@isTest static void dummyTestMethod() {
-		ServiceAppointment saDummy = [SELECT Id FROM ServiceAppointment];
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_MySAListControllerTest', workType);
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
+
+		ServiceAppointment saDummy = [SELECT Id FROM ServiceAppointment LIMIT 1];
 		List<ServiceAppointment> assignedAppointments = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
 		Map<String, List<ServiceAppointmentHistory>> historyMap = HOT_MyServiceAppointmentListController.getMyServiceAppointmentFieldHistories(saDummy.Id);
 		List<WorkOrderLineItem> workOrderLineItems = HOT_MyServiceAppointmentListController.getParentWorkOrderLineItems();
