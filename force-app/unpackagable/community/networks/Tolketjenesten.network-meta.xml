@@ -27,9 +27,9 @@
     <forgotPasswordTemplate>unfiled$public/CommunityForgotPasswordEmailTemplate</forgotPasswordTemplate>
     <gatherCustomerSentimentData>false</gatherCustomerSentimentData>
     <networkMemberGroups>
-        <permissionSet>HOT_Tolk_Frilans</permissionSet>
-        <permissionSet>HOT_Tolk_Bruker</permissionSet>
-        <profile>Admin</profile>
+        <profile>admin</profile>
+        <profile>nav bruker</profile>
+        <profile>nav samhandler</profile>
     </networkMemberGroups>
     <networkPageOverrides>
         <changePasswordPageOverrideSetting>Standard</changePasswordPageOverrideSetting>
@@ -42,7 +42,7 @@
     <selfRegistration>false</selfRegistration>
     <sendWelcomeEmail>false</sendWelcomeEmail>
     <site>Tolketjenesten</site>
-    <status>UnderConstruction</status>
+    <status>Live</status>
     <tabs>
         <defaultTab>home</defaultTab>
         <standardTab>Chatter</standardTab>
