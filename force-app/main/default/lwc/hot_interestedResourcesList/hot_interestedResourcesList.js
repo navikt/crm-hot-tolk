@@ -9,6 +9,7 @@ import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.a
 import STATUS from '@salesforce/schema/HOT_InterestedResource__c.Status__c';
 import INTERESTEDRESOURCE_ID from '@salesforce/schema/HOT_InterestedResource__c.Id';
 
+
 var actions = [
 	{ label: 'Kommenter', name: 'comment' },
 	{ label: 'Send Interesse', name: 'resendInterest' },
@@ -31,7 +32,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			sortable: true,
 		},
 		{
-			label: 'Sted',
+			label: 'Adresse',
 			fieldName: 'ServiceAppointmentAddress__c',
 			type: 'text',
 			sortable: true,
@@ -47,6 +48,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			typeAttributes: { rowActions: actions },
 		},
 	];
+	columnLabels = ["'Oppdragsnummer'", "''", "'Tid'", "'Adresse'", "'Status'"];
+
+
 	@track serviceResource;
 	@wire(getServiceResource)
 	wiredServiceresource(result) {
@@ -94,6 +98,10 @@ export default class Hot_interestedResourcesList extends LightningElement {
 	}
 
 	connectedCallback() {
+
+		for (var i = 0; i < this.columnLabels.length; i++) {
+			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		}
 		refreshApex(this.wiredInterestedResourcesResult);
 	}
 
@@ -105,12 +113,14 @@ export default class Hot_interestedResourcesList extends LightningElement {
 	mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
 	get sortingOptions() {
 		return [
-			{ label: 'Start tid stigende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ' },
-			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
-			{ label: 'Tema A - Å', value: '{"fieldName": "Subject", "sortDirection": "asc"} ' },
-			{ label: 'Tema Å - A', value: '{"fieldName": "Subject", "sortDirection": "desc"} ' },
-			{ label: 'Sted A - Å', value: '{"fieldName": "HOT_InterpretationStreet__c", "sortDirection": "asc"} ' },
-			{ label: 'Sted Å - A', value: '{"fieldName": "HOT_InterpretationStreet__c", "sortDirection": "desc"} ' },
+			{ label: 'Oppdragsnummer stigende', value: '{"fieldName": "Name", "sortDirection": "asc"} ' },
+			{ label: 'Oppdragsnummer synkende', value: '{"fieldName": "Name", "sortDirection": "desc"} ' },
+			{ label: 'Tid stigende', value: '{"fieldName": "ServiceAppointmentTime__c", "sortDirection": "asc"} ' },
+			{ label: 'Tid synkende', value: '{"fieldName": "ServiceAppointmentTime__c", "sortDirection": "desc"} ' },
+			{ label: 'Adresse A - Å', value: '{"fieldName": "ServiceAppointmentAddress__c", "sortDirection": "asc"} ' },
+			{ label: 'Adresse Å - A', value: '{"fieldName": "ServiceAppointmentAddress__c", "sortDirection": "desc"} ' },
+			{ label: 'Status A - Å', value: '{"fieldName": "Status__c", "sortDirection": "asc"} ' },
+			{ label: 'Status Å - A', value: '{"fieldName": "Status__c", "sortDirection": "desc"} ' },
 		];
 	}
 	handleMobileSorting(event) {
@@ -120,20 +130,12 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		const key = function (x) {
 			return x[field];
 		};
-		if (field == 'HOT_NumberOfInterestedResources__c') {
-			return function (a, b) {
-				a = key(a);
-				b = key(b);
-				return reverse * ((a > b) - (b > a));
-			};
-		}
-		else {
-			return function (a, b) {
-				a = key(a).toLowerCase();
-				b = key(b).toLowerCase();
-				return reverse * ((a > b) - (b > a));
-			};
-		}
+		return function (a, b) {
+			a = key(a).toLowerCase();
+			b = key(b).toLowerCase();
+			return reverse * ((a > b) - (b > a));
+		};
+
 	}
 	onHandleSort(event) {
 		this.sortList(event.detail);

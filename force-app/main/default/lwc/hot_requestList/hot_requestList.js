@@ -8,7 +8,6 @@ import { NavigationMixin } from 'lightning/navigation';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 
-
 var actions = [
 	{ label: 'Avlys', name: 'delete' },
 	{ label: 'Kopier', name: 'clone_order' },
@@ -19,9 +18,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	@track error;
 	@wire(isProdFunction)
 	wiredIsProd({ error, data }) {
-		console.log("wiredIsProd");
 		this.isProd = data;
-		console.log("isProd: " + this.isProd);
 	}
 	@track columns = [
 		{
@@ -75,6 +72,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			typeAttributes: { rowActions: actions },
 		},
 	];
+	columnLabels = ["'Start tid'", "'Slutt tid'", "'Oppmøtested'", "'Tema'", "'Status'"];
 
 
 	@track rerender;
@@ -212,6 +210,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 	}
 	connectedCallback() {
+		for (var i = 0; i < this.columnLabels.length; i++) {
+			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		}
 		window.scrollTo(0, 0);
 		refreshApex(this.wiredRequestsResult);
 	}

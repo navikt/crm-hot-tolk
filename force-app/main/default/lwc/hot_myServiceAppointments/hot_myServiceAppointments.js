@@ -12,6 +12,12 @@ var actions = [
 
 export default class Hot_myServiceAppointments extends LightningElement {
 
+	connectedCallback() {
+		for (var i = 0; i < this.columnLabels.length; i++) {
+			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		}
+	}
+
 	@track columns = [
 		{
 			label: 'Oppdragsnummer',
@@ -42,7 +48,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
 			typeAttributes: { rowActions: actions },
 		},
 	];
-
+	columnLabels = ["'Oppdragsnummer'", "'Tid'", "'Adresse'", "'Status'"];
 
 	@track serviceResource;
 	@wire(getServiceResource)
@@ -129,12 +135,14 @@ export default class Hot_myServiceAppointments extends LightningElement {
 	mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
 	get sortingOptions() {
 		return [
-			{ label: 'Start tid stigende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ' },
-			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
-			{ label: 'Tema A - Å', value: '{"fieldName": "Subject", "sortDirection": "asc"} ' },
-			{ label: 'Tema Å - A', value: '{"fieldName": "Subject", "sortDirection": "desc"} ' },
-			{ label: 'Sted A - Å', value: '{"fieldName": "HOT_InterpretationStreet__c", "sortDirection": "asc"} ' },
-			{ label: 'Sted Å - A', value: '{"fieldName": "HOT_InterpretationStreet__c", "sortDirection": "desc"} ' },
+			{ label: 'Oppdragsnummer stigende', value: '{"fieldName": "AppointmentNumber", "sortDirection": "asc"} ' },
+			{ label: 'Oppdragsnummer synkende', value: '{"fieldName": "AppointmentNumber", "sortDirection": "desc"} ' },
+			{ label: 'Tid stigende', value: '{"fieldName": "HOT_DateTimeFormated__c", "sortDirection": "asc"} ' },
+			{ label: 'Tid synkende', value: '{"fieldName": "HOT_DateTimeFormated__c", "sortDirection": "desc"} ' },
+			{ label: 'Adresse A - Å', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "asc"} ' },
+			{ label: 'Adresse Å - A', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "desc"} ' },
+			{ label: 'Status A - Å', value: '{"fieldName": "Status", "sortDirection": "asc"} ' },
+			{ label: 'Status Å - A', value: '{"fieldName": "Status", "sortDirection": "desc"} ' },
 		];
 	}
 	handleMobileSorting(event) {

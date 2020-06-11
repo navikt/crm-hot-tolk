@@ -5,11 +5,14 @@ import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 
 
+
 var actions = [
 	{ label: 'Detaljer', name: 'details' },
 ];
 
 export default class Hot_allServiceAppointments extends LightningElement {
+
+
 
 	@track columns = [
 		/*{
@@ -48,6 +51,9 @@ export default class Hot_allServiceAppointments extends LightningElement {
 			typeAttributes: { rowActions: actions },
 		},
 	];
+
+	columnLabels = ["'Tid'", "''", "'Adresse'", "'Arbeidstype'", "'Påmeldte'"];
+
 	@track serviceResource;
 	@wire(getServiceResource)
 	wiredServiceresource(result) {
@@ -96,6 +102,11 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	}
 
 	connectedCallback() {
+
+		for (var i = 0; i < this.columnLabels.length; i++) {
+			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		}
+
 		refreshApex(this.wiredAllServiceAppointmentsResult);
 	}
 
@@ -107,12 +118,14 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
 	get sortingOptions() {
 		return [
-			{ label: 'Start tid stigende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ' },
-			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
-			{ label: 'Tema A - Å', value: '{"fieldName": "Subject", "sortDirection": "asc"} ' },
-			{ label: 'Tema Å - A', value: '{"fieldName": "Subject", "sortDirection": "desc"} ' },
-			{ label: 'Sted A - Å', value: '{"fieldName": "HOT_InterpretationStreet__c", "sortDirection": "asc"} ' },
-			{ label: 'Sted Å - A', value: '{"fieldName": "HOT_InterpretationStreet__c", "sortDirection": "desc"} ' },
+			{ label: 'Tid stigende', value: '{"fieldName": "HOT_DateTimeFormated__c", "sortDirection": "asc"} ' },
+			{ label: 'Tid synkende', value: '{"fieldName": "HOT_DateTimeFormated__c", "sortDirection": "desc"} ' },
+			{ label: 'Adresse A - Å', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "asc"} ' },
+			{ label: 'Adresse Å - A', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "desc"} ' },
+			{ label: 'Arbeidstype A - Å', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} ' },
+			{ label: 'Arbeidstype Å - A', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} ' },
+			{ label: 'Antall påmeldte stigende', value: '{"fieldName": "HOT_NumberOfInterestedResources__c", "sortDirection": "asc"} ' },
+			{ label: 'Antall påmeldte synkende', value: '{"fieldName": "HOT_NumberOfInterestedResources__c", "sortDirection": "desc"} ' },
 		];
 	}
 	handleMobileSorting(event) {
