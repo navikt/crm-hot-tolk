@@ -21,13 +21,27 @@ public without sharing class HOT_InterestedResourcesListController {
 		}
 		update interestedResources;	
 	}
+	@AuraEnabled
+	public static void resendInterest(Id interestedId){
+		HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c
+		FROM HOT_InterestedResource__c WHERE Id = :interestedId];
+		interestedResource.Status__c = 'Interested';
+		update interestedResource;	
+		
+	}
 
 	@AuraEnabled
 	public static void addComment(Id interestedResourceId, String newComment){
-		System.debug('addComment');
+		ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()];
+		newComment = UserInfo.getFirstName() + ' ' + UserInfo.getLastName()
+		+ ', ' + Datetime.now() + ': ' + newComment;
 		HOT_InterestedResource__c interestedResource = [SELECT Id, Comments__c FROM HOT_InterestedResource__c WHERE Id =: interestedResourceId];
-		interestedResource.Comments__c = interestedResource.Comments__c + '\n|' + newComment;
-		System.debug(interestedResource.Comments__c);
+		if(interestedResource.Comments__c == null){
+			interestedResource.Comments__c = newComment;
+		}
+		else{
+		interestedResource.Comments__c = interestedResource.Comments__c + '|\n' + newComment;
+		}
 		update interestedResource;
 	}
 
