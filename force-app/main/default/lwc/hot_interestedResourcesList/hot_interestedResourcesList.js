@@ -61,14 +61,13 @@ export default class Hot_interestedResourcesList extends LightningElement {
 	wiredInterestedResourcesResult;
 	@wire(getInterestedResources)
 	wiredInterestedResources(result) {
-		console.log("wiredInterestedResources");
 		this.wiredInterestedResourcesResult = result;
 		if (result.data) {
 			this.interestedResources = result.data;
 			this.error = undefined;
 			this.filterInterestedResources();
 			this.showHideAll();
-			console.log(JSON.stringify(this.interestedResources));
+			//console.log(JSON.stringify(this.interestedResources));
 
 		} else if (result.error) {
 			this.error = result.error;
@@ -170,7 +169,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
 	@track recordId;
 	@track prevComments = ["Ingen tidligere kommentarer"];
 	openComments(row) {
-		console.log("openComments");
 		this.isAddComments = true;
 		this.subject = row.ServiceAppointment__r.HOT_FreelanceSubject__c;
 		this.recordId = row.Id;
@@ -185,8 +183,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		var newComment = this.template.querySelector(".newComment").value;
 		addComment({ interestedResourceId, newComment })
 			.then(() => {
-				console.log("refresh");
-				//this.wiredInterestedResourcesResult = getInterestedResources();
 				refreshApex(this.wiredInterestedResourcesResult);
 			});
 		this.isAddComments = false;
