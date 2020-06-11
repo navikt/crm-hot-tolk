@@ -1,4 +1,4 @@
-@isTest (SeeAllData=true)
+@isTest
 private class HOT_MySAListControllerTest{
 /*
 	static void testSetup(){
