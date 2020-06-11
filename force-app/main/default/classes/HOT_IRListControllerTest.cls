@@ -25,7 +25,7 @@ private class HOT_IRListControllerTest{
 
 	@isTest static void getInterestedResourcesTest() {
 		List<HOT_InterestedResource__c> interestedResources = HOT_InterestedResourcesListController.getInterestedResources();
-		System.assertNotEquals(0, interestedResources.size(), 'Could not get list of interested resources');
+		System.assertEquals(1, interestedResources.size(), 'Could not get list of interested resources');
 	}
 
 	@isTest static void retractInterestsTest() {
@@ -35,12 +35,20 @@ private class HOT_IRListControllerTest{
 		HOT_InterestedResource__c updatedInterestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c WHERE Id = :interestedResource.Id];
 		System.assertEquals('Retracted Interest', updatedInterestedResource.Status__c, 'Status was not updated');
 	}
+	@isTest static void resendInterestTest() {
+		HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
+		List<Id> retractionIds = new List<Id>{interestedResource.Id};
+		HOT_InterestedResourcesListController.retractInterests(retractionIds);
+		HOT_InterestedResourcesListController.resendInterest(interestedResource.Id);
+		HOT_InterestedResource__c updatedInterestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c WHERE Id = :interestedResource.Id];
+		System.assertEquals('Interested', updatedInterestedResource.Status__c, 'Status was not updated');
+	}
 	@isTest static void addCommentTest() {
 		HOT_InterestedResource__c interestedResource = [SELECT Id, Comments__c FROM HOT_InterestedResource__c];
 		String newComment = 'New Comment';
 		HOT_InterestedResourcesListController.addComment(interestedResource.Id, newComment);
 		HOT_InterestedResource__c updatedInterestedResource = [SELECT Id, Comments__c FROM HOT_InterestedResource__c WHERE Id = :interestedResource.Id];
 		System.debug(updatedInterestedResource.Comments__c);
-		System.assertEquals('Test Value\n|New Comment', updatedInterestedResource.Comments__c, 'Comment was not updated');
+		System.assertEquals(true, updatedInterestedResource.Comments__c.contains('New Comment'), 'Comment was not updated');
 	}
 }
