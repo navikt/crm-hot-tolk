@@ -1,12 +1,17 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
+import { updateRecord } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import retractInterests from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterests';
+import resendInterestApex from '@salesforce/apex/HOT_InterestedResourcesListController.resendInterest';
 import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
+import STATUS from '@salesforce/schema/HOT_InterestedResource__c.Status__c';
+import INTERESTEDRESOURCE_ID from '@salesforce/schema/HOT_InterestedResource__c.Id';
 
 var actions = [
 	{ label: 'Kommenter', name: 'comment' },
+	{ label: 'Send Interesse', name: 'resendInterest' },
 ];
 
 export default class Hot_interestedResourcesList extends LightningElement {
@@ -56,11 +61,13 @@ export default class Hot_interestedResourcesList extends LightningElement {
 	wiredInterestedResourcesResult;
 	@wire(getInterestedResources)
 	wiredInterestedResources(result) {
+		console.log("wiredInterestedResources");
 		this.wiredInterestedResourcesResult = result;
 		if (result.data) {
 			this.interestedResources = result.data;
 			this.error = undefined;
 			this.filterInterestedResources();
+			this.showHideAll();
 			console.log(JSON.stringify(this.interestedResources));
 
 		} else if (result.error) {
@@ -74,7 +81,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			if (this.interestedResources[i].Status__c == "Interested") {
 				tempInterestedResources.push(this.interestedResources[i]);
 			}
-
 		}
 		this.interestedResourcesFiltered = tempInterestedResources;
 	}
@@ -152,6 +158,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			case 'comment':
 				this.openComments(row);
 				break;
+			case 'resendInterest':
+				this.resendInterest(row);
+				break;
 			default:
 		}
 	}
@@ -174,9 +183,31 @@ export default class Hot_interestedResourcesList extends LightningElement {
 	sendComment() {
 		let interestedResourceId = this.recordId;
 		var newComment = this.template.querySelector(".newComment").value;
-		addComment({ interestedResourceId, newComment });
+		addComment({ interestedResourceId, newComment })
+			.then(() => {
+				console.log("refresh");
+				//this.wiredInterestedResourcesResult = getInterestedResources();
+				refreshApex(this.wiredInterestedResourcesResult);
+			});
 		this.isAddComments = false;
+	}
 
+	//Move this to apex to avoid sharing settings
+	resendInterest(row) {
+		const interestedId = row.Id;
+		if (row.Status__c == "Retracted Interest") {
+			if (confirm("Er du sikker på at du vil melde interesse for oppdraget?")) {
+				resendInterestApex({ interestedId })
+					.then(() => {
+						refreshApex(this.wiredInterestedResourcesResult);
+					})
+					.catch(error => {
+						console.log(error);
+						alert("Kunne ikke sende interesse.");
+					});
+			}
+		}
+		else { alert("Du kan ikke sende interesse for dette oppdraget"); }
 	}
 
 	@track selectedRows = [];
@@ -202,9 +233,12 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		for (var i = 0; i < this.selectedRows.length; i++) {
 			retractionIds.push(this.selectedRows[i].Id);
 		}
-		console.log(retractionIds);
+		//console.log(retractionIds);
 		if (confirm("Er du sikker på at du vil tilbaketrekke interesse for valgte oppdrag?")) {
-			retractInterests({ retractionIds });
+			retractInterests({ retractionIds })
+				.then(() => {
+					refreshApex(this.wiredInterestedResourcesResult);
+				});
 		}
 
 	}
