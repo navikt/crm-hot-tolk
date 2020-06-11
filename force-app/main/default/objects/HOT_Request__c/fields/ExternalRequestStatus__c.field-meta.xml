@@ -13,7 +13,7 @@
 &quot;Avlyst&quot;, &quot;Avlyst&quot;,
 &quot;Avslått&quot;, &quot;Avslått&quot;,
 &quot;Dekket&quot;, &quot;Dekket&quot;,
-&quot;Under behandling&quot;)</formula>
+&quot;Ukjent&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <inlineHelpText>Status som vises for bruker på nav.no</inlineHelpText>
     <label>External Request Status</label>
