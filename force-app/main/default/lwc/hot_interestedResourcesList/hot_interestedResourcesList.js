@@ -227,16 +227,21 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		}
 	}
 	retractInterest() {
-		let retractionIds = [];
-		for (var i = 0; i < this.selectedRows.length; i++) {
-			retractionIds.push(this.selectedRows[i].Id);
+		if (this.selectedRows.length > 0) {
+			let retractionIds = [];
+			for (var i = 0; i < this.selectedRows.length; i++) {
+				retractionIds.push(this.selectedRows[i].Id);
+			}
+			//console.log(retractionIds);
+			if (confirm("Er du sikker på at du vil tilbaketrekke interesse for valgte oppdrag?")) {
+				retractInterests({ retractionIds })
+					.then(() => {
+						refreshApex(this.wiredInterestedResourcesResult);
+					});
+			}
 		}
-		//console.log(retractionIds);
-		if (confirm("Er du sikker på at du vil tilbaketrekke interesse for valgte oppdrag?")) {
-			retractInterests({ retractionIds })
-				.then(() => {
-					refreshApex(this.wiredInterestedResourcesResult);
-				});
+		else {
+			alert("Velg oppdrag du ønsker å tilbaketrekke interesse for, så trykk på knappen.");
 		}
 
 	}
