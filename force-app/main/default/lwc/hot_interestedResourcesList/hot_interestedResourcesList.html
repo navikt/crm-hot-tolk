@@ -30,6 +30,7 @@
 						<h2 class="typo-undertittel">Diskusjon med formidler</h2>
 						<template iterator:it={prevComments}>
 							<p class="typo-normal" key={it.value}>{it.value}</p>
+							<p style="color: transparent;" key={it.value}>.</p>
 						</template>
 					</div>
 					<lightning-textarea style="margin-bottom: 1rem;" class="newComment" name="newComment">

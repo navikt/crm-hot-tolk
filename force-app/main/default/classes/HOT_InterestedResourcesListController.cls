@@ -27,7 +27,6 @@ public without sharing class HOT_InterestedResourcesListController {
 		FROM HOT_InterestedResource__c WHERE Id = :interestedId];
 		interestedResource.Status__c = 'Interested';
 		update interestedResource;	
-		
 	}
 
 	@AuraEnabled
@@ -40,9 +39,17 @@ public without sharing class HOT_InterestedResourcesListController {
 			interestedResource.Comments__c = newComment;
 		}
 		else{
-		interestedResource.Comments__c = interestedResource.Comments__c + '|\n' + newComment;
+		interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
 		}
 		update interestedResource;
 	}
 
+		@InvocableVariable public ID recordId;
+		@InvocableVariable public String newComment;
+	
+		@InvocableMethod
+		public static void addComment(List<HOT_InterestedResourcesListController> inputVariables){
+			HOT_InterestedResourcesListController.addComment(inputVariables[0].recordId, inputVariables[0].newComment);
+		}
+	
 }

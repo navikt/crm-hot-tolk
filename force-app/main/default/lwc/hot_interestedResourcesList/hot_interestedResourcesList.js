@@ -174,8 +174,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		this.isAddComments = true;
 		this.subject = row.ServiceAppointment__r.HOT_FreelanceSubject__c;
 		this.recordId = row.Id;
-
-		this.prevComments = row.Comments__c.split("|");
+		this.prevComments = row.Comments__c.split("\n\n");
 	}
 	closeComments() {
 		this.isAddComments = false;
