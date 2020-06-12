@@ -84,6 +84,7 @@ export default class Hot_allServiceAppointments extends LightningElement {
 			this.allServiceAppointments = result.data;
 			this.error = undefined;
 			this.filterServiceAppointments();
+			this.showHideAll();
 			//console.log(JSON.stringify(this.allServiceAppointments));
 			for (var i = 0; i < this.allServiceAppointments.length; i++) {
 				//console.log(JSON.stringify(this.allServiceAppointments[i].WorkType));
