@@ -3,7 +3,7 @@
     <assignments>
         <name>AssignFieldValues</name>
         <label>AssignFieldValues</label>
-        <locationX>926</locationX>
+        <locationX>1138</locationX>
         <locationY>124</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_DeadlineDate__c</assignToReference>
@@ -40,7 +40,7 @@
     <assignments>
         <name>RemoveAssignedResourceAssignment</name>
         <label>RemoveAssignedResourceAssignment</label>
-        <locationX>573</locationX>
+        <locationX>785</locationX>
         <locationY>624</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
@@ -75,7 +75,7 @@
 Status == &quot;Ingen&quot;</description>
         <name>Check_isReleasedToFreelance</name>
         <label>Check isReleasedToFreelance</label>
-        <locationX>296</locationX>
+        <locationX>508</locationX>
         <locationY>123</locationY>
         <defaultConnector>
             <targetReference>ServiceAppointment_already_Released</targetReference>
@@ -100,7 +100,7 @@ Status == &quot;Ingen&quot;</description>
     <decisions>
         <name>Check_Status</name>
         <label>Check Status</label>
-        <locationX>559</locationX>
+        <locationX>771</locationX>
         <locationY>125</locationY>
         <defaultConnector>
             <targetReference>AlreadyScheduled</targetReference>
@@ -125,7 +125,7 @@ Status == &quot;Ingen&quot;</description>
     <decisions>
         <name>CheckChoice</name>
         <label>CheckChoice</label>
-        <locationX>563</locationX>
+        <locationX>775</locationX>
         <locationY>453</locationY>
         <defaultConnector>
             <targetReference>OutScreen</targetReference>
@@ -165,7 +165,7 @@ Status == &quot;Ingen&quot;</description>
     <recordDeletes>
         <name>DeleteAssignedResource</name>
         <label>DeleteAssignedResource</label>
-        <locationX>802</locationX>
+        <locationX>1014</locationX>
         <locationY>626</locationY>
         <connector>
             <targetReference>Sett_frist_for_pamelding</targetReference>
@@ -182,7 +182,7 @@ Status == &quot;Ingen&quot;</description>
     <recordLookups>
         <name>GetCurrentServiceAppointment</name>
         <label>GetCurrentServiceAppointment</label>
-        <locationX>178</locationX>
+        <locationX>390</locationX>
         <locationY>82</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -211,7 +211,7 @@ Status == &quot;Ingen&quot;</description>
     <recordUpdates>
         <name>UpdateServiceAppointment</name>
         <label>UpdateServiceAppointment</label>
-        <locationX>1051</locationX>
+        <locationX>1263</locationX>
         <locationY>126</locationY>
         <connector>
             <targetReference>SuccessScreen</targetReference>
@@ -221,8 +221,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>AlreadyScheduled</name>
         <label>AlreadyScheduled</label>
-        <locationX>570</locationX>
-        <locationY>290</locationY>
+        <locationX>782</locationX>
+        <locationY>289</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -249,24 +249,24 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>OutScreen</name>
         <label>OutScreen</label>
-        <locationX>339</locationX>
-        <locationY>560</locationY>
-        <allowBack>true</allowBack>
+        <locationX>550</locationX>
+        <locationY>558</locationY>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <fields>
             <name>OutMessage</name>
             <fieldText>&lt;p&gt;Oppdrag ble ikke frigitt til frilanstolker.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>ServiceAppointment_already_Released</name>
         <label>ServiceAppointment already Released</label>
-        <locationX>301</locationX>
-        <locationY>371</locationY>
+        <locationX>513</locationX>
+        <locationY>370</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -275,17 +275,17 @@ Status == &quot;Ingen&quot;</description>
             <fieldText>&lt;p&gt;Oppdraget er allerede frigitt til frilanstolk.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>Sett_frist_for_pamelding</name>
         <label>Sett frist for påmelding</label>
-        <locationX>820</locationX>
+        <locationX>1034</locationX>
         <locationY>122</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <connector>
             <targetReference>AssignFieldValues</targetReference>
         </connector>
@@ -315,17 +315,17 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>1185</locationX>
+        <locationX>1397</locationX>
         <locationY>129</locationY>
-        <allowBack>true</allowBack>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <fields>
             <name>Success</name>
             <fieldText>&lt;p&gt;Oppdraget ble frigitt til frilanstolker.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
