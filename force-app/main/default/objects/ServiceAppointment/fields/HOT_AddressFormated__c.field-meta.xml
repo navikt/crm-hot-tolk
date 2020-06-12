@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
 	<fullName>HOT_AddressFormated__c</fullName>
 	<externalId>false</externalId>
-	<formula>HOT_InterpretationStreet__c + &quot;, &quot; +  HOT_InterpretationPostalCode__c</formula>
+	<formula>HOT_InterpretationStreet__c + &quot;, &quot; +  HOT_InterpretationPostalCode__c + &quot;, &quot; +  HOT_InterpretationPostalCity__c</formula>
 	<formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
 	<label>Address</label>
 	<required>false</required>
