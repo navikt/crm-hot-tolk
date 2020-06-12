@@ -204,6 +204,9 @@ export default class Hot_allServiceAppointments extends LightningElement {
 		if (this.selectedRows.length > 0) {
 			this.isAddComments = true;
 		}
+		else {
+			alert("Velg oppdrag du ønsker å melde interesse om, så trykk på knappen.");
+		}
 	}
 	confirmSendingInterest() {
 
