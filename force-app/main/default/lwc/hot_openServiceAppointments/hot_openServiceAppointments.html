@@ -30,11 +30,13 @@
 						<lightning-record-edit-form class="comment-form" key={it.value.Id}
 							object-api-name="HOT_InterestedResource__c" density="comfy">
 							<div>
-								<p class="typo-normal">{it.value.HOT_WorkTypeName__c}</p>
-								<p class="typo-normal">{it.value.HOT_DateTimeFormated__c}</p>
-								<p class="typo-normal">{it.value.HOT_AddressFormated__c}
+								<p class="typo-normal">Tid: {it.value.HOT_DateTimeFormated__c}</p>
+								<p class="typo-normal">Adresse: {it.value.HOT_AddressFormated__c}
 								</p>
-								<p class="typo-normal">{it.value.HOT_FreelanceSubject__c}
+								<p class="typo-normal">Arbeidstype: {it.value.HOT_WorkTypeName__c}</p>
+								<p class="typo-normal">Påmeldte: {it.value.HOT_NumberOfInterestedResources__c}</p>
+								<p class="typo-normal">Frist: {it.value.HOT_DeadlineDate__c}</p>
+								<p class="typo-normal">Tema: {it.value.HOT_FreelanceSubject__c}
 								</p>
 							</div>
 							<lightning-input-field field-name="Comments__c">
@@ -62,7 +64,7 @@
 			tabindex="-1" role="dialog">
 			<section>
 				<div>
-					<h2 class="typo-undertittel">Emne</h2>
+					<h2 class="typo-undertittel">Tema</h2>
 					<p class="typo-normal">{subject}</p>
 				</div>
 			</section>

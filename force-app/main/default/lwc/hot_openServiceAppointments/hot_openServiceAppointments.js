@@ -47,12 +47,23 @@ export default class Hot_allServiceAppointments extends LightningElement {
 			cellAttributes: { alignment: 'left' }
 		},
 		{
+			label: 'Frist',
+			fieldName: 'HOT_DeadlineDate__c',
+			type: 'date',
+			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+			}
+		},
+		{
 			type: 'action',
 			typeAttributes: { rowActions: actions },
 		},
 	];
 
-	columnLabels = ["'Tid'", "''", "'Adresse'", "'Arbeidstype'", "'Påmeldte'"];
+	columnLabels = ["'Tid'", "''", "'Adresse'", "'Arbeidstype'", "'Påmeldte'", "'Frist"];
 
 	@track serviceResource;
 	@wire(getServiceResource)
