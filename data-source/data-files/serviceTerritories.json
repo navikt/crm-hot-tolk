@@ -21,7 +21,7 @@
 		{
 			"attributes": {
 				"type": "ServiceTerritory",
-				"referenceId": "ServiceTerritoryRef2"
+				"referenceId": "ServiceTerritoryRef3"
 			},
 			"Name": "Tromsø",
 			"OperatingHoursId": "@OperatingHoursRef1",
