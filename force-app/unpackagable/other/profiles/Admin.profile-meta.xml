@@ -137,11 +137,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_InterestedResource__c.Location__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_InterestedResource__c.ServiceAppointmentAddress__c</field>
         <readable>false</readable>
     </fieldPermissions>
