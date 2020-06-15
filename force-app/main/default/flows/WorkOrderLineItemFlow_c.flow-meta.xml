@@ -89,6 +89,27 @@
                 <elementReference>Owner</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>VarSA.HOT_AssignmentType__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>VarWOLIAssigmentType</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>VarSA.SchedStartTime</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>VarWOLIStartDate</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>VarSA.SchedEndTime</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>VarWOLIEndDate</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>SAcollection</targetReference>
         </connector>
@@ -210,6 +231,10 @@
             <field>EndDate</field>
         </outputAssignments>
         <outputAssignments>
+            <assignToReference>VarWOLIAssigmentType</assignToReference>
+            <field>HOT_AssignmentType__c</field>
+        </outputAssignments>
+        <outputAssignments>
             <assignToReference>VarWOLIIntercity</assignToReference>
             <field>HOT_InterpretationPostalCity__c</field>
         </outputAssignments>
@@ -295,6 +320,13 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <scale>0</scale>
+    </variables>
+    <variables>
+        <name>VarWOLIAssigmentType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>VarWOLICity</name>

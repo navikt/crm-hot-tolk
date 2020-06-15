@@ -50,6 +50,11 @@
         <default>false</default>
         <label>Avslått</label>
     </customValue>
+    <customValue>
+        <fullName>Annullert</fullName>
+        <default>false</default>
+        <label>Annullert</label>
+    </customValue>
     <masterLabel>Interpreter Status</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>

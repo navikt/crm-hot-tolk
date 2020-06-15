@@ -1,7 +1,4 @@
 <template>
-	<div class="hovedbanner tolketjenesten">
-		<h1 class="typo-systemtittel">Mine tolketjenester </h1>
-	</div>
 
 	<div class="brodsmulesti">
 		<lightning-breadcrumbs class="liste-max-width">
@@ -17,8 +14,8 @@
 			<lightning-button title="Ny bestilling" class="slds-m-top-small right-button" variant="brand"
 				label="Ny bestilling" onclick={goToNewRequest}>
 			</lightning-button>
-			<lightning-input type="checkbox" style="width:50%;" label="Vis fullførte, avlyste og udekte bestillinger"
-				name="ShowAll" onchange={handleChecked}>
+			<lightning-input type="checkbox" class="filter-list-checkbox"
+				label="Vis fullførte, avlyste og udekte bestillinger" name="ShowAll" onchange={handleChecked}>
 			</lightning-input>
 			<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
 				value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>

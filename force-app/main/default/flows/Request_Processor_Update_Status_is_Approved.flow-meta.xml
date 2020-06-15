@@ -32,16 +32,16 @@
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue>ISPICKVAL([HOT_Request__c].Status__c,&#39;Godkjent&#39;) 
+                <stringValue>ISPICKVAL([HOT_Request__c].Status__c,&apos;Godkjent&apos;) 
 &amp;&amp; ISCHANGED([HOT_Request__c].Status__c)
-&amp;&amp;  ISPICKVAL(PRIORVALUE([HOT_Request__c].Status__c),&#39;Åpen&#39;)</stringValue>
+&amp;&amp;  ISPICKVAL(PRIORVALUE([HOT_Request__c].Status__c),&apos;Åpen&apos;)</stringValue>
             </value>
         </processMetadataValues>
         <name>formula_myRule_1</name>
         <dataType>Boolean</dataType>
-        <expression>ISPICKVAL({!myVariable_current.Status__c},&#39;Godkjent&#39;) 
+        <expression>ISPICKVAL({!myVariable_current.Status__c},&apos;Godkjent&apos;) 
 &amp;&amp; ISCHANGED({!myVariable_current.Status__c})
-&amp;&amp;  ISPICKVAL(PRIORVALUE({!myVariable_current.Status__c}),&#39;Åpen&#39;)</expression>
+&amp;&amp;  ISPICKVAL(PRIORVALUE({!myVariable_current.Status__c}),&apos;Åpen&apos;)</expression>
     </formulas>
     <interviewLabel>Request_Processor_Update_Status_is_Approved-2_InterviewLabel</interviewLabel>
     <label>Request Processor - Update - Status is Approved</label>
@@ -505,6 +505,42 @@
             <field>PostalCode</field>
             <value>
                 <elementReference>myVariable_current.MeetingPostalCode__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Territory ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue>ServiceTerritory</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Reference</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>ServiceTerritoryId</field>
+            <value>
+                <elementReference>myVariable_current.ServiceTerritory__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

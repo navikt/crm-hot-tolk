@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_NumberOfInterestedResources__c</fullName>
+    <externalId>false</externalId>
+    <label>Number Of Interested Resources</label>
+    <summaryForeignKey>HOT_InterestedResource__c.ServiceAppointment__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

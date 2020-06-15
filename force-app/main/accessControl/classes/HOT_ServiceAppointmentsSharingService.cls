@@ -3,22 +3,28 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
 	public static void grantAccess( Map<Id, Id > apppointmentIdByAssignment, Map<Id, Id> resourceByAssignment ) {
 		Map<Id, Id> userIdyResourceId = getUserIdyResourceId( resourceByAssignment.values() );
 		Map<Id, Id> woBySa = getWorkOrderIds( apppointmentIdByAssignment.values() );
+		Map<Id, User> userByUserId = getUserById( userIdyResourceId.values() );
 		List<ServiceAppointmentShare> serviceAppointmentShares = new List<ServiceAppointmentShare>();
 		List<WorkOrderShare> workOrderShares = new List<WorkOrderShare>();
 		for ( Id assignmentId:apppointmentIdByAssignment.keySet() ) {
 			Id resourceId = resourceByAssignment.get( assignmentId );
+			Id userId = userIdyResourceId.get( resourceId );
 			Id serviceAppointmentId = apppointmentIdByAssignment.get( assignmentId );
+			String workOrderAccessLevel = 'Edit';
+			if(userByUserId.get(userId).IsPortalEnabled == true) {
+				workOrderAccessLevel = 'Read';
+			}
 			serviceAppointmentShares.add( new ServiceAppointmentShare(
 											  ParentId = serviceAppointmentId,
 											  AccessLevel = 'Edit',
 											  RowCause = 'Manual',
-											  UserOrGroupId = userIdyResourceId.get( resourceId )
+											  UserOrGroupId = userId
 											  ) );
 			workOrderShares.add( new WorkOrderShare(
 									 ParentId = woBySa.get( serviceAppointmentId ),
-									 AccessLevel = 'Edit',
+									 AccessLevel = workOrderAccessLevel,
 									 RowCause = 'Manual',
-									 UserOrGroupId = userIdyResourceId.get( resourceId )
+									 UserOrGroupId = userId
 									 ) );
 		}
 		Database.insert( serviceAppointmentShares, false );
@@ -52,6 +58,15 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
 		}
 
 		return userIdyResourceId;
+	}
+
+	private static Map<Id, User> getUserById( List<Id> userIds ) {
+		Map<Id, User> userByUserId = new Map<Id, User>();
+		for ( User user : [SELECT Id, IsPortalEnabled FROM User WHERE Id in:userIds] ) {
+			userByUserId.put( user.Id, user );
+		}
+		
+		return userByUserId;
 	}
 
 	private static Map<Id, Id> getWorkOrderIds( List<Id> serviceApponntmentIds ) {

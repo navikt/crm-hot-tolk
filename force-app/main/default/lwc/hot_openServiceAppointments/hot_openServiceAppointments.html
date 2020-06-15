@@ -1,0 +1,77 @@
+<template>
+	<div class="main-content">
+		<div class="right-content">
+			<lightning-button title="Meld interesse" class="slds-m-top-small right-button" variant="brand"
+				label="Meld interesse" onclick={sendInterest}>
+			</lightning-button>
+			<lightning-input type="checkbox" class="filter-list-checkbox" label={checkBoxLabel} name="toggleTerritory"
+				onchange={handleChecked}>
+			</lightning-input>
+			<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
+				value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
+			</lightning-combobox>
+		</div>
+		<lightning-datatable key-field="AppointmentNumber" data={allServiceAppointmentsFiltered} columns={columns}
+			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
+			onsort={onHandleSort} onrowaction={handleRowAction} onrowselection={getSelectedName}>
+		</lightning-datatable>
+	</div>
+
+	<div if:true={isAddComments} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+		style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
+		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
+			tabindex="-1" role="dialog">
+			<section>
+				<div>
+					<h2 class="typo-undertittel">Legg til kommentarer til oppdragene</h2>
+
+					<template iterator:it={selectedRows}>
+
+						<lightning-record-edit-form class="comment-form" key={it.value.Id}
+							object-api-name="HOT_InterestedResource__c" density="comfy">
+							<div>
+								<p class="typo-normal">Tid: {it.value.HOT_DateTimeFormated__c}</p>
+								<p class="typo-normal">Adresse: {it.value.HOT_AddressFormated__c}
+								</p>
+								<p class="typo-normal">Arbeidstype: {it.value.HOT_WorkTypeName__c}</p>
+								<p class="typo-normal">Påmeldte: {it.value.HOT_NumberOfInterestedResources__c}</p>
+								<p class="typo-normal">Frist: {it.value.HOT_DeadlineDate__c}</p>
+								<p class="typo-normal">Tema: {it.value.HOT_FreelanceSubject__c}
+								</p>
+							</div>
+							<lightning-input-field field-name="Comments__c">
+							</lightning-input-field>
+
+						</lightning-record-edit-form>
+
+					</template>
+
+					<lightning-button class="slds-m-left_x-small" variant="brand" type="submit" label="Send inn"
+						onclick={confirmSendingInterest}>
+					</lightning-button>
+
+				</div>
+			</section>
+			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortSendingInterest}>
+				<span class="text-hide">Lukk</span>
+			</button>
+		</div>
+	</div>
+
+	<div if:true={isDetails} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+		style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
+		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
+			tabindex="-1" role="dialog">
+			<section>
+				<div>
+					<h2 class="typo-undertittel">Tema</h2>
+					<p class="typo-normal">{subject}</p>
+				</div>
+			</section>
+			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
+				<span class="text-hide">Lukk</span>
+			</button>
+		</div>
+	</div>
+
+</template>

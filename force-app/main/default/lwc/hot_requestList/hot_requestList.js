@@ -5,6 +5,7 @@ import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
+import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 
 var actions = [
@@ -13,7 +14,12 @@ var actions = [
 	{ label: 'Rediger', name: 'edit_order' },
 ];
 export default class RequestList extends NavigationMixin(LightningElement) {
-
+	@track isProd;
+	@track error;
+	@wire(isProdFunction)
+	wiredIsProd({ error, data }) {
+		this.isProd = data;
+	}
 	@track columns = [
 		{
 			label: 'Start tid',
@@ -66,6 +72,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			typeAttributes: { rowActions: actions },
 		},
 	];
+	columnLabels = ["'Start tid'", "'Slutt tid'", "'Oppmøtested'", "'Tema'", "'Status'"];
 
 
 	@track rerender;
@@ -82,6 +89,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			this.filterRequests();
 			this.showHideInactives();
 			this.error = undefined;
+			console.log(this.allRequests[0]);
 		} else if (result.error) {
 			this.error = result.error;
 			this.allRequests = undefined;
@@ -90,7 +98,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	}
 
 	filterRequests() {
-		console.log("Running filterRequests()");
 		var tempRequests = [];
 		for (var i = 0; i < this.allRequests.length; i++) {
 			if (this.allRequests[i].ExternalRequestStatus__c != "Avlyst" &&
@@ -100,7 +107,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		}
 		this.requests = tempRequests;
-		console.log("End of filterRequests()");
 	}
 
 	@track checked = false;
@@ -110,9 +116,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	}
 
 	showHideInactives() {
-		console.log("Running showHideInactives()");
 		if (this.checked) {
-			console.log("if true");
 			this.requests = this.allRequests;
 		}
 		else {
@@ -206,6 +210,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 	}
 	connectedCallback() {
+		for (var i = 0; i < this.columnLabels.length; i++) {
+			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		}
 		window.scrollTo(0, 0);
 		refreshApex(this.wiredRequestsResult);
 	}

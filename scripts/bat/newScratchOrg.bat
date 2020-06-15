@@ -8,7 +8,7 @@ call sfdx force:package:install --package 04t2o000000OA5aAAG  -k navcrm --wait 1
 call sfdx force:package:install --package 04t2o000000OA22AAG  -k navcrm --wait 10 --publishwait 10
 
 :: Installer crm-community-base
-call sfdx force:package:install --package 04t2o000000OA9SAAW  -k navcrm --wait 10 --publishwait 10
+call sfdx force:package:install --package 04t2o000000OAAaAAO  -k navcrm --wait 10 --publishwait 10
 
 :: Dytt kildekoden til scratch org'en
 call sfdx force:source:push
@@ -18,3 +18,4 @@ call sfdx force:user:permset:assign --permsetname HOT_admin
 
 :: Opprett testdata
 call sfdx force:data:tree:import --plan data-source/data-import-plan.json
+call sfdx force:apex:execute -f scripts/apex/createTestData.apex
