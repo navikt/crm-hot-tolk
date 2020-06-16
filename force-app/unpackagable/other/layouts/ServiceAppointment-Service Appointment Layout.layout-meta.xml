@@ -249,7 +249,6 @@
 		<fields>ServiceResource.NAME</fields>
 		<fields>Status__c</fields>
 		<fields>Comments__c</fields>
-		<fields>Location__c</fields>
 		<relatedList>HOT_InterestedResource__c.ServiceAppointment__c</relatedList>
 	</relatedLists>
 	<relatedLists>
