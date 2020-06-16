@@ -17,6 +17,15 @@
 			"Name": "Dagobah System",
 			"OperatingHoursId": "@OperatingHoursRef1",
 			"IsActive": true
+		},
+		{
+			"attributes": {
+				"type": "ServiceTerritory",
+				"referenceId": "ServiceTerritoryRef3"
+			},
+			"Name": "Tromsø",
+			"OperatingHoursId": "@OperatingHoursRef1",
+			"IsActive": true
 		}
 	]
 }

@@ -96,6 +96,20 @@
                 <elementReference>VarWOLIAssigmentType</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>VarSA.SchedStartTime</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>VarWOLIStartDate</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>VarSA.SchedEndTime</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>VarWOLIEndDate</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>SAcollection</targetReference>
         </connector>

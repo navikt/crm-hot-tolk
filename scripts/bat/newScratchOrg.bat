@@ -8,7 +8,7 @@ call sfdx force:package:install --package 04t2o000000OA5aAAG  -k navcrm --wait 1
 call sfdx force:package:install --package 04t2o000000OA22AAG  -k navcrm --wait 10 --publishwait 10
 
 :: Installer crm-community-base
-call sfdx force:package:install --package 04t2o000000OA9wAAG  -k navcrm --wait 10 --publishwait 10
+call sfdx force:package:install --package 04t2o000000OAAaAAO  -k navcrm --wait 10 --publishwait 10
 
 :: Dytt kildekoden til scratch org'en
 call sfdx force:source:push
