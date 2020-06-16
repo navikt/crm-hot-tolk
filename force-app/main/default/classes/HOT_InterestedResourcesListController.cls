@@ -6,7 +6,7 @@ public without sharing class HOT_InterestedResourcesListController {
 		List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId=:userId];
 		
 		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Name, Comments__c, Status__c, ServiceAppointmentTime__c, ServiceAppointmentAddress__c,
-		ServiceAppointment__r.HOT_FreelanceSubject__c
+		ServiceAppointment__r.HOT_FreelanceSubject__c, IsNewComment__c
 		FROM HOT_InterestedResource__c WHERE ServiceResource__c IN: serviceResource];
 
 		return interestedResources;
@@ -30,26 +30,37 @@ public without sharing class HOT_InterestedResourcesListController {
 	}
 
 	@AuraEnabled
-	public static void addComment(Id interestedResourceId, String newComment){
-		ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()];
-		newComment = UserInfo.getFirstName() + ' ' + UserInfo.getLastName()
-		+ ', ' + Datetime.now() + ': ' + newComment;
-		HOT_InterestedResource__c interestedResource = [SELECT Id, Comments__c FROM HOT_InterestedResource__c WHERE Id =: interestedResourceId];
-		if(interestedResource.Comments__c == null){
-			interestedResource.Comments__c = newComment;
-		}
-		else{
-		interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
-		}
+	public static void readComment(String interestedResourceId){
+		HOT_InterestedResource__c interestedResource = [SELECT Id, IsNewComment__c FROM HOT_InterestedResource__c WHERE Id =: interestedResourceId];
+		interestedResource.IsNewComment__c = false;
 		update interestedResource;
 	}
 
-		@InvocableVariable public ID recordId;
-		@InvocableVariable public String newComment;
-	
-		@InvocableMethod
-		public static void addComment(List<HOT_InterestedResourcesListController> inputVariables){
-			HOT_InterestedResourcesListController.addComment(inputVariables[0].recordId, inputVariables[0].newComment);
+	@AuraEnabled
+	public static void addComment(Id interestedResourceId, String newComment){
+		if(newComment != null && newComment != ''){
+			newComment = UserInfo.getFirstName() + ' ' + UserInfo.getLastName()
+			+ ', ' + Datetime.now() + ': ' + newComment;
+			HOT_InterestedResource__c interestedResource = [SELECT Id, Comments__c, IsNewComment__c FROM HOT_InterestedResource__c WHERE Id =: interestedResourceId];
+			if(interestedResource.Comments__c == null){
+				interestedResource.Comments__c = newComment;
+			}
+			else{
+			interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
+			}
+			if(UserInfo.getProfileId() != [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0].Id){
+				interestedResource.IsNewComment__c = true;
+			}
+			update interestedResource;
 		}
+	}
+
+	@InvocableVariable public ID recordId;
+	@InvocableVariable public String newComment;
+
+	@InvocableMethod
+	public static void addComment(List<HOT_InterestedResourcesListController> inputVariables){
+		HOT_InterestedResourcesListController.addComment(inputVariables[0].recordId, inputVariables[0].newComment);
+	}
 	
 }
