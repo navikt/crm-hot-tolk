@@ -132,11 +132,6 @@
     <custom>false</custom>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_HistoricallyAssignedResource__c.ServiceAppointment__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>HOT_HistoricallyAssignedResource__c.ServiceResource__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -153,6 +148,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_InterestedResource__c.Comments__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_InterestedResource__c.IsNewComment__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
