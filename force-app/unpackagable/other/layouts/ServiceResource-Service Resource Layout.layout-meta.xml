@@ -77,6 +77,13 @@
         <relatedList>HOT_InterestedResource__c.ServiceResource__c</relatedList>
     </relatedLists>
     <relatedLists>
+        <fields>NAME</fields>
+        <fields>ServiceAppointment__c</fields>
+        <fields>Status__c</fields>
+        <fields>StatusComment__c</fields>
+        <relatedList>HOT_HistoricallyAssignedResource__c.ServiceResource__c</relatedList>
+    </relatedLists>
+    <relatedLists>
         <fields>ServiceAppointment</fields>
         <relatedList>ServiceAppointments</relatedList>
     </relatedLists>
@@ -165,10 +172,6 @@
         <fields>EndTime</fields>
         <fields>Status</fields>
         <relatedList>ServiceResourceShifts</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>HOT_HistoricallyAssignedResource__c.ServiceResource__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
