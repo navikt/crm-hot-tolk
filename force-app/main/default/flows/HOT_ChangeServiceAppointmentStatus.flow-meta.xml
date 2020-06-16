@@ -243,25 +243,25 @@
         <object>HOT_HistoricallyAssignedResource__c</object>
     </recordCreates>
     <recordLookups>
-        <name>Get_Service_Resource</name>
-        <label>Get Service Resource</label>
-        <locationX>942</locationX>
-        <locationY>512</locationY>
+        <name>Get_Assigned_Resource</name>
+        <label>Get Assigned Resource</label>
+        <locationX>966</locationX>
+        <locationY>520</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Create_Historically_Assigned_Resource</targetReference>
         </connector>
         <filters>
-            <field>RelatedRecordId</field>
+            <field>ServiceAppointmentId</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>currentUserId</elementReference>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
             </value>
         </filters>
-        <object>ServiceResource</object>
+        <object>AssignedResource</object>
         <outputAssignments>
             <assignToReference>ServiceResourceId</assignToReference>
-            <field>Id</field>
+            <field>ServiceResourceId</field>
         </outputAssignments>
     </recordLookups>
     <recordLookups>
@@ -328,7 +328,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Get_Service_Resource</targetReference>
+            <targetReference>Get_Assigned_Resource</targetReference>
         </connector>
         <fields>
             <name>Cancel_Comment_Tolk</name>
