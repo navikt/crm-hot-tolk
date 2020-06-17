@@ -71,6 +71,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
 		}
 	}
 
+
 	@track myServiceAppointments;
 	@track myServiceAppointmentsFiltered;
 	wiredMyServiceAppointmentsResult;
@@ -207,7 +208,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
 		this.recordId = row.Id;
 		var serviceAppointmentId
 
-		var history = getMyServiceAppointmentFieldHistories({ serviceAppointmentId });
+		//var history = getMyServiceAppointmentFieldHistories({ serviceAppointmentId });
 		this.assignmentType = this.assignmentTypes[this.recordId];
 		/*
 		for (var i = 0; i < history.Status.length; i++) {

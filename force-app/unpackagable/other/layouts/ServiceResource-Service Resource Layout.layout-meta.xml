@@ -36,6 +36,17 @@
                 <behavior>Edit</behavior>
                 <field>IsOptimizationCapable</field>
             </layoutItems>
+            <layoutItems>
+                <emptySpace>true</emptySpace>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_IsEmployedInterpreter__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_IsFreelanceInterpreter__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
@@ -75,6 +86,13 @@
     <relatedLists>
         <fields>NAME</fields>
         <relatedList>HOT_InterestedResource__c.ServiceResource__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>ServiceAppointment__c</fields>
+        <fields>Status__c</fields>
+        <fields>StatusComment__c</fields>
+        <relatedList>HOT_HistoricallyAssignedResource__c.ServiceResource__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>ServiceAppointment</fields>
@@ -170,7 +188,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h3N0000013Exr</masterLabel>
+        <masterLabel>00h1j000001B5RU</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

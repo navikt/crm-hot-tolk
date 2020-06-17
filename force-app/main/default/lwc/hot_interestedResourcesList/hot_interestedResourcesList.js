@@ -1,13 +1,11 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
-import { updateRecord } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import retractInterests from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterests';
 import resendInterestApex from '@salesforce/apex/HOT_InterestedResourcesListController.resendInterest';
 import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
-import STATUS from '@salesforce/schema/HOT_InterestedResource__c.Status__c';
-import INTERESTEDRESOURCE_ID from '@salesforce/schema/HOT_InterestedResource__c.Id';
+import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
 
 
 var actions = [
@@ -21,7 +19,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
 		{
 			label: 'Oppdragsnummer',
-			fieldName: 'Name',
+			fieldName: 'AppointmentNumber__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -44,11 +42,16 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			sortable: true,
 		},
 		{
+			label: 'Ny kommentar',
+			fieldName: 'IsNewComment__c',
+			type: 'boolean',
+		},
+		{
 			type: 'action',
 			typeAttributes: { rowActions: actions },
 		},
 	];
-	columnLabels = ["'Oppdragsnummer'", "''", "'Tid'", "'Adresse'", "'Status'"];
+	columnLabels = ["'Oppdragsnummer'", "''", "'Tid'", "'Adresse'", "'Status'", "'Ny kommentar'"];
 
 
 	@track serviceResource;
@@ -71,7 +74,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			this.error = undefined;
 			this.filterInterestedResources();
 			this.showHideAll();
-			//console.log(JSON.stringify(this.interestedResources));
+			console.log(JSON.stringify(this.interestedResources));
 
 		} else if (result.error) {
 			this.error = result.error;
@@ -175,6 +178,13 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		this.subject = row.ServiceAppointment__r.HOT_FreelanceSubject__c;
 		this.recordId = row.Id;
 		this.prevComments = row.Comments__c.split("\n\n");
+
+		let interestedResourceId = this.recordId;
+		console.log(interestedResourceId);
+		readComment({ interestedResourceId })
+			.then(() => {
+				refreshApex(this.wiredInterestedResourcesResult);
+			});
 	}
 	closeComments() {
 		this.isAddComments = false;

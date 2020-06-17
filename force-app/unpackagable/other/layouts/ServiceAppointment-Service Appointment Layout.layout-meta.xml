@@ -248,17 +248,24 @@
 		<fields>NAME</fields>
 		<fields>ServiceResource.NAME</fields>
 		<fields>Status__c</fields>
-		<fields>Comments__c</fields>
+		<fields>IsDispatcherNewComment__c</fields>
 		<relatedList>HOT_InterestedResource__c.ServiceAppointment__c</relatedList>
 	</relatedLists>
 	<relatedLists>
 		<relatedList>RelatedEntityHistoryList</relatedList>
 	</relatedLists>
+	<relatedLists>
+		<fields>NAME</fields>
+		<fields>ServiceResource__c</fields>
+		<fields>Status__c</fields>
+		<fields>StatusComment__c</fields>
+		<relatedList>HOT_HistoricallyAssignedResource__c.ServiceAppointment__c</relatedList>
+	</relatedLists>
 	<showEmailCheckbox>false</showEmailCheckbox>
 	<showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
 	<showSubmitAndAttachButton>false</showSubmitAndAttachButton>
 	<summaryLayout>
-		<masterLabel>00h1x000000SXKT</masterLabel>
+		<masterLabel>00h1j000001B0uU</masterLabel>
 		<sizeX>4</sizeX>
 		<sizeY>0</sizeY>
 		<summaryLayoutStyle>Default</summaryLayoutStyle>

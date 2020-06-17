@@ -23,28 +23,35 @@
 				<lightning-record-edit-form class="comment-form" record-id={recordId}
 					object-api-name="ServiceAppointment" density="comfy">
 
-					<lightning-output-field field-name="AppointmentNumber">
-					</lightning-output-field>
-					<lightning-output-field field-name="HOT_FreelanceSubject__c">
-					</lightning-output-field>
-					<lightning-output-field field-name="SchedStartTime">
-					</lightning-output-field>
-					<lightning-output-field field-name="SchedEndTime">
-					</lightning-output-field>
-					<lightning-output-field field-name="ActualStartTime">
-					</lightning-output-field>
-					<lightning-output-field field-name="ActualEndTime">
-					</lightning-output-field>
-					<lightning-output-field field-name="HOT_AddressFormated__c">
-					</lightning-output-field>
-					<lightning-output-field field-name="HOT_WorkTypeName__c">
-					</lightning-output-field>
-					<lightning-output-field field-name="HOT_HapticCommunication__c">
-					</lightning-output-field>
-					<lightning-output-field field-name="HOT_DegreeOfHearingAndVisualImpairment__c">
-					</lightning-output-field>
-					<p class="typo-normal">Oppdragstype</p>
-					<p class="typo-normal">{assignmentType}</p>
+					<div class="slds-grid slds-gutters">
+						<div class="slds-col slds-size_1-of-2">
+							<lightning-output-field field-name="AppointmentNumber">
+							</lightning-output-field>
+							<lightning-output-field field-name="HOT_FreelanceSubject__c">
+							</lightning-output-field>
+							<lightning-output-field field-name="SchedStartTime">
+							</lightning-output-field>
+							<lightning-output-field field-name="SchedEndTime">
+							</lightning-output-field>
+							<lightning-output-field field-name="ActualStartTime">
+							</lightning-output-field>
+							<lightning-output-field field-name="ActualEndTime">
+							</lightning-output-field>
+						</div>
+						<div class="slds-col slds-size_1-of-2">
+							<lightning-output-field field-name="HOT_AddressFormated__c">
+							</lightning-output-field>
+							<lightning-output-field field-name="HOT_WorkTypeName__c">
+							</lightning-output-field>
+							<lightning-output-field field-name="HOT_HapticCommunication__c">
+							</lightning-output-field>
+							<lightning-output-field field-name="HOT_DegreeOfHearingAndVisualImpairment__c">
+							</lightning-output-field>
+							<span class="slds-form-element__label">Oppdragstype</span>
+							<lightning-formatted-text class="slds-form-element__static">{assignmentType}
+							</lightning-formatted-text>
+						</div>
+					</div>
 
 					<div if:true={testing}>
 						<p class="typo-normal">Formidler</p>
