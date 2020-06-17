@@ -242,7 +242,7 @@
 		<platformActionListItems>
 			<actionName>ServiceAppointment.HOT_RetractServiceAppointment</actionName>
 			<actionType>QuickAction</actionType>
-			<sortOrder>3</sortOrder>
+			<sortOrder>4</sortOrder>
 		</platformActionListItems>
 	</platformActionList>
 	<relatedLists>
