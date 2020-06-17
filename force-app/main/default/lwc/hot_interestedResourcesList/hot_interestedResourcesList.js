@@ -19,7 +19,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
 		{
 			label: 'Oppdragsnummer',
-			fieldName: 'Name',
+			fieldName: 'AppointmentNumber__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -74,7 +74,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			this.error = undefined;
 			this.filterInterestedResources();
 			this.showHideAll();
-			//console.log(JSON.stringify(this.interestedResources));
+			console.log(JSON.stringify(this.interestedResources));
 
 		} else if (result.error) {
 			this.error = result.error;
