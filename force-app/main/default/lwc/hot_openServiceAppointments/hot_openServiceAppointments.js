@@ -15,12 +15,12 @@ export default class Hot_allServiceAppointments extends LightningElement {
 
 
 	@track columns = [
-		/*{
+		{
 			label: 'Oppdragsnummer',
 			fieldName: 'AppointmentNumber',
 			type: 'text',
 			sortable: true,
-		},*/
+		},
 		{
 			label: 'Tid',
 			fieldName: 'HOT_DateTimeFormated__c',
