@@ -51,4 +51,13 @@ private class HOT_IRListControllerTest{
 		System.debug(updatedInterestedResource.Comments__c);
 		System.assertEquals(true, updatedInterestedResource.Comments__c.contains('New Comment'), 'Comment was not updated');
 	}
+
+	@isTest static void dispatcherReadCommentTest(){
+		HOT_InterestedResource__c interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c];
+		interestedResource.IsDispatcherNewComment__c = true;
+		update interestedResource;
+		HOT_InterestedResourcesListController.dispatcherReadComment(interestedResource.Id);
+		interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c];
+		System.assertEquals(false, interestedResource.IsDispatcherNewComment__c);
+	}
 }

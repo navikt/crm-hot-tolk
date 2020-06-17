@@ -6,7 +6,7 @@ public without sharing class HOT_InterestedResourcesListController {
 		List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId=:userId];
 		
 		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Name, Comments__c, Status__c, ServiceAppointmentTime__c, ServiceAppointmentAddress__c,
-		ServiceAppointment__r.HOT_FreelanceSubject__c, IsNewComment__c
+		ServiceAppointment__r.HOT_FreelanceSubject__c, IsNewComment__c, ServiceAppointment__c
 		FROM HOT_InterestedResource__c WHERE ServiceResource__c IN: serviceResource];
 
 		return interestedResources;
@@ -30,10 +30,17 @@ public without sharing class HOT_InterestedResourcesListController {
 	}
 
 	@AuraEnabled
-	public static void readComment(String interestedResourceId){
+	public static void readComment(Id interestedResourceId){
 		HOT_InterestedResource__c interestedResource = [SELECT Id, IsNewComment__c FROM HOT_InterestedResource__c WHERE Id =: interestedResourceId];
 		interestedResource.IsNewComment__c = false;
 		update interestedResource;
+	}
+
+	@AuraEnabled
+	public static void dispatcherReadComment(Id recordId){
+		HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(Id = recordId, IsDispatcherNewComment__c=false);
+		update interestedResource;
+		
 	}
 
 	@AuraEnabled
@@ -41,14 +48,18 @@ public without sharing class HOT_InterestedResourcesListController {
 		if(newComment != null && newComment != ''){
 			newComment = UserInfo.getFirstName() + ' ' + UserInfo.getLastName()
 			+ ', ' + Datetime.now() + ': ' + newComment;
-			HOT_InterestedResource__c interestedResource = [SELECT Id, Comments__c, IsNewComment__c FROM HOT_InterestedResource__c WHERE Id =: interestedResourceId];
+			HOT_InterestedResource__c interestedResource = [SELECT Id, Comments__c, IsNewComment__c, IsDispatcherNewComment__c FROM HOT_InterestedResource__c WHERE Id =: interestedResourceId];
 			if(interestedResource.Comments__c == null){
 				interestedResource.Comments__c = newComment;
 			}
 			else{
 			interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
 			}
-			if(UserInfo.getProfileId() != [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0].Id){
+			if(UserInfo.getProfileId() == [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0].Id){
+					System.debug('IsDispatcherNewComment__c = true');
+				interestedResource.IsDispatcherNewComment__c = true;
+			}
+			else{
 				interestedResource.IsNewComment__c = true;
 			}
 			update interestedResource;
@@ -62,5 +73,7 @@ public without sharing class HOT_InterestedResourcesListController {
 	public static void addComment(List<HOT_InterestedResourcesListController> inputVariables){
 		HOT_InterestedResourcesListController.addComment(inputVariables[0].recordId, inputVariables[0].newComment);
 	}
+
+
 	
 }
