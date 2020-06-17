@@ -35,6 +35,20 @@
                 <stringValue>Ingen</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_IsEmployedInterpreter__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Save_Service_Appointment</targetReference>
         </connector>
@@ -209,8 +223,8 @@
     </processMetadataValues>
     <processType>FieldServiceMobile</processType>
     <recordCreates>
-        <name>Create_Historically_Assigned_Resource</name>
-        <label>Create Historically Assigned Resource</label>
+        <name>Create_Historically_Assigned_Resource_Avlyst</name>
+        <label>Create Historically Assigned Resource - Avlyst</label>
         <locationX>1229</locationX>
         <locationY>482</locationY>
         <connector>
@@ -242,14 +256,42 @@
         </inputAssignments>
         <object>HOT_HistoricallyAssignedResource__c</object>
     </recordCreates>
+    <recordCreates>
+        <name>Create_Historically_Assigned_Resource_Dekket</name>
+        <label>Create Historically Assigned Resource - Dekket</label>
+        <locationX>892</locationX>
+        <locationY>16</locationY>
+        <connector>
+            <targetReference>Assign_new_values_dekket</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>ServiceAppointment__c</field>
+            <value>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ServiceResource__c</field>
+            <value>
+                <elementReference>ServiceResourceId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Dekket</stringValue>
+            </value>
+        </inputAssignments>
+        <object>HOT_HistoricallyAssignedResource__c</object>
+    </recordCreates>
     <recordLookups>
         <name>Get_Assigned_Resource</name>
         <label>Get Assigned Resource</label>
-        <locationX>966</locationX>
-        <locationY>520</locationY>
+        <locationX>325</locationX>
+        <locationY>288</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Create_Historically_Assigned_Resource</targetReference>
+            <targetReference>Set_status</targetReference>
         </connector>
         <filters>
             <field>ServiceAppointmentId</field>
@@ -267,11 +309,11 @@
     <recordLookups>
         <name>Get_ServiceAppointment</name>
         <label>Get ServiceAppointment</label>
-        <locationX>295</locationX>
-        <locationY>286</locationY>
+        <locationX>173</locationX>
+        <locationY>290</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Set_status</targetReference>
+            <targetReference>Get_Assigned_Resource</targetReference>
         </connector>
         <filters>
             <field>Id</field>
@@ -322,13 +364,13 @@
     <screens>
         <name>Set_Cancel_Comment_Tolk</name>
         <label>Set Cancel Comment - Tolk</label>
-        <locationX>752</locationX>
-        <locationY>520</locationY>
+        <locationX>921</locationX>
+        <locationY>489</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Get_Assigned_Resource</targetReference>
+            <targetReference>Create_Historically_Assigned_Resource_Avlyst</targetReference>
         </connector>
         <fields>
             <name>Cancel_Comment_Tolk</name>
@@ -374,7 +416,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Assign_new_values_dekket</targetReference>
+            <targetReference>Create_Historically_Assigned_Resource_Dekket</targetReference>
         </connector>
         <fields>
             <name>New_start_time_dekket</name>

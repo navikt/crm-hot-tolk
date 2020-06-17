@@ -53,6 +53,22 @@
             <targetReference>DeleteAssignedResource</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>setInterestedResourceStatusInterested</name>
+        <label>setInterestedResourceStatusInterested</label>
+        <locationX>1319</locationX>
+        <locationY>528</locationY>
+        <assignmentItems>
+            <assignToReference>interatorRelatedInterestedResource.Status__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Interested</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>updateRelatedInterestedResource</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>DontExecute</name>
         <choiceText>Avbryt</choiceText>
@@ -149,6 +165,21 @@ Status == &quot;Ingen&quot;</description>
     </decisions>
     <interviewLabel>Release To Freelance {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Release To Freelance</label>
+    <loops>
+        <name>Loop_Over_RelatedInterestedResources</name>
+        <label>Loop Over RelatedInterestedResources</label>
+        <locationX>1406</locationX>
+        <locationY>312</locationY>
+        <assignNextValueToReference>interatorRelatedInterestedResource</assignNextValueToReference>
+        <collectionReference>getRelatedInterestedResources</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>setInterestedResourceStatusInterested</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>SuccessScreen</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -208,13 +239,43 @@ Status == &quot;Ingen&quot;</description>
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
+    <recordLookups>
+        <name>getRelatedInterestedResources</name>
+        <label>getRelatedInterestedResources</label>
+        <locationX>1264</locationX>
+        <locationY>303</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Loop_Over_RelatedInterestedResources</targetReference>
+        </connector>
+        <filters>
+            <field>ServiceAppointment__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>HOT_InterestedResource__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>updateRelatedInterestedResource</name>
+        <label>updateRelatedInterestedResource</label>
+        <locationX>1541</locationX>
+        <locationY>524</locationY>
+        <connector>
+            <targetReference>Loop_Over_RelatedInterestedResources</targetReference>
+        </connector>
+        <inputReference>interatorRelatedInterestedResource</inputReference>
+    </recordUpdates>
     <recordUpdates>
         <name>UpdateServiceAppointment</name>
         <label>UpdateServiceAppointment</label>
         <locationX>1263</locationX>
         <locationY>126</locationY>
         <connector>
-            <targetReference>SuccessScreen</targetReference>
+            <targetReference>getRelatedInterestedResources</targetReference>
         </connector>
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
@@ -315,8 +376,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>1397</locationX>
-        <locationY>129</locationY>
+        <locationX>1668</locationX>
+        <locationY>127</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -353,6 +414,14 @@ Status == &quot;Ingen&quot;</description>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>ServiceAppointment</objectType>
+    </variables>
+    <variables>
+        <name>interatorRelatedInterestedResource</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>HOT_InterestedResource__c</objectType>
     </variables>
     <variables>
         <name>recordId</name>

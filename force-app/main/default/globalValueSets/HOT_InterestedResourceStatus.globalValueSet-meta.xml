@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
 	<customValue>
 		<fullName>Interested</fullName>
@@ -24,6 +24,11 @@
 		<fullName>Canceled</fullName>
 		<default>false</default>
 		<label>Canceled</label>
+	</customValue>
+	<customValue>
+		<fullName>Service Appointment Retracted</fullName>
+		<default>false</default>
+		<label>Service Appointment Retracted</label>
 	</customValue>
 	<masterLabel>Interested Resource Status</masterLabel>
 	<sorted>false</sorted>

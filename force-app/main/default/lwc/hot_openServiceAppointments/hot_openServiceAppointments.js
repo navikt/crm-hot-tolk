@@ -7,7 +7,7 @@ import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointme
 
 
 var actions = [
-	{ label: 'Detaljer', name: 'details' },
+	{ label: 'Tema', name: 'details' },
 ];
 
 export default class Hot_allServiceAppointments extends LightningElement {
@@ -63,7 +63,7 @@ export default class Hot_allServiceAppointments extends LightningElement {
 		},
 	];
 
-	columnLabels = ["'Tid'", "''", "'Adresse'", "'Arbeidstype'", "'Påmeldte'", "'Frist"];
+	columnLabels = ["'Oppdragsnummer'", "''", "'Tid'", "'Adresse'", "'Arbeidstype'", "'Påmeldte'", "'Frist"];
 
 	@track serviceResource;
 	@wire(getServiceResource)

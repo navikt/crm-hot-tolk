@@ -86,6 +86,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_ServiceResourceAccessHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_TestDataFactory</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -129,7 +133,16 @@
         <apexClass>MaskinportenServiceTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>SobjectWrapper</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <custom>false</custom>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>AssignedResource.HOT_TriggerValidation__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_HistoricallyAssignedResource__c.ServiceResource__c</field>
@@ -144,6 +157,11 @@
         <editable>true</editable>
         <field>HOT_HistoricallyAssignedResource__c.Status__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_InterestedResource__c.AppointmentNumber__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -533,6 +551,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.HOT_IsFreelanceInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_ServiceTerritoryLastUpdated__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

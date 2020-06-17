@@ -16,6 +16,14 @@
         <enabled>true</enabled>
         <name>HOT_ReleaseToFreelance</name>
     </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>ManageAccounts</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>ManageUsers</name>
+    </customPermissions>
     <description>Brukes av de som utvikler løsningene for HOT</description>
     <fieldPermissions>
         <editable>true</editable>
@@ -480,6 +488,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.HOT_IsFreelanceInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_ServiceTerritoryLastUpdated__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

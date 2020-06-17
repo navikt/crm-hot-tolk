@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GlobalValueSetTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
 	<valueTranslation>
 		<masterLabel>Assigned</masterLabel>
@@ -19,5 +19,9 @@
 	<valueTranslation>
 		<masterLabel>Canceled</masterLabel>
 		<translation>Avlyst</translation>
+	</valueTranslation>
+	<valueTranslation>
+		<masterLabel>Service Appointment Retracted</masterLabel>
+		<translation>Oppdrag tilbaketrukket</translation>
 	</valueTranslation>
 </GlobalValueSetTranslation>
