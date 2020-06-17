@@ -7,7 +7,7 @@ import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointme
 
 
 var actions = [
-	{ label: 'Detaljer', name: 'details' },
+	{ label: 'Tema', name: 'details' },
 ];
 
 export default class Hot_allServiceAppointments extends LightningElement {
