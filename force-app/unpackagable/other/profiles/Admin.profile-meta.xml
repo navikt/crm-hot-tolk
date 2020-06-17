@@ -139,6 +139,11 @@
     </classAccesses>
     <custom>false</custom>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>AssignedResource.HOT_TriggerValidation__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_HistoricallyAssignedResource__c.ServiceResource__c</field>
         <readable>true</readable>
@@ -546,6 +551,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.HOT_IsFreelanceInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_ServiceTerritoryLastUpdated__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

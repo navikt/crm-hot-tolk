@@ -48,7 +48,7 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
     }
 
     public override  void onAfterUpdate(Map<Id,sObject> triggerOldMap){
-        List<String> fieldNamesToCheck = new String[]{'HOT_IsFreelanceInterpreter__c'};
+        List<String> fieldNamesToCheck = new String[]{'HOT_IsFreelanceInterpreter__c', 'HOT_ServiceTerritoryLastUpdated__c'};
         List<Id> parentIdToDelete = new List<Id>();
         List<ServiceResource> serviceResourcesWithNewSharing = new List<ServiceResource>();
 
@@ -65,8 +65,6 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
             delete serviceResourceSharesToDelete;
             grantAccess(serviceResourcesWithNewSharing);
         }
-        
-
     }
 
     private Map<Integer,Id> getRecordIdByIndex(List<ServiceResource> serviceResources) {
