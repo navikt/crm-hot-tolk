@@ -3,8 +3,8 @@
     <assignments>
         <name>SetReleasedToFreelanceToFalse</name>
         <label>SetReleasedToFreelanceToFalse</label>
-        <locationX>1208</locationX>
-        <locationY>118</locationY>
+        <locationX>1096</locationX>
+        <locationY>121</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</assignToReference>
             <operator>Assign</operator>
@@ -12,8 +12,31 @@
                 <booleanValue>false</booleanValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_IsEmployedInterpreter__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>UpdateServiceAppointment</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>SetStatusToRetracted</name>
+        <label>SetStatusToRetracted</label>
+        <locationX>1356</locationX>
+        <locationY>542</locationY>
+        <assignmentItems>
+            <assignToReference>interatorRelatedInterestedResources.Status__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Service appointment retracted</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>updateRelatedInterestedResources</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -71,8 +94,8 @@ Status == &quot;Ingen&quot;</description>
     <decisions>
         <name>CheckChoice</name>
         <label>CheckChoice</label>
-        <locationX>987</locationX>
-        <locationY>123</locationY>
+        <locationX>877</locationX>
+        <locationY>125</locationY>
         <defaultConnector>
             <targetReference>OutScreen</targetReference>
         </defaultConnector>
@@ -95,6 +118,21 @@ Status == &quot;Ingen&quot;</description>
     </decisions>
     <interviewLabel>HOT_RetractFromFreelance {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Retract From Freelance</label>
+    <loops>
+        <name>Loop_Over_Related_Interested_Resources</name>
+        <label>Loop Over Related Interested Resources</label>
+        <locationX>1401</locationX>
+        <locationY>341</locationY>
+        <assignNextValueToReference>interatorRelatedInterestedResources</assignNextValueToReference>
+        <collectionReference>getRelatedInterestedResources</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>SetStatusToRetracted</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>SuccessScreen</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -137,21 +175,51 @@ Status == &quot;Ingen&quot;</description>
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
+    <recordLookups>
+        <name>getRelatedInterestedResources</name>
+        <label>getRelatedInterestedResources</label>
+        <locationX>1229</locationX>
+        <locationY>342</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Loop_Over_Related_Interested_Resources</targetReference>
+        </connector>
+        <filters>
+            <field>ServiceAppointment__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>HOT_InterestedResource__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>updateRelatedInterestedResources</name>
+        <label>updateRelatedInterestedResources</label>
+        <locationX>1511</locationX>
+        <locationY>542</locationY>
+        <connector>
+            <targetReference>Loop_Over_Related_Interested_Resources</targetReference>
+        </connector>
+        <inputReference>interatorRelatedInterestedResources</inputReference>
+    </recordUpdates>
     <recordUpdates>
         <name>UpdateServiceAppointment</name>
         <label>UpdateServiceAppointment</label>
-        <locationX>1352</locationX>
-        <locationY>124</locationY>
+        <locationX>1229</locationX>
+        <locationY>122</locationY>
         <connector>
-            <targetReference>SuccessScreen</targetReference>
+            <targetReference>getRelatedInterestedResources</targetReference>
         </connector>
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
     <screens>
         <name>AlreadyScheduled</name>
         <label>AlreadyScheduled</label>
-        <locationX>811</locationX>
-        <locationY>120</locationY>
+        <locationX>735</locationX>
+        <locationY>122</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -189,38 +257,38 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>OutScreen</name>
         <label>OutScreen</label>
-        <locationX>994</locationX>
-        <locationY>384</locationY>
-        <allowBack>true</allowBack>
+        <locationX>889</locationX>
+        <locationY>377</locationY>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <fields>
             <name>OutMessage</name>
             <fieldText>&lt;p&gt;Oppdrag ble ikke tilbaketrukket.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>1472</locationX>
-        <locationY>121</locationY>
-        <allowBack>true</allowBack>
+        <locationX>1557</locationX>
+        <locationY>128</locationY>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <fields>
             <name>Success</name>
             <fieldText>&lt;p&gt;Oppdraget ble tilbaketrukket.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
-        <locationY>50</locationY>
+        <locationX>212</locationX>
+        <locationY>62</locationY>
         <connector>
             <targetReference>GetCurrentServiceAppointment</targetReference>
         </connector>
@@ -243,6 +311,14 @@ Status == &quot;Ingen&quot;</description>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>ServiceAppointment</objectType>
+    </variables>
+    <variables>
+        <name>interatorRelatedInterestedResources</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>HOT_InterestedResource__c</objectType>
     </variables>
     <variables>
         <name>recordId</name>
