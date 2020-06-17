@@ -29,6 +29,17 @@
         </rules>
     </decisions>
     <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>NOW()</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_2_myRule_1_A1_5666914999</name>
+        <dataType>DateTime</dataType>
+        <expression>NOW()</expression>
+    </formulas>
+    <formulas>
         <name>formula_myRule_1</name>
         <dataType>Boolean</dataType>
         <expression>true</expression>
@@ -106,7 +117,7 @@
             <processMetadataValues>
                 <name>dataType</name>
                 <value>
-                    <stringValue>Boolean</stringValue>
+                    <stringValue>DateTime</stringValue>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -118,7 +129,7 @@
             <processMetadataValues>
                 <name>leftHandSideLabel</name>
                 <value>
-                    <stringValue>Active</stringValue>
+                    <stringValue>Service Territory Last Updated</stringValue>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -130,18 +141,18 @@
             <processMetadataValues>
                 <name>rightHandSideType</name>
                 <value>
-                    <stringValue>Boolean</stringValue>
+                    <stringValue>Formula</stringValue>
                 </value>
             </processMetadataValues>
-            <field>IsActive</field>
+            <field>HOT_ServiceTerritoryLastUpdated__c</field>
             <value>
-                <booleanValue>false</booleanValue>
+                <elementReference>formula_2_myRule_1_A1_5666914999</elementReference>
             </value>
         </inputAssignments>
         <object>ServiceResource</object>
     </recordUpdates>
     <startElementReference>myDecision</startElementReference>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>myVariable_current</name>
         <dataType>SObject</dataType>
