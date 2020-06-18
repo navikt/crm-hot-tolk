@@ -3,7 +3,7 @@
 	<fullName>IsDispatcherNewComment__c</fullName>
 	<defaultValue>false</defaultValue>
 	<externalId>false</externalId>
-	<label>New Comment</label>
+	<label>New Comment From Freelance Interpreter</label>
 	<trackHistory>false</trackHistory>
 	<type>Checkbox</type>
 </CustomField>
