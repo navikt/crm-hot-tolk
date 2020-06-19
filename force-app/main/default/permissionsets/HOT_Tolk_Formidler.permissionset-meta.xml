@@ -1078,6 +1078,10 @@
         <visible>true</visible>
     </recordTypeVisibilities>
     <tabSettings>
+        <tab>HOT_InterestedResource__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>HOT_Request__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
