@@ -12,9 +12,12 @@
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>numVisibleActions</name>
-                <value>3</value>
+                <value>10</value>
             </componentInstanceProperties>
             <componentName>force:highlightsPanel</componentName>
+        </componentInstances>
+        <componentInstances>
+            <componentName>hot_warningBannerServiceAppointment</componentName>
         </componentInstances>
         <name>header</name>
         <type>Region</type>
