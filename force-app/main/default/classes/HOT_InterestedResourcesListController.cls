@@ -31,16 +31,14 @@ public without sharing class HOT_InterestedResourcesListController {
 
 	@AuraEnabled
 	public static void readComment(Id interestedResourceId){
-		HOT_InterestedResource__c interestedResource = [SELECT Id, IsNewComment__c FROM HOT_InterestedResource__c WHERE Id =: interestedResourceId];
-		interestedResource.IsNewComment__c = false;
+		HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(Id = interestedResourceId, IsNewComment__c = false);
 		update interestedResource;
 	}
 
 	@AuraEnabled
 	public static void dispatcherReadComment(Id recordId){
-		HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(Id = recordId, IsDispatcherNewComment__c=false);
+		HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(Id = recordId, IsDispatcherNewComment__c = false);
 		update interestedResource;
-		
 	}
 
 	@AuraEnabled
