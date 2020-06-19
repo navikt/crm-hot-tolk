@@ -10,7 +10,7 @@ import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.
 
 var actions = [
 	{ label: 'Kommenter', name: 'comment' },
-	{ label: 'Send Interesse', name: 'resendInterest' },
+	//{ label: 'Send Interesse', name: 'resendInterest' },
 ];
 
 export default class Hot_interestedResourcesList extends LightningElement {
