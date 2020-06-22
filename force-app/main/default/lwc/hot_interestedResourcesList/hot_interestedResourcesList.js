@@ -84,7 +84,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 	filterInterestedResources() {
 		var tempInterestedResources = [];
 		for (var i = 0; i < this.interestedResources.length; i++) {
-			if (this.interestedResources[i].Status__c == "Interested") {
+			if (this.interestedResources[i].Status__c == "Påmeldt") {
 				tempInterestedResources.push(this.interestedResources[i]);
 			}
 		}
