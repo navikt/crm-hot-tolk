@@ -79,22 +79,25 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	wiredAllServiceAppointmentsResult;
 	@wire(getOpenServiceAppointments)
 	wiredAllServiceAppointments(result) {
+		console.log("wiredAllServiceAppointments");
 		this.wiredAllServiceAppointmentsResult = result;
 		if (result.data) {
 			this.allServiceAppointments = result.data;
 			this.error = undefined;
 			this.filterServiceAppointments();
 			this.showHideAll();
-			//console.log(JSON.stringify(this.allServiceAppointments));
-			for (var i = 0; i < this.allServiceAppointments.length; i++) {
-				//console.log(JSON.stringify(this.allServiceAppointments[i].WorkType));
-			}
+			console.log("JSON.stringify(this.allServiceAppointments):");
+			console.log(JSON.stringify(this.allServiceAppointments));
+			console.log("JSON.stringify(this.allServiceAppointmentsFiltered):");
+			console.log(JSON.stringify(this.allServiceAppointmentsFiltered));
 		} else if (result.error) {
 			this.error = result.error;
+			console.log(this.error);
 			this.allServiceAppointments = undefined;
 		}
 	}
 	filterServiceAppointments() {
+		console.log("filterServiceAppointments");
 		var tempServiceAppointments = [];
 		for (var i = 0; i < this.allServiceAppointments.length; i++) {
 			if (this.serviceResource.ServiceTerritories && JSON.stringify(this.serviceResource.ServiceTerritories).includes(this.allServiceAppointments[i].ServiceTerritoryId)) {
@@ -105,6 +108,7 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	}
 
 	showHideAll() {
+		console.log("showHideAll");
 		if (this.isChecked) {
 			this.allServiceAppointmentsFiltered = this.allServiceAppointments;
 		}
@@ -114,14 +118,12 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	}
 
 	connectedCallback() {
-
 		for (var i = 0; i < this.columnLabels.length; i++) {
 			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
 		}
 
 		refreshApex(this.wiredAllServiceAppointmentsResult);
 	}
-
 	//Sorting methods
 	@track defaultSortDirection = 'asc';
 	@track sortDirection = 'asc';

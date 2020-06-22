@@ -2,7 +2,7 @@
 
 	<div class="brodsmulesti">
 		<lightning-breadcrumbs class="liste-max-width">
-			<lightning-breadcrumb label="Hjem" href="/tolketjenesten/s/">
+			<lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}>
 			</lightning-breadcrumb>
 			<lightning-breadcrumb label="Oppdrag" href="/tolketjenesten/s/mine-oppdrag">
 			</lightning-breadcrumb>
@@ -10,19 +10,19 @@
 	</div>
 
 	<div class="liste liste-max-width">
-		<lightning-tabset active-tab-value="open">
+		<lightning-tabset active-tab-value={activeTab}>
 
-			<lightning-tab label="Ledige oppdrag" value="open">
+			<lightning-tab label="Ledige oppdrag" value="open" onactive={onOpen}>
 				<c-hot_open-service-appointments item-name="openServiceAppointments">
 				</c-hot_open-service-appointments>
 			</lightning-tab>
 
-			<lightning-tab label="Påmeldte oppdrag" value="interested">
+			<lightning-tab label="Påmeldte oppdrag" value="interested" onactive={onInterested}>
 				<c-hot_interested-resources-list item-name="interestedResources">
 				</c-hot_interested-resources-list>
 			</lightning-tab>
 
-			<lightning-tab label="Mine oppdrag" value="my">
+			<lightning-tab label="Mine oppdrag" value="my" onactive={onMy}>
 				<c-hot_my-service-appointments item-name="myServiceAppointments">
 				</c-hot_my-service-appointments>
 			</lightning-tab>

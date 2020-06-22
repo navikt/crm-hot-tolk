@@ -57,6 +57,8 @@ private class HOT_MySAListControllerTest{
 		insert request;
 		request.Status__c = 'Godkjent';
 		update request;
+		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+		insert serviceResource;
 
 		ServiceAppointment saDummy = [SELECT Id FROM ServiceAppointment LIMIT 1];
 		List<ServiceAppointment> assignedAppointments = HOT_MyServiceAppointmentListController.getMyServiceAppointments();

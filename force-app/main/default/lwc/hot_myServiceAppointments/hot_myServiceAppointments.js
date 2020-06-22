@@ -12,11 +12,6 @@ var actions = [
 
 export default class Hot_myServiceAppointments extends LightningElement {
 
-	connectedCallback() {
-		for (var i = 0; i < this.columnLabels.length; i++) {
-			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
-		}
-	}
 
 	@track columns = [
 		{
@@ -48,7 +43,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
 			typeAttributes: { rowActions: actions },
 		},
 	];
-	columnLabels = ["'Oppdragsnummer'", "'Tid'", "'Adresse'", "'Status'"];
 
 	@track serviceResource;
 	@wire(getServiceResource)
