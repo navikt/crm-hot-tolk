@@ -10,7 +10,7 @@
 	</div>
 
 	<div class="liste liste-max-width">
-		<lightning-tabset active-tab-value="open">
+		<lightning-tabset active-tab-value={activeTab}>
 
 			<lightning-tab label="Ledige oppdrag" value="open" onactive={onOpen}>
 				<c-hot_open-service-appointments item-name="openServiceAppointments">
