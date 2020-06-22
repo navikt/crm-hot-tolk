@@ -87,6 +87,18 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 	}
 
+	goToOppdrag(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'mine-oppdrag'
+				},
+			});
+		}
+	}
+
 
 
 }
