@@ -51,7 +51,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			typeAttributes: { rowActions: actions },
 		},
 	];
-	columnLabels = ["'Oppdragsnummer'", "''", "'Tid'", "'Adresse'", "'Status'", "'Ny kommentar'"];
+
 
 
 	@track serviceResource;
@@ -101,10 +101,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
 	}
 
 	connectedCallback() {
-
-		for (var i = 0; i < this.columnLabels.length; i++) {
-			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
-		}
 		refreshApex(this.wiredInterestedResourcesResult);
 	}
 
