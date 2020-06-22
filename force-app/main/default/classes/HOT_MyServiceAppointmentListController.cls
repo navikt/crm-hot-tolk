@@ -16,13 +16,21 @@ public without sharing class HOT_MyServiceAppointmentListController {
 	
 	@AuraEnabled(cacheable = true)
 	public static List<ServiceAppointment> getMyServiceAppointments() {
+		ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId=:UserInfo.getUserId()];
+		List<AssignedResource> assignedResources = [SELECT ServiceAppointmentId, ServiceResourceId 
+													FROM AssignedResource
+													WHERE ServiceResourceId = :serviceResource.Id];
+		List<Id> serviceAppointmentIds = new List<Id>();
+		for(AssignedResource ar:assignedResources){
+			serviceAppointmentIds.add(ar.ServiceAppointmentId);
+		}
 		List<ServiceAppointment> serviceAppointments = [
 			SELECT AppointmentNumber, Subject, Status, ParentRecordId,
 				   HOT_AddressFormated__c, HOT_DateTimeFormated__c, HOT_AssignedResourceId__c, HOT_WorkTypeName__c,
 				   SchedStartTime, SchedEndTime, ActualEndTime, ActualStartTime,
 				   HOT_DegreeOfHearingAndVisualImpairment__c, HOT_HapticCommunication__c
 			FROM ServiceAppointment 
-			WHERE HOT_AssignedResourceId__c = :UserInfo.getUserId()
+			WHERE Id IN :serviceAppointmentIds
 			ORDER BY SchedStartTime ASC];
 		return serviceAppointments;
 	}
