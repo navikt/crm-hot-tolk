@@ -7,11 +7,17 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		//Getting the skills of the user --> ServiceResource
 		Id userId = UserInfo.getUserId();
 		List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId=:userId];
+		System.debug('serviceResource: ' + serviceResource);
+
 		List<ServiceResourceSkill> serviceResourceSkills = [SELECT SkillId FROM ServiceResourceSkill WHERE ServiceResourceId IN: serviceResource];
+		System.debug('serviceResourceSkills: ' + serviceResourceSkills);
+
 		List<Id> mySkillIds = new List<Id>();
 		for(ServiceResourceSkill SRSkill:serviceResourceSkills){
 			mySkillIds.add(SRSkill.SkillId);
 		}
+		System.debug('mySkillIds: ' + mySkillIds);
+
 		//List<Skill> mySkills = [SELECT Id, MasterLabel FROM Skill WHERE Id IN: mySkillIds];
 
 		//Getting ServiceAppointments of interest
@@ -21,6 +27,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		for(HOT_InterestedResource__c ir:interestedResources){
 			interestedServiceAppointmentIds.add(ir.ServiceAppointment__c);
 		}
+		System.debug('interestedServiceAppointmentIds: ' + interestedServiceAppointmentIds);
 
 		//Getting ServiceAppointments, filtered by isRealeased, Status, 
 		//and if the ServiceResource has already reported interest in the ServiceAppointment
@@ -33,20 +40,27 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		WHERE HOT_IsReleasedToFreelance__c = true AND Status = 'Ingen' AND HOT_DeadlineDate__c >= :DATE.TODAY()
 														AND Id NOT IN: interestedServiceAppointmentIds
 		ORDER BY EarliestStartTime ASC];
+		System.debug('serviceAppointments: ' + serviceAppointments);
 
 		//Getting the required Skills for each workType 
 		Set<Id> workTypeIds = new Set<Id>();
 		for(ServiceAppointment sa:serviceAppointments){
 			workTypeIds.add(sa.WorkType.Id);
 		}
+		System.debug('workTypeIds: ' + workTypeIds);
+
 		List<SkillRequirement> neededSkillRequirements = [SELECT SkillId, RelatedRecordId FROM SkillRequirement WHERE RelatedRecordId IN: workTypeIds];
-		
+		System.debug('neededSkillRequirements: ' + neededSkillRequirements);
+
 		List<Id> neededSkillIds = new List<Id>();
 		for(SkillRequirement req:neededSkillRequirements){
 			neededSkillIds.add(req.SkillId);
 		}
+		System.debug('neededSkillIds: ' + neededSkillIds);
+
 		List<Skill> neededSkills = [SELECT Id FROM Skill WHERE Id IN: neededSkillIds];
-		
+		System.debug('neededSkills: ' + neededSkills);
+
 		//Removing the ServiceAppointments with needed skills the ServiceResource does not have
 		List<ServiceAppointment> serviceAppointmentsFiltered = new List<ServiceAppointment>();
 		for(ServiceAppointment sa:serviceAppointments){
@@ -64,6 +78,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 				serviceAppointmentsFiltered.add(sa);
 			}
 		}
+		System.debug('serviceAppointmentsFiltered: ' + serviceAppointmentsFiltered);
 		return serviceAppointmentsFiltered;
 	}
 
