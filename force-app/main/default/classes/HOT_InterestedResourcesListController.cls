@@ -5,7 +5,7 @@ public without sharing class HOT_InterestedResourcesListController {
 		Id userId = UserInfo.getUserId();
 		List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId=:userId];
 		
-		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Name, Comments__c, Status__c, ServiceAppointmentTime__c, ServiceAppointmentAddress__c,
+		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Name, Comments__c, toLabel(Status__c), ServiceAppointmentTime__c, ServiceAppointmentAddress__c,
 		ServiceAppointment__r.HOT_FreelanceSubject__c, IsNewComment__c, ServiceAppointment__c, AppointmentNumber__c
 		FROM HOT_InterestedResource__c WHERE ServiceResource__c IN: serviceResource];
 
