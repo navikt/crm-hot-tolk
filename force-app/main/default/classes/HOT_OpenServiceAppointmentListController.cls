@@ -69,12 +69,12 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 			for(SkillRequirement sreq:neededSkillRequirements){
 				if(sreq.RelatedRecordId == sa.WorkType.Id){
 					subNeededSkillIds.add(sreq.SkillId);
-					if(mySkillIds.contains(sreq.SkillId)){
+					if(!mySkillIds.contains(sreq.SkillId)){
 					n++;
 					}
 				}
 			}
-			if(n ==subNeededSkillIds.size()){
+			if(n == 0){
 				serviceAppointmentsFiltered.add(sa);
 			}
 		}
