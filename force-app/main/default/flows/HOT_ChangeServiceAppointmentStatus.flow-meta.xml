@@ -26,8 +26,8 @@
     <assignments>
         <name>Assign_new_values_Avlyst_Tolk</name>
         <label>Assign new values - Avlyst - Tolk</label>
-        <locationX>1497</locationX>
-        <locationY>454</locationY>
+        <locationX>1495</locationX>
+        <locationY>466</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
@@ -104,6 +104,22 @@
         </assignmentItems>
         <connector>
             <targetReference>Save_Service_Appointment</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>setInterestedResourceStatusCanceledByInterpreter</name>
+        <label>setInterestedResourceStatusCanceledByInterpreter</label>
+        <locationX>1215</locationX>
+        <locationY>462</locationY>
+        <assignmentItems>
+            <assignToReference>interestedResource.Status__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Canceled by Interpreter</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>updateInterestedResource</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -225,10 +241,10 @@
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Avlyst</name>
         <label>Create Historically Assigned Resource - Avlyst</label>
-        <locationX>1229</locationX>
-        <locationY>482</locationY>
+        <locationX>993</locationX>
+        <locationY>461</locationY>
         <connector>
-            <targetReference>Assign_new_values_Avlyst_Tolk</targetReference>
+            <targetReference>getInterestedResources</targetReference>
         </connector>
         <inputAssignments>
             <field>ServiceAppointment__c</field>
@@ -333,12 +349,53 @@
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
+    <recordLookups>
+        <name>getInterestedResources</name>
+        <label>getInterestedResources</label>
+        <locationX>1108</locationX>
+        <locationY>462</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>setInterestedResourceStatusCanceledByInterpreter</targetReference>
+        </connector>
+        <filters>
+            <field>ServiceAppointment__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>ServiceResource__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>ServiceResourceId</elementReference>
+            </value>
+        </filters>
+        <object>HOT_InterestedResource__c</object>
+        <outputReference>interestedResource</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Status__c</queriedFields>
+        <queriedFields>ServiceResource__c</queriedFields>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+    </recordLookups>
     <recordUpdates>
         <name>Save_Service_Appointment</name>
         <label>Save Service Appointment</label>
         <locationX>2043</locationX>
         <locationY>450</locationY>
         <inputReference>CurrentServiceAppointment</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>updateInterestedResource</name>
+        <label>updateInterestedResource</label>
+        <locationX>1342</locationX>
+        <locationY>458</locationY>
+        <connector>
+            <targetReference>Assign_new_values_Avlyst_Tolk</targetReference>
+        </connector>
+        <inputReference>interestedResource</inputReference>
     </recordUpdates>
     <screens>
         <name>Set_Cancel_Comment_Bruker</name>
@@ -364,8 +421,8 @@
     <screens>
         <name>Set_Cancel_Comment_Tolk</name>
         <label>Set Cancel Comment - Tolk</label>
-        <locationX>921</locationX>
-        <locationY>489</locationY>
+        <locationX>869</locationX>
+        <locationY>462</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -481,6 +538,14 @@
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>interestedResource</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>HOT_InterestedResource__c</objectType>
     </variables>
     <variables>
         <name>ServiceResourceId</name>
