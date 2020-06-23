@@ -106,7 +106,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
 		console.log("filterServiceAppointments");
 		var tempServiceAppointments = [];
 		for (var i = 0; i < this.myServiceAppointments.length; i++) {
-			if (this.myServiceAppointments[i].Status != 'Avbrutt' && this.myServiceAppointments[i].Status != 'Kan ikke fullføre' && this.myServiceAppointments[i].Status != 'Fullført') {
+			if (this.myServiceAppointments[i].Status != 'Avlyst' && this.myServiceAppointments[i].Status != 'Udekket' && this.myServiceAppointments[i].Status != 'Dekket') {
 				tempServiceAppointments.push(this.myServiceAppointments[i]);
 			}
 		}
