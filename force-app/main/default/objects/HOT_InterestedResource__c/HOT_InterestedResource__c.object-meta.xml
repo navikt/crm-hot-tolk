@@ -161,7 +161,7 @@
     <externalSharingModel>ControlledByParent</externalSharingModel>
     <label>Interested Resource</label>
     <nameField>
-        <displayFormat>{000000}</displayFormat>
+        <displayFormat>IR-{000000}</displayFormat>
         <label>Interested Resource</label>
         <trackHistory>true</trackHistory>
         <type>AutoNumber</type>
