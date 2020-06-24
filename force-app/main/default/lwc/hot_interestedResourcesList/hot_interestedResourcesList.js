@@ -10,6 +10,7 @@ import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.
 
 var actions = [
 	{ label: 'Kommenter', name: 'comment' },
+	{ label: 'Detaljer', name: 'details' },
 	//{ label: 'Send Interesse', name: 'resendInterest' },
 ];
 
@@ -40,6 +41,13 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			fieldName: 'Status__c',
 			type: 'text',
 			sortable: true,
+		},
+		{
+			label: 'Påmeldte',
+			fieldName: 'NumberOfInterestedResources__c',
+			type: 'number',
+			sortable: true,
+			cellAttributes: { alignment: 'left' }
 		},
 		{
 			label: 'Ny kommentar',
@@ -161,6 +169,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			case 'resendInterest':
 				this.resendInterest(row);
 				break;
+			case 'details':
+				this.openDetails(row);
+				break;
 			default:
 		}
 	}
@@ -195,7 +206,25 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		this.isAddComments = false;
 	}
 
-	//Move this to apex to avoid sharing settings
+	@track assignemntType;
+	@track deadlineDate;
+	@track isDetails = false;
+	openDetails(row) {
+		this.isDetails = true;
+		this.subject = row.ServiceAppointment__r.HOT_FreelanceSubject__c;
+		this.assignemntType = row.ServiceAppointment__r.HOT_WorkTypeName__c.toString();
+		this.deadlineDate = row.ServiceAppointment__r.HOT_DeadlineDate__c.toString();
+		console.log(JSON.stringify(row));
+		console.log(this.assignemntType);
+		console.log(this.deadlineDate);
+		this.isDetails = true;
+	}
+	abortShowDetails() {
+		this.isDetails = false;
+	}
+
+
+
 	resendInterest(row) {
 		const interestedId = row.Id;
 		if (row.Status__c == "Retracted Interest") {
