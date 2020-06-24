@@ -26,8 +26,8 @@
     <assignments>
         <name>SetStatusToRetracted</name>
         <label>SetStatusToRetracted</label>
-        <locationX>1356</locationX>
-        <locationY>542</locationY>
+        <locationX>1360</locationX>
+        <locationY>599</locationY>
         <assignmentItems>
             <assignToReference>interatorRelatedInterestedResources.Status__c</assignToReference>
             <operator>Assign</operator>
@@ -116,6 +116,31 @@ Status == &quot;Ingen&quot;</description>
             <label>Retract</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>checkInterestedResourcesStatus</name>
+        <label>checkInterestedResourcesStatus</label>
+        <locationX>1230</locationX>
+        <locationY>507</locationY>
+        <defaultConnector>
+            <targetReference>Loop_Over_Related_Interested_Resources</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>ShouldChange</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>interatorRelatedInterestedResources.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Interested</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>SetStatusToRetracted</targetReference>
+            </connector>
+            <label>ShouldChange</label>
+        </rules>
+    </decisions>
     <interviewLabel>HOT_RetractFromFreelance {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Retract From Freelance</label>
     <loops>
@@ -127,7 +152,7 @@ Status == &quot;Ingen&quot;</description>
         <collectionReference>getRelatedInterestedResources</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
-            <targetReference>SetStatusToRetracted</targetReference>
+            <targetReference>checkInterestedResourcesStatus</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
             <targetReference>SuccessScreen</targetReference>
