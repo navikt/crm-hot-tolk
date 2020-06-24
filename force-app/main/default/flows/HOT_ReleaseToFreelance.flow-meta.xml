@@ -56,8 +56,8 @@
     <assignments>
         <name>setInterestedResourceStatusInterested</name>
         <label>setInterestedResourceStatusInterested</label>
-        <locationX>1319</locationX>
-        <locationY>528</locationY>
+        <locationX>1394</locationX>
+        <locationY>541</locationY>
         <assignmentItems>
             <assignToReference>interatorRelatedInterestedResource.Status__c</assignToReference>
             <operator>Assign</operator>
@@ -139,6 +139,31 @@ Status == &quot;Ingen&quot;</description>
         </rules>
     </decisions>
     <decisions>
+        <name>Check_Status_of_InterestedResource</name>
+        <label>Check Status of InterestedResource</label>
+        <locationX>1227</locationX>
+        <locationY>463</locationY>
+        <defaultConnector>
+            <targetReference>Loop_Over_RelatedInterestedResources</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Status_is_Not_Assigned</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>interatorRelatedInterestedResource.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Not Assigned</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>setInterestedResourceStatusInterested</targetReference>
+            </connector>
+            <label>Status is Not Assigned</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>CheckChoice</name>
         <label>CheckChoice</label>
         <locationX>775</locationX>
@@ -174,7 +199,7 @@ Status == &quot;Ingen&quot;</description>
         <collectionReference>getRelatedInterestedResources</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
-            <targetReference>setInterestedResourceStatusInterested</targetReference>
+            <targetReference>Check_Status_of_InterestedResource</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
             <targetReference>SuccessScreen</targetReference>
@@ -326,8 +351,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>ServiceAppointment_already_Released</name>
         <label>ServiceAppointment already Released</label>
-        <locationX>513</locationX>
-        <locationY>371</locationY>
+        <locationX>505</locationX>
+        <locationY>387</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>

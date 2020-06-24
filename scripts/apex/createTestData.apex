@@ -1,4 +1,4 @@
-User user = [SELECT Id FROM User WHERE Email = 'fakeemail@nav.no.scratchorg'];
+User user = [SELECT Id FROM User WHERE Email = 'fakeemail@nav.no.scratchorg' LIMIT 1];
 Skill skill = [SELECT Id FROM Skill WHERE DeveloperName = 'Tegnspraktolk'];
 ServiceTerritory serviceTerritory = [SELECT Id FROM ServiceTerritory WHERE Name = 'Tromsø'];
 WorkType workType = [SELECT Id FROM WorkType WHERE Name = 'Tegnspråktolk'];
