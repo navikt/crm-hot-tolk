@@ -24,7 +24,7 @@
 			<section>
 				<div style="padding: 1rem;">
 					<h2 class="typo-undertittel">Emne</h2>
-					<p class="typo-normal">{subject}</p>
+					<p class="typo-normal">{AppointmentNumber__c}</p>
 					</br>
 					<div>
 						<h2 class="typo-undertittel">Diskusjon med formidler</h2>
@@ -53,12 +53,57 @@
 		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
 			tabindex="-1" role="dialog">
 			<section>
-				<span class="slds-form-element__label">Fristdato</span>
-				<p class="typo-normal" style="margin-bottom: 0.25rem;">{deadlineDate}</p>
-				<span class="slds-form-element__label">Oppdragstype</span>
-				<p class="typo-normal" style="margin-bottom: 0.25rem;">{assignemntType}</p>
+				<h2 class="typo-undertittel">Detaljer</h2>
+				<div class="slds-grid slds-gutters">
+					<div class="slds-col slds-size_1-of-2">
+						<span class="slds-form-element__label">Oppdrag</span>
+						<p class="typo-normal" style="margin-bottom: 0.25rem;">
+							{detailInterestedResource.AppointmentNumber__c}
+						</p>
+						<span class="slds-form-element__label">Tid</span>
+						<p class="typo-normal" style="margin-bottom: 0.25rem;">
+							{detailInterestedResource.ServiceAppointmentTime__c}</p>
+						<span class="slds-form-element__label">Sted</span>
+						<p class="typo-normal" style="margin-bottom: 0.25rem;">
+							{detailInterestedResource.ServiceAppointmentAddress__c}</p>
+						<span class="slds-form-element__label">Oppdragstype</span>
+						<p class="typo-normal" style="margin-bottom: 0.25rem;">
+							{detailInterestedResource.ServiceAppointment__r.HOT_WorkTypeName__c}</p>
+					</div>
+					<div class="slds-col slds-size_1-of-2">
+						<span class="slds-form-element__label">Status</span>
+						<p class="typo-normal" style="margin-bottom: 0.25rem;">{detailInterestedResource.Status__c}</p>
+						<span class="slds-form-element__label">Påmeldte</span>
+						<p class="typo-normal" style="margin-bottom: 0.25rem;">
+							{detailInterestedResource.NumberOfInterestedResources__c}</p>
+						<span class="slds-form-element__label">Fristdato</span>
+						<p class="typo-normal" style="margin-bottom: 0.25rem;">
+							{detailInterestedResource.ServiceAppointment__r.HOT_DeadlineDate__c}</p>
+					</div>
+				</div>
 				<span class="slds-form-element__label">Tema</span>
-				<p class="typo-normal">{subject}</p>
+				<p class="typo-normal">{detailInterestedResource.ServiceAppointment__r.HOT_FreelanceSubject__c}</p>
+				<section>
+					<div style="padding: 1rem;">
+						</br>
+						<div>
+							<h2 class="typo-undertittel">Diskusjon med formidler</h2>
+							<template iterator:it={prevComments}>
+								<p class="typo-normal" key={it.value}>{it.value}</p>
+								<p style="color: transparent;" key={it.value}>.</p>
+							</template>
+						</div>
+						<lightning-textarea style="margin-bottom: 1rem;" class="newComment" name="newComment">
+						</lightning-textarea>
+						<lightning-button onclick={sendComment} class="slds-m-left_x-small" variant="brand"
+							type="submit" label="Send inn">
+						</lightning-button>
+
+					</div>
+				</section>
+				<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeComments}>
+					<span class="text-hide">Lukk</span>
+				</button>
 			</section>
 			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
 				<span class="text-hide">Lukk</span>

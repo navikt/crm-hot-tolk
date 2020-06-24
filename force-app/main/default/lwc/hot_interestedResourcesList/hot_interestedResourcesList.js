@@ -9,8 +9,8 @@ import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.
 
 
 var actions = [
-	{ label: 'Kommenter', name: 'comment' },
-	{ label: 'Detaljer', name: 'details' },
+	//{ label: 'Kommenter', name: 'comment' },
+	{ label: 'Se mer', name: 'details' },
 	//{ label: 'Send Interesse', name: 'resendInterest' },
 ];
 
@@ -176,13 +176,26 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		}
 	}
 
-	@track subject = "Ingen detaljer";
-	@track isAddComments = false;
+	@track appointmentNumber = "Ingen detaljer";
 	@track recordId;
 	@track prevComments = ["Ingen tidligere kommentarer"];
-	openComments(row) {
-		this.isAddComments = true;
-		this.subject = row.ServiceAppointment__r.HOT_FreelanceSubject__c;
+	sendComment() {
+		let interestedResourceId = this.recordId;
+		var newComment = this.template.querySelector(".newComment").value;
+		addComment({ interestedResourceId, newComment })
+			.then(() => {
+				refreshApex(this.wiredInterestedResourcesResult);
+			});
+		this.isDetails = false;
+	}
+
+	@track deadlineDate;
+	@track isDetails = false;
+	@track detailInterestedResource;
+	openDetails(row) {
+		this.isDetails = true;
+		this.detailInterestedResource = row;
+
 		this.recordId = row.Id;
 		this.prevComments = row.Comments__c.split("\n\n");
 
@@ -192,32 +205,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			.then(() => {
 				refreshApex(this.wiredInterestedResourcesResult);
 			});
-	}
-	closeComments() {
-		this.isAddComments = false;
-	}
-	sendComment() {
-		let interestedResourceId = this.recordId;
-		var newComment = this.template.querySelector(".newComment").value;
-		addComment({ interestedResourceId, newComment })
-			.then(() => {
-				refreshApex(this.wiredInterestedResourcesResult);
-			});
-		this.isAddComments = false;
-	}
-
-	@track assignemntType;
-	@track deadlineDate;
-	@track isDetails = false;
-	openDetails(row) {
-		this.isDetails = true;
-		this.subject = row.ServiceAppointment__r.HOT_FreelanceSubject__c;
-		this.assignemntType = row.ServiceAppointment__r.HOT_WorkTypeName__c.toString();
-		this.deadlineDate = row.ServiceAppointment__r.HOT_DeadlineDate__c.toString();
-		console.log(JSON.stringify(row));
-		console.log(this.assignemntType);
-		console.log(this.deadlineDate);
-		this.isDetails = true;
 	}
 	abortShowDetails() {
 		this.isDetails = false;
