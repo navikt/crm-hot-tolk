@@ -62,7 +62,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 		});
 	}
 	onInterested() {
-		const columnLabels = ["'Oppdragsnummer'", "''", "'Tid'", "'Adresse'", "'Status'", "'Ny kommentar'", "''"];
+		const columnLabels = ["'Oppdragsnummer'", "''", "'Tid'", "'Adresse'", "'Status'", "'Påmeldte'", "'Ny kommentar'"];
 		for (var i = 0; i < columnLabels.length; i++) {
 			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
 		}
