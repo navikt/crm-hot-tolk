@@ -110,6 +110,13 @@
                 <elementReference>VarWOLIEndDate</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>VarSA.HOT_Request__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>VarWOLI.WorkOrder.HOT_Request__r.Id</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>SAcollection</targetReference>
         </connector>
