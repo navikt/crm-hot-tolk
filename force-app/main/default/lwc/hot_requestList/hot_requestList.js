@@ -12,6 +12,7 @@ var actions = [
 	{ label: 'Avlys', name: 'delete' },
 	{ label: 'Kopier', name: 'clone_order' },
 	{ label: 'Rediger', name: 'edit_order' },
+	{ label: 'Detaljer', name: 'details' },
 ];
 export default class RequestList extends NavigationMixin(LightningElement) {
 	@track isProd;
@@ -89,7 +90,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			this.filterRequests();
 			this.showHideInactives();
 			this.error = undefined;
-			console.log(this.allRequests[0]);
+			console.log(JSON.stringify(this.allRequests));
 		} else if (result.error) {
 			this.error = result.error;
 			this.allRequests = undefined;
@@ -206,6 +207,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			case 'edit_order':
 				this.editOrder(row);
 				break;
+			case 'details':
+				this.showDetails(row);
+				break;
 			default:
 		}
 	}
@@ -302,6 +306,33 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		}
 	}
+	@track interpreters = [];
+	@track showInterpreters = false;
+	@track isDetails = false;
+	showDetails(row) {
+		this.interpreters = [];
+		console.log("showDetails");
+		if (row.ServiceAppointments__r != null) {
+			var serviceAppointments = row.ServiceAppointments__r;
+			for (var sa of serviceAppointments) {
+				if (sa.HOT_ServiceResource__c != null) {
+					this.interpreters.push(sa.HOT_ServiceResource__r.Name);
+					console.log(JSON.stringify(this.interpreters));
+				}
+			}
+			if (this.interpreters.length > 0) {
+				this.showInterpreters = true;
+			}
+		}
+		this.isDetails = true;
+	}
+
+	abortShowDetails() {
+		this.isDetails = false;
+		this.showInterpreters = false;
+	}
+
+
 	goToMyRequests(event) {
 		if (!this.isProd) {
 			event.preventDefault();
