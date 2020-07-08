@@ -12,6 +12,13 @@
                 <stringValue/>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.HOT_ServiceResource__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue/>
+            </value>
+        </assignmentItems>
     </assignments>
     <assignments>
         <name>Set_Assigned_Resource_Id</name>
