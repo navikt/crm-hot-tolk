@@ -10,7 +10,7 @@ on:
 # Jobs to be executed
 jobs:
   scratch-org-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
       # Install Salesforce CLI
       - name: Install Salesforce CLI
@@ -41,7 +41,7 @@ jobs:
       - name: "Install dependencies"
         run: |
           echo y | sfdx plugins:install sfpowerkit # echo y to confirm installation
-          sfdx sfpowerkit:package:dependencies:install -u scratch-org -v devhub -k "crm-platform-base:${{ secrets.PACKAGE_KEY }} crm-platform-access-control:${{ secrets.PACKAGE_KEY }} crm-community-base:${{ secrets.PACKAGE_KEY }}"
+          sfdx sfpowerkit:package:dependencies:install -u scratch-org -v devhub -k "crm-platform-base:${{ secrets.PACKAGE_KEY }} crm-platform-access-control:${{ secrets.PACKAGE_KEY }} crm-community-base:${{ secrets.PACKAGE_KEY }} crm-arbeidsgiver-base:${{ secrets.PACKAGE_KEY }} crm-hot:${{ secrets.PACKAGE_KEY }} crm-platform-admin:${{ secrets.PACKAGE_KEY }} crm-platform-integration:${{ secrets.PACKAGE_KEY }} crm-platform-reporting:${{ secrets.PACKAGE_KEY }}"
 
       # Deploy source to scratch org
       - name: "Push source to scratch org"
