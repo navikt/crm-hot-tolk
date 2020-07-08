@@ -25,6 +25,13 @@
                 <elementReference>Get_Service_Resource.RelatedRecordId</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.HOT_ServiceResource__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Service_Resource.Id</elementReference>
+            </value>
+        </assignmentItems>
     </assignments>
     <decisions>
         <name>Is_there_an_Assigned_Resource</name>
