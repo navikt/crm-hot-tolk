@@ -346,6 +346,11 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_Escort__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>true</editable>
 		<field>ServiceAppointment.HOT_InterpretationPostalCity__c</field>
 		<readable>true</readable>
