@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Tildelt ressurs</label>
+    <name>HOT_ServiceResource__c</name>
+    <relationshipLabel><!-- Service Appointments --></relationshipLabel>
+</CustomFieldTranslation>
