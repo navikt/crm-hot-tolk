@@ -90,7 +90,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			this.filterRequests();
 			this.showHideInactives();
 			this.error = undefined;
-			console.log(JSON.stringify(this.allRequests));
+			//console.log(JSON.stringify(this.allRequests));
 		} else if (result.error) {
 			this.error = result.error;
 			this.allRequests = undefined;
@@ -121,7 +121,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			this.requests = this.allRequests;
 		}
 		else {
-			console.log("if false");
 			this.filterRequests();
 		}
 	}
@@ -159,8 +158,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 				b = key(b).toLowerCase();
 				a = valueStatus.indexOf(a);
 				b = valueStatus.indexOf(b);
-				console.log(a + ", " + b);
-				console.log(reverse * ((a > b) - (b > a)));
+				//console.log(a + ", " + b);
+				//console.log(reverse * ((a > b) - (b > a)));
 				return reverse * ((a > b) - (b > a));
 			};
 		}
@@ -168,8 +167,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			return function (a, b) {
 				a = key(a).toLowerCase();
 				b = key(b).toLowerCase();
-				console.log(a + ", " + b);
-				console.log(reverse * ((a > b) - (b > a)));
+				//console.log(a + ", " + b);
+				//console.log(reverse * ((a > b) - (b > a)));
 				return reverse * ((a > b) - (b > a));
 			};
 		}
@@ -177,7 +176,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	onHandleSort(event) {
 		this.sortList(event.detail);
-		console.log("End of onHandleSort");
 	}
 
 	sortList(input) {
@@ -190,7 +188,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		this.sortDirection = sortDirection;
 		this.sortedBy = sortedBy;
 		this.showHideInactives();
-		console.log("End of sortList");
 	}
 
 	handleRowAction(event) {
@@ -311,13 +308,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	@track isDetails = false;
 	showDetails(row) {
 		this.interpreters = [];
-		console.log("showDetails");
 		if (row.ServiceAppointments__r != null) {
 			var serviceAppointments = row.ServiceAppointments__r;
 			for (var sa of serviceAppointments) {
 				if (sa.HOT_ServiceResource__c != null) {
 					this.interpreters.push(sa.HOT_ServiceResource__r.Name);
-					console.log(JSON.stringify(this.interpreters));
 				}
 			}
 			if (this.interpreters.length > 0) {
