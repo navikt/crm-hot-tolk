@@ -10,7 +10,7 @@ on:
 # Jobs to be executed
 jobs:
   scratch-org-test:
-    runs-on: ubuntu-18.04-arm8
+    runs-on: ubuntu-latest
     steps:
       # Install Salesforce CLI
       - name: Install Salesforce CLI
