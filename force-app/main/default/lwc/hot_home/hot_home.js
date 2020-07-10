@@ -14,7 +14,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 	@wire(isProdFunction)
 	wiredIsProd({ error, data }) {
 		this.isProd = data;
-		console.log("isProd: " + this.isProd);
+		//console.log("isProd: " + this.isProd);
 	}
 
 
