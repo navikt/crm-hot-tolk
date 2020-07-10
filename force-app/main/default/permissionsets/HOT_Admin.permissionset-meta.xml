@@ -171,6 +171,11 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
+		<field>HOT_Request__c.MessageToDispatcher__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
 		<field>HOT_Request__c.NumberOfInterpreters__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
