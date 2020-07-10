@@ -64,9 +64,6 @@ jobs:
           json=$(sfdx force:package:version:create -f config/project-scratch-def.json -p crm-hot-dev -k ${{ secrets.PACKAGE_KEY }} -w 90 --json)
           echo $json
           status=$(echo $json |jq '.status')
-          if [ $status == "1" ]
-            exit 125
-          fi
 
       # Extract data from package version create result
       - name: "Extract package:version:create result data"
