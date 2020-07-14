@@ -61,9 +61,8 @@ jobs:
       - name: "Create package version"
         id: package-version-create
         run: |
-          json=$(sfdx force:package:version:create -f config/project-scratch-def.json -p crm-hot-dev -k ${{ secrets.PACKAGE_KEY }} -w 90 --json)
-          echo $json
-          status=$(echo $json |jq '.status')
+          echo "::set-output name=result::$(sfdx force:package:version:create -f config/project-scratch-def.json -p crm-hot-dev -k ${{ secrets.PACKAGE_KEY }} -w 60 --json | jq -c .)"
+          echo "::set-output name=isSuccess::true"
 
       # Extract data from package version create result
       - name: "Extract package:version:create result data"
