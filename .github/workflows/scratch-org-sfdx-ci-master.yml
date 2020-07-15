@@ -37,21 +37,24 @@ jobs:
       - name: "Create scratch org"
         run: "sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1"
 
-      # Install dependencies to scratch org
-      - name: "Install dependencies"
-        run: |
-          echo y | sfdx plugins:install sfpowerkit@1.45.2-13 # echo y to confirm installation
-          sfdx sfpowerkit:package:dependencies:install -u scratch-org -v devhub -k "1:${{ secrets.PACKAGE_KEY }} 2:${{ secrets.PACKAGE_KEY }} 3:${{ secrets.PACKAGE_KEY }} 4:${{ secrets.PACKAGE_KEY }} 5:${{ secrets.PACKAGE_KEY }} 6:${{ secrets.PACKAGE_KEY }} 7:${{ secrets.PACKAGE_KEY }} 8:${{ secrets.PACKAGE_KEY }}"
-
-      # Deploy source to scratch org
-      - name: "Push source to scratch org"
-        run: "sfdx force:source:push"
-
-      # Run Apex tests in scratch org
-      - name: "Run Apex tests"
-        run: "sfdx force:apex:test:run -c -r human -d ./tests/apex -w 60"
-
-      # Housekeeping
-      - name: "Delete scratch org"
-        if: always()
-        run: "sfdx force:org:delete -p -u scratch-org"
+      # Test user thing
+      - name: "Test user thing"
+        run: "sfdx force:org:open -u scratch-org -r --json"
+    #  # Install dependencies to scratch org
+    #  - name: "Install dependencies"
+    #    run: |
+    #      echo y | sfdx plugins:install sfpowerkit@1.45.2-13 # echo y to confirm installation
+    #      sfdx sfpowerkit:package:dependencies:install -u scratch-org -v devhub -k "1:${{ secrets.PACKAGE_KEY }} 2:${{ secrets.PACKAGE_KEY }} 3:${{ secrets.PACKAGE_KEY }} 4:${{ secrets.PACKAGE_KEY }} 5:${{ secrets.PACKAGE_KEY }} 6:${{ secrets.PACKAGE_KEY }} 7:${{ secrets.PACKAGE_KEY }} 8:${{ secrets.PACKAGE_KEY }}"
+#
+#  # Deploy source to scratch org
+#  - name: "Push source to scratch org"
+#    run: "sfdx force:source:push"
+#
+#  # Run Apex tests in scratch org
+#  - name: "Run Apex tests"
+#    run: "sfdx force:apex:test:run -c -r human -d ./tests/apex -w 60"
+#
+#  # Housekeeping
+#  - name: "Delete scratch org"
+#    if: always()
+#    run: "sfdx force:org:delete -p -u scratch-org"
