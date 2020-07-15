@@ -188,12 +188,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	connectedCallback() {
 
 		let testURL = window.location.href;
-		console.log(testURL);
+		//console.log(testURL);
 		//var newURL = parseUri(testURL).searchParams;
 		//let newURL = new URL(testURL).searchParams;
 		//let newURL = "derp";
 		let params = testURL.split("?")[1];
-		console.log(params);
+		//console.log(params);
 
 		function parse_query_string(query) {
 			var vars = query.split("&");
