@@ -519,7 +519,7 @@
         <showHeader>true</showHeader>
     </screens>
     <startElementReference>Get_ServiceAppointment</startElementReference>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>CurrentServiceAppointment</name>
         <dataType>SObject</dataType>
