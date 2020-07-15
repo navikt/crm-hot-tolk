@@ -10,7 +10,7 @@ on:
 # Jobs to be executed
 jobs:
   scratch-org-test:
-    runs-on: ubuntu-18.04-arm8
+    runs-on: ubuntu-latest
     steps:
       # Install Salesforce CLI
       - name: Install Salesforce CLI
@@ -37,11 +37,15 @@ jobs:
       - name: "Create scratch org"
         run: "sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1"
 
+      # Test user thing
+      - name: "Test user thing"
+        run: "sfdx force:org:open -u scratch-org -r --json"
+
       # Install dependencies to scratch org
       - name: "Install dependencies"
         run: |
-          echo y | sfdx plugins:install sfpowerkit # echo y to confirm installation
-          sfdx sfpowerkit:package:dependencies:install -u scratch-org -v devhub -k "crm-platform-base:${{ secrets.PACKAGE_KEY }} crm-platform-access-control:${{ secrets.PACKAGE_KEY }} crm-community-base:${{ secrets.PACKAGE_KEY }} crm-arbeidsgiver-base:${{ secrets.PACKAGE_KEY }} crm-hot:${{ secrets.PACKAGE_KEY }} crm-platform-admin:${{ secrets.PACKAGE_KEY }} crm-platform-integration:${{ secrets.PACKAGE_KEY }} crm-platform-reporting:${{ secrets.PACKAGE_KEY }}"
+          echo y | sfdx plugins:install sfpowerkit@1.45.2-13 # echo y to confirm installation
+          sfdx sfpowerkit:package:dependencies:install -u scratch-org -v devhub -k "1:${{ secrets.PACKAGE_KEY }} 2:${{ secrets.PACKAGE_KEY }} 3:${{ secrets.PACKAGE_KEY }} 4:${{ secrets.PACKAGE_KEY }} 5:${{ secrets.PACKAGE_KEY }} 6:${{ secrets.PACKAGE_KEY }} 7:${{ secrets.PACKAGE_KEY }} 8:${{ secrets.PACKAGE_KEY }}"
 
       # Deploy source to scratch org
       - name: "Push source to scratch org"
