@@ -67,7 +67,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 	wiredServiceresource(result) {
 		if (result.data) {
 			this.serviceResource = result.data;
-			console.log(JSON.stringify(this.serviceResource));
+			//console.log(JSON.stringify(this.serviceResource));
 		}
 	}
 
