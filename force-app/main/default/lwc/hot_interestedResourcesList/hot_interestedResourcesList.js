@@ -200,7 +200,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		this.prevComments = row.Comments__c.split("\n\n");
 
 		let interestedResourceId = this.recordId;
-		console.log(interestedResourceId);
+		//console.log(interestedResourceId);
 		readComment({ interestedResourceId })
 			.then(() => {
 				refreshApex(this.wiredInterestedResourcesResult);
