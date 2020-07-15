@@ -26,26 +26,4 @@
 			onsort={onHandleSort} onrowaction={handleRowAction}>
 		</lightning-datatable>
 	</div>
-
-	<div if:true={isDetails} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
-		style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
-		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
-			tabindex="-1" role="dialog">
-			<section>
-				<div if:true={showInterpreters}>
-					<h2 class="typo-undertittel">Tolker</h2>
-					<template iterator:it={interpreters}>
-						<p class="typo-normal" key={it.value}>{it.value}</p>
-					</template>
-				</div>
-				<div if:false={showInterpreters}>
-					<p class="typo-normal">Ingen ytterligere detaljer</p>
-				</div>
-			</section>
-			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
-				<span class="text-hide">Lukk</span>
-			</button>
-		</div>
-	</div>
-
 </template>

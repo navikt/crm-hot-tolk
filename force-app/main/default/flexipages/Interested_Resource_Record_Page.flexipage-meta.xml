@@ -16,9 +16,6 @@
             </componentInstanceProperties>
             <componentName>force:highlightsPanel</componentName>
         </componentInstances>
-        <componentInstances>
-            <componentName>hot_registerDispatcherReadComment</componentName>
-        </componentInstances>
         <mode>Replace</mode>
         <name>header</name>
         <type>Region</type>
