@@ -5,15 +5,15 @@
 		<visible>true</visible>
 	</applicationVisibilities>
 	<classAccesses>
+		<apexClass>HOT_AssignedResourcesCreatedController</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
 		<apexClass>HOT_MyServiceAppointmentListController</apexClass>
 		<enabled>true</enabled>
 	</classAccesses>
 	<classAccesses>
 		<apexClass>HOT_OpenServiceAppointmentListController</apexClass>
-		<enabled>true</enabled>
-	</classAccesses>
-	<classAccesses>
-		<apexClass>HOT_AssignedResourcesCreatedController</apexClass>
 		<enabled>true</enabled>
 	</classAccesses>
 	<customPermissions>
@@ -420,6 +420,11 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_Escort__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>true</editable>
 		<field>ServiceAppointment.HOT_FreelanceSubject__c</field>
 		<readable>true</readable>
@@ -457,6 +462,16 @@
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>ServiceAppointment.HOT_NumberOfInterestedResources__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_Request__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_ServiceResource__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
