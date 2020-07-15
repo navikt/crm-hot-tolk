@@ -40,6 +40,7 @@ jobs:
       # Test user thing
       - name: "Test user thing"
         run: "sfdx force:org:open -u scratch-org -r --json"
+
       # Install dependencies to scratch org
       - name: "Install dependencies"
         run: |
