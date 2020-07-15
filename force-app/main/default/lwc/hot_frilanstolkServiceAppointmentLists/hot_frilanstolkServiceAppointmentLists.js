@@ -39,8 +39,8 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
 			if (parsed_params.activeTab != null) {
 				this.activeTab = parsed_params.activeTab;
-				console.log(parsed_params.activeTab);
-				console.log(this.activeTab);
+				//console.log(parsed_params.activeTab);
+				//console.log(this.activeTab);
 			}
 		}
 	}
