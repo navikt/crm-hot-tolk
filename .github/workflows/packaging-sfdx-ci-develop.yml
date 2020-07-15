@@ -68,7 +68,7 @@ jobs:
       # Extract data from package version create result
       - name: "Extract package:version:create result data"
         id: extract-data-package-version-create
-        uses: muenzpraeger/github-action-extract-sfdx-packaging-result@develop
+        uses: muenzpraeger/github-action-extract-sfdx-packaging-result@master
         with:
           json: ${{steps.package-version-create.outputs.result}}
 
