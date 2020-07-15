@@ -79,7 +79,7 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	wiredAllServiceAppointmentsResult;
 	@wire(getOpenServiceAppointments)
 	wiredAllServiceAppointments(result) {
-		console.log("wiredAllServiceAppointments");
+		//console.log("wiredAllServiceAppointments");
 		this.wiredAllServiceAppointmentsResult = result;
 		if (result.data) {
 			this.allServiceAppointments = result.data;
