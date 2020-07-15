@@ -3,8 +3,8 @@
     <assignments>
         <name>addToIterator</name>
         <label>addToIterator</label>
-        <locationX>407</locationX>
-        <locationY>284</locationY>
+        <locationX>410</locationX>
+        <locationY>265</locationY>
         <assignmentItems>
             <assignToReference>iterator</assignToReference>
             <operator>Assign</operator>
@@ -19,8 +19,8 @@
     <assignments>
         <name>TriggerErrorMessage</name>
         <label>TriggerErrorMessage</label>
-        <locationX>658</locationX>
-        <locationY>274</locationY>
+        <locationX>665</locationX>
+        <locationY>273</locationY>
         <assignmentItems>
             <assignToReference>$Record.HOT_TriggerValidation__c</assignToReference>
             <operator>Assign</operator>
@@ -29,11 +29,37 @@
             </value>
         </assignmentItems>
     </assignments>
+    <assignments>
+        <name>TriggerOverlappingValidation</name>
+        <label>TriggerOverlappingValidation</label>
+        <locationX>1107</locationX>
+        <locationY>340</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.HOT_HasReservations__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.debug__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>In loop</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>LoopOverReservations</targetReference>
+        </connector>
+    </assignments>
     <decisions>
         <name>checkNumberOfRecords</name>
         <label>checkNumberOfRecords</label>
         <locationX>654</locationX>
         <locationY>64</locationY>
+        <defaultConnector>
+            <targetReference>getReservations</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>RecordsExists</name>
@@ -49,6 +75,66 @@
                 <targetReference>TriggerErrorMessage</targetReference>
             </connector>
             <label>RecordsExists</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>CheckTimeOverlap</name>
+        <label>CheckTimeOverlap</label>
+        <locationX>1342</locationX>
+        <locationY>331</locationY>
+        <defaultConnector>
+            <targetReference>LoopOverReservations</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>IsOverlapping</name>
+            <conditionLogic>(1 AND 2) OR (3 AND 4) OR (5 AND 6)</conditionLogic>
+            <conditions>
+                <leftValueReference>Reservation.EarliestStartTime</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>getThisServiceAppointment.EarliestStartTime</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getThisServiceAppointment.EarliestStartTime</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>Reservation.DueDate</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Reservation.EarliestStartTime</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>getThisServiceAppointment.DueDate</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getThisServiceAppointment.DueDate</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>Reservation.DueDate</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getThisServiceAppointment.EarliestStartTime</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>Reservation.EarliestStartTime</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Reservation.DueDate</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>getThisServiceAppointment.DueDate</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>TriggerOverlappingValidation</targetReference>
+            </connector>
+            <label>IsOverlapping</label>
         </rules>
     </decisions>
     <interviewLabel>CheckAssignedResources {!$Flow.CurrentDateTime}</interviewLabel>
@@ -67,6 +153,18 @@
         <noMoreValuesConnector>
             <targetReference>checkNumberOfRecords</targetReference>
         </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <name>LoopOverReservations</name>
+        <label>LoopOverReservations</label>
+        <locationX>1229</locationX>
+        <locationY>66</locationY>
+        <assignNextValueToReference>Reservation</assignNextValueToReference>
+        <collectionReference>getReservations</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>CheckTimeOverlap</targetReference>
+        </nextValueConnector>
     </loops>
     <processMetadataValues>
         <name>BuilderType</name>
@@ -103,6 +201,48 @@
         <sortOrder>Asc</sortOrder>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>getReservations</name>
+        <label>getReservations</label>
+        <locationX>908</locationX>
+        <locationY>63</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>getThisServiceAppointment</targetReference>
+        </connector>
+        <filters>
+            <field>HOT_ServiceResource__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ServiceResourceId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>ServiceAppointment</object>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>getThisServiceAppointment</name>
+        <label>getThisServiceAppointment</label>
+        <locationX>1029</locationX>
+        <locationY>63</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>LoopOverReservations</targetReference>
+        </connector>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ServiceAppointmentId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceAppointment</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <start>
         <locationX>50</locationX>
         <locationY>50</locationY>
@@ -131,6 +271,16 @@
         <objectType>AssignedResource</objectType>
     </variables>
     <variables>
+        <name>hasReservations</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+    <variables>
         <name>iterator</name>
         <dataType>Number</dataType>
         <isCollection>false</isCollection>
@@ -140,5 +290,13 @@
         <value>
             <numberValue>0.0</numberValue>
         </value>
+    </variables>
+    <variables>
+        <name>Reservation</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>ServiceAppointment</objectType>
     </variables>
 </Flow>
