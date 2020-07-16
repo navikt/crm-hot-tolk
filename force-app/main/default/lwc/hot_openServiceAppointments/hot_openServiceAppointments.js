@@ -22,10 +22,32 @@ export default class Hot_allServiceAppointments extends LightningElement {
 			sortable: true,
 		},
 		{
-			label: 'Tid',
-			fieldName: 'HOT_DateTimeFormated__c',
-			type: 'Text',
+			label: 'Start Tid',
+			fieldName: 'EarliestStartTime',
+			type: 'date',
 			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+		{
+			label: 'Slutt Tid',
+			fieldName: 'DueDate',
+			type: 'date',
+			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
 		},
 		{
 			label: 'Adresse',
@@ -63,7 +85,7 @@ export default class Hot_allServiceAppointments extends LightningElement {
 		},
 	];
 
-	columnLabels = ["'Oppdragsnummer'", "''", "'Tid'", "'Adresse'", "'Arbeidstype'", "'Påmeldte'", "'Frist"];
+	columnLabels = ["'Oppdragsnummer'", "''", "'Start Tid'", "'Slutt Tid'", "'Adresse'", "'Arbeidstype'", "'Påmeldte'", "'Frist"];
 
 	@track serviceResource;
 	@wire(getServiceResource)
@@ -132,8 +154,10 @@ export default class Hot_allServiceAppointments extends LightningElement {
 	mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
 	get sortingOptions() {
 		return [
-			{ label: 'Tid stigende', value: '{"fieldName": "HOT_DateTimeFormated__c", "sortDirection": "asc"} ' },
-			{ label: 'Tid synkende', value: '{"fieldName": "HOT_DateTimeFormated__c", "sortDirection": "desc"} ' },
+			{ label: 'Start tid stigende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ' },
+			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
+			{ label: 'Slutt tid stigende', value: '{"fieldName": "DueDate", "sortDirection": "asc"} ' },
+			{ label: 'Slutt tid synkende', value: '{"fieldName": "DueDate", "sortDirection": "desc"} ' },
 			{ label: 'Adresse A - Å', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "asc"} ' },
 			{ label: 'Adresse Å - A', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "desc"} ' },
 			{ label: 'Arbeidstype A - Å', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} ' },

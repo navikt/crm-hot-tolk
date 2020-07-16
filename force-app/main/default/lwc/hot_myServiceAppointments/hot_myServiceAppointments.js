@@ -21,10 +21,32 @@ export default class Hot_myServiceAppointments extends LightningElement {
 			sortable: true,
 		},
 		{
-			label: 'Tid',
-			fieldName: 'HOT_DateTimeFormated__c',
-			type: 'Text',
+			label: 'Start Tid',
+			fieldName: 'EarliestStartTime',
+			type: 'date',
 			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+		{
+			label: 'Slutt Tid',
+			fieldName: 'DueDate',
+			type: 'date',
+			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
 		},
 		{
 			label: 'Adresse',
@@ -132,8 +154,10 @@ export default class Hot_myServiceAppointments extends LightningElement {
 		return [
 			{ label: 'Oppdragsnummer stigende', value: '{"fieldName": "AppointmentNumber", "sortDirection": "asc"} ' },
 			{ label: 'Oppdragsnummer synkende', value: '{"fieldName": "AppointmentNumber", "sortDirection": "desc"} ' },
-			{ label: 'Tid stigende', value: '{"fieldName": "HOT_DateTimeFormated__c", "sortDirection": "asc"} ' },
-			{ label: 'Tid synkende', value: '{"fieldName": "HOT_DateTimeFormated__c", "sortDirection": "desc"} ' },
+			{ label: 'Start tid stigende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ' },
+			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
+			{ label: 'Slutt tid stigende', value: '{"fieldName": "DueDate", "sortDirection": "asc"} ' },
+			{ label: 'Slutt tid synkende', value: '{"fieldName": "DueDate", "sortDirection": "desc"} ' },
 			{ label: 'Adresse A - Å', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "asc"} ' },
 			{ label: 'Adresse Å - A', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "desc"} ' },
 			{ label: 'Status A - Å', value: '{"fieldName": "Status", "sortDirection": "asc"} ' },

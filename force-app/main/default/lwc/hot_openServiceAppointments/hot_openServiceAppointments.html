@@ -30,7 +30,8 @@
 						<lightning-record-edit-form class="comment-form" key={it.value.Id}
 							object-api-name="HOT_InterestedResource__c" density="comfy">
 							<div>
-								<p class="typo-normal">Tid: {it.value.HOT_DateTimeFormated__c}</p>
+								<p class="typo-normal">Start tid: {it.value.EarliestStartTime}</p>
+								<p class="typo-normal">Slutt tid: {it.value.DueDate}</p>
 								<p class="typo-normal">Adresse: {it.value.HOT_AddressFormated__c}
 								</p>
 								<p class="typo-normal">Arbeidstype: {it.value.HOT_WorkTypeName__c}</p>

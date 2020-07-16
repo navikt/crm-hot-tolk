@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Tid</label>
-    <name>HOT_DateTimeFormated__c</name>
+	<label>Slutt Tid</label>
+	<name>ServiceAppointmentEndTime__c</name>
 </CustomFieldTranslation>

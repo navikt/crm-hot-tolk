@@ -25,10 +25,32 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			sortable: true,
 		},
 		{
-			label: 'Tid',
-			fieldName: 'ServiceAppointmentTime__c',
-			type: 'text',
+			label: 'Start tid',
+			fieldName: 'ServiceAppointmentStartTime__c',
+			type: 'date',
 			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+		{
+			label: 'Slutt tid',
+			fieldName: 'ServiceAppointmentEndTime__c',
+			type: 'date',
+			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
 		},
 		{
 			label: 'Adresse',
@@ -122,8 +144,10 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		return [
 			{ label: 'Oppdragsnummer stigende', value: '{"fieldName": "Name", "sortDirection": "asc"} ' },
 			{ label: 'Oppdragsnummer synkende', value: '{"fieldName": "Name", "sortDirection": "desc"} ' },
-			{ label: 'Tid stigende', value: '{"fieldName": "ServiceAppointmentTime__c", "sortDirection": "asc"} ' },
-			{ label: 'Tid synkende', value: '{"fieldName": "ServiceAppointmentTime__c", "sortDirection": "desc"} ' },
+			{ label: 'Start tid stigende', value: '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "asc"} ' },
+			{ label: 'Start tid synkende', value: '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "desc"} ' },
+			{ label: 'Slutt tid stigende', value: '{"fieldName": "ServiceAppointmentEndTime__c", "sortDirection": "asc"} ' },
+			{ label: 'Slutt tid synkende', value: '{"fieldName": "ServiceAppointmentEndTime__c", "sortDirection": "desc"} ' },
 			{ label: 'Adresse A - Å', value: '{"fieldName": "ServiceAppointmentAddress__c", "sortDirection": "asc"} ' },
 			{ label: 'Adresse Å - A', value: '{"fieldName": "ServiceAppointmentAddress__c", "sortDirection": "desc"} ' },
 			{ label: 'Status A - Å', value: '{"fieldName": "Status__c", "sortDirection": "asc"} ' },

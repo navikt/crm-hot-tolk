@@ -69,7 +69,12 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
-		<field>HOT_InterestedResource__c.ServiceAppointmentTime__c</field>
+		<field>HOT_InterestedResource__c.ServiceAppointmentStartTime__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_InterestedResource__c.ServiceAppointmentEndTime__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
