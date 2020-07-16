@@ -306,7 +306,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	@track interpreters = [];
 	@track showInterpreters = false;
 	@track isDetails = false;
+	@track record = null;
 	showDetails(row) {
+		this.record = row;
+		console.log(JSON.stringify(this.record));
 		this.interpreters = [];
 		if (row.ServiceAppointments__r != null) {
 			var serviceAppointments = row.ServiceAppointments__r;
