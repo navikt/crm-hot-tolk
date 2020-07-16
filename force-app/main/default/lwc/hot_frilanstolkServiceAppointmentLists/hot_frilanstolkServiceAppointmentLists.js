@@ -39,14 +39,14 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
 			if (parsed_params.activeTab != null) {
 				this.activeTab = parsed_params.activeTab;
-				console.log(parsed_params.activeTab);
-				console.log(this.activeTab);
+				//console.log(parsed_params.activeTab);
+				//console.log(this.activeTab);
 			}
 		}
 	}
 
 	onOpen() {
-		const columnLabels = ["'Oppdragsnummer'", "''", "'Tid'", "'Adresse'", "'Arbeidstype'", "'Påmeldte'", "'Frist"];
+		const columnLabels = ["'Oppdragsnummer'", "''", "'Start Tid'", "'Slutt Tid'", "'Adresse'", "'Arbeidstype'", "'Påmeldte'", "'Frist"];
 		for (var i = 0; i < columnLabels.length; i++) {
 			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
 		}
@@ -62,7 +62,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 		});
 	}
 	onInterested() {
-		const columnLabels = ["'Oppdragsnummer'", "''", "'Tid'", "'Adresse'", "'Status'", "'Påmeldte'", "'Ny kommentar'"];
+		const columnLabels = ["'Oppdragsnummer'", "''", "'Start Tid'", "'Slutt Tid'", "'Adresse'", "'Status'", "'Påmeldte'", "'Ny kommentar'"];
 		for (var i = 0; i < columnLabels.length; i++) {
 			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
 		}
@@ -79,7 +79,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
 	}
 	onMy() {
-		const columnLabels = ["'Oppdragsnummer'", "'Tid'", "'Adresse'", "'Status'", "''", "''", "''"];
+		const columnLabels = ["'Oppdragsnummer'", "'Start Tid'", "'Slutt Tid'", "'Adresse'", "'Status'", "''", "''", "''"];
 		for (var i = 0; i < columnLabels.length; i++) {
 			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
 		}

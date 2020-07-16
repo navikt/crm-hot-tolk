@@ -106,6 +106,22 @@
             <targetReference>Save_Service_Appointment</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>setInterestedResourceStatus</name>
+        <label>setInterestedResourceStatus</label>
+        <locationX>1277</locationX>
+        <locationY>464</locationY>
+        <assignmentItems>
+            <assignToReference>interestedResource.Status__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Canceled by Interpreter</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>updateInterestedResource</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>Status_Avlyst</name>
         <choiceText>Avlyst av bruker</choiceText>
@@ -225,10 +241,10 @@
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Avlyst</name>
         <label>Create Historically Assigned Resource - Avlyst</label>
-        <locationX>993</locationX>
-        <locationY>461</locationY>
+        <locationX>1001</locationX>
+        <locationY>464</locationY>
         <connector>
-            <targetReference>Assign_new_values_Avlyst_Tolk</targetReference>
+            <targetReference>getInterestedResource</targetReference>
         </connector>
         <inputAssignments>
             <field>ServiceAppointment__c</field>
@@ -333,12 +349,49 @@
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
+    <recordLookups>
+        <name>getInterestedResource</name>
+        <label>getInterestedResource</label>
+        <locationX>1146</locationX>
+        <locationY>464</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>setInterestedResourceStatus</targetReference>
+        </connector>
+        <filters>
+            <field>ServiceAppointment__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>ServiceResource__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>ServiceResourceId</elementReference>
+            </value>
+        </filters>
+        <object>HOT_InterestedResource__c</object>
+        <outputReference>interestedResource</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
     <recordUpdates>
         <name>Save_Service_Appointment</name>
         <label>Save Service Appointment</label>
         <locationX>2043</locationX>
         <locationY>450</locationY>
         <inputReference>CurrentServiceAppointment</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>updateInterestedResource</name>
+        <label>updateInterestedResource</label>
+        <locationX>1378</locationX>
+        <locationY>467</locationY>
+        <connector>
+            <targetReference>Assign_new_values_Avlyst_Tolk</targetReference>
+        </connector>
+        <inputReference>interestedResource</inputReference>
     </recordUpdates>
     <screens>
         <name>Set_Cancel_Comment_Bruker</name>

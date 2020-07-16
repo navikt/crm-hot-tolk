@@ -11,5 +11,5 @@
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>MasterDetail</type>
-    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    <writeRequiresMasterRead>true</writeRequiresMasterRead>
 </CustomField>

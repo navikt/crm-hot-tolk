@@ -26,4 +26,53 @@
 			onsort={onHandleSort} onrowaction={handleRowAction}>
 		</lightning-datatable>
 	</div>
+
+	<div if:true={isDetails} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+		style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
+		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
+			tabindex="-1" role="dialog">
+			<section>
+				<lightning-record-view-form object-api-name="HOT_Request__c" record-id={record.Id}>
+					<div class="slds-grid slds-gutters">
+						<div class="slds-col slds-size_1-of-2">
+							<lightning-output-field field-name="Subject__c" class="hidden-helptext">
+							</lightning-output-field>
+							<lightning-output-field field-name="Description__c" class="hidden-helptext">
+							</lightning-output-field>
+							<lightning-output-field field-name="StartTime__c"></lightning-output-field>
+							<lightning-output-field field-name="EndTime__c"></lightning-output-field>
+							<span class="slds-form-element__label lightning-output-field__label">Status</span>
+							</br>
+							<lightning-formatted-text value={record.ExternalRequestStatus__c}
+								class="lightning-output-field"></lightning-formatted-text>
+							<div if:true={showInterpreters}>
+								<span class="slds-form-element__label lightning-output-field__label">Tolker</span>
+								</br>
+								<template iterator:it={interpreters}>
+									<lightning-formatted-text value={it.value} class="lightning-output-field"
+										key={it.value}>
+									</lightning-formatted-text>
+								</template>
+							</div>
+						</div>
+						<div class="slds-col slds-size_1-of-2">
+							<lightning-output-field field-name="MeetingStreet__c"></lightning-output-field>
+							<lightning-output-field field-name="MeetingPostalCode__c"></lightning-output-field>
+							<lightning-output-field field-name="MeetingPostalCity__c"></lightning-output-field>
+							<lightning-output-field field-name="InterpretationStreet__c"></lightning-output-field>
+							<lightning-output-field field-name="InterpretationPostalCode__c">
+							</lightning-output-field>
+							<lightning-output-field field-name="InterpretationPostalCity__c">
+							</lightning-output-field>
+
+						</div>
+					</div>
+				</lightning-record-view-form>
+			</section>
+			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
+				<span class="text-hide">Lukk</span>
+			</button>
+		</div>
+	</div>
+
 </template>

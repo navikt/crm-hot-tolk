@@ -7,8 +7,8 @@
 			"path": "force-app",
 			"default": true,
 			"package": "crm-hot",
-			"versionName": "ver 0.17",
-			"versionNumber": "0.17.0.NEXT",
+			"versionName": "ver 0.19",
+			"versionNumber": "0.19.0.NEXT",
 			"dependencies": [
 				{
 					"package": "crm-platform-base",
@@ -51,6 +51,7 @@
 		"crm-platform-access-control": "0Ho2o0000008OR3CAM",
 		"crm-hot": "0Ho2o0000008OSVCA2",
 		"crm-community-base": "0Ho2o0000008OSzCAM",
-		"crm-hot-dev": "0Ho2o000000KylqCAC"
+		"crm-hot-dev": "0Ho2o000000KylqCAC",
+		"crm-platform-reporting": "0Ho2o0000008OSfCAM"
 	}
 }
