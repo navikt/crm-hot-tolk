@@ -43,8 +43,12 @@
         </sections>
     </layouts>
     <quickActions>
-        <label><!-- Release To Freelance --></label>
+        <label>Frigi til frilanstolker</label>
         <name>HOT_ReleaseToFreelance</name>
+    </quickActions>
+    <quickActions>
+        <label>Tilbaketrekk oppdrag</label>
+        <name>HOT_RetractServiceAppointment</name>
     </quickActions>
     <quickActions>
         <label><!-- SendEmail --></label>
