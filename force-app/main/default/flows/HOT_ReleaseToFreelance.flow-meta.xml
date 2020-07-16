@@ -374,7 +374,7 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>Sett_frist_for_pamelding</name>
         <label>Sett frist for påmelding</label>
-        <locationX>1032</locationX>
+        <locationX>1033</locationX>
         <locationY>120</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -398,8 +398,9 @@ Status == &quot;Ingen&quot;</description>
             <defaultValue>
                 <elementReference>CurrentServiceAppointment.Subject</elementReference>
             </defaultValue>
-            <fieldText>Frilanstema</fieldText>
+            <fieldText>Opplysninger (ikke sensitive)</fieldText>
             <fieldType>InputField</fieldType>
+            <helpText>&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
