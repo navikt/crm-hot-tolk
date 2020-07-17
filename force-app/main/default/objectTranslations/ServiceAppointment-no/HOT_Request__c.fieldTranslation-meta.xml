@@ -2,5 +2,5 @@
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Forespørsel</label>
     <name>HOT_Request__c</name>
-    <relationshipLabel><!-- Service Appointments --></relationshipLabel>
+    <relationshipLabel>Oppdrag</relationshipLabel>
 </CustomFieldTranslation>
