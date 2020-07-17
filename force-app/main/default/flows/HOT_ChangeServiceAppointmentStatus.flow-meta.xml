@@ -375,6 +375,7 @@
         <object>HOT_InterestedResource__c</object>
         <outputReference>interestedResource</outputReference>
         <queriedFields>Id</queriedFields>
+        <queriedFields>Status__c</queriedFields>
     </recordLookups>
     <recordUpdates>
         <name>Save_Service_Appointment</name>

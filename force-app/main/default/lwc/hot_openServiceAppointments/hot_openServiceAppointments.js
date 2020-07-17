@@ -10,7 +10,7 @@ var actions = [
 	{ label: 'Tema', name: 'details' },
 ];
 
-export default class Hot_allServiceAppointments extends LightningElement {
+export default class Hot_openServiceAppointments extends LightningElement {
 
 
 

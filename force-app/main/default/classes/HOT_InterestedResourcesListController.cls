@@ -8,8 +8,11 @@ public without sharing class HOT_InterestedResourcesListController {
 		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Name, Comments__c, toLabel(Status__c), ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c, ServiceAppointmentAddress__c,
 		ServiceAppointment__r.HOT_FreelanceSubject__c, IsNewComment__c, ServiceAppointment__c, AppointmentNumber__c, NumberOfInterestedResources__c,
 		ServiceAppointment__r.HOT_WorkTypeName__c, ServiceAppointment__r.HOT_DeadlineDate__c
-		FROM HOT_InterestedResource__c WHERE ServiceResource__c IN: serviceResource];
-
+		FROM HOT_InterestedResource__c 
+		WHERE 
+		ServiceResource__c IN: serviceResource
+		AND
+		Status__c NOT IN ('Assigned')];
 		return interestedResources;
 	}
 	
@@ -18,7 +21,9 @@ public without sharing class HOT_InterestedResourcesListController {
 		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c
 		FROM HOT_InterestedResource__c WHERE Id IN :retractionIds];
 		for(HOT_InterestedResource__c IR: interestedResources){
-			IR.Status__c = 'Retracted Interest';
+			if(IR.Status__c == 'Interested'){
+				IR.Status__c = 'Retracted Interest';
+			}
 		}
 		update interestedResources;	
 	}
