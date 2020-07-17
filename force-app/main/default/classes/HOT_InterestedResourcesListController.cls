@@ -12,7 +12,7 @@ public without sharing class HOT_InterestedResourcesListController {
 		WHERE 
 		ServiceResource__c IN: serviceResource
 		AND
-		Status__c NOT IN ('Assigned', 'Canceled by Interpreter')];
+		Status__c NOT IN ('Assigned')];
 		return interestedResources;
 	}
 	
@@ -21,7 +21,9 @@ public without sharing class HOT_InterestedResourcesListController {
 		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c
 		FROM HOT_InterestedResource__c WHERE Id IN :retractionIds];
 		for(HOT_InterestedResource__c IR: interestedResources){
-			IR.Status__c = 'Retracted Interest';
+			if(IR.Status__c == 'Interested'){
+				IR.Status__c = 'Retracted Interest';
+			}
 		}
 		update interestedResources;	
 	}
