@@ -77,10 +77,10 @@ export default class Hot_myServiceAppointments extends LightningElement {
 	@track workOrderLineItems;
 	@wire(getParentWorkOrderLineItems)
 	wiredWorkOrderLineItems(result) {
-		console.log("wiredWorkOrderLineItems");
+		//console.log("wiredWorkOrderLineItems");
 		if (result.data) {
 			this.workOrderLineItems = result.data;
-			console.log(JSON.stringify(this.workOrderLineItems));
+			//console.log(JSON.stringify(this.workOrderLineItems));
 		}
 		if (this.myServiceAppointments != null && this.workOrderLineItems != null) {
 			this.insertAssignemtType();
