@@ -1,6 +1,6 @@
 import { LightningElement, wire } from 'lwc';
-import getPerson from '@salesforce/apex/HOT_UserContactInformationController.getPerson';
+import getPersonPhoneEmail from '@salesforce/apex/HOT_UserInformationController.getPersonPhoneEmail';
 
 export default class hot_userContactInformation extends LightningElement {
-	@wire(getPerson) person;
+	@wire(getPersonPhoneEmail) person;
 }
