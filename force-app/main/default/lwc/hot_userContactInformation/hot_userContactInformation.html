@@ -1,21 +1,34 @@
 <template>
-	<lightning-record-view-form object-api-name="Person__c" record-id={recordId}>
-		<div class="slds-grid slds-gutters">
-			<div class="slds-col slds-size_1-of-2">
-				<lightning-output-field field-name="INT_MobilePhone__c">
-				</lightning-output-field>
-			</div>
-			<div class="slds-col slds-size_1-of-2">
-				<lightning-output-field field-name="INT_Email__c">
-				</lightning-output-field>
-			</div>
-		</div>
-	</lightning-record-view-form>
+	<div class="user-info-wrapper center-content">
+		<div class="user-info-tile center-content">
+			<section>
+				<h2 class="typo-systemtittel">Kontaktinformasjon</h2>
 
-	<p class="typo-normal">
-		<a href="https://brukerprofil.difi.no/minprofil" class="lenke kilde__lenke lenke">
-			Endre i Kontakt- og reservasjonsregisteret
-		</a>
-	</p>
+				<lightning-record-view-form object-api-name="Person__c" record-id={recordId}>
+					<div class="slds-grid slds-gutters">
+						<div class="slds-col slds-size_1-of-2">
+							<lightning-output-field field-name="INT_MobilePhone__c">
+							</lightning-output-field>
+						</div>
+						<div class="slds-col slds-size_1-of-2">
+							<lightning-output-field field-name="INT_Email__c">
+							</lightning-output-field>
+						</div>
+					</div>
+				</lightning-record-view-form>
+
+				<p class="typo-normal">
+					<a href="https://brukerprofil.difi.no/minprofil" class="lenke kilde__lenke lenke">
+						<span class="kilde__icon">
+							<img if:false={isProd} style="width: 1rem;"
+								src="/sfsites/c/resource/1595245347000/linkNAV"></img>
+							<img if:true={isProd} style="width: 1rem;"
+								src="/s/sfsites/c/resource/1595245347000/linkNAV"></img>
+						</span> Endre i Kontakt- og reservasjonsregisteret
+					</a>
+				</p>
+			</section>
+		</div>
+	</div>
 
 </template>
