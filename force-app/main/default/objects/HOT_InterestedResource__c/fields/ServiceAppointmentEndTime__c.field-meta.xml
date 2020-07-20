@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+	<fullName>ServiceAppointmentEndTime__c</fullName>
+	<externalId>false</externalId>
+	<formula>ServiceAppointment__r.DueDate</formula>
+	<formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+	<label>Service Appointment End Time</label>
+	<required>false</required>
+	<trackHistory>false</trackHistory>
+	<trackTrending>false</trackTrending>
+	<type>DateTime</type>
+	<unique>false</unique>
+</CustomField>

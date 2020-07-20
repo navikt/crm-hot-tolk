@@ -3,20 +3,65 @@
 		{
 			"attributes": {
 				"type": "HOT_Request__c",
-				"referenceId": "HOT_Request__cRef1"
+				"referenceId": "RequestRef1"
 			},
-			"Subject__c": "Dette er en test for å sjekke om man kan imortere data",
-			"UserPhone__c": "41451899",
-			"Person__c": "Person__cRef1"
+			"Subject__c": "Forespørsel 1",
+			"Account__c": "@AccountRef1",
+			"Person__c": "@PersonRef1",
+			"InterpretationMethod__c": "@WorkTypeRef1",
+			"InterpretationStreet__c": "Veien 1",
+			"InterpretationPostalCode__c": "1001",
+			"InterpretationPostalCity__c": "Oslo",
+			"MeetingStreet__c": "Veien 1",
+			"MeetingPostalCode__c": "1001",
+			"MeetingPostalCity__c": "Oslo",
+			"NumberOfInterpreters__c": "2",
+			"StartTime__c": "2020-08-01T10:00:00.000+0000",
+			"EndTime__c": "2020-08-01T11:00:00.000+0000",
+			"Status__c": "Åpen",
+			"AssignmentType__c": "Private"
 		},
 		{
 			"attributes": {
 				"type": "HOT_Request__c",
-				"referenceId": "HOT_Request__cRef2"
+				"referenceId": "RequestRef2"
 			},
-			"Subject__c": "Dette er test 2 for å sjekke om man kan imortere data",
-			"UserPhone__c": "91919191",
-			"Person__c": "Person__cRef2"
+			"Subject__c": "Forespørsel 2",
+			"Account__c": "@AccountRef2",
+			"Person__c": "@PersonRef2",
+			"InterpretationMethod__c": "@WorkTypeRef1",
+			"InterpretationStreet__c": "Veien 2",
+			"InterpretationPostalCode__c": "1002",
+			"InterpretationPostalCity__c": "Oslo",
+			"MeetingStreet__c": "Veien 2",
+			"MeetingPostalCode__c": "1002",
+			"MeetingPostalCity__c": "Oslo",
+			"NumberOfInterpreters__c": "2",
+			"StartTime__c": "2020-08-02T10:00:00.000+0000",
+			"EndTime__c": "2020-08-02T11:00:00.000+0000",
+			"Status__c": "Åpen",
+			"AssignmentType__c": "Private"
+		},
+		{
+			"attributes": {
+				"type": "HOT_Request__c",
+				"referenceId": "RequestRef3"
+			},
+			"Subject__c": "Forespørsel 3",
+			"Account__c": "@AccountRef3",
+			"Person__c": "@PersonRef3",
+			"InterpretationMethod__c": "@WorkTypeRef1",
+			"InterpretationStreet__c": "Veien 3",
+			"InterpretationPostalCode__c": "1003",
+			"InterpretationPostalCity__c": "Oslo",
+			"MeetingStreet__c": "Veien 3",
+			"MeetingPostalCode__c": "1003",
+			"MeetingPostalCity__c": "Oslo",
+			"NumberOfInterpreters__c": "2",
+			"StartTime__c": "2020-08-03T10:00:00.000+0000",
+			"EndTime__c": "2020-08-03T11:00:00.000+0000",
+			"Status__c": "Åpen",
+			"AssignmentType__c": "Private"
 		}
 	]
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ServiceAppointment__c</fullName>
+    <externalId>false</externalId>
+    <label>Service Appointment</label>
+    <referenceTo>ServiceAppointment</referenceTo>
+    <relationshipLabel>Historically Assigned Resources</relationshipLabel>
+    <relationshipName>Historically_Assigned_Resources</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

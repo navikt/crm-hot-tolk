@@ -5,15 +5,22 @@ import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
+import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 
 var actions = [
 	{ label: 'Avlys', name: 'delete' },
 	{ label: 'Kopier', name: 'clone_order' },
 	{ label: 'Rediger', name: 'edit_order' },
+	{ label: 'Detaljer', name: 'details' },
 ];
 export default class RequestList extends NavigationMixin(LightningElement) {
-
+	@track isProd;
+	@track error;
+	@wire(isProdFunction)
+	wiredIsProd({ error, data }) {
+		this.isProd = data;
+	}
 	@track columns = [
 		{
 			label: 'Start tid',
@@ -66,6 +73,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			typeAttributes: { rowActions: actions },
 		},
 	];
+	columnLabels = ["'Start tid'", "'Slutt tid'", "'Oppmøtested'", "'Tema'", "'Status'"];
 
 
 	@track rerender;
@@ -82,6 +90,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			this.filterRequests();
 			this.showHideInactives();
 			this.error = undefined;
+			//console.log(JSON.stringify(this.allRequests));
 		} else if (result.error) {
 			this.error = result.error;
 			this.allRequests = undefined;
@@ -90,7 +99,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	}
 
 	filterRequests() {
-		console.log("Running filterRequests()");
 		var tempRequests = [];
 		for (var i = 0; i < this.allRequests.length; i++) {
 			if (this.allRequests[i].ExternalRequestStatus__c != "Avlyst" &&
@@ -100,7 +108,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		}
 		this.requests = tempRequests;
-		console.log("End of filterRequests()");
 	}
 
 	@track checked = false;
@@ -110,13 +117,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	}
 
 	showHideInactives() {
-		console.log("Running showHideInactives()");
 		if (this.checked) {
-			console.log("if true");
 			this.requests = this.allRequests;
 		}
 		else {
-			console.log("if false");
 			this.filterRequests();
 		}
 	}
@@ -154,8 +158,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 				b = key(b).toLowerCase();
 				a = valueStatus.indexOf(a);
 				b = valueStatus.indexOf(b);
-				console.log(a + ", " + b);
-				console.log(reverse * ((a > b) - (b > a)));
+				//console.log(a + ", " + b);
+				//console.log(reverse * ((a > b) - (b > a)));
 				return reverse * ((a > b) - (b > a));
 			};
 		}
@@ -163,8 +167,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			return function (a, b) {
 				a = key(a).toLowerCase();
 				b = key(b).toLowerCase();
-				console.log(a + ", " + b);
-				console.log(reverse * ((a > b) - (b > a)));
+				//console.log(a + ", " + b);
+				//console.log(reverse * ((a > b) - (b > a)));
 				return reverse * ((a > b) - (b > a));
 			};
 		}
@@ -172,7 +176,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	onHandleSort(event) {
 		this.sortList(event.detail);
-		console.log("End of onHandleSort");
 	}
 
 	sortList(input) {
@@ -185,7 +188,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		this.sortDirection = sortDirection;
 		this.sortedBy = sortedBy;
 		this.showHideInactives();
-		console.log("End of sortList");
 	}
 
 	handleRowAction(event) {
@@ -202,10 +204,17 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			case 'edit_order':
 				this.editOrder(row);
 				break;
+			case 'details':
+				this.showDetails(row);
+				break;
 			default:
 		}
 	}
 	connectedCallback() {
+		for (var i = 0; i < this.columnLabels.length; i++) {
+			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		}
+		window.scrollTo(0, 0);
 		refreshApex(this.wiredRequestsResult);
 	}
 
@@ -294,6 +303,46 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		}
 	}
+	@track interpreters = [];
+	@track showInterpreters = false;
+	@track isDetails = false;
+	@track record = null;
+	showDetails(row) {
+		this.record = row;
+		console.log(JSON.stringify(this.record));
+		this.interpreters = [];
+		if (row.ServiceAppointments__r != null) {
+			var serviceAppointments = row.ServiceAppointments__r;
+			for (var sa of serviceAppointments) {
+				if (sa.HOT_ServiceResource__c != null) {
+					this.interpreters.push(sa.HOT_ServiceResource__r.Name);
+				}
+			}
+			if (this.interpreters.length > 0) {
+				this.showInterpreters = true;
+			}
+		}
+		this.isDetails = true;
+	}
+
+	abortShowDetails() {
+		this.isDetails = false;
+		this.showInterpreters = false;
+	}
+
+
+	goToMyRequests(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'mine-bestillinger'
+				}
+			});
+		}
+	}
+
 	goToNewRequest() {
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',
@@ -305,13 +354,16 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		});
 	}
-	goHome() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: 'home'
-			}
-		});
+	goToHome(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'home'
+				},
+			});
+		}
 	}
 
 }

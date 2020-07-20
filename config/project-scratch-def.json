@@ -8,7 +8,9 @@
 		"ForceComPlatform",
 		"Communities",
 		"CustomerCommunity",
+		"CustomerCommunityLogin",
 		"CustomerCommunityPlus",
+		"CustomerCommunityPlusLogin",
 		"PersonAccounts",
 		"ProcessBuilder",
 		"API",
@@ -41,10 +43,10 @@
 			"enableWorkOrders": true,
 			"isGeoCodeSyncEnabled": false,
 			"isLocationHistoryEnabled": false,
-			"fieldServiceNotificationsOrgPref": false,
-			"serviceAppointmentsDueDateOffsetOrgValue": 7,
-			"workOrderLineItemSearchFields": "Subject",
-			"workOrderSearchFields": "Subject"
+			"fieldServiceNotificationsOrgPref": true
+		},
+		"nameSettings": {
+			"enableMiddleName": true
 		}
 	}
 }

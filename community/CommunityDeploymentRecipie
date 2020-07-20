@@ -1,7 +1,0 @@
-sfdx force:package:install --package 04t2o000001MxsHAAS  -k navcrm --wait 10 --publishwait 10
-sfdx force:package:install --package 04t2o000001MxphAAC  -k navcrm --wait 10 --publishwait 10
-sfdx force:package:install --package 04t2o000001My1YAAS  -k navcrm --wait 10 --publishwait 10
-
-*Create profile NAV Bruker*
-
-sfdx force:source:deploy  -u ORG_ALIAS -p .\force-app\unpackagable\community

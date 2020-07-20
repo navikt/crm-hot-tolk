@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+        <value>Linjeelement-ID i opprinnelig arbeidsordre</value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <name>root_workorderlineitem_id</name>
+</CustomFieldTranslation>

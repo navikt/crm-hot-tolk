@@ -1,5 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+	<classAccesses>
+		<apexClass>HOT_InterestedResourcesListController</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<classAccesses>
+		<apexClass>HOT_AssignedResourcesCreatedController</apexClass>
+		<enabled>true</enabled>
+	</classAccesses>
+	<customPermissions>
+		<enabled>true</enabled>
+		<name>HOT_ReleaseToFreelance</name>
+	</customPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>Account.CRM_Person__c</field>
@@ -13,6 +25,61 @@
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>Contact.MobilePhone</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_HistoricallyAssignedResource__c.ServiceResource__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_HistoricallyAssignedResource__c.StatusComment__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_HistoricallyAssignedResource__c.Status__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_InterestedResource__c.AppointmentNumber__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_InterestedResource__c.Comments__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_InterestedResource__c.IsDispatcherNewComment__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_InterestedResource__c.IsNewComment__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_InterestedResource__c.ServiceAppointmentAddress__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_InterestedResource__c.ServiceAppointmentStartTime__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_InterestedResource__c.ServiceAppointmentEndTime__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_InterestedResource__c.Status__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -92,12 +159,22 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
+		<field>HOT_Request__c.MessageToDispatcher__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
 		<field>HOT_Request__c.NumberOfInterpreters__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
 		<field>HOT_Request__c.Person__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_Request__c.ServiceTerritory__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -181,6 +258,11 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>false</editable>
+		<field>Person__c.HOT_SIPAddress__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>true</editable>
 		<field>Person__c.HOT_SignLanguageWithLimitedFieldOfView__c</field>
 		<readable>true</readable>
@@ -252,11 +334,6 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
-		<field>Person__c.HOT_SIPAddress__c</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>false</editable>
 		<field>ServiceAppointment.AccountId</field>
 		<readable>true</readable>
 	</fieldPermissions>
@@ -302,6 +379,46 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
+		<field>ServiceAppointment.HOT_AssignedResourceId__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_AssignedServiceAppointmentFilter__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_AssignmentType__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_CancelComment__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_DeadlineDate__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_Escort__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_FreelanceSubject__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_HapticCommunication__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
 		<field>ServiceAppointment.HOT_InterpretationPostalCity__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
@@ -316,8 +433,43 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_IsEmployedInterpreter__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_NumberOfInterestedResources__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_ServiceResource__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_Request__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_TermsOfAgreement__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>false</editable>
 		<field>ServiceAppointment.HOT_Warning__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_WorkTypeName__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -367,6 +519,16 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
+		<field>ServiceResource.HOT_IsEmployedInterpreter__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceResource.HOT_IsFreelanceInterpreter__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
 		<field>ServiceResource.IsActive</field>
 		<readable>true</readable>
 	</fieldPermissions>
@@ -391,17 +553,17 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>false</editable>
+		<editable>true</editable>
 		<field>ServiceTerritory.Address</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>false</editable>
+		<editable>true</editable>
 		<field>ServiceTerritory.Description</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>false</editable>
+		<editable>true</editable>
 		<field>ServiceTerritory.IsActive</field>
 		<readable>true</readable>
 	</fieldPermissions>
@@ -411,7 +573,7 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>false</editable>
+		<editable>true</editable>
 		<field>ServiceTerritory.TypicalInTerritoryTravelTime</field>
 		<readable>true</readable>
 	</fieldPermissions>
@@ -847,6 +1009,24 @@
 		<viewAllRecords>false</viewAllRecords>
 	</objectPermissions>
 	<objectPermissions>
+		<allowCreate>false</allowCreate>
+		<allowDelete>false</allowDelete>
+		<allowEdit>false</allowEdit>
+		<allowRead>true</allowRead>
+		<modifyAllRecords>false</modifyAllRecords>
+		<object>HOT_HistoricallyAssignedResource__c</object>
+		<viewAllRecords>false</viewAllRecords>
+	</objectPermissions>
+	<objectPermissions>
+		<allowCreate>true</allowCreate>
+		<allowDelete>false</allowDelete>
+		<allowEdit>true</allowEdit>
+		<allowRead>true</allowRead>
+		<modifyAllRecords>false</modifyAllRecords>
+		<object>HOT_InterestedResource__c</object>
+		<viewAllRecords>false</viewAllRecords>
+	</objectPermissions>
+	<objectPermissions>
 		<allowCreate>true</allowCreate>
 		<allowDelete>false</allowDelete>
 		<allowEdit>true</allowEdit>
@@ -893,10 +1073,10 @@
 	</objectPermissions>
 	<objectPermissions>
 		<allowCreate>false</allowCreate>
-		<allowDelete>false</allowDelete>
-		<allowEdit>false</allowEdit>
+		<allowDelete>true</allowDelete>
+		<allowEdit>true</allowEdit>
 		<allowRead>true</allowRead>
-		<modifyAllRecords>false</modifyAllRecords>
+		<modifyAllRecords>true</modifyAllRecords>
 		<object>ServiceTerritory</object>
 		<viewAllRecords>true</viewAllRecords>
 	</objectPermissions>
@@ -916,12 +1096,20 @@
 		<allowRead>true</allowRead>
 		<modifyAllRecords>false</modifyAllRecords>
 		<object>WorkType</object>
-		<viewAllRecords>false</viewAllRecords>
+		<viewAllRecords>true</viewAllRecords>
 	</objectPermissions>
+	<pageAccesses>
+		<apexPage>HOT_ReleaseToFreelance</apexPage>
+		<enabled>true</enabled>
+	</pageAccesses>
 	<recordTypeVisibilities>
 		<recordType>PersonAccount.PersonAccount</recordType>
 		<visible>true</visible>
 	</recordTypeVisibilities>
+	<tabSettings>
+		<tab>HOT_InterestedResource__c</tab>
+		<visibility>Visible</visibility>
+	</tabSettings>
 	<tabSettings>
 		<tab>HOT_Request__c</tab>
 		<visibility>Visible</visibility>
@@ -952,6 +1140,14 @@
 	</tabSettings>
 	<tabSettings>
 		<tab>standard-WorkType</tab>
-		<visibility>Available</visibility>
+		<visibility>Visible</visibility>
 	</tabSettings>
+	<userPermissions>
+		<enabled>true</enabled>
+		<name>ApiEnabled</name>
+	</userPermissions>
+	<userPermissions>
+		<enabled>true</enabled>
+		<name>RunFlow</name>
+	</userPermissions>
 </PermissionSet>

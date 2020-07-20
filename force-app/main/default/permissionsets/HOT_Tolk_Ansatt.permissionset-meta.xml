@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
 	<fieldPermissions>
 		<editable>false</editable>
@@ -33,6 +33,21 @@
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>Contact.Title</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_HistoricallyAssignedResource__c.ServiceResource__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_HistoricallyAssignedResource__c.StatusComment__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_HistoricallyAssignedResource__c.Status__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -108,6 +123,11 @@
 	<fieldPermissions>
 		<editable>true</editable>
 		<field>HOT_Request__c.MeetingStreet__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_Request__c.MessageToDispatcher__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -196,6 +216,11 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>false</editable>
+		<field>Person__c.HOT_SIPAddress__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>true</editable>
 		<field>Person__c.HOT_SignLanguageWithLimitedFieldOfView__c</field>
 		<readable>true</readable>
@@ -257,11 +282,6 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
-		<field>Person__c.HOT_SIPAddress__c</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>false</editable>
 		<field>ServiceAppointment.AccountId</field>
 		<readable>true</readable>
 	</fieldPermissions>
@@ -307,6 +327,36 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
+		<field>ServiceAppointment.HOT_AssignedResourceId__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_AssignedServiceAppointmentFilter__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_CancelComment__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_HapticCommunication__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_Escort__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
 		<field>ServiceAppointment.HOT_InterpretationPostalCity__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
@@ -318,6 +368,26 @@
 	<fieldPermissions>
 		<editable>true</editable>
 		<field>ServiceAppointment.HOT_InterpretationStreet__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_IsEmployedInterpreter__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_Request__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceAppointment.HOT_ServiceResource__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -353,6 +423,16 @@
 	<fieldPermissions>
 		<editable>true</editable>
 		<field>ServiceAppointment.WorkTypeId</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceResource.HOT_IsEmployedInterpreter__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>ServiceResource.HOT_IsFreelanceInterpreter__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -782,6 +862,15 @@
 		<allowEdit>true</allowEdit>
 		<allowRead>true</allowRead>
 		<modifyAllRecords>false</modifyAllRecords>
+		<object>HOT_HistoricallyAssignedResource__c</object>
+		<viewAllRecords>false</viewAllRecords>
+	</objectPermissions>
+	<objectPermissions>
+		<allowCreate>true</allowCreate>
+		<allowDelete>false</allowDelete>
+		<allowEdit>true</allowEdit>
+		<allowRead>true</allowRead>
+		<modifyAllRecords>false</modifyAllRecords>
 		<object>HOT_Request__c</object>
 		<viewAllRecords>false</viewAllRecords>
 	</objectPermissions>
@@ -814,15 +903,6 @@
 	</objectPermissions>
 	<objectPermissions>
 		<allowCreate>false</allowCreate>
-		<allowDelete>false</allowDelete>
-		<allowEdit>false</allowEdit>
-		<allowRead>true</allowRead>
-		<modifyAllRecords>false</modifyAllRecords>
-		<object>ProfileSkill</object>
-		<viewAllRecords>false</viewAllRecords>
-	</objectPermissions>
-	<objectPermissions>
-		<allowCreate>true</allowCreate>
 		<allowDelete>false</allowDelete>
 		<allowEdit>true</allowEdit>
 		<allowRead>true</allowRead>

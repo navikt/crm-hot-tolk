@@ -1,15 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignments>
-        <name>Assign_new_values_Avlyst</name>
-        <label>Assign new values - Avlyst</label>
-        <locationX>902</locationX>
-        <locationY>290</locationY>
+        <name>Assign_new_values_Avlyst_Bruker</name>
+        <label>Assign new values - Avlyst - Bruker</label>
+        <locationX>1206</locationX>
+        <locationY>192</locationY>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Cancel_Comment_Bruker</elementReference>
+            </value>
+        </assignmentItems>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>New_status</elementReference>
+                <stringValue>Avbrutt</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Save_Service_Appointment</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_new_values_Avlyst_Tolk</name>
+        <label>Assign new values - Avlyst - Tolk</label>
+        <locationX>1495</locationX>
+        <locationY>466</locationY>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Ingen</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_IsEmployedInterpreter__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
             </value>
         </assignmentItems>
         <connector>
@@ -19,13 +56,13 @@
     <assignments>
         <name>Assign_new_values_dekket</name>
         <label>Assign new values - Dekket</label>
-        <locationX>898</locationX>
-        <locationY>90</locationY>
+        <locationX>1129</locationX>
+        <locationY>15</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>New_status</elementReference>
+                <stringValue>Fullført</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -49,13 +86,13 @@
     <assignments>
         <name>Assign_new_values_Pagar</name>
         <label>Assign new values - Pågår</label>
-        <locationX>916</locationX>
-        <locationY>488</locationY>
+        <locationX>1083</locationX>
+        <locationY>819</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>New_status</elementReference>
+                <stringValue>Pågår</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -69,9 +106,25 @@
             <targetReference>Save_Service_Appointment</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>setInterestedResourceStatus</name>
+        <label>setInterestedResourceStatus</label>
+        <locationX>1277</locationX>
+        <locationY>464</locationY>
+        <assignmentItems>
+            <assignToReference>interestedResource.Status__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Canceled by Interpreter</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>updateInterestedResource</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>Status_Avlyst</name>
-        <choiceText>Avlyst</choiceText>
+        <choiceText>Avlyst av bruker</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>Avbrutt</stringValue>
@@ -92,6 +145,11 @@
         <value>
             <stringValue>Pågår</stringValue>
         </value>
+    </choices>
+    <choices>
+        <name>Status_TolkAvlyst</name>
+        <choiceText>Avlyst av tolk</choiceText>
+        <dataType>String</dataType>
     </choices>
     <decisions>
         <name>Status</name>
@@ -140,11 +198,31 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Assign_new_values_Avlyst</targetReference>
+                <targetReference>Set_Cancel_Comment_Bruker</targetReference>
             </connector>
             <label>Avlyst</label>
         </rules>
+        <rules>
+            <name>TolkAvlyst</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>New_status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Status_TolkAvlyst</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Cancel_Comment_Tolk</targetReference>
+            </connector>
+            <label>TolkAvlyst</label>
+        </rules>
     </decisions>
+    <formulas>
+        <name>currentUserId</name>
+        <dataType>String</dataType>
+        <expression>{!$User.Id}</expression>
+    </formulas>
     <interviewLabel>HOT_ChangeServiceAppointmentStatus {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_ChangeServiceAppointmentStatus</label>
     <processMetadataValues>
@@ -160,14 +238,98 @@
         </value>
     </processMetadataValues>
     <processType>FieldServiceMobile</processType>
+    <recordCreates>
+        <name>Create_Historically_Assigned_Resource_Avlyst</name>
+        <label>Create Historically Assigned Resource - Avlyst</label>
+        <locationX>1001</locationX>
+        <locationY>464</locationY>
+        <connector>
+            <targetReference>getInterestedResource</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>ServiceAppointment__c</field>
+            <value>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ServiceResource__c</field>
+            <value>
+                <elementReference>ServiceResourceId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>StatusComment__c</field>
+            <value>
+                <elementReference>Cancel_Comment_Tolk</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Avlyst</stringValue>
+            </value>
+        </inputAssignments>
+        <object>HOT_HistoricallyAssignedResource__c</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Historically_Assigned_Resource_Dekket</name>
+        <label>Create Historically Assigned Resource - Dekket</label>
+        <locationX>892</locationX>
+        <locationY>16</locationY>
+        <connector>
+            <targetReference>Assign_new_values_dekket</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>ServiceAppointment__c</field>
+            <value>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ServiceResource__c</field>
+            <value>
+                <elementReference>ServiceResourceId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Dekket</stringValue>
+            </value>
+        </inputAssignments>
+        <object>HOT_HistoricallyAssignedResource__c</object>
+    </recordCreates>
     <recordLookups>
-        <name>Get_ServiceAppointment</name>
-        <label>Get ServiceAppointment</label>
-        <locationX>295</locationX>
-        <locationY>286</locationY>
+        <name>Get_Assigned_Resource</name>
+        <label>Get Assigned Resource</label>
+        <locationX>325</locationX>
+        <locationY>288</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_status</targetReference>
+        </connector>
+        <filters>
+            <field>ServiceAppointmentId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
+            </value>
+        </filters>
+        <object>AssignedResource</object>
+        <outputAssignments>
+            <assignToReference>ServiceResourceId</assignToReference>
+            <field>ServiceResourceId</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_ServiceAppointment</name>
+        <label>Get ServiceAppointment</label>
+        <locationX>173</locationX>
+        <locationY>290</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Assigned_Resource</targetReference>
         </connector>
         <filters>
             <field>Id</field>
@@ -187,13 +349,93 @@
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
+    <recordLookups>
+        <name>getInterestedResource</name>
+        <label>getInterestedResource</label>
+        <locationX>1146</locationX>
+        <locationY>464</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>setInterestedResourceStatus</targetReference>
+        </connector>
+        <filters>
+            <field>ServiceAppointment__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>ServiceResource__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>ServiceResourceId</elementReference>
+            </value>
+        </filters>
+        <object>HOT_InterestedResource__c</object>
+        <outputReference>interestedResource</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Status__c</queriedFields>
+    </recordLookups>
     <recordUpdates>
         <name>Save_Service_Appointment</name>
         <label>Save Service Appointment</label>
-        <locationX>1245</locationX>
-        <locationY>285</locationY>
+        <locationX>2043</locationX>
+        <locationY>450</locationY>
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
+    <recordUpdates>
+        <name>updateInterestedResource</name>
+        <label>updateInterestedResource</label>
+        <locationX>1378</locationX>
+        <locationY>467</locationY>
+        <connector>
+            <targetReference>Assign_new_values_Avlyst_Tolk</targetReference>
+        </connector>
+        <inputReference>interestedResource</inputReference>
+    </recordUpdates>
+    <screens>
+        <name>Set_Cancel_Comment_Bruker</name>
+        <label>Set Cancel Comment - Bruker</label>
+        <locationX>876</locationX>
+        <locationY>192</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Assign_new_values_Avlyst_Bruker</targetReference>
+        </connector>
+        <fields>
+            <name>Cancel_Comment_Bruker</name>
+            <dataType>String</dataType>
+            <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Set_Cancel_Comment_Tolk</name>
+        <label>Set Cancel Comment - Tolk</label>
+        <locationX>869</locationX>
+        <locationY>462</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Create_Historically_Assigned_Resource_Avlyst</targetReference>
+        </connector>
+        <fields>
+            <name>Cancel_Comment_Tolk</name>
+            <dataType>String</dataType>
+            <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <screens>
         <name>Set_status</name>
         <label>Set status</label>
@@ -210,6 +452,7 @@
             <choiceReferences>Status_Pagar</choiceReferences>
             <choiceReferences>Status_Dekket</choiceReferences>
             <choiceReferences>Status_Avlyst</choiceReferences>
+            <choiceReferences>Status_TolkAvlyst</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Status</fieldText>
             <fieldType>RadioButtons</fieldType>
@@ -222,12 +465,12 @@
         <name>Set_Time_Dekket</name>
         <label>Set Time-  Dekket</label>
         <locationX>626</locationX>
-        <locationY>92</locationY>
+        <locationY>16</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Assign_new_values_dekket</targetReference>
+            <targetReference>Create_Historically_Assigned_Resource_Dekket</targetReference>
         </connector>
         <fields>
             <name>New_start_time_dekket</name>
@@ -255,8 +498,8 @@
     <screens>
         <name>Set_Time_Pagar</name>
         <label>Set Time - Pågår</label>
-        <locationX>626</locationX>
-        <locationY>488</locationY>
+        <locationX>624</locationX>
+        <locationY>861</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -291,6 +534,21 @@
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>interestedResource</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>HOT_InterestedResource__c</objectType>
+    </variables>
+    <variables>
+        <name>ServiceResourceId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
 </Flow>

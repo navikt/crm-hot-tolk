@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <label>User Phone</label>
     <required>false</required>
-    <trackHistory>false</trackHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Phone</type>
 </CustomField>

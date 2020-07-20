@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-	<label>Tilleggsopplysninger</label>
-	<name>Description__c</name>
+    <help><!-- Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende.) --></help>
+    <label>Tilleggsopplysninger</label>
+    <name>Description__c</name>
 </CustomFieldTranslation>

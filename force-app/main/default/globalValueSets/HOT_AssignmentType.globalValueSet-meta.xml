@@ -35,6 +35,11 @@
         <default>false</default>
         <label>Image Interpreter</label>
     </customValue>
+    <customValue>
+        <fullName>Video Interpreter</fullName>
+        <default>false</default>
+        <label>Video Interpreter</label>
+    </customValue>
     <masterLabel>Assignment Type</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>

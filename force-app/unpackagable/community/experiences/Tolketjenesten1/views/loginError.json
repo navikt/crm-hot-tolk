@@ -8,16 +8,6 @@
     "regionName" : "header",
     "type" : "region"
   }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "richTextValue" : "<div style=\"text-align: center;\">Invalid Page</div>"
-      },
-      "componentName" : "forceCommunity:richTextInline",
-      "id" : "03f57add-2589-4de2-b991-f25eb79818c6",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
     "id" : "8f40ce98-bd3e-4b85-bc60-01df917df4f3",
     "regionName" : "content",
     "type" : "region"
@@ -30,7 +20,7 @@
       "componentAttributes" : {
         "description" : "",
         "metaTags" : "",
-        "title" : "Login Error"
+        "title" : "Finnes ikke (404)"
       },
       "componentName" : "forceCommunity:seoAssistant",
       "id" : "93a3105f-1f28-45d0-9127-b5dfd86ab6d9",

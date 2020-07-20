@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+	<caseValues>
+		<article>Definite</article>
+		<plural>false</plural>
+		<value>Interesserte ressursen</value>
+	</caseValues>
+	<caseValues>
+		<article>Indefinite</article>
+		<plural>false</plural>
+		<value>Interessert ressurs</value>
+	</caseValues>
+	<caseValues>
+		<article>None</article>
+		<plural>false</plural>
+		<value>Interessert ressurs</value>
+	</caseValues>
+	<caseValues>
+		<article>Definite</article>
+		<plural>true</plural>
+		<value>Interesserte ressursene</value>
+	</caseValues>
+	<caseValues>
+		<article>Indefinite</article>
+		<plural>true</plural>
+		<value>Interesserte ressurser</value>
+	</caseValues>
+	<caseValues>
+		<article>None</article>
+		<plural>true</plural>
+		<value>Interesserte ressurser</value>
+	</caseValues>
+	<gender>Masculine</gender>
+	<layouts>
+		<layout>Interested Resource Layout</layout>
+		<sections>
+			<label>Samtale</label>
+			<section>Comments</section>
+		</sections>
+	</layouts>
+	<nameFieldLabel>Interessert ressurs</nameFieldLabel>
+	<quickActions>
+		<label>Legg til kommentar</label>
+		<name>AddComment</name>
+	</quickActions>
+	<quickActions>
+		<label>Tildel oppdraget til ressursen</label>
+		<name>AssignResource</name>
+	</quickActions>
+</CustomObjectTranslation>

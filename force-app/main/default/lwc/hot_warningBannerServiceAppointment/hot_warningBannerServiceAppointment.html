@@ -1,0 +1,12 @@
+<template>
+	<template if:true={isReleased}>
+		<div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning"
+			style="background-color: #0067C5;" role="alert">
+			<span class="slds-assistive-text">Advarsel</span>
+			<lightning-icon icon-name="utility:info_alt" size="small" class="slds-m-right--x-small" variant="inverse">
+			</lightning-icon>
+			<h2 style="color: white;">Dette oppdraget har blitt frigitt til frilanstolker. Se interessenter under
+				"Påmeldte ressurser"</h2>
+		</div>
+	</template>
+</template>

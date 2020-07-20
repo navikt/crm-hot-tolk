@@ -1,20 +1,18 @@
 <template>
 
-	<div class="hovedbanner tolketjenesten">
-		<h1 class="typo-systemtittel">Bestille tolketjenester</h1>
-	</div>
 
 	<div class="brodsmulesti">
 		<lightning-breadcrumbs class="skjema-max-width">
-			<lightning-breadcrumb label="Tolketjenesten" href="/tolketjenesten/s/">
+			<lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}>
 			</lightning-breadcrumb>
-			<lightning-breadcrumb label="Ny bestilling" href="/tolketjenesten/s/ny-bestilling">
+			<lightning-breadcrumb label="Ny bestilling" href="/s/ny-bestilling" onclick={goToNewRequest}>
 			</lightning-breadcrumb>
 		</lightning-breadcrumbs>
 	</div>
 	<div if:false={edit} class="main-content submitted-false create-form">
 		<div class="skjema-ikon tolketjenesten">
-			<img class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
+			<img if:false={isProd} class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
+			<img if:true={isProd} class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
 		</div>
 		<div class="skjema skjema-max-width">
 			<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
@@ -44,7 +42,7 @@
 				</lightning-button>
 
 				</br>
-				<lightning-input-field class="tolk-skjema-input" field-name="MeetingStreet__c"
+				<lightning-input-field class="tolk-skjema-input adressefelt-hjelp" field-name="MeetingStreet__c"
 					value={fieldValues.MeetingStreet__c} required>
 				</lightning-input-field>
 				<div class="slds-grid slds-gutters">
@@ -63,13 +61,13 @@
 
 
 				<lightning-radio-group class="nav-radio-button-group" name="radioGroup"
-					label="Er oppmøtested det samme som tolkested?" options={options} value={value} type="radio"
+					label="Er oppmøteadresse det samme som tolkeadresse?" options={options} value={value} type="radio"
 					onchange={toggled}></lightning-radio-group>
 
 
 
 				<div if:false={sameLocation}>
-					<lightning-input-field class="tolk-skjema-input" title="Tolkeaddresse"
+					<lightning-input-field class="tolk-skjema-input adressefelt-hjelp" title="Tolkeaddresse"
 						field-name="InterpretationStreet__c" value={fieldValues.InterpretationStreet__c}>
 					</lightning-input-field>
 					<div class="slds-grid slds-gutters">
@@ -99,7 +97,7 @@
 						variant="brand" label="SEND INN" onclick={handleSubmit}>
 					</lightning-button>
 					</br>
-					<lightning-button title="Avbryt" variant="base" label="Avbryt" onclick={goHome}
+					<lightning-button title="Avbryt" variant="base" label="Avbryt" onclick={goToPrevousPage}
 						class="slds-m-left_x-small back-button">
 					</lightning-button>
 				</div>
@@ -107,8 +105,8 @@
 		</div>
 	</div>
 
-	<div class="main-content hidden submitted-true">
-		<div class="check-out-container">
+	<div class="main-content hidden submitted-true ">
+		<div class="main-content dialog-boks skjema-max-width">
 			<lightning-icon icon-name="utility:success" alternative-text="Suksess" title="Suksess" variant="success"
 				size="large">
 			</lightning-icon>
@@ -127,7 +125,8 @@
 
 	<div if:true={edit} class="main-content submitted-false">
 		<div class="skjema-ikon tolketjenesten">
-			<img class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
+			<img if:false={isProd} class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
+			<img if:true={isProd} class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
 		</div>
 		<div class="skjema skjema-max-width">
 			<lightning-record-edit-form object-api-name="HOT_Request__c" record-id={recordId} density="comfy"
@@ -143,7 +142,7 @@
 					value={fieldValues.EndTime__c} onchange={setEndTime} required>
 				</lightning-input-field>
 				</br>
-				<lightning-input-field class="tolk-skjema-input" field-name="MeetingStreet__c"
+				<lightning-input-field class="tolk-skjema-input adressefelt-hjelp" field-name="MeetingStreet__c"
 					value={fieldValues.MeetingStreet__c} required>
 				</lightning-input-field>
 				<div class="slds-grid slds-gutters">
@@ -162,13 +161,13 @@
 
 
 				<lightning-radio-group class="nav-radio-button-group" name="radioGroup"
-					label="Er oppmøtested det samme som tolkested?" options={options} value={value} type="radio"
+					label="Er oppmøteadresse det samme som tolkeadresse?" options={options} value={value} type="radio"
 					onchange={toggled}></lightning-radio-group>
 
 
 
 				<div if:false={sameLocation}>
-					<lightning-input-field class="tolk-skjema-input" title="Tolkeaddresse"
+					<lightning-input-field class="tolk-skjema-input adressefelt-hjelp" title="Tolkeaddresse"
 						field-name="InterpretationStreet__c" value={fieldValues.InterpretationStreet__c}>
 					</lightning-input-field>
 					<div class="slds-grid slds-gutters">
@@ -202,7 +201,7 @@
 						variant="brand" label="SEND INN" onclick={handleSubmit}>
 					</lightning-button>
 					</br>
-					<lightning-button title="Avbryt" variant="base" label="Avbryt" onclick={goHome}
+					<lightning-button title="Avbryt" variant="base" label="Avbryt" onclick={goToPrevousPage}
 						class="slds-m-left_x-small back-button">
 					</lightning-button>
 				</div>

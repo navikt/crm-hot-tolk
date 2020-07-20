@@ -3,11 +3,22 @@ import { NavigationMixin } from 'lightning/navigation';
 import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import NAME_FIELD from '@salesforce/schema/User.FirstName';
+import checkAssignedPermissionSet from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSet'
+import checkAssignedPermissionSetGroup from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSetGroup'
+import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
 
-	@track name;
+	@track isProd;
 	@track error;
+	@wire(isProdFunction)
+	wiredIsProd({ error, data }) {
+		this.isProd = data;
+		//console.log("isProd: " + this.isProd);
+	}
+
+
+	@track name;
 	@wire(getRecord, {
 		recordId: USER_ID,
 		fields: [NAME_FIELD]
@@ -23,31 +34,71 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 	}
 
-	goToMyRequests() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: 'mine-bestillinger'
-			}
-		});
+
+	goToMyRequests(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'mine-bestillinger'
+				}
+			});
+		}
 	}
 
-	goToNewRequest() {
-		this[NavigationMixin.Navigate]({
-			type: 'comm__namedPage',
-			attributes: {
-				pageName: 'ny-bestilling'
-			},
-		});
+	goToNewRequest(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'ny-bestilling'
+				},
+			});
+		}
 	}
 
-	goToKnowledgebank() {
-		this[NavigationMixin.Navigate]({
-			type: 'standard__webPage',
-			attributes: {
-				url: 'https://www.kunnskapsbanken.net/tolking/'
-			},
-		});
+	@track isFrilans = false;
+	@wire(checkAssignedPermissionSetGroup, { permissionSetGroupName: 'HOT_Tolk_Frilans_Gruppe' })
+	wireIsFrilans({ error, data }) {
+		if (data) {
+			this.isFrilans = data;
+		}
+		//console.log("isFrilans: " + this.isFrilans);
 	}
+	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
+	wireIsAdmin({ error, data }) {
+		if (data && !this.isFrilans) {
+			this.isFrilans = data;
+		}
+		//console.log("isAdmin: " + this.isFrilans);
+	}
+
+	goToHome(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'home'
+				},
+			});
+		}
+	}
+
+	goToOppdrag(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'mine-oppdrag'
+				},
+			});
+		}
+	}
+
+
 
 }

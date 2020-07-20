@@ -1,44 +1,78 @@
 <template>
-	<div class="hovedbanner tolketjenesten">
-		<h1 class="typo-systemtittel">Tolketjenesten</h1>
-	</div>
 	<div class="portal-hilsen">
 		<h2 class="typo-undertittel">Hei {name}</h2>
 	</div>
 
+	<div if:true={isFrilans} class="informasjonstavle__body">
+		<div class="informasjonstavle__content">
+			<div class="informasjonstavle__bildepaneler-single">
+				<a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag" onclick={goToOppdrag}>
+					<div class="panelMedBilde__imageOnPanel-single">
+						<div class="panelMedBilde__svgContainer-single">
+							<img if:false={isProd} style="height: 60%;"
+								src="/sfsites/c/resource/1590665878000/OppdragIkon"></img>
+							<img if:true={isProd} style="height: 60%;"
+								src="/s/sfsites/c/resource/1590665878000/OppdragIkon"></img>
+						</div>
+					</div>
+					<div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
+						<h2 class="typo-undertittel">Oppdrag</h2>
+						<div>
+							<p class="typo-normal">
+								<span>
+									Se oversikt over dine oppdrag, og åpne oppdrag som du kan melde interesse
+									om.</span>
+							</p>
+						</div>
+					</div>
+					<div class="panelMedBilde__imageOnPanel-single">
+						<div class="panelMedBilde__svgContainer-single">
+							<img if:false={isProd} src="/sfsites/c/resource/1590666405000/rightArrow"></img>
+							<img if:true={isProd} src="/s/sfsites/c/resource/1590666405000/rightArrow"></img>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+
+
 	<div class="informasjonstavle__body">
 		<div class="informasjonstavle__content">
 			<div class="informasjonstavle__bildepaneler">
-				<a class="panelMedBilde" href="/tolketjenesten/s/ny-bestilling">
+				<a class="panelMedBilde" href="/s/ny-bestilling" onclick={goToNewRequest}>
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
-							<img class="illustrasjon" src="/sfsites/c/resource/1584959871000/BestilleTolk"></img>
+							<img if:false={isProd} class="illustrasjon"
+								src="/sfsites/c/resource/1584959871000/BestilleTolk"></img>
+							<img if:true={isProd} class="illustrasjon"
+								src="/s/sfsites/c/resource/1584959871000/BestilleTolk"></img>
 						</div>
 					</div>
 					<div class="panel panelMedBilde__panelOnPanel">
 						<h2 class="typo-undertittel">Bestille tolk</h2>
 						<div>
 							<p class="typo-normal">
-								<span>
-									Her kan du bestille tolketjenesten for døve, døvblinde og hørselshemmede.</span>
+								Her kan du bestille tolketjenesten for døve, døvblinde og hørselshemmede.
 							</p>
 						</div>
 					</div>
 				</a>
-				<a class="panelMedBilde" href="/tolketjenesten/s/mine-bestillinger">
+				<a class="panelMedBilde" href="/s/mine-bestillinger" onclick={goToMyRequests}>
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
-							<img class="illustrasjon" src="/sfsites/c/resource/1584959850000/MineBestillinger"></img>
+							<img if:false={isProd} class="illustrasjon"
+								src="/sfsites/c/resource/1584959850000/MineBestillinger"></img>
+							<img if:true={isProd} class="illustrasjon"
+								src="/s/sfsites/c/resource/1584959850000/MineBestillinger"></img>
 						</div>
 					</div>
 					<div class="panel panelMedBilde__panelOnPanel">
 						<h2 class="typo-undertittel">Mine bestillinger</h2>
 						<div>
 							<p class="typo-normal">
-								<span>
-									Her finner du oversikt over alle dine bestillinger, og du kan
-									se status på bestillingene.
-								</span>
+								Her finner du oversikt over alle dine bestillinger, og du kan se status på
+								bestillingene.
 							</p>
 						</div>
 					</div>
@@ -46,16 +80,17 @@
 				<a class="panelMedBilde" href="https://www.kunnskapsbanken.net/tolking/">
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
-							<img class="illustrasjon" src="/sfsites/c/resource/1584957822000/Kunnskapsbanken"></img>
+							<img if:false={isProd} class="illustrasjon"
+								src="/sfsites/c/resource/1584957822000/Kunnskapsbanken"></img>
+							<img if:true={isProd} class="illustrasjon"
+								src="/s/sfsites/c/resource/1584957822000/Kunnskapsbanken"></img>
 						</div>
 					</div>
 					<div class="panel panelMedBilde__panelOnPanel">
 						<h2 class="typo-undertittel">Kunnskapsbanken</h2>
 						<div>
 							<p class="typo-normal">
-								<span>
-									Her finner du fagstoff og artikler om tolking.
-								</span>
+								Her finner du fagstoff og artikler om tolking.
 							</p>
 						</div>
 					</div>

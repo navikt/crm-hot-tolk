@@ -2,5 +2,5 @@
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label><!-- Person --></label>
     <name>Person__c</name>
-    <relationshipLabel>Tolkebestillinger</relationshipLabel>
+    <relationshipLabel>Forespørsler</relationshipLabel>
 </CustomFieldTranslation>

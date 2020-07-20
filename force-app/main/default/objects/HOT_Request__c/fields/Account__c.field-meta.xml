@@ -9,7 +9,7 @@
     <relationshipLabel>Requests</relationshipLabel>
     <relationshipName>Requests</relationshipName>
     <required>false</required>
-    <trackHistory>false</trackHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>
