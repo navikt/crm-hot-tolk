@@ -3,7 +3,8 @@ public without sharing class HOT_Utility {
 	@AuraEnabled(cacheable = true)
     public static ServiceResource getServiceResource() {
 		ServiceResource serviceResource = [SELECT Id, Name, ResourceType, IsActive, RelatedRecordId,
-		(SELECT Id, ServiceTerritoryId FROM ServiceResource.ServiceTerritories)
+		(SELECT Id, ServiceTerritory.Name FROM ServiceResource.ServiceTerritories),
+		(SELECT Id, Skill.MasterLabel FROM ServiceResource.ServiceResourceSkills)
 		FROM ServiceResource WHERE RelatedRecordId =: UserInfo.getUserId()];
 		return serviceResource;
 	}
