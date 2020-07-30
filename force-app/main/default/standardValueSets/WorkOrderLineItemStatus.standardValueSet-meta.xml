@@ -3,51 +3,69 @@
     <groupingStringEnum>WorkStatusCategory</groupingStringEnum>
     <sorted>false</sorted>
     <standardValue>
-        <fullName>Ny</fullName>
+        <fullName>None</fullName>
+        <default>false</default>
+        <label>None</label>
+        <groupingString>None</groupingString>
+    </standardValue>
+    <standardValue>
+        <fullName>New</fullName>
         <default>true</default>
-        <label>Ny</label>
+        <label>New</label>
         <groupingString>New</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Planlagt</fullName>
+        <fullName>Scheduled</fullName>
         <default>false</default>
-        <label>Planlagt</label>
+        <label>Scheduled</label>
         <groupingString>InProgress</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Sendt</fullName>
+        <fullName>Dispatched</fullName>
         <default>false</default>
-        <label>Sendt</label>
+        <label>Dispatched</label>
         <groupingString>InProgress</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Pågår</fullName>
+        <fullName>In Progress</fullName>
         <default>false</default>
-        <label>Pågår</label>
+        <label>In Progress</label>
         <groupingString>InProgress</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Fullført</fullName>
+        <fullName>On Hold</fullName>
         <default>false</default>
-        <label>Fullført</label>
+        <label>On Hold</label>
+        <groupingString>OnHold</groupingString>
+    </standardValue>
+    <standardValue>
+        <fullName>Completed</fullName>
+        <default>false</default>
+        <label>Completed</label>
         <groupingString>Completed</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Delvis fullført</fullName>
+        <fullName>Closed</fullName>
         <default>false</default>
-        <label>Delvis fullført</label>
+        <label>Closed</label>
+        <groupingString>Closed</groupingString>
+    </standardValue>
+    <standardValue>
+        <fullName>Partially Complete</fullName>
+        <default>false</default>
+        <label>Partially Complete</label>
         <groupingString>CannotComplete</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Kan ikke fullføre</fullName>
+        <fullName>Cannot Complete</fullName>
         <default>false</default>
-        <label>Kan ikke fullføre</label>
+        <label>Cannot Complete</label>
         <groupingString>CannotComplete</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Avbrutt</fullName>
+        <fullName>Canceled</fullName>
         <default>false</default>
-        <label>Avbrutt</label>
+        <label>Canceled</label>
         <groupingString>Canceled</groupingString>
     </standardValue>
 </StandardValueSet>

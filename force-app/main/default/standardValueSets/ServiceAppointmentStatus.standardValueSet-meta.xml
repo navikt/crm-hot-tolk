@@ -3,45 +3,45 @@
     <groupingStringEnum>SvcApptStatusCategory</groupingStringEnum>
     <sorted>false</sorted>
     <standardValue>
-        <fullName>Ingen</fullName>
+        <fullName>None</fullName>
         <default>true</default>
-        <label>Ingen</label>
+        <label>None</label>
         <groupingString>None</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Planlagt</fullName>
+        <fullName>Scheduled</fullName>
         <default>false</default>
-        <label>Planlagt</label>
+        <label>Scheduled</label>
         <groupingString>Scheduled</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Sendt</fullName>
+        <fullName>Dispatched</fullName>
         <default>false</default>
-        <label>Sendt</label>
+        <label>Dispatched</label>
         <groupingString>Dispatched</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Pågår</fullName>
+        <fullName>In Progress</fullName>
         <default>false</default>
-        <label>Pågår</label>
+        <label>In Progress</label>
         <groupingString>InProgress</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Fullført</fullName>
+        <fullName>Completed</fullName>
         <default>false</default>
-        <label>Fullført</label>
+        <label>Completed</label>
         <groupingString>Completed</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Kan ikke fullføre</fullName>
+        <fullName>Cannot Complete</fullName>
         <default>false</default>
-        <label>Kan ikke fullføre</label>
+        <label>Cannot Complete</label>
         <groupingString>CannotComplete</groupingString>
     </standardValue>
     <standardValue>
-        <fullName>Avbrutt</fullName>
+        <fullName>Canceled</fullName>
         <default>false</default>
-        <label>Avbrutt</label>
+        <label>Canceled</label>
         <groupingString>Canceled</groupingString>
     </standardValue>
 </StandardValueSet>

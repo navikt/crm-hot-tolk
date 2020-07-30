@@ -13,7 +13,6 @@ private class HOT_RequestHandlerTest {
 		update request;
 
 		// To trigger the update of child records
-		// The staus Avbrutt is translatet to Avlyst for the standard objects - so Avbrutt == Avlyst
 		request.Status__c = 'Avlyst';
 		update request;
 
@@ -22,13 +21,13 @@ private class HOT_RequestHandlerTest {
 		List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment];
 		
 		for (WorkOrder workOrder : workOrders) {
-			System.assertEquals('Avbrutt', workOrder.Status, 'Work Order Satus was not changed to correct status');
+			System.assertEquals('Canceled', workOrder.Status, 'Work Order Satus was not changed to correct status');
 		}
 		for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
-			System.assertEquals('Avbrutt', workOrderLineItem.Status, 'Work Order Satus was not changed to correct status');
+			System.assertEquals('Canceled', workOrderLineItem.Status, 'Work Order Satus was not changed to correct status');
 		}
 		for (ServiceAppointment serviceAppointment : serviceAppointments) {
-			System.assertEquals('Avbrutt', serviceAppointment.Status, 'Work Order Satus was not changed to correct status');
+			System.assertEquals('Canceled', serviceAppointment.Status, 'Work Order Satus was not changed to correct status');
 		}
 	}
 

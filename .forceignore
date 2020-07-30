@@ -100,3 +100,6 @@
 
 # Installed Packages - beta
 **/installedPackages/*
+
+# StandardValueSetTranslations - bug
+**/standardValueSetTranslations/*

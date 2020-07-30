@@ -61,7 +61,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
         // We only need to update Service Appointment, since the status is updated from SA -> WOLI -> WO in other tigger logic
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.Status = 'Avbrutt';
+            serviceAppointment.Status = 'Canceled';
         }
         if (serviceAppointments.size() > 0) {
             update serviceAppointments;
