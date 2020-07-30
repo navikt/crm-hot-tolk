@@ -16,7 +16,7 @@
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>Avbrutt</stringValue>
+                <stringValue>Canceled</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -32,7 +32,7 @@
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>Ingen</stringValue>
+                <stringValue>None</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -62,7 +62,7 @@
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>Fullført</stringValue>
+                <stringValue>Completed</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -92,7 +92,7 @@
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>Pågår</stringValue>
+                <stringValue>In Progress</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
