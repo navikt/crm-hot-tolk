@@ -26,8 +26,8 @@
     <assignments>
         <name>Assign_new_values_Avlyst_Tolk</name>
         <label>Assign new values - Avlyst - Tolk</label>
-        <locationX>1495</locationX>
-        <locationY>466</locationY>
+        <locationX>1528</locationX>
+        <locationY>382</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
@@ -109,8 +109,8 @@
     <assignments>
         <name>setInterestedResourceStatus</name>
         <label>setInterestedResourceStatus</label>
-        <locationX>1277</locationX>
-        <locationY>464</locationY>
+        <locationX>1185</locationX>
+        <locationY>622</locationY>
         <assignmentItems>
             <assignToReference>interestedResource.Status__c</assignToReference>
             <operator>Assign</operator>
@@ -151,6 +151,31 @@
         <choiceText>Avlyst av tolk</choiceText>
         <dataType>String</dataType>
     </choices>
+    <decisions>
+        <name>Interested_Resource</name>
+        <label>Interested Resource?</label>
+        <locationX>1113</locationX>
+        <locationY>375</locationY>
+        <defaultConnector>
+            <targetReference>setInterestedResourceStatus</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Yes</defaultConnectorLabel>
+        <rules>
+            <name>No</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>interestedResource.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_new_values_Avlyst_Tolk</targetReference>
+            </connector>
+            <label>No</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>Status</name>
         <label>Status</label>
@@ -241,8 +266,8 @@
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Avlyst</name>
         <label>Create Historically Assigned Resource - Avlyst</label>
-        <locationX>1001</locationX>
-        <locationY>464</locationY>
+        <locationX>873</locationX>
+        <locationY>477</locationY>
         <connector>
             <targetReference>getInterestedResource</targetReference>
         </connector>
@@ -352,11 +377,11 @@
     <recordLookups>
         <name>getInterestedResource</name>
         <label>getInterestedResource</label>
-        <locationX>1146</locationX>
-        <locationY>464</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <locationX>1014</locationX>
+        <locationY>476</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>setInterestedResourceStatus</targetReference>
+            <targetReference>Interested_Resource</targetReference>
         </connector>
         <filters>
             <field>ServiceAppointment__c</field>
@@ -387,8 +412,8 @@
     <recordUpdates>
         <name>updateInterestedResource</name>
         <label>updateInterestedResource</label>
-        <locationX>1378</locationX>
-        <locationY>467</locationY>
+        <locationX>1390</locationX>
+        <locationY>622</locationY>
         <connector>
             <targetReference>Assign_new_values_Avlyst_Tolk</targetReference>
         </connector>
@@ -418,8 +443,8 @@
     <screens>
         <name>Set_Cancel_Comment_Tolk</name>
         <label>Set Cancel Comment - Tolk</label>
-        <locationX>869</locationX>
-        <locationY>462</locationY>
+        <locationX>741</locationX>
+        <locationY>477</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
