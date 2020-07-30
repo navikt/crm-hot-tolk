@@ -46,7 +46,7 @@
 			<assignToReference>CurrentServiceAppointment.Status</assignToReference>
 			<operator>Assign</operator>
 			<value>
-				<stringValue>Ingen</stringValue>
+				<stringValue>None</stringValue>
 			</value>
 		</assignmentItems>
 		<connector>
@@ -123,19 +123,19 @@ Status == &quot;Ingen&quot;</description>
 		</defaultConnector>
 		<defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
 		<rules>
-			<name>StatusIngen</name>
+			<name>Status_None</name>
 			<conditionLogic>and</conditionLogic>
 			<conditions>
 				<leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
 				<operator>EqualTo</operator>
 				<rightValue>
-					<stringValue>Ingen</stringValue>
+					<stringValue>None</stringValue>
 				</rightValue>
 			</conditions>
 			<connector>
 				<targetReference>Sett_frist_for_pamelding</targetReference>
 			</connector>
-			<label>StatusIngen</label>
+			<label>None</label>
 		</rules>
 	</decisions>
 	<decisions>
