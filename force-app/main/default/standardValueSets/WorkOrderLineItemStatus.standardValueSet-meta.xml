@@ -68,4 +68,10 @@
         <label>Canceled</label>
         <groupingString>Canceled</groupingString>
     </standardValue>
+    <standardValue>
+        <fullName>Annul</fullName>
+        <default>false</default>
+        <label>Annul</label>
+        <groupingString>Canceled</groupingString>
+    </standardValue>
 </StandardValueSet>
