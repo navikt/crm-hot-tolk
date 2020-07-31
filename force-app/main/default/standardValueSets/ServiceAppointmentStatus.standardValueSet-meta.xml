@@ -9,6 +9,12 @@
         <groupingString>None</groupingString>
     </standardValue>
     <standardValue>
+        <fullName>Released to Freelance</fullName>
+        <default>false</default>
+        <label>Released to Freelance</label>
+        <groupingString>None</groupingString>
+    </standardValue>
+    <standardValue>
         <fullName>Scheduled</fullName>
         <default>false</default>
         <label>Scheduled</label>
