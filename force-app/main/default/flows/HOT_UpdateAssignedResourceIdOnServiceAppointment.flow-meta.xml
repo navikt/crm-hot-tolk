@@ -127,14 +127,14 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
-        <locationX>50</locationX>
-        <locationY>49</locationY>
+        <locationX>7</locationX>
+        <locationY>370</locationY>
         <connector>
             <targetReference>Get_Assigned_Resource</targetReference>
         </connector>
         <object>ServiceAppointment</object>
         <recordTriggerType>Update</recordTriggerType>
-        <triggerType>RecordBeforeSave</triggerType>
+        <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
     <variables>
