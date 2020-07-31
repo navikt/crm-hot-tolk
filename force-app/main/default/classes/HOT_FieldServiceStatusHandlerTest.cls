@@ -171,4 +171,51 @@ private class HOT_FieldServiceStatusHandlerTest {
 
 	}
 
+	@isTest
+    private static void testStatusChangeToCancel() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
+
+		Test.startTest();
+		request.Status__c = 'Avlyst';
+		update request;
+		Test.stopTest();
+
+		WorkOrder workOrder = [SELECT Status FROM WorkOrder];
+		System.assertEquals('Canceled', workOrder.Status, 'Status on the work order did not update to correct value');
+
+		WorkOrderLineItem workOrderLineItem = [SELECT Status FROM WorkOrderLineItem];
+		System.assertEquals('Canceled', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
+
+		ServiceAppointment serviceAppointment = [SELECT Status FROM ServiceAppointment];
+		System.assertEquals('Canceled', serviceAppointment.Status, 'Status on the service appointment did not update to correct value');
+	}
+
+	@isTest
+    private static void testStatusChangeToAnnul() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
+
+		Test.startTest();
+		request.Status__c = 'Annullert';
+		update request;
+		Test.stopTest();
+
+		WorkOrder workOrder = [SELECT Status FROM WorkOrder];
+		System.assertEquals('Annul', workOrder.Status, 'Status on the work order did not update to correct value');
+
+		WorkOrderLineItem workOrderLineItem = [SELECT Status FROM WorkOrderLineItem];
+		System.assertEquals('Annul', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
+
+		ServiceAppointment serviceAppointment = [SELECT Status FROM ServiceAppointment];
+		System.assertEquals('Annul', serviceAppointment.Status, 'Status on the service appointment did not update to correct value');
+	}
 }
