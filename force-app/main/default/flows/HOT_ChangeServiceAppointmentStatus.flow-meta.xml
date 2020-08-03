@@ -56,6 +56,13 @@
                 <stringValue/>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_ServiceResource__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue/>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Save_Service_Appointment</targetReference>
         </connector>
@@ -134,7 +141,7 @@
         <choiceText>Avlyst av bruker</choiceText>
         <dataType>String</dataType>
         <value>
-            <stringValue>Avbrutt</stringValue>
+            <stringValue>Canceled</stringValue>
         </value>
     </choices>
     <choices>
@@ -142,7 +149,7 @@
         <choiceText>Dekket</choiceText>
         <dataType>String</dataType>
         <value>
-            <stringValue>Fullført</stringValue>
+            <stringValue>Completed</stringValue>
         </value>
     </choices>
     <choices>
@@ -150,13 +157,16 @@
         <choiceText>Pågår</choiceText>
         <dataType>String</dataType>
         <value>
-            <stringValue>Pågår</stringValue>
+            <stringValue>In Progress</stringValue>
         </value>
     </choices>
     <choices>
         <name>Status_TolkAvlyst</name>
         <choiceText>Avlyst av tolk</choiceText>
         <dataType>String</dataType>
+        <value>
+            <stringValue>None</stringValue>
+        </value>
     </choices>
     <decisions>
         <name>Interested_Resource</name>
@@ -472,7 +482,7 @@
         <name>Set_status</name>
         <label>Set status</label>
         <locationX>480</locationX>
-        <locationY>286</locationY>
+        <locationY>285</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
