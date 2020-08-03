@@ -39,6 +39,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			if(serviceAppointment.Status == 'None') {
 				serviceAppointment.HOT_AssignedResourceId__c = null;
 				serviceAppointment.HOT_ServiceResource__c = null;
+			} else {
+				serviceAppointment.HOT_CanceledByInterpreter__c = false;
 			}
 		}
 	}
