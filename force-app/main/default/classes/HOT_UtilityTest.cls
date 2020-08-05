@@ -2,8 +2,9 @@
 private class HOT_UtilityTest{
 
 	@testSetup static void setup(){
-		ServiceResource serviceresourceObj = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-		insert serviceresourceObj;
+		ServiceResource serviceresource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+		insert serviceresource;
+
 	}
 
 	@isTest static void testGetServiceResource() {
@@ -18,5 +19,37 @@ private class HOT_UtilityTest{
 		
 		Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSet('HOT_Tolk_Ansatt');
 		System.assertEquals(true, hasPermissionSet);
+	}
+	@isTest static void testCheckAssignedPermissionSetGroup() {
+		PermissionSetGroup psg = [SELECT Id FROM PermissionSetGroup WHERE DeveloperName = 'Test'];
+		PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = UserInfo.getUserId(), PermissionSetGroupId = psg.Id);
+		insert permissionSetAssignment;
+		
+		Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSetGroup('Test');
+		System.assertEquals(true, hasPermissionSet);
+	}
+
+	@isTest static void testGetAssignedResource(){
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('Bestilling', workType);
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
+		List<Id> requestIds = new List<Id>{request.Id};
+		ServiceResource serviceResource = HOT_Utility.getServiceResource();
+
+		ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id LIMIT 1];
+		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, serviceResource.Id);
+		insert assignedResource;
+		serviceAppointment.Status = 'Dispatched';
+		update serviceAppointment;
+
+		Test.startTest();
+		Map<Id, List<String>> requestIdToServiceResources = HOT_Utility.getAssignedResources(requestIds);
+		Test.stopTest();
+
+		System.assertEquals(1, requestIdToServiceResources.get(request.Id).size(), 'Could not get assigned resources');
+
 	}
 }
