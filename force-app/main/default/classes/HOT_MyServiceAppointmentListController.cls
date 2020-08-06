@@ -38,8 +38,8 @@ public without sharing class HOT_MyServiceAppointmentListController {
 	
 	@AuraEnabled(cacheable = true)
 	public static Map<String, List<ServiceAppointmentHistory>> getMyServiceAppointmentFieldHistories(Id serviceAppointmentId) {
-		// TODO: fikse oversettelse hvis dette skal taes i bruk
-		List<String> statusList = new List<String>{'Avbrutt', 'Fullført', 'Kan ikke fullføre'};
+		
+		List<String> statusList = new List<String>{'Canceled', 'Completed', 'Cannot Complete'};
 		List<ServiceAppointmentHistory> statusHistories = new List<ServiceAppointmentHistory>();
 		List<ServiceAppointmentHistory> allStatusHistories = 
 		[SELECT Id, ServiceAppointmentId, Field, CreatedById, CreatedDate, NewValue

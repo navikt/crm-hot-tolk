@@ -56,70 +56,78 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 
 		for(WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
 			Integer numberOfServiceAppointments = serviceAppointmentMaps.get(workOrderLineItem.Id).size();
-			Integer numberOfPlanlagt = 0;
-			Integer numberOfSendt = 0;
-			Integer numberOfPagar = 0;
-			Integer numberOfFullfort = 0;
-			Integer numberOfDelvisFullfort = 0;
-			Integer numberOfKanIkkeFullfore = 0;
-			Integer numberOfAvbrutt = 0;
+			Integer numberOfScheduled = 0;
+			Integer numberOfDispatched = 0;
+			Integer numberOfInProgress = 0;
+			Integer numberOfCompleted = 0;
+			Integer numberOfPartiallyComplete = 0;
+			Integer numberOfCannotComplete = 0;
+			Integer numberOfCanceled = 0;
+			Integer numberOfAnnul = 0;
 			
 			for(ServiceAppointment serviceAppointment : serviceAppointmentMaps.get(workOrderLineItem.Id)) {
-				if(serviceAppointment.Status == 'Planlagt') {
-					numberOfPlanlagt++;
+				if(serviceAppointment.Status == 'Scheduled') {
+					numberOfScheduled++;
 				}
-				if(serviceAppointment.Status == 'Sendt') {
-					numberOfSendt++;
+				if(serviceAppointment.Status == 'Dispatched') {
+					numberOfDispatched++;
 				}
-				if(serviceAppointment.Status == 'Pågår') {
-					numberOfPagar++;
+				if(serviceAppointment.Status == 'In Progress') {
+					numberOfInProgress++;
 				}
-				if(serviceAppointment.Status == 'Fullført') {
-					numberOfFullfort++;
+				if(serviceAppointment.Status == 'Completed') {
+					numberOfCompleted++;
 				}
-				if(serviceAppointment.Status == 'Delvis fullført') {
-					numberOfDelvisFullfort++;
+				if(serviceAppointment.Status == 'Partially Complete') {
+					numberOfPartiallyComplete++;
 				}
-				if(serviceAppointment.Status == 'Kan ikke fullføre') {
-					numberOfKanIkkeFullfore++;
+				if(serviceAppointment.Status == 'Cannot Complete') {
+					numberOfCannotComplete++;
 				}
-				if(serviceAppointment.Status == 'Avbrutt') {
-					numberOfAvbrutt++;
+				if(serviceAppointment.Status == 'Canceled') {
+					numberOfCanceled++;
+				}
+				if(serviceAppointment.Status == 'Annul') {
+					numberOfAnnul++;
 				}
 			}
 
 			System.debug('numberOfServiceAppointments: ' + numberOfServiceAppointments);
-			System.debug('numberOfPlanlagt: ' + numberOfPlanlagt);
-			System.debug('numberOfSendt: ' + numberOfSendt);
-			System.debug('numberOfPagar: ' + numberOfPagar);
-			System.debug('numberOfFullfort: ' + numberOfFullfort);
-			System.debug('numberOfDelvisFullfort: ' + numberOfDelvisFullfort);
-			System.debug('numberOfKanIkkeFullfore: ' + numberOfKanIkkeFullfore);
-			System.debug('numberOfAvbrutt: ' + numberOfAvbrutt);
+			System.debug('numberOfScheduled: ' + numberOfScheduled);
+			System.debug('numberOfDispatched: ' + numberOfDispatched);
+			System.debug('numberOfInProgress: ' + numberOfInProgress);
+			System.debug('numberOfCompleted: ' + numberOfCompleted);
+			System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
+			System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
+			System.debug('numberOfCanceled: ' + numberOfCanceled);
+			System.debug('numberOfAnnul: ' + numberOfAnnul);
 			
-			if(numberOfPlanlagt > 0) {
-				workOrderLineItem.Status = 'Planlagt';
+			if(numberOfScheduled > 0) {
+				workOrderLineItem.Status = 'Scheduled';
 			}
-			if(numberOfDelvisFullfort > 0) {
-				workOrderLineItem.Status = 'Delvis fullført';
+			if(numberOfPartiallyComplete > 0) {
+				workOrderLineItem.Status = 'Partially Complete';
 			}
-			if(numberOfKanIkkeFullfore > 0) {
-				workOrderLineItem.Status = 'Delvis fullført';
+			if(numberOfCannotComplete > 0) {
+				workOrderLineItem.Status = 'Partially Complete';
 			}
-			if(numberOfSendt == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'Sendt';
+			if(numberOfDispatched == numberOfServiceAppointments) {
+				workOrderLineItem.Status = 'Dispatched';
 			}
-			if(numberOfPagar == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'Pågår';
+			if(numberOfInProgress == numberOfServiceAppointments) {
+				workOrderLineItem.Status = 'In Progress';
 			}
-			if(numberOfFullfort == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'Fullført';
+			if(numberOfCompleted == numberOfServiceAppointments) {
+				workOrderLineItem.Status = 'Completed';
 			}
-			if(numberOfKanIkkeFullfore == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'Kan ikke fullføre';
+			if(numberOfCannotComplete == numberOfServiceAppointments) {
+				workOrderLineItem.Status = 'Cannot Complete';
 			}
-			if(numberOfAvbrutt == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'Avbrutt';
+			if(numberOfCanceled == numberOfServiceAppointments) {
+				workOrderLineItem.Status = 'Canceled';
+			}
+			if(numberOfAnnul == numberOfServiceAppointments) {
+				workOrderLineItem.Status = 'Annul';
 			}
 			workOrderLineItem.HOT_IsUpdateStatus__c = false;
 		}

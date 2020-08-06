@@ -1,5 +1,5 @@
 # Unique name for this workflow
-name: Create and validate package - develop
+name: Create, validate and install package - develop
 
 # Definition when the workflow should run
 on:
@@ -74,6 +74,6 @@ jobs:
           json: ${{steps.package-version-create.outputs.result}}
 
       # Install package version into DEVHOT sandbox
-      - name: "Install new package version into test org"
+      - name: "Install new package version into DEVHOT"
         if: steps.extract-data-package-version-create.outputs.isSuccess
         run: "sfdx force:package:install --package ${{ steps.extract-data-package-version-create.outputs.packageVersionId }} -w 60 -b 60 -u devhot-sandbox -r -k ${{ secrets.PACKAGE_KEY }}"

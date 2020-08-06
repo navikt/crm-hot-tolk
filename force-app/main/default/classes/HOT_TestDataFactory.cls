@@ -17,7 +17,7 @@ public class HOT_TestDataFactory {
 	public static WorkOrder createWorkOrder( HOT_Request__c request, WorkType workType ) {
 		WorkOrder workOrder = new WorkOrder();
 		workOrder.HOT_Request__c = request.Id;
-		workOrder.Status = 'Ny';
+		workOrder.Status = 'New';
 		workOrder.HOT_NumberOfInterpreters__c = 1;
 		workOrder.StartDate = Datetime.now().addHours( 1 );
 		workOrder.EndDate = workOrder.StartDate.addHours( 2 );
@@ -29,7 +29,7 @@ public class HOT_TestDataFactory {
 	public static WorkOrderLineItem createWorkOrderLineItem( WorkOrder workOrder, WorkType workType ) {
 		WorkOrderLineItem workOrderLineItem = new WorkOrderLineItem();
 		workOrderLineItem.WorkOrderId = workOrder.Id;
-		workOrderLineItem.Status = 'Ny';
+		workOrderLineItem.Status = 'New';
 		workOrderLineItem.HOT_NumberOfInterpreters__c = 1;
 		workOrderLineItem.StartDate = Datetime.now().addHours( 1 );
 		workOrderLineItem.EndDate = workOrderLineItem.StartDate.addHours( 2 );
@@ -41,7 +41,7 @@ public class HOT_TestDataFactory {
 	public static ServiceAppointment createServiceAppointment( WorkOrderLineItem workOrderLineItem ) {
 		ServiceAppointment serviceAppointment = new ServiceAppointment();
 		serviceAppointment.ParentRecordId = workOrderLineItem.Id;
-		serviceAppointment.Status = 'Ingen';
+		serviceAppointment.Status = 'None';
 		serviceAppointment.EarliestStartTime = Datetime.now().addHours( 1 );
 		serviceAppointment.DueDate = serviceAppointment.EarliestStartTime.addHours( 2 );
 

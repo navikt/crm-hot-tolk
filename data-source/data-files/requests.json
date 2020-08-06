@@ -16,8 +16,8 @@
 			"MeetingPostalCode__c": "1001",
 			"MeetingPostalCity__c": "Oslo",
 			"NumberOfInterpreters__c": "2",
-			"StartTime__c": "2020-08-01T10:00:00.000+0000",
-			"EndTime__c": "2020-08-01T11:00:00.000+0000",
+			"StartTime__c": "2020-11-01T10:00:00.000+0000",
+			"EndTime__c": "2020-11-01T11:00:00.000+0000",
 			"Status__c": "Åpen",
 			"AssignmentType__c": "Private"
 		},
@@ -37,8 +37,8 @@
 			"MeetingPostalCode__c": "1002",
 			"MeetingPostalCity__c": "Oslo",
 			"NumberOfInterpreters__c": "2",
-			"StartTime__c": "2020-08-02T10:00:00.000+0000",
-			"EndTime__c": "2020-08-02T11:00:00.000+0000",
+			"StartTime__c": "2020-11-02T10:00:00.000+0000",
+			"EndTime__c": "2020-11-02T11:00:00.000+0000",
 			"Status__c": "Åpen",
 			"AssignmentType__c": "Private"
 		},
@@ -58,8 +58,8 @@
 			"MeetingPostalCode__c": "1003",
 			"MeetingPostalCity__c": "Oslo",
 			"NumberOfInterpreters__c": "2",
-			"StartTime__c": "2020-08-03T10:00:00.000+0000",
-			"EndTime__c": "2020-08-03T11:00:00.000+0000",
+			"StartTime__c": "2020-11-03T10:00:00.000+0000",
+			"EndTime__c": "2020-11-03T11:00:00.000+0000",
 			"Status__c": "Åpen",
 			"AssignmentType__c": "Private"
 		}

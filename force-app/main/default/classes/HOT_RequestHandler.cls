@@ -1,15 +1,20 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
-        List<HOT_Request__c> changedStatusRequests = new List<HOT_Request__c>();
+		List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
+		List<HOT_Request__c> annullertRequests = new List<HOT_Request__c>();
 		Set<Id> personIdsToUpdate = new Set<Id>();
 		List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
         List<HOT_Request__c> finishedRequests = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
-			// Filter for relevant records with status updates
+			// Filter for Avlyst requests
             if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
-                changedStatusRequests.add(request);
+                avlystRequests.add(request);
+			}
+			// Filter for Annullert requests
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Annullert') {
+                annullertRequests.add(request);
 			}
 			// Filter for relevant records to initiate callout to Kontakt og Reservasjonsregisteret (KRR)
 			if (request.Person__c != null && request.Person__c != triggerOldMap.get(request.Id).get('Person__c')) {
@@ -24,8 +29,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 					finishedRequests.add(request);
 			}*/
         }
-        if (changedStatusRequests.size() > 0) {
-            updateChildRecords(changedStatusRequests);
+        if (avlystRequests.size() > 0) {
+            updateChildRecords(avlystRequests, 'Canceled');
+		}
+		if (annullertRequests.size() > 0) {
+            updateChildRecords(annullertRequests, 'Annul');
 		}
 
         if (requestsToGetContactInformationFor.size() > 0) {
@@ -54,19 +62,17 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     }
 
-    private static void updateChildRecords(List<HOT_Request__c> changedRequests) {
+    private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
         List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder WHERE HOT_Request__c IN :changedRequests];
         List<WorkOrderLineItem> workOrderLineItems = [SELECT Status FROM WorkOrderLineItem WHERE WorkOrderId IN :workOrders];
         List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment WHERE ParentRecordId IN :workOrderLineItems];
 
         // We only need to update Service Appointment, since the status is updated from SA -> WOLI -> WO in other tigger logic
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.Status = 'Avbrutt';
+            serviceAppointment.Status = newStatus;
         }
         if (serviceAppointments.size() > 0) {
             update serviceAppointments;
         }
     }
-
-
 }
