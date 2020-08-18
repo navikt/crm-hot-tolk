@@ -6,6 +6,7 @@ import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
+import getAssignedResources from '@salesforce/apex/HOT_Utility.getAssignedResources';
 
 
 var actions = [
@@ -83,7 +84,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	wiredRequestsResult;
 
 	@wire(getRequestList)
-	wiredRequest(result) {
+	async wiredRequest(result) {
 		this.wiredRequestsResult = result;
 		if (result.data) {
 			this.allRequests = result.data;
@@ -91,12 +92,20 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			this.showHideInactives();
 			this.error = undefined;
 			//console.log(JSON.stringify(this.allRequests));
+			var requestIds = [];
+			for (var request of this.allRequests) {
+				requestIds.push(request.Id);
+			}
+			this.requestAssignedResources = await getAssignedResources({ requestIds });
+			console.log(this.requestAssignedResources);
+
+
 		} else if (result.error) {
 			this.error = result.error;
 			this.allRequests = undefined;
 		}
-
 	}
+
 
 	filterRequests() {
 		var tempRequests = [];
@@ -309,14 +318,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	@track record = null;
 	showDetails(row) {
 		this.record = row;
+		this.isDetails = true;
 		console.log(JSON.stringify(this.record));
 		this.interpreters = [];
-		if (row.ServiceAppointments__r != null) {
-			var serviceAppointments = row.ServiceAppointments__r;
-			for (var sa of serviceAppointments) {
-				if (sa.HOT_ServiceResource__c != null) {
-					this.interpreters.push(sa.HOT_ServiceResource__r.Name);
-				}
+		if (this.requestAssignedResources[row.Id] != null) {
+			for (var interpreter of this.requestAssignedResources[row.Id]) {
+				this.interpreters.push(interpreter);
 			}
 			if (this.interpreters.length > 0) {
 				this.showInterpreters = true;
