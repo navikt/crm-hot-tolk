@@ -58,6 +58,20 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 			});
 		}
 	}
+	goToRequestOnBehalf(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'ny-bestilling'
+				},
+				state: {
+					isDefault: true,
+				}
+			});
+		}
+	}
 
 	@track isFrilans = false;
 	@wire(checkAssignedPermissionSetGroup, { permissionSetGroupName: 'HOT_Tolk_Frilans_Gruppe' })

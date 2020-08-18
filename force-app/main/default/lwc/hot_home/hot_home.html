@@ -36,6 +36,39 @@
 		</div>
 	</div>
 
+	<div class="informasjonstavle__body">
+		<div class="informasjonstavle__content">
+			<div class="informasjonstavle__bildepaneler-single">
+				<a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag?isDefailt=false"
+					onclick={goToRequestOnBehalf}>
+					<div class="panelMedBilde__imageOnPanel-single">
+						<div class="panelMedBilde__svgContainer-single">
+							<img if:false={isProd} style="height: 60%;"
+								src="/sfsites/c/resource/1590665878000/OppdragIkon"></img>
+							<img if:true={isProd} style="height: 60%;"
+								src="/s/sfsites/c/resource/1590665878000/OppdragIkon"></img>
+						</div>
+					</div>
+					<div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
+						<h2 class="typo-undertittel">Bestill tolk</h2>
+						<div>
+							<p class="typo-normal">
+								<span>
+									Bestill tolk på vegne av andre eller bedrift</span>
+							</p>
+						</div>
+					</div>
+					<div class="panelMedBilde__imageOnPanel-single">
+						<div class="panelMedBilde__svgContainer-single">
+							<img if:false={isProd} src="/sfsites/c/resource/1590666405000/rightArrow"></img>
+							<img if:true={isProd} src="/s/sfsites/c/resource/1590666405000/rightArrow"></img>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+
 
 	<div class="informasjonstavle__body">
 		<div class="informasjonstavle__content">
