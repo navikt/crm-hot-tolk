@@ -50,6 +50,10 @@
             <section>Order Information</section>
         </sections>
         <sections>
+            <label>Annen betaler</label>
+            <section>Other Economic Provider</section>
+        </sections>
+        <sections>
             <label>Bruker</label>
             <section>User Section</section>
         </sections>
