@@ -73,6 +73,26 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		];
 	}
 
+
+	@track userForm = false;
+	@track companyForm = false;
+	@track requestForm = true;
+
+	get requestTypes() {
+		return [
+			{ label: 'Bestille på vegne av bruker med vedtak', value: 'user' },
+			{ label: 'Bestiller på vegne av bruker, virksomhet betaler', value: 'user_company' },
+			{ label: 'Bestiller som virksomhet, virksomhet betaler', value: 'company' }
+		];
+	}
+	handleRequestTypeSubmit(event) {
+		console.log(JSON.stringify(event.target));
+	}
+
+	handleInformUser(event) {
+
+	}
+
 	@track error;
 	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
 
