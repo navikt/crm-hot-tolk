@@ -1,6 +1,5 @@
 <template>
 
-
 	<div class="brodsmulesti">
 		<lightning-breadcrumbs class="skjema-max-width">
 			<lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}>
@@ -17,19 +16,22 @@
 		</div>
 		<div class="skjema skjema-max-width">
 
-			<div class="valg-av-bestillingstype__container">
+			<div if:false={defaultForm} class="valg-av-bestillingstype__container">
 				<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy"
 					onsubmit={handleRequestTypeSubmit}>
-					<lightning-radio-group class="nav-radio-button-group" name="radioGroup"
-						label="Hva slags bestilling ønsker du å legge inn?" options={requestTypes} type="radio">
+					<lightning-radio-group style="margin-bottom: 1rem;" name="radioGroup"
+						label="Hva slags bestilling ønsker du å legge inn?" options={requestTypes} type="radio"
+						onchange={handleRequestTypeChange}>
 					</lightning-radio-group>
 					<lightning-button type="submit" label="Neste"></lightning-button>
 				</lightning-record-edit-form>
 			</div>
 
+
 			<div if:true={userForm} class="bruker-info-skjema">
 				<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy"
 					onsubmit={handleUserFormSubmit}>
+					<h2 style="font-size: 1.25rem;">Informasjon om bruker</h2>
 					<lightning-input-field class="tolk-skjema-input" field-name="UserName__c" required>
 					</lightning-input-field>
 					<lightning-input-field class="tolk-skjema-input" field-name="PersonNumber__c" required>
@@ -37,7 +39,7 @@
 
 					<lightning-radio-group class="nav-radio-button-group" name="radioGroup"
 						label="Skal bruker informeres om bestillingen?" options={options} type="radio"
-						onchange={handleInformUser}>
+						onchange={handleInformUser} required>
 					</lightning-radio-group>
 
 					<lightning-button type="submit" label="Neste"></lightning-button>
@@ -47,9 +49,11 @@
 			<div if:true={publicEventForm} class="offentlig-info-skjema">
 				<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy"
 					onsubmit={handlePublicEventFormSubmit}>
-					<lightning-input class="tolk-skjema-input" type="text" name="Type arrangement">
+					<h2 style="font-size: 1.25rem;">Informasjon om arrangement</h2>
+					<lightning-input class="tolk-skjema-input" type="text" name="eventType"
+						label="Type arrangement (Idrettsstevne, Premierevisning, ol)">
 					</lightning-input>
-					<lightning-input class="tolk-skjema-input" type="text" name="sentral">
+					<lightning-input class="tolk-skjema-input" type="text" name="region" label="Sentral">
 					</lightning-input>
 
 					<lightning-button type="submit" label="Neste"></lightning-button>
@@ -59,6 +63,7 @@
 			<div if:true={companyForm} class="virksomhet-info-skjema">
 				<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy"
 					onsubmit={handleCompanyFormSubmit}>
+					<h2 style="font-size: 1.25rem;">Informasjon om virksomhet</h2>
 					<lightning-input-field class="tolk-skjema-input" field-name="OrganizationNumber__c" required>
 					</lightning-input-field>
 					<lightning-input-field class="tolk-skjema-input" field-name="InvoiceReference__c">
@@ -73,10 +78,11 @@
 			</div>
 
 
-			<div if:false={edit} if:true={requestForm} class="bestilling-info-skjema">
+			<div if:true={requestForm} class="bestilling-info-skjema">
 
 				<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
 					onerror={handleError} onsubmit={handleSubmit}>
+					<h2 style="font-size: 1.25rem;">Informasjon om behov for tolk</h2>
 					<lightning-input-field class="tolk-skjema-input" field-name="Subject__c"
 						value={fieldValues.Subject__c} title="Hva trenger du tolk til?" required>
 					</lightning-input-field>

@@ -73,11 +73,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		];
 	}
 
-
+	@track defaultForm = true;
 	@track userForm = false;
+	@track publicEventForm = false;
 	@track companyForm = false;
 	@track requestForm = true;
 
+	currentRequestType = "";
 	get requestTypes() {
 		return [
 			{ label: 'Bestille på vegne av bruker med vedtak', value: 'user' },
@@ -85,13 +87,73 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			{ label: 'Bestiller som virksomhet, virksomhet betaler', value: 'company' }
 		];
 	}
+
 	handleRequestTypeSubmit(event) {
-		console.log(JSON.stringify(event.target));
+		event.preventDefault();
+		console.log("handleRequestTypeSubmit");
+		if (this.currentRequestType.includes('user')) {
+			this.userForm = true;
+		}
+		else {
+			this.publicEventForm = true;
+		}
+		console.log("handleRequestTypeSubmit");
+	}
+	handleRequestTypeChange(event) {
+		this.currentRequestType = event.detail.value
 	}
 
-	handleInformUser(event) {
-
+	informUser = false;
+	handleInformUserChange(event) {
+		this.informUser = event.detail.value == 'Ja'
 	}
+
+	handleUserFormSubmit(event) {
+		event.preventDefault();
+
+		const fields = event.detail.fields;
+
+		this.fieldValues.IsNotifyUser__c = this.informUser;
+		this.fieldValues.UserName__c = fields.UserName__c;
+		this.fieldValues.PersonNumber__c = fields.PersonNumber__c;
+
+		if (this.currentRequestType.includes('company')) {
+			this.companyForm = true;
+		}
+		else {
+			this.requestForm = true;
+		}
+		console.log("handleUserFormSubmit");
+	}
+
+	handlePublicEventFormSubmit(event) {
+		event.preventDefault();
+
+		const fields = event.detail.fields;
+
+		this.fieldValues.EventType__c = fields.eventType;
+		this.fieldValues.Region__c = fields.region;
+
+		this.companyForm = true;
+		console.log("handlePublicEventFormSubmit");
+	}
+
+	handleCompanyFormSubmit(event) {
+		event.preventDefault();
+
+		const fields = event.detail.fields;
+
+		this.fieldValues.OrganizationNumber__c = fields.OrganizationNumber__c;
+		this.fieldValues.InvoiceReference__c = fields.InvoiceReference__c;
+		this.fieldValues.AdditionalInvoiceText__c = fields.AdditionalInvoiceText__c;
+		this.fieldValues.OrderNumber__c = fields.OrderNumber__c;
+
+		this.requestForm = true;
+		console.log("handleCompanyFormSubmit");
+	}
+
+
+
 
 	@track error;
 	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
@@ -235,11 +297,16 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		if (params != undefined) {
 			var parsed_params = parse_query_string(params);
 			console.log(parsed_params.fieldValues);
+			console.log(parsed_params.isDefault);
+			if (parsed_params.isDefault != null) {
+				this.defaultForm = false;
+				this.requestForm = false;
+			}
+
 
 			if (parsed_params.fromList != null) {
 				this.previousPage = 'mine-bestillinger';
 			}
-
 
 			if (parsed_params.fieldValues != null) {
 
