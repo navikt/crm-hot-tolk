@@ -2,6 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
+import ID from '@salesforce/user/Id';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
@@ -116,6 +117,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.fieldValues.IsNotifyUser__c = this.informUser;
 		this.fieldValues.UserName__c = fields.UserName__c;
 		this.fieldValues.PersonNumber__c = fields.PersonNumber__c;
+		this.fieldValues.Orderer__c = ID;
 
 		if (this.currentRequestType.includes('company')) {
 			this.companyForm = true;
