@@ -40,4 +40,10 @@ public without sharing class HOT_Utility {
 		}
 		return requestIdToServiceResource;
 	}
+
+	@AuraEnabled(cacheable = true)
+    public static Id getPersonAccountId() {
+		return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+	}
+
 }
