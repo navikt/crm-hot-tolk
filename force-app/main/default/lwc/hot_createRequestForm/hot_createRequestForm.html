@@ -23,7 +23,7 @@
 						label="Hva slags bestilling ønsker du å legge inn?" options={requestTypes} type="radio"
 						onchange={handleRequestTypeChange}>
 					</lightning-radio-group>
-					<lightning-button type="submit" label="Neste"></lightning-button>
+					<lightning-button variant="brand" type="submit" label="Neste"></lightning-button>
 				</lightning-record-edit-form>
 			</div>
 
@@ -42,21 +42,7 @@
 						onchange={handleInformUser} required>
 					</lightning-radio-group>
 
-					<lightning-button type="submit" label="Neste"></lightning-button>
-				</lightning-record-edit-form>
-			</div>
-
-			<div if:true={publicEventForm} class="offentlig-info-skjema">
-				<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy"
-					onsubmit={handlePublicEventFormSubmit}>
-					<h2 style="font-size: 1.25rem;">Informasjon om arrangement</h2>
-					<lightning-input class="tolk-skjema-input" type="text" name="eventType"
-						label="Type arrangement (Idrettsstevne, Premierevisning, ol)">
-					</lightning-input>
-					<lightning-input class="tolk-skjema-input" type="text" name="region" label="Sentral">
-					</lightning-input>
-
-					<lightning-button type="submit" label="Neste"></lightning-button>
+					<lightning-button variant="brand" type="submit" label="Neste"></lightning-button>
 				</lightning-record-edit-form>
 			</div>
 
@@ -73,7 +59,7 @@
 					<lightning-input-field class="tolk-skjema-input" field-name="OrderNumber__c">
 					</lightning-input-field>
 
-					<lightning-button type="submit" label="Neste"></lightning-button>
+					<lightning-button variant="brand" type="submit" label="Neste"></lightning-button>
 				</lightning-record-edit-form>
 			</div>
 
@@ -144,14 +130,18 @@
 
 					<lightning-messages aria-live="assertive">
 					</lightning-messages>
+
 					<div class="button-container">
-						<lightning-button title="Send inn bestilling" class="slds-m-left_x-small" type="submit"
-							variant="brand" label="SEND INN" onclick={handleSubmit}>
-						</lightning-button>
-						</br>
-						<lightning-button title="Avbryt" variant="base" label="Avbryt" onclick={goToPrevousPage}
-							class="slds-m-left_x-small back-button">
-						</lightning-button>
+						<div if:true={spin} class="loader"></div>
+						<div if:false={spin}>
+							<lightning-button title="Send inn bestilling" class="slds-m-left_x-small" type="submit"
+								variant="brand" label="SEND INN" onclick={handleSubmit}>
+							</lightning-button>
+							</br>
+							<lightning-button title="Avbryt" variant="base" label="Avbryt" onclick={goToPrevousPage}
+								class="slds-m-left_x-small back-button">
+							</lightning-button>
+						</div>
 					</div>
 				</lightning-record-edit-form>
 			</div>

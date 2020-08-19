@@ -2,11 +2,10 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
-import ID from '@salesforce/user/Id';
+import ACCOUNTID from '@salesforce/apex/HOT_Utility.getPersonAccountId';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
-
 
 	@track isProd;
 	@track error;
@@ -76,37 +75,34 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track defaultForm = true;
 	@track userForm = false;
-	@track publicEventForm = false;
 	@track companyForm = false;
 	@track requestForm = true;
 
 	currentRequestType = "";
 	get requestTypes() {
 		return [
-			{ label: 'Bestille på vegne av bruker med vedtak', value: 'user' },
-			{ label: 'Bestiller på vegne av bruker, virksomhet betaler', value: 'user_company' },
-			{ label: 'Bestiller som virksomhet, virksomhet betaler', value: 'company' }
+			{ label: 'Bestille for bruker', value: 'user' },
+			{ label: 'Bestille for bruker, virksomheten betaler', value: 'user_company' },
+			{ label: 'Bestille til arrangement, virksomheten betaler', value: 'company' }
 		];
 	}
 
 	handleRequestTypeSubmit(event) {
 		event.preventDefault();
-		console.log("handleRequestTypeSubmit");
 		if (this.currentRequestType.includes('user')) {
 			this.userForm = true;
 		}
 		else {
-			this.publicEventForm = true;
+			this.companyForm = true;
 		}
-		console.log("handleRequestTypeSubmit");
 	}
 	handleRequestTypeChange(event) {
-		this.currentRequestType = event.detail.value
+		this.currentRequestType = event.detail.value;
 	}
 
 	informUser = false;
 	handleInformUserChange(event) {
-		this.informUser = event.detail.value == 'Ja'
+		this.informUser = event.detail.value == 'Ja';
 	}
 
 	handleUserFormSubmit(event) {
@@ -117,7 +113,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.fieldValues.IsNotifyUser__c = this.informUser;
 		this.fieldValues.UserName__c = fields.UserName__c;
 		this.fieldValues.PersonNumber__c = fields.PersonNumber__c;
-		this.fieldValues.Orderer__c = ID;
 
 		if (this.currentRequestType.includes('company')) {
 			this.companyForm = true;
@@ -125,19 +120,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		else {
 			this.requestForm = true;
 		}
-		console.log("handleUserFormSubmit");
-	}
-
-	handlePublicEventFormSubmit(event) {
-		event.preventDefault();
-
-		const fields = event.detail.fields;
-
-		this.fieldValues.EventType__c = fields.eventType;
-		this.fieldValues.Region__c = fields.region;
-
-		this.companyForm = true;
-		console.log("handlePublicEventFormSubmit");
 	}
 
 	handleCompanyFormSubmit(event) {
@@ -151,14 +133,17 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.fieldValues.OrderNumber__c = fields.OrderNumber__c;
 
 		this.requestForm = true;
-		console.log("handleCompanyFormSubmit");
 	}
 
 
 
 
 	@track error;
-	@track fieldValues = { Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "" };
+	@track fieldValues = {
+		Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "",
+		OrganizationNumber__c: "", InvoiceReference__c: "", AdditionalInvoiceText__c: "", OrderNumber__c: "",
+		IsNotifyUser__c: "", UserName__c: "", PersonNumber__c: "", Orderer__c: "",
+	};
 
 
 	@track startTime;
@@ -204,20 +189,27 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 
+	@track spin = false;
 	handleSubmit(event) {
 		event.preventDefault();
+		this.spin = true;
 
 		const fields = event.detail.fields;
-		if (this.sameLocation) {
-			fields.InterpretationStreet__c = fields.MeetingStreet__c;
-			fields.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
-			fields.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
+		this.fieldValues.Orderer__c = ACCOUNTID();
+		for (const k in fields) {
+			this.fieldValues[k] = fields[k];
 		}
-		//console.log(JSON.stringify(fields));
+		if (this.sameLocation) {
+			this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
+			this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
+			this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
+		}
+
+
 		if (fields) {
-			const isDuplicate = this.isDuplicate(fields);
+			const isDuplicate = this.isDuplicate(this.fieldValues);
 			if (isDuplicate == null) {
-				this.template.querySelector('lightning-record-edit-form').submit(fields);
+				this.template.querySelector('div.bestilling-info-skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
 			}
 
 			else {
@@ -225,10 +217,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
 					"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
 					+ "\n\nFortsett?")) {
-					this.template.querySelector('lightning-record-edit-form').submit(fields);
+					this.template.querySelector('div.bestilling-info-skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
 				}
 			}
 		}
+		this.spin = false;
 	}
 
 	formatDateTime(dateTime) {
@@ -298,8 +291,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 		if (params != undefined) {
 			var parsed_params = parse_query_string(params);
-			console.log(parsed_params.fieldValues);
-			console.log(parsed_params.isDefault);
 			if (parsed_params.isDefault != null) {
 				this.defaultForm = false;
 				this.requestForm = false;
@@ -313,7 +304,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			if (parsed_params.fieldValues != null) {
 
 				this.fieldValues = JSON.parse(parsed_params.fieldValues);
-				console.log(JSON.stringify(this.fieldValues));
 				this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
 				if (!this.sameLocation) {
 					this.value = 'no';
