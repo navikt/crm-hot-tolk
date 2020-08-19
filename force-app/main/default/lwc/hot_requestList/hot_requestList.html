@@ -45,9 +45,8 @@
 							</br>
 							<lightning-formatted-text value={record.ExternalRequestStatus__c}
 								class="lightning-output-field"></lightning-formatted-text>
-							<div if:true={showInterpreters}>
+							<div if:true={showInterpreters} style="display: flex; flex-direction: column;">
 								<span class="slds-form-element__label lightning-output-field__label">Tolker</span>
-								</br>
 								<template iterator:it={interpreters}>
 									<lightning-formatted-text value={it.value} class="lightning-output-field"
 										key={it.value}>
