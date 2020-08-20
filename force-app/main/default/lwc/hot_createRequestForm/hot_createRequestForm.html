@@ -20,11 +20,14 @@
 				<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy"
 					onsubmit={handleRequestTypeSubmit} onerror={handleError}>
 
+					<lightning-input label="Bestiller navn" name="ordererName" class="tolk-skjema-input"
+						value={personAccount.Name} disabled>
+					</lightning-input>
 					<lightning-input-field field-name="OrdererEmail__c" class="tolk-skjema-input"
-						value={fieldValues.OrdererEmail__c} required>
+						value={ordererDetails.OrdererEmail__c} required>
 					</lightning-input-field>
 					<lightning-input-field field-name="OrdererPhone__c" class="tolk-skjema-input"
-						value={fieldValues.OrdererPhone__c} required>
+						value={ordererDetails.OrdererPhone__c} required>
 					</lightning-input-field>
 
 

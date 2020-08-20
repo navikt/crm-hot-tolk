@@ -64,4 +64,20 @@ private class HOT_UtilityTest{
 		
 		System.assertEquals(false, hasVedtak);
 	}
+
+	
+	@isTest static void testGetOrdererDetails(){
+
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('Testing getOrderDetails', workType);
+		insert request;
+
+		Test.startTest();
+		Map<String,String> ordererDetails = HOT_Utility.getOrdererDetails();
+		Test.stopTest();
+		
+		System.assertEquals(null, ordererDetails.get('OrdererEmail__c'));
+		System.assertEquals(null, ordererDetails.get('OrdererPhone__c'));
+	}
 }

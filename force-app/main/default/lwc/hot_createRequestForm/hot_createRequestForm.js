@@ -2,7 +2,8 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
-import ACCOUNTID from '@salesforce/apex/HOT_Utility.getPersonAccountId';
+import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
+import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
@@ -72,6 +73,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			{ label: 'Nei', value: 'no' },
 		];
 	}
+	@wire(getPersonAccount) personAccount;
+	@wire(getOrdererDetails) ordererDetails;
 
 	@track defaultForm = true;
 	@track userForm = false;
@@ -154,6 +157,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	};
 
 
+
 	@track startTime;
 	@track endTime;
 	handleChange(event) {
@@ -202,7 +206,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		event.preventDefault();
 
 		const fields = event.detail.fields;
-		this.fieldValues.Orderer__c = ACCOUNTID();
+		this.fieldValues.Orderer__c = this.personAccount.Id;
 		for (const k in fields) {
 			this.fieldValues[k] = fields[k];
 		}
