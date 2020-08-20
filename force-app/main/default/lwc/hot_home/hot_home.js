@@ -102,7 +102,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 	wireIsAdmin({ error, data }) {
 		if (data && !this.isFrilans) {
 			this.isFrilans = data;
-			this.isTolkUser = checkUserHasEntitlement();
+			this.isTolkUser = true; //checkUserHasEntitlement();
 			this.isUser = !this.isTolkUser && !this.isFrilans;
 			if (this.isFrilans) {
 				this.showFrilans = true;
