@@ -89,7 +89,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleRequestTypeSubmit(event) {
 		event.preventDefault();
-		if (this.currentRequestType != "") {
+		const fields = event.detail.fields;
+
+		if (this.currentRequestType != "" && fields != null) {
+			this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
+			this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
+
 			if (this.currentRequestType.includes('user')) {
 				this.userForm = true;
 			}
@@ -106,32 +111,22 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.currentRequestType = event.detail.value;
 	}
 
-	informUser = false;
-	informUserChosen = false;
-	handleInformUserChange(event) {
-		this.informUser = event.detail.value == 'Ja';
-		this.informUserChosen = true;
-	}
 
 	handleUserFormSubmit(event) {
 		event.preventDefault();
 
-		if (this.informUserChosen) {
-			const fields = event.detail.fields;
+		const fields = event.detail.fields;
 
-			this.fieldValues.UserName__c = fields.UserName__c;
-			this.fieldValues.PersonNumber__c = fields.PersonNumber__c;
+		this.fieldValues.UserName__c = fields.UserName__c;
+		this.fieldValues.PersonNumber__c = fields.PersonNumber__c;
 
-			if (this.currentRequestType.includes('company')) {
-				this.companyForm = true;
-			}
-			else {
-				this.requestForm = true;
-			}
+		if (this.currentRequestType.includes('company')) {
+			this.companyForm = true;
 		}
 		else {
-			console.log("Error no 2")
+			this.requestForm = true;
 		}
+
 	}
 
 	handleCompanyFormSubmit(event) {
@@ -155,6 +150,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "",
 		OrganizationNumber__c: "", InvoiceReference__c: "", AdditionalInvoiceText__c: "", OrderNumber__c: "",
 		UserName__c: "", PersonNumber__c: "", Orderer__c: "",
+		OrdererEmail__c: "", OrdererPhone__c: "",
 	};
 
 
