@@ -5,6 +5,7 @@ import USER_ID from '@salesforce/user/Id';
 import NAME_FIELD from '@salesforce/schema/User.FirstName';
 import checkAssignedPermissionSet from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSet'
 import checkAssignedPermissionSetGroup from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSetGroup'
+import checkUserHasDecision from '@salesforce/apex/HOT_Utility.checkUserHasDecision';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
@@ -16,7 +17,6 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		this.isProd = data;
 		//console.log("isProd: " + this.isProd);
 	}
-
 
 	@track name;
 	@wire(getRecord, {
@@ -67,17 +67,34 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 					pageName: 'ny-bestilling'
 				},
 				state: {
-					isDefault: true,
+					notDefault: true,
 				}
 			});
 		}
 	}
 
 	@track isFrilans = false;
+	@track isTolkUser = true;
+	@track isUser = false;
+
+	@track showFrilans = false;
+	@track showTolkUser = false;
+	@track showUser = false;
 	@wire(checkAssignedPermissionSetGroup, { permissionSetGroupName: 'HOT_Tolk_Frilans_Gruppe' })
 	wireIsFrilans({ error, data }) {
 		if (data) {
 			this.isFrilans = data;
+			this.isTolkUser = checkUserHasDecision();
+			this.isUser = !this.isTolkUser && !this.isFrilans;
+			if (this.isFrilans) {
+				this.showFrilans = true;
+			}
+			else if (this.isTolkUser) {
+				this.showTolkUser = true;
+			}
+			else {
+				this.showUser = true;
+			}
 		}
 		//console.log("isFrilans: " + this.isFrilans);
 	}
@@ -85,9 +102,48 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 	wireIsAdmin({ error, data }) {
 		if (data && !this.isFrilans) {
 			this.isFrilans = data;
+			this.isTolkUser = checkUserHasDecision();
+			this.isUser = !this.isTolkUser && !this.isFrilans;
+			if (this.isFrilans) {
+				this.showFrilans = true;
+			}
+			else if (this.isTolkUser) {
+				this.showTolkUser = true;
+			}
+			else {
+				this.showUser = true;
+			}
 		}
-		//console.log("isAdmin: " + this.isFrilans);
+		console.log("isFrilans: " + this.isFrilans);
+		console.log("isTolkUser: " + this.isTolkUser);
+		console.log("isUser: " + this.isUser);
 	}
+
+	//Check if user has vedtak
+	//if isFrilans
+
+	@track showChoices = false;
+	handleShowChoices() {
+		this.showChoices = !this.showChoices;
+	}
+
+	changeToFreelance() {
+		this.showFrilans = true;
+		this.showTolkUser = false;
+		this.showUser = false;
+	}
+	changeToTolkUser() {
+		this.showFrilans = false;
+		this.showTolkUser = true;
+		this.showUser = false;
+	}
+	changeToUser() {
+		this.showFrilans = false;
+		this.showTolkUser = false;
+		this.showUser = true;
+	}
+
+
 
 	goToHome(event) {
 		if (!this.isProd) {

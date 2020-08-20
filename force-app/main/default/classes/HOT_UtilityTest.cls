@@ -52,4 +52,16 @@ private class HOT_UtilityTest{
 		System.assertEquals(1, requestIdToServiceResources.get(request.Id).size(), 'Could not get assigned resources');
 
 	}
+
+	@isTest static void testCheckUserHasDecision(){
+
+		Person__c person = HOT_TestDataFactory.createPerson();
+		insert person;
+
+		Test.startTest();
+		Boolean hasVedtak = HOT_Utility.checkUserHasDecision();
+		Test.stopTest();
+		
+		System.assertEquals(false, hasVedtak);
+	}
 }

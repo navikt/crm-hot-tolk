@@ -46,4 +46,23 @@ public without sharing class HOT_Utility {
 		return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
 	}
 
+	@AuraEnabled(cacheable = true)
+    public static Boolean checkUserHasDecision() {
+		User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+		Person__c person = [SELECT Id, HOT_DailyLifeInterpreter__c, HOT_EducationInterpreter__c, HOT_Escort__c, HOT_HapticCommunication__c, HOT_InterpreterAtWork__c, HOT_RemoteInterpreter__c,
+								   HOT_SignLanguage__c, HOT_SignLanguageWithLimitedFieldOfView__c, HOT_SignToSupportMouthReading__c, HOT_SpeechInterpreting__c, HOT_TactileSignLanguage__c, HOT_WritenInterpreting__c
+							FROM Person__c];// WHERE CRM_Account__c = :user.AccountId];
+		System.debug([SELECT Id FROM Person__c]);
+		Map<String, Object> fieldsToValue = person.getPopulatedFieldsAsMap();
+
+		for (String fieldName : fieldsToValue.keySet()){
+			if(fieldName != 'Id'){
+				if(fieldsToValue.get(fieldName) == true){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }
