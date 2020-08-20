@@ -18,37 +18,39 @@
 
 			<div if:false={defaultForm} class="valg-av-bestillingstype__container">
 				<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy"
-					onsubmit={handleRequestTypeSubmit}>
+					onsubmit={handleRequestTypeSubmit} onerror={handleError}>
 					<lightning-radio-group style="margin-bottom: 1rem;" name="radioGroup"
 						label="Hva slags bestilling ønsker du å legge inn?" options={requestTypes} type="radio"
-						onchange={handleRequestTypeChange}>
+						onchange={handleRequestTypeChange} required>
 					</lightning-radio-group>
-					<lightning-button variant="brand" type="submit" label="Neste"></lightning-button>
+
+					<lightning-messages aria-live="assertive">
+					</lightning-messages>
+					<lightning-button onclick={validateFields} variant="brand" type="submit" label="Neste">
+					</lightning-button>
 				</lightning-record-edit-form>
 			</div>
 
 
 			<div if:true={userForm} class="bruker-info-skjema">
 				<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy"
-					onsubmit={handleUserFormSubmit}>
+					onsubmit={handleUserFormSubmit} onerror={handleError}>
 					<h2 style="font-size: 1.25rem;">Informasjon om bruker</h2>
 					<lightning-input-field class="tolk-skjema-input" field-name="UserName__c" required>
 					</lightning-input-field>
 					<lightning-input-field class="tolk-skjema-input" field-name="PersonNumber__c" required>
 					</lightning-input-field>
 
-					<lightning-radio-group class="nav-radio-button-group" name="radioGroup"
-						label="Skal bruker informeres om bestillingen?" options={options} type="radio"
-						onchange={handleInformUser} required>
-					</lightning-radio-group>
-
-					<lightning-button variant="brand" type="submit" label="Neste"></lightning-button>
+					<lightning-messages aria-live="assertive">
+					</lightning-messages>
+					<lightning-button variant="brand" type="submit" label="Neste">
+					</lightning-button>
 				</lightning-record-edit-form>
 			</div>
 
 			<div if:true={companyForm} class="virksomhet-info-skjema">
 				<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy"
-					onsubmit={handleCompanyFormSubmit}>
+					onsubmit={handleCompanyFormSubmit} onerror={handleError}>
 					<h2 style="font-size: 1.25rem;">Informasjon om virksomhet</h2>
 					<lightning-input-field class="tolk-skjema-input" field-name="OrganizationNumber__c" required>
 					</lightning-input-field>
@@ -59,6 +61,8 @@
 					<lightning-input-field class="tolk-skjema-input" field-name="OrderNumber__c">
 					</lightning-input-field>
 
+					<lightning-messages aria-live="assertive">
+					</lightning-messages>
 					<lightning-button variant="brand" type="submit" label="Neste"></lightning-button>
 				</lightning-record-edit-form>
 			</div>

@@ -89,36 +89,48 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleRequestTypeSubmit(event) {
 		event.preventDefault();
-		if (this.currentRequestType.includes('user')) {
-			this.userForm = true;
+		if (this.currentRequestType != "") {
+			if (this.currentRequestType.includes('user')) {
+				this.userForm = true;
+			}
+			else {
+				this.companyForm = true;
+			}
 		}
 		else {
-			this.companyForm = true;
+			console.log("ERROR")
 		}
 	}
+
 	handleRequestTypeChange(event) {
 		this.currentRequestType = event.detail.value;
 	}
 
 	informUser = false;
+	informUserChosen = false;
 	handleInformUserChange(event) {
 		this.informUser = event.detail.value == 'Ja';
+		this.informUserChosen = true;
 	}
 
 	handleUserFormSubmit(event) {
 		event.preventDefault();
 
-		const fields = event.detail.fields;
+		if (this.informUserChosen) {
+			const fields = event.detail.fields;
 
-		this.fieldValues.IsNotifyUser__c = this.informUser;
-		this.fieldValues.UserName__c = fields.UserName__c;
-		this.fieldValues.PersonNumber__c = fields.PersonNumber__c;
+			this.fieldValues.UserName__c = fields.UserName__c;
+			this.fieldValues.PersonNumber__c = fields.PersonNumber__c;
 
-		if (this.currentRequestType.includes('company')) {
-			this.companyForm = true;
+			if (this.currentRequestType.includes('company')) {
+				this.companyForm = true;
+			}
+			else {
+				this.requestForm = true;
+			}
 		}
 		else {
-			this.requestForm = true;
+			console.log("Error no 2")
 		}
 	}
 
@@ -142,7 +154,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track fieldValues = {
 		Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "",
 		OrganizationNumber__c: "", InvoiceReference__c: "", AdditionalInvoiceText__c: "", OrderNumber__c: "",
-		IsNotifyUser__c: "", UserName__c: "", PersonNumber__c: "", Orderer__c: "",
+		UserName__c: "", PersonNumber__c: "", Orderer__c: "",
 	};
 
 
@@ -192,7 +204,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track spin = false;
 	handleSubmit(event) {
 		event.preventDefault();
-		this.spin = true;
 
 		const fields = event.detail.fields;
 		this.fieldValues.Orderer__c = ACCOUNTID();
@@ -207,6 +218,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 
 		if (fields) {
+			this.spin = true;
 			const isDuplicate = this.isDuplicate(this.fieldValues);
 			if (isDuplicate == null) {
 				this.template.querySelector('div.bestilling-info-skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
@@ -220,8 +232,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					this.template.querySelector('div.bestilling-info-skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
 				}
 			}
+			this.spin = false;
 		}
-		this.spin = false;
 	}
 
 	formatDateTime(dateTime) {
@@ -291,7 +303,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 		if (params != undefined) {
 			var parsed_params = parse_query_string(params);
-			if (parsed_params.isDefault != null) {
+			if (parsed_params.notDefault != null) {
 				this.defaultForm = false;
 				this.requestForm = false;
 			}
