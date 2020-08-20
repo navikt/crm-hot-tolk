@@ -5,7 +5,7 @@ import USER_ID from '@salesforce/user/Id';
 import NAME_FIELD from '@salesforce/schema/User.FirstName';
 import checkAssignedPermissionSet from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSet'
 import checkAssignedPermissionSetGroup from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSetGroup'
-import checkUserHasDecision from '@salesforce/apex/HOT_Utility.checkUserHasDecision';
+import checkUserHasEntitlement from '@salesforce/apex/HOT_Utility.checkUserHasEntitlement';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
@@ -84,7 +84,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 	wireIsFrilans({ error, data }) {
 		if (data) {
 			this.isFrilans = data;
-			this.isTolkUser = checkUserHasDecision();
+			this.isTolkUser = checkUserHasEntitlement();
 			this.isUser = !this.isTolkUser && !this.isFrilans;
 			if (this.isFrilans) {
 				this.showFrilans = true;
@@ -102,7 +102,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 	wireIsAdmin({ error, data }) {
 		if (data && !this.isFrilans) {
 			this.isFrilans = data;
-			this.isTolkUser = checkUserHasDecision();
+			this.isTolkUser = checkUserHasEntitlement();
 			this.isUser = !this.isTolkUser && !this.isFrilans;
 			if (this.isFrilans) {
 				this.showFrilans = true;

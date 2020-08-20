@@ -53,13 +53,13 @@ private class HOT_UtilityTest{
 
 	}
 
-	@isTest static void testCheckUserHasDecision(){
+	@isTest static void testCheckUserHasEntitlement(){
 
 		Person__c person = HOT_TestDataFactory.createPerson();
 		insert person;
 
 		Test.startTest();
-		Boolean hasVedtak = HOT_Utility.checkUserHasDecision();
+		Boolean hasVedtak = HOT_Utility.checkUserHasEntitlement();
 		Test.stopTest();
 		
 		System.assertEquals(false, hasVedtak);
