@@ -90,62 +90,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		];
 	}
 
-	handleRequestTypeSubmit(event) {
-		event.preventDefault();
-		const fields = event.detail.fields;
-
-		if (this.currentRequestType != "" && fields != null) {
-			this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
-			this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
-
-			if (this.currentRequestType.includes('user')) {
-				this.userForm = true;
-			}
-			else {
-				this.companyForm = true;
-			}
-		}
-		else {
-			console.log("ERROR")
-		}
-	}
+	@track showNextButton = true;
 
 	handleRequestTypeChange(event) {
 		this.currentRequestType = event.detail.value;
 	}
-
-
-	handleUserFormSubmit(event) {
-		event.preventDefault();
-
-		const fields = event.detail.fields;
-
-		this.fieldValues.UserName__c = fields.UserName__c;
-		this.fieldValues.PersonNumber__c = fields.PersonNumber__c;
-
-		if (this.currentRequestType.includes('company')) {
-			this.companyForm = true;
-		}
-		else {
-			this.requestForm = true;
-		}
-
-	}
-
-	handleCompanyFormSubmit(event) {
-		event.preventDefault();
-
-		const fields = event.detail.fields;
-
-		this.fieldValues.OrganizationNumber__c = fields.OrganizationNumber__c;
-		this.fieldValues.InvoiceReference__c = fields.InvoiceReference__c;
-		this.fieldValues.AdditionalInvoiceText__c = fields.AdditionalInvoiceText__c;
-		this.fieldValues.OrderNumber__c = fields.OrderNumber__c;
-
-		this.requestForm = true;
-	}
-
-
 
 
 	@track error;
@@ -204,35 +153,58 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track spin = false;
 	handleSubmit(event) {
 		event.preventDefault();
-
 		const fields = event.detail.fields;
-		this.fieldValues.Orderer__c = this.personAccount.Id;
-		for (const k in fields) {
-			this.fieldValues[k] = fields[k];
-		}
-		if (this.sameLocation) {
-			this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
-			this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
-			this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
-		}
 
-
-		if (fields) {
-			this.spin = true;
-			const isDuplicate = this.isDuplicate(this.fieldValues);
-			if (isDuplicate == null) {
-				this.template.querySelector('div.bestilling-info-skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+		//Pressed "SEND INN"
+		if (this.showNextButton == false && this.defaultForm == true) {
+			this.fieldValues.Orderer__c = this.personAccount.Id;
+			for (const k in fields) {
+				this.fieldValues[k] = fields[k];
+			}
+			if (this.sameLocation) {
+				this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
+				this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
+				this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 			}
 
-			else {
-				if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
-					"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
-					"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
-					+ "\n\nFortsett?")) {
-					this.template.querySelector('div.bestilling-info-skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+
+			if (fields) {
+				this.spin = true;
+				const isDuplicate = this.isDuplicate(this.fieldValues);
+				if (isDuplicate == null) {
+					this.template.querySelector('div.actual-form').querySelector('lightning-record-edit-form').submit(this.fieldValues);
 				}
+
+				else {
+					if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
+						"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
+						"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
+						+ "\n\nFortsett?")) {
+						this.template.querySelector('div.actual-form').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+					}
+				}
+				this.spin = false;
 			}
-			this.spin = false;
+		}
+
+		//Pressed "NESTE"
+		else if (this.currentRequestType != "" && fields != null) {
+			this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
+			this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
+
+			if (this.currentRequestType == 'user') {
+				this.userForm = true;
+			}
+			else if (this.currentRequestType == 'user_company') {
+				this.userForm = true;
+				this.companyForm = true;
+			}
+			else if (this.currentRequestType == 'company') {
+				//this.publicEventForm = true;
+				this.companyForm = true;
+			}
+			this.requestForm = true;
+			this.showNextButton = false;
 		}
 	}
 

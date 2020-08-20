@@ -21,3 +21,7 @@
 		transform: rotate(360deg);
 	}
 }
+
+div.sub-form {
+	margin-bottom: 4rem;
+}
