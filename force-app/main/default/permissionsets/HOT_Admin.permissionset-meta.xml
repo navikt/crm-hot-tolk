@@ -275,6 +275,11 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
+		<field>HOT_Request__c.UserPersonNumber</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
 		<field>HOT_Request__c.UserPhone__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
