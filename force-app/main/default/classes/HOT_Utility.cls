@@ -97,4 +97,14 @@ public without sharing class HOT_Utility {
 			update request;
 		}
 	}
+	
+	@AuraEnabled(cacheable = true)
+    public static void setAccountFieldOnRequestFromOrgNumber(Id requestId, String orgNumber) {
+		Account account = [SELECT Id FROM Account WHERE INT_OrganizationNumber__c = :orgNumber LIMIT 1];
+		if(account != null){
+			HOT_Request__c request = [SELECT Id, Account__C FROM HOT_Request__c WHERE Id = :requestId LIMIT 1];
+			request.Account__c = account.Id;
+			update request;
+		}
+	}
 }
