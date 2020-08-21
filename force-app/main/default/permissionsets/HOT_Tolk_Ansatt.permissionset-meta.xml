@@ -207,7 +207,7 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
-		<field>HOT_Request__.UserPersonNumber__c</field>
+		<field>HOT_Request__c.UserPersonNumber__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
