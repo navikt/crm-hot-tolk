@@ -81,26 +81,32 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 	@track showTolkUser = false;
 	@track showUser = false;
 	@wire(checkAssignedPermissionSetGroup, { permissionSetGroupName: 'HOT_Tolk_Frilans_Gruppe' })
-	wireIsFrilans({ error, data }) {
-		if (data) {
-			this.isFrilans = data;
-			this.isTolkUser = checkUserHasEntitlement();
-			this.isUser = !this.isTolkUser && !this.isFrilans;
-			if (this.isFrilans) {
-				this.showFrilans = true;
-			}
-			else if (this.isTolkUser) {
-				this.showTolkUser = true;
-			}
-			else {
-				this.showUser = true;
-			}
+	async wireIsFrilans({ error, data }) {
+		this.isFrilans = data;
+		this.isTolkUser = await checkUserHasEntitlement();
+		this.isUser = !this.isTolkUser && !this.isFrilans;
+		if (this.isFrilans) {
+			this.showFrilans = true;
 		}
-		//console.log("isFrilans: " + this.isFrilans);
+		else if (this.isTolkUser == true) {
+			this.showTolkUser = true;
+		}
+		else {
+			this.showUser = true;
+		}
+		/*
+		console.log("isFrilans: " + this.isFrilans);
+		console.log("isTolkUser: " + this.isTolkUser);
+		console.log("isUser: " + this.isUser);
+		console.log("showFrilans: " + this.showFrilans);
+		console.log("showTolkUser: " + this.showTolkUser);
+		console.log("showUser: " + this.showUser);
+		*/
+
 	}
 	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
 	wireIsAdmin({ error, data }) {
-		if (data && !this.isFrilans) {
+		if (!this.isFrilans) {
 			this.isFrilans = data;
 			this.isTolkUser = true; //checkUserHasEntitlement();
 			this.isUser = !this.isTolkUser && !this.isFrilans;
@@ -114,13 +120,8 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 				this.showUser = true;
 			}
 		}
-		console.log("isFrilans: " + this.isFrilans);
-		console.log("isTolkUser: " + this.isTolkUser);
-		console.log("isUser: " + this.isUser);
 	}
 
-	//Check if user has vedtak
-	//if isFrilans
 
 	@track showChoices = false;
 	handleShowChoices() {
