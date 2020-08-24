@@ -87,11 +87,17 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		this.isUser = !this.isTolkUser && !this.isFrilans;
 		if (this.isFrilans) {
 			this.showFrilans = true;
+			this.showTolkUser = false;
+			this.showUser = false;
 		}
 		else if (this.isTolkUser == true) {
+			this.showFrilans = false;
 			this.showTolkUser = true;
+			this.showUser = false;
 		}
 		else {
+			this.showFrilans = false;
+			this.showTolkUser = false;
 			this.showUser = true;
 		}
 
