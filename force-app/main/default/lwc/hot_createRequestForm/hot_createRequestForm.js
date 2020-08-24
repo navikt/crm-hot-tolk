@@ -73,8 +73,21 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			{ label: 'Nei', value: 'no' },
 		];
 	}
-	@wire(getPersonAccount) personAccount;
-	@wire(getOrdererDetails) ordererDetails;
+	@track personAccount = { Id: "", Name: "" };
+	@track ordererDetails = { OrdererEmail__c: "", OrdererPhone__c: "" };
+
+	@wire(getPersonAccount)
+	wiredGetPersonAccount(result) {
+		if (result.data) {
+			this.personAccount = result.data;
+		}
+	}
+	@wire(getOrdererDetails)
+	wiredGetOrdererDetails(result) {
+		if (result.data) {
+			this.ordererDetails = result.data;
+		}
+	}
 
 	@track defaultForm = true;
 	@track userForm = false;
@@ -94,6 +107,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleRequestTypeChange(event) {
 		this.currentRequestType = event.detail.value;
+		//this.fieldValues.Source__c = "Annen Betaler";
+		console.log(JSON.stringify(this.personAccount));
 	}
 
 
@@ -101,8 +116,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track fieldValues = {
 		Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "",
 		OrganizationNumber__c: "", InvoiceReference__c: "", AdditionalInvoiceText__c: "", OrderNumber__c: "",
-		UserName__c: "", PersonNumber__c: "", Orderer__c: "",
+		UserName__c: "", UserPersonNumber__c: "", Orderer__c: "",
 		OrdererEmail__c: "", OrdererPhone__c: "",
+		//Source__c: "Bruker",
 	};
 
 
@@ -152,15 +168,18 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track spin = false;
 	handleSubmit(event) {
+		console.log("handleSubmit");
 		event.preventDefault();
 		const fields = event.detail.fields;
 
 		//Pressed "SEND INN"
-		if (this.showNextButton == false && this.defaultForm == true) {
+		if (this.showNextButton == false) {
+			console.log('Pressed "SEND INN"');
 			this.fieldValues.Orderer__c = this.personAccount.Id;
 			for (const k in fields) {
 				this.fieldValues[k] = fields[k];
 			}
+			console.log('this.fieldValues.Orderer__c: ' + this.fieldValues.Orderer__c);
 			if (this.sameLocation) {
 				this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
 				this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
@@ -169,10 +188,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 
 			if (fields) {
+				console.log('if (fields) {');
 				this.spin = true;
 				const isDuplicate = this.isDuplicate(this.fieldValues);
 				if (isDuplicate == null) {
-					this.template.querySelector('div.actual-form').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+					console.log("Sumbitting")
+					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+					console.log("submitted");
 				}
 
 				else {
@@ -180,7 +202,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 						"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
 						"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
 						+ "\n\nFortsett?")) {
-						this.template.querySelector('div.actual-form').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+						this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
 					}
 				}
 				this.spin = false;
@@ -224,6 +246,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	}
 	handleSuccess(event) {
+		console.log("handleSuccess");
 		var x = this.template.querySelector(".submitted-true");
 		x.classList.remove('hidden');
 		this.template.querySelector(".h2-successMessage").focus();
@@ -231,6 +254,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
 		window.scrollTo(0, 0);
+
 
 	}
 	handleUploadFinished(event) {
@@ -247,7 +271,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	previousPage = 'home';
 
 	connectedCallback() {
-
+		console.log("connectedCallback");
+		//this.personAccount.Name = "rolf";
 		let testURL = window.location.href;
 		let params = testURL.split("?")[1];
 
@@ -278,6 +303,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			if (parsed_params.notDefault != null) {
 				this.defaultForm = false;
 				this.requestForm = false;
+				//this.fieldValues.Source__c = "NONE";
+			}
+			else {
+				this.showNextButton = false;
 			}
 
 
