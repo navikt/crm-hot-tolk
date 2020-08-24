@@ -3,11 +3,10 @@
     <fullName>OrganizationNumber__c</fullName>
     <externalId>false</externalId>
     <label>Organization Number</label>
-    <precision>9</precision>
+    <length>11</length>
     <required>false</required>
-    <scale>0</scale>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
-    <type>Number</type>
+    <type>Text</type>
     <unique>false</unique>
 </CustomField>
