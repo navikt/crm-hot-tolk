@@ -17,7 +17,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 
 	@track submitted = false; // if:false={submitted}
-	hide = true; //@track edit = false; When file-upload is ready, fix this.
+	@track edit = false;
 	acceptedFormat = '[.pdf, .png, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
 
 	@track recordId = null;
