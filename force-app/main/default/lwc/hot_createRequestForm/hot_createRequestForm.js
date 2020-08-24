@@ -108,7 +108,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleRequestTypeChange(event) {
 		this.currentRequestType = event.detail.value;
-		//this.fieldValues.Source__c = "Annen Betaler";
+		this.fieldValues.Source__c = "Annen Bestiller";
 		console.log(JSON.stringify(this.personAccount));
 		console.log(JSON.stringify(this.ordererDetails));
 	}
