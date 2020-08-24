@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ValidPersonNumber</fullName>
+    <active>true</active>
+    <errorConditionFormula>NOT(REGEX(UserPersonNumber__c, &apos;[0-3][0-9][0-1]\\d{8}&apos; ))</errorConditionFormula>
+    <errorDisplayField>UserPersonNumber__c</errorDisplayField>
+    <errorMessage>Personnummeret er ikke gyldig</errorMessage>
+</ValidationRule>
