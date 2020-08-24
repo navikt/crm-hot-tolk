@@ -3,11 +3,40 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 	public override void onBeforeInsert() {
 		
 		// Setter feltene Account__c og Person__c når den blir opprettet av en Community-bruker
-		User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c from User WHERE Id = :UserInfo.getUserId()];
+		User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+		List<Account> accounts = [SELECT Id, Name, INT_PersonIdent__c, CRM_Person__c, INT_OrganizationNumber__c FROM Account];
+		Map<String, Account> identToAccount = new Map<String, Account>();
+		Map<String, Account> orgNumberToAccount = new Map<String, Account>();
+		for(Account account:accounts){
+			if(account.INT_PersonIdent__c != null){
+				identToAccount.put(account.INT_PersonIdent__c, account);
+			}
+			else if(account.INT_OrganizationNumber__c != null){
+				orgNumberToAccount.put(account.INT_OrganizationNumber__c, account);
+			}
+		}
 		for ( HOT_Request__c request:(List<HOT_Request__c>)records ) {
 			if(request.Account__c == null && currentUser.AccountId != null){
-				request.Account__c = currentUser.AccountId;
-				request.Person__c = currentUser.Account.CRM_Person__c;
+
+				//Sets account and Person fields if UserPersonNumber__c is filled out in form
+				if(request.UserPersonNumber__c != null && identToAccount.get(request.UserPersonNumber__c) != null){
+					request.Account__c = identToAccount.get(request.UserPersonNumber__c).Id;
+					request.Person__c = identToAccount.get(request.UserPersonNumber__c).CRM_Person__c;
+				}
+				else{
+
+					//Sets Company-lookup if orgNumber is filled in
+					if(request.OrganizationNumber__c != null && orgNumberToAccount.get(request.OrganizationNumber__c) != null){
+						request.Company__c = orgNumberToAccount.get(request.OrganizationNumber__c).Id;
+					}
+
+					//Sets account and Person Fields if it should be connected to THIS.User
+					request.Account__c = currentUser.AccountId;
+					request.Person__c = currentUser.Account.CRM_Person__c;
+				}
+				
+				
+				
 			}
 		}
 		
