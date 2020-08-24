@@ -80,4 +80,5 @@ private class HOT_UtilityTest{
 		System.assertEquals(null, ordererDetails.get('OrdererEmail__c'));
 		System.assertEquals(null, ordererDetails.get('OrdererPhone__c'));
 	}
+
 }
