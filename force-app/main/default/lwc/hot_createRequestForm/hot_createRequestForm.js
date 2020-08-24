@@ -104,7 +104,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		];
 	}
 
-	@track showNextButton = true;
+	@track showNextButton = false;
 
 	handleRequestTypeChange(event) {
 		this.currentRequestType = event.detail.value;
@@ -305,6 +305,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			if (parsed_params.notDefault != null) {
 				this.defaultForm = false;
 				this.requestForm = false;
+				this.showNextButton = true;
 				//this.fieldValues.Source__c = "NONE";
 			}
 			else {
