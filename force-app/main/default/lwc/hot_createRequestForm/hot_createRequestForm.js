@@ -86,6 +86,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	wiredGetOrdererDetails(result) {
 		if (result.data) {
 			this.ordererDetails = result.data;
+			console.log(JSON.stringify(this.ordererDetails));
 		}
 	}
 
@@ -109,6 +110,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.currentRequestType = event.detail.value;
 		//this.fieldValues.Source__c = "Annen Betaler";
 		console.log(JSON.stringify(this.personAccount));
+		console.log(JSON.stringify(this.ordererDetails));
 	}
 
 
