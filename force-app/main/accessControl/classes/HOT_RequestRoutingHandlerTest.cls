@@ -41,7 +41,7 @@ private class HOT_RequestRoutingHandlerTest {
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
 		HOT_Request__c personRequest = HOT_TestDataFactory.createRequest('Person Test', workType);
-		personRequest.UserPersonNumber__c = '12345678999';
+		personRequest.UserPersonNumber__c = '12015678999';
 		HOT_Request__c businessRequest = HOT_TestDataFactory.createRequest('Business Test', workType);
 		businessRequest.OrganizationNumber__c = '987654321';
 
