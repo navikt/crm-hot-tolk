@@ -24,15 +24,13 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 					request.Person__c = identToAccount.get(request.UserPersonNumber__c).CRM_Person__c;
 				}
 				else{
-
-					//Sets Company-lookup if orgNumber is filled in
-					if(request.OrganizationNumber__c != null && orgNumberToAccount.get(request.OrganizationNumber__c) != null){
-						request.Company__c = orgNumberToAccount.get(request.OrganizationNumber__c).Id;
-					}
-
 					//Sets account and Person Fields if it should be connected to THIS.User
 					request.Account__c = currentUser.AccountId;
 					request.Person__c = currentUser.Account.CRM_Person__c;
+				}
+				//Sets Company-lookup if orgNumber is filled in
+				if(request.OrganizationNumber__c != null && orgNumberToAccount.get(request.OrganizationNumber__c) != null){
+					request.Company__c = orgNumberToAccount.get(request.OrganizationNumber__c).Id;
 				}
 				
 				
