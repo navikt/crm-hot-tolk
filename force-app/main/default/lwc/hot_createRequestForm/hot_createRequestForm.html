@@ -142,10 +142,12 @@
 						</lightning-messages>
 
 						<div class="button-container">
-							<div if:true={spin} class="loader"></div>
+							<div style="display: flex; justify-content: center;">
+								<div if:true={spin} class="loader"></div>
+							</div>
 							<div if:false={spin}>
 								<lightning-button title="Send inn bestilling" class="slds-m-left_x-small" type="submit"
-									variant="brand" label="SEND INN" onclick={handleSubmit}>
+									variant="brand" label="SEND INN">
 								</lightning-button>
 								</br>
 								<lightning-button title="Avbryt" variant="base" label="Avbryt" onclick={goToPrevousPage}

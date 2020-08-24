@@ -167,10 +167,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.endTime = event.detail.value;
 	}
 
-
 	@track spin = false;
+
 	handleSubmit(event) {
 		console.log("handleSubmit");
+		this.spin = true;
 		event.preventDefault();
 		const fields = event.detail.fields;
 
@@ -191,7 +192,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 			if (fields) {
 				console.log('if (fields) {');
-				this.spin = true;
 				const isDuplicate = this.isDuplicate(this.fieldValues);
 				if (isDuplicate == null) {
 					console.log("Sumbitting")
@@ -207,12 +207,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 						this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
 					}
 				}
-				this.spin = false;
 			}
 		}
 
 		//Pressed "NESTE"
 		else if (this.currentRequestType != "" && fields != null) {
+			this.spin = false;
 			this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
 			this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
 
@@ -245,9 +245,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	handleError(event) {
-
+		console.log("handleError");
+		this.spin = false;
 	}
+
 	handleSuccess(event) {
+		this.spin = false;
 		console.log("handleSuccess");
 		var x = this.template.querySelector(".submitted-true");
 		x.classList.remove('hidden');
