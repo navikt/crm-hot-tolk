@@ -185,3 +185,4 @@ force-app/main/default/objects/WorkOrder/fields/LineItemCount.field-meta.xml
 force-app/main/default/objects/WorkOrder/fields/IsStopped.field-meta.xml
 force-app/main/default/objects/WorkOrder/fields/IsGeneratedFromMaintenancePlan.field-meta.xml
 force-app/main/default/objects/WorkOrder/fields/IsClosed.field-meta.xml
+force-app/main/default/objects/HOT_Request__c/listViews/queue_4719_HOT_Request.listView-meta.xml
