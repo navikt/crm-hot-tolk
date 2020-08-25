@@ -1,127 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
-    <actionOverrides>
-        <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Person_Record_Page</content>
-        <formFactor>Small</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>Person__c</pageOrSobjectType>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Person_Record_Page</content>
-        <formFactor>Large</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>Person__c</pageOrSobjectType>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Service_Appointment_Record_Page</content>
-        <formFactor>Small</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>ServiceAppointment</pageOrSobjectType>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Service_Appointment_Record_Page</content>
-        <formFactor>Large</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>ServiceAppointment</pageOrSobjectType>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Work_Order_Line_Item_Record_Page</content>
-        <formFactor>Small</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>WorkOrderLineItem</pageOrSobjectType>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Work_Order_Line_Item_Record_Page</content>
-        <formFactor>Large</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>WorkOrderLineItem</pageOrSobjectType>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Work_Order_Record_Page</content>
-        <formFactor>Small</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>WorkOrder</pageOrSobjectType>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Work_Order_Record_Page</content>
-        <formFactor>Large</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>WorkOrder</pageOrSobjectType>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Interested_Resource_Record_Page</content>
-        <formFactor>Small</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>HOT_InterestedResource__c</pageOrSobjectType>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Interested_Resource_Record_Page</content>
-        <formFactor>Large</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>HOT_InterestedResource__c</pageOrSobjectType>
-    </actionOverrides>
-    <brand>
-        <headerColor>#0070D2</headerColor>
-        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
-    </brand>
-    <description>Hjelpemidler og tilrettelegging</description>
-    <formFactors>Small</formFactors>
-    <formFactors>Large</formFactors>
-    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
-    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
-    <label>HoT Admin</label>
-    <navType>Standard</navType>
-    <profileActionOverrides>
-        <actionName>View</actionName>
-        <content>Person_Account_Record_Page</content>
-        <formFactor>Large</formFactor>
-        <pageOrSobjectType>Account</pageOrSobjectType>
-        <recordType>PersonAccount.PersonAccount</recordType>
-        <type>Flexipage</type>
-        <profile>Admin</profile>
-    </profileActionOverrides>
-    <tabs>standard-Account</tabs>
-    <tabs>Person__c</tabs>
-    <tabs>HOT_Request__c</tabs>
-    <tabs>standard-WorkOrder</tabs>
-    <tabs>standard-ServiceAppointment</tabs>
-    <tabs>standard-WorkType</tabs>
-    <tabs>standard-ServiceTerritory</tabs>
-    <tabs>standard-OperatingHours</tabs>
-    <tabs>standard-ServiceResource</tabs>
-    <tabs>HOT_InterestedResource__c</tabs>
-    <tabs>standard-report</tabs>
-    <tabs>standard-Dashboard</tabs>
-    <uiType>Lightning</uiType>
-    <utilityBar>HoT_Admin_UtilityBar</utilityBar>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>Interested_Resource_Record_Page</content>
+		<formFactor>Small</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>HOT_InterestedResource__c</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>Interested_Resource_Record_Page</content>
+		<formFactor>Large</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>HOT_InterestedResource__c</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>Person_Record_Page</content>
+		<formFactor>Small</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>Person__c</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>Person_Record_Page</content>
+		<formFactor>Large</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>Person__c</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>Service_Appointment_Record_Page</content>
+		<formFactor>Small</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>ServiceAppointment</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>Service_Appointment_Record_Page</content>
+		<formFactor>Large</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>ServiceAppointment</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>Work_Order_Line_Item_Record_Page</content>
+		<formFactor>Small</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>WorkOrderLineItem</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>Work_Order_Line_Item_Record_Page</content>
+		<formFactor>Large</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>WorkOrderLineItem</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>Work_Order_Record_Page</content>
+		<formFactor>Small</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>WorkOrder</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>Work_Order_Record_Page</content>
+		<formFactor>Large</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>WorkOrder</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>HOT_Account_Record_Page</content>
+		<formFactor>Small</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>Account</pageOrSobjectType>
+	</actionOverrides>
+	<actionOverrides>
+		<actionName>View</actionName>
+		<comment>Action override created by Lightning App Builder during activation.</comment>
+		<content>HOT_Account_Record_Page</content>
+		<formFactor>Large</formFactor>
+		<skipRecordTypeSelect>false</skipRecordTypeSelect>
+		<type>Flexipage</type>
+		<pageOrSobjectType>Account</pageOrSobjectType>
+	</actionOverrides>
+	<brand>
+		<headerColor>#0070D2</headerColor>
+		<shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+	</brand>
+	<description>Hjelpemidler og tilrettelegging</description>
+	<formFactors>Small</formFactors>
+	<formFactors>Large</formFactors>
+	<isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+	<isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+	<label>HoT Admin</label>
+	<navType>Standard</navType>
+	<profileActionOverrides>
+		<actionName>View</actionName>
+		<content>Person_Account_Record_Page</content>
+		<formFactor>Large</formFactor>
+		<pageOrSobjectType>Account</pageOrSobjectType>
+		<recordType>PersonAccount.PersonAccount</recordType>
+		<type>Flexipage</type>
+		<profile>Admin</profile>
+	</profileActionOverrides>
+	<tabs>standard-Account</tabs>
+	<tabs>Person__c</tabs>
+	<tabs>HOT_Request__c</tabs>
+	<tabs>standard-WorkOrder</tabs>
+	<tabs>standard-ServiceAppointment</tabs>
+	<tabs>standard-WorkType</tabs>
+	<tabs>standard-ServiceTerritory</tabs>
+	<tabs>standard-OperatingHours</tabs>
+	<tabs>standard-ServiceResource</tabs>
+	<tabs>HOT_InterestedResource__c</tabs>
+	<tabs>standard-report</tabs>
+	<tabs>standard-Dashboard</tabs>
+	<uiType>Lightning</uiType>
+	<utilityBar>HoT_Admin_UtilityBar</utilityBar>
 </CustomApplication>
