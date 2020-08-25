@@ -33,5 +33,6 @@ serviceTerritoryMember.ServiceResourceId = serviceResource.Id;
 serviceTerritoryMember.ServiceTerritoryId = serviceTerritory.Id;
 insert serviceTerritoryMember;
 
+request.Company__c = businessAccount;
 request.Status__c = 'Godkjent';
 update request;
