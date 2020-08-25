@@ -4,6 +4,12 @@ ServiceTerritory serviceTerritory = [SELECT Id FROM ServiceTerritory WHERE Name 
 WorkType workType = [SELECT Id FROM WorkType WHERE Name = 'Tegnspråktolk'];
 HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Subject__c = 'Forespørsel 1'];
 OperatingHours operatingHours = [SELECT Id FROM OperatingHours WHERE Name = 'Always'];
+Id businessRecordTypeId = [SELECT Id FROM RecordType WHERE DeveloperName = 'Business_Account'][0].Id;
+
+Account businessAccount = new Account();
+businessAccount.Name = 'Jedi Order';
+businessAccount.INT_OrganizationNumber__c = '987654321';
+insert businessAccount;
 
 ServiceResource serviceResource = new ServiceResource();
 serviceResource.Name = 'Boba Fett';
