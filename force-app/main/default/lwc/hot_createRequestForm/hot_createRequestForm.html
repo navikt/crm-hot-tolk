@@ -20,46 +20,47 @@
 			<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
 				onerror={handleError} onsubmit={handleSubmit} record-id={recordId}>
 
-				<div if:false={defaultForm} class="valg-av-bestillingstype__container sub-form">
+				<section if:true={showNextButton} class="valg-av-bestillingstype__container sub-form">
 
-					<lightning-input label="Bestillers navn" name="ordererName" class="tolk-skjema-input"
-						value={personAccount.Name} disabled>
-					</lightning-input>
-					<lightning-input-field field-name="OrdererEmail__c" class="tolk-skjema-input"
-						value={ordererDetails.OrdererEmail__c} required>
-					</lightning-input-field>
-					<lightning-input-field field-name="OrdererPhone__c" class="tolk-skjema-input"
-						value={ordererDetails.OrdererPhone__c} required>
-					</lightning-input-field>
-
-
-					<lightning-radio-group style="margin-bottom: 1rem;" name="radioGroup"
+					<lightning-radio-group style="margin-bottom: 1rem;" name="radioGroup" class="requestTypeChoice"
 						label="Hva slags bestilling ønsker du å legge inn?" options={requestTypes} type="radio"
 						onchange={handleRequestTypeChange} required value={currentRequestType}>
 					</lightning-radio-group>
-					<!--lightning-input-field field-name="Source__c" style="margin-top: -4rem;"
-						value={ordererDetails.Source__c} required>
-					</lightning-input-field!-->
 
 					<lightning-messages aria-live="assertive">
 					</lightning-messages>
-					<lightning-button if:true={showNextButton} variant="brand" type="submit" label="Neste">
+					<lightning-button if:true={showNextButton} variant="brand" onclick={onHandleNeste} label="Neste">
 					</lightning-button>
-				</div>
+				</section>
 
 				<div if:false={showNextButton} class="actual-form">
 
 
-					<div if:true={userForm} class="bruker-info-skjema sub-form">
+
+					<section if:true={ordererForm} class="bestiller-info-skjema sub-form">
+						<h2 style="font-size: 1.25rem;">Kontaktinformasjon</h2>
+						<lightning-input label="Bestillers navn" name="ordererName" class="tolk-skjema-input"
+							value={personAccount.Name} disabled>
+						</lightning-input>
+						<lightning-input-field field-name="OrdererEmail__c" class="tolk-skjema-input"
+							value={ordererDetails.OrdererEmail__c} required>
+						</lightning-input-field>
+						<lightning-input-field field-name="OrdererPhone__c" class="tolk-skjema-input"
+							value={ordererDetails.OrdererPhone__c} required>
+						</lightning-input-field>
+					</section>
+
+
+					<section if:true={userForm} class="bruker-info-skjema sub-form">
 						<h2 style="font-size: 1.25rem;">Informasjon om bruker</h2>
 						<lightning-input-field class="tolk-skjema-input" field-name="UserName__c" required>
 						</lightning-input-field>
 						<lightning-input class="tolk-skjema-input personNumber" label="Brukers fødselsnummer"
 							type="text" max-length="11" name="UserPersonNumber__c" required onblur={checkPersonNumber}>
 						</lightning-input>
-					</div>
+					</section>
 
-					<div if:true={companyForm} class="virksomhet-info-skjema sub-form">
+					<section if:true={companyForm} class="virksomhet-info-skjema sub-form">
 						<h2 style="font-size: 1.25rem;">Informasjon om virksomhet</h2>
 						<lightning-input-field class="tolk-skjema-input" field-name="OrganizationNumber__c" required>
 						</lightning-input-field>
@@ -69,10 +70,10 @@
 						</lightning-input-field>
 						<lightning-input-field class="tolk-skjema-input" field-name="OrderNumber__c">
 						</lightning-input-field>
-					</div>
+					</section>
 
 
-					<div if:true={requestForm} class="bestilling-info-skjema">
+					<section if:true={requestForm} class="bestilling-info-skjema">
 
 						<h2 style="font-size: 1.25rem;">Informasjon om behov for tolk</h2>
 						<lightning-input-field class="tolk-skjema-input" field-name="Subject__c"
@@ -156,7 +157,7 @@
 								</lightning-button>
 							</div>
 						</div>
-					</div>
+					</section>
 				</div>
 			</lightning-record-edit-form>
 

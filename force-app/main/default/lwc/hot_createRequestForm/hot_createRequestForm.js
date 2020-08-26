@@ -90,21 +90,22 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 	}
 
-	@track defaultForm = true;
+	@track ordererForm = false;
 	@track userForm = false;
 	@track companyForm = false;
-	@track requestForm = true;
+	@track requestForm = false;
 
-	currentRequestType = "";
+	@track currentRequestType = "";
 	get requestTypes() {
 		return [
+			{ label: 'Bestille for meg selv', value: 'me' },
 			{ label: 'Bestille for bruker', value: 'user' },
 			{ label: 'Bestille for bruker, virksomheten betaler', value: 'user_company' },
 			{ label: 'Bestille til arrangement, virksomheten betaler', value: 'company' }
 		];
 	}
 
-	@track showNextButton = false;
+	@track showNextButton = true;
 
 	handleRequestTypeChange(event) {
 		this.currentRequestType = event.detail.value;
@@ -137,7 +138,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.fieldValues.UserPersonNumber__c = inputComponent.value;
 		}
 		inputComponent.reportValidity();
-
 
 	}
 
@@ -192,63 +192,69 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		event.preventDefault();
 		const fields = event.detail.fields;
 
-		//Pressed "SEND INN"
-		if (this.showNextButton == false) {
-			console.log('Pressed "SEND INN"');
-			this.fieldValues.Orderer__c = this.personAccount.Id;
-			for (const k in fields) {
-				this.fieldValues[k] = fields[k];
-			}
-			console.log('this.fieldValues.Orderer__c: ' + this.fieldValues.Orderer__c);
-			if (this.sameLocation) {
-				this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
-				this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
-				this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
-			}
+		this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
+		this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
 
-
-			if (fields) {
-				console.log('if (fields) {');
-				const isDuplicate = this.isDuplicate(this.fieldValues);
-				if (isDuplicate == null) {
-					console.log("Sumbitting")
-					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-					console.log("submitted");
-				}
-
-				else {
-					if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
-						"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
-						"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
-						+ "\n\nFortsett?")) {
-						this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
-					}
-				}
-			}
+		this.fieldValues.Orderer__c = this.personAccount.Id;
+		for (const k in fields) {
+			this.fieldValues[k] = fields[k];
+		}
+		if (this.sameLocation) {
+			this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
+			this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
+			this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 		}
 
+		if (fields) {
+			const isDuplicate = this.isDuplicate(this.fieldValues);
+			if (isDuplicate == null) {
+				console.log("Sumbitting")
+				this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+				console.log("submitted");
+			}
+
+			else {
+				if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
+					"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
+					"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
+					+ "\n\nFortsett?")) {
+					this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
+				}
+
+			}
+		}
+	}
+
+	onHandleNeste() {
+		console.log("onHandleNeste")
+		let radioButtonGroup = this.template.querySelector(".skjema").querySelector(".requestTypeChoice");
 		//Pressed "NESTE"
-		else if (this.currentRequestType != "" && fields != null) {
+		if (this.currentRequestType != "") {
 			this.spin = false;
-			this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
-			this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
 
 			if (this.currentRequestType == 'user') {
+				this.ordererForm = true;
 				this.userForm = true;
 			}
 			else if (this.currentRequestType == 'user_company') {
+				this.ordererForm = true;
 				this.userForm = true;
 				this.companyForm = true;
-				this.fieldValues.IsOtherEconomicProvicer__c = true;
 			}
 			else if (this.currentRequestType == 'company') {
 				//this.publicEventForm = true;
+				this.ordererForm = true;
 				this.companyForm = true;
-				this.fieldValues.IsOtherEconomicProvicer__c = true;
 			}
 			this.requestForm = true;
 			this.showNextButton = false;
+			radioButtonGroup.setCustomValidity("");
 		}
+		else {
+
+			radioButtonGroup.setCustomValidity("Du må velge type bestilling");
+		}
+		radioButtonGroup.reportValidity();
 	}
 
 	formatDateTime(dateTime) {
@@ -323,16 +329,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 		if (params != undefined) {
 			var parsed_params = parse_query_string(params);
-			if (parsed_params.notDefault != null) {
-				this.defaultForm = false;
-				this.requestForm = false;
-				this.showNextButton = true;
-				//this.fieldValues.Source__c = "NONE";
-			}
-			else {
-				this.showNextButton = false;
-			}
-
 
 			if (parsed_params.fromList != null) {
 				this.previousPage = 'mine-bestillinger';
