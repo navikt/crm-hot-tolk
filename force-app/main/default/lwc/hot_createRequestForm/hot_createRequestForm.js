@@ -134,6 +134,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		} else {
 			console.log("valid")
 			inputComponent.setCustomValidity("");
+			this.fieldValues.UserPersonNumber__c = inputComponent.value;
 		}
 		inputComponent.reportValidity();
 
