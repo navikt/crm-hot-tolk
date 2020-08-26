@@ -117,7 +117,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track error;
 	@track fieldValues = {
 		Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "",
-		OrganizationNumber__c: "", InvoiceReference__c: "", AdditionalInvoiceText__c: "", OrderNumber__c: "",
+		IsOtherEconomicProvicer__c: false, OrganizationNumber__c: "", InvoiceReference__c: "", AdditionalInvoiceText__c: "", OrderNumber__c: "",
 		UserName__c: "", UserPersonNumber__c: "", Orderer__c: "",
 		OrdererEmail__c: "", OrdererPhone__c: "",
 		//Source__c: "Bruker",
@@ -239,10 +239,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			else if (this.currentRequestType == 'user_company') {
 				this.userForm = true;
 				this.companyForm = true;
+				this.fieldValues.IsOtherEconomicProvicer__c = true;
 			}
 			else if (this.currentRequestType == 'company') {
 				//this.publicEventForm = true;
 				this.companyForm = true;
+				this.fieldValues.IsOtherEconomicProvicer__c = true;
 			}
 			this.requestForm = true;
 			this.showNextButton = false;
