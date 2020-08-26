@@ -1,14 +1,9 @@
 <template>
 	<div class="portal-hilsen">
-		<h2 onclick={handleShowChoices} class="typo-undertittel">Hei {name}</h2>
-		<div if:true={showChoices}>
-			<button onclick={changeToFreelance}>Frilans</button>
-			<button onclick={changeToTolkUser}>Bruker</button>
-			<button onclick={changeToUser}>Bestille for andre</button>
-		</div>
+		<h2 class="typo-undertittel">Hei {name}</h2>
 	</div>
 
-	<div if:true={showFrilans} class="informasjonstavle__body">
+	<div if:true={isFrilans} class="informasjonstavle__body">
 		<div class="informasjonstavle__content">
 			<div class="informasjonstavle__bildepaneler-single">
 				<a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag" onclick={goToOppdrag}>
@@ -41,70 +36,8 @@
 		</div>
 	</div>
 
-	<div if:true={showUser} class="informasjonstavle__body">
-		<div class="informasjonstavle__content">
-			<div class="informasjonstavle__bildepaneler">
-				<a class="panelMedBilde" href="/s/mine-oppdrag?notDefault=true" onclick={goToRequestOnBehalf}>
-					<div class="tolketjenesten panelMedBilde__imageOnPanel">
-						<div class="panelMedBilde__svgContainer">
-							<img if:false={isProd} class="illustrasjon"
-								src="/sfsites/c/resource/1584959871000/BestilleTolk"></img>
-							<img if:true={isProd} class="illustrasjon"
-								src="/s/sfsites/c/resource/1584959871000/BestilleTolk"></img>
-						</div>
-					</div>
-					<div class="panel panelMedBilde__panelOnPanel">
-						<h2 class="typo-undertittel">Bestille tolk</h2>
-						<div>
-							<p class="typo-normal">
-								Bestill tolk på vegne av andre eller bedrift.
-							</p>
-						</div>
-					</div>
-				</a>
-				<a class="panelMedBilde" href="/s/mine-bestillinger" onclick={goToMyRequests}>
-					<div class="tolketjenesten panelMedBilde__imageOnPanel">
-						<div class="panelMedBilde__svgContainer">
-							<img if:false={isProd} class="illustrasjon"
-								src="/sfsites/c/resource/1584959850000/MineBestillinger"></img>
-							<img if:true={isProd} class="illustrasjon"
-								src="/s/sfsites/c/resource/1584959850000/MineBestillinger"></img>
-						</div>
-					</div>
-					<div class="panel panelMedBilde__panelOnPanel">
-						<h2 class="typo-undertittel">Mine bestillinger</h2>
-						<div>
-							<p class="typo-normal">
-								Her finner du oversikt over alle dine bestillinger, og du kan se status på
-								bestillingene.
-							</p>
-						</div>
-					</div>
-				</a>
-				<a class="panelMedBilde" href="https://www.kunnskapsbanken.net/tolking/">
-					<div class="tolketjenesten panelMedBilde__imageOnPanel">
-						<div class="panelMedBilde__svgContainer">
-							<img if:false={isProd} class="illustrasjon"
-								src="/sfsites/c/resource/1584957822000/Kunnskapsbanken"></img>
-							<img if:true={isProd} class="illustrasjon"
-								src="/s/sfsites/c/resource/1584957822000/Kunnskapsbanken"></img>
-						</div>
-					</div>
-					<div class="panel panelMedBilde__panelOnPanel">
-						<h2 class="typo-undertittel">Kunnskapsbanken</h2>
-						<div>
-							<p class="typo-normal">
-								Her finner du fagstoff og artikler om tolking.
-							</p>
-						</div>
-					</div>
-				</a>
-			</div>
-		</div>
-	</div>
 
-
-	<div if:true={showTolkUser} class="informasjonstavle__body">
+	<div class="informasjonstavle__body">
 		<div class="informasjonstavle__content">
 			<div class="informasjonstavle__bildepaneler">
 				<a class="panelMedBilde" href="/s/ny-bestilling" onclick={goToNewRequest}>
