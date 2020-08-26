@@ -4,6 +4,16 @@
     <deleteConstraint>SetNull</deleteConstraint>
     <externalId>false</externalId>
     <label>Company</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage>Betaler må være en virksomhet, ikke en bruker</errorMessage>
+        <filterItems>
+            <field>Account.RecordType.DeveloperName</field>
+            <operation>notEqual</operation>
+            <value>PersonAccount</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
     <referenceTo>Account</referenceTo>
     <relationshipLabel>Requests (Company)</relationshipLabel>
     <relationshipName>CompanyRequests</relationshipName>
