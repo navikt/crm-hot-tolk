@@ -288,6 +288,11 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>false</editable>
+		<field>Person__c.HOT_HasEntitlement__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>true</editable>
 		<field>Person__c.HOT_InterpreterAtWork__c</field>
 		<readable>true</readable>
