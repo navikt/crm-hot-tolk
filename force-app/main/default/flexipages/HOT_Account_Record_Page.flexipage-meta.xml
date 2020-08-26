@@ -4,7 +4,7 @@
         <componentInstances>
             <componentInstanceProperties>
                 <name>collapsed</name>
-                <value>false</value>
+                <value>true</value>
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>enableActionsConfiguration</name>
@@ -12,24 +12,16 @@
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>hideChatterActions</name>
-                <value>false</value>
+                <value>true</value>
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>numVisibleActions</name>
-                <value>3</value>
+                <value>10</value>
             </componentInstanceProperties>
             <componentName>force:highlightsPanel</componentName>
         </componentInstances>
         <mode>Replace</mode>
         <name>header</name>
-        <type>Region</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <componentInstances>
-            <componentName>force:detailPanel</componentName>
-        </componentInstances>
-        <mode>Replace</mode>
-        <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -55,6 +47,14 @@
                 <value>true</value>
             </componentInstanceProperties>
             <componentName>force:relatedListSingleContainer</componentName>
+        </componentInstances>
+        <mode>Replace</mode>
+        <name>main</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <componentInstances>
+            <componentName>force:detailPanel</componentName>
         </componentInstances>
         <mode>Replace</mode>
         <name>sidebar</name>

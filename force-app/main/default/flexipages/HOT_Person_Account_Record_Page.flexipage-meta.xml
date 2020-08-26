@@ -12,7 +12,7 @@
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>hideChatterActions</name>
-                <value>false</value>
+                <value>true</value>
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>numVisibleActions</name>
@@ -29,25 +29,6 @@
     </flexiPageRegions>
     <flexiPageRegions>
         <componentInstances>
-            <componentName>force:detailPanel</componentName>
-        </componentInstances>
-        <componentInstances>
-            <componentInstanceProperties>
-                <name>lookupFieldName</name>
-                <value>CRM_Person__c</value>
-            </componentInstanceProperties>
-            <componentInstanceProperties>
-                <name>updateQuickActionName</name>
-                <value>Person__c.Update_Person</value>
-            </componentInstanceProperties>
-            <componentName>console:relatedRecord</componentName>
-        </componentInstances>
-        <mode>Replace</mode>
-        <name>main</name>
-        <type>Region</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <componentInstances>
             <componentInstanceProperties>
                 <name>parentFieldApiName</name>
                 <value>Account.Id</value>
@@ -58,7 +39,30 @@
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>relatedListComponentOverride</name>
-                <value>NONE</value>
+                <value>ADVGRID</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>rowsToDisplay</name>
+                <value>10</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>showActionBar</name>
+                <value>true</value>
+            </componentInstanceProperties>
+            <componentName>force:relatedListSingleContainer</componentName>
+        </componentInstances>
+        <componentInstances>
+            <componentInstanceProperties>
+                <name>parentFieldApiName</name>
+                <value>Account.Id</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>relatedListApiName</name>
+                <value>OrdererRequests__r</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>relatedListComponentOverride</name>
+                <value>ADVGRID</value>
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>rowsToDisplay</name>
@@ -106,6 +110,25 @@
                     <rightValue>false</rightValue>
                 </criteria>
             </visibilityRule>
+        </componentInstances>
+        <mode>Replace</mode>
+        <name>main</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <componentInstances>
+            <componentName>force:detailPanel</componentName>
+        </componentInstances>
+        <componentInstances>
+            <componentInstanceProperties>
+                <name>lookupFieldName</name>
+                <value>Account.CRM_Person__c</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>updateQuickActionName</name>
+                <value>Person__c.Update_Person</value>
+            </componentInstanceProperties>
+            <componentName>console:relatedRecord</componentName>
         </componentInstances>
         <mode>Replace</mode>
         <name>sidebar</name>
