@@ -220,6 +220,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					+ "\n\nFortsett?")) {
 					this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
 				}
+				else {
+					this.spin = false;
+				}
 
 			}
 		}
@@ -240,11 +243,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.ordererForm = true;
 				this.userForm = true;
 				this.companyForm = true;
+				this.fieldValues.IsOtherEconomicProvicer__c = true;
 			}
 			else if (this.currentRequestType == 'company') {
 				//this.publicEventForm = true;
 				this.ordererForm = true;
 				this.companyForm = true;
+				this.fieldValues.IsOtherEconomicProvicer__c = true;
 			}
 			this.requestForm = true;
 			this.showNextButton = false;
