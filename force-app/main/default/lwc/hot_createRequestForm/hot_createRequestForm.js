@@ -123,6 +123,23 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		//Source__c: "Bruker",
 	};
 
+	checkPersonNumber(event) {
+		console.log("checkPersonNumber")
+		var inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
+
+		let regExp = RegExp("[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]");
+		if (!regExp.test(inputComponent.value)) {
+			console.log("invalid")
+			inputComponent.setCustomValidity("Fødselsnummeret er ikke gyldig");
+		} else {
+			console.log("valid")
+			inputComponent.setCustomValidity("");
+			this.fieldValues.UserPersonNumber__c = inputComponent.value;
+		}
+		inputComponent.reportValidity();
+
+
+	}
 
 
 	@track startTime;
@@ -259,9 +276,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
 		window.scrollTo(0, 0);
-
-
 	}
+
 	handleUploadFinished(event) {
 		// Get the list of uploaded files
 		const uploadedFiles = event.detail.files;

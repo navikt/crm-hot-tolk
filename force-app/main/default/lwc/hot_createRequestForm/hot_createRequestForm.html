@@ -22,7 +22,7 @@
 
 				<div if:false={defaultForm} class="valg-av-bestillingstype__container sub-form">
 
-					<lightning-input label="Bestiller navn" name="ordererName" class="tolk-skjema-input"
+					<lightning-input label="Bestillers navn" name="ordererName" class="tolk-skjema-input"
 						value={personAccount.Name} disabled>
 					</lightning-input>
 					<lightning-input-field field-name="OrdererEmail__c" class="tolk-skjema-input"
@@ -54,8 +54,9 @@
 						<h2 style="font-size: 1.25rem;">Informasjon om bruker</h2>
 						<lightning-input-field class="tolk-skjema-input" field-name="UserName__c" required>
 						</lightning-input-field>
-						<lightning-input-field class="tolk-skjema-input" field-name="UserPersonNumber__c" required>
-						</lightning-input-field>
+						<lightning-input class="tolk-skjema-input personNumber" label="Brukers fødselsnummer"
+							type="text" max-length="11" name="UserPersonNumber__c" required onblur={checkPersonNumber}>
+						</lightning-input>
 					</div>
 
 					<div if:true={companyForm} class="virksomhet-info-skjema sub-form">
