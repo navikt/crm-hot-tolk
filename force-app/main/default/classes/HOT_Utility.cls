@@ -51,20 +51,9 @@ public without sharing class HOT_Utility {
     public static Boolean checkUserHasEntitlement() {
 		User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 		if(user.AccountId != null){
-			Person__c person = [SELECT Id, HOT_DailyLifeInterpreter__c, HOT_EducationInterpreter__c, HOT_Escort__c, HOT_HapticCommunication__c, HOT_InterpreterAtWork__c, HOT_RemoteInterpreter__c,
-									   HOT_SignLanguage__c, HOT_SignLanguageWithLimitedFieldOfView__c, HOT_SignToSupportMouthReading__c, HOT_SpeechInterpreting__c, HOT_TactileSignLanguage__c, HOT_WritenInterpreting__c
-								FROM Person__c WHERE CRM_Account__c = :user.AccountId LIMIT 1];
-
-			Map<String, Object> fieldsToValue = person.getPopulatedFieldsAsMap();
-			for (String fieldName : fieldsToValue.keySet()){
-				if(fieldName != 'Id'){
-					if(fieldsToValue.get(fieldName) == true){
-						return true;
-					}
-				}
-			}
+			Person__c person = [SELECT Id, HOT_HasEntitlement__c FROM Person__c WHERE CRM_Account__c = :user.AccountId LIMIT 1];
+			return person.HOT_HasEntitlement__c;
 		}
-		
 		return false;
 	}
 
