@@ -35,6 +35,13 @@
 
 				<div if:false={showNextButton} class="actual-form">
 
+					<section if:true={publicEventForm} class="offentlig-arrangement-info-skjema sub-form">
+						<h2 style="font-size: 1.25rem;">Informasjon om arrangementet</h2>
+						<lightning-combobox class="type-arrangement" name="typeOfEvent"
+							label="Type offentlig arrangement" options={getEventTypes} onchange={handleChoiceOfEvent}
+							required>
+						</lightning-combobox>
+					</section>
 
 					<section if:true={ordererForm} class="bestiller-info-skjema sub-form">
 						<h2 style="font-size: 1.25rem;">Kontaktinformasjon
@@ -45,21 +52,16 @@
 						<lightning-input label="Bestillers navn" name="ordererName" class="tolk-skjema-input"
 							value={personAccount.Name} disabled>
 						</lightning-input>
+						</br>
 						<lightning-input-field field-name="OrdererEmail__c" class="tolk-skjema-input"
 							value={ordererDetails.OrdererEmail__c} required>
 						</lightning-input-field>
+						</br>
 						<lightning-input-field field-name="OrdererPhone__c" class="tolk-skjema-input"
 							value={ordererDetails.OrdererPhone__c} required>
 						</lightning-input-field>
 					</section>
 
-					<section if:true={publicEventForm} class="offentlig-arrangement-info-skjema sub-form">
-						<h2 style="font-size: 1.25rem;">Informasjon om arrangementet</h2>
-						<lightning-combobox class="type-arrangement" name="typeOfEvent"
-							label="Type offentlig arrangement" options={getEventTypes} onchange={handleChoiceOfEvent}
-							required>
-						</lightning-combobox>
-					</section>
 
 					<section if:true={userForm} class="bruker-info-skjema sub-form">
 						<h2 style="font-size: 1.25rem;">Informasjon om tolkebruker
@@ -71,6 +73,7 @@
 							synliggjort for bruker.</p>
 						<lightning-input-field class="tolk-skjema-input" field-name="UserName__c" required>
 						</lightning-input-field>
+						</br>
 						<lightning-input class="tolk-skjema-input personNumber" label="Brukers fødselsnummer"
 							type="text" max-length="11" name="UserPersonNumber__c" required onblur={checkPersonNumber}>
 						</lightning-input>
@@ -80,8 +83,10 @@
 						<h2 style="font-size: 1.25rem;">Informasjon om virksomhet</h2>
 						<lightning-input-field class="tolk-skjema-input" field-name="OrganizationNumber__c" required>
 						</lightning-input-field>
+						</br>
 						<lightning-input-field class="tolk-skjema-input" field-name="InvoiceReference__c">
 						</lightning-input-field>
+						</br>
 						<lightning-input-field class="tolk-skjema-input" field-name="AdditionalInvoiceText__c">
 						</lightning-input-field>
 					</section>
