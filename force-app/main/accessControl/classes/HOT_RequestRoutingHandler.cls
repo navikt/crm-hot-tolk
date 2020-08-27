@@ -3,8 +3,19 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 	public override void onBeforeInsert() {
 		
 		// Setter feltene Account__c og Person__c når den blir opprettet av en Community-bruker
+		List<String> idents = new List<String>();
+		for(HOT_Request__c request:(List<HOT_Request__c>)records){
+			if(request.UserPersonNumber__c != ''){
+				idents.add(request.UserPersonNumber__c);
+			}
+			if(request.OrganizationNumber__c != ''){
+				idents.add(request.OrganizationNumber__c);
+			}
+		}
+
 		User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
-		List<Account> accounts = [SELECT Id, Name, INT_PersonIdent__c, CRM_Person__c, INT_OrganizationNumber__c FROM Account];
+		List<Account> accounts = [SELECT Id, Name, INT_PersonIdent__c, CRM_Person__c, INT_OrganizationNumber__c FROM Account
+								  WHERE INT_PersonIdent__c IN :idents OR INT_OrganizationNumber__c IN :idents];
 		Map<String, Account> identToAccount = new Map<String, Account>();
 		Map<String, Account> orgNumberToAccount = new Map<String, Account>();
 		for(Account account:accounts){
@@ -15,6 +26,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 				orgNumberToAccount.put(account.INT_OrganizationNumber__c, account);
 			}
 		}
+
 		for ( HOT_Request__c request:(List<HOT_Request__c>)records ) {
 			if(request.Account__c == null && currentUser.AccountId != null){
 
