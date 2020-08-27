@@ -17,7 +17,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 
 	@track submitted = false; // if:false={submitted}
-	@track edit = false;
 	acceptedFormat = '[.pdf, .png, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
 
 	@track recordId = null;
@@ -94,6 +93,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track userForm = false;
 	@track companyForm = false;
 	@track requestForm = false;
+	@track publicEventForm = false;
 
 	@track currentRequestType = "";
 	get requestTypes() {
@@ -114,6 +114,18 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		console.log(JSON.stringify(this.ordererDetails));
 	}
 
+	get getEventTypes() {
+		return [
+			{ label: 'Idrettsarrangement', value: 'sporting_event' },
+			{ label: 'Annet', value: 'other_event' },
+		];
+	}
+	@track eventType = null;
+	handleChoiceOfEvent(event) {
+		console.log(event.detail.value);
+		this.eventType = event.detail.value;
+	}
+
 
 	@track error;
 	@track fieldValues = {
@@ -132,6 +144,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		if (!regExp.test(inputComponent.value)) {
 			console.log("invalid")
 			inputComponent.setCustomValidity("Fødselsnummeret er ikke gyldig");
+			inputComponent.focus();
 		} else {
 			console.log("valid")
 			inputComponent.setCustomValidity("");
@@ -206,25 +219,38 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 
 		if (fields) {
-			const isDuplicate = this.isDuplicate(this.fieldValues);
-			if (isDuplicate == null) {
-				console.log("Sumbitting")
-				this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-				console.log("submitted");
-			}
+			let typeOfEventElement = this.template.querySelector(".skjema").querySelector(".type-arrangement");
+			typeOfEventElement.setCustomValidity("");
+			console.log(this.eventType);
+			if (this.eventType == null && this.publicEventForm) {
 
+				typeOfEventElement.setCustomValidity("Du må velge type arrangement");
+				typeOfEventElement.focus();
+				this.spin = false;
+			}
 			else {
-				if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
-					"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
-					"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
-					+ "\n\nFortsett?")) {
-					this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
-				}
-				else {
-					this.spin = false;
+
+				const isDuplicate = this.isDuplicate(this.fieldValues);
+				if (isDuplicate == null) {
+					console.log("Sumbitting")
+					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+					console.log("submitted");
 				}
 
+				else {
+					if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
+						"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
+						"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
+						+ "\n\nFortsett?")) {
+						this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
+					}
+					else {
+						this.spin = false;
+					}
+
+				}
 			}
+			typeOfEventElement.reportValidity();
 		}
 	}
 
@@ -246,7 +272,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.fieldValues.IsOtherEconomicProvicer__c = true;
 			}
 			else if (this.currentRequestType == 'company') {
-				//this.publicEventForm = true;
+				this.publicEventForm = true;
 				this.ordererForm = true;
 				this.companyForm = true;
 				this.fieldValues.IsOtherEconomicProvicer__c = true;
@@ -348,7 +374,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				}
 
 				this.recordId = this.fieldValues.Id;
-				this.edit = parsed_params.edit != null;
+
+				this.showNextButton = !(parsed_params.edit != null || parsed_params.copy != null);
+				if (!this.showNextButton) {
+					this.requestForm = true;
+					this.ordererForm = true;
+					this.userForm = parsed_params.fieldValues.UserPersonNumber__c != null;
+					this.companyForm = parsed_params.fieldValues.OrganizationNumber__c != null;
+
+				}
 			}
 		}
 

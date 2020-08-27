@@ -9,7 +9,7 @@
 		</lightning-breadcrumbs>
 	</div>
 
-	<div if:false={edit} class="main-content submitted-false create-form">
+	<div class="main-content submitted-false">
 		<div class="skjema-ikon tolketjenesten">
 			<img if:false={isProd} class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
 			<img if:true={isProd} class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon"></img>
@@ -36,7 +36,6 @@
 				<div if:false={showNextButton} class="actual-form">
 
 
-
 					<section if:true={ordererForm} class="bestiller-info-skjema sub-form">
 						<h2 style="font-size: 1.25rem;">Kontaktinformasjon</h2>
 						<lightning-input label="Bestillers navn" name="ordererName" class="tolk-skjema-input"
@@ -50,6 +49,13 @@
 						</lightning-input-field>
 					</section>
 
+					<section if:true={publicEventForm} class="offentlig-arrangement-info-skjema sub-form">
+						<h2 style="font-size: 1.25rem;">Informasjon om arrangementet</h2>
+						<lightning-combobox class="type-arrangement" name="typeOfEvent"
+							label="Type offentlig arrangement" options={getEventTypes} onchange={handleChoiceOfEvent}
+							required>
+						</lightning-combobox>
+					</section>
 
 					<section if:true={userForm} class="bruker-info-skjema sub-form">
 						<h2 style="font-size: 1.25rem;">Informasjon om bruker</h2>
