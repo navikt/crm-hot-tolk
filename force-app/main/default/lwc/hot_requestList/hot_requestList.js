@@ -281,6 +281,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 				state: {
 					fieldValues: JSON.stringify(clone),
 					fromList: true,
+					copy: true,
 				}
 			});
 		}
