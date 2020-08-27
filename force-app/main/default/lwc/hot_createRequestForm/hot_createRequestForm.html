@@ -37,7 +37,11 @@
 
 
 					<section if:true={ordererForm} class="bestiller-info-skjema sub-form">
-						<h2 style="font-size: 1.25rem;">Kontaktinformasjon</h2>
+						<h2 style="font-size: 1.25rem;">Kontaktinformasjon
+							<lightning-helptext content="Dine kontaktopplysninger vil knyttes til denne bestillingen. Dette for å
+							kunne kontakte deg dersom vi har behov for ytterligere opplysninger vedrørende din
+							bestilling."></lightning-helptext>
+						</h2>
 						<lightning-input label="Bestillers navn" name="ordererName" class="tolk-skjema-input"
 							value={personAccount.Name} disabled>
 						</lightning-input>
