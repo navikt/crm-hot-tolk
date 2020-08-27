@@ -5,10 +5,10 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 		// Setter feltene Account__c og Person__c når den blir opprettet av en Community-bruker
 		List<String> idents = new List<String>();
 		for(HOT_Request__c request:(List<HOT_Request__c>)records){
-			if(request.UserPersonNumber__c != ''){
+			if(!String.isBlank(request.UserPersonNumber__c)){
 				idents.add(request.UserPersonNumber__c);
 			}
-			if(request.OrganizationNumber__c != ''){
+			if(!String.isBlank(request.OrganizationNumber__c)){
 				idents.add(request.OrganizationNumber__c);
 			}
 		}
