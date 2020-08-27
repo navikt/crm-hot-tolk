@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Type</label>
+    <name>Type__c</name>
+    <picklistValues>
+        <masterLabel>Bruker på vegne av seg selv</masterLabel>
+        <translation><!-- Bruker på vegne av seg selv --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Privatperson på vegne av bruker</masterLabel>
+        <translation><!-- Privatperson på vegne av bruker --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Virksomhet på vegne av bruker</masterLabel>
+        <translation><!-- Virksomhet på vegne av bruker --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Virksomhet til offentlig arrangement</masterLabel>
+        <translation><!-- Virksomhet til offentlig arrangement --></translation>
+    </picklistValues>
+</CustomFieldTranslation>
