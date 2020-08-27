@@ -130,7 +130,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track error;
 	@track fieldValues = {
 		Name: "", Subject__c: "", StartTime__c: "", EndTime__c: "", MeetingStreet__c: "", MeetingPostalCity__c: "", MeetingPostalCode__c: "", Description__C: "",
-		IsOtherEconomicProvicer__c: false, OrganizationNumber__c: "", InvoiceReference__c: "", AdditionalInvoiceText__c: "", OrderNumber__c: "",
+		IsOtherEconomicProvicer__c: false, OrganizationNumber__c: "", InvoiceReference__c: "", AdditionalInvoiceText__c: "",
 		UserName__c: "", UserPersonNumber__c: "", Orderer__c: "",
 		OrdererEmail__c: "", OrdererPhone__c: "",
 		//Source__c: "Bruker",
