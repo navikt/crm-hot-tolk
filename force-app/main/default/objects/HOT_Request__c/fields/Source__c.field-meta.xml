@@ -13,24 +13,32 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Formidler</fullName>
-                <default>false</default>
+                <fullName>Dispatcher</fullName>
+                <default>true</default>
                 <label>Formidler</label>
             </value>
             <value>
-                <fullName>NONE</fullName>
+                <fullName>Community</fullName>
                 <default>false</default>
-                <label>NONE</label>
-            </value>
-            <value>
-                <fullName>Bruker</fullName>
-                <default>false</default>
-                <label>Bruker</label>
+                <label>Community</label>
             </value>
             <value>
                 <fullName>Annen Bestiller</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Annen Bestiller</label>
+            </value>
+            <value>
+                <fullName>Bruker</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Bruker</label>
+            </value>
+            <value>
+                <fullName>NONE</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>NONE</label>
             </value>
         </valueSetDefinition>
     </valueSet>

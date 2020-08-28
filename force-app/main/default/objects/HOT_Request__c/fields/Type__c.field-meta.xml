@@ -12,22 +12,22 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Bruker på vegne av seg selv</fullName>
+                <fullName>Me</fullName>
                 <default>false</default>
                 <label>Bruker på vegne av seg selv</label>
             </value>
             <value>
-                <fullName>Privatperson på vegne av bruker</fullName>
+                <fullName>User</fullName>
                 <default>false</default>
                 <label>Privatperson på vegne av bruker</label>
             </value>
             <value>
-                <fullName>Virksomhet på vegne av bruker</fullName>
+                <fullName>Company</fullName>
                 <default>false</default>
                 <label>Virksomhet på vegne av bruker</label>
             </value>
             <value>
-                <fullName>Virksomhet til offentlig arrangement</fullName>
+                <fullName>PublicEvent</fullName>
                 <default>false</default>
                 <label>Virksomhet til offentlig arrangement</label>
             </value>

@@ -95,13 +95,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track requestForm = false;
 	@track publicEventForm = false;
 
-	@track currentRequestType = "";
+	@track currentRequestType = 'Me';
 	get requestTypes() {
 		return [
-			{ label: 'Bestille for meg selv', value: 'me' },
-			{ label: 'Bestille for bruker', value: 'user' },
-			{ label: 'Bestille for bruker, virksomheten betaler', value: 'user_company' },
-			{ label: 'Bestille til arrangement, virksomheten betaler', value: 'company' }
+			{ label: 'Bestille for meg selv', value: 'Me' },
+			{ label: 'Bestille for bruker', value: 'User' },
+			{ label: 'Bestille for bruker, virksomheten betaler', value: 'Company' },
+			{ label: 'Bestille til arrangement, virksomheten betaler', value: 'PublicEvent' }
 		];
 	}
 
@@ -109,15 +109,14 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleRequestTypeChange(event) {
 		this.currentRequestType = event.detail.value;
-		this.fieldValues.Source__c = "Annen Bestiller";
-		console.log(JSON.stringify(this.personAccount));
-		console.log(JSON.stringify(this.ordererDetails));
+		this.publicEventForm = true;
+
 	}
 
-	get getEventTypes() {
+	get eventTypes() {
 		return [
-			{ label: 'Idrettsarrangement', value: 'sporting_event' },
-			{ label: 'Annet', value: 'other_event' },
+			{ label: 'Idrettsarrangement', value: 'SportingEvent' },
+			{ label: 'Annet', value: 'OtherEvent' },
 		];
 	}
 	@track eventType = null;
@@ -133,7 +132,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		IsOtherEconomicProvicer__c: false, OrganizationNumber__c: "", InvoiceReference__c: "", AdditionalInvoiceText__c: "",
 		UserName__c: "", UserPersonNumber__c: "", Orderer__c: "",
 		OrdererEmail__c: "", OrdererPhone__c: "",
-		//Source__c: "Bruker",
+		Source__c: "Community", Type__c: "", EventType__c: "",
 	};
 
 	checkPersonNumber(event) {
@@ -219,67 +218,69 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 
 		if (fields) {
-			let typeOfEventElement = this.template.querySelector(".skjema").querySelector(".type-arrangement");
-			typeOfEventElement.setCustomValidity("");
-			console.log(this.eventType);
-			if (this.eventType == null && this.publicEventForm) {
 
-				typeOfEventElement.setCustomValidity("Du må velge type arrangement");
-				typeOfEventElement.focus();
-				this.spin = false;
+			const isDuplicate = this.isDuplicate(this.fieldValues);
+			if (isDuplicate == null) {
+				console.log("Sumbitting")
+				this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+				console.log("submitted");
 			}
+
 			else {
-
-				const isDuplicate = this.isDuplicate(this.fieldValues);
-				if (isDuplicate == null) {
-					console.log("Sumbitting")
-					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-					console.log("submitted");
+				if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
+					"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
+					"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
+					+ "\n\nFortsett?")) {
+					this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
 				}
-
 				else {
-					if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
-						"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
-						"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
-						+ "\n\nFortsett?")) {
-						this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
-					}
-					else {
-						this.spin = false;
-					}
-
+					this.spin = false;
 				}
+
 			}
-			typeOfEventElement.reportValidity();
 		}
 	}
 
 	onHandleNeste() {
-		console.log("onHandleNeste")
 		let radioButtonGroup = this.template.querySelector(".skjema").querySelector(".requestTypeChoice");
+
 		//Pressed "NESTE"
+		let valid = true;
 		if (this.currentRequestType != "") {
 			this.spin = false;
 
-			if (this.currentRequestType == 'user') {
+			if (this.currentRequestType == 'User') {
 				this.ordererForm = true;
 				this.userForm = true;
 			}
-			else if (this.currentRequestType == 'user_company') {
+			else if (this.currentRequestType == 'Company') {
 				this.ordererForm = true;
 				this.userForm = true;
 				this.companyForm = true;
 				this.fieldValues.IsOtherEconomicProvicer__c = true;
 			}
-			else if (this.currentRequestType == 'company') {
-				this.publicEventForm = true;
-				this.ordererForm = true;
-				this.companyForm = true;
-				this.fieldValues.IsOtherEconomicProvicer__c = true;
+			else if (this.currentRequestType == 'PublicEvent') {
+				let typeOfEventElement = this.template.querySelector(".skjema").querySelector(".type-arrangement");
+				if (this.eventType == null) {
+					typeOfEventElement.setCustomValidity("Du må velge type arrangement");
+					typeOfEventElement.focus();
+					this.spin = false;
+					valid = false;
+				}
+				else {
+					typeOfEventElement.setCustomValidity("");
+					this.ordererForm = true;
+					this.companyForm = true;
+					this.fieldValues.IsOtherEconomicProvicer__c = true;
+				}
+				typeOfEventElement.reportValidity();
+
 			}
-			this.requestForm = true;
-			this.showNextButton = false;
-			radioButtonGroup.setCustomValidity("");
+			if (valid) {
+				this.requestForm = true;
+				this.showNextButton = false;
+				radioButtonGroup.setCustomValidity("");
+			}
 		}
 		else {
 
