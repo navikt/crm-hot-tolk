@@ -109,7 +109,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleRequestTypeChange(event) {
 		this.currentRequestType = event.detail.value;
-		this.publicEventForm = true;
+		if (this.currentRequestType == 'PublicEvent') {
+			this.publicEventForm = true;
+		}
+		else {
+			this.publicEventForm = false;
+			this.eventType = null;
+		}
 
 	}
 
