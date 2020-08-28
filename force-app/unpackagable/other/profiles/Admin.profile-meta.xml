@@ -180,11 +180,6 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>false</editable>
-		<field>Account.CRM_Type__c</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
 		<editable>true</editable>
 		<field>Account.Description</field>
 		<readable>true</readable>
