@@ -66,6 +66,7 @@ private class HOT_UtilityTest{
 	}
 
 	
+	//TODO: //TODO: Oppdatere asserts til å sjekke epost og mobil på orderer, men må da kunne kjøre testen som en Community-bruker, noe som vi ikke har fått til enda
 	@isTest static void testGetOrdererDetails(){
 
 		WorkType workType = HOT_TestDataFactory.createWorkType();
