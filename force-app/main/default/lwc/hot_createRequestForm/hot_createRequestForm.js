@@ -95,7 +95,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track requestForm = false;
 	@track publicEventForm = false;
 
-	@track currentRequestType = "";
+	@track currentRequestType = 'Me';
 	get requestTypes() {
 		return [
 			{ label: 'Bestille for meg selv', value: 'Me' },
