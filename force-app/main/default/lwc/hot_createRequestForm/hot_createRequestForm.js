@@ -216,9 +216,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
 			this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 		}
-
+		console.log(JSON.stringify(fields))
 		if (fields) {
-
 			const isDuplicate = this.isDuplicate(this.fieldValues);
 			if (isDuplicate == null) {
 				console.log("Sumbitting")
