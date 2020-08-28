@@ -13,7 +13,7 @@
 		<valueSetDefinition>
 			<sorted>false</sorted>
 			<value>
-				<fullName>Formidler</fullName>
+				<fullName>Dispatcher</fullName>
 				<default>false</default>
 				<label>Formidler</label>
 			</value>
