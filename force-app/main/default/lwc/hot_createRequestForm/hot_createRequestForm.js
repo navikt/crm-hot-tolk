@@ -210,20 +210,24 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		event.preventDefault();
 		const fields = event.detail.fields;
 
-		this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
-		this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
-
-		this.fieldValues.Orderer__c = this.personAccount.Id;
-		for (const k in fields) {
-			this.fieldValues[k] = fields[k];
-		}
-		if (this.sameLocation) {
-			this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
-			this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
-			this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
-		}
-		console.log(JSON.stringify(fields))
 		if (fields) {
+
+			this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
+			this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
+
+			this.fieldValues.Orderer__c = this.personAccount.Id;
+			for (const k in fields) {
+				this.fieldValues[k] = fields[k];
+			}
+			if (this.sameLocation) {
+				this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
+				this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
+				this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
+			}
+
+			this.fieldValues.Type__c = this.currentRequestType;
+			this.fieldValues.EventType__c = this.eventType;
+
 			const isDuplicate = this.isDuplicate(this.fieldValues);
 			if (isDuplicate == null) {
 				console.log("Sumbitting")
