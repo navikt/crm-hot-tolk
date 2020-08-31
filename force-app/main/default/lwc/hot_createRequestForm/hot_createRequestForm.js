@@ -387,7 +387,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.showNextButton = !(parsed_params.edit != null || parsed_params.copy != null);
 				if (!this.showNextButton) {
 					this.requestForm = true;
-					if (this.fieldValues.Type__c != 'Me') {
+					if (this.fieldValues.Type__c != 'Me' && this.fieldValues.Type__c != null) {
 						this.ordererForm = true;
 						this.userForm = this.fieldValues.Type__c != 'PublicEvent';
 						this.companyForm = this.fieldValues.Type__c != 'User';
@@ -399,7 +399,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				}
 			}
 		}
-		console.log(this.fieldValues.UserPersonNumber__c);
 
 	}
 
