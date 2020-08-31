@@ -107,6 +107,11 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_Request__c.EventType__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>false</editable>
 		<field>HOT_Request__c.ExternalRequestStatus__c</field>
 		<readable>true</readable>
@@ -199,6 +204,11 @@
 	<fieldPermissions>
 		<editable>true</editable>
 		<field>HOT_Request__c.Subject__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_Request__c.Type__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
