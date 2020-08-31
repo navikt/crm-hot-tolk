@@ -369,7 +369,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 		if (params != undefined) {
 			var parsed_params = parse_query_string(params);
-
+			console.log(JSON.stringify(parsed_params));
 			if (parsed_params.fromList != null) {
 				this.previousPage = 'mine-bestillinger';
 			}
