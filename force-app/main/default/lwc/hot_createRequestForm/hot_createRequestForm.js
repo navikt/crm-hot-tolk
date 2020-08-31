@@ -387,13 +387,19 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.showNextButton = !(parsed_params.edit != null || parsed_params.copy != null);
 				if (!this.showNextButton) {
 					this.requestForm = true;
-					this.ordererForm = true;
-					this.userForm = parsed_params.fieldValues.UserPersonNumber__c != null;
-					this.companyForm = parsed_params.fieldValues.OrganizationNumber__c != null;
-
+					if (this.fieldValues.Type__c != 'Me') {
+						this.ordererForm = true;
+						this.userForm = this.fieldValues.Type__c != 'PublicEvent';
+						this.companyForm = this.fieldValues.Type__c != 'User';
+					}
+				}
+				if (parsed_params.copy == true) {
+					this.fieldValues.StartTime__c = "";
+					this.fieldValues.EndTime__c = "";
 				}
 			}
 		}
+		console.log(this.fieldValues.UserPersonNumber__c);
 
 	}
 
