@@ -22,7 +22,7 @@
 
 				<section if:true={showNextButton} class="valg-av-bestillingstype__container sub-form">
 
-					<lightning-radio-group name="radioGroup" class="requestTypeChoice vertical"
+					<lightning-radio-group name="radioGroup" class="requestTypeChoice" style="margin-bottom: 1rem;"
 						label="Hva slags bestilling ønsker du å legge inn?" options={requestTypes} type="radio"
 						onchange={handleRequestTypeChange} required value={currentRequestType}>
 					</lightning-radio-group>

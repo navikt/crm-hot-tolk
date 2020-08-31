@@ -85,7 +85,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	wiredGetOrdererDetails(result) {
 		if (result.data) {
 			this.ordererDetails = result.data;
-			console.log(JSON.stringify(this.ordererDetails));
 		}
 	}
 
@@ -127,7 +126,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 	@track eventType = null;
 	handleChoiceOfEvent(event) {
-		console.log(event.detail.value);
 		this.eventType = event.detail.value;
 	}
 
@@ -369,7 +367,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 		if (params != undefined) {
 			var parsed_params = parse_query_string(params);
-			console.log(JSON.stringify(parsed_params));
 			if (parsed_params.fromList != null) {
 				this.previousPage = 'mine-bestillinger';
 			}
