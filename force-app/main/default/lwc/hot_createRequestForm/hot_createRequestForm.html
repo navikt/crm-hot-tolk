@@ -22,7 +22,7 @@
 
 				<section if:true={showNextButton} class="valg-av-bestillingstype__container sub-form">
 
-					<lightning-radio-group style="margin-bottom: 1rem;" name="radioGroup" class="requestTypeChoice"
+					<lightning-radio-group name="radioGroup" class="requestTypeChoice vertical"
 						label="Hva slags bestilling ønsker du å legge inn?" options={requestTypes} type="radio"
 						onchange={handleRequestTypeChange} required value={currentRequestType}>
 					</lightning-radio-group>
@@ -123,7 +123,7 @@
 						</br>
 
 
-						<lightning-radio-group class="nav-radio-button-group" name="radioGroup"
+						<lightning-radio-group class="nav-radio-button-group horizontal" name="radioGroup"
 							label="Er oppmøteadresse det samme som tolkeadresse?" options={options} value={value}
 							type="radio" onchange={toggled}></lightning-radio-group>
 
