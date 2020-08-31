@@ -292,6 +292,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		else {
 
 			radioButtonGroup.setCustomValidity("Du må velge type bestilling");
+			radioButtonGroup.focus();
 		}
 		radioButtonGroup.reportValidity();
 	}
