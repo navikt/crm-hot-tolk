@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SharingSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <accessMappings>
-        <accessLevel>Edit</accessLevel>
+        <accessLevel>Read</accessLevel>
         <object>HOT_Request__c</object>
         <objectField>Account__c</objectField>
         <userField>Account</userField>
