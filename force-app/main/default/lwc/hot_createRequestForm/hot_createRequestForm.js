@@ -165,7 +165,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		var tempTime = event.detail.value;
 		tempTime = tempTime.split("");
 
-		if (this.startTime == null) {
+		if (this.startTime == null || this.startTime == "") {
 			if (Math.abs(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes()) <= 1) {
 				tempTime[14] = '0';
 				tempTime[15] = '0';
@@ -390,9 +390,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 						this.companyForm = this.fieldValues.Type__c != 'User';
 					}
 				}
-				if (parsed_params.copy == true) {
-					this.fieldValues.StartTime__c = "";
-					this.fieldValues.EndTime__c = "";
+				if (!!parsed_params.copy) {
+					this.startTime = "";
+					this.endTime = "";
 				}
 			}
 		}
