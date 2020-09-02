@@ -2,7 +2,8 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 
 	public override void onBeforeInsert() {
 		
-		// Setter feltene Account__c og Person__c når den blir opprettet av en Community-bruker
+		// Setter feltene Account__c og Person__c (og Company__c om det eksisterer) når den blir opprettet av en Community-bruker
+		//Feltet Orderer__c settes automatisk i skjemaet.
 		List<String> idents = new List<String>();
 		for(HOT_Request__c request:(List<HOT_Request__c>)records){
 			if(!String.isBlank(request.UserPersonNumber__c)){
@@ -35,7 +36,8 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 					request.Account__c = identToAccount.get(request.UserPersonNumber__c).Id;
 					request.Person__c = identToAccount.get(request.UserPersonNumber__c).CRM_Person__c;
 				}
-				else{
+				//Checks if user is putting in request for interpreter for itself
+				else if(request.Type__c == 'Me'){
 					//Sets account and Person Fields if it should be connected to THIS.User
 					request.Account__c = currentUser.AccountId;
 					request.Person__c = currentUser.Account.CRM_Person__c;
@@ -62,33 +64,90 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 	}
 
 	private List<SobjectWrapper> getSobjectWrappers() {
-		Map<Id, SobjectWrapper> personInfoMap = getPersonsInfo();
+		Map<Id, SobjectWrapper> userInfoMap = getUserInfo();
+		Map<Id, SobjectWrapper> companyInfoMap = getCompanyInfo();
+		Map<Id, SobjectWrapper> ordererInfoMap = getOrdererInfo();
 		List<SobjectWrapper> wrappers = new List<SobjectWrapper>();
 		Integer recordIndex = 0;
 		for ( HOT_Request__c request:(List<HOT_Request__c>)records ) {
-			SobjectWrapper personInfo = personInfoMap.get( request.Account__c );
-			String region = null;
 
-			if ( personInfo != null ) {
-				region = personInfo.Region;
+			//If the request is connected to a user (Account__c)
+			if(request.Account__c != null){
+				SobjectWrapper userInfo = userInfoMap.get( request.Account__c );
+				String region = null;
+				if ( userInfo != null ) {
+					region = userInfo.Region;
+				}
+				wrappers.add( new SobjectWrapper( recordIndex, null, region ) );
+				recordIndex++;
 			}
-			wrappers.add( new SobjectWrapper( recordIndex, null, region ) );
-			recordIndex++;
+
+			//If the request is connected to a company (Company__c)
+			else if(request.Company__c != null){
+				SobjectWrapper companyInfo = companyInfoMap.get( request.Company__c );
+				String region = null;
+				if ( companyInfo != null ) {
+					region = companyInfo.Region;
+				}
+				wrappers.add( new SobjectWrapper( recordIndex, null, region ) );
+				recordIndex++;
+			}
+
+			//If there was an error connecting the request to a user or company, the request should be sent to the orderers region.
+			else {
+				SobjectWrapper ordererInfo = userInfoMap.get( request.Orderer__c );
+				String region = null;
+				if ( ordererInfo != null ) {
+					region = ordererInfo.Region;
+				}
+				wrappers.add( new SobjectWrapper( recordIndex, null, region ) );
+				recordIndex++;
+			}
 		}
 
 		return wrappers;
 	}
 
-	private Map<Id, SobjectWrapper> getPersonsInfo() {
+	private Map<Id, SobjectWrapper> getUserInfo() {
 		Set<Id> accountIds = new Set<Id>();
 		for ( HOT_Request__c request : (List<HOT_Request__c>) records ) {
 			accountIds.add( request.Account__c );
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
-		for ( Person__c per : [SELECT INT_RegionNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c in:accountIds] ) {
+		for ( Person__c per : [SELECT INT_RegionNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
 			SobjectWrapper wrapper = new SobjectWrapper();
 			wrapper.Region = per.INT_RegionNumber__c;
 			wrapperByAccountId.put( per.CRM_Account__c, wrapper );
+		}
+
+		return wrapperByAccountId;
+	}
+	
+	private Map<Id, SobjectWrapper> getOrdererInfo() {
+		Set<Id> accountIds = new Set<Id>();
+		for ( HOT_Request__c request : (List<HOT_Request__c>) records ) {
+			accountIds.add( request.Orderer__c );
+		}
+		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
+		for ( Person__c per : [SELECT INT_RegionNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
+			SobjectWrapper wrapper = new SobjectWrapper();
+			wrapper.Region = per.INT_RegionNumber__c;
+			wrapperByAccountId.put( per.CRM_Account__c, wrapper );
+		}
+
+		return wrapperByAccountId;
+	}
+	
+	private Map<Id, SobjectWrapper> getCompanyInfo() {
+		Set<Id> accountIds = new Set<Id>();
+		for ( HOT_Request__c request : (List<HOT_Request__c>) records ) {
+			accountIds.add( request.Account__c );
+		}
+		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
+		for ( Account company : [SELECT Id, INT_RegionNumber__c FROM Account WHERE Id IN :accountIds] ) {
+			SobjectWrapper wrapper = new SobjectWrapper();
+			wrapper.Region = company.INT_RegionNumber__c;
+			wrapperByAccountId.put( company.Id, wrapper );
 		}
 
 		return wrapperByAccountId;
