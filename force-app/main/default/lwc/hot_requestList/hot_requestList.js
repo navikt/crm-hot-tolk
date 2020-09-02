@@ -7,6 +7,7 @@ import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 import getAssignedResources from '@salesforce/apex/HOT_Utility.getAssignedResources';
+import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 
 
 var actions = [
@@ -22,6 +23,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	wiredIsProd({ error, data }) {
 		this.isProd = data;
 	}
+	@track userRecord = { AccountId: null };
+	@wire(getPersonAccount)
+	wiredGetRecord({ error, data }) {
+		if (data) {
+			this.userRecord.AccountId = data.Id;
+		}
+	}
+
 	@track columns = [
 		{
 			label: 'Start tid',
@@ -71,39 +80,104 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		},
 		{
 			type: 'action',
-			typeAttributes: { rowActions: actions },
+			typeAttributes: { rowActions: this.getRowActions },
 		},
 	];
 	columnLabels = ["'Start tid'", "'Slutt tid'", "'Oppmøtested'", "'Tema'", "'Status'"];
+
+	getRowActions(row, doneCallback) {
+		console.log("getRowActions")
+		console.log(JSON.stringify(row));
+
+		for (let r in row) {
+			console.log(r + ": " + JSON.stringify(row[r]));
+			//console.log(JSON.stringify(r));
+		}
+		let actions = [];
+		console.log("Debugging")
+		console.log(row["Orderer__c"])
+		console.log(row["EconomicalProvider__c"])
+		console.log(row["Orderer__c"] == row["EconomicalProvider__c"])
+		if (row["Orderer__c"] == row["EconomicalProvider__c"]) {
+			if (row["Status__c"] == 'Åpen') {
+				actions = [
+					{ label: 'Avlys', name: 'delete' },
+					{ label: 'Kopier', name: 'clone_order' },
+					{ label: 'Rediger', name: 'edit_order' },
+					{ label: 'Detaljer', name: 'details' },
+				]
+			}
+			else {
+				actions = [
+					{ label: 'Avlys', name: 'delete' },
+					{ label: 'Kopier', name: 'clone_order' },
+					{ label: 'Detaljer', name: 'details' },
+				]
+			}
+		}
+		else {
+			actions = [
+				{ label: 'Detaljer', name: 'details' },
+			]
+		}
+		console.log(JSON.stringify(actions));
+		doneCallback(actions);
+
+	}
+
+	get requestTypes() {
+		return [
+			{ label: 'Mine bestillinger', value: 'my' },
+			{ label: 'Bestillinger på vegne av andre', value: 'user' }
+		];
+	}
 
 
 	@track rerender;
 	@track requests;
 	@track allRequests;
+	@track allOrderedRequests;
+	@track allMyRequests;
 	@track error;
 	wiredRequestsResult;
 
 	@wire(getRequestList)
 	async wiredRequest(result) {
+		console.log("wiredRequests")
+		console.log(JSON.stringify(result));
 		this.wiredRequestsResult = result;
 		if (result.data) {
-			this.allRequests = result.data;
+
+			this.allRequests = this.distributeRequests(result.data);
 			this.filterRequests();
 			this.showHideInactives();
 			this.error = undefined;
 			//console.log(JSON.stringify(this.allRequests));
 			var requestIds = [];
-			for (var request of this.allRequests) {
+			for (var request of result.data) {
 				requestIds.push(request.Id);
 			}
 			this.requestAssignedResources = await getAssignedResources({ requestIds });
-			console.log(this.requestAssignedResources);
-
+			//console.log(this.requestAssignedResources);
 
 		} else if (result.error) {
 			this.error = result.error;
 			this.allRequests = undefined;
 		}
+	}
+
+	distributeRequests(data) {
+		this.allMyRequests = [];
+		this.allOrderedRequests = [];
+		for (let request of data) {
+			if (request.Account__c == this.userRecord.AccountId) {
+				this.allMyRequests.push(request);
+			}
+			else if (request.Orderer__c == this.userRecord.AccountId && request.Account__c != this.userRecord.AccountId) {
+				this.allOrderedRequests.push(request);
+			}
+		}
+		return this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
 	}
 
 
@@ -118,6 +192,30 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 		this.requests = tempRequests;
 	}
+	@track isMyRequests = true;
+	handleRequestType(event) {
+		this.isMyRequests = event.detail.value == 'my';
+		this.allRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
+		this.filterRequests();
+		this.showHideInactives();
+		let tempColumns = [...this.columns];
+		let tempColumnLabels = [...this.columnLabels];
+		if (this.isMyRequests) {
+			tempColumns.shift();
+			tempColumnLabels.shift();
+		}
+		else {
+			tempColumns.unshift({ label: 'Bruker', fieldName: 'UserName__c', type: 'text', sortable: true, })
+			tempColumnLabels.unshift("'Start tid'");
+		}
+		for (var i = 0; i < this.columnLabels.length; i++) {
+			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		}
+		this.columns = [...tempColumns];
+		this.columnLabels = [...tempColumnLabels];
+		console.log(this.columns.length)
+	}
+
 
 	@track checked = false;
 	handleChecked(event) {
@@ -198,6 +296,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		this.sortedBy = sortedBy;
 		this.showHideInactives();
 	}
+
 
 	handleRowAction(event) {
 		const actionName = event.detail.action.name;
@@ -292,24 +391,29 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
-			if (this.requests[index].ExternalRequestStatus__c == "Åpen") {
-				//Here we should get the entire record from salesforce, to get entire interpretation address.
-				let clone = this.requests[index];
-				this[NavigationMixin.Navigate]({
-					type: 'comm__namedPage',
-					attributes: {
-						pageName: 'ny-bestilling'
-					},
-					state: {
-						fieldValues: JSON.stringify(clone),
-						fromList: true,
-						edit: true,
-					}
-				});
+			if (row.Orderer__c == this.userRecord.AccountId) {
+				if (this.requests[index].ExternalRequestStatus__c == "Åpen") {
+					//Here we should get the entire record from salesforce, to get entire interpretation address.
+					let clone = this.requests[index];
+					this[NavigationMixin.Navigate]({
+						type: 'comm__namedPage',
+						attributes: {
+							pageName: 'ny-bestilling'
+						},
+						state: {
+							fieldValues: JSON.stringify(clone),
+							fromList: true,
+							edit: true,
+						}
+					});
+				}
+				else {
+					alert("Du kan ikke endre denne bestillingen");
+
+				}
 			}
 			else {
-				alert("Du kan ikke endre denne bestillingen");
-
+				alert("Denne bestillingen er bestilt av noen andre, og du har ikke rettigheter til å endre den.")
 			}
 		}
 	}
