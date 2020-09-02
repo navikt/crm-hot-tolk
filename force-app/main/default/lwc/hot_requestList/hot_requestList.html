@@ -11,14 +11,17 @@
 
 	<div class="liste liste-max-width">
 		<div class="right-content">
-			<lightning-button title="Ny bestilling" class="slds-m-top-small right-button" variant="brand"
-				label="Ny bestilling" onclick={goToNewRequest}>
+			<lightning-button title="Ny bestilling" class="right-button" variant="brand" label="Ny bestilling"
+				onclick={goToNewRequest}>
 			</lightning-button>
 			<lightning-input type="checkbox" class="filter-list-checkbox"
 				label="Vis fullførte, avlyste og udekte bestillinger" name="ShowAll" onchange={handleChecked}>
 			</lightning-input>
 			<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
 				value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
+			</lightning-combobox>
+			<lightning-combobox style="width: 30%;" name="typeOfList" label="Type bestilling" value="my"
+				options={requestTypes} onchange={handleRequestType}>
 			</lightning-combobox>
 		</div>
 		<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
