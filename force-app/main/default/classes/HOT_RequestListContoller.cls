@@ -11,6 +11,8 @@ public without sharing class HOT_RequestListContoller {
 		Source__c, Type__c, EventType__c, Orderer__r.Name, OrdererPhone__c, OrdererEmail__c, UserName__c, UserPersonNumber__c, Company__r.Name, OrganizationNumber__c, InvoiceReference__c, AdditionalInvoicetext__c
 		,EconomicalProvider__c
 		FROM HOT_Request__c WHERE (Account__c !=null AND Account__c = : user.AccountId) OR Orderer__c = :user.AccountId ORDER BY StartTime__c ASC];
+
+		//Setting the helping-field to control the users access to row-actions in requestList (lwc)
 		for(HOT_Request__c request: requests){
 			request.TempAccountId__c = user.AccountId;
 		}
