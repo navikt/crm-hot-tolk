@@ -86,40 +86,19 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	columnLabels = ["'Start tid'", "'Slutt tid'", "'Oppmøtested'", "'Tema'", "'Status'"];
 
 	getRowActions(row, doneCallback) {
-		console.log("getRowActions")
-		console.log(JSON.stringify(row));
-
-		for (let r in row) {
-			console.log(r + ": " + JSON.stringify(row[r]));
-			//console.log(JSON.stringify(r));
-		}
 		let actions = [];
-		console.log("Debugging")
-		console.log(row["Orderer__c"])
-		console.log(row["EconomicalProvider__c"])
-		console.log(row["Orderer__c"] == row["EconomicalProvider__c"])
-		if (row["Orderer__c"] == row["EconomicalProvider__c"]) {
-			if (row["Status__c"] == 'Åpen') {
-				actions = [
-					{ label: 'Avlys', name: 'delete' },
-					{ label: 'Kopier', name: 'clone_order' },
-					{ label: 'Rediger', name: 'edit_order' },
-					{ label: 'Detaljer', name: 'details' },
-				]
+		if (row["Orderer__c"] == row["TempAccountId__c"]) {
+			if (row["Status__c"] != "Avlyst" && row["Status__c"] != "Dekket" && row["Status__c"] != "Udekket") {
+				actions.push({ label: 'Avlys', name: 'delete' });
 			}
-			else {
-				actions = [
-					{ label: 'Avlys', name: 'delete' },
-					{ label: 'Kopier', name: 'clone_order' },
-					{ label: 'Detaljer', name: 'details' },
-				]
+			if (row["Status__c"] == "Åpen") {
+				actions.push({ label: 'Rediger', name: 'edit_order' });
 			}
+			actions.push({ label: 'Kopier', name: 'clone_order' });
 		}
-		else {
-			actions = [
-				{ label: 'Detaljer', name: 'details' },
-			]
-		}
+
+		actions.push({ label: 'Detaljer', name: 'details' });
+
 		console.log(JSON.stringify(actions));
 		doneCallback(actions);
 
@@ -358,10 +337,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 						});
 				}
 			}
-			else {
-				alert("Du kan ikke avlyse denne bestillingen");
-
-			}
 		}
 	}
 
@@ -406,10 +381,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 							edit: true,
 						}
 					});
-				}
-				else {
-					alert("Du kan ikke endre denne bestillingen");
-
 				}
 			}
 			else {

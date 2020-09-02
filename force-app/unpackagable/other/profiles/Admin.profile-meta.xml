@@ -550,6 +550,11 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_Request__c.TempAccountId__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>false</editable>
 		<field>HOT_Request__c.UserEmail__c</field>
 		<readable>false</readable>
