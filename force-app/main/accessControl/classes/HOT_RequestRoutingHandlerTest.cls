@@ -8,7 +8,7 @@ private class HOT_RequestRoutingHandlerTest {
 	}
 
 	@IsTest
-	private static void testRequstRegion54OnPerson() {
+	private static void testRequstRegion54OnUser() {
 
 		Person__c person = HOT_TestDataFactory.createPerson( );
 		person.INT_RegionNumber__c = '54';
@@ -22,7 +22,43 @@ private class HOT_RequestRoutingHandlerTest {
 		insert request;
 
 		Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
-		System.assertEquals( queueId, [SELECT OwnerId FROM HOT_Request__c].OwnerId );
+		System.assertEquals( queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id].OwnerId );
+	}
+	
+	@IsTest
+	private static void testRequstRegion54OnOrderer() {
+
+		Person__c person = HOT_TestDataFactory.createPerson( );
+		person.INT_RegionNumber__c = '54';
+		insert person;
+		Id accountId = [SELECT Id FROM Account LIMIT 1].Id;
+
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		
+		HOT_Request__c orderedRequest = HOT_TestDataFactory.createRequest( 'Orderer TEST', workType );
+		orderedRequest.Orderer__c = accountId;
+		insert orderedRequest;
+
+		Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
+		System.assertEquals( queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :orderedRequest.Id].OwnerId );
+	}
+	
+	@IsTest
+	private static void testRequstRegion54OnCompany() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+
+		Account company = HOT_TestDataFactory.createAccount(false);
+		company.INT_RegionNumber__c = '54';
+		insert company;
+
+		HOT_Request__c companyRequest = HOT_TestDataFactory.createRequest( 'Orderer TEST', workType );
+		companyRequest.Company__c = company.Id;
+		insert companyRequest;
+
+		Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
+		System.assertEquals( queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :companyRequest.Id].OwnerId );
 	}
 /*
 	@IsTest
