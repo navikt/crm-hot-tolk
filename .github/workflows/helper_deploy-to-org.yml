@@ -1,0 +1,48 @@
+name: "[Helper] Deploy to Org"
+on:
+  workflow_dispatch:
+    inputs:
+      packageId:
+        description: "Package ID"
+        required: true
+      org:
+        description: "Org (prod, preprod, dev)"
+        required: true
+jobs:
+  deploy-package:
+    runs-on: ubuntu-latest
+    steps:
+      # Print Input Values
+      - name: "Print Input Values"
+        run: |
+          echo "Org: ${{ github.event.inputs.org }}"
+          echo "Package ID: ${{ github.event.inputs.packageId }}"
+          echo "Initiator: ${{ github.actor }}"
+
+      # Set SFDX Auth URL
+      - name: "Set SFDX Auth URL"
+        id: auth-url
+        run: |
+          if [ ${{ github.event.inputs.org }} == "prod" ]
+          then
+            echo "::set-output name=target::$(echo ${{ secrets.PROD_SFDX_URL }})"
+            echo "'prod' was set"
+          elif [ ${{ github.event.inputs.org }} == "preprod" ]
+          then
+            echo "::set-output name=target::$(echo ${{ secrets.PREPROD_SFDX_URL }})"
+            echo "'preprod' was set"
+          elif [ ${{ github.event.inputs.org }} == "dev" ]
+          then
+            echo "::set-output name=target::$(echo ${{ secrets.DEV_SFDX_URL }})"
+            echo "'dev' was set"
+          fi
+
+      # Authorize SFDX
+      - name: Authorize SFDX
+        uses: sfdx-actions/setup-sfdx@v1
+        with:
+          sfdx-auth-url: ${{ steps.auth-url.outputs.target }}
+
+      # Install package in target org
+      - name: "Install package in target org"
+        run: "sfdx force:package:install --package ${{ github.event.inputs.packageId }} -k ${{ secrets.PACKAGE_KEY }} -w 10 -b 10 -r"

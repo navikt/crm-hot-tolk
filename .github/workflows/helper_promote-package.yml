@@ -1,0 +1,156 @@
+name: "[Helper] Promote Package"
+on:
+  workflow_dispatch:
+    inputs:
+      packageId:
+        description: "Package ID"
+        required: true
+      comment:
+        description: "Release Comment"
+        required: true
+jobs:
+  debug:
+    name: Debug Information
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print input values
+        run: |
+          echo "Package ID: ${{ github.event.inputs.packageId }}"
+          echo "Initiator: ${{ github.actor }}"
+          echo "Comment: ${{ github.event.inputs.comment }}"
+
+  promote-package:
+    name: Promote Package
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout code in master
+      - name: Checkout source code from master
+        uses: actions/checkout@master
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+
+      # Install SFDX
+      - name: Authorize SFDX
+        uses: sfdx-actions/setup-sfdx@v1
+
+      # Authenticate prod
+      - name: Authenticate prod
+        run: |
+          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./PROD_SFDX_URL.txt
+
+      # Promote package
+      - name: Promote package
+        run: "sfdx force:package:version:promote --package ${{ github.event.inputs.packageId }} --noprompt"
+
+  install-package-preprod:
+    name: Install Package in Preprod
+    runs-on: ubuntu-latest
+    needs: promote-package
+    steps:
+      # Install SFDX
+      - name: Authorize SFDX
+        uses: sfdx-actions/setup-sfdx@v1
+
+      # Authenticate preprod
+      - name: Authenticate preprod
+        run: |
+          echo ${{ secrets.PREPROD_SFDX_URL}} > ./PREPROD_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./PREPROD_SFDX_URL.txt -a preprod -s
+          rm -f ./PREPROD_SFDX_URL.txt
+
+      # Install package version to preprod
+      - name: Install package version to preprod
+        run: sfdx force:package:install --package ${{ github.event.inputs.packageId }} -w 20 -b 20 -u preprod -r -k ${{ secrets.PACKAGE_KEY }} --json
+
+  push-new-version-number-to-master:
+    name: Push new version number to master
+    runs-on: ubuntu-latest
+    needs: promote-package
+    steps:
+      # Checkout code in master
+      - name: Checkout source code from master
+        uses: actions/checkout@master
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+
+      # Update version number
+      - name: Update version number
+        id: packaging-updater
+        uses: navikt/github-action-sfdx-version-updater@master
+
+      # Create commit message by extracting the latest version number from sfdx-project.json
+      - name: Build commit message
+        id: build-commit-message
+        run: |
+          echo "::set-output name=message::(CI) Updated to new version number $(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
+          cat sfdx-project.json
+
+      # The main branch is protected
+      - name: "Create new branch and pull request for updated package version ID"
+        uses: peter-evans/create-pull-request@v2
+        with:
+          title: "Added new package version ID"
+          commit-message: ${{steps.build-commit-message.outputs.message}}
+          branch: "auto/package-version-update"
+
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Merge pull request
+      - name: "Merge pull request"
+        uses: juliangruber/merge-pull-request-action@v1
+        with:
+          # ! USES CUSTOM PAT TO INITIATE STATUS CHECKS (SEE "Require status checks to pass before merging" IN BRANCHES SETTINGS IN REPO)
+          github-token: ${{ secrets.DEPLOYMENT_PAT }}
+          number: ${{ env.PULL_REQUEST_NUMBER }}
+          method: squash
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: promote-package
+    steps:
+      # Checkout code in master
+      - name: Checkout source code from master
+        uses: actions/checkout@master
+        with:
+          persist-credentials: true # ! set to true to be able to checkout correctly
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+
+      # Set release variables
+      - name: Set release fields
+        id: release-fields
+        run: |
+          echo "::set-output name=tagName::v$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
+          echo "::set-output name=releaseName::$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
+          echo "::set-output name=bodyVersion::$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
+
+      # Generate changelog from commits
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v0.4.0
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # create github release
+      - name: Create GitHub Release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{steps.release-fields.outputs.tagName}}
+          release_name: ${{steps.release-fields.outputs.releaseName}}
+          body: |
+            **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
+            **Package ID**: ${{ github.event.inputs.packageId }}
+            **Author**: ${{ github.actor }}
+            **Comment**: ${{ github.event.inputs.comment }}
+
+            ## Changelog
+
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
