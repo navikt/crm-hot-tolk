@@ -1,5 +1,5 @@
 # Unique name for this workflow
-name: Create, validate and install package - develop
+name: "[Push] Create and Install Package in DEVHOT"
 
 # Definition when the workflow should run
 on:
