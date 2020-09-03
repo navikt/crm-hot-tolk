@@ -20,7 +20,9 @@
 			"EndTime__c": "2020-11-01T11:00:00.000+0000",
 			"Status__c": "Åpen",
 			"AssignmentType__c": "Private",
-			"Type__c": "Me"
+			"Type__c": "Me",
+			"Source__c": "Dispatcher",
+			"Orderer__c": "@AccountRef1"
 		},
 		{
 			"attributes": {
@@ -44,7 +46,9 @@
 			"AssignmentType__c": "Private",
 			"Type__c": "User",
 			"UserName__c": "Jar Jar Binks",
-			"UserPersonNumber__c": "12125678903"
+			"UserPersonNumber__c": "12125678903",
+			"Source__c": "Community",
+			"Orderer__c": "@AccountRef1"
 		},
 		{
 			"attributes": {
@@ -66,7 +70,9 @@
 			"EndTime__c": "2020-11-03T11:00:00.000+0000",
 			"Status__c": "Åpen",
 			"AssignmentType__c": "Private",
-			"Type__c": "Me"
+			"Type__c": "Me",
+			"Source__c": "Dispatcher",
+			"Orderer__c": "@AccountRef3"
 		}
 	]
 }
