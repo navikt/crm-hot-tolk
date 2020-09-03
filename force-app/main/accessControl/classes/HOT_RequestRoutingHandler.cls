@@ -95,7 +95,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 
 			//If there was an error connecting the request to a user or company, the request should be sent to the orderers region.
 			else {
-				SobjectWrapper ordererInfo = userInfoMap.get( request.Orderer__c );
+				SobjectWrapper ordererInfo = ordererInfoMap.get( request.Orderer__c );
 				String region = null;
 				if ( ordererInfo != null ) {
 					region = ordererInfo.Region;
@@ -104,7 +104,6 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 				recordIndex++;
 			}
 		}
-
 		return wrappers;
 	}
 
@@ -141,7 +140,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 	private Map<Id, SobjectWrapper> getCompanyInfo() {
 		Set<Id> accountIds = new Set<Id>();
 		for ( HOT_Request__c request : (List<HOT_Request__c>) records ) {
-			accountIds.add( request.Account__c );
+			accountIds.add( request.Company__c );
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
 		for ( Account company : [SELECT Id, INT_RegionNumber__c FROM Account WHERE Id IN :accountIds] ) {
