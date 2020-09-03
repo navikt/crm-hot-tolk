@@ -17,7 +17,6 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		//console.log("isProd: " + this.isProd);
 	}
 
-
 	@track name;
 	@wire(getRecord, {
 		recordId: USER_ID,
@@ -34,6 +33,9 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 	}
 
+	connectedCallback() {
+		window.scrollTo(0, 0);
+	}
 
 	goToMyRequests(event) {
 		if (!this.isProd) {
@@ -61,19 +63,18 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 
 	@track isFrilans = false;
 	@wire(checkAssignedPermissionSetGroup, { permissionSetGroupName: 'HOT_Tolk_Frilans_Gruppe' })
-	wireIsFrilans({ error, data }) {
-		if (data) {
-			this.isFrilans = data;
-		}
-		//console.log("isFrilans: " + this.isFrilans);
+	async wireIsFrilans({ error, data }) {
+		this.isFrilans = data;
+
+
 	}
 	@wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
 	wireIsAdmin({ error, data }) {
-		if (data && !this.isFrilans) {
+		if (!this.isFrilans) {
 			this.isFrilans = data;
 		}
-		//console.log("isAdmin: " + this.isFrilans);
 	}
+
 
 	goToHome(event) {
 		if (!this.isProd) {

@@ -10,6 +10,7 @@ public class HOT_TestDataFactory {
 		request.StartTime__c = Datetime.now().addHours( 1 );
 		request.EndTime__c = request.StartTime__c.addHours( 2 );
 		request.AssignmentType__c = 'Work';
+		request.Source__c = null;
 
 		return request;
 	}
@@ -131,7 +132,7 @@ public class HOT_TestDataFactory {
 	public static Person__c createPerson(  ) {
 		Person__c person = new Person__c();
 		person.INT_Confidential__c = 'UGRADERT';
-		person.Name = '12345678901';
+		person.Name = '12015678901';
 		person.INT_LastName__c = 'Last';
 		person.INT_FirstName__c = 'First';
 
