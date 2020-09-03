@@ -2,7 +2,9 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>RequireOrderer</fullName>
     <active>true</active>
-    <errorConditionFormula>ISBLANK(Orderer__c)</errorConditionFormula>
+    <errorConditionFormula>ISBLANK(Orderer__c)
+&amp;&amp;
+ISPICKVAL(Source__c, &apos;Dispatcher&apos;)</errorConditionFormula>
     <errorDisplayField>Orderer__c</errorDisplayField>
     <errorMessage>Bestiller må alltid fylles ut.</errorMessage>
 </ValidationRule>
