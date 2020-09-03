@@ -10,6 +10,7 @@ public class HOT_TestDataFactory {
 		request.StartTime__c = Datetime.now().addHours( 1 );
 		request.EndTime__c = request.StartTime__c.addHours( 2 );
 		request.AssignmentType__c = 'Work';
+		request.Source__c = null;
 
 		return request;
 	}
