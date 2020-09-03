@@ -1172,10 +1172,6 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>standard-home</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
         <tab>standard-report</tab>
         <visibility>Visible</visibility>
     </tabSettings>
