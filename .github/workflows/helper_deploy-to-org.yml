@@ -6,7 +6,7 @@ on:
         description: "Package ID"
         required: true
       org:
-        description: "Org (prod, preprod, dev)"
+        description: "Org (prod, preprod, devhot, uathot)"
         required: true
 jobs:
   deploy-package:
@@ -31,10 +31,14 @@ jobs:
           then
             echo "::set-output name=target::$(echo ${{ secrets.PREPROD_SFDX_URL }})"
             echo "'preprod' was set"
-          elif [ ${{ github.event.inputs.org }} == "dev" ]
+          elif [ ${{ github.event.inputs.org }} == "devhot" ]
           then
-            echo "::set-output name=target::$(echo ${{ secrets.DEV_SFDX_URL }})"
-            echo "'dev' was set"
+            echo "::set-output name=target::$(echo ${{ secrets.DEVHOT_SFDX_URL }})"
+            echo "'devhot' was set"
+          elif [ ${{ github.event.inputs.org }} == "uathot" ]
+          then
+            echo "::set-output name=target::$(echo ${{ secrets.UATHOT_SFDX_URL }})"
+            echo "'uathot' was set"
           fi
 
       # Authorize SFDX
