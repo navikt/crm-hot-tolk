@@ -3,10 +3,10 @@
     <assignments>
         <name>Set_Service_Territory_on_Request</name>
         <label>Set Service Territory on Request</label>
-        <locationX>1168</locationX>
-        <locationY>103</locationY>
+        <locationX>1356</locationX>
+        <locationY>133</locationY>
         <assignmentItems>
-            <assignToReference>getRequest.ServiceTerritory__c</assignToReference>
+            <assignToReference>$Record.ServiceTerritory__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>Get_Service_Territory.Id</elementReference>
@@ -19,8 +19,8 @@
     <assignments>
         <name>Set_ServiceTerritory_Name_Nordland</name>
         <label>Set ServiceTerritory.Name Nordland</label>
-        <locationX>805</locationX>
-        <locationY>182</locationY>
+        <locationX>992</locationX>
+        <locationY>211</locationY>
         <assignmentItems>
             <assignToReference>ServiceTerritoryDeveloperName</assignToReference>
             <operator>Assign</operator>
@@ -35,8 +35,8 @@
     <assignments>
         <name>Set_ServiceTerritory_Name_Tromso</name>
         <label>Set ServiceTerritory.Name Tromso</label>
-        <locationX>804</locationX>
-        <locationY>26</locationY>
+        <locationX>991</locationX>
+        <locationY>56</locationY>
         <assignmentItems>
             <assignToReference>ServiceTerritoryDeveloperName</assignToReference>
             <operator>Assign</operator>
@@ -51,14 +51,14 @@
     <decisions>
         <name>switchCaseQueueNameToServiceTerritory</name>
         <label>switchCaseQueueNameToServiceTerritory</label>
-        <locationX>621</locationX>
-        <locationY>106</locationY>
+        <locationX>808</locationX>
+        <locationY>136</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Tromso</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>getQueues.DeveloperName</leftValueReference>
+                <leftValueReference>queueDeveloperName</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>queue_4719</stringValue>
@@ -73,7 +73,7 @@
             <name>Nordland</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>getQueues.DeveloperName</leftValueReference>
+                <leftValueReference>queueDeveloperName</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>queue_4718</stringValue>
@@ -103,8 +103,8 @@
     <recordLookups>
         <name>Get_Service_Territory</name>
         <label>Get Service Territory</label>
-        <locationX>1007</locationX>
-        <locationY>103</locationY>
+        <locationX>1194</locationX>
+        <locationY>132</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_Service_Territory_on_Request</targetReference>
@@ -125,9 +125,9 @@
     <recordLookups>
         <name>getQueues</name>
         <label>getQueues</label>
-        <locationX>521</locationX>
-        <locationY>107</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <locationX>604</locationX>
+        <locationY>141</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>switchCaseQueueNameToServiceTerritory</targetReference>
         </connector>
@@ -135,7 +135,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>getRequest.OwnerId</elementReference>
+                <elementReference>$Record.OwnerId</elementReference>
             </value>
         </filters>
         <filters>
@@ -145,42 +145,24 @@
                 <stringValue>Queue</stringValue>
             </value>
         </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Group</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>getRequest</name>
-        <label>getRequest</label>
-        <locationX>404</locationX>
-        <locationY>131</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>getQueues</targetReference>
-        </connector>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>HOT_Request__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <outputAssignments>
+            <assignToReference>queueDeveloperName</assignToReference>
+            <field>DeveloperName</field>
+        </outputAssignments>
     </recordLookups>
     <recordUpdates>
         <name>updateRequest</name>
         <label>updateRequest</label>
-        <locationX>1356</locationX>
-        <locationY>119</locationY>
-        <inputReference>getRequest</inputReference>
+        <locationX>1544</locationX>
+        <locationY>149</locationY>
+        <inputReference>$Record</inputReference>
     </recordUpdates>
     <start>
-        <locationX>50</locationX>
-        <locationY>50</locationY>
+        <locationX>196</locationX>
+        <locationY>62</locationY>
         <connector>
-            <targetReference>getRequest</targetReference>
+            <targetReference>getQueues</targetReference>
         </connector>
         <object>HOT_Request__c</object>
         <recordTriggerType>Create</recordTriggerType>
@@ -188,11 +170,11 @@
     </start>
     <status>Active</status>
     <variables>
-        <name>recordId</name>
+        <name>queueDeveloperName</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>ServiceTerritoryDeveloperName</name>
