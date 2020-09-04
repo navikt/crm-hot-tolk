@@ -42,6 +42,11 @@
 
 				<div if:false={showNextButton} class="actual-form">
 
+					<p if:true={showInformationSharingText} class="typo-normal">Navn på bestiller/virksomhet og øvrig
+						informasjon som gis i
+						bestillingen,
+						vil være tilgjengelig for tolkebruker</p>
+
 					<section if:true={ordererForm} class="bestiller-info-skjema sub-form">
 						<h2 style="font-size: 1.25rem;">Kontaktinformasjon
 							<lightning-helptext

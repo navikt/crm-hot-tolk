@@ -246,6 +246,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.spin = false;
 	}
 
+	@track showInformationSharingText = true;
 	onHandleNeste() {
 		let radioButtonGroup = this.template.querySelector(".skjema").querySelector(".requestTypeChoice");
 
@@ -280,6 +281,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				}
 				typeOfEventElement.reportValidity();
 
+			}
+			else {
+				this.showInformationSharingText = false;
 			}
 			if (valid) {
 				this.requestForm = true;
