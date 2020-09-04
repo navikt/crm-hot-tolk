@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignments>
-        <name>default</name>
-        <label>default</label>
-        <locationX>810</locationX>
-        <locationY>474</locationY>
-        <assignmentItems>
-            <assignToReference>getRequest.Description__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>getQueues.Name</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Get_Service_Territory</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Set_Service_Territory_on_Request</name>
         <label>Set Service Territory on Request</label>
         <locationX>1168</locationX>
@@ -26,13 +10,6 @@
             <operator>Assign</operator>
             <value>
                 <elementReference>Get_Service_Territory.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>getRequest.AdditionalInvoiceText__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>ServiceTerritoryDeveloperName</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -51,13 +28,6 @@
                 <stringValue>Nordland</stringValue>
             </value>
         </assignmentItems>
-        <assignmentItems>
-            <assignToReference>getRequest.Description__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>getQueues.Name</elementReference>
-            </value>
-        </assignmentItems>
         <connector>
             <targetReference>Get_Service_Territory</targetReference>
         </connector>
@@ -74,13 +44,6 @@
                 <stringValue>Tromso</stringValue>
             </value>
         </assignmentItems>
-        <assignmentItems>
-            <assignToReference>getRequest.Description__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>getQueues.Name</elementReference>
-            </value>
-        </assignmentItems>
         <connector>
             <targetReference>Get_Service_Territory</targetReference>
         </connector>
@@ -90,9 +53,6 @@
         <label>switchCaseQueueNameToServiceTerritory</label>
         <locationX>621</locationX>
         <locationY>106</locationY>
-        <defaultConnector>
-            <targetReference>default</targetReference>
-        </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Tromso</name>
