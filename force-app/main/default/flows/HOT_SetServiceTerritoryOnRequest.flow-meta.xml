@@ -9,7 +9,7 @@
             <assignToReference>$Record.ServiceTerritory__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_Service_Territory.Id</elementReference>
+                <elementReference>serviceTerritoryId</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -105,7 +105,7 @@
         <label>Get Service Territory</label>
         <locationX>1194</locationX>
         <locationY>132</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_Service_Territory_on_Request</targetReference>
         </connector>
@@ -116,11 +116,13 @@
                 <elementReference>ServiceTerritoryDeveloperName</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>ServiceTerritory</object>
+        <outputAssignments>
+            <assignToReference>queueDeveloperName</assignToReference>
+            <field>Id</field>
+        </outputAssignments>
         <sortField>Name</sortField>
         <sortOrder>Asc</sortOrder>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
         <name>getQueues</name>
@@ -178,6 +180,13 @@
     </variables>
     <variables>
         <name>ServiceTerritoryDeveloperName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>serviceTerritoryId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
