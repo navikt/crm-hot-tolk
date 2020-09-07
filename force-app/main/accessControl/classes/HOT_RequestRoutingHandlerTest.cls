@@ -60,24 +60,7 @@ private class HOT_RequestRoutingHandlerTest {
 		Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
 		System.assertEquals( queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :companyRequest.Id].OwnerId );
 	}
-/*
-	@IsTest
-	private static void testRequstRegion54OnCompany() {
-
-		Account account = HOT_TestDataFactory.createAccount(false);
-		account.INT_MunicipalityNumber__c = '5401';
-		insert account;
-
-		WorkType workType = HOT_TestDataFactory.createWorkType();
-		insert workType;
-		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-		request.Account__c = account.Id;
-		insert request;
-
-		Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
-		System.assertEquals(queueId, [SELECT OwnerId FROM HOT_Request__c].OwnerId);
-	}
-*/
+	
 	@IsTest
 	private static void testRequestAccountFields(){
 		Person__c person = HOT_TestDataFactory.createPerson( );
