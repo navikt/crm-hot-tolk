@@ -37,11 +37,24 @@ jobs:
       - name: "Create scratch org"
         run: "sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1"
 
-      # Install dependencies to scratch org
-      - name: "Install dependencies"
+      # Install sfpowerkit plugin used to install multiple packages only by version number
+      - name: "Install sfpowerkit plugin"
+        run: "echo y | sfdx plugins:install sfpowerkit"
+
+      # Get package keys
+      - name: "Get package keys"
+        id: install-keys
         run: |
-          echo y | sfdx plugins:install sfpowerkit@1.45.2-13 # echo y to confirm installation
-          sfdx sfpowerkit:package:dependencies:install -u scratch-org -v devhub -k "1:${{ secrets.PACKAGE_KEY }} 2:${{ secrets.PACKAGE_KEY }} 3:${{ secrets.PACKAGE_KEY }} 4:${{ secrets.PACKAGE_KEY }} 5:${{ secrets.PACKAGE_KEY }} 6:${{ secrets.PACKAGE_KEY }} 7:${{ secrets.PACKAGE_KEY }} 8:${{ secrets.PACKAGE_KEY }}"
+          keys=""
+          for p in $(jq '.result | .[].Name' -r <<< "$(sfdx force:package:list --json)"); do
+              keys+=$p":${{ secrets.PACKAGE_KEY}} "
+          done
+                  
+          echo "::set-output name=keys::$(echo $keys)"
+
+      # Install packages this repo is dependant on
+      - name: "Install dependant packages"
+        run: "sfdx sfpowerkit:package:dependencies:install -u scratch-org -r -a -w 60 -k '${{ steps.install-keys.outputs.keys }}'"
 
       # Deploy source to scratch org
       - name: "Push source to scratch org"
