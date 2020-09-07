@@ -238,7 +238,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
 					"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
 					+ "\n\nFortsett?")) {
-					this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
+					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
 				}
 
 			}
@@ -383,8 +383,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					this.value = 'no';
 				}
 
-				this.recordId = this.fieldValues.Id;
-
 				this.showNextButton = !(parsed_params.edit != null || parsed_params.copy != null);
 				if (!this.showNextButton) {
 					this.requestForm = true;
@@ -397,7 +395,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				if (!!parsed_params.copy) {
 					this.startTime = "";
 					this.endTime = "";
+					delete this.fieldValues.Id;
 				}
+				else {
+					this.recordId = this.fieldValues.Id;
+				}
+
 			}
 		}
 
