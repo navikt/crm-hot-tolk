@@ -23,14 +23,13 @@
 				<section if:true={showNextButton} class="valg-av-bestillingstype__container sub-form">
 
 					<lightning-radio-group name="radioGroup" class="requestTypeChoice" style="margin-bottom: 1rem;"
-						label="Hva slags bestilling ønsker du å legge inn?" options={requestTypes} type="radio"
+						label="Hvilken type bestilling ønsker du?" options={requestTypes} type="radio"
 						onchange={handleRequestTypeChange} required value={currentRequestType}>
 					</lightning-radio-group>
 
 					<section if:true={publicEventForm} class="offentlig-arrangement-info-skjema sub-form">
-						<lightning-combobox class="type-arrangement" name="typeOfEvent"
-							label="Type offentlig arrangement" options={eventTypes} onchange={handleChoiceOfEvent}
-							required>
+						<lightning-combobox class="type-arrangement" name="typeOfEvent" label="Type arrangement"
+							options={eventTypes} onchange={handleChoiceOfEvent} required>
 						</lightning-combobox>
 					</section>
 
