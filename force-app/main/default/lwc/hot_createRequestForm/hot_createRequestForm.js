@@ -243,7 +243,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 			}
 		}
-		this.spin = false;
 	}
 
 	@track showInformationSharingText = true;
@@ -317,14 +316,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	handleSuccess(event) {
-		this.spin = false;
 		console.log("handleSuccess");
+		this.spin = false;
 		var x = this.template.querySelector(".submitted-true");
 		x.classList.remove('hidden');
 		this.template.querySelector(".h2-successMessage").focus();
 		x = this.template.querySelector(".submitted-false");
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
+		window.scrollTo(0, 1);
 		window.scrollTo(0, 0);
 	}
 
