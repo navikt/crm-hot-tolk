@@ -97,10 +97,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track currentRequestType = 'Me';
 	get requestTypes() {
 		return [
-			{ label: 'Bestille for meg selv', value: 'Me' },
-			{ label: 'Bestille for bruker', value: 'User' },
-			{ label: 'Bestille for bruker, virksomheten betaler', value: 'Company' },
-			{ label: 'Bestille til arrangement, virksomheten betaler', value: 'PublicEvent' }
+			{ label: 'For meg selv', value: 'Me' },
+			{ label: 'For en bruker', value: 'User' },
+			{ label: 'For en bruker, virksomheten betaler', value: 'Company' },
+			{ label: 'Til et arrangement, virksomheten betaler', value: 'PublicEvent' }
 		];
 	}
 
@@ -115,7 +115,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.publicEventForm = false;
 			this.eventType = null;
 		}
-
+		this.fieldValues.Type__c = this.currentRequestType;
 	}
 
 	get eventTypes() {
@@ -127,6 +127,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track eventType = null;
 	handleChoiceOfEvent(event) {
 		this.eventType = event.detail.value;
+		this.fieldValues.EventType__c = this.eventType;
 	}
 
 
@@ -222,9 +223,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
 				this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 			}
-
-			this.fieldValues.Type__c = this.currentRequestType;
-			this.fieldValues.EventType__c = this.eventType;
 
 			const isDuplicate = this.isDuplicate(this.fieldValues);
 			if (isDuplicate == null) {
