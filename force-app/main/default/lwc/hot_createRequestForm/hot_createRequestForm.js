@@ -322,7 +322,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		x = this.template.querySelector(".submitted-false");
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
-		window.scrollTo(0, 1);
 		window.scrollTo(0, 0);
 	}
 
@@ -341,6 +340,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	connectedCallback() {
 		console.log("connectedCallback");
+		window.scrollTo(0, 0);
 		//this.personAccount.Name = "rolf";
 		let testURL = window.location.href;
 		let params = testURL.split("?")[1];

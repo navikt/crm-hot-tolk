@@ -34,6 +34,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 	}
 
 	connectedCallback() {
+		window.scrollTo(0, 1);
 		window.scrollTo(0, 0);
 	}
 
