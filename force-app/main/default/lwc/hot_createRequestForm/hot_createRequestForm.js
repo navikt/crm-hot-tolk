@@ -240,6 +240,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				}
 
 			}
+			window.scrollBy(0, 100);
+			window.scrollBy(0, -100);
 		}
 	}
 
@@ -315,7 +317,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleSuccess(event) {
 		console.log("handleSuccess");
-		//window.scrollTo(0, 0);
 		this.spin = false;
 		var x = this.template.querySelector(".submitted-true");
 		x.classList.remove('hidden');
@@ -323,7 +324,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		x = this.template.querySelector(".submitted-false");
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
-		window.scrollTo(0, 0);
+
 	}
 
 	handleUploadFinished(event) {
