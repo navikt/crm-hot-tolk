@@ -6,6 +6,7 @@
 				"referenceId": "ServiceTerritoryRef1"
 			},
 			"Name": "Naboo",
+			"HOT_DeveloperName__c": "Naboo",
 			"OperatingHoursId": "@OperatingHoursRef1",
 			"IsActive": true
 		},
@@ -15,6 +16,7 @@
 				"referenceId": "ServiceTerritoryRef2"
 			},
 			"Name": "Dagobah System",
+			"HOT_DeveloperName__c": "Dagobah_System",
 			"OperatingHoursId": "@OperatingHoursRef1",
 			"IsActive": true
 		},
@@ -24,6 +26,7 @@
 				"referenceId": "ServiceTerritoryRef3"
 			},
 			"Name": "Tromsø",
+			"HOT_DeveloperName__c": "Tromso",
 			"OperatingHoursId": "@OperatingHoursRef1",
 			"IsActive": true
 		}
