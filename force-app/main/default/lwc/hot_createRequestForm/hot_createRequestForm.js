@@ -315,6 +315,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleSuccess(event) {
 		console.log("handleSuccess");
+		//window.scrollTo(0, 0);
 		this.spin = false;
 		var x = this.template.querySelector(".submitted-true");
 		x.classList.remove('hidden');
