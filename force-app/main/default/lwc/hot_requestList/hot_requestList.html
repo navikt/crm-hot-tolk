@@ -15,14 +15,17 @@
 				onclick={goToNewRequest}>
 			</lightning-button>
 			<lightning-input type="checkbox" class="filter-list-checkbox"
-				label="Vis fullførte, avlyste og udekte bestillinger" name="ShowAll" onchange={handleChecked}>
+				label="Vis også fullførte, avlyste og udekte bestillinger" name="ShowAll" onchange={handleChecked}>
 			</lightning-input>
+			</br>
+
 			<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
 				value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
 			</lightning-combobox>
-			<lightning-combobox style="width: 30%;" name="typeOfList" label="Type bestilling" value="my"
-				options={requestTypes} onchange={handleRequestType}>
-			</lightning-combobox>
+
+			<lightning-radio-group class="horizontal" name="radioGroup" options={requestTypes} value="my" type="radio"
+				onchange={handleRequestType}></lightning-radio-group>
+
 		</div>
 		<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
 			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
