@@ -72,7 +72,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 		for ( HOT_Request__c request:(List<HOT_Request__c>)records ) {
 
 			//If the request is connected to a user (Account__c)
-			if(request.Account__c != null){
+			if(request.Account__c != null && userInfoMap.containsKey(request.Account__c)){
 				SobjectWrapper userInfo = userInfoMap.get( request.Account__c );
 				String region = null;
 				if ( userInfo != null ) {
@@ -83,7 +83,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			}
 
 			//If the request is connected to a company (Company__c)
-			else if(request.Company__c != null){
+			else if(request.Company__c != null && companyInfoMap.containsKey(request.Company__c)){
 				SobjectWrapper companyInfo = companyInfoMap.get( request.Company__c );
 				String region = null;
 				if ( companyInfo != null ) {
@@ -103,6 +103,8 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 				wrappers.add( new SobjectWrapper( recordIndex, null, region ) );
 				recordIndex++;
 			}
+
+			//Else, go to hot tolk admin
 		}
 		return wrappers;
 	}
