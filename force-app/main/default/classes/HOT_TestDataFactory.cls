@@ -63,9 +63,9 @@ public class HOT_TestDataFactory {
 		return workType;
 	}
 
-	public static ServiceResource createServiceResource(Id userId){
+	public static ServiceResource createServiceResource(Id userId, String name){
 		ServiceResource serviceResource = new ServiceResource();
-		serviceResource.Name = 'Service Resource Name';
+		serviceResource.Name = name;
 		serviceResource.RelatedRecordId = userId;
 		serviceResource.IsActive = true;
 		serviceResource.ResourceType = 'T';
@@ -145,7 +145,7 @@ public class HOT_TestDataFactory {
 		return user;
 	}
 
-	public static User createUser( String lastName, Profile ProfileId ) {
+	public static User createUser( String lastName, Profile profile ) {
 		User user = new User (
 			Username = 'HOT.' + lastName + '@nav.hot.no',
 			LastName = lastName,
@@ -156,7 +156,7 @@ public class HOT_TestDataFactory {
 			LocaleSidKey = 'no_NO',
 			EmailEncodingKey = 'UTF-8',
 			LanguageLocaleKey = 'no',
-			ProfileId = ProfileId.id
+			ProfileId = profile.id
 			);
 
 		return user;
