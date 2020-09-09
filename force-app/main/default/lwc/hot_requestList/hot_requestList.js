@@ -392,10 +392,19 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	@track showInterpreters = false;
 	@track isDetails = false;
 	@track record = null;
+	@track userForm = false;
+	@track myRequest = false;
+	@track companyForm = false;
+	@track publicEvent = false;
 	showDetails(row) {
 		this.record = row;
-		this.isDetails = true;
 		console.log(JSON.stringify(this.record));
+
+		this.myRequest = this.record.Orderer__c == this.userRecord.AccountId;
+		this.userForm = this.record.Type__c == 'User' || this.record.Type__c == 'Company';
+		this.companyForm = this.record.Type__c == 'Company' || this.record.Type__c == 'PublicEvent';
+		this.publicEvent = this.record.Type__c == 'PublicEvent';
+
 		this.interpreters = [];
 		if (this.requestAssignedResources[row.Id] != null) {
 			for (var interpreter of this.requestAssignedResources[row.Id]) {
