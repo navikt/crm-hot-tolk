@@ -133,12 +133,14 @@
 							</lightning-formatted-text>
 							<span class="slds-form-element__label lightning-output-field__label">Start tid</span>
 							</br>
-							<lightning-formatted-text value={record.StartTime__c} class="lightning-output-field">
-							</lightning-formatted-text>
+							<lightning-formatted-date-time value={record.StartTime__c} class="lightning-output-field">
+							</lightning-formatted-date-time>
+							</br>
 							<span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
 							</br>
-							<lightning-formatted-text value={record.EndTime__c} class="lightning-output-field">
-							</lightning-formatted-text>
+							<lightning-formatted-date-time value={record.EndTime__c} class="lightning-output-field">
+							</lightning-formatted-date-time>
+							</br>
 							<span class="slds-form-element__label lightning-output-field__label">Status</span>
 							</br>
 							<lightning-formatted-text value={record.ExternalRequestStatus__c}
