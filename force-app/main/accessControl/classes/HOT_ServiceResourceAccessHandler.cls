@@ -8,10 +8,10 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
         Map<Integer,Id> recordIdByIndex=getRecordIdByIndex(serviceResources);
         List<SobjectWrapper> sobjects = new List<SobjectWrapper>();
 		Integer i=0;
-		List<ServiceTerritoryMember> serviceTerritoryMembers = [SELECT Id, ServiceResourceId, ServiceTerritory.Name FROM ServiceTerritoryMember WHERE TerritoryType = 'P' AND ServiceResourceId IN :serviceResources];
+		List<ServiceTerritoryMember> serviceTerritoryMembers = [SELECT Id, ServiceResourceId, ServiceTerritory.HOT_DeveloperName__c FROM ServiceTerritoryMember WHERE TerritoryType = 'P' AND ServiceResourceId IN :serviceResources];
 		Map<Id, String> serviceTerritoryNameByServiceResourceIdMap = new Map<Id, String>();
 		for(ServiceTerritoryMember serviceTerritoryMember : serviceTerritoryMembers) {
-			serviceTerritoryNameByServiceResourceIdMap.put(serviceTerritoryMember.ServiceResourceId, serviceTerritoryMember.ServiceTerritory.Name);
+			serviceTerritoryNameByServiceResourceIdMap.put(serviceTerritoryMember.ServiceResourceId, serviceTerritoryMember.ServiceTerritory.HOT_DeveloperName__c);
 		}
 		List<ServiceResourceShare> shareRecords = new List<ServiceResourceShare>();
         for(ServiceResource serviceResource : serviceResources) {

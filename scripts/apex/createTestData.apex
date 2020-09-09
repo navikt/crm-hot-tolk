@@ -1,6 +1,6 @@
 User user = [SELECT Id FROM User WHERE Email = 'fakeemail@nav.no.scratchorg' LIMIT 1];
 Skill skill = [SELECT Id FROM Skill WHERE DeveloperName = 'Tegnspraktolk'];
-ServiceTerritory serviceTerritory = [SELECT Id FROM ServiceTerritory WHERE Name = 'Tromsø'];
+ServiceTerritory serviceTerritory = [SELECT Id FROM ServiceTerritory WHERE HOT_DeveloperName__c = 'Tromso'];
 WorkType workType = [SELECT Id FROM WorkType WHERE Name = 'Tegnspråktolk'];
 HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Subject__c = 'Forespørsel 1'];
 OperatingHours operatingHours = [SELECT Id FROM OperatingHours WHERE Name = 'Always'];
