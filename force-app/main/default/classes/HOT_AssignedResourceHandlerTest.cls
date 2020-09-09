@@ -13,9 +13,9 @@ private class HOT_AssignedResourceHandlerTest{
 		Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator'];
 		User user = HOT_TestDataFactory.createUser('User2', profile);
 		insert user;
-		ServiceResource serviceResourceAdmin = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId(), 'admin');
+		ServiceResource serviceResourceAdmin = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
 		insert serviceResourceAdmin;
-		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id, 'user2');
+		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
 		insert serviceResource;
 
 	}
