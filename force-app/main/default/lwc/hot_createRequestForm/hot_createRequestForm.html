@@ -84,13 +84,16 @@
 
 					<section if:true={companyForm} class="virksomhet-info-skjema sub-form">
 						<h2 style="font-size: 1.25rem;">Informasjon om virksomhet</h2>
-						<lightning-input-field class="tolk-skjema-input" field-name="OrganizationNumber__c" required>
+						<lightning-input-field class="tolk-skjema-input" field-name="OrganizationNumber__c"
+							value={fieldValues.OrganizationNumber__c} required>
 						</lightning-input-field>
 						</br>
-						<lightning-input-field class="tolk-skjema-input" field-name="InvoiceReference__c">
+						<lightning-input-field class="tolk-skjema-input" field-name="InvoiceReference__c"
+							value={fieldValues.InvoiceReference__c}>
 						</lightning-input-field>
 						</br>
-						<lightning-input-field class="tolk-skjema-input" field-name="AdditionalInvoiceText__c">
+						<lightning-input-field class="tolk-skjema-input" field-name="AdditionalInvoiceText__c"
+							value={fieldValues.AdditionalInvoiceText__c}>
 						</lightning-input-field>
 					</section>
 
