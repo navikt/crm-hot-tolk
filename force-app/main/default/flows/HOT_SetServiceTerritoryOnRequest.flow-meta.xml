@@ -52,7 +52,7 @@
         <name>switchCaseQueueNameToServiceTerritory</name>
         <label>switchCaseQueueNameToServiceTerritory</label>
         <locationX>808</locationX>
-        <locationY>136</locationY>
+        <locationY>135</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Tromso</name>
@@ -118,7 +118,7 @@
         </filters>
         <object>ServiceTerritory</object>
         <outputAssignments>
-            <assignToReference>queueDeveloperName</assignToReference>
+            <assignToReference>serviceTerritoryId</assignToReference>
             <field>Id</field>
         </outputAssignments>
         <sortField>Name</sortField>
