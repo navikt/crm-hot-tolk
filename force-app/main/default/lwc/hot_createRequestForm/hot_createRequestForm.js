@@ -115,7 +115,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.publicEventForm = false;
 			this.eventType = null;
 		}
-		this.fieldValues.Type__c = this.currentRequestType;
 	}
 
 	get eventTypes() {
@@ -247,6 +246,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track showInformationSharingText = true;
 	onHandleNeste() {
+		this.fieldValues.Type__c = this.currentRequestType;
+
 		let radioButtonGroup = this.template.querySelector(".skjema").querySelector(".requestTypeChoice");
 
 		//Pressed "NESTE"
