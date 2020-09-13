@@ -283,7 +283,7 @@
                 <stringValue>[HOT_Request__c].Account__c.CRM_Person__c </stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_5_myRule_4_A1_3222209790</name>
+        <name>formula_5_myRule_4_A1_3080705876</name>
         <dataType>String</dataType>
         <expression>{!myVariable_current.Account__r.CRM_Person__c}</expression>
     </formulas>
@@ -304,7 +304,7 @@ IsChanged({!myVariable_current.Account__c})=true
 || ISNEW()
 )</expression>
     </formulas>
-    <interviewLabel>Request_Processor_Update_Set_Account_and_Person-3_InterviewLabel</interviewLabel>
+    <interviewLabel>Request_Processor_Update_Set_Account_and_Person-2_InterviewLabel</interviewLabel>
     <label>Request Processor - Update - Set Account and Person</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -415,7 +415,7 @@ IsChanged({!myVariable_current.Account__c})=true
         <processMetadataValues>
             <name>evaluationType</name>
             <value>
-                <stringValue>always</stringValue>
+                <stringValue>criteria</stringValue>
             </value>
         </processMetadataValues>
         <processMetadataValues>
@@ -443,6 +443,55 @@ IsChanged({!myVariable_current.Account__c})=true
         <connector>
             <targetReference>myDecision6</targetReference>
         </connector>
+        <filters>
+            <processMetadataValues>
+                <name>implicit</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>inputDataType</name>
+                <value>
+                    <stringValue>Boolean</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Account</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue>Account</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideType</name>
+                <value>
+                    <stringValue>ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>operatorDataType</name>
+                <value>
+                    <stringValue>String</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Boolean</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>Account__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
         <filters>
             <processMetadataValues>
                 <name>implicit</name>
@@ -489,7 +538,7 @@ IsChanged({!myVariable_current.Account__c})=true
             </processMetadataValues>
             <field>Person__c</field>
             <value>
-                <elementReference>formula_5_myRule_4_A1_3222209790</elementReference>
+                <elementReference>formula_5_myRule_4_A1_3080705876</elementReference>
             </value>
         </inputAssignments>
         <object>HOT_Request__c</object>
@@ -568,6 +617,72 @@ IsChanged({!myVariable_current.Account__c})=true
                 </value>
             </processMetadataValues>
             <field>Account__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Company</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue>Account</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>GlobalConstant</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>Company__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Orderer</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue>Account</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>GlobalConstant</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>Orderer__c</field>
         </inputAssignments>
         <inputAssignments>
             <processMetadataValues>

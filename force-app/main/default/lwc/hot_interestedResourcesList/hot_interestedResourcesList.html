@@ -1,8 +1,8 @@
 <template>
 	<div class="main-content">
 		<div class="right-content">
-			<lightning-button title="Meld interesse" class="slds-m-top-small right-button" variant="brand"
-				label="Tilbaketrekk interesse" onclick={retractInterest}>
+			<lightning-button title="Meld interesse" class="right-button" variant="brand" label="Tilbaketrekk interesse"
+				onclick={retractInterest}>
 			</lightning-button>
 			<lightning-input type="checkbox" class="filter-list-checkbox" label={checkBoxLabel} name="toggleTerritory"
 				onchange={handleChecked}>
@@ -56,36 +56,67 @@
 				<h2 class="typo-undertittel">Detaljer</h2>
 				<div class="slds-grid slds-gutters">
 					<div class="slds-col slds-size_1-of-2">
-						<span class="slds-form-element__label">Oppdrag</span>
-						<p class="typo-normal" style="margin-bottom: 0.25rem;">
-							{detailInterestedResource.AppointmentNumber__c}
-						</p>
-						<span class="slds-form-element__label">Start tid</span>
-						<p class="typo-normal" style="margin-bottom: 0.25rem;">
-							{detailInterestedResource.ServiceAppointmentStartTime__c}</p>
-						<span class="slds-form-element__label">Slutt tid</span>
-						<p class="typo-normal" style="margin-bottom: 0.25rem;">
-							{detailInterestedResource.ServiceAppointmentEndTime__c}</p>
-						<span class="slds-form-element__label">Sted</span>
-						<p class="typo-normal" style="margin-bottom: 0.25rem;">
-							{detailInterestedResource.ServiceAppointmentAddress__c}</p>
-						<span class="slds-form-element__label">Oppdragstype</span>
-						<p class="typo-normal" style="margin-bottom: 0.25rem;">
-							{detailInterestedResource.ServiceAppointment__r.HOT_WorkTypeName__c}</p>
+						<span class="slds-form-element__label lightning-output-field__label">Oppdrag</span>
+						</br>
+						<lightning-formatted-text value={detailInterestedResource.AppointmentNumber__c}
+							class="lightning-output-field">
+						</lightning-formatted-text>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Start tid</span>
+						</br>
+						<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit" hour12="false"
+							hour="2-digit" minute="2-digit"
+							value={detailInterestedResource.ServiceAppointmentStartTime__c}
+							class="lightning-output-field">
+						</lightning-formatted-date-time>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
+						</br>
+						<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit" hour12="false"
+							hour="2-digit" minute="2-digit"
+							value={detailInterestedResource.ServiceAppointmentEndTime__c}
+							class="lightning-output-field">
+						</lightning-formatted-date-time>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Sted</span>
+						</br>
+						<lightning-formatted-text value={detailInterestedResource.ServiceAppointmentAddress__c}
+							class="lightning-output-field">
+						</lightning-formatted-text>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Oppdragstype</span>
+						</br>
+						<lightning-formatted-text
+							value={detailInterestedResource.ServiceAppointment__r.HOT_WorkTypeName__c}
+							class="lightning-output-field">
+						</lightning-formatted-text>
 					</div>
 					<div class="slds-col slds-size_1-of-2">
-						<span class="slds-form-element__label">Status</span>
-						<p class="typo-normal" style="margin-bottom: 0.25rem;">{detailInterestedResource.Status__c}</p>
-						<span class="slds-form-element__label">Påmeldte</span>
-						<p class="typo-normal" style="margin-bottom: 0.25rem;">
-							{detailInterestedResource.NumberOfInterestedResources__c}</p>
-						<span class="slds-form-element__label">Fristdato</span>
-						<p class="typo-normal" style="margin-bottom: 0.25rem;">
-							{detailInterestedResource.ServiceAppointment__r.HOT_DeadlineDate__c}</p>
+						<span class="slds-form-element__label lightning-output-field__label">Status</span>
+						</br>
+						<lightning-formatted-text value={detailInterestedResource.Status__c}
+							class="lightning-output-field">
+						</lightning-formatted-text>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Påmeldte</span>
+						</br>
+						<lightning-formatted-number value={detailInterestedResource.NumberOfInterestedResources__c}
+							class="lightning-output-field">
+						</lightning-formatted-number>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Fristdato</span>
+						</br>
+						<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit"
+							value={detailInterestedResource.HOT_DeadlineDate__c} class="lightning-output-field">
+						</lightning-formatted-date-time>
+						</br>
 					</div>
 				</div>
-				<span class="slds-form-element__label">Tema</span>
-				<p class="typo-normal">{detailInterestedResource.ServiceAppointment__r.HOT_FreelanceSubject__c}</p>
+				<span class="slds-form-element__label lightning-output-field__label">Tema</span>
+				</br>
+				<lightning-formatted-text value={detailInterestedResource.ServiceAppointment__r.HOT_FreelanceSubject__c}
+					class="lightning-output-field">
+				</lightning-formatted-text>
 				<section>
 					<div style="padding: 1rem;">
 						</br>
@@ -96,7 +127,8 @@
 								<p style="color: transparent;" key={it.value}>.</p>
 							</template>
 						</div>
-						<lightning-textarea style="margin-bottom: 1rem;" class="newComment" name="newComment">
+						<lightning-textarea label="Legg til ny kommentar" style="margin-bottom: 1rem;"
+							class="newComment" name="newComment">
 						</lightning-textarea>
 						<lightning-button onclick={sendComment} class="slds-m-left_x-small" variant="brand"
 							type="submit" label="Send inn">

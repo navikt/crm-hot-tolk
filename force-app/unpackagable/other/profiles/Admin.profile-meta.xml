@@ -155,9 +155,184 @@
 	</classAccesses>
 	<custom>false</custom>
 	<fieldPermissions>
+		<editable>false</editable>
+		<field>Account.AccountNumber</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>true</editable>
-		<field>AssignedResource.HOT_HasReservations__c</field>
+		<field>Account.AccountSource</field>
 		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.AnnualRevenue</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.BillingAddress</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.CRM_Person__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.Description</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.Fax</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_IndustryCode__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_Industry__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_IsBankrupt__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_IsInForcedSettlementOrResolution__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_IsInLiquidation__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_MunicipalityNumber__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_OrganizationNumber__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_OrganizationalStructureDesc__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_OrganizationalStructure__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_ParentOrganizationNumber__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_PersonIdent__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_PotentialMandays__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.INT_RegDateEreg__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.Industry</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.Jigsaw</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.NumberOfEmployees</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.OperatingHoursId</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>Account.Ownership</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.ParentId</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.Phone</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>Account.Rating</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.ShippingAddress</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>Account.Sic</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.SicDesc</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>Account.Site</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>Account.TickerSymbol</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.Type</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>Account.Website</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>AssignedResource.HOT_HasReservations__c</field>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -165,19 +340,19 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>HOT_HistoricallyAssignedResource__c.ServiceResource__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>HOT_HistoricallyAssignedResource__c.StatusComment__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>HOT_HistoricallyAssignedResource__c.Status__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -212,12 +387,12 @@
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>HOT_InterestedResource__c.ServiceAppointmentEndTime__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>HOT_InterestedResource__c.ServiceAppointmentStartTime__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -231,7 +406,17 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
+		<field>HOT_Request__c.AdditionalInvoiceText__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
 		<field>HOT_Request__c.AssignmentType__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_Request__c.Company__c</field>
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -281,7 +466,17 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
+		<field>HOT_Request__c.InvoiceReference__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
 		<field>HOT_Request__c.IsAcute__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_Request__c.IsOtherEconomicProvicer__c</field>
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
@@ -310,14 +505,39 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_Request__c.OrdererEmail__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_Request__c.OrdererPhone__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_Request__c.Orderer__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_Request__c.OrganizationNumber__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>false</editable>
 		<field>HOT_Request__c.Person__c</field>
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>HOT_Request__c.ServiceTerritory__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
+		<field>HOT_Request__c.Source__c</field>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -328,6 +548,11 @@
 		<editable>false</editable>
 		<field>HOT_Request__c.Subject__c</field>
 		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_Request__c.TempAccountId__c</field>
+		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -341,13 +566,18 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
+		<field>HOT_Request__c.UserPersonNumber__c</field>
+		<readable>false</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>false</editable>
 		<field>HOT_Request__c.UserPhone__c</field>
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>HOT_Request__c.Warning__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -425,9 +655,9 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>Person__c.HOT_SIPAddress__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -535,39 +765,39 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>ServiceAppointment.HOT_AssignedResourceId__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>ServiceAppointment.HOT_AssignedServiceAppointmentFilter__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>ServiceAppointment.HOT_AssignmentType__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>ServiceAppointment.HOT_CancelComment__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>ServiceAppointment.HOT_CanceledByInterpreter__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>ServiceAppointment.HOT_DeadlineDate__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>ServiceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -605,9 +835,9 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -637,7 +867,7 @@
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>ServiceAppointment.HOT_Warning__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -680,24 +910,19 @@
 		<readable>true</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>ServiceResource.HOT_IsEmployedInterpreter__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>ServiceResource.HOT_IsFreelanceInterpreter__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
-		<editable>true</editable>
+		<editable>false</editable>
 		<field>ServiceResource.HOT_ServiceTerritoryLastUpdated__c</field>
-		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>true</editable>
-		<field>ServiceTerritory.HOT_DeveloperName__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
@@ -962,7 +1187,7 @@
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>WorkOrderLineItem.HOT_AssignmentType__c</field>
-		<readable>true</readable>
+		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
@@ -990,6 +1215,10 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<layoutAssignments>
+		<layout>Account-HOT Account Layout</layout>
+		<recordType>Account.Employer</recordType>
+	</layoutAssignments>
+	<layoutAssignments>
 		<layout>HOT_HistoricallyAssignedResource__c-Historically Assigned Resource Layout</layout>
 	</layoutAssignments>
 	<layoutAssignments>
@@ -1006,9 +1235,6 @@
 		<recordType>PersonAccount.PersonAccount</recordType>
 	</layoutAssignments>
 	<layoutAssignments>
-		<layout>Person__c-HOT Person Layout</layout>
-	</layoutAssignments>
-	<layoutAssignments>
 		<layout>ServiceAppointment-Service Appointment Layout</layout>
 	</layoutAssignments>
 	<layoutAssignments>
@@ -1020,6 +1246,15 @@
 	<layoutAssignments>
 		<layout>WorkOrderLineItem-Work Order Line Item Layout</layout>
 	</layoutAssignments>
+	<objectPermissions>
+		<allowCreate>true</allowCreate>
+		<allowDelete>true</allowDelete>
+		<allowEdit>true</allowEdit>
+		<allowRead>true</allowRead>
+		<modifyAllRecords>true</modifyAllRecords>
+		<object>Account</object>
+		<viewAllRecords>true</viewAllRecords>
+	</objectPermissions>
 	<objectPermissions>
 		<allowCreate>true</allowCreate>
 		<allowDelete>true</allowDelete>
@@ -1069,9 +1304,20 @@
 		<apexPage>HOT_ReleaseToFreelance</apexPage>
 		<enabled>true</enabled>
 	</pageAccesses>
+	<recordTypeVisibilities>
+		<default>false</default>
+		<recordType>Account.Business_Account</recordType>
+		<visible>false</visible>
+	</recordTypeVisibilities>
+	<recordTypeVisibilities>
+		<default>true</default>
+		<personAccountDefault>true</personAccountDefault>
+		<recordType>Account.Employer</recordType>
+		<visible>true</visible>
+	</recordTypeVisibilities>
 	<tabVisibilities>
 		<tab>HOT_InterestedResource__c</tab>
-		<visibility>DefaultOn</visibility>
+		<visibility>Hidden</visibility>
 	</tabVisibilities>
 	<tabVisibilities>
 		<tab>HOT_Request__c</tab>
@@ -1080,6 +1326,10 @@
 	<tabVisibilities>
 		<tab>Person__c</tab>
 		<visibility>Hidden</visibility>
+	</tabVisibilities>
+	<tabVisibilities>
+		<tab>standard-Account</tab>
+		<visibility>DefaultOn</visibility>
 	</tabVisibilities>
 	<tabVisibilities>
 		<tab>standard-ServiceAppointment</tab>
@@ -1229,6 +1479,10 @@
 	<userPermissions>
 		<enabled>true</enabled>
 		<name>CreateTopics</name>
+	</userPermissions>
+	<userPermissions>
+		<enabled>true</enabled>
+		<name>CreateWorkBadgeDefinition</name>
 	</userPermissions>
 	<userPermissions>
 		<enabled>true</enabled>
