@@ -40,4 +40,38 @@ public without sharing class HOT_Utility {
 		}
 		return requestIdToServiceResource;
 	}
+
+	@AuraEnabled(cacheable = true)
+    public static Account getPersonAccount() {
+		User user = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+		return [SELECT Id, Name FROM Account WHERE Id = :User.AccountId];
+	}
+
+	@AuraEnabled(cacheable = true)
+    public static Boolean checkUserHasEntitlement() {
+		User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+		if(user.AccountId != null){
+			Person__c person = [SELECT Id, HOT_HasEntitlement__c FROM Person__c WHERE CRM_Account__c = :user.AccountId LIMIT 1];
+			return person.HOT_HasEntitlement__c;
+		}
+		return false;
+	}
+
+
+	@AuraEnabled(cacheable = true)
+    public static Map<String, String> getOrdererDetails() {
+		User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+		//Metode 1
+		List<HOT_Request__c> requests = [SELECT Id, OrdererEmail__c, OrdererPhone__c, CreatedDate FROM HOT_Request__c WHERE Orderer__c = :user.AccountId ORDER BY CreatedDate DESC LIMIT 1];
+		Map<String, String> ordererDetails = new Map<String,String>();
+		if(requests.size()>0){
+			ordererDetails.put('OrdererEmail__c', String.valueOf(requests[0].OrdererEmail__c));
+			ordererDetails.put('OrdererPhone__c', String.valueOf(requests[0].OrdererPhone__c));
+		}
+		
+
+		return ordererDetails;
+	}
+
 }
