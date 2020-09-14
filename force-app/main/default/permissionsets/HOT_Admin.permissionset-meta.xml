@@ -650,14 +650,19 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
+		<field>ServiceResource.HOT_ServiceTerritory__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
 		<field>ServiceResource.HOT_ServiceTerritoryLastUpdated__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
-  <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceTerritory.HOT_DeveloperName__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>ServiceTerritory.HOT_DeveloperName__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
 	<fieldPermissions>
 		<editable>true</editable>
 		<field>WorkOrder.AccountId</field>
