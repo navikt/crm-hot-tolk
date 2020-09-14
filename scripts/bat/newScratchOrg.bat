@@ -4,8 +4,8 @@ call sfdx force:org:create -f config\project-scratch-def.json --setalias %1 --du
 :: Installer crm-platform-base ver. 0.21.0.1
 call sfdx force:package:install --package 04t2o000000yPMbAAM  -k navcrm --wait 10 --publishwait 10
 
-:: Installer crm-platform-access-control ver. 0.22.0.1
-call sfdx force:package:install --package 04t2o000000OAPBAA4  -k navcrm --wait 10 --publishwait 10
+:: Installer crm-platform-access-control ver. 0.24.0.1
+call sfdx force:package:install --package 04t2o000000yPWbAAM  -k navcrm --wait 10 --publishwait 10
 
 :: Installer crm-community-base ver. 0.8.0.7
 call sfdx force:package:install --package 04t2o000000OAAaAAO  -k navcrm --wait 10 --publishwait 10
