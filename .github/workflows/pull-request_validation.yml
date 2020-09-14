@@ -1,5 +1,5 @@
 # Unique name for this workflow
-name: "[Pull Request] Validate Metadata"
+name: "[PR] Validate Metadata"
 
 # Definition when the workflow should run
 on:
@@ -11,13 +11,9 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      # Install Salesforce CLI
-      - name: Install Salesforce CLI
-        run: |
-          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-          mkdir sfdx-cli
-          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-          ./sfdx-cli/install
+      # Install SFDX
+      - name: Install SFDX
+        uses: sfdx-actions/setup-sfdx@v1
 
       # Checkout the code in the pull request
       - name: "Checkout source code"
@@ -26,7 +22,7 @@ jobs:
       # Store secret for dev hub
       - name: "Populate auth file with PROD_SFDX_URL secret"
         shell: bash
-        run: "echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt"
+        run: "echo ${{ secrets.PROD_SFDX_URL }} > ./PROD_SFDX_URL.txt"
 
       # Authenticate dev hub
       - name: "Authenticate Dev Hub"
@@ -51,7 +47,7 @@ jobs:
         run: |
           keys=""
           for p in $(jq '.result | .[].Name' -r <<< "$(sfdx force:package:list --json)"); do
-              keys+=$p":${{ secrets.PACKAGE_KEY}} "
+              keys+=$p":${{ secrets.PACKAGE_KEY }} "
           done
 
           echo "::set-output name=keys::$(echo $keys)"
@@ -71,5 +67,5 @@ jobs:
 
       # Delete scratch orgs
       - name: "Delete scratch org"
-        if: failure() || !contains( github.event.pull_request.labels.*.name, 'saveScratchOrg')
+        if: always()
         run: "sfdx force:org:delete -p -u scratch-org"

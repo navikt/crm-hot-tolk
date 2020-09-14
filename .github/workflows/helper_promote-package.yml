@@ -1,4 +1,4 @@
-name: "[Helper] Promote Package"
+name: "[HELPER] Promote Package"
 on:
   workflow_dispatch:
     inputs:
@@ -151,7 +151,7 @@ jobs:
       # Generate changelog from commits
       - name: Generate changelog
         id: changelog
-        uses: metcalfc/changelog-generator@v0.4.0
+        uses: metcalfc/changelog-generator@v0.4.3
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
 

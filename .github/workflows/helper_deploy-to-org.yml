@@ -1,4 +1,4 @@
-name: "[Helper] Deploy to Org"
+name: "[HELPER] Install package into org"
 on:
   workflow_dispatch:
     inputs:
@@ -31,6 +31,10 @@ jobs:
           then
             echo "::set-output name=target::$(echo ${{ secrets.PREPROD_SFDX_URL }})"
             echo "'preprod' was set"
+          elif [ ${{ github.event.inputs.org }} == "sit" ]
+          then
+            echo "::set-output name=target::$(echo ${{ secrets.INTEGRATION_SANDBOX_SFDX_URL }})"
+            echo "'sit' was set"
           elif [ ${{ github.event.inputs.org }} == "devhot" ]
           then
             echo "::set-output name=target::$(echo ${{ secrets.DEVHOT_SFDX_URL }})"

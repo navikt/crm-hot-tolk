@@ -1,24 +1,20 @@
 # Unique name for this workflow
-name: "[Push] Validate Metadata"
+name: "[PUSH] Validate Metadata"
 
 # Definition when the workflow should run
 on:
   push:
     branches:
-      - "*"
+      - develop
 
 # Jobs to be executed
 jobs:
   scratch-org-test:
     runs-on: ubuntu-latest
     steps:
-      # Install Salesforce CLI
-      - name: Install Salesforce CLI
-        run: |
-          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-          mkdir sfdx-cli
-          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-          ./sfdx-cli/install
+      # Install SFDX
+      - name: Install SFDX
+        uses: sfdx-actions/setup-sfdx@v1
 
       # Checkout the code in the pull request
       - name: "Checkout source code"
@@ -27,7 +23,7 @@ jobs:
       # Store secret for dev hub
       - name: "Populate auth file with DEVHUB_SFDX_URL secret"
         shell: bash
-        run: "echo ${{ secrets.DEVHUB_SFDX_URL}} > ./DEVHUB_SFDX_URL.txt"
+        run: "echo ${{ secrets.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt"
 
       # Authenticate dev hub
       - name: "Authenticate Dev Hub"
@@ -47,7 +43,7 @@ jobs:
         run: |
           keys=""
           for p in $(jq '.result | .[].Name' -r <<< "$(sfdx force:package:list --json)"); do
-              keys+=$p":${{ secrets.PACKAGE_KEY}} "
+              keys+=$p":${{ secrets.PACKAGE_KEY }} "
           done
                   
           echo "::set-output name=keys::$(echo $keys)"
