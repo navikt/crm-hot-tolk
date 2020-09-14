@@ -1,55 +1,41 @@
 # Unique name for this workflow
-name: "[Push] Create and Install Package in DEVHOT"
+name: "[PUSH] Create and Install Package in DEVHOT"
 
 # Definition when the workflow should run
 on:
+  workflow_dispatch:
   push:
     branches:
       - develop
     paths:
       - "force-app/**"
-      - "sfdx-project.json"
 
 # Jobs to be executed
 jobs:
-  packaging:
+  create-package:
     name: Create new package
     runs-on: ubuntu-latest
     steps:
-      # Install Salesforce CLI
-      - name: "Install Salesforce CLI"
-        run: |
-          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-          mkdir sfdx-cli
-          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-          ./sfdx-cli/install
+      # Install SFDX
+      - name: Install SFDX
+        uses: sfdx-actions/setup-sfdx@v1
 
       # Checkout the code in the pull request
       - name: "Checkout source code"
         uses: actions/checkout@v2
 
-      # Store secret for dev hub
-      - name: "Populate auth file with DEVHUB_SFDX_URL secret"
-        shell: bash
-        run: "echo ${{ secrets.DEVHUB_SFDX_URL}} > ./DEVHUB_SFDX_URL.txt"
-
-      # Store secret for package target org installation
-      - name: "Populate auth file with DEVHOT_SFDX_URL secret"
-        shell: bash
-        run: "echo ${{ secrets.DEVHOT_SFDX_URL}} > ./DEVHOT_SFDX_URL.txt"
-
-      # Authenticate dev hub
-      - name: "Authenticate Dev Hub"
-        run: "sfdx force:auth:sfdxurl:store -f ./DEVHUB_SFDX_URL.txt -a devhub -d"
-
-      # Authenticate devhot sandbox
-      - name: "Authenticate package target org"
-        run: "sfdx force:auth:sfdxurl:store -f ./DEVHOT_SFDX_URL.txt -a devhot-sandbox -s"
-
-      # Remove auth files
-      - name: "Remove auth files"
+      # Authenticate prod
+      - name: Authenticate prod
         run: |
-          rm -f ./DEVHUB_SFDX_URL.txt
+          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./PROD_SFDX_URL.txt
+
+      # Authenticate DEVHOT
+      - name: Authenticate DEVHOT
+        run: |
+          echo ${{ secrets.DEVHOT_SFDX_URL}} > ./DEVHOT_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./DEVHOT_SFDX_URL.txt -a devhot -s
           rm -f ./DEVHOT_SFDX_URL.txt
 
       # Delete unpackagable
@@ -61,10 +47,15 @@ jobs:
       - name: "Create package version"
         id: package-version-create
         run: |
-          json=$(sfdx force:package:version:create -f config/project-scratch-def.json -p crm-hot-dev -k ${{ secrets.PACKAGE_KEY }} -w 90 --json)
-          echo $json
-          echo "::set-output name=result::$(echo $json | jq -c .)"
-          status=$(echo $json |jq '.status')
+          sfdx force:package:version:create -f config/project-scratch-def.json -p crm-hot-dev -k ${{ secrets.PACKAGE_KEY }} -w 90 --json | tee output
+          echo "::set-output name=result::$(cat output | jq -c .)"
+
+          status=$(cat output |jq '.status')
+          if [ $status == "0" ]
+          then
+            echo "::set-output name=isSuccess::true"
+          fi
+          rm output
 
       # Extract data from package version create result
       - name: "Extract package:version:create result data"
@@ -73,7 +64,16 @@ jobs:
         with:
           json: ${{steps.package-version-create.outputs.result}}
 
-      # Install package version into DEVHOT sandbox
-      - name: "Install new package version into DEVHOT"
-        if: steps.extract-data-package-version-create.outputs.isSuccess
-        run: "sfdx force:package:install --package ${{ steps.extract-data-package-version-create.outputs.packageVersionId }} -w 60 -b 60 -u devhot-sandbox -r -k ${{ secrets.PACKAGE_KEY }}"
+      # Install new package version into devhot
+      - name: "Install new package version into devhot"
+        id: devhot-installation
+        run: |
+          sfdx force:package:install --package ${{ steps.extract-data-package-version-create.outputs.packageVersionId }} -w 20 -b 20 -u devhot -r -k ${{ secrets.PACKAGE_KEY }} --json | tee output
+
+          status=$(cat output |jq '.status')
+
+          if [ $status == "0" ]
+          then
+            echo "::set-output name=isSuccess::true"
+          fi
+          rm output
