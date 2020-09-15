@@ -52,4 +52,34 @@ private class HOT_UtilityTest{
 		System.assertEquals(1, requestIdToServiceResources.get(request.Id).size(), 'Could not get assigned resources');
 
 	}
+
+	@isTest static void testCheckUserHasEntitlement(){
+
+		Person__c person = HOT_TestDataFactory.createPerson();
+		insert person;
+
+		Test.startTest();
+		Boolean hasVedtak = HOT_Utility.checkUserHasEntitlement();
+		Test.stopTest();
+		
+		System.assertEquals(false, hasVedtak);
+	}
+
+	
+	//TODO: //TODO: Oppdatere asserts til å sjekke epost og mobil på orderer, men må da kunne kjøre testen som en Community-bruker, noe som vi ikke har fått til enda
+	@isTest static void testGetOrdererDetails(){
+
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('Testing getOrderDetails', workType);
+		insert request;
+
+		Test.startTest();
+		Map<String,String> ordererDetails = HOT_Utility.getOrdererDetails();
+		Test.stopTest();
+		
+		System.assertEquals(null, ordererDetails.get('OrdererEmail__c'));
+		System.assertEquals(null, ordererDetails.get('OrdererPhone__c'));
+	}
+
 }
