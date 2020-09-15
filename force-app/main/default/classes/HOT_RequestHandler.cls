@@ -1,5 +1,18 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
 
+	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
+			List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
+		for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+			// Filter for owner change
+            if (request.OwnerId != triggerOldMap.get(request.Id).get('OwnerId')) {
+                ownerChangedRequests.add(request);
+			}
+		}
+		if(ownerChangedRequests.size() > 0){
+			setServiceTerritory(ownerChangedRequests);
+		}
+	}
+
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
 		List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
 		List<HOT_Request__c> annullertRequests = new List<HOT_Request__c>();
@@ -74,5 +87,25 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (serviceAppointments.size() > 0) {
             update serviceAppointments;
         }
-    }
+	}
+	
+	public static void setServiceTerritory(List<HOT_Request__c> requests){
+		Map<String, String> serviceTerritoryByQueue = new Map<String, String>{
+			'queue_4719' => 'Tromso',
+			'queue_4718' => 'Nordland'
+		};
+		List<Group> queues = [SELECT Id, Name, DeveloperName FROM Group WHERE Type='Queue' AND DeveloperName IN :serviceTerritoryByQueue.keySet()];
+		List<ServiceTerritory> serviceTerritories = [SELECT Id, Name, HOT_DeveloperName__c FROM ServiceTerritory WHERE HOT_DeveloperName__c IN :serviceTerritoryByQueue.values()];
+		Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
+		for(Group queue:queues){
+			for(ServiceTerritory serviceTerritory:serviceTerritories){
+				if(serviceTerritoryByQueue.get(queue.DeveloperName) == serviceTerritory.HOT_DeveloperName__c){
+					serviceTerritoryIdByQueueId.put(queue.Id, serviceTerritory.Id);
+				}
+			}
+		}
+		for(HOT_Request__c request:requests){
+			request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
+		}
+	}
 }
