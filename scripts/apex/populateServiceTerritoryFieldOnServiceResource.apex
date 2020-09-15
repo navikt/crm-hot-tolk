@@ -6,6 +6,8 @@ for(ServiceTerritoryMember stm:serviceTerritoryMembers){
 
 List<ServiceResource> serviceResources = [SELECT Id, HOT_ServiceTerritory__c FROM ServiceResource WHERE Id IN :serviceTerritoryIdByServiceResourceId.keySet()];
 for(ServiceResource sr:serviceResources){
-	sr.HOT_ServiceTerritory__c = serviceTerritoryIdByServiceResourceId.get(sr.Id);
+	if(sr.HOT_ServiceTerritory__c == null){
+		sr.HOT_ServiceTerritory__c = serviceTerritoryIdByServiceResourceId.get(sr.Id);
+	}
 }
 update serviceResources;
