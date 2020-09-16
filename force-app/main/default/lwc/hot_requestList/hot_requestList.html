@@ -24,7 +24,7 @@
 			</lightning-combobox>
 
 			<lightning-radio-group class="horizontal" name="radioGroup" options={requestTypes} value="my" type="radio"
-				onchange={handleRequestType}></lightning-radio-group>
+				onchange={handleRequestType} style="margin-bottom: 1.25rem;"></lightning-radio-group>
 
 		</div>
 		<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
