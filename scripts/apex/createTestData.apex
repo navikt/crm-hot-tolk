@@ -1,38 +1,66 @@
-User user = [SELECT Id FROM User WHERE Alias = 'UUser' LIMIT 1];
-Skill skill = [SELECT Id FROM Skill WHERE DeveloperName = 'Tegnspraktolk'];
-ServiceTerritory serviceTerritory = [SELECT Id FROM ServiceTerritory WHERE HOT_DeveloperName__c = 'Tromso'];
-WorkType workType = [SELECT Id FROM WorkType WHERE Name = 'Tegnspråktolk' LIMIT 1];
-HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Subject__c = 'Forespørsel 1'];
-OperatingHours operatingHours = [SELECT Id FROM OperatingHours WHERE Name = 'Always'];
-Id businessRecordTypeId = [SELECT Id FROM RecordType WHERE DeveloperName = 'Employer'][0].Id;
+User user = [SELECT Id, UserRoleId, Name FROM User WHERE Alias = 'UUser' LIMIT 1];
+List<Skill> skills = [SELECT Id FROM Skill WHERE DeveloperName = 'Tegnspraktolk' LIMIT 1];
 
-Account businessAccount = new Account();
-businessAccount.Name = 'Jedi Order';
-businessAccount.INT_OrganizationNumber__c = '987654321';
-insert businessAccount;
+HOT_TestDatabase testDatabase = new HOT_TestDatabase();
+Integer n = 3;
+List<Person__c> persons = testDatabase.getPersons(4);
+insert persons;
+System.debug(persons);
 
-ServiceResource serviceResource = new ServiceResource();
-serviceResource.Name = 'Boba Fett';
-serviceResource.IsActive = true;
-serviceResource.RelatedRecordId = user.Id;
-insert serviceResource;
+persons = [SELECT Id, Name, CRM_Account__c FROM Person__c];
 
-ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
-serviceResourceSkill.ServiceResourceId = serviceResource.Id;
-serviceResourceSkill.EffectiveStartDate = Date.today().addDays(-1);
-serviceResourceSkill.SkillId = skill.Id;
-insert serviceResourceSkill;
-SkillRequirement skillRequirement = new SkillRequirement();
-skillRequirement.RelatedRecordId = workType.Id;
-skillRequirement.SkillId = skill.Id;
-insert skillRequirement;
+List<Account> personAccounts = testDatabase.getPersonAccounts(persons);
+insert personAccounts;
+System.debug(personAccounts);
+persons = testDatabase.getUpdatedPersons(persons, personAccounts);
+update persons;
+System.debug(persons);
+List<Account> companies = testDatabase.getCompanies(1);
+insert companies;
 
-ServiceTerritoryMember serviceTerritoryMember = new ServiceTerritoryMember();
-serviceTerritoryMember.EffectiveStartDate = Date.today().addDays(-1);
-serviceTerritoryMember.ServiceResourceId = serviceResource.Id;
-serviceTerritoryMember.ServiceTerritoryId = serviceTerritory.Id;
-insert serviceTerritoryMember;
+List<WorkType> workTypes = testDatabase.getWorkTypes(2);
+insert workTypes;
+System.debug(workTypes);
+List<SkillRequirement> skillRequirements = testDatabase.getSkillRequirements(workTypes, skills);
+insert skillRequirements;
+System.debug(skillRequirements);
 
-request.Company__c = businessAccount.Id;
-request.Status__c = 'Godkjent';
-update request;
+List<OperatingHours> operatingHours = testDatabase.getOperatingHours();
+insert operatingHours;
+System.debug(operatingHours);
+List<ServiceTerritory> serviceTerritories = testDatabase.getServiceTerritories(operatingHours[0], 3);
+insert serviceTerritories;
+System.debug(serviceTerritories);
+
+List<ServiceResource> serviceResources = testDatabase.getServiceResources(new List<User>{user});
+insert serviceResources;
+System.debug(serviceResources);
+List<ServiceResourceSkill> serviceResourceSkills = testDatabase.getServiceResourceSkills(serviceResources, skills);
+insert serviceResourceSkills;
+System.debug(serviceResourceSkills);
+List<ServiceTerritoryMember> serviceTerritoryMembers = testDatabase.getServiceTerritoryMembers(serviceResources, serviceTerritories[0]);
+insert serviceTerritoryMembers;
+System.debug(serviceTerritoryMembers);
+
+
+List<WorkType> requestWorkTypes = new List<WorkType>();
+for(Integer i=0; i<personAccounts.size(); i++){
+	requestWorkTypes.add(workTypes[math.mod(i, workTypes.size())]);
+}
+List<HOT_Request__c> meRequests = testDatabase.getMeRequests(personAccounts, requestWorkTypes);
+insert meRequests;
+System.debug(meRequests);
+
+List<Account> orderers = new List<Account>();
+for(Integer i=0; i<personAccounts.size(); i++){
+	orderers.add(personAccounts[0]);
+}
+personAccounts.remove(0);
+orderers.remove(0);
+requestWorkTypes.remove(0);
+List<HOT_Request__c> userRequests = testDatabase.getUserRequests(personAccounts, orderers, requestWorkTypes);
+insert userRequests;
+System.debug(userRequests);
+
+meRequests[0].Status__c = 'Godkjent';
+update meRequests[0];
