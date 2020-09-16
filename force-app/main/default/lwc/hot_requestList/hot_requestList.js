@@ -182,17 +182,17 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		if (this.isMyRequests) {
 			tempColumns.shift();
 			tempColumnLabels.shift();
+			tempColumnLabels.push("''");
 		}
 		else {
 			tempColumns.unshift({ label: 'Bruker', fieldName: 'UserName__c', type: 'text', sortable: true, })
-			tempColumnLabels.unshift("'Start tid'");
+			tempColumnLabels.unshift("'Bruker'");
 		}
-		for (var i = 0; i < this.columnLabels.length; i++) {
-			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		for (var i = 0; i < tempColumnLabels.length; i++) {
+			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), tempColumnLabels[i]);
 		}
 		this.columns = [...tempColumns];
 		this.columnLabels = [...tempColumnLabels];
-		console.log(this.columns.length)
 	}
 
 
