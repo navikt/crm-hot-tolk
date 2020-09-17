@@ -4,12 +4,16 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		System.debug('VEGARD RUNS AR: onAfterInsert');
 		List<ServiceAppointment> serviceAppointments = setServiceResourceFieldsOnServiceAppointment((List<AssignedResource>) records);
 		update serviceAppointments;
+		List<HOT_InterestedResource__c> interestedResource = createInterestedResources((List<AssignedResource>) records);
+		insert interestedResource;
 	}
 
 	public override void onAfterUpdate(Map<Id, sObject> triggerOldMap){
 		System.debug('VEGARD RUNS AR: onAfterUpdate');
 		List<ServiceAppointment> serviceAppointments = setServiceResourceFieldsOnServiceAppointment((List<AssignedResource>) records);
 		update serviceAppointments;
+		List<HOT_InterestedResource__c> interestedResource = createInterestedResources((List<AssignedResource>) records);
+		insert interestedResource;
 	}
 	
 	public List<ServiceAppointment> setServiceResourceFieldsOnServiceAppointment(List<AssignedResource> records){
@@ -51,4 +55,38 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		}
 		update serviceAppointments;
 	}
+
+	List<HOT_InterestedResource__c> createInterestedResources(List<AssignedResource> records){
+		List<HOT_InterestedResource__c> interestedResources = new List<HOT_InterestedResource__c>();
+
+		//Creates map to be used in query of InterestedResources
+		Map<Id, Id> serviceResourceIdByServiceAppointmentId = new Map<Id, Id>();
+		for(AssignedResource assignedResource : records){
+			serviceResourceIdByServiceAppointmentId.put(assignedResource.ServiceAppointmentId, assignedResource.ServiceResourceId);
+		}
+		List<HOT_InterestedResource__c> existingInterestedResources = [SELECT Id, ServiceAppointment__c, ServiceResource__c FROM HOT_InterestedResource__c 
+																	   WHERE ServiceAppointment__c IN :serviceResourceIdByServiceAppointmentId.keySet()
+																	   AND ServiceResource__c IN :serviceResourceIdByServiceAppointmentId.values()];
+		System.debug(existingInterestedResources);
+		for(AssignedResource assignedResource : records){
+			Boolean shouldCreateInterestedResource = true;
+			for(HOT_InterestedResource__c interestedResource:existingInterestedResources){
+				if(assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c && assignedResource.ServiceResourceId == interestedResource.ServiceResource__c){
+					shouldCreateInterestedResource = false;
+					break;
+				}
+			}
+			if(shouldCreateInterestedResource){
+				HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c();
+				interestedResource.ServiceAppointment__c = assignedResource.ServiceAppointmentId;
+				interestedResource.ServiceResource__c = assignedResource.ServiceResourceId;
+				interestedResource.Status__c = 'Interested';
+				interestedResources.add(interestedResource);
+			}
+		}
+		return interestedResources;
+	}
+
+
+
 }
