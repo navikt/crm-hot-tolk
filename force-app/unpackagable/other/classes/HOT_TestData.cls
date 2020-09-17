@@ -1,4 +1,4 @@
-public class HOT_TestDatabase{
+public class HOT_TestData{
 
 	//Data
 	List<String> idents = new List<String>{
