@@ -7,15 +7,11 @@ private class HOT_TestDatabaseTest{
 
 		HOT_TestDatabase testDatabase = new HOT_TestDatabase();
 		Integer n = 3;
-		List<Person__c> persons = testDatabase.getPersons(4);
+		List<Person__c> persons = testDatabase.getPersons(4, '54');
 		insert persons;
 
-		persons = [SELECT Id, Name, CRM_Account__c FROM Person__c];
+		List<Account> personAccounts = [SELECT Id, Name, INT_PersonIdent__c FROM Account];
 
-		List<Account> personAccounts = testDatabase.getPersonAccounts(persons);
-		insert personAccounts;
-		persons = testDatabase.getUpdatedPersons(persons, personAccounts);
-		update persons;
 		List<Account> companies = testDatabase.getCompanies(1);
 		insert companies;
 
