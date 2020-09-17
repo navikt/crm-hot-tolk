@@ -10,14 +10,14 @@ public class HOT_TestDatabase{
 		'06060600000',
 		'07070700000'
 	};
-	List<String> names = new List<String>{
-		'JarJar Binks',
-		'Darth Vader',
-		'Luke Skywalker',
-		'Princess Leah',
-		'Lord Sidius',
-		'Han Solo',
-		'Yoda'
+	List<List<String>> names = new List<List<String>>{
+		new List<String>{'JarJar', '', 'Binks'},
+		new List<String>{'Darth', '', 'Vader'},
+		new List<String>{'Luke', '', 'Skywalker'},
+		new List<String>{'Princess', '', 'Leah'},
+		new List<String>{'Lord', '', 'Sidius'},
+		new List<String>{'Han', '', 'Solo'},
+		new List<String>{'', '', 'Yoda'}
 	};
 	List<String> companies = new List<String>{
 		'Jedi Order',
@@ -45,44 +45,18 @@ public class HOT_TestDatabase{
 
 
 	//Get-methods
-	public List<Person__c> getPersons(Integer n){
+	public List<Person__c> getPersons(Integer n, String regionNumber){
 		List<Person__c> persons = new List<Person__c>();
 		for(Integer i=0; i<n && i<this.idents.size();i++){
 			Person__c person = new Person__c();
 			person.Name = this.idents[i];
 			person.HOT_DailyLifeInterpreter__c = true;
 			person.HOT_DegreeOfHearingAndVisualImpairment__c = 'Hearing impaired or deaf';
-			person.INT_RegionNumber__c = '54';	
+			person.INT_RegionNumber__c = regionNumber;	
+			person.INT_FirstName__c = this.names[i][0];
+			person.INT_MiddleName__c = this.names[i][1];
+			person.INT_LastName__c = this.names[i][2];
 			persons.add(person);	
-		}
-		return persons;
-	}
-
-	public List<Account> getPersonAccounts(List<Person__c> persons){
-		List<Id> oldAccountIds = new List<Id>();
-			List<Account> accounts = new List<Account>();
-		String personAccountRecordTypeId = Schema.getGlobalDescribe().get('Account').getDescribe().getRecordTypeInfosByDeveloperName().get('PersonAccount').getRecordTypeId();
-		for(Integer i = 0; i < persons.size(); i++){
-			oldAccountIds.add(persons[i].CRM_Account__c);
-
-			Account account = new Account();
-			account.Name = this.names[i];
-			account.INT_PersonIdent__c = persons[i].Name;
-			account.CRM_Person__c = persons[i].Id;
-			accounts.add(account);
-		}
-		List<Account> oldAccounts = [SELECT Id FROM Account WHERE Id IN :oldAccountIds];
-		delete oldAccounts;
-		return accounts;
-	}
-
-	public List<Person__c> getUpdatedPersons(List<Person__c> persons, List<Account> accounts){
-		for(Person__c person:persons){
-			for(Account account:accounts){
-				if(person.Name == account.INT_PersonIdent__c){
-					person.CRM_Account__c = account.Id;
-				}
-			}
 		}
 		return persons;
 	}
