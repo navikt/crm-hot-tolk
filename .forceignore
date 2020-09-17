@@ -264,3 +264,4 @@ force-app/main/default/objects/ServiceResource/fields/IsCapacityBased.field-meta
 force-app/main/default/objects/ServiceResource/fields/IsActive.field-meta.xml
 force-app/main/default/objects/ServiceResource/fields/Description.field-meta.xml
 force-app/main/default/objects/ServiceResource/fields/AccountId.field-meta.xml
+force-app/main/default/objects/ServiceAppointment/listViews/queue_4718_ServiceAppointment.listView-meta.xml

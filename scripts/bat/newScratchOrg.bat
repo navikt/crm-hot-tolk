@@ -17,5 +17,7 @@ call sfdx force:source:push
 call sfdx force:user:permset:assign --permsetname HOT_admin
 
 :: Opprett testdata
-:: call sfdx force:data:tree:import --plan data-source/data-import-plan.json
 call sfdx force:apex:execute -f scripts/apex/createTestData.apex
+
+:: Hent kildekoden til scratch org'en (for å nullstille)
+call sfdx force:source:pull
