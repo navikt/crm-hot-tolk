@@ -64,24 +64,35 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		for(AssignedResource assignedResource : records){
 			serviceResourceIdByServiceAppointmentId.put(assignedResource.ServiceAppointmentId, assignedResource.ServiceResourceId);
 		}
+		//Fetches possible matches with Interested Resources
 		List<HOT_InterestedResource__c> existingInterestedResources = [SELECT Id, ServiceAppointment__c, ServiceResource__c FROM HOT_InterestedResource__c 
 																	   WHERE ServiceAppointment__c IN :serviceResourceIdByServiceAppointmentId.keySet()
 																	   AND ServiceResource__c IN :serviceResourceIdByServiceAppointmentId.values()];
-		System.debug(existingInterestedResources);
+		//Fetches Freelance interpreters included in the assigned resource records, and gets their Ids
+		List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource WHERE Id IN :serviceResourceIdByServiceAppointmentId.values() AND HOT_IsFreelanceInterpreter__c = true];
+		List<Id> serviceResourceIds = new List<Id>();
+		for(ServiceResource serviceResource:serviceResources){
+			serviceResourceIds.add(serviceResource.Id);
+		}
+
+		//Runs through all AR records, and if the ServiceResource is a freelance interpreter, runs through the Interested Resources and checks for matches on SA and SR
+		//If there is no match, an IR should be created.
 		for(AssignedResource assignedResource : records){
-			Boolean shouldCreateInterestedResource = true;
-			for(HOT_InterestedResource__c interestedResource:existingInterestedResources){
-				if(assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c && assignedResource.ServiceResourceId == interestedResource.ServiceResource__c){
-					shouldCreateInterestedResource = false;
-					break;
+			if(serviceResourceIds.contains(assignedResource.ServiceResourceId)){
+				Boolean shouldCreateInterestedResource = true;
+				for(HOT_InterestedResource__c interestedResource:existingInterestedResources){
+					if(assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c && assignedResource.ServiceResourceId == interestedResource.ServiceResource__c){
+						shouldCreateInterestedResource = false;
+						break;
+					}
 				}
-			}
-			if(shouldCreateInterestedResource){
-				HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c();
-				interestedResource.ServiceAppointment__c = assignedResource.ServiceAppointmentId;
-				interestedResource.ServiceResource__c = assignedResource.ServiceResourceId;
-				interestedResource.Status__c = 'Interested';
-				interestedResources.add(interestedResource);
+				if(shouldCreateInterestedResource){
+					HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c();
+					interestedResource.ServiceAppointment__c = assignedResource.ServiceAppointmentId;
+					interestedResource.ServiceResource__c = assignedResource.ServiceResourceId;
+					interestedResource.Status__c = 'Interested';
+					interestedResources.add(interestedResource);
+				}
 			}
 		}
 		return interestedResources;
