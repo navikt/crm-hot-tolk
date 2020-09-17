@@ -47,4 +47,23 @@ private class HOT_AssignedResourceHandlerTest{
 		System.assertEquals(null, serviceAppointment.HOT_AssignedResourceId__c, 'Could not set HOT_AssignedResourceId__c onAfterdelete');
 	}
 
+	@isTest static void createInterestedResourcesTest(){
+		ServiceAppointment serviceAppointment = [SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c FROM ServiceAppointment LIMIT 1];
+		ServiceResource testResource = [SELECT Id, RelatedRecordId FROM ServiceResource WHERE RelatedRecordId != :UserInfo.getUserId()];
+		ServiceResource adminResource = [SELECT Id, RelatedRecordId FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()];
+		
+		//
+		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, adminResource.Id);
+		insert assignedResource;
+		List<HOT_InterestedResource__c> interestedResources = [SELECT Id FROM HOT_InterestedResource__c];
+		System.assertEquals(1, interestedResources.size(), 'Interested Resource was not created.');
+		
+		HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(serviceAppointment.Id, testResource.Id);
+		insert interestedResource;
+		assignedResource.ServiceResourceId = testResource.Id;
+		update assignedResource;
+		interestedResources = [SELECT Id FROM HOT_InterestedResource__c];
+		System.assertEquals(2, interestedResources.size(), 'Interested Resource should not have been created.');
+	}
+
 }
