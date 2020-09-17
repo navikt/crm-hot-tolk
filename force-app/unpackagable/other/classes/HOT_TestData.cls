@@ -56,6 +56,7 @@ public class HOT_TestData{
 			person.INT_FirstName__c = this.names[i][0];
 			person.INT_MiddleName__c = this.names[i][1];
 			person.INT_LastName__c = this.names[i][2];
+			person.INT_Confidential__c = 'UGRADERT';
 			persons.add(person);	
 		}
 		return persons;
