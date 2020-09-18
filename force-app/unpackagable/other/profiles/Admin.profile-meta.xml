@@ -202,11 +202,6 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
-		<field>Contact.CRM_Unit__c</field>
-		<readable>false</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>false</editable>
 		<field>Event.CRM_Region__c</field>
 		<readable>false</readable>
 	</fieldPermissions>
