@@ -53,12 +53,24 @@ private class HOT_RequestRoutingHandlerTest {
 		company.INT_RegionNumber__c = '54';
 		insert company;
 
-		HOT_Request__c companyRequest = HOT_TestDataFactory.createRequest( 'Orderer TEST', workType );
+		HOT_Request__c companyRequest = HOT_TestDataFactory.createRequest( 'Company TEST', workType );
 		companyRequest.Company__c = company.Id;
 		insert companyRequest;
 
 		Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
 		System.assertEquals( queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :companyRequest.Id].OwnerId );
+	}
+
+	@IsTest
+	private static void testRequstDefaultRouting() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+
+		HOT_Request__c request = HOT_TestDataFactory.createRequest( 'defaultRouting TEST', workType );
+		insert request;
+
+		Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'HOT_Tolk_Admin_Queue' LIMIT 1].Id;
+		System.assertEquals( queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id].OwnerId );
 	}
 	
 	@IsTest
