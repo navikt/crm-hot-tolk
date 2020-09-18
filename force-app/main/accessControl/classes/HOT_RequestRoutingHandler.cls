@@ -55,7 +55,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 		// Tildeler til kø basert på region
 		Map<Integer, ApexSharingRuleWrapper> ruleByByRequestId = RecordOwnerService.getQueuesAndNavUnits( getSobjectWrappers(), 'HOT_Request__c' );
 		Integer i = 0;
-		Group adminGroup = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'HOT_Tolk_Admin_Queue' LIMIT 1];
+		Group adminGroup = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'HOT_Tolk_Admin' LIMIT 1];
 		for ( HOT_Request__c request:(List<HOT_Request__c>)records ) {
 			ApexSharingRuleWrapper rule = ruleByByRequestId.get( i );
 			if ( rule == null ) {
