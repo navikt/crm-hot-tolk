@@ -202,11 +202,6 @@
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
-		<field>Event.CRM_Region__c</field>
-		<readable>false</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>false</editable>
 		<field>Event.CRM_Unit__c</field>
 		<readable>false</readable>
 	</fieldPermissions>
@@ -934,11 +929,6 @@
 		<editable>true</editable>
 		<field>ServiceTerritory.HOT_DeveloperName__c</field>
 		<readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-		<editable>false</editable>
-		<field>Task.CRM_Region__c</field>
-		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
 		<editable>false</editable>
