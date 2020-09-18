@@ -69,7 +69,7 @@ private class HOT_RequestRoutingHandlerTest {
 		HOT_Request__c request = HOT_TestDataFactory.createRequest( 'defaultRouting TEST', workType );
 		insert request;
 
-		Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'HOT_Tolk_Admin_Queue' LIMIT 1].Id;
+		Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'HOT_Tolk_Admin' LIMIT 1].Id;
 		System.assertEquals( queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id].OwnerId );
 	}
 	
