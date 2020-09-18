@@ -70,15 +70,15 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 																	   AND ServiceResource__c IN :serviceResourceIdByServiceAppointmentId.values()];
 		//Fetches Freelance interpreters included in the assigned resource records, and gets their Ids
 		List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource WHERE Id IN :serviceResourceIdByServiceAppointmentId.values() AND HOT_IsFreelanceInterpreter__c = true];
-		List<Id> serviceResourceIds = new List<Id>();
+		List<Id> freelanceResourceIds = new List<Id>();
 		for(ServiceResource serviceResource:serviceResources){
-			serviceResourceIds.add(serviceResource.Id);
+			freelanceResourceIds.add(serviceResource.Id);
 		}
 
 		//Runs through all AR records, and if the ServiceResource is a freelance interpreter, runs through the Interested Resources and checks for matches on SA and SR
 		//If there is no match, an IR should be created.
 		for(AssignedResource assignedResource : records){
-			if(serviceResourceIds.contains(assignedResource.ServiceResourceId)){
+			if(freelanceResourceIds.contains(assignedResource.ServiceResourceId)){
 				Boolean shouldCreateInterestedResource = true;
 				for(HOT_InterestedResource__c interestedResource:existingInterestedResources){
 					if(assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c && assignedResource.ServiceResourceId == interestedResource.ServiceResource__c){
