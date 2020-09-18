@@ -443,9 +443,9 @@ force-app/main/default/objects/Account/validationRules/Owner_is_not_editable.val
 force-app/main/default/objects/Account/validationRules/Name_is_not_editable.validationRule-meta.xml
 force-app/main/default/objects/Account/recordTypes/Business_Account.recordType-meta.xml
 force-app/main/default/objects/Account/recordTypes/Employer.recordType-meta.xml
-force-app/main/default/objects/ServiceAppointment/listViews/HOT_Tolk_Admin_ServiceAppointment.listView-meta.xml
+force-app/main/default/objects/ServiceAppointment/listViews/HOT_Tolk_Admin_Queue_ServiceAppointment.listView-meta.xml
 force-app/main/default/objects/WorkOrder/listViews/queue_4718_WorkOrder.listView-meta.xml
-force-app/main/default/objects/WorkOrder/listViews/HOT_Tolk_Admin_WorkOrder.listView-meta.xml
+force-app/main/default/objects/WorkOrder/listViews/HOT_Tolk_Admin_Queue_WorkOrder.listView-meta.xml
 force-app/main/default/objects/ServiceResource/ServiceResource.object-meta.xml
 force-app/main/default/objects/ServiceResource/listViews/My_ServiceResources.listView-meta.xml
 force-app/main/default/objects/ServiceResource/listViews/All_ServiceResources.listView-meta.xml
