@@ -8,5 +8,6 @@
     <fields>InterpretationMethod__c</fields>
     <fields>NumberOfInterpreters__c</fields>
     <fields>StartTime__c</fields>
+    <fields>CreatedById</fields>
     <label>HOT_Request_Compact_Layout</label>
 </CompactLayout>
