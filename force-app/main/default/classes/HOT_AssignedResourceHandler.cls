@@ -1,7 +1,6 @@
 public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 	
 	public override void onAfterInsert(){
-		System.debug('VEGARD RUNS AR: onAfterInsert');
 		List<ServiceAppointment> serviceAppointments = setServiceResourceFieldsOnServiceAppointment((List<AssignedResource>) records);
 		update serviceAppointments;
 		List<HOT_InterestedResource__c> interestedResource = createInterestedResources((List<AssignedResource>) records);
@@ -9,7 +8,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 	}
 
 	public override void onAfterUpdate(Map<Id, sObject> triggerOldMap){
-		System.debug('VEGARD RUNS AR: onAfterUpdate');
 		List<ServiceAppointment> serviceAppointments = setServiceResourceFieldsOnServiceAppointment((List<AssignedResource>) records);
 		update serviceAppointments;
 		List<HOT_InterestedResource__c> interestedResource = createInterestedResources((List<AssignedResource>) records);
@@ -34,8 +32,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		//Setting fields on ServiceAppointment
 		for(ServiceAppointment sa:serviceAppointments){
 			Id serviceResourceId = assignedResourceByServiceAppointmentId.get(sa.Id).ServiceResourceId;
-			System.debug('serviceResource.Name: ' + serviceResourceById.get(serviceResourceId).Name);
-			System.debug('serviceResourceId: ' + serviceResourceId);
 			sa.HOT_ServiceResource__c = serviceResourceId;
 			sa.HOT_AssignedResourceId__c = serviceResourceById.get(serviceResourceId).RelatedRecordId;
 		}

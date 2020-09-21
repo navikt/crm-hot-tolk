@@ -32,6 +32,30 @@
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
+                <stringValue>BLANKVALUE([HOT_Request__c].Account__c, &quot;&quot;)</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_2_myRule_1_A1_2347516109</name>
+        <dataType>String</dataType>
+        <expression>BLANKVALUE({!myVariable_current.Account__c}, &quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>IF(ISBLANK([HOT_Request__c].Account__c), &quot;&quot;, 
+[HOT_Request__c].Account__r.PersonContactId)</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_3_myRule_1_A1_9337796555</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!myVariable_current.Account__c}), &quot;&quot;, 
+{!myVariable_current.Account__r.PersonContactId})</expression>
+    </formulas>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
                 <stringValue>ISPICKVAL([HOT_Request__c].Status__c,&apos;Godkjent&apos;) 
 &amp;&amp; ISCHANGED([HOT_Request__c].Status__c)
 &amp;&amp;  ISPICKVAL(PRIORVALUE([HOT_Request__c].Status__c),&apos;Åpen&apos;)</stringValue>
@@ -43,7 +67,7 @@
 &amp;&amp; ISCHANGED({!myVariable_current.Status__c})
 &amp;&amp;  ISPICKVAL(PRIORVALUE({!myVariable_current.Status__c}),&apos;Åpen&apos;)</expression>
     </formulas>
-    <interviewLabel>Request_Processor_Update_Status_is_Approved-2_InterviewLabel</interviewLabel>
+    <interviewLabel>Request_Processor_Update_Status_is_Approved-4_InterviewLabel</interviewLabel>
     <label>Request Processor - Update - Status is Approved</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -103,12 +127,12 @@
             <processMetadataValues>
                 <name>rightHandSideType</name>
                 <value>
-                    <stringValue>Reference</stringValue>
+                    <stringValue>Formula</stringValue>
                 </value>
             </processMetadataValues>
             <field>AccountId</field>
             <value>
-                <elementReference>myVariable_current.Account__r.Id</elementReference>
+                <elementReference>formula_2_myRule_1_A1_2347516109</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -175,12 +199,12 @@
             <processMetadataValues>
                 <name>rightHandSideType</name>
                 <value>
-                    <stringValue>Reference</stringValue>
+                    <stringValue>Formula</stringValue>
                 </value>
             </processMetadataValues>
             <field>ContactId</field>
             <value>
-                <elementReference>myVariable_current.Account__r.PersonContactId</elementReference>
+                <elementReference>formula_3_myRule_1_A1_9337796555</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

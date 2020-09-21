@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Status på faktura</label>
+    <name>HOT_InvoiceStatus__c</name>
+    <picklistValues>
+        <masterLabel>Fakturert</masterLabel>
+        <translation><!-- Fakturert --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Ikke fakturert</masterLabel>
+        <translation><!-- Ikke fakturert --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Klar for fakturering</masterLabel>
+        <translation><!-- Klar for fakturering --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

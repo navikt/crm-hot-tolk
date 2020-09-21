@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-	<fullName>HOT_Warning__c</fullName>
-	<externalId>false</externalId>
-	<formula>IF(Text(Status)!=&quot;Ingen&quot;,&quot;&quot;,
+    <fullName>HOT_Warning__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(Text(Status)!=&quot;Ingen&quot;,&quot;&quot;,
 IF(DateValue(EarliestStartTime)-TODAY()&lt;=1,
 IMAGE( &quot;/img/samples/flag_red.gif&quot;, &quot;Red&quot;),
 IF(DateValue(EarliestStartTime)-TODAY()&lt;=3,
 IMAGE (&quot;/img/samples/flag_yellow.gif&quot;,&quot;Yellow&quot;), &quot;&quot;)))</formula>
-	<formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-	<inlineHelpText>Gult flagg vises når det er 3 dager til oppdraget starter.
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Gult flagg vises når det er 3 dager til oppdraget starter.
 Rødt flagg vises når det er 1 dag til oppdraget starter.</inlineHelpText>
-	<label>Warning</label>
-	<required>false</required>
-	<trackHistory>false</trackHistory>
-	<type>Text</type>
-	<unique>false</unique>
+    <label>Warning</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
 </CustomField>
