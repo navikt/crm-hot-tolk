@@ -581,6 +581,16 @@
 		<readable>false</readable>
 	</fieldPermissions>
 	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_ServiceTerritoryByQueue__mdt.ServiceTerritory__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+		<editable>true</editable>
+		<field>HOT_ServiceTerritoryByQueue__mdt.Queue__c</field>
+		<readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
 		<editable>false</editable>
 		<field>MaskinportenClient__mdt.Audience__c</field>
 		<readable>false</readable>
