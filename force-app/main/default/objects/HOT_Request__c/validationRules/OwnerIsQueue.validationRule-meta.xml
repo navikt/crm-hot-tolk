@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OwnerIsQueue</fullName>
+    <active>true</active>
+    <errorConditionFormula>LEFT(OwnerId  , 3) == &apos;005&apos;
+&amp;&amp;
+ $Profile.Name != &apos;System Administrator&apos;</errorConditionFormula>
+    <errorMessage>En feil skjedde i opprettelsen av forespørselen</errorMessage>
+</ValidationRule>
