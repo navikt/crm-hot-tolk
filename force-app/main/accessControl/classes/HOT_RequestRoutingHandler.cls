@@ -67,8 +67,6 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			}
 		}
 
-		//Setter ServiceTerritory på Request Bassert på Eier
-		HOT_RequestHandler.setServiceTerritory((List<HOT_Request__c>) records);
 	}
 
 	private List<SobjectWrapper> getSobjectWrappers() {
