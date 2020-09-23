@@ -36,18 +36,18 @@ public class HOT_TestData{
 		'Tegnspråk i begrenset synsfelt'
 	};
 	List<String> ServiceTerritoryNames = new List<String>{
-		'Naboo',
-		'Dagobah System',
 		'Tromso',
 		'Nordland',
+		'Naboo',
+		'Dagobah System',
 		'Rogaland'
 	};
 
 
 	//Get-methods
-	public List<Person__c> getPersons(Integer n, String regionNumber){
+	public List<Person__c> getPersons(Integer j, Integer n, String regionNumber){
 		List<Person__c> persons = new List<Person__c>();
-		for(Integer i=0; i<n && i<this.idents.size();i++){
+		for(Integer i=j; i<n+j && i<this.idents.size();i++){
 			Person__c person = new Person__c();
 			person.Name = this.idents[i];
 			person.HOT_DailyLifeInterpreter__c = true;
@@ -167,7 +167,38 @@ public class HOT_TestData{
 				Type__c = 'User',
 				Source__c = 'Community',
 				Orderer__c = orderers[i].Id,
+				Account__c = accounts[i].Id,
 				UserName__c = accounts[i].Name,
+				UserPersonNumber__c = accounts[i].INT_PersonIdent__c
+			);
+			requests.add(request);
+		}
+		return requests;
+	}
+	
+	public List<HOT_Request__c> getCompanyRequests(List<Account> accounts, List<Account> orderers, Account company, List<WorkType> workTypes){
+		List<HOT_Request__c> requests = new List<HOT_Request__c>();
+		for(Integer i = 0; i < accounts.size(); i++){
+			HOT_Request__c request = new HOT_Request__c(
+				Subject__c = 'Forespørsel på vegne av ' + accounts[i].Name,
+				InterpretationMethod__c = workTypes[i].Id,
+				InterpretationStreet__c = 'Gata ' + String.valueOf(i),
+				InterpretationPostalCode__c = String.valueOf(i) + '11' + String.valueOf(i),
+				InterpretationPostalCity__c = 'Lillestrøm',
+				MeetingStreet__c = 'Gata ' + String.valueOf(i),
+				MeetingPostalCode__c = String.valueOf(i) + '11' + String.valueOf(i),
+				MeetingPostalCity__c = 'Lillestrøm',
+				NumberOfInterpreters__c = 2,
+				StartTime__c = DateTime.now().addDays(i).addHours(1) ,
+				EndTime__c =  DateTime.now().addDays(i).addHours(2),
+				Status__c = 'Åpen',
+				AssignmentType__c = 'Private',
+				Type__c = 'Company',
+				Source__c = 'Community',
+				Orderer__c = orderers[i].Id,
+				Company__c = company.Id, 
+				UserName__c = accounts[i].Name,
+				Account__c = accounts[i].Id,
 				UserPersonNumber__c = accounts[i].INT_PersonIdent__c
 			);
 			requests.add(request);
