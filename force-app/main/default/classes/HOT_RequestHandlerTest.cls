@@ -39,15 +39,7 @@ private class HOT_RequestHandlerTest {
 		personTromso.INT_LastName__c = 'User';
 		personTromso.INT_RegionNumber__c = '54';
 		insert personTromso;
-/*		
-		Person__c personNordland = HOT_TestDataFactory.createPerson();
-		personNordland.INT_FirstName__c = 'Nordland';
-		personNordland.INT_LastName__c = 'User';
-		personNordland.INT_RegionNumber__c = '18';
-		insert personNordland;
-*/
 		Account accountTromso = [SELECT Id FROM Account WHERE FirstName = :personTromso.INT_FirstName__c LIMIT 1];
-		//Account accountNordland = [SELECT Id FROM Account WHERE Name = :personNordland.INT_FirstName__c LIMIT 1];
 
 
 		OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
@@ -77,46 +69,5 @@ private class HOT_RequestHandlerTest {
 		System.assertEquals(Nordland.Id, request.ServiceTerritory__r.Id, 'ServiceTerritory was not properly set on update');
 		
 	}
-
-
-
-
-	/*
-	@isTest
-	private static void testdeleteRelatedFiles(){
-		WorkType workType = HOT_TestDataFactory.createWorkType();
-		insert workType;
-		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-		insert request;
-
-		ContentVersion contentVersion = new ContentVersion(
-		Title = 'Penguins',
-		PathOnClient = 'Penguins.jpg',
-		VersionData = Blob.valueOf('Test Content'),
-		IsMajorVersion = true
-		);
-		insert contentVersion;    
-		List<ContentDocument> documents = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument];
-		System.debug(documents.size());
-
-		//create ContentDocumentLink  record 
-		ContentDocumentLink cdl = New ContentDocumentLink();
-		cdl.LinkedEntityId = request.id;
-		cdl.ContentDocumentId = documents[0].Id;
-		cdl.shareType = 'V';
-		insert cdl;
-
-		List<ContentDocumentLink> files = [Select Id, ContentDocumentId From ContentDocumentLink where LinkedEntityId=:request.id];
-		System.debug(files.size());
-		System.assertEquals(1, files.size(), 'Was not able to add files');
-
-		request.Status__c = 'Avlyst';
-		update request;
-		
-		files = [Select Id, ContentDocumentId From ContentDocumentLink where LinkedEntityId=:request.id];
-		System.assertEquals(0, files.size(), 'Was not able to delete files');
-
-	}
-	*/
 	
 }
