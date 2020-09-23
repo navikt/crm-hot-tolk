@@ -3,7 +3,7 @@
     <fullName>ServiceTerritory__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>Service Territory</label>
+    <label>Service Territory (DeveloperName)</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

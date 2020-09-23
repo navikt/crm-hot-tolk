@@ -4,6 +4,6 @@
     <active>true</active>
     <errorConditionFormula>LEFT(OwnerId  , 3) == &apos;005&apos;
 &amp;&amp;
- $Profile.Name != &apos;System Administrator&apos;</errorConditionFormula>
-    <errorMessage>En feil skjedde i opprettelsen av forespørselen</errorMessage>
+ Contains($Profile.Name, &apos;admin&apos;)</errorConditionFormula>
+    <errorMessage>Eieren av en forespørsel kan ikke settes til en bruker, den må settest til en kø.</errorMessage>
 </ValidationRule>

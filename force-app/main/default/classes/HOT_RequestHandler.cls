@@ -38,13 +38,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 personIdsToUpdate.add(request.Person__c);
                 requestsToGetContactInformationFor.add(request);
 			}
-			/*
-			//Filter for relevant records to delete attached files (from finished requests)
-			if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') &&
-				 (request.Status__c == 'Avlyst' || request.Status__c == 'Avslått' || 
-				 request.Status__c == 'Dekket' || request.Status__c == 'Udekket')) {
-					finishedRequests.add(request);
-			}*/
         }
         if (avlystRequests.size() > 0) {
             updateChildRecords(avlystRequests, 'Canceled');
