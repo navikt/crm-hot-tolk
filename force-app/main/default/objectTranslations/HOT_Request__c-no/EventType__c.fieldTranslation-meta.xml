@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Arrangement type</label>
+    <label>Type arrangement</label>
     <name>EventType__c</name>
     <picklistValues>
         <masterLabel>Annet</masterLabel>
