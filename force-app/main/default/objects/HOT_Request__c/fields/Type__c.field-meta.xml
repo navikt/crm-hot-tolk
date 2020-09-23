@@ -29,7 +29,7 @@
             <value>
                 <fullName>PublicEvent</fullName>
                 <default>false</default>
-                <label>Virksomhet til offentlig arrangement</label>
+                <label>Arrangement</label>
             </value>
         </valueSetDefinition>
     </valueSet>
