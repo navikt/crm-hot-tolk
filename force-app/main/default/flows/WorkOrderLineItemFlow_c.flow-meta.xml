@@ -90,13 +90,6 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>VarSA.HOT_AssignmentType__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>VarWOLIAssigmentType</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
             <assignToReference>VarSA.SchedStartTime</assignToReference>
             <operator>Assign</operator>
             <value>
