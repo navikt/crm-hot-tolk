@@ -4,7 +4,7 @@
 	<protected>false</protected>
 	<values>
 		<field>Queue__c</field>
-		<value xsi:type="xsd:string">queue_4711</value>
+		<value xsi:type="xsd:string">queue_47005</value>
 	</values>
 	<values>
 		<field>ServiceTerritory__c</field>
