@@ -15,7 +15,7 @@
         <translation><!-- Virksomhet på vegne av bruker --></translation>
     </picklistValues>
     <picklistValues>
-        <masterLabel>Virksomhet til offentlig arrangement</masterLabel>
-        <translation><!-- Virksomhet til offentlig arrangement --></translation>
+        <masterLabel>Arrangement</masterLabel>
+        <translation><!-- Arrangement --></translation>
     </picklistValues>
 </CustomFieldTranslation>

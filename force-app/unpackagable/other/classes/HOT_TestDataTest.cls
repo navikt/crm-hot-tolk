@@ -7,7 +7,7 @@ private class HOT_TestDataTest{
 
 		HOT_TestData testData = new HOT_TestData();
 		Integer n = 3;
-		List<Person__c> persons = testData.getPersons(4, '54');
+		List<Person__c> persons = testData.getPersons(0, 4, '54');
 		insert persons;
 
 		List<Account> personAccounts = [SELECT Id, Name, INT_PersonIdent__c FROM Account];
@@ -49,6 +49,8 @@ private class HOT_TestDataTest{
 		requestWorkTypes.remove(0);
 		List<HOT_Request__c> userRequests = testData.getUserRequests(personAccounts, orderers, requestWorkTypes);
 		insert userRequests;
+		List<HOT_Request__c> companyRequests = testData.getCompanyRequests(personAccounts, orderers, companies[0], requestWorkTypes);
+		insert companyRequests;
 
 		System.assertEquals(true, userRequests.size() != null, 'Was not able to create test data');
 	}

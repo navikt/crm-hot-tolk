@@ -3,9 +3,10 @@ List<Skill> skills = [SELECT Id FROM Skill WHERE DeveloperName = 'Tegnspraktolk'
 
 HOT_TestData testData = new HOT_TestData();
 Integer n = 3;
-List<Person__c> persons = testData.getPersons(2, '54');
-List<Person__c> persons = testData.getPersons(2, '18');
+List<Person__c> persons = testData.getPersons(0, 2, '54');
+List<Person__c> persons2 = testData.getPersons(2, 2, '18');
 insert persons;
+insert persons2;
 System.debug(persons);
 
 List<Account> personAccounts = [SELECT Id, Name, INT_PersonIdent__c FROM Account];
@@ -59,3 +60,7 @@ System.debug(userRequests);
 
 meRequests[0].Status__c = 'Godkjent';
 update meRequests[0];
+
+
+List<HOT_Request__c> companyRequests = testData.getCompanyRequests(personAccounts, orderers, companies[0], requestWorkTypes);
+insert companyRequests;

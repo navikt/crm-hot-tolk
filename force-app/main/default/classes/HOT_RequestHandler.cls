@@ -1,7 +1,11 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
 
+	public override void onBeforeInsert(){
+		setServiceTerritory((List<HOT_Request__c>) records);
+	}
+
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
-			List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
+		List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
 		for (HOT_Request__c request : (List<HOT_Request__c>) records) {
 			// Filter for owner change
             if (request.OwnerId != triggerOldMap.get(request.Id).get('OwnerId')) {
@@ -34,13 +38,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 personIdsToUpdate.add(request.Person__c);
                 requestsToGetContactInformationFor.add(request);
 			}
-			/*
-			//Filter for relevant records to delete attached files (from finished requests)
-			if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') &&
-				 (request.Status__c == 'Avlyst' || request.Status__c == 'Avslått' || 
-				 request.Status__c == 'Dekket' || request.Status__c == 'Udekket')) {
-					finishedRequests.add(request);
-			}*/
         }
         if (avlystRequests.size() > 0) {
             updateChildRecords(avlystRequests, 'Canceled');
@@ -90,10 +87,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 	}
 	
 	public static void setServiceTerritory(List<HOT_Request__c> requests){
-		Map<String, String> serviceTerritoryByQueue = new Map<String, String>{
-			'queue_4719' => 'Tromso',
-			'queue_4718' => 'Nordland'
-		};
+		List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = [SELECT Queue__c, ServiceTerritory__c FROM HOT_ServiceTerritoryByQueue__mdt];
+		Map<String, String> serviceTerritoryByQueue = new Map<String, String>();
+		for(HOT_ServiceTerritoryByQueue__mdt STbyQ:serviceTerritoryByQueueList){
+			serviceTerritoryByQueue.put(STbyQ.Queue__c, STbyQ.ServiceTerritory__c);
+		}
 		List<Group> queues = [SELECT Id, Name, DeveloperName FROM Group WHERE Type='Queue' AND DeveloperName IN :serviceTerritoryByQueue.keySet()];
 		List<ServiceTerritory> serviceTerritories = [SELECT Id, Name, HOT_DeveloperName__c FROM ServiceTerritory WHERE HOT_DeveloperName__c IN :serviceTerritoryByQueue.values()];
 		Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
@@ -105,7 +103,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 			}
 		}
 		for(HOT_Request__c request:requests){
-			request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
+			if(serviceTerritoryIdByQueueId.get(request.OwnerId) != null){
+				request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
+			}
 		}
 	}
 }

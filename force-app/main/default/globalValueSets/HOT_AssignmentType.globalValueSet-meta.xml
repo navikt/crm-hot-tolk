@@ -3,42 +3,42 @@
     <customValue>
         <fullName>Private</fullName>
         <default>false</default>
-        <label>Private</label>
+        <label>Privatliv</label>
     </customValue>
     <customValue>
         <fullName>Work</fullName>
         <default>false</default>
-        <label>Work</label>
+        <label>Arbeidsliv</label>
     </customValue>
     <customValue>
         <fullName>Health Services</fullName>
         <default>false</default>
-        <label>Health Services</label>
+        <label>Helsetjenester</label>
     </customValue>
     <customValue>
         <fullName>Education</fullName>
         <default>false</default>
-        <label>Education</label>
+        <label>Utdanning</label>
     </customValue>
     <customValue>
         <fullName>Other Economical Provider</fullName>
         <default>false</default>
-        <label>Other Economical Provider</label>
+        <label>Annen betaler</label>
     </customValue>
     <customValue>
         <fullName>Interpreter at Work</fullName>
         <default>false</default>
-        <label>Interpreter at Work</label>
+        <label>Tolk på arbeidsplass - TPA</label>
     </customValue>
     <customValue>
         <fullName>Image Interpreter</fullName>
         <default>false</default>
-        <label>Image Interpreter</label>
+        <label>Bildetolk</label>
     </customValue>
     <customValue>
         <fullName>Video Interpreter</fullName>
         <default>false</default>
-        <label>Video Interpreter</label>
+        <label>Videotolk</label>
     </customValue>
     <masterLabel>Assignment Type</masterLabel>
     <sorted>false</sorted>

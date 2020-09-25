@@ -54,6 +54,8 @@ jobs:
           if [ $status == "0" ]
           then
             echo "::set-output name=isSuccess::true"
+          else
+            exit 125
           fi
           rm output
 
