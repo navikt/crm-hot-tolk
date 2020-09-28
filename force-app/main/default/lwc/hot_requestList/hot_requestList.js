@@ -185,7 +185,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			tempColumnLabels.push("''");
 		}
 		else {
-			tempColumns.unshift({ label: 'Bruker', fieldName: 'UserName__c', type: 'text', sortable: true, })
+			tempColumns.unshift({ label: 'Bruker', fieldName: 'ActualUserName__c', type: 'text', sortable: true, })
 			tempColumnLabels.unshift("'Bruker'");
 		}
 		for (var i = 0; i < tempColumnLabels.length; i++) {
