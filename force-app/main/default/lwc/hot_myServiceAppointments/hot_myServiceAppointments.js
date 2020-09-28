@@ -180,7 +180,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
 	@track recordId;
 	@track isDetails = false;
-	@track testing = false;
 	showDetails(row) {
 		console.log("showDetails");
 		this.recordId = row.Id;
