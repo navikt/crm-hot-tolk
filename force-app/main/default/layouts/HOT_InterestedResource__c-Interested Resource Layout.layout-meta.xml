@@ -20,7 +20,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>SA_Subject__c</field>
+                <field>SASubject__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
