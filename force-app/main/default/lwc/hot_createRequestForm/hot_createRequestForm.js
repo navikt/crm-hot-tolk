@@ -325,6 +325,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		x = this.template.querySelector(".submitted-false");
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
+		window.scrollTo(0, 0);
 
 	}
 
