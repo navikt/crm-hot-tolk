@@ -403,6 +403,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					this.recordId = this.fieldValues.Id;
 				}
 
+				if (this.fieldValues.Type__c == 'PublicEvent') {
+					this.fieldValues.EventType__c = this.fieldValues.EventType__c == "Annet" ? "OtherEvent" : "SportingEvent";
+				}
+
 			}
 		}
 
