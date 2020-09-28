@@ -9,7 +9,7 @@ public without sharing class HOT_RequestListContoller {
 		MeetingPostalCity__c, InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, 
 		Description__c, Status__c, ExternalRequestStatus__c, Account__c, (SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
 		Source__c, Type__c, toLabel(EventType__c), Orderer__r.Name, OrdererPhone__c, OrdererEmail__c, UserName__c, UserPersonNumber__c, Company__r.Name, OrganizationNumber__c, InvoiceReference__c, AdditionalInvoicetext__c
-		,EconomicalProvider__c
+		,EconomicalProvider__c, ActualUserName__c
 		FROM HOT_Request__c WHERE Orderer__c != null AND ((Account__c !=null AND Account__c = : user.AccountId) OR Orderer__c = :user.AccountId) ORDER BY StartTime__c ASC];
 
 		//Setting the helping-field to control the users access to row-actions in requestList (lwc)
