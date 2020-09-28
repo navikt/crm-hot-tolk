@@ -347,7 +347,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 			//Here we should get the entire record from salesforce, to get entire interpretation address.
 			let clone = this.requests[index];
-			clone.EventType__c = clone.EventType__c == null ? null : clone.EventType__c == 'Annet' ? 'Other' : 'SportingEvent';
+			if (clone.Type__c == 'PublicEvent') {
+				clone.EventType__c = clone.EventType__c == 'Annet' ? 'Other' : 'SportingEvent';
+			}
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
