@@ -1,10 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignments>
+        <name>Assign_new_time</name>
+        <label>Assign new time</label>
+        <locationX>1695</locationX>
+        <locationY>33</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Request.StartTime__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>New_Start_Time</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Request.EndTime__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>New_End_Time</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Request</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Assign_new_time_and_set_status_to_Godkjent</name>
         <label>Assign new time and set status to Godkjent</label>
-        <locationX>1526</locationX>
-        <locationY>144</locationY>
+        <locationX>2058</locationX>
+        <locationY>240</locationY>
         <assignmentItems>
             <assignToReference>Get_Request.Status__c</assignToReference>
             <operator>Assign</operator>
@@ -33,8 +56,8 @@
     <assignments>
         <name>Set_request_status_to_open</name>
         <label>Set request status to open</label>
-        <locationX>785</locationX>
-        <locationY>152</locationY>
+        <locationX>1552</locationX>
+        <locationY>240</locationY>
         <assignmentItems>
             <assignToReference>Get_Request.Status__c</assignToReference>
             <operator>Assign</operator>
@@ -47,12 +70,37 @@
         </connector>
     </assignments>
     <decisions>
+        <name>Status_is_Open</name>
+        <label>Status is Open</label>
+        <locationX>1325</locationX>
+        <locationY>151</locationY>
+        <defaultConnector>
+            <targetReference>Set_request_status_to_open</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Request.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Åpen</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_new_time</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Work_Orders_to_Delete</name>
         <label>Work Orders to Delete?</label>
-        <locationX>1235</locationX>
-        <locationY>156</locationY>
+        <locationX>942</locationX>
+        <locationY>153</locationY>
         <defaultConnector>
-            <targetReference>Assign_new_time_and_set_status_to_Godkjent</targetReference>
+            <targetReference>Status_is_Open</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
@@ -89,10 +137,10 @@
     <recordDeletes>
         <name>Delete_related_work_orders</name>
         <label>Delete related work orders</label>
-        <locationX>1383</locationX>
-        <locationY>50</locationY>
+        <locationX>1151</locationX>
+        <locationY>40</locationY>
         <connector>
-            <targetReference>Assign_new_time_and_set_status_to_Godkjent</targetReference>
+            <targetReference>Status_is_Open</targetReference>
         </connector>
         <filters>
             <field>HOT_Request__c</field>
@@ -106,8 +154,8 @@
     <recordLookups>
         <name>Get_Request</name>
         <label>Get Request</label>
-        <locationX>459</locationX>
-        <locationY>144</locationY>
+        <locationX>446</locationX>
+        <locationY>152</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>ChooseStartandEndTime</targetReference>
@@ -130,8 +178,8 @@
     <recordLookups>
         <name>Get_WorkOrders_to_Delete</name>
         <label>Get WorkOrders to Delete</label>
-        <locationX>1118</locationX>
-        <locationY>154</locationY>
+        <locationX>786</locationX>
+        <locationY>151</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Work_Orders_to_Delete</targetReference>
@@ -154,8 +202,8 @@
     <recordUpdates>
         <name>Update_Request</name>
         <label>Update Request</label>
-        <locationX>1687</locationX>
-        <locationY>144</locationY>
+        <locationX>2057</locationX>
+        <locationY>33</locationY>
         <connector>
             <targetReference>Finish</targetReference>
         </connector>
@@ -164,10 +212,10 @@
     <recordUpdates>
         <name>Update_Request_Status</name>
         <label>Update Request Status</label>
-        <locationX>978</locationX>
-        <locationY>153</locationY>
+        <locationX>1744</locationX>
+        <locationY>240</locationY>
         <connector>
-            <targetReference>Get_WorkOrders_to_Delete</targetReference>
+            <targetReference>Assign_new_time_and_set_status_to_Godkjent</targetReference>
         </connector>
         <inputReference>Get_Request</inputReference>
     </recordUpdates>
@@ -181,7 +229,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Set_request_status_to_open</targetReference>
+            <targetReference>Get_WorkOrders_to_Delete</targetReference>
         </connector>
         <fields>
             <name>Info</name>
@@ -214,8 +262,8 @@
     <screens>
         <name>Finish</name>
         <label>Ferdig</label>
-        <locationX>1813</locationX>
-        <locationY>144</locationY>
+        <locationX>2294</locationX>
+        <locationY>33</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -228,8 +276,8 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
-        <locationY>125</locationY>
+        <locationX>52</locationX>
+        <locationY>133</locationY>
         <connector>
             <targetReference>Get_Request</targetReference>
         </connector>
