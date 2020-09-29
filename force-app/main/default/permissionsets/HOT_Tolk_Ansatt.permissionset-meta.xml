@@ -464,6 +464,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceResource.HOT_IsAvailableForAcuteAssignments__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceResource.HOT_IsEmployedInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
