@@ -56,7 +56,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				||
 				fields.StartTime__c <= this.requests[i].StartTime__c && this.requests[i].StartTime__c <= fields.EndTime__c)
 				&&
-				this.requests[i].Id != this.recordId) {
+				this.requests[i].Id != this.recordId
+				&&
+				fields.Type__c == 'Me' && this.requests[i].Account__c == this.personAccount.Id) {
 				isDuplicate = i;
 				break;
 			}
@@ -325,6 +327,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		x = this.template.querySelector(".submitted-false");
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
+		window.scrollTo(0, 0);
 
 	}
 
@@ -400,6 +403,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				}
 				else {
 					this.recordId = this.fieldValues.Id;
+				}
+
+				if (this.fieldValues.Type__c == 'PublicEvent') {
+					this.fieldValues.EventType__c = this.fieldValues.EventType__c == "Annet" ? "OtherEvent" : "SportingEvent";
 				}
 
 			}
