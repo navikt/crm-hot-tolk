@@ -20,11 +20,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>SASubject__c</field>
+                <field>ServiceAppointmentSubject__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>SAContact__c</field>
+                <field>ServiceAppointmentContact__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
