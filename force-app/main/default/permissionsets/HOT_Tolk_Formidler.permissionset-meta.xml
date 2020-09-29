@@ -287,12 +287,12 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.OrdererEmail__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.OrdererPhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -302,7 +302,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.OrganizationNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -314,6 +314,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.ServiceTerritory__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.Source__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -337,22 +342,22 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.UserEmail__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.UserName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.UserPersonNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.UserPhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
