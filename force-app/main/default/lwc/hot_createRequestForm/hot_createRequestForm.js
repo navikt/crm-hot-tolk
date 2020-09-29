@@ -56,7 +56,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				||
 				fields.StartTime__c <= this.requests[i].StartTime__c && this.requests[i].StartTime__c <= fields.EndTime__c)
 				&&
-				this.requests[i].Id != this.recordId) {
+				this.requests[i].Id != this.recordId
+				&&
+				fields.Type__c == 'Me' && this.requests[i].Account__c == this.personAccount.Id) {
 				isDuplicate = i;
 				break;
 			}
