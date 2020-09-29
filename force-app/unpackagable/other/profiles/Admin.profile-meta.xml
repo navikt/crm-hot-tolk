@@ -223,6 +223,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_InterestedResource__c.ServiceAppointmentContact__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_InterestedResource__c.ServiceAppointmentEndTime__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -230,6 +235,11 @@
         <editable>false</editable>
         <field>HOT_InterestedResource__c.ServiceAppointmentStartTime__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_InterestedResource__c.ServiceAppointmentSubject__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -794,6 +804,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.Description</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_IsAvailableForAcuteAssignments__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1402,6 +1417,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>CreateTopics</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>CreateWorkBadgeDefinition</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
