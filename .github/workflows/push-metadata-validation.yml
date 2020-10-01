@@ -5,7 +5,7 @@ name: "[PUSH] Validate Metadata"
 on:
   push:
     branches:
-      - develop
+      - NEVER_RUN
 
 # Jobs to be executed
 jobs:
