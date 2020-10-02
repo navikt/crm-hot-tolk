@@ -4,7 +4,7 @@
     <name>Source__c</name>
     <picklistValues>
         <masterLabel>Fra nav.no</masterLabel>
-        <translation>Fra nav.no</translation>
+        <translation><!-- Fra nav.no --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Formidler</masterLabel>
