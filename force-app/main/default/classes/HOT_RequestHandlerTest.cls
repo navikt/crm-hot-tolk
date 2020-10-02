@@ -19,6 +19,7 @@ private class HOT_RequestHandlerTest {
 		List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder];
 		List<WorkOrderLineItem> workOrderLineItems = [SELECT Status FROM WorkOrderLineItem];
 		List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment];
+		request = [SELECT CanceledDate__c FROM HOT_Request__c];
 		
 		for (WorkOrder workOrder : workOrders) {
 			System.assertEquals('Canceled', workOrder.Status, 'Work Order Satus was not changed to correct status');
@@ -29,6 +30,8 @@ private class HOT_RequestHandlerTest {
 		for (ServiceAppointment serviceAppointment : serviceAppointments) {
 			System.assertEquals('Canceled', serviceAppointment.Status, 'Work Order Satus was not changed to correct status');
 		}
+
+		System.assertEquals(Date.today(), request.CanceledDate__c, 'Cancel data was not set correct');
 	}
 
 	@isTest

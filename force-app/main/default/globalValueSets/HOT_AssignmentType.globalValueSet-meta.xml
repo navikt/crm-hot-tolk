@@ -21,11 +21,6 @@
         <label>Utdanning</label>
     </customValue>
     <customValue>
-        <fullName>Other Economical Provider</fullName>
-        <default>false</default>
-        <label>Annen betaler</label>
-    </customValue>
-    <customValue>
         <fullName>Interpreter at Work</fullName>
         <default>false</default>
         <label>Tolk på arbeidsplass - TPA</label>
@@ -39,6 +34,12 @@
         <fullName>Video Interpreter</fullName>
         <default>false</default>
         <label>Videotolk</label>
+    </customValue>
+    <customValue>
+        <fullName>Other Economical Provider</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Annen betaler</label>
     </customValue>
     <masterLabel>Assignment Type</masterLabel>
     <sorted>false</sorted>

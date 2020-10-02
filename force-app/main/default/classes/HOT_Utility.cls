@@ -63,7 +63,8 @@ public without sharing class HOT_Utility {
 		User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
 
 		//Metode 1
-		List<HOT_Request__c> requests = [SELECT Id, OrdererEmail__c, OrdererPhone__c, CreatedDate FROM HOT_Request__c WHERE Orderer__c = :user.AccountId ORDER BY CreatedDate DESC LIMIT 1];
+		List<HOT_Request__c> requests = [SELECT Id, OrdererEmail__c, OrdererPhone__c, CreatedDate FROM HOT_Request__c 
+										 WHERE Orderer__c = :user.AccountId AND OrdererEmail__c != '' AND OrdererPhone__c != '' ORDER BY CreatedDate DESC LIMIT 1];
 		Map<String, String> ordererDetails = new Map<String,String>();
 		if(requests.size()>0){
 			ordererDetails.put('OrdererEmail__c', String.valueOf(requests[0].OrdererEmail__c));

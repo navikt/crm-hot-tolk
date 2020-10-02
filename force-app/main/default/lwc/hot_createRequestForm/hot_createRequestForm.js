@@ -382,6 +382,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			if (parsed_params.fieldValues != null) {
 
 				this.fieldValues = JSON.parse(parsed_params.fieldValues);
+
+				this.fieldValues.Account__c = null;
+				this.fieldValues.Orderer__c = null;
+				delete this.fieldValues.Company__c;
+
 				this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
 				if (!this.sameLocation) {
 					this.value = 'no';
@@ -449,6 +454,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 	}
 	goToPrevousPage() {
+		window.scrollTo(0, 0);
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',
 			attributes: {
