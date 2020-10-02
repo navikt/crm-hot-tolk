@@ -3,8 +3,8 @@
     <label>Kilde</label>
     <name>Source__c</name>
     <picklistValues>
-        <masterLabel>Community</masterLabel>
-        <translation><!-- Community --></translation>
+        <masterLabel>Fra nav.no</masterLabel>
+        <translation>Fra nav.no</translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Formidler</masterLabel>
