@@ -6,14 +6,22 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
 		List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
+		List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
 		for (HOT_Request__c request : (List<HOT_Request__c>) records) {
 			// Filter for owner change
             if (request.OwnerId != triggerOldMap.get(request.Id).get('OwnerId')) {
                 ownerChangedRequests.add(request);
 			}
+			// Filter for Avlyst requests
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
+                avlystRequests.add(request);
+			}
 		}
 		if(ownerChangedRequests.size() > 0){
 			setServiceTerritory(ownerChangedRequests);
+		}
+		if (avlystRequests.size() > 0) {
+            setCancelDate(avlystRequests);
 		}
 	}
 
@@ -106,6 +114,12 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 			if(serviceTerritoryIdByQueueId.get(request.OwnerId) != null){
 				request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
 			}
+		}
+	}
+
+	public static void setCancelDate(List<HOT_Request__c> requests){
+		for(HOT_Request__c request:requests){
+			request.CanceledDate__c = Date.today();
 		}
 	}
 }
