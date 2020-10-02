@@ -3,11 +3,11 @@
     <label>Kilde</label>
     <name>Source__c</name>
     <picklistValues>
-        <masterLabel>Fra nav.no</masterLabel>
-        <translation><!-- Fra nav.no --></translation>
-    </picklistValues>
-    <picklistValues>
         <masterLabel>Formidler</masterLabel>
         <translation><!-- Formidler --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Fra nav.no</masterLabel>
+        <translation><!-- Fra nav.no --></translation>
     </picklistValues>
 </CustomFieldTranslation>
