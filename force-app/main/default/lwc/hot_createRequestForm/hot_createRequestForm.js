@@ -383,8 +383,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 				this.fieldValues = JSON.parse(parsed_params.fieldValues);
 
-				this.fieldValues.Account__c = null;
-				this.fieldValues.Orderer__c = null;
+				delete this.fieldValues.Account__c;
 				delete this.fieldValues.Company__c;
 
 				this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
