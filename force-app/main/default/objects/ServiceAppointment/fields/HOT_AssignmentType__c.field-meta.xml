@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_AssignmentType__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <formula>TEXT(HOT_Request__r.AssignmentType__c)</formula>
+    <formula>CASE( TEXT(HOT_Request__r.AssignmentType__c),
+
+&apos;Private&apos;, &apos;Dagligliv&apos;,
+&apos;Work&apos;, &apos;Arbeidsliv&apos;,
+&apos;Health Services&apos;, &apos;Helsetjenester&apos;,
+&apos;Education&apos;, &apos;Utdanning&apos;,
+&apos;Interpreter at Work&apos;, &apos;Tolk på arbeidsplass - TPA&apos;,
+&apos;Image Interpreter&apos;, &apos;Bildetolk&apos;,
+&apos;Video Interpreter&apos;, &apos;Videotolk&apos;,
+&apos;&apos;
+)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Assignment Type</label>
     <required>false</required>
