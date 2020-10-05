@@ -26,13 +26,13 @@
         <label>Kontaktinformasjon (fra KRR)</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>INT_KrrMobilePhone__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>INT_KrrEmail__c</field>
             </layoutItems>
         </layoutColumns>
@@ -127,7 +127,7 @@
                 <field>HOT_Reservations__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>INT_SecurityMeasures__c</field>
             </layoutItems>
             <layoutItems>
@@ -194,7 +194,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h3N000000sU5x</masterLabel>
+        <masterLabel>00h1j000001EkDQ</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
