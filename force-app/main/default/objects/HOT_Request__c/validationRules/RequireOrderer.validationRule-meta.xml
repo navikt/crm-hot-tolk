@@ -4,7 +4,9 @@
     <active>true</active>
     <errorConditionFormula>ISBLANK(Orderer__c)
 &amp;&amp;
-ISPICKVAL(Source__c, &apos;Dispatcher&apos;)</errorConditionFormula>
+ISPICKVAL(Source__c, &apos;Dispatcher&apos;)
+&amp;&amp;
+NOT(ISPICKVAL(Status__c, &quot;Annullert&quot;))</errorConditionFormula>
     <errorDisplayField>Orderer__c</errorDisplayField>
     <errorMessage>Bestiller må alltid fylles ut.</errorMessage>
 </ValidationRule>
