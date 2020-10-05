@@ -30,10 +30,10 @@ public without sharing class KrrCalloutQueuable implements Queueable, Database.A
                     // Map contact information fields if they were returned by krr
                     if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon != null) {
                         if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.epostadresse != null) {
-                            person.INT_Email__c = krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.epostadresse;
+                            person.INT_KrrEmail__c = krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.epostadresse;
                         }
                         if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.mobiltelefonnummer != null) {
-                            person.INT_MobilePhone__c = krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.mobiltelefonnummer;
+                            person.INT_KrrMobilePhone__c = krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.mobiltelefonnummer;
                         }
                     }
                     personsToUpdate.add(person);

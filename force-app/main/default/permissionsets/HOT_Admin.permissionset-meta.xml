@@ -445,7 +445,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Person__c.INT_Email__c</field>
+        <field>Person__c.INT_KrrEmail__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -485,7 +485,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Person__c.INT_MobilePhone__c</field>
+        <field>Person__c.INT_KrrMobilePhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

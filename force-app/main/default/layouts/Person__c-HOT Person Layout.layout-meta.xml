@@ -27,13 +27,13 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>INT_MobilePhone__c</field>
+                <field>INT_KrrMobilePhone__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>INT_Email__c</field>
+                <field>INT_KrrEmail__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
