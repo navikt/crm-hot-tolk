@@ -63,9 +63,11 @@ public class HOT_TestData{
 	}
 	
 	public List<Account> getCompanies(Integer n){
+		Id employerRecordTypeId = [SELECT Id FROM RecordType WHERE DeveloperName = 'Employer' LIMIT 1].Id;
 		List<Account> accounts = new List<Account>();
 		for(Integer i = 0; i < n && i < this.companies.size(); i++){
 			Account account = new Account();
+			account.RecordTypeId = employerRecordTypeId;
 			account.Name = this.companies[i];
 			account.INT_OrganizationNumber__c = this.org_numbers[i];
 			accounts.add(account);
