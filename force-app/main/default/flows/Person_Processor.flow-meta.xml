@@ -223,7 +223,7 @@
             </processMetadataValues>
             <field>PersonEmail</field>
             <value>
-                <elementReference>myVariable_current.INT_Email__c</elementReference>
+                <elementReference>myVariable_current.INT_KrrEmail__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -259,7 +259,7 @@
             </processMetadataValues>
             <field>PersonMobilePhone</field>
             <value>
-                <elementReference>myVariable_current.INT_MobilePhone__c</elementReference>
+                <elementReference>myVariable_current.INT_KrrMobilePhone__c</elementReference>
             </value>
         </inputAssignments>
         <object>Account</object>
