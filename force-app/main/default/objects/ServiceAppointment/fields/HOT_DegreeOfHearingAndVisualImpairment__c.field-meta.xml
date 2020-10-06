@@ -2,8 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_DegreeOfHearingAndVisualImpairment__c</fullName>
     <externalId>false</externalId>
-    <formula>IF(ISPICKVAL(Account.CRM_Person__r.HOT_DegreeOfHearingAndVisualImpairment__c, &quot;Hearing impaired or deaf&quot;), &quot;Hørselshemmet/døv&quot;, 
-		IF(ISPICKVAL(Account.CRM_Person__r.HOT_DegreeOfHearingAndVisualImpairment__c, &quot;Deafblind&quot;), &quot;Døvblind&quot;, null))</formula>
+    <formula>IF(ISPICKVAL(Account.CRM_Person__r.HOT_DegreeOfHearingAndVisualImpairment__c, &quot;Hearing impaired or deaf&quot;), &quot;Hørselshemmet/døv (ftrl. § 10-7 f)&quot;, 
+		IF(ISPICKVAL(Account.CRM_Person__r.HOT_DegreeOfHearingAndVisualImpairment__c, &quot;Deafblind&quot;), &quot;Døvblind (ftrl. § 10-7 g)&quot;, null))</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Degree of Hearing and Visual Impairment</label>
     <required>false</required>
