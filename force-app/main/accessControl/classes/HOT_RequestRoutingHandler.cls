@@ -118,7 +118,9 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 	private Map<Id, SobjectWrapper> getUserInfo() {
 		Set<Id> accountIds = new Set<Id>();
 		for ( HOT_Request__c request : (List<HOT_Request__c>) records ) {
-			accountIds.add( request.Account__c );
+			if(request.Account__c != null) {
+				accountIds.add( request.Account__c );
+			}
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
 		for ( Person__c per : [SELECT INT_RegionNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
@@ -133,7 +135,9 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 	private Map<Id, SobjectWrapper> getOrdererInfo() {
 		Set<Id> accountIds = new Set<Id>();
 		for ( HOT_Request__c request : (List<HOT_Request__c>) records ) {
-			accountIds.add( request.Orderer__c );
+			if(request.Orderer__c != null) {
+				accountIds.add( request.Orderer__c );
+			}
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
 		for ( Person__c per : [SELECT INT_RegionNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
@@ -148,7 +152,9 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 	private Map<Id, SobjectWrapper> getCompanyInfo() {
 		Set<Id> accountIds = new Set<Id>();
 		for ( HOT_Request__c request : (List<HOT_Request__c>) records ) {
-			accountIds.add( request.Company__c );
+			if(request.Company__c != null) {
+				accountIds.add( request.Company__c );
+			}
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
 		for ( Account company : [SELECT Id, INT_RegionNumber__c FROM Account WHERE Id IN :accountIds] ) {
