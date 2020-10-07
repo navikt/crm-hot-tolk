@@ -16,10 +16,34 @@
             <name>myRule_1</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>formula_myRule_1</leftValueReference>
+                <processMetadataValues>
+                    <name>inputDataType</name>
+                    <value>
+                        <stringValue>Picklist</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>leftHandSideType</name>
+                    <value>
+                        <stringValue>Picklist</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>operatorDataType</name>
+                    <value>
+                        <stringValue>String</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>rightHandSideType</name>
+                    <value>
+                        <stringValue>Picklist</stringValue>
+                    </value>
+                </processMetadataValues>
+                <leftValueReference>myVariable_current.TerritoryType</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <booleanValue>true</booleanValue>
+                    <stringValue>P</stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -35,16 +59,11 @@
                 <stringValue>NOW()</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_2_myRule_1_A1_5666914999</name>
+        <name>formula_2_myRule_1_A1_3783134795</name>
         <dataType>DateTime</dataType>
         <expression>NOW()</expression>
     </formulas>
-    <formulas>
-        <name>formula_myRule_1</name>
-        <dataType>Boolean</dataType>
-        <expression>true</expression>
-    </formulas>
-    <interviewLabel>HOT_Service_Territory_Member_Processor-1_InterviewLabel</interviewLabel>
+    <interviewLabel>HOT_Service_Territory_Member_Processor-3_InterviewLabel</interviewLabel>
     <label>Service Territory Member Processor</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -146,7 +165,43 @@
             </processMetadataValues>
             <field>HOT_ServiceTerritoryLastUpdated__c</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_5666914999</elementReference>
+                <elementReference>formula_2_myRule_1_A1_3783134795</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Service Territory</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue>ServiceTerritory</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Reference</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>HOT_ServiceTerritory__c</field>
+            <value>
+                <elementReference>myVariable_current.ServiceTerritoryId</elementReference>
             </value>
         </inputAssignments>
         <object>ServiceResource</object>

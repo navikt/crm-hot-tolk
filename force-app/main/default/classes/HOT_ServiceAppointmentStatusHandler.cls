@@ -9,7 +9,7 @@ public without sharing class HOT_ServiceAppointmentStatusHandler extends MyTrigg
 				&& record.get('ParentRecordId') != null
 				&& record.get('Status') != triggerOldMap.get(record.Id).get('Status')) {
 					changedStatusServiceAppointments.add((ServiceAppointment)record);
-					if(record.get('Status') == 'Avbrutt'){
+					if(record.get('Status') == 'Canceled'){
 						canceledServiceAppointments.add((ServiceAppointment)record);
 					}
 			}
