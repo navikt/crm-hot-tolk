@@ -31,48 +31,6 @@
 		<value>Oppdrag</value>
 	</caseValues>
 	<gender>Neuter</gender>
-	<layouts>
-		<layout>HOT Service Appointment Layout</layout>
-		<sections>
-			<label>
-				<!-- Frilanstolk -->
-			</label>
-			<section>Frilanstolk</section>
-		</sections>
-		<sections>
-			<label>Tidsbegrensninger</label>
-			<section>Time Constraints</section>
-		</sections>
-		<sections>
-			<label>Adresse</label>
-			<section>Address</section>
-		</sections>
-		<sections>
-			<label>Ressursplanlegger</label>
-			<section>Dispatcher Console</section>
-		</sections>
-	</layouts>
-	<layouts>
-		<layout>HOT Tolk Service Appointment Layout</layout>
-		<sections>
-			<label>
-				<!-- Frilanstolk -->
-			</label>
-			<section>Frilanstolk</section>
-		</sections>
-		<sections>
-			<label>Tidsbegrensninger</label>
-			<section>Time Constraints</section>
-		</sections>
-		<sections>
-			<label>Adresse</label>
-			<section>Address</section>
-		</sections>
-		<sections>
-			<label>Ressursplanlegger</label>
-			<section>Dispatcher Console</section>
-		</sections>
-	</layouts>
 	<quickActions>
 		<label>Frigi til frilanstolker</label>
 		<name>HOT_ReleaseToFreelance</name>
