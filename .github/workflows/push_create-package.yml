@@ -280,12 +280,10 @@ jobs:
       - name: "Push source to scratch org"
         run: "sfdx force:source:push"
 
-      # Sleep for 1 minute while permset groups are updating
-      # TODO replace with soql checker
-      - name: Sleep for 1 minute while permset groups are updating
-        uses: jakejarvis/wait-action@master
-        with:
-          time: "1m"
+      # Delete unpackagable
+      - name: "Delete unpackagable"
+        run: |
+          rm -rf ./force-app/unpackagable
 
       # Get all test classes from current repo
       - name: Get all test classes from currentrepo
