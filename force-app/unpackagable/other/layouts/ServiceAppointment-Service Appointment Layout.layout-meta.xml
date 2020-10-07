@@ -62,6 +62,10 @@
                 <behavior>Readonly</behavior>
                 <field>HOT_NumberOfAssignedResources__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HOT_IsAcute__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
