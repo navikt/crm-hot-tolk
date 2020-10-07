@@ -1,14 +1,15 @@
 # Unique name for this workflow
-name: "[PR] Validate Metadata"
+name: "[PUSH] Validate Metadata"
 
 # Definition when the workflow should run
 on:
-  pull_request:
+  push:
     branches:
-      - "*"
+      - NEVER_RUN
 
+# Jobs to be executed
 jobs:
-  validate:
+  scratch-org-test:
     runs-on: ubuntu-latest
     steps:
       # Install SFDX
@@ -20,22 +21,17 @@ jobs:
         uses: actions/checkout@v2
 
       # Store secret for dev hub
-      - name: "Populate auth file with PROD_SFDX_URL secret"
+      - name: "Populate auth file with DEVHUB_SFDX_URL secret"
         shell: bash
-        run: "echo ${{ secrets.PROD_SFDX_URL }} > ./PROD_SFDX_URL.txt"
+        run: "echo ${{ secrets.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt"
 
       # Authenticate dev hub
       - name: "Authenticate Dev Hub"
-        run: "sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d"
-
-      # Remove auth files
-      - name: "Remove auth files"
-        if: always()
-        run: "rm -f ./PROD_SFDX_URL.txt"
+        run: "sfdx force:auth:sfdxurl:store -f ./DEVHUB_SFDX_URL.txt -a devhub -d"
 
       # Create scratch org
       - name: "Create scratch org"
-        run: sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1
+        run: "sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1"
 
       # Install sfpowerkit plugin used to install multiple packages only by version number
       - name: "Install sfpowerkit plugin"
@@ -49,7 +45,7 @@ jobs:
           for p in $(jq '.result | .[].Name' -r <<< "$(sfdx force:package:list --json)"); do
               keys+=$p":${{ secrets.PACKAGE_KEY }} "
           done
-
+                  
           echo "::set-output name=keys::$(echo $keys)"
 
       # Install packages this repo is dependant on

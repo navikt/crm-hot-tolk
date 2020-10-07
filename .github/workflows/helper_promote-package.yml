@@ -65,6 +65,26 @@ jobs:
       - name: Install package version to preprod
         run: sfdx force:package:install --package ${{ github.event.inputs.packageId }} -w 20 -b 20 -u preprod -r -k ${{ secrets.PACKAGE_KEY }} --json
 
+  install-package-uathot:
+    name: Install Package in UATHOT
+    runs-on: ubuntu-latest
+    needs: promote-package
+    steps:
+      # Install SFDX
+      - name: Authorize SFDX
+        uses: sfdx-actions/setup-sfdx@v1
+
+      # Authenticate uathot
+      - name: Authenticate uathot
+        run: |
+          echo ${{ secrets.UATHOT_SFDX_URL}} > ./UATHOT_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./UATHOT_SFDX_URL.txt -a uathot -s
+          rm -f ./UATHOT_SFDX_URL.txt
+
+      # Install package version to uathot
+      - name: Install package version to uathot
+        run: sfdx force:package:install --package ${{ github.event.inputs.packageId }} -w 20 -b 20 -u uathot -r -k ${{ secrets.PACKAGE_KEY }} --json
+
   push-new-version-number-to-master:
     name: Push new version number to master
     runs-on: ubuntu-latest
@@ -113,17 +133,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: promote-package
     steps:
-      # Authorize SFDX
-      - name: Authorize SFDX
-        uses: sfdx-actions/setup-sfdx@v1
-        
-      # Authenticate prod
-      - name: Authenticate prod
-        run: |
-          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
-          sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
-          rm -f ./PROD_SFDX_URL.txt
-          
       # Checkout code in master
       - name: Checkout source code from master
         uses: actions/checkout@master
@@ -138,7 +147,6 @@ jobs:
           echo "::set-output name=tagName::v$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
           echo "::set-output name=releaseName::$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
           echo "::set-output name=bodyVersion::$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
-          echo "::set-output name=codeCoverage::$( sfdx force:package:version:report -p ${{ github.event.inputs.packageId }} --json | jq '.result.CodeCoverage.apexCodeCoveragePercentage' -r )"
 
       # Generate changelog from commits
       - name: Generate changelog
@@ -158,8 +166,6 @@ jobs:
           body: |
             **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
             **Package ID**: ${{ github.event.inputs.packageId }}
-            **Code Coverage**: ${{ steps.release-fields.outputs.codeCoverage }}%
-
             **Author**: ${{ github.actor }}
             **Comment**: ${{ github.event.inputs.comment }}
 
