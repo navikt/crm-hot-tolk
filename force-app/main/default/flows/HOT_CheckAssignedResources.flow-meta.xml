@@ -84,42 +84,42 @@
 			<conditionLogic>(1 AND 2) OR (3 AND 4) OR (5 AND 6)</conditionLogic>
 			<conditions>
 				<leftValueReference>Reservation.EarliestStartTime</leftValueReference>
-				<operator>LessThanOrEqualTo</operator>
+				<operator>LessThan</operator>
 				<rightValue>
 					<elementReference>getThisServiceAppointment.EarliestStartTime</elementReference>
 				</rightValue>
 			</conditions>
 			<conditions>
 				<leftValueReference>getThisServiceAppointment.EarliestStartTime</leftValueReference>
-				<operator>LessThanOrEqualTo</operator>
+				<operator>LessThan</operator>
 				<rightValue>
 					<elementReference>Reservation.DueDate</elementReference>
 				</rightValue>
 			</conditions>
 			<conditions>
 				<leftValueReference>Reservation.EarliestStartTime</leftValueReference>
-				<operator>LessThanOrEqualTo</operator>
+				<operator>LessThan</operator>
 				<rightValue>
 					<elementReference>getThisServiceAppointment.DueDate</elementReference>
 				</rightValue>
 			</conditions>
 			<conditions>
 				<leftValueReference>getThisServiceAppointment.DueDate</leftValueReference>
-				<operator>LessThanOrEqualTo</operator>
+				<operator>LessThan</operator>
 				<rightValue>
 					<elementReference>Reservation.DueDate</elementReference>
 				</rightValue>
 			</conditions>
 			<conditions>
 				<leftValueReference>getThisServiceAppointment.EarliestStartTime</leftValueReference>
-				<operator>LessThanOrEqualTo</operator>
+				<operator>LessThan</operator>
 				<rightValue>
 					<elementReference>Reservation.EarliestStartTime</elementReference>
 				</rightValue>
 			</conditions>
 			<conditions>
 				<leftValueReference>Reservation.DueDate</leftValueReference>
-				<operator>LessThanOrEqualTo</operator>
+				<operator>LessThan</operator>
 				<rightValue>
 					<elementReference>getThisServiceAppointment.DueDate</elementReference>
 				</rightValue>
@@ -163,6 +163,12 @@
 		<name>BuilderType</name>
 		<value>
 			<stringValue>LightningFlowBuilder</stringValue>
+		</value>
+	</processMetadataValues>
+	<processMetadataValues>
+		<name>CanvasMode</name>
+		<value>
+			<stringValue>FREE_FORM_CANVAS</stringValue>
 		</value>
 	</processMetadataValues>
 	<processMetadataValues>
