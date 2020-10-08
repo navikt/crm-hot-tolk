@@ -22,7 +22,7 @@ jobs:
       # Store secret for dev hub
       - name: "Populate auth file with PROD_SFDX_URL secret"
         shell: bash
-        run: "echo ${{ secrets.PROD_SFDX_URL }} > ./PROD_SFDX_URL.txt"
+        run: "echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt"
 
       # Authenticate dev hub
       - name: "Authenticate Dev Hub"
@@ -60,10 +60,26 @@ jobs:
       - name: "Push source to scratch org"
         run: "sfdx force:source:push"
 
+      # Delete unpackagable
+      - name: "Delete unpackagable"
+        run: |
+          rm -rf ./force-app/unpackagable
+
+      # Get all test classes from current repo
+      - name: Get all test classes from currentrepo
+        id: test-classes-in-repo
+        run: |
+          classes=""
+          for p in $( grep -r -l -i --include="*.cls" "@istest" . | sed 's@.*/@@' ); do
+            classes+=$(echo $p | cut -f 1 -d '.')","
+          done
+
+          echo "::set-output name=classes::$( echo $classes | sed 's/\(.*\),/\1 /' )"
+
       # Run Apex tests in scratch org
+      # TODO throw error on below 75% code coverage
       - name: "Run Apex tests"
-        # run: "sfdx force:apex:test:run -l RunLocalTests -c -r human -d ./tests/apex -w 30"
-        run: sfdx force:source:deploy -m ApexClass --testlevel=RunLocalTests --checkonly
+        run: "sfdx force:apex:test:run -t ${{ steps.test-classes-in-repo.outputs.classes }} -c -r human -d ./tests/apex -w 20"
 
       # Delete scratch orgs
       - name: "Delete scratch org"
