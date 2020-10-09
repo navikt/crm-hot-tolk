@@ -235,7 +235,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 
 			else {
-				if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
+				if (confirm("Du har allerede en bestilling på samme tidspunkt" +
+					"\nForespørsel: " + this.requests[isDuplicate].Name +
+					"\nTema: " + this.requests[isDuplicate].Subject__c +
 					"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
 					"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
 					+ "\n\nFortsett?")) {
