@@ -1,20 +1,21 @@
 <template>
 	<div class="user-info-wrapper center-content">
 		<div class="user-info-tile center-content">
-
-			<section class="bruker-info-skjema sub-form">
-				<h2 style="font-size: 1.25rem;">Kontaktinformasjon</h2>
+			<section style="width: 545px;">
 				<lightning-record-view-form object-api-name="Person__c" record-id={recordId}>
-					<div class="slds-grid slds-gutters">
-						<div class="slds-col slds-size_1-of-2">
-							<lightning-output-field field-name="INT_KrrMobilePhone__c">
-							</lightning-output-field>
+					<section class="bruker-info-skjema sub-form">
+						<h2 style="font-size: 1.25rem;">Kontaktinformasjon</h2>
+						<div class="slds-grid slds-gutters">
+							<div class="slds-col slds-size_1-of-2">
+								<lightning-output-field field-name="INT_KrrMobilePhone__c">
+								</lightning-output-field>
+							</div>
+							<div class="slds-col slds-size_1-of-2">
+								<lightning-output-field field-name="INT_KrrEmail__c">
+								</lightning-output-field>
+							</div>
 						</div>
-						<div class="slds-col slds-size_1-of-2">
-							<lightning-output-field field-name="INT_KrrEmail__c">
-							</lightning-output-field>
-						</div>
-					</div>
+					</section>
 				</lightning-record-view-form>
 				</br>
 				<p class="typo-normal">
