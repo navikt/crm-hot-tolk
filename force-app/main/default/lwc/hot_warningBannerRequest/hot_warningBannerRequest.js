@@ -71,7 +71,9 @@ export default class Hot_warningBannerRequest extends LightningElement {
 			for (var i = 0; i < this.requests.length; i++) {
 				if ((this.requests[i].StartTime__c < getFieldValue(this.record.data, START_TIME) && getFieldValue(this.record.data, START_TIME) < this.requests[i].EndTime__c
 					||
-					getFieldValue(this.record.data, START_TIME) < this.requests[i].StartTime__c && this.requests[i].StartTime__c < getFieldValue(this.record.data, END_TIME))
+					getFieldValue(this.record.data, START_TIME) < this.requests[i].StartTime__c && this.requests[i].StartTime__c < getFieldValue(this.record.data, END_TIME)
+					||
+					getFieldValue(this.record.data, START_TIME) == this.requests[i].StartTime__c && this.requests[i].EndTime__c == getFieldValue(this.record.data, END_TIME))
 					&&
 					this.requests[i].Id != this.recordId) {
 
