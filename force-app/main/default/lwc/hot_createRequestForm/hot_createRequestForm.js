@@ -241,6 +241,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					+ "\n\nFortsett?")) {
 					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
 				}
+				else {
+					this.spin = false;
+				}
 
 			}
 			window.scrollBy(0, 100);
