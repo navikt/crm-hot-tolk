@@ -4,6 +4,16 @@
     <deleteConstraint>SetNull</deleteConstraint>
     <externalId>false</externalId>
     <label>Orderer</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage>Bestiller må være en person</errorMessage>
+        <filterItems>
+            <field>Account.RecordType.DeveloperName</field>
+            <operation>equals</operation>
+            <value>PersonAccount</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
     <referenceTo>Account</referenceTo>
     <relationshipLabel>Requests (Orderer)</relationshipLabel>
     <relationshipName>OrdererRequests</relationshipName>

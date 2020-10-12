@@ -124,7 +124,8 @@ public class HOT_TestDataFactory {
 			return account;
 		}
 		else{
-			return new Account( Name = 'Test AS' );
+			String personAccountRecordTypeId = Schema.getGlobalDescribe().get('Account').getDescribe().getRecordTypeInfosByDeveloperName().get('Employer').getRecordTypeId();
+			return new Account(RecordTypeId = personAccountRecordTypeId, Name = 'Test AS' );
 		}
 
 	}
