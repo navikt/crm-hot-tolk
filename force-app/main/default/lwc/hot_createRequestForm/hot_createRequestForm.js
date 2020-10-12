@@ -54,9 +54,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		for (var i = 0; i < this.requests.length; i++) {
 			if ((this.requests[i].StartTime__c < fields.StartTime__c && fields.StartTime__c < this.requests[i].EndTime__c
 				||
-				fields.StartTime__c < this.requests[i].StartTime__c && this.requests[i].StartTime__c < fields.EndTime__c)
+				fields.StartTime__c < this.requests[i].StartTime__c && this.requests[i].StartTime__c < fields.EndTime__c
+				||
+				fields.StartTime__c == this.requests[i].StartTime__c && this.requests[i].EndTime__c == fields.EndTime__c)
 				&&
 				this.requests[i].Id != this.recordId
+				&&
+				this.requests[i].Status__c != 'Avlyst' && this.requests[i].Status__c != 'Annullert'
 				&&
 				fields.Type__c == 'Me' && this.requests[i].Account__c == this.personAccount.Id) {
 				isDuplicate = i;
