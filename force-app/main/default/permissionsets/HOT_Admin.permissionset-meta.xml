@@ -26,6 +26,10 @@
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
+        <name>HOT_SetInvoiceStatus</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>ManageAccounts</name>
     </customPermissions>
     <customPermissions>
@@ -231,6 +235,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsManuallyInvoiced__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
