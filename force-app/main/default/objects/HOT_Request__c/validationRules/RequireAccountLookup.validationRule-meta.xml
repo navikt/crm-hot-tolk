@@ -6,7 +6,11 @@
 &amp;&amp;
 ISBLANK(Company__c)
 &amp;&amp;
-ISBLANK(Orderer__c)</errorConditionFormula>
+ISBLANK(Orderer__c)
+&amp;&amp;
+ISPICKVAL(Source__c, &apos;Dispatcher&apos;)
+&amp;&amp;
+NOT(ISPICKVAL(Status__c, &apos;Annullert&apos;))</errorConditionFormula>
     <errorDisplayField>Orderer__c</errorDisplayField>
     <errorMessage>Bestiller må alltid fylles ut.</errorMessage>
 </ValidationRule>
