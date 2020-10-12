@@ -242,7 +242,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.HOT_InvoiceStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -274,6 +274,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsManuallyInvoiced__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -493,12 +498,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.INT_KrrEmail__c</field>
+        <field>Person__c.INT_IsNavEmployee__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.INT_IsNavEmployee__c</field>
+        <field>Person__c.INT_KrrEmail__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

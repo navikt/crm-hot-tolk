@@ -88,6 +88,10 @@
         <name>SaveRequestBeforeApproving</name>
     </validationRules>
     <validationRules>
+        <errorMessage><!-- Du kan bare endre fakturastatus når manuell fakturering er krysset av. --></errorMessage>
+        <name>Set_invoice_status</name>
+    </validationRules>
+    <validationRules>
         <errorMessage><!-- Slutt tid må være etter start tid. --></errorMessage>
         <name>Start_time_before_end_time</name>
     </validationRules>
