@@ -5,6 +5,16 @@
     <description>The person requesting the interpreter service.</description>
     <externalId>false</externalId>
     <label>Account</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage>Bruker må være en person</errorMessage>
+        <filterItems>
+            <field>Account.RecordType.DeveloperName</field>
+            <operation>equals</operation>
+            <value>PersonAccount</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
     <referenceTo>Account</referenceTo>
     <relationshipLabel>Requests</relationshipLabel>
     <relationshipName>Requests</relationshipName>
