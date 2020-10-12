@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RequireAccountLookup</fullName>
+    <active>true</active>
+    <errorConditionFormula>ISBLANK(Account__c)
+&amp;&amp;
+ISBLANK(Company__c)
+&amp;&amp;
+ISBLANK(Orderer__c)</errorConditionFormula>
+    <errorDisplayField>Orderer__c</errorDisplayField>
+    <errorMessage>Bestiller må alltid fylles ut.</errorMessage>
+</ValidationRule>
