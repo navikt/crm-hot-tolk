@@ -206,7 +206,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>HOT_InvoiceStatus__c</field>
+                <field>InvoiceStatus__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>

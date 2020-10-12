@@ -318,7 +318,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.HOT_InvoiceStatus__c</field>
+        <field>HOT_Request__c.InvoiceStatus__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
