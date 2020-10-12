@@ -6,11 +6,11 @@
     <label>Company</label>
     <lookupFilter>
         <active>true</active>
-        <errorMessage>Betaler må være en virksomhet, ikke en bruker</errorMessage>
+        <errorMessage>Virksomheten kan ikke være en person.</errorMessage>
         <filterItems>
             <field>Account.RecordType.DeveloperName</field>
             <operation>notEqual</operation>
-            <value>PersonAccount</value>
+            <value>Employer</value>
         </filterItems>
         <isOptional>false</isOptional>
     </lookupFilter>
