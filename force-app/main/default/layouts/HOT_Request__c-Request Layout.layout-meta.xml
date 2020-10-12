@@ -163,6 +163,10 @@
                 <behavior>Edit</behavior>
                 <field>Orderer__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>OrdererName__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
