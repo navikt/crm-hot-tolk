@@ -9,7 +9,7 @@
         <errorMessage>Virksomheten kan ikke være en person.</errorMessage>
         <filterItems>
             <field>Account.RecordType.DeveloperName</field>
-            <operation>notEqual</operation>
+            <operation>equals</operation>
             <value>Employer</value>
         </filterItems>
         <isOptional>false</isOptional>
