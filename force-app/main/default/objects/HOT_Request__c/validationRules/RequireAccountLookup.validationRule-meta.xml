@@ -11,6 +11,5 @@ ISBLANK(Orderer__c)
 ISPICKVAL(Source__c, &apos;Dispatcher&apos;)
 &amp;&amp;
 NOT(ISPICKVAL(Status__c, &apos;Annullert&apos;))</errorConditionFormula>
-    <errorDisplayField>Orderer__c</errorDisplayField>
-    <errorMessage>Bestiller må alltid fylles ut.</errorMessage>
+    <errorMessage>Forespørselen må være koblet til en person eller virksomhet. Fyll ut Bruker-, Bestiller- eller Virksomhet-feltet.</errorMessage>
 </ValidationRule>
