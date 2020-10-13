@@ -128,7 +128,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			}
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
-		for ( Person__c per : [SELECT INT_RegionNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
+		for ( Person__c per : [SELECT INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
 			SobjectWrapper wrapper = new SobjectWrapper();
 			wrapper.Region = per.INT_RegionNumber__c;
 			wrapper.Municipality = per.INT_MunicipalityNumber__c;
@@ -146,7 +146,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			}
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
-		for ( Person__c per : [SELECT INT_RegionNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
+		for ( Person__c per : [SELECT INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
 			SobjectWrapper wrapper = new SobjectWrapper();
 			wrapper.Region = per.INT_RegionNumber__c;
 			wrapper.Municipality = per.INT_MunicipalityNumber__c;
@@ -164,7 +164,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			}
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
-		for ( Account company : [SELECT Id, INT_RegionNumber__c FROM Account WHERE Id IN :accountIds] ) {
+		for ( Account company : [SELECT Id, INT_RegionNumber__c, INT_MunicipalityNumber__c FROM Account WHERE Id IN :accountIds] ) {
 			SobjectWrapper wrapper = new SobjectWrapper();
 			wrapper.Region = company.INT_RegionNumber__c;
 			wrapper.Municipality = company.INT_MunicipalityNumber__c;
