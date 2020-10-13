@@ -6,7 +6,8 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 		for(SObject record : records) {
 			if(record.getSObjectType() == Schema.WorkOrder.getSObjectType()
 				&& record.get('HOT_Request__c') != null
-				&& record.get('Status') != triggerOldMap.get(record.Id).get('Status')) {
+				&& record.get('Status') != triggerOldMap.get(record.Id).get('Status')
+				&& record.get('Status') != 'Annul') {
 					changedStatusWorkOrders.add((WorkOrder)record);
 			}
 		}
@@ -42,7 +43,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 		statusMap.put('Partially Complete', 'Delvis dekket');
 		statusMap.put('Cannot Complete', 'Udekket');
 		statusMap.put('Canceled', 'Avlyst');
-		statusMap.put('Annul', 'Annullert');
 
 		List<HOT_Request__c> requestsToUpdate = new List<HOT_Request__c>();
 		for(WorkOrder workOrder : changedWorkOrders) {
@@ -57,7 +57,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 	}
 
 	private static void updateWorkOrderStatus(List<WorkOrder> workOrders) {
-		List<WorkOrderLineItem> workOrderLineItems = [SELECT WorkOrderId, Status FROM WorkOrderLineItem WHERE WorkOrderId IN: workOrders];
+		List<WorkOrderLineItem> workOrderLineItems = [SELECT WorkOrderId, Status FROM WorkOrderLineItem WHERE WorkOrderId IN: workOrders AND Status != 'Annul'];
 		Map<Id,List<WorkOrderLineItem>> workOrderLineItemsMaps = new Map<Id, List<WorkOrderLineItem>>();
 		
 		for(WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
@@ -79,7 +79,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 			Integer numberOfPartiallyComplete = 0;
 			Integer numberOfCannotComplete = 0;
 			Integer numberOfCanceled = 0;
-			Integer numberOfAnnul = 0;
 			
 			for(WorkOrderLineItem workOrderLineItem : workOrderLineItemsMaps.get(workOrder.Id)) {
 				if(workOrderLineItem.Status == 'Scheduled') {
@@ -103,9 +102,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 				if(workOrderLineItem.Status == 'Canceled') {
 					numberOfCanceled++;
 				}
-				if(workOrderLineItem.Status == 'Annul') {
-					numberOfAnnul++;
-				}
 			}
 
 			System.debug('numberOfWorkOrderLineItem: ' + numberOfWorkOrderLineItem);
@@ -116,7 +112,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 			System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
 			System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
 			System.debug('numberOfCanceled: ' + numberOfCanceled);
-			System.debug('numberOfAnnul: ' + numberOfAnnul);
 			
 			if(numberOfScheduled > 0) {
 				workOrder.Status = 'Scheduled';
@@ -141,9 +136,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 			}
 			if(numberOfCanceled == numberOfWorkOrderLineItem) {
 				workOrder.Status = 'Canceled';
-			}
-			if(numberOfAnnul == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'Annul';
 			}
 			workOrder.HOT_IsUpdateStatus__c = false;
 		}
