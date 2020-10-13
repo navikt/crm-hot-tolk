@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_MobilePhone__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(ISBLANK(HOT_MobilePhoneOverride__c) &amp;&amp; HOT_IsEmployedInterpreter__c, RelatedRecord.MobilePhone, HOT_MobilePhoneOverride__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Viser mobilnummer fra bruker-konto i Salesforce, med mindre det et fylt inn et eget mobilnummer på tjenesteressursen, da vises denne.</inlineHelpText>
+    <label>Mobile phone</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
