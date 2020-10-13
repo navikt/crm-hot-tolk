@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>INT_KrrIntegrationStatus__c</fullName>
+    <fullName>InvoiceStatus__c</fullName>
     <externalId>false</externalId>
-    <label>KRR Integration Status</label>
+    <label>Invoice status</label>
     <required>false</required>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
@@ -11,24 +12,19 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Not Started</fullName>
+                <fullName>Ikke fakturert</fullName>
                 <default>true</default>
-                <label>Not Started</label>
+                <label>Ikke fakturert</label>
             </value>
             <value>
-                <fullName>Queued</fullName>
+                <fullName>Klar for fakturering</fullName>
                 <default>false</default>
-                <label>Queued</label>
+                <label>Klar for fakturering</label>
             </value>
             <value>
-                <fullName>Completed</fullName>
+                <fullName>Fakturert</fullName>
                 <default>false</default>
-                <label>Completed</label>
-            </value>
-            <value>
-                <fullName>Failed</fullName>
-                <default>false</default>
-                <label>Failed</label>
+                <label>Fakturert</label>
             </value>
         </valueSetDefinition>
     </valueSet>

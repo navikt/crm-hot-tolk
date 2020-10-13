@@ -17,12 +17,8 @@ private class HOT_AssignedResourceAccessHandlerTest {
 		insert workType;
 		HOT_Request__c request = HOT_TestDataFactory.createRequest( 'TEST', workType );
 		insert request;
-		WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder( request, workType );
-		insert workOrder;
-		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem( workOrder, workType );
-		insert workOrderLineItem;
-		ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
-		insert serviceAppointment;
+		request.Status__c = 'Godkjent';
+		update request;
 	}
 
 	@IsTest

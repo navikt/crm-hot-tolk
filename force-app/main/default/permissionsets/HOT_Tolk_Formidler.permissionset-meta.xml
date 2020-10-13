@@ -158,6 +158,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_InterestedResource__c.ServiceAppointmentOwner__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_InterestedResource__c.ServiceAppointmentStartTime__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -237,8 +242,8 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.HOT_InvoiceStatus__c</field>
+        <editable>true</editable>
+        <field>HOT_Request__c.InvoiceStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -269,6 +274,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsManuallyInvoiced__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -304,6 +314,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.OrdererEmail__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.OrdererName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -483,17 +498,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.INT_Email__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Person__c.INT_IsNavEmployee__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.INT_MobilePhone__c</field>
+        <field>Person__c.INT_KrrEmail__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.INT_KrrMobilePhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -624,6 +639,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_InterpretationStreet__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsAcute__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

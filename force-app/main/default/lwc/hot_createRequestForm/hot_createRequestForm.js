@@ -52,11 +52,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	isDuplicate(fields) {
 		var isDuplicate = null;
 		for (var i = 0; i < this.requests.length; i++) {
-			if ((this.requests[i].StartTime__c <= fields.StartTime__c && fields.StartTime__c <= this.requests[i].EndTime__c
+			if ((this.requests[i].StartTime__c < fields.StartTime__c && fields.StartTime__c < this.requests[i].EndTime__c
 				||
-				fields.StartTime__c <= this.requests[i].StartTime__c && this.requests[i].StartTime__c <= fields.EndTime__c)
+				fields.StartTime__c < this.requests[i].StartTime__c && this.requests[i].StartTime__c < fields.EndTime__c
+				||
+				fields.StartTime__c == this.requests[i].StartTime__c && this.requests[i].EndTime__c == fields.EndTime__c)
 				&&
 				this.requests[i].Id != this.recordId
+				&&
+				this.requests[i].Status__c != 'Avlyst' && this.requests[i].Status__c != 'Annullert'
 				&&
 				fields.Type__c == 'Me' && this.requests[i].Account__c == this.personAccount.Id) {
 				isDuplicate = i;
@@ -238,6 +242,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
 					+ "\n\nFortsett?")) {
 					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+				}
+				else {
+					this.spin = false;
 				}
 
 			}

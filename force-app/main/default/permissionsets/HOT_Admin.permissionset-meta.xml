@@ -26,6 +26,10 @@
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
+        <name>HOT_SetInvoiceStatus</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>ManageAccounts</name>
     </customPermissions>
     <customPermissions>
@@ -115,6 +119,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_InterestedResource__c.ServiceAppointmentOwner__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_InterestedResource__c.ServiceAppointmentStartTime__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -195,7 +204,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.HOT_InvoiceStatus__c</field>
+        <field>HOT_Request__c.InvoiceStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -226,6 +235,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsManuallyInvoiced__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -261,6 +275,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.OrdererEmail__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.OrdererName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -445,11 +464,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Person__c.INT_Email__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Person__c.INT_FirstName__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -465,7 +479,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Person__c.INT_KrrEmail__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Person__c.INT_KrrIntegrationStatus__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Person__c.INT_KrrMobilePhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -481,11 +505,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.INT_MiddleName__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Person__c.INT_MobilePhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -619,6 +638,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_IsEmployedInterpreter__c</field>
         <readable>true</readable>
@@ -636,6 +660,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_NumberOfInterestedResources__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_Processed__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1259,7 +1288,7 @@
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <recordTypeVisibilities>
-        <recordType>Account.Business_Account</recordType>
+        <recordType>Account.Employer</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>
