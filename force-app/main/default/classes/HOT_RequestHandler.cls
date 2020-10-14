@@ -81,17 +81,28 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
-        List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder WHERE HOT_Request__c IN :changedRequests];
-        List<WorkOrderLineItem> workOrderLineItems = [SELECT Status FROM WorkOrderLineItem WHERE WorkOrderId IN :workOrders];
-        List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment WHERE ParentRecordId IN :workOrderLineItems];
+        List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder WHERE HOT_Request__c IN :changedRequests AND Status != :newStatus];
+        List<WorkOrderLineItem> workOrderLineItems = [SELECT Status FROM WorkOrderLineItem WHERE WorkOrderId IN :workOrders AND Status != :newStatus];
+        List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment WHERE ParentRecordId IN :workOrderLineItems AND Status != :newStatus];
 
-        // We only need to update Service Appointment, since the status is updated from SA -> WOLI -> WO in other tigger logic
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+		for (WorkOrder workOrder : workOrders) {
+            workOrder.Status = newStatus;
+        }
+        if (workOrders.size() > 0) {
+            update workOrders;
+        }
+		for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
+            workOrderLineItem.Status = newStatus;
+        }
+        if (workOrderLineItems.size() > 0) {
+            update workOrderLineItems;
+		}
+		for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.Status = newStatus;
         }
         if (serviceAppointments.size() > 0) {
             update serviceAppointments;
-        }
+		}
 	}
 	
 	public static void setServiceTerritory(List<HOT_Request__c> requests){

@@ -81,10 +81,12 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			if(request.Account__c != null && userInfoMap.containsKey(request.Account__c)){
 				SobjectWrapper userInfo = userInfoMap.get( request.Account__c );
 				String region = null;
+				String municipality = null;
 				if ( userInfo != null ) {
 					region = userInfo.Region;
+					municipality = userInfo.Municipality;
 				}
-				wrappers.add( new SobjectWrapper( recordIndex, null, region ) );
+				wrappers.add( new SobjectWrapper( recordIndex, municipality, region ) );
 				recordIndex++;
 			}
 
@@ -92,10 +94,12 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			else if(request.Company__c != null && companyInfoMap.containsKey(request.Company__c)){
 				SobjectWrapper companyInfo = companyInfoMap.get( request.Company__c );
 				String region = null;
+				String municipality = null;
 				if ( companyInfo != null ) {
 					region = companyInfo.Region;
+					municipality = companyInfo.Municipality;
 				}
-				wrappers.add( new SobjectWrapper( recordIndex, null, region ) );
+				wrappers.add( new SobjectWrapper( recordIndex, municipality, region ) );
 				recordIndex++;
 			}
 
@@ -103,14 +107,15 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			else {
 				SobjectWrapper ordererInfo = ordererInfoMap.get( request.Orderer__c );
 				String region = null;
+				String municipality = null;
 				if ( ordererInfo != null ) {
 					region = ordererInfo.Region;
+					municipality = ordererInfo.Municipality;
 				}
-				wrappers.add( new SobjectWrapper( recordIndex, null, region ) );
+				wrappers.add( new SobjectWrapper( recordIndex, municipality, region ) );
 				recordIndex++;
 			}
 
-			//Else, go to hot tolk admin
 		}
 		return wrappers;
 	}
@@ -123,9 +128,10 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			}
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
-		for ( Person__c per : [SELECT INT_RegionNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
+		for ( Person__c per : [SELECT INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
 			SobjectWrapper wrapper = new SobjectWrapper();
 			wrapper.Region = per.INT_RegionNumber__c;
+			wrapper.Municipality = per.INT_MunicipalityNumber__c;
 			wrapperByAccountId.put( per.CRM_Account__c, wrapper );
 		}
 
@@ -140,9 +146,10 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			}
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
-		for ( Person__c per : [SELECT INT_RegionNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
+		for ( Person__c per : [SELECT INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_Account__c FROM Person__c WHERE CRM_Account__c IN :accountIds] ) {
 			SobjectWrapper wrapper = new SobjectWrapper();
 			wrapper.Region = per.INT_RegionNumber__c;
+			wrapper.Municipality = per.INT_MunicipalityNumber__c;
 			wrapperByAccountId.put( per.CRM_Account__c, wrapper );
 		}
 
@@ -157,9 +164,10 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
 			}
 		}
 		Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
-		for ( Account company : [SELECT Id, INT_RegionNumber__c FROM Account WHERE Id IN :accountIds] ) {
+		for ( Account company : [SELECT Id, INT_RegionNumber__c, INT_MunicipalityNumber__c FROM Account WHERE Id IN :accountIds] ) {
 			SobjectWrapper wrapper = new SobjectWrapper();
 			wrapper.Region = company.INT_RegionNumber__c;
+			wrapper.Municipality = company.INT_MunicipalityNumber__c;
 			wrapperByAccountId.put( company.Id, wrapper );
 		}
 
