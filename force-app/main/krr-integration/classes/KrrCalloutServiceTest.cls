@@ -4,7 +4,7 @@ public class KrrCalloutServiceTest {
     @IsTest
     public static void testSingleSuccesfulPersonOppslag() {
         // Get the KRR maskinporten client in order to map the endpoint to a mock response
-        MaskinportenClient__mdt krrClient = [SELECT Endpoint__c FROM Maskinportenclient__mdt WHERE DeveloperName = 'salesforce_krr' LIMIT 1];
+        MaskinportenClient__mdt krrClient = [SELECT Endpoint__c FROM Maskinportenclient__mdt WHERE DeveloperName = :Test.isRunningTest() ? 'salesforce_krr_test' : 'salesforce_krr' LIMIT 1];
 
         // Construct mock responses for all callouts that will be performed
         SingleRequestMock maskinPortenResponse = new SingleRequestMock(200, 'Complete', '{"access_token": "super-secret-access-token", "token_type": "Bearer", "expires_in": 119, "scope": "global/kontaktinformasjon.read global/spraak.read global/sikkerdigitalpost.read global/varslingsstatus.read"}', null);
@@ -33,7 +33,7 @@ public class KrrCalloutServiceTest {
     @IsTest
     public static void testMultipleSuccesfulPersonOppslag() {
         // Get the KRR maskinporten client in order to map the endpoint to a mock response
-        MaskinportenClient__mdt krrClient = [SELECT Endpoint__c FROM Maskinportenclient__mdt WHERE DeveloperName = 'salesforce_krr' LIMIT 1];
+        MaskinportenClient__mdt krrClient = [SELECT Endpoint__c FROM Maskinportenclient__mdt WHERE DeveloperName = :Test.isRunningTest() ? 'salesforce_krr_test' : 'salesforce_krr' LIMIT 1];
 
         // Construct mock responses for all callouts that will be performed
         SingleRequestMock maskinPortenResponse = new SingleRequestMock(200, 'Complete', '{"access_token": "super-secret-access-token", "token_type": "Bearer", "expires_in": 119, "scope": "global/kontaktinformasjon.read global/spraak.read global/sikkerdigitalpost.read global/varslingsstatus.read"}', null);
@@ -67,7 +67,7 @@ public class KrrCalloutServiceTest {
     @IsTest
     public static void testSingleUnsuccesfulPersonOppslag() {
         // Get the KRR maskinporten client in order to map the endpoint to a mock response
-        MaskinportenClient__mdt krrClient = [SELECT Endpoint__c FROM Maskinportenclient__mdt WHERE DeveloperName = 'salesforce_krr' LIMIT 1];
+        MaskinportenClient__mdt krrClient = [SELECT Endpoint__c FROM Maskinportenclient__mdt WHERE DeveloperName = :Test.isRunningTest() ? 'salesforce_krr_test' : 'salesforce_krr' LIMIT 1];
 
         // Construct mock responses for all callouts that will be performed
         SingleRequestMock maskinPortenResponse = new SingleRequestMock(200, 'Complete', '{"access_token": "super-secret-access-token", "token_type": "Bearer", "expires_in": 119, "scope": "global/kontaktinformasjon.read global/spraak.read global/sikkerdigitalpost.read global/varslingsstatus.read"}', null);
