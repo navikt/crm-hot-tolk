@@ -75,11 +75,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Request__c.InvoiceStatus__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.InterpretationMethod__c</field>
         <readable>true</readable>
@@ -102,6 +97,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.InvoiceReference__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.InvoiceStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -259,6 +259,11 @@
         <field>ServiceAppointment.StatusCategory</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceResource.HOT_Email__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT Tolk OEBS Faktura RPA</label>
     <objectPermissions>
@@ -295,6 +300,15 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>ServiceAppointment</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>ServiceResource</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <recordTypeVisibilities>
