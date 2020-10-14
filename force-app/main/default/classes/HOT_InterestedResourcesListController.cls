@@ -57,14 +57,11 @@ public without sharing class HOT_InterestedResourcesListController {
 				interestedResource.Comments__c = newComment;
 			}
 			else{
-				interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
+			interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
 			}
-			
-			List<Profile>freelanceProfile = [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler' LIMIT 1];
-			if(freelanceProfile.size() > 0){
-				if(UserInfo.getProfileId() == freelanceProfile[0].Id){
-					interestedResource.IsDispatcherNewComment__c = true;
-				}
+			if(UserInfo.getProfileId() == [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0].Id){
+					System.debug('IsDispatcherNewComment__c = true');
+				interestedResource.IsDispatcherNewComment__c = true;
 			}
 			else{
 				interestedResource.IsNewComment__c = true;
