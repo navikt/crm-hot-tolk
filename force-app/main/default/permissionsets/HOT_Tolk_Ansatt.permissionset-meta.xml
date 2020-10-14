@@ -1210,6 +1210,10 @@
         <visibility>Available</visibility>
     </tabSettings>
     <tabSettings>
+        <tab>standard-Task</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>standard-WorkOrder</tab>
         <visibility>Visible</visibility>
     </tabSettings>
