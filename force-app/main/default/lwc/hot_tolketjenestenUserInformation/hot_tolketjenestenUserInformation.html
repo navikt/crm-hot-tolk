@@ -1,0 +1,79 @@
+<template>
+
+	<div class="user-info-wrapper center-content">
+		<div class="user-info-tile center-content">
+			<section>
+				<lightning-record-view-form object-api-name="Person__c" record-id={recordId}>
+
+					<section class="bruker-info-skjema sub-form" style="margin-bottom: 4rem;">
+						<h2 style="font-size: 1.25rem;">Vedtak</h2>
+						<div class="slds-grid slds-gutters">
+							<div class="slds-col slds-size_1-of-2">
+								<lightning-output-field class="checkbox-inline"
+									field-name="HOT_WorkplaceInterpreter__c">
+								</lightning-output-field>
+								<lightning-output-field class="checkbox-inline"
+									field-name="HOT_DailyLifeInterpreter__c">
+								</lightning-output-field>
+								<lightning-output-field class="checkbox-inline"
+									field-name="HOT_EducationInterpreter__c">
+								</lightning-output-field>
+							</div>
+							<div class="slds-col slds-size_1-of-2">
+								<lightning-output-field class="checkbox-inline" field-name="HOT_InterpreterAtWork__c">
+								</lightning-output-field>
+								<lightning-output-field class="checkbox-inline" field-name="HOT_RemoteInterpreter__c">
+								</lightning-output-field>
+							</div>
+						</div>
+					</section>
+
+					<section class="bruker-info-skjema sub-form" style="margin-bottom: 4rem;">
+						<h2 style="font-size: 1.25rem;">Tolkemetoder</h2>
+						<div class="slds-grid slds-gutters">
+							<div class="slds-col slds-size_1-of-2">
+								<lightning-output-field class="checkbox-inline" field-name="HOT_SignLanguage__c">
+								</lightning-output-field>
+								<lightning-output-field class="checkbox-inline" field-name="HOT_WritenInterpreting__c">
+								</lightning-output-field>
+								<lightning-output-field class="checkbox-inline"
+									field-name="HOT_SignToSupportMouthReading__c">
+								</lightning-output-field>
+								<lightning-output-field class="checkbox-inline" field-name="HOT_SpeechInterpreting__c">
+								</lightning-output-field>
+							</div>
+							<div class="slds-col slds-size_1-of-2">
+								<lightning-output-field class="checkbox-inline" field-name="HOT_TactileSignLanguage__c">
+								</lightning-output-field>
+								<lightning-output-field class="checkbox-inline"
+									field-name="HOT_SignLanguageWithLimitedFieldOfView__c">
+								</lightning-output-field>
+								<lightning-output-field class="checkbox-inline" field-name="HOT_HapticCommunication__c">
+								</lightning-output-field>
+								<lightning-output-field class="checkbox-inline" field-name="HOT_Escort__c">
+								</lightning-output-field>
+							</div>
+						</div>
+					</section>
+
+					<section class="bruker-info-skjema sub-form" style="margin-bottom: 4rem;">
+						<h2 style="font-size: 1.25rem;">Annet</h2>
+						<div class="slds-grid slds-gutters">
+							<div class="slds-col slds-size_1-of-2">
+								<lightning-output-field field-name="HOT_DegreeOfHearingAndVisualImpairment__c">
+								</lightning-output-field>
+								<lightning-output-field field-name="INT_SecurityMeasures__c">
+								</lightning-output-field>
+							</div>
+							<div class="slds-col slds-size_1-of-2">
+								<lightning-output-field field-name="HOT_SIPAddress__c">
+								</lightning-output-field>
+							</div>
+						</div>
+					</section>
+				</lightning-record-view-form>
+
+			</section>
+		</div>
+	</div>
+</template>
