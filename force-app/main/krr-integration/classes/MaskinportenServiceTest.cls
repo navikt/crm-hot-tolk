@@ -12,12 +12,12 @@ public class MaskinportenServiceTest {
         MaskinportenClient__mdt krrClient =  [
                 SELECT Id, Endpoint__c, Audience__c, Issuer__c, KeyId__c, PrivateKey__c, Scopes__c
                 FROM Maskinportenclient__mdt
-                WHERE DeveloperName = 'salesforce_krr'
+                WHERE DeveloperName = :Test.isRunningTest() ? 'salesforce_krr_test' : 'salesforce_krr'
                 LIMIT 1
         ];
 
         // Initialize the MaskinportenService with the developername of the client custom metadata record
-        MaskinportenService ms = new MaskinportenService('salesforce_krr');
+        MaskinportenService ms = new MaskinportenService(Test.isRunningTest() ? 'salesforce_krr_test' : 'salesforce_krr');
 
         // Perform token exchange and assert that the response is correctly parsed
         MaskinportenService.AuthResponse response = ms.doMaskinportenJWTExchange();

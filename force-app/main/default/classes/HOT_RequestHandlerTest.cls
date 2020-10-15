@@ -1,6 +1,14 @@
 @isTest
 private class HOT_RequestHandlerTest {
 	
+	@TestSetup
+	static void makeData() {
+		TestDataFactory.getPublicGroup( 'HMS Troms og Finmark', 'group_4719' );
+		TestDataFactory.getQueue( 'HMS Troms og Finmark', 'queue_4719', 'HOT_Request__c' );
+		TestDataFactory.getPublicGroup( 'HMS Nordland', 'group_4718' );
+		TestDataFactory.getQueue( 'HMS Nordland', 'queue_4718', 'HOT_Request__c' );
+	}
+	
 	@isTest
     private static void testStatusChangeOnReqestToAvlyst() {
 		WorkType workType = HOT_TestDataFactory.createWorkType();

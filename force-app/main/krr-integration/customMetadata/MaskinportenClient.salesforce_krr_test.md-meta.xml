@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<label>salesforce-krr</label>
+	<protected>false</protected>
+	<values>
+		<field>Audience__c</field>
+		<value xsi:type="xsd:string">https://oidc-ver2.difi.no/idporten-oidc-provider/</value>
+	</values>
+	<values>
+		<field>Endpoint__c</field>
+		<value xsi:type="xsd:string">https://oidc-ver2.difi.no/idporten-oidc-provider/token</value>
+	</values>
+	<values>
+		<field>Issuer__c</field>
+		<value xsi:type="xsd:string">c061effb-1235-4ab1-93c5-015a0c3a5789</value>
+	</values>
+	<values>
+		<field>KeyId__c</field>
+		<value xsi:type="xsd:string">9bdf0dce-830c-4773-835d-5452d0d666f9</value>
+	</values>
+	<values>
+		<field>PrivateKey__c</field>
+		<value xsi:type="xsd:string">ENTER PRIVATE KEY</value>
+	</values>
+	<values>
+		<field>Scopes__c</field>
+		<value xsi:type="xsd:string">global/kontaktinformasjon.read global/spraak.read global/sikkerdigitalpost.read global/varslingsstatus.read</value>
+	</values>
+</CustomMetadata>
