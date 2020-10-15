@@ -98,8 +98,8 @@
 Status == &quot;Ingen&quot;</description>
         <name>Check_isReleasedToFreelance</name>
         <label>Check isReleasedToFreelance</label>
-        <locationX>508</locationX>
-        <locationY>123</locationY>
+        <locationX>605</locationX>
+        <locationY>126</locationY>
         <defaultConnector>
             <targetReference>ServiceAppointment_already_Released</targetReference>
         </defaultConnector>
@@ -202,6 +202,28 @@ Status == &quot;Ingen&quot;</description>
             <label>RemoveAndRelease</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>checkIfFoundRecord</name>
+        <label>checkIfFoundRecord</label>
+        <locationX>506</locationX>
+        <locationY>83</locationY>
+        <defaultConnector>
+            <targetReference>Check_isReleasedToFreelance</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>RecordNOTFound</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>recordId</leftValueReference>
+                <operator>EqualTo</operator>
+            </conditions>
+            <connector>
+                <targetReference>recordNOTfoundScreen</targetReference>
+            </connector>
+            <label>RecordNOTFound</label>
+        </rules>
+    </decisions>
     <interviewLabel>Release To Freelance {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Release To Freelance</label>
     <loops>
@@ -223,6 +245,12 @@ Status == &quot;Ingen&quot;</description>
         <name>BuilderType</name>
         <value>
             <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -256,7 +284,7 @@ Status == &quot;Ingen&quot;</description>
         <locationY>82</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_isReleasedToFreelance</targetReference>
+            <targetReference>checkIfFoundRecord</targetReference>
         </connector>
         <filters>
             <field>Id</field>
@@ -351,9 +379,9 @@ Status == &quot;Ingen&quot;</description>
         <label>OutScreen</label>
         <locationX>551</locationX>
         <locationY>560</locationY>
-        <allowBack>true</allowBack>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <fields>
             <name>OutMessage</name>
             <fieldText>&lt;p&gt;Oppdrag ble ikke frigitt til frilanstolker.&lt;/p&gt;</fieldText>
@@ -363,10 +391,26 @@ Status == &quot;Ingen&quot;</description>
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>recordNOTfoundScreen</name>
+        <label>recordNOTfoundScreen</label>
+        <locationX>506</locationX>
+        <locationY>309</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>CloseWindowText</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>ServiceAppointment_already_Released</name>
         <label>ServiceAppointment already Released</label>
-        <locationX>505</locationX>
-        <locationY>387</locationY>
+        <locationX>614</locationX>
+        <locationY>357</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -418,9 +462,9 @@ Status == &quot;Ingen&quot;</description>
         <label>SuccessScreen</label>
         <locationX>1668</locationX>
         <locationY>127</locationY>
-        <allowBack>true</allowBack>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <fields>
             <name>Success</name>
             <fieldText>&lt;p&gt;Oppdraget ble frigitt til frilanstolker.&lt;/p&gt;</fieldText>
