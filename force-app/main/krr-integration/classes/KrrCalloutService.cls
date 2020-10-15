@@ -7,7 +7,7 @@ public class KrrCalloutService {
         requestBody.personidentifikatorer = personIdentifikatorer;
 
         // Obtain access token from Maskinporten
-        String access_token = new MaskinportenService('salesforce_krr').doMaskinportenJWTExchange().access_token;
+        String access_token = new MaskinportenService(Test.isRunningTest() ? 'salesforce_krr_test' : 'salesforce_krr').doMaskinportenJWTExchange().access_token;
 
         // Initialize HttpRequest
         HttpRequest req = new HttpRequest();
