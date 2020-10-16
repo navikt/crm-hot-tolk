@@ -20,11 +20,11 @@ private class HOT_UserInformationControllerTest{
 		person.INT_KrrEmail__c = 'getPersonTest@nav.no';
 		person.HOT_WorkplaceInterpreter__c = true;
 		person.INT_Confidential__c = 'Ugradert';
-		person.INT_FirstName__c = 'Frilans';
-		person.INT_LastName__c = 'Tolk';
+		person.INT_FirstName__c = 'Tolk';
+		person.INT_LastName__c = 'Bruker';
 		insert person;
 
-		Account account = [SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c FROM Account WHERE LastName =: 'Tolk'];
+		Account account = [SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c FROM Account WHERE LastName =: 'Bruker'];
 		account.OwnerId = admin.Id;
 		update account;
 
@@ -50,11 +50,11 @@ private class HOT_UserInformationControllerTest{
 		person.INT_KrrEmail__c = 'getPersonTest@nav.no';
 		person.HOT_WorkplaceInterpreter__c = true;
 		person.INT_Confidential__c = 'Ugradert';
-		person.INT_FirstName__c = 'Frilans';
-		person.INT_LastName__c = 'Tolk';
+		person.INT_FirstName__c = 'Tolk';
+		person.INT_LastName__c = 'Bruker';
 		insert person;
 
-		Account account = [SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c FROM Account WHERE LastName =: 'Tolk'];
+		Account account = [SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c FROM Account WHERE LastName =: 'Bruker'];
 		account.OwnerId = admin.Id;
 		update account;
 
