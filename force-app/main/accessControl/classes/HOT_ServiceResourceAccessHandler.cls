@@ -21,7 +21,7 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
             sobjects.add(wrapper);
 			i++;
 			
-			if(serviceResource.IsActive && serviceResource.RelatedRecordId != null) {
+			if(serviceResource.IsActive && serviceResource.RelatedRecordId != null && serviceResource.RelatedRecordId != serviceResource.OwnerId) {
 				ServiceResourceShare serviceResourceShare = new ServiceResourceShare();
 			
 				serviceResourceShare.ParentId				= serviceResource.Id;
