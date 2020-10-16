@@ -65,6 +65,10 @@ jobs:
         run: |
           rm -rf ./force-app/unpackagable
 
+      # Set role on user to default
+      - name: "Setting role on user"
+        run: "sfdx force:apex:execute -f scripts/apex/setUserRole.apex"
+
       # Get all test classes from current repo
       - name: Get all test classes from currentrepo
         id: test-classes-in-repo
