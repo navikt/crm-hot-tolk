@@ -4,6 +4,31 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 		setServiceTerritory((List<HOT_Request__c>) records);
 	}
 
+	public override void onAfterInsert(){
+		List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
+		Set<Id> personIdsToUpdate = new Set<Id>();
+		for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+			// Filter for relevant records to initiate callout to Kontakt og Reservasjonsregisteret (KRR)
+			if (request.Person__c != null) {
+				personIdsToUpdate.add(request.Person__c);
+				requestsToGetContactInformationFor.add(request);
+			}
+		}
+
+		if (requestsToGetContactInformationFor.size() > 0) {
+            // Set related Person__c records "KRR Integration Status" field to 'Queued'
+            List<Person__c> personsToUpdate = new List<Person__c>();
+			for (Id personId : personIdsToUpdate) {
+                personsToUpdate.add(new Person__c(Id = personId, INT_KrrIntegrationStatus__c = 'Queued'));
+            }
+            update personsToUpdate;
+
+            // Call out to KRR through Queuable Apex
+            KRRCalloutQueuable krr = new KRRCalloutQueuable(requestsToGetContactInformationFor);
+            System.enqueueJob(krr);
+		}
+	}
+
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
 		List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
 		List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
@@ -28,8 +53,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
 		List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
 		List<HOT_Request__c> annullertRequests = new List<HOT_Request__c>();
-		Set<Id> personIdsToUpdate = new Set<Id>();
-		List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
         List<HOT_Request__c> finishedRequests = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
@@ -41,11 +64,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Annullert') {
                 annullertRequests.add(request);
 			}
-			// Filter for relevant records to initiate callout to Kontakt og Reservasjonsregisteret (KRR)
-			if (request.Person__c != null && request.Person__c != triggerOldMap.get(request.Id).get('Person__c')) {
-                personIdsToUpdate.add(request.Person__c);
-                requestsToGetContactInformationFor.add(request);
-			}
         }
         if (avlystRequests.size() > 0) {
             updateChildRecords(avlystRequests, 'Canceled');
@@ -54,18 +72,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             updateChildRecords(annullertRequests, 'Annul');
 		}
 
-        if (requestsToGetContactInformationFor.size() > 0) {
-            // Set related Person__c records "KRR Integration Status" field to 'Queued'
-            List<Person__c> personsToUpdate = new List<Person__c>();
-			for (Id personId : personIdsToUpdate) {
-                personsToUpdate.add(new Person__c(Id = personId, INT_KrrIntegrationStatus__c = 'Queued'));
-            }
-            update personsToUpdate;
-
-            // Call out to KRR through Queuable Apex
-            KRRCalloutQueuable krr = new KRRCalloutQueuable(requestsToGetContactInformationFor);
-            System.enqueueJob(krr);
-		}
 		if (finishedRequests.size() > 0) {
 			for (HOT_Request__c request : finishedRequests) {
 				List<ContentDocumentLink> files = [Select Id, ContentDocumentId From ContentDocumentLink where LinkedEntityId=:request.Id];
