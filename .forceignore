@@ -268,3 +268,4 @@ force-app/main/default/objects/ServiceAppointment/listViews/queue_4718_ServiceAp
 force-app/main/default/objects/HOT_Request__c/listViews/HOT_Tolk_Admin_HOT_Request.listView-meta.xml
 force-app/main/default/objects/HOT_Request__c/listViews/queue_4718_HOT_Request.listView-meta.xml
 force-app/main/default/objects/HOT_Request__c/listViews/queue_4719_HOT_Request.listView-meta.xml
+force-app/main/default/objects/WorkOrder/fields/AssetWarrantyId.field-meta.xml
