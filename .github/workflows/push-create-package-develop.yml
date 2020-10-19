@@ -41,7 +41,8 @@ jobs:
       # Delete unpackagable
       - name: "Delete unpackagable"
         run: |
-          rm -rf force-app/unpackagable
+          rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/scratch-org
 
       # Create package version
       - name: "Create package version"

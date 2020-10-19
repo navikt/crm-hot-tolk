@@ -64,6 +64,7 @@ jobs:
       - name: "Delete unpackagable"
         run: |
           rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/scratch-org
 
       # Get all test classes from current repo
       - name: Get all test classes from currentrepo
