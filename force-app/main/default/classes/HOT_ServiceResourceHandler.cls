@@ -1,17 +1,11 @@
 public without sharing class HOT_ServiceResourceHandler {
 
 	public static void createServiceResource(List<String> personIdents, Boolean addAllSkills, String serviceTerritoryDeveloperName){
-		List<User> users = [SELECT Id, ProfileId FROM User WHERE Account.INT_PersonIdent__c IN :personIdents];
+		List<User> users = [SELECT Id, Name, ProfileId FROM User WHERE Account.INT_PersonIdent__c IN :personIdents];
 		createServiceResource(users, addAllSkills, serviceTerritoryDeveloperName);
-	}
-	public static void createServiceResource(List<String> personIdents, Boolean addAllSkills){
-		createServiceResource(personIdents, addAllSkills, null);
 	}
 	public static void createServiceResource(List<String> personIdents){
 		createServiceResource(personIdents, false, null);
-	}
-	public static void createServiceResource(List<String> personIdents, String serviceTerritoryDeveloperName){
-		createServiceResource(personIdents, false, serviceTerritoryDeveloperName);
 	}
 
 	public static void createServiceResource(List<User> users, Boolean addAllSkills, String serviceTerritoryDeveloperName) {
