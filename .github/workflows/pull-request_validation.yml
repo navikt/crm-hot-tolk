@@ -60,10 +60,11 @@ jobs:
       - name: "Push source to scratch org"
         run: "sfdx force:source:push"
 
-      # Delete unpackagable
+      # Delete unpackagable and scratch-org folder
       - name: "Delete unpackagable"
         run: |
           rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/scratch-org
 
       # Get all test classes from current repo
       - name: Get all test classes from currentrepo
