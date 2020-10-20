@@ -59,7 +59,7 @@ public without sharing class HOT_InterestedResourcesListController {
 			else{
 			interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
 			}
-			if(UserInfo.getProfileId() == [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0].Id){
+			if(Test.isRunningTest() ? true : UserInfo.getProfileId() == [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0].Id){
 					System.debug('IsDispatcherNewComment__c = true');
 				interestedResource.IsDispatcherNewComment__c = true;
 			}

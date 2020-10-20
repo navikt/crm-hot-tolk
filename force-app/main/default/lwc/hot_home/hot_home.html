@@ -16,7 +16,7 @@
 						</div>
 					</div>
 					<div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
-						<h2 class="typo-undertittel">Oppdrag</h2>
+						<h2 class="typo-undertittel">Frilanstolk</h2>
 						<div>
 							<p class="typo-normal">
 								<span>
@@ -53,7 +53,7 @@
 						<h2 class="typo-undertittel">Bestille tolk</h2>
 						<div>
 							<p class="typo-normal">
-								Her kan du bestille tolketjenesten for døve, døvblinde og hørselshemmede.
+								Her kan du bestille tolketjenester for døve, døvblinde og hørselshemmede.
 							</p>
 						</div>
 					</div>
@@ -71,13 +71,30 @@
 						<h2 class="typo-undertittel">Mine bestillinger</h2>
 						<div>
 							<p class="typo-normal">
-								Her finner du oversikt over alle dine bestillinger, og du kan se status på
-								bestillingene.
+								Her finner du oversikt over alle bestillinger du har sendt inn, og status på disse.
 							</p>
 						</div>
 					</div>
 				</a>
-				<a class="panelMedBilde" href="https://www.kunnskapsbanken.net/tolking/">
+				<a class="panelMedBilde" href="/s/min-side" onclick={goToMyPage}>
+					<div class="tolketjenesten panelMedBilde__imageOnPanel">
+						<div class="panelMedBilde__svgContainer">
+							<img if:false={isProd} class="illustrasjon"
+								src="/sfsites/c/resource/1602568081000/MinSide"></img>
+							<img if:true={isProd} class="illustrasjon"
+								src="/s/sfsites/c/resource/1602568081000/MinSide"></img>
+						</div>
+					</div>
+					<div class="panel panelMedBilde__panelOnPanel">
+						<h2 class="typo-undertittel">Min side</h2>
+						<div>
+							<p class="typo-normal">
+								Her finner du oversikt over informasjon Tolketjenesten har om deg.
+							</p>
+						</div>
+					</div>
+				</a>
+				<a class="panelMedBilde" href="https://www.kunnskapsbanken.net/tolking/" target="_blank">
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
 							<img if:false={isProd} class="illustrasjon"

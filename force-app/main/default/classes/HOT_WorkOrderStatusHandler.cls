@@ -6,7 +6,8 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 		for(SObject record : records) {
 			if(record.getSObjectType() == Schema.WorkOrder.getSObjectType()
 				&& record.get('HOT_Request__c') != null
-				&& record.get('Status') != triggerOldMap.get(record.Id).get('Status')) {
+				&& record.get('Status') != triggerOldMap.get(record.Id).get('Status')
+				&& record.get('Status') != 'Annul') {
 					changedStatusWorkOrders.add((WorkOrder)record);
 			}
 		}
@@ -34,14 +35,14 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 
 	public static void updateRequestStatus(List<WorkOrder> changedWorkOrders) {
 		Map<String, String> statusMap = new Map<String, String>(); // Map<Work Order Status, Request Status>
-		statusMap.put('Ny', 'Godkjent');
-		statusMap.put('Planlagt', 'Reservert');
-		statusMap.put('Sendt', 'Tildelt');
-		statusMap.put('Pågår', 'Pågår');
-		statusMap.put('Fullført', 'Dekket');
-		statusMap.put('Delvis fullført', '	Delvis dekket');
-		statusMap.put('Kan ikke fullføre', 'Udekket');
-		statusMap.put('Avbrutt', 'Avlyst');
+		statusMap.put('New', 'Godkjent');
+		statusMap.put('Scheduled', 'Reservert');
+		statusMap.put('Dispatched', 'Tildelt');
+		statusMap.put('In Progress', 'Pågår');
+		statusMap.put('Completed', 'Dekket');
+		statusMap.put('Partially Complete', 'Delvis dekket');
+		statusMap.put('Cannot Complete', 'Udekket');
+		statusMap.put('Canceled', 'Avlyst');
 
 		List<HOT_Request__c> requestsToUpdate = new List<HOT_Request__c>();
 		for(WorkOrder workOrder : changedWorkOrders) {
@@ -56,7 +57,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 	}
 
 	private static void updateWorkOrderStatus(List<WorkOrder> workOrders) {
-		List<WorkOrderLineItem> workOrderLineItems = [SELECT WorkOrderId, Status FROM WorkOrderLineItem WHERE WorkOrderId IN: workOrders];
+		List<WorkOrderLineItem> workOrderLineItems = [SELECT WorkOrderId, Status FROM WorkOrderLineItem WHERE WorkOrderId IN: workOrders AND Status != 'Annul'];
 		Map<Id,List<WorkOrderLineItem>> workOrderLineItemsMaps = new Map<Id, List<WorkOrderLineItem>>();
 		
 		for(WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
@@ -71,70 +72,70 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 
 		for(WorkOrder workOrder : workOrders) {
 			Integer numberOfWorkOrderLineItem = workOrderLineItemsMaps.get(workOrder.Id).size();
-			Integer numberOfPlanlagt = 0;
-			Integer numberOfSendt = 0;
-			Integer numberOfPagar = 0;
-			Integer numberOfFullfort = 0;
-			Integer numberOfDelvisFullfort = 0;
-			Integer numberOfKanIkkeFullfore = 0;
-			Integer numberOfAvbrutt = 0;
+			Integer numberOfScheduled = 0;
+			Integer numberOfDispatched = 0;
+			Integer numberOfInProgress = 0;
+			Integer numberOfCompleted = 0;
+			Integer numberOfPartiallyComplete = 0;
+			Integer numberOfCannotComplete = 0;
+			Integer numberOfCanceled = 0;
 			
 			for(WorkOrderLineItem workOrderLineItem : workOrderLineItemsMaps.get(workOrder.Id)) {
-				if(workOrderLineItem.Status == 'Planlagt') {
-					numberOfPlanlagt++;
+				if(workOrderLineItem.Status == 'Scheduled') {
+					numberOfScheduled++;
 				}
-				if(workOrderLineItem.Status == 'Sendt') {
-					numberOfSendt++;
+				if(workOrderLineItem.Status == 'Dispatched') {
+					numberOfDispatched++;
 				}
-				if(workOrderLineItem.Status == 'Pågår') {
-					numberOfPagar++;
+				if(workOrderLineItem.Status == 'In Progress') {
+					numberOfInProgress++;
 				}
-				if(workOrderLineItem.Status == 'Fullført') {
-					numberOfFullfort++;
+				if(workOrderLineItem.Status == 'Completed') {
+					numberOfCompleted++;
 				}
-				if(workOrderLineItem.Status == 'Delvis fullført') {
-					numberOfDelvisFullfort++;
+				if(workOrderLineItem.Status == 'Partially Complete') {
+					numberOfPartiallyComplete++;
 				}
-				if(workOrderLineItem.Status == 'Kan ikke fullføre') {
-					numberOfKanIkkeFullfore++;
+				if(workOrderLineItem.Status == 'Cannot Complete') {
+					numberOfCannotComplete++;
 				}
-				if(workOrderLineItem.Status == 'Avbrutt') {
-					numberOfAvbrutt++;
+				if(workOrderLineItem.Status == 'Canceled') {
+					numberOfCanceled++;
 				}
 			}
 
 			System.debug('numberOfWorkOrderLineItem: ' + numberOfWorkOrderLineItem);
-			System.debug('numberOfPlanlagt: ' + numberOfPlanlagt);
-			System.debug('numberOfSendt: ' + numberOfSendt);
-			System.debug('numberOfPagar: ' + numberOfPagar);
-			System.debug('numberOfFullfort: ' + numberOfFullfort);
-			System.debug('numberOfDelvisFullfort: ' + numberOfDelvisFullfort);
-			System.debug('numberOfKanIkkeFullfore: ' + numberOfKanIkkeFullfore);
-			System.debug('numberOfAvbrutt: ' + numberOfAvbrutt);
+			System.debug('numberOfScheduled: ' + numberOfScheduled);
+			System.debug('numberOfDispatched: ' + numberOfDispatched);
+			System.debug('numberOfInProgress: ' + numberOfInProgress);
+			System.debug('numberOfCompleted: ' + numberOfCompleted);
+			System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
+			System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
+			System.debug('numberOfCanceled: ' + numberOfCanceled);
 			
-			if(numberOfPlanlagt > 0) {
-				workOrder.Status = 'Planlagt';
+			if(numberOfScheduled > 0) {
+				workOrder.Status = 'Scheduled';
 			}
-			if(numberOfDelvisFullfort > 0) {
-				workOrder.Status = 'Delvis fullført';
+			if(numberOfPartiallyComplete > 0) {
+				workOrder.Status = 'Partially Complete';
 			}
-			if(numberOfKanIkkeFullfore > 0) {
-				workOrder.Status = 'Delvis fullført';
+			if(numberOfCannotComplete > 0) {
+				workOrder.Status = 'Partially Complete';
 			}
-			if(numberOfSendt == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'Sendt';
+			if(numberOfDispatched == numberOfWorkOrderLineItem) {
+				workOrder.Status = 'Dispatched';
 			}
-			if(numberOfPagar == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'Pågår';
+			if(numberOfInProgress == numberOfWorkOrderLineItem) {
+				workOrder.Status = 'In Progress';
 			}
-			if(numberOfFullfort == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'Fullført';
+			if(numberOfCompleted == numberOfWorkOrderLineItem) {
+				workOrder.Status = 'Completed';
 			}
-			if(numberOfKanIkkeFullfore == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'Kan ikke fullføre';
+			if(numberOfCannotComplete == numberOfWorkOrderLineItem) {
+				workOrder.Status = 'Cannot Complete';
 			}
-			if(numberOfAvbrutt == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'Avbrutt';
+			if(numberOfCanceled == numberOfWorkOrderLineItem) {
+				workOrder.Status = 'Canceled';
 			}
 			workOrder.HOT_IsUpdateStatus__c = false;
 		}

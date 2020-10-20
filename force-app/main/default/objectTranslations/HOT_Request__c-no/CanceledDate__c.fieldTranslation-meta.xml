@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Settes automatisk til dagens dato når forespørselen blir satt til avlyst. Kan endres til en annen dato etter status er satt til Avlyst hvis det er aktuelt. --></help>
+    <label>Avlyst av bruker (dato)</label>
+    <name>CanceledDate__c</name>
+</CustomFieldTranslation>

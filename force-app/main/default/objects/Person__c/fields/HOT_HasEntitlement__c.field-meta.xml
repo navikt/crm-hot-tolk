@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_HasEntitlement__c</fullName>
+    <externalId>false</externalId>
+    <formula>OR(
+HOT_DailyLifeInterpreter__c, HOT_EducationInterpreter__c, HOT_Escort__c, HOT_HapticCommunication__c, HOT_InterpreterAtWork__c, HOT_RemoteInterpreter__c,								   HOT_SignLanguage__c, HOT_SignLanguageWithLimitedFieldOfView__c, HOT_SignToSupportMouthReading__c, HOT_SpeechInterpreting__c, HOT_TactileSignLanguage__c, HOT_WritenInterpreting__c
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Entitlement</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

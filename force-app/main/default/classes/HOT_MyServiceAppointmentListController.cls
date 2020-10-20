@@ -28,7 +28,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
 			SELECT AppointmentNumber, Subject, toLabel(Status), ParentRecordId,
 				   HOT_AddressFormated__c, EarliestStartTime, DueDate, HOT_AssignedResourceId__c, HOT_WorkTypeName__c,
 				   SchedStartTime, SchedEndTime, ActualEndTime, ActualStartTime,
-				   HOT_DegreeOfHearingAndVisualImpairment__c, HOT_HapticCommunication__c, HOT_Escort__c
+				   HOT_DegreeOfHearingAndVisualImpairment__c, HOT_HapticCommunication__c, HOT_Escort__c, HOT_AssignmentType__c
 			FROM ServiceAppointment 
 			WHERE Id IN :serviceAppointmentIds
 			ORDER BY SchedStartTime ASC];
@@ -38,8 +38,8 @@ public without sharing class HOT_MyServiceAppointmentListController {
 	
 	@AuraEnabled(cacheable = true)
 	public static Map<String, List<ServiceAppointmentHistory>> getMyServiceAppointmentFieldHistories(Id serviceAppointmentId) {
-		// TODO: fikse oversettelse hvis dette skal taes i bruk
-		List<String> statusList = new List<String>{'Avbrutt', 'Fullført', 'Kan ikke fullføre'};
+		
+		List<String> statusList = new List<String>{'Canceled', 'Completed', 'Cannot Complete'};
 		List<ServiceAppointmentHistory> statusHistories = new List<ServiceAppointmentHistory>();
 		List<ServiceAppointmentHistory> allStatusHistories = 
 		[SELECT Id, ServiceAppointmentId, Field, CreatedById, CreatedDate, NewValue

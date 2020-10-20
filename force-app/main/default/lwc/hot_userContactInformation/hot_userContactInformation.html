@@ -1,0 +1,35 @@
+<template>
+	<div class="user-info-wrapper center-content">
+		<div class="user-info-tile center-content">
+			<section style="width: 545px;">
+				<lightning-record-view-form object-api-name="Person__c" record-id={recordId}>
+					<section class="bruker-info-skjema sub-form">
+						<h2 style="font-size: 1.25rem;">Kontaktinformasjon</h2>
+						<div class="slds-grid slds-gutters">
+							<div class="slds-col slds-size_1-of-2">
+								<lightning-output-field field-name="INT_KrrMobilePhone__c">
+								</lightning-output-field>
+							</div>
+							<div class="slds-col slds-size_1-of-2">
+								<lightning-output-field field-name="INT_KrrEmail__c">
+								</lightning-output-field>
+							</div>
+						</div>
+					</section>
+				</lightning-record-view-form>
+				</br>
+				<p class="typo-normal">
+					<a href="https://brukerprofil.difi.no/minprofil" class="lenke kilde__lenke lenke" target="_blank">
+						<span class="kilde__icon">
+							<img if:false={isProd} style="width: 1rem;"
+								src="/sfsites/c/resource/1595245347000/linkNAV"></img>
+							<img if:true={isProd} style="width: 1rem;"
+								src="/s/sfsites/c/resource/1595245347000/linkNAV"></img>
+						</span> Endre i Kontakt- og reservasjonsregisteret
+					</a>
+				</p>
+			</section>
+		</div>
+	</div>
+
+</template>

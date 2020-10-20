@@ -8,10 +8,10 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
         Map<Integer,Id> recordIdByIndex=getRecordIdByIndex(serviceResources);
         List<SobjectWrapper> sobjects = new List<SobjectWrapper>();
 		Integer i=0;
-		List<ServiceTerritoryMember> serviceTerritoryMembers = [SELECT Id, ServiceResourceId, ServiceTerritory.Name FROM ServiceTerritoryMember WHERE TerritoryType = 'P' AND ServiceResourceId IN :serviceResources];
+		List<ServiceTerritoryMember> serviceTerritoryMembers = [SELECT Id, ServiceResourceId, ServiceTerritory.HOT_DeveloperName__c FROM ServiceTerritoryMember WHERE TerritoryType = 'P' AND ServiceResourceId IN :serviceResources];
 		Map<Id, String> serviceTerritoryNameByServiceResourceIdMap = new Map<Id, String>();
 		for(ServiceTerritoryMember serviceTerritoryMember : serviceTerritoryMembers) {
-			serviceTerritoryNameByServiceResourceIdMap.put(serviceTerritoryMember.ServiceResourceId, serviceTerritoryMember.ServiceTerritory.Name);
+			serviceTerritoryNameByServiceResourceIdMap.put(serviceTerritoryMember.ServiceResourceId, serviceTerritoryMember.ServiceTerritory.HOT_DeveloperName__c);
 		}
 		List<ServiceResourceShare> shareRecords = new List<ServiceResourceShare>();
         for(ServiceResource serviceResource : serviceResources) {
@@ -21,12 +21,12 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
             sobjects.add(wrapper);
 			i++;
 			
-			if(serviceResource.HOT_IsFreelanceInterpreter__c) {
+			if(serviceResource.IsActive && serviceResource.RelatedRecordId != null && serviceResource.RelatedRecordId != serviceResource.OwnerId) {
 				ServiceResourceShare serviceResourceShare = new ServiceResourceShare();
 			
 				serviceResourceShare.ParentId				= serviceResource.Id;
 				serviceResourceShare.UserOrGroupId			= serviceResource.RelatedRecordId;
-				serviceResourceShare.AccessLevel			= 'Read';
+				serviceResourceShare.AccessLevel			= 'Edit';
 				serviceResourceShare.RowCause 				= 'Manual';
 				
 				shareRecords.add(serviceResourceShare);
@@ -48,7 +48,7 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
     }
 
     public override  void onAfterUpdate(Map<Id,sObject> triggerOldMap){
-        List<String> fieldNamesToCheck = new String[]{'HOT_IsFreelanceInterpreter__c', 'HOT_ServiceTerritoryLastUpdated__c'};
+        List<String> fieldNamesToCheck = new String[]{'IsActive', 'HOT_ServiceTerritoryLastUpdated__c', 'OwnerId', 'RelatedRecordId'};
         List<Id> parentIdToDelete = new List<Id>();
         List<ServiceResource> serviceResourcesWithNewSharing = new List<ServiceResource>();
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Viser mobilnummer fra bruker-konto i Salesforce, med mindre det et fylt inn et eget mobilnummer på tjenesteressursen, da vises denne. --></help>
+    <label>Mobilnummer</label>
+    <name>HOT_MobilePhone__c</name>
+</CustomFieldTranslation>
