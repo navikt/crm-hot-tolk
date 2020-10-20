@@ -90,19 +90,12 @@
 **/classes/ChangePasswordController*
 **/classes/CommunitiesLandingController*
 **/classes/MyProfilePageController*
-**/sharingSets/HOT_RequestSharingSet.sharingSet-meta.xml
 
 # MyTriggers
 **/classes/MyTriggers*
 
 # Translations - bug
 **/translations/*
-
-# Installed Packages - beta
-**/installedPackages/*
-
-# StandardValueSetTranslations - bug
-**/standardValueSetTranslations/*
 
 # Standard fields and other items that are reportet as changes, but are not
 force-app/main/default/objects/ServiceAppointment/fields/EarliestStartTime.field-meta.xml

@@ -38,10 +38,11 @@ jobs:
           sfdx force:auth:sfdxurl:store -f ./DEVHOT_SFDX_URL.txt -a devhot -s
           rm -f ./DEVHOT_SFDX_URL.txt
 
-      # Delete unpackagable
+      # Delete unpackagable and scratch-org folder
       - name: "Delete unpackagable"
         run: |
-          rm -rf force-app/unpackagable
+          rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/scratch-org
 
       # Create package version
       - name: "Create package version"
