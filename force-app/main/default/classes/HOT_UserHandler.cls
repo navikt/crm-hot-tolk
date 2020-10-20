@@ -17,9 +17,11 @@ public without sharing class HOT_UserHandler extends MyTriggers {
 				usersToCreateServiceResourceFor.add(user);
 			}
 		}
-		createServiceResource(usersToCreateServiceResourceFor);
+		if(usersToCreateServiceResourceFor.size() > 0){
+			createServiceResource(usersToCreateServiceResourceFor);
+		}
 	}
-	
+
 	public override void onAfterUpdate(Map<Id, sObject> triggerOldMap){
 		List<User> usersToCreateServiceResourceFor = new List<User>();
 		List<Id> userIds = new List<Id>();
@@ -39,7 +41,9 @@ public without sharing class HOT_UserHandler extends MyTriggers {
 				usersToCreateServiceResourceFor.add(user);
 			}
 		}
-		createServiceResource(usersToCreateServiceResourceFor);
+		if(usersToCreateServiceResourceFor.size() > 0){
+			createServiceResource(usersToCreateServiceResourceFor);
+		}
 	}
 
 	public static void createServiceResource(List<User> users) {
