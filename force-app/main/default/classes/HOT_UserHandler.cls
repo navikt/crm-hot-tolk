@@ -49,7 +49,7 @@ public without sharing class HOT_UserHandler extends MyTriggers {
             serviceResource.Name = user.Name;
             serviceResource.ResourceType = 'T';
             serviceResource.IsActive = true;
-            //serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : '');
+            serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : '');
             serviceResource.HOT_IsEmployedInterpreter__c = !isFreelance;
             serviceResource.HOT_IsFreelanceInterpreter__c = isFreelance;
 
