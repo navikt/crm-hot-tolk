@@ -1,20 +1,17 @@
 public without sharing class HOT_ServiceResourceHandler {
 
 	public static void createServiceResource(List<String> personIdents, Boolean addAllSkills, String serviceTerritoryDeveloperName){
-		List<User> users = [SELECT Id FROM User WHERE Account.INT_PersonIdent__c IN :personIdents];
+		List<User> users = [SELECT Id, ProfileId FROM User WHERE Account.INT_PersonIdent__c IN :personIdents];
 		createServiceResource(users, addAllSkills, serviceTerritoryDeveloperName);
 	}
 	public static void createServiceResource(List<String> personIdents, Boolean addAllSkills){
-		List<User> users = [SELECT Id FROM User WHERE Account.INT_PersonIdent__c IN :personIdents];
-		createServiceResource(users, addAllSkills, null);
+		createServiceResource(personIdents, addAllSkills, null);
 	}
 	public static void createServiceResource(List<String> personIdents){
-		List<User> users = [SELECT Id FROM User WHERE Account.INT_PersonIdent__c IN :personIdents];
-		createServiceResource(users, false, null);
+		createServiceResource(personIdents, false, null);
 	}
 	public static void createServiceResource(List<String> personIdents, String serviceTerritoryDeveloperName){
-		List<User> users = [SELECT Id FROM User WHERE Account.INT_PersonIdent__c IN :personIdents];
-		createServiceResource(users, false, serviceTerritoryDeveloperName);
+		createServiceResource(personIdents, false, serviceTerritoryDeveloperName);
 	}
 
 	public static void createServiceResource(List<User> users, Boolean addAllSkills, String serviceTerritoryDeveloperName) {
@@ -55,7 +52,6 @@ public without sharing class HOT_ServiceResourceHandler {
 			insert serviceResourceSkills;
 		}
 		if(serviceTerritoryDeveloperName != null){
-			Id operatingHoursId = [SELECT Id FROM OperatingHours WHERE Name = 'Base Calendar'].Id;
 			Id serviceTerritoryId = [SELECT Id FROM ServiceTerritory WHERE HOT_DeveloperName__c = :serviceTerritoryDeveloperName].Id;
 			List<ServiceTerritoryMember> serviceTerritoryMembers = new List<ServiceTerritoryMember>();
 			for(ServiceResource serviceResource:serviceResources){
@@ -63,7 +59,6 @@ public without sharing class HOT_ServiceResourceHandler {
 				serviceTerritoryMember.ServiceResourceId = serviceResource.Id;
 				serviceTerritoryMember.ServiceTerritoryId = serviceTerritoryId;
 				serviceTerritoryMember.EffectiveStartDate = startDate;
-				serviceTerritoryMember.OperatingHoursId = operatingHoursId;
 				serviceTerritoryMembers.add(serviceTerritoryMember);
 			}
 			insert serviceTerritoryMembers;
