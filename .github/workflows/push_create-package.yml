@@ -43,11 +43,11 @@ jobs:
           sfdx force:auth:sfdxurl:store -f ./INTEGRATION_SANDBOX_SFDX_URL.txt -a integration-sandbox -s
           rm -f ./INTEGRATION_SANDBOX_SFDX_URL.txt
 
-      # Delete unpackagable
+      # Delete unpackagable and scratch-org folder
       - name: "Delete unpackagable"
         run: |
-          rm -rf ./unpackagable
           rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/scratch-org
 
       # Create package version
       # TODO throw error on below 75% code coverage
