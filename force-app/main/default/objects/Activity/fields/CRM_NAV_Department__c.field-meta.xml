@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>CRM_NAV_Department__c</fullName>
     <externalId>false</externalId>
-    <label>CRM_NAV_Department</label>
+    <label>NAV Department</label>
     <required>false</required>
     <type>Picklist</type>
     <valueSet>
