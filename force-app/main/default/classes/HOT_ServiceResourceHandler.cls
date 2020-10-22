@@ -7,6 +7,11 @@ public without sharing class HOT_ServiceResourceHandler {
 	public static void createServiceResource(List<String> personIdents){
 		createServiceResource(personIdents, false, null);
 	}
+	@Future
+	public static void createServiceResourceFuture(List<Id> userIds) {
+		List<User> users = [SELECT Id, Name, ProfileId FROM User WHERE Id IN :userIds];
+		createServiceResource(users, false, null);	
+    }
 
 	public static void createServiceResource(List<User> users, Boolean addAllSkills, String serviceTerritoryDeveloperName) {
 		users = removeUsersWithServiceResource(users);
@@ -26,7 +31,7 @@ public without sharing class HOT_ServiceResourceHandler {
             serviceResource.HOT_IsFreelanceInterpreter__c = isFreelance;
 
             serviceResources.add(serviceResource);
-        }
+		}
         insert serviceResources;
 
 		Datetime startDate = Datetime.valueOf('2018-01-01 00:00:00');
@@ -58,7 +63,7 @@ public without sharing class HOT_ServiceResourceHandler {
 			insert serviceTerritoryMembers;
 		}
         
-    }
+	}
 
 	static List<User> removeUsersWithServiceResource(List<User> users){
 		List<User> filteredUsers = new List<User>();
