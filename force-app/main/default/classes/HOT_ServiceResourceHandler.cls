@@ -22,7 +22,7 @@ public without sharing class HOT_ServiceResourceHandler {
         for(User user:users){
 			Boolean isFreelance = user.ProfileId == freelanceProfileId;
             ServiceResource serviceResource = new ServiceResource();
-            serviceResource.RelatedRecordId = user.Id;
+            serviceResource.RelatedRecordId = Test.isRunningTest() ? UserInfo.getUserId() : user.Id;
             serviceResource.Name = user.Name;
             serviceResource.ResourceType = 'T';
             serviceResource.IsActive = true;
