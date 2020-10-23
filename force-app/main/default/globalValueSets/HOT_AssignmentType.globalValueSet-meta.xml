@@ -28,11 +28,13 @@
     <customValue>
         <fullName>Image Interpreter</fullName>
         <default>false</default>
+		<isActive>false</isActive>
         <label>Bildetolk</label>
     </customValue>
     <customValue>
         <fullName>Video Interpreter</fullName>
         <default>false</default>
+		<isActive>false</isActive>
         <label>Videotolk</label>
     </customValue>
     <customValue>
