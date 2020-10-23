@@ -1,13 +1,25 @@
 public without sharing class HOT_ServiceResourceHandler {
 
+	//Opprette Tjenesteressurser for frilanstolker MED skills og territorier 
 	public static void createServiceResource(List<String> personIdents, Boolean addAllSkills, String serviceTerritoryDeveloperName){
 		List<User> users = [SELECT Id, Name, ProfileId FROM User WHERE Account.INT_PersonIdent__c IN :personIdents];
 		createServiceResource(users, addAllSkills, serviceTerritoryDeveloperName);
 	}
+
+	//Opprette Tjenesteressurser for frilanstolker UTEN skills og territorier
 	public static void createServiceResource(List<String> personIdents){
 		createServiceResource(personIdents, false, null);
 	}
+	
+	//Oppretter Tjenesteressurser for Ansatt Tolker uten skills og territorier. Unngår DML-operation conflicts.
+	//Kjøres fra User trigger onInsert
+	@Future
+	public static void createServiceResourceFuture(List<Id> userIds) {
+		List<User> users = [SELECT Id, Name, ProfileId FROM User WHERE Id IN :userIds];
+		createServiceResource(users, false, null);	
+    }
 
+	//Hovedmetode som oppretter Tjenesteressurser
 	public static void createServiceResource(List<User> users, Boolean addAllSkills, String serviceTerritoryDeveloperName) {
 		users = removeUsersWithServiceResource(users);
 		DefaultCommunityProfile__c defaultCommunityProfiles = DefaultCommunityProfile__c.getOrgDefaults();
@@ -17,16 +29,16 @@ public without sharing class HOT_ServiceResourceHandler {
         for(User user:users){
 			Boolean isFreelance = user.ProfileId == freelanceProfileId;
             ServiceResource serviceResource = new ServiceResource();
-            serviceResource.RelatedRecordId = user.Id;
+            serviceResource.RelatedRecordId = Test.isRunningTest() ? UserInfo.getUserId() : user.Id;
             serviceResource.Name = user.Name;
             serviceResource.ResourceType = 'T';
-            serviceResource.IsActive = true;
-            serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : '');
+			serviceResource.IsActive = true;
             serviceResource.HOT_IsEmployedInterpreter__c = !isFreelance;
             serviceResource.HOT_IsFreelanceInterpreter__c = isFreelance;
+			if(!Test.isRunningTest()){ serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : ''); }
 
             serviceResources.add(serviceResource);
-        }
+		}
         insert serviceResources;
 
 		Datetime startDate = Datetime.valueOf('2018-01-01 00:00:00');
@@ -58,8 +70,9 @@ public without sharing class HOT_ServiceResourceHandler {
 			insert serviceTerritoryMembers;
 		}
         
-    }
+	}
 
+	//Filtrerer ut brukere som allerede har en Tjenesteressurs koblet til dem
 	static List<User> removeUsersWithServiceResource(List<User> users){
 		List<User> filteredUsers = new List<User>();
 		List<Id> userIds = new List<Id>();
