@@ -15,6 +15,10 @@ private class HOT_ServiceResourceHandlerTest{
 		person.Name = '01011800001';
 		insert person;
 
+		Account account = [SELECT Id, OwnerId FROM Account WHERE LastName =: 'Tolk'];
+		account.OwnerId = UserInfo.getUserId();
+		update account;
+
 		OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
 		insert operatingHours;
 		ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
