@@ -25,10 +25,10 @@ public without sharing class HOT_ServiceResourceHandler {
             serviceResource.RelatedRecordId = Test.isRunningTest() ? UserInfo.getUserId() : user.Id;
             serviceResource.Name = user.Name;
             serviceResource.ResourceType = 'T';
-            serviceResource.IsActive = true;
-            serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : '');
+			serviceResource.IsActive = true;
             serviceResource.HOT_IsEmployedInterpreter__c = !isFreelance;
             serviceResource.HOT_IsFreelanceInterpreter__c = isFreelance;
+			if(Test.isRunningTest()){ serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : ''); }
 
             serviceResources.add(serviceResource);
 		}
