@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>NAV Avdeling</label>
+    <name>CRM_NAV_Department__c</name>
+    <picklistValues>
+        <masterLabel>Arbeidsgiver</masterLabel>
+        <translation><!-- Arbeidsgiver --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>HOT</masterLabel>
+        <translation><!-- HOT --></translation>
+    </picklistValues>
+</CustomFieldTranslation>
