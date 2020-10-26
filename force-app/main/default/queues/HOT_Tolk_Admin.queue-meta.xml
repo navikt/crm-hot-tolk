@@ -9,6 +9,9 @@
         <sobjectType>ServiceAppointment</sobjectType>
     </queueSobject>
     <queueSobject>
+        <sobjectType>Task</sobjectType>
+    </queueSobject>
+    <queueSobject>
         <sobjectType>WorkOrder</sobjectType>
     </queueSobject>
 </Queue>
