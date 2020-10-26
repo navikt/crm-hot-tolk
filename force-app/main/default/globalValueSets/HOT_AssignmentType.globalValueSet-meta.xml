@@ -26,10 +26,22 @@
         <label>Tolk på arbeidsplass - TPA</label>
     </customValue>
     <customValue>
+        <fullName>Video Interpreter</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Videotolk</label>
+    </customValue>
+    <customValue>
         <fullName>Other Economical Provider</fullName>
         <default>false</default>
         <isActive>false</isActive>
         <label>Annen betaler</label>
+    </customValue>
+    <customValue>
+        <fullName>Image Interpreter</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Bildetolk</label>
     </customValue>
     <masterLabel>Assignment Type</masterLabel>
     <sorted>false</sorted>
