@@ -409,6 +409,43 @@
                     <stringValue>Canceled</stringValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <processMetadataValues>
+                    <name>inputDataType</name>
+                    <value>
+                        <stringValue>ID</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>leftHandSideReferenceTo</name>
+                    <value>
+                        <stringValue>Group;User</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>leftHandSideType</name>
+                    <value>
+                        <stringValue>ID</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>operatorDataType</name>
+                    <value>
+                        <stringValue>String</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>rightHandSideType</name>
+                    <value>
+                        <stringValue>ID</stringValue>
+                    </value>
+                </processMetadataValues>
+                <leftValueReference>myVariable_current.OwnerId</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>00G</stringValue>
+                </rightValue>
+            </conditions>
             <connector>
                 <targetReference>myAssignment_myRule_4_A1</targetReference>
             </connector>
@@ -498,7 +535,6 @@
             <label>SA Avlyst av Tolk</label>
         </rules>
     </decisions>
-    <description>Update Duration field when Service Appointment is created or edited</description>
     <formulas>
         <processMetadataValues>
             <name>originalFormula</name>
@@ -506,7 +542,7 @@
                 <stringValue>([ServiceAppointment].DueDate - [ServiceAppointment].EarliestStartTime )*24</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_2_myRule_1_A1_6140576488</name>
+        <name>formula_2_myRule_1_A1_8688218326</name>
         <dataType>Number</dataType>
         <expression>({!myVariable_current.DueDate} - {!myVariable_current.EarliestStartTime} )*24</expression>
         <scale>18</scale>
@@ -518,7 +554,7 @@
                 <stringValue>[ServiceAppointment].Owner:Queue.Id </stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_6_myRule_4_A2_3414247817</name>
+        <name>formula_6_myRule_4_A2_7026748487</name>
         <dataType>String</dataType>
         <expression>{!myVariable_current.Owner:Queue.Id}</expression>
     </formulas>
@@ -527,7 +563,7 @@
         <dataType>Boolean</dataType>
         <expression>true</expression>
     </formulas>
-    <interviewLabel>ServiceAppointment_Processor_c-4_InterviewLabel</interviewLabel>
+    <interviewLabel>ServiceAppointment_Processor_c-2_InterviewLabel</interviewLabel>
     <label>ServiceAppointment Processor</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -625,7 +661,7 @@
             </processMetadataValues>
             <field>OwnerId</field>
             <value>
-                <elementReference>formula_6_myRule_4_A2_3414247817</elementReference>
+                <elementReference>formula_6_myRule_4_A2_7026748487</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1045,7 +1081,7 @@
             </processMetadataValues>
             <field>Duration</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_6140576488</elementReference>
+                <elementReference>formula_2_myRule_1_A1_8688218326</elementReference>
             </value>
         </inputAssignments>
         <object>ServiceAppointment</object>
