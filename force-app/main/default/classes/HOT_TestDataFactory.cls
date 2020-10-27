@@ -84,6 +84,7 @@ public class HOT_TestDataFactory {
 		serviceTerritory.OperatingHoursId = operatingHour.Id;
 		serviceTerritory.IsActive = true;
 		serviceTerritory.Name = 'Service Territory Name';
+		serviceTerritory.HOT_DeveloperName__c = 'Service_Territory_Name';
 		return serviceTerritory;
 	}
 	public static ServiceTerritoryMember createServiceTerritoryMember(ServiceResource serviceResource, ServiceTerritory serviceTerritory){
