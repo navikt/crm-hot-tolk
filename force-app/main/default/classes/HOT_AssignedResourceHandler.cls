@@ -1,5 +1,13 @@
 public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 	
+	public override void onBeforeInsert(){
+		updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
+	}
+	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
+		updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
+	}
+
+
 	public override void onAfterInsert(){
 		List<ServiceAppointment> serviceAppointments = setServiceResourceFieldsOnServiceAppointment((List<AssignedResource>) records);
 		update serviceAppointments;
@@ -93,6 +101,24 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		return interestedResources;
 	}
 
+	public static void updateServiceTerritoryOnServiceAppointment(List<AssignedResource> assignedResources){
+		List<Id> serviceAppointmentIds = new List<Id>();
+		List<Id> serviceResourceIds = new List<Id>();
+		for(AssignedResource assignedResource:assignedResources){
+			serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+			serviceResourceIds.add(assignedResource.ServiceResourceId);
+		}
+		Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>([SELECT Id, ServiceTerritoryId FROM ServiceAppointment WHERE Id IN :serviceAppointmentIds]);
+		Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>([SELECT Id, HOT_ServiceTerritory__r.Id FROM ServiceResource WHERE Id IN :serviceResourceIds]);
+
+		for(AssignedResource assignedResource:assignedResources){
+			if(serviceAppointments.get(assignedResource.ServiceAppointmentId).ServiceTerritoryId != serviceResources.get(assignedResource.ServiceResourceId).HOT_ServiceTerritory__r.Id){
+				serviceAppointments.get(assignedResource.ServiceAppointmentId).ServiceTerritoryId = serviceResources.get(assignedResource.ServiceResourceId).HOT_ServiceTerritory__c;
+			}
+		}
+		update serviceAppointments.values();
+	}
+	
 
 
 }
