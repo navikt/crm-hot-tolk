@@ -35,7 +35,7 @@
                 <stringValue>BLANKVALUE([HOT_Request__c].Account__c, &quot;&quot;)</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_2_myRule_1_A1_8761845237</name>
+        <name>formula_2_myRule_1_A1_2194594712</name>
         <dataType>String</dataType>
         <expression>BLANKVALUE({!myVariable_current.Account__c}, &quot;&quot;)</expression>
     </formulas>
@@ -47,7 +47,7 @@
 [HOT_Request__c].Account__r.PersonContactId)</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_3_myRule_1_A1_4116060699</name>
+        <name>formula_3_myRule_1_A1_8805294275</name>
         <dataType>String</dataType>
         <expression>IF(ISBLANK({!myVariable_current.Account__c}), &quot;&quot;, 
 {!myVariable_current.Account__r.PersonContactId})</expression>
@@ -56,12 +56,12 @@
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue>([HOT_Request__c].StartTime__c -  [HOT_Request__c].StartTime__c  )*24</stringValue>
+                <stringValue>([HOT_Request__c].StartTime__c -  [HOT_Request__c].EndTime__c  )*24</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_4_myRule_1_A1_7763499930</name>
+        <name>formula_4_myRule_1_A1_3946792123</name>
         <dataType>Number</dataType>
-        <expression>({!myVariable_current.StartTime__c} -  {!myVariable_current.StartTime__c}  )*24</expression>
+        <expression>({!myVariable_current.StartTime__c} -  {!myVariable_current.EndTime__c}  )*24</expression>
         <scale>18</scale>
     </formulas>
     <formulas>
@@ -79,7 +79,7 @@
 &amp;&amp; ISCHANGED({!myVariable_current.Status__c})
 &amp;&amp;  ISPICKVAL(PRIORVALUE({!myVariable_current.Status__c}),&apos;Åpen&apos;)</expression>
     </formulas>
-    <interviewLabel>Request_Processor_Update_Status_is_Approved-3_InterviewLabel</interviewLabel>
+    <interviewLabel>Request_Processor_Update_Status_is_Approved-2_InterviewLabel</interviewLabel>
     <label>Request Processor - Update - Status is Approved</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -144,7 +144,7 @@
             </processMetadataValues>
             <field>AccountId</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_8761845237</elementReference>
+                <elementReference>formula_2_myRule_1_A1_2194594712</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -216,7 +216,7 @@
             </processMetadataValues>
             <field>ContactId</field>
             <value>
-                <elementReference>formula_3_myRule_1_A1_4116060699</elementReference>
+                <elementReference>formula_3_myRule_1_A1_8805294275</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -288,7 +288,7 @@
             </processMetadataValues>
             <field>Duration</field>
             <value>
-                <elementReference>formula_4_myRule_1_A1_7763499930</elementReference>
+                <elementReference>formula_4_myRule_1_A1_3946792123</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
