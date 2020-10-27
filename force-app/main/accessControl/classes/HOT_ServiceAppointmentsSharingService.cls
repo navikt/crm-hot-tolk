@@ -4,8 +4,10 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
 		Map<Id, Id> userIdyResourceId = getUserIdyResourceId( resourceByAssignment.values() );
 		Map<Id, Id> woBySa = getWorkOrderIds( apppointmentIdByAssignment.values() );
 		Map<Id, User> userByUserId = getUserById( userIdyResourceId.values() );
+		Map<Id, Id> accountIdByServiceAppointmentId = getAccountIdByServiceAppointmentId( apppointmentIdByAssignment.values() );
 		List<ServiceAppointmentShare> serviceAppointmentShares = new List<ServiceAppointmentShare>();
 		List<WorkOrderShare> workOrderShares = new List<WorkOrderShare>();
+		List<AccountShare> accountShares = new List<AccountShare>();
 		for ( Id assignmentId:apppointmentIdByAssignment.keySet() ) {
 			Id resourceId = resourceByAssignment.get( assignmentId );
 			Id userId = userIdyResourceId.get( resourceId );
@@ -26,9 +28,18 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
 									 RowCause = 'Manual',
 									 UserOrGroupId = userId
 									 ) );
+			accountShares.add( new AccountShare(
+								   AccountId = accountIdByServiceAppointmentId.get( serviceAppointmentId ),
+								   AccountAccessLevel = 'Read',
+								   CaseAccessLevel = 'None',
+								   OpportunityAccessLevel = 'None',
+								   RowCause = 'Manual',
+								   UserOrGroupId = userId
+								   ) );
 		}
 		Database.insert( serviceAppointmentShares, false );
 		Database.insert( workOrderShares, false );
+		Database.insert( accountShares, false );
 	}
 
 	public static void removeAccessForSpecificUsers( Map<Id, Id > apppointmentByAssignment, Map<Id, Id> resourceByAssignment ) {
@@ -85,5 +96,13 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
 		}
 
 		return workOrderByServiceAppointment;
+	}
+
+	private static Map<Id, Id> getAccountIdByServiceAppointmentId( List<Id> serviceApponntmentIds ) {
+		Map<Id, Id> accountIdByServiceAppointmentId = new Map<Id, Id>();
+		for ( ServiceAppointment sa:[SELECT Id, AccountId FROM ServiceAppointment WHERE Id in:serviceApponntmentIds] ) {
+			accountIdByServiceAppointmentId.put( sa.Id, sa.AccountId );
+		}
+		return AccountIdByServiceAppointmentId;
 	}
 }
