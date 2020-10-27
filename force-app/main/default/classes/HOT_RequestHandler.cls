@@ -1,6 +1,8 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
 
 	public override void onBeforeInsert(){
+		setStatusDefault((List<HOT_Request__c>) records);
+		setOrdererField((List<HOT_Request__c>) records);
 		setServiceTerritory((List<HOT_Request__c>) records);
 	}
 
@@ -139,4 +141,18 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 			request.CanceledDate__c = Date.today();
 		}
 	}
+	public static void setStatusDefault(List<HOT_Request__c> requests){
+		for(HOT_Request__c request:requests){
+			request.Status__c = 'Åpen';
+		}
+	}
+	public static void setOrdererField(List<HOT_Request__c> requests){
+		for(HOT_Request__c request:requests){
+			if(request.Type__c == 'Me' && request.Orderer__c == null && request.Account__c != null){
+				request.Orderer__c = request.Account__c;
+			}
+		}
+	}
+
+	
 }
