@@ -111,12 +111,14 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>([SELECT Id, ServiceTerritoryId FROM ServiceAppointment WHERE Id IN :serviceAppointmentIds]);
 		Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>([SELECT Id, HOT_ServiceTerritory__r.Id FROM ServiceResource WHERE Id IN :serviceResourceIds]);
 
+		List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
 		for(AssignedResource assignedResource:assignedResources){
 			if(serviceAppointments.get(assignedResource.ServiceAppointmentId).ServiceTerritoryId != serviceResources.get(assignedResource.ServiceResourceId).HOT_ServiceTerritory__r.Id){
 				serviceAppointments.get(assignedResource.ServiceAppointmentId).ServiceTerritoryId = serviceResources.get(assignedResource.ServiceResourceId).HOT_ServiceTerritory__c;
+				serviceAppointmentsToUpdate.add(serviceAppointments.get(assignedResource.ServiceAppointmentId));
 			}
 		}
-		update serviceAppointments.values();
+		update serviceAppointmentsToUpdate;
 	}
 	
 
