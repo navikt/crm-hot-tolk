@@ -35,7 +35,7 @@
                 <stringValue>BLANKVALUE([HOT_Request__c].Account__c, &quot;&quot;)</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_2_myRule_1_A1_2194594712</name>
+        <name>formula_2_myRule_1_A1_2347516109</name>
         <dataType>String</dataType>
         <expression>BLANKVALUE({!myVariable_current.Account__c}, &quot;&quot;)</expression>
     </formulas>
@@ -47,22 +47,10 @@
 [HOT_Request__c].Account__r.PersonContactId)</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_3_myRule_1_A1_8805294275</name>
+        <name>formula_3_myRule_1_A1_9337796555</name>
         <dataType>String</dataType>
         <expression>IF(ISBLANK({!myVariable_current.Account__c}), &quot;&quot;, 
 {!myVariable_current.Account__r.PersonContactId})</expression>
-    </formulas>
-    <formulas>
-        <processMetadataValues>
-            <name>originalFormula</name>
-            <value>
-                <stringValue>([HOT_Request__c].StartTime__c -  [HOT_Request__c].EndTime__c  )*24</stringValue>
-            </value>
-        </processMetadataValues>
-        <name>formula_4_myRule_1_A1_3946792123</name>
-        <dataType>Number</dataType>
-        <expression>({!myVariable_current.StartTime__c} -  {!myVariable_current.EndTime__c}  )*24</expression>
-        <scale>18</scale>
     </formulas>
     <formulas>
         <processMetadataValues>
@@ -79,7 +67,7 @@
 &amp;&amp; ISCHANGED({!myVariable_current.Status__c})
 &amp;&amp;  ISPICKVAL(PRIORVALUE({!myVariable_current.Status__c}),&apos;Åpen&apos;)</expression>
     </formulas>
-    <interviewLabel>Request_Processor_Update_Status_is_Approved-2_InterviewLabel</interviewLabel>
+    <interviewLabel>Request_Processor_Update_Status_is_Approved-4_InterviewLabel</interviewLabel>
     <label>Request Processor - Update - Status is Approved</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -144,7 +132,7 @@
             </processMetadataValues>
             <field>AccountId</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_2194594712</elementReference>
+                <elementReference>formula_2_myRule_1_A1_2347516109</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -216,7 +204,7 @@
             </processMetadataValues>
             <field>ContactId</field>
             <value>
-                <elementReference>formula_3_myRule_1_A1_8805294275</elementReference>
+                <elementReference>formula_3_myRule_1_A1_9337796555</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -253,42 +241,6 @@
             <field>Description</field>
             <value>
                 <elementReference>myVariable_current.Description__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <processMetadataValues>
-                <name>dataType</name>
-                <value>
-                    <stringValue>Number</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>isRequired</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideLabel</name>
-                <value>
-                    <stringValue>Duration</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideReferenceTo</name>
-                <value>
-                    <stringValue/>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>rightHandSideType</name>
-                <value>
-                    <stringValue>Formula</stringValue>
-                </value>
-            </processMetadataValues>
-            <field>Duration</field>
-            <value>
-                <elementReference>formula_4_myRule_1_A1_3946792123</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
