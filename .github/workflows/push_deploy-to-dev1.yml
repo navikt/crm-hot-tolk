@@ -1,7 +1,4 @@
-# Unique name for this workflow
 name: "[PUSH] Deploy to Dev"
-
-# Definition when the workflow should run
 on:
   workflow_dispatch:
   push:
@@ -9,20 +6,18 @@ on:
       - dev
     paths:
       - "force-app/**"
-
-# Jobs to be executed
 jobs:
   deploy-metadata:
     name: Create new package
     runs-on: ubuntu-latest
     steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
       # Install SFDX
       - name: Install SFDX
         uses: sfdx-actions/setup-sfdx@v1
-
-      # Checkout the code in the pull request
-      - name: "Checkout source code"
-        uses: actions/checkout@v2
 
       # Authenticate prod
       - name: Authenticate prod
@@ -39,11 +34,11 @@ jobs:
           rm -f ./DEV_SFDX_URL.txt
 
       # Install sfpowerkit plugin used to install multiple packages only by version number
-      - name: "Install sfpowerkit plugin"
-        run: "echo y | sfdx plugins:install sfpowerkit"
+      - name: Install sfpowerkit plugin
+        run: echo y | sfdx plugins:install sfpowerkit
 
       # Get package keys
-      - name: "Get package keys"
+      - name: Get package keys
         id: install-keys
         run: |
           keys=""
@@ -54,11 +49,11 @@ jobs:
           echo "::set-output name=keys::$(echo $keys)"
 
       # Install packages this repo is dependant on
-      - name: "Install dependant packages"
-        run: "sfdx sfpowerkit:package:dependencies:install -u dev -r -a -w 60 -k '${{ steps.install-keys.outputs.keys }}'"
+      - name: Install dependant packages
+        run: sfdx sfpowerkit:package:dependencies:install -u dev -r -a -w 60 -k '${{ steps.install-keys.outputs.keys }}'
 
       # Install new package version into dev sandbox
-      - name: "Install new package version into dev sandbox"
+      - name: Install new package version into dev sandbox
         if: success()
         id: dev-installation
         run: |
