@@ -2,7 +2,7 @@ public without sharing class HOT_ServiceResourceHandler {
 
 	//Opprette Tjenesteressurser for frilanstolker MED skills og territorier 
 	public static void createServiceResource(List<String> personIdents, Boolean addAllSkills, String serviceTerritoryDeveloperName){
-		List<User> users = [SELECT Id, Name, ProfileId FROM User WHERE Account.INT_PersonIdent__c IN :personIdents];
+		List<User> users = [SELECT Id, Name, ProfileId, Department FROM User WHERE Account.INT_PersonIdent__c IN :personIdents];
 		createServiceResource(users, addAllSkills, serviceTerritoryDeveloperName);
 	}
 
@@ -15,18 +15,23 @@ public without sharing class HOT_ServiceResourceHandler {
 	//Kjøres fra User trigger onInsert
 	@Future
 	public static void createServiceResourceFuture(List<Id> userIds) {
-		List<User> users = [SELECT Id, Name, ProfileId FROM User WHERE Id IN :userIds];
-		createServiceResource(users, false, null);	
+		List<User> users = [SELECT Id, Name, ProfileId, Department FROM User WHERE Id IN :userIds];
+		createServiceResource(users, false, 'AUTO');	
     }
 
 	//Hovedmetode som oppretter Tjenesteressurser
 	public static void createServiceResource(List<User> users, Boolean addAllSkills, String serviceTerritoryDeveloperName) {
+
 		users = removeUsersWithServiceResource(users);
+
 		DefaultCommunityProfile__c defaultCommunityProfiles = DefaultCommunityProfile__c.getOrgDefaults();
 		String profileName =  defaultCommunityProfiles.DefaultCommunityPlusProfile__c;
 		Id freelanceProfileId = [SELECT Id FROM Profile WHERE Name = :profileName].Id;
+
+        Map<Id, String> departmentByUser = new Map<Id, String>();
         List<ServiceResource> serviceResources = new List<ServiceResource>();
         for(User user:users){
+
 			Boolean isFreelance = user.ProfileId == freelanceProfileId;
             ServiceResource serviceResource = new ServiceResource();
             serviceResource.RelatedRecordId = Test.isRunningTest() ? UserInfo.getUserId() : user.Id;
@@ -35,11 +40,13 @@ public without sharing class HOT_ServiceResourceHandler {
 			serviceResource.IsActive = true;
             serviceResource.HOT_IsEmployedInterpreter__c = !isFreelance;
             serviceResource.HOT_IsFreelanceInterpreter__c = isFreelance;
-			if(!Test.isRunningTest()){ serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : ''); }
+			//if(!Test.isRunningTest()){ serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : ''); }
 
-            serviceResources.add(serviceResource);
+			serviceResources.add(serviceResource);
+			departmentByUser.put(serviceResource.RelatedRecordId, user.Department);
+
 		}
-        insert serviceResources;
+		insert serviceResources;
 
 		Datetime startDate = Datetime.valueOf('2018-01-01 00:00:00');
 		if(addAllSkills){
@@ -57,7 +64,36 @@ public without sharing class HOT_ServiceResourceHandler {
 			}
 			insert serviceResourceSkills;
 		}
-		if(serviceTerritoryDeveloperName != null){
+		
+		if(serviceTerritoryDeveloperName == 'AUTO'){
+			
+			Map<String, Id> serviceTerritoryIdByDeveloperName = new Map<String, Id>();
+			List<ServiceTerritory> serviceTerritories = [SELECT Id, HOT_DeveloperName__c FROM ServiceTerritory];
+			for(ServiceTerritory st:serviceTerritories){
+				serviceTerritoryIdByDeveloperName.put(st.HOT_DeveloperName__c, st.Id);
+			}
+			List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = [SELECT Queue__c, ServiceTerritory__c FROM HOT_ServiceTerritoryByQueue__mdt];
+
+			Map<String, Id> serviceTerritoryByDepartment = new Map<String, Id>();
+			for(HOT_ServiceTerritoryByQueue__mdt stq:serviceTerritoryByQueueList){
+				String department = stq.Queue__c.removeStart('queue_');
+				if(serviceTerritoryIdByDeveloperName.get(stq.ServiceTerritory__c) != null){
+					serviceTerritoryByDepartment.put(department, serviceTerritoryIdByDeveloperName.get(stq.ServiceTerritory__c));
+				}
+			}
+
+			List<ServiceTerritoryMember> serviceTerritoryMembers = new List<ServiceTerritoryMember>();
+			for(ServiceResource serviceResource:serviceResources){
+				ServiceTerritoryMember serviceTerritoryMember = new ServiceTerritoryMember();
+				serviceTerritoryMember.ServiceResourceId = serviceResource.Id;
+				serviceTerritoryMember.ServiceTerritoryId = serviceTerritoryByDepartment.get(departmentByUser.get(serviceResource.RelatedRecordId));
+				serviceTerritoryMember.EffectiveStartDate = startDate;
+				serviceTerritoryMembers.add(serviceTerritoryMember);
+			}
+			insert serviceTerritoryMembers;
+		}
+		else if(serviceTerritoryDeveloperName != null){
+
 			Id serviceTerritoryId = [SELECT Id FROM ServiceTerritory WHERE HOT_DeveloperName__c = :serviceTerritoryDeveloperName].Id;
 			List<ServiceTerritoryMember> serviceTerritoryMembers = new List<ServiceTerritoryMember>();
 			for(ServiceResource serviceResource:serviceResources){
