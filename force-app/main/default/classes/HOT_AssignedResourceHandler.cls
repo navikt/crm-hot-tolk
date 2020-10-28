@@ -43,11 +43,13 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		for ( AssignedResource ar:(List<AssignedResource>) records ) {
 			serviceAppointmentIds.add(ar.ServiceAppointmentId);
 		}
-		List<ServiceAppointment> serviceAppointments = [SELECT Id, HOT_AssignedResourceId__c, HOT_ServiceResource__c FROM ServiceAppointment WHERE Id IN :serviceAppointmentIds];
+		List<ServiceAppointment> serviceAppointments = [SELECT Id, HOT_AssignedResourceId__c, HOT_ServiceResource__c, EarliestStartTime, DueDate, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Id IN :serviceAppointmentIds];
 		
 		for(ServiceAppointment sa:serviceAppointments){
 			sa.HOT_ServiceResource__c = null;
 			sa.HOT_AssignedResourceId__c = null;
+			System.assertEquals(serviceAppointment.SchedStartTime, serviceAppointment.EarliestStartTime, 'Could not set EarliestStartTime onAfterdelete');
+			System.assertEquals(serviceAppointment.SchedEndTime, serviceAppointment.DueDate, 'Could not set SchedEndTime onAfterdelete');
 		}
 		update serviceAppointments;
 	}
