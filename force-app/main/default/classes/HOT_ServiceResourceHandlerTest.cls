@@ -7,6 +7,7 @@ private class HOT_ServiceResourceHandlerTest{
 		UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
 		User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
 		admin.UserRoleId = role.Id;
+		admin.Department = '4718';
 		insert admin;
 
         System.runAs(admin) {
@@ -31,6 +32,7 @@ private class HOT_ServiceResourceHandlerTest{
 			OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
 			insert operatingHours;
 			ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+			serviceTerritory.HOT_DeveloperName__c = 'Nordland';
 			insert serviceTerritory;
 	
 		}
@@ -45,12 +47,28 @@ private class HOT_ServiceResourceHandlerTest{
 
 		User officeUser = TestDataFactory_Community.getUsers(1, 'System Administrator', true, true)[0];
         System.runAs(officeUser) {
-			HOT_ServiceResourceHandler.createServiceResource(new List<String>{ '01011800001' }, true, 'Service_Territory_Name');
+			HOT_ServiceResourceHandler.createServiceResource(new List<String>{ '01011800001' }, true, 'Nordland');
 		}
 
 		List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource];
+		List<ServiceTerritoryMember> serviceTerritoryMembers = [SELECT Id FROM ServiceTerritoryMember];
 		System.assertEquals(1, serviceResources.size());
+		System.assertEquals(1, serviceTerritoryMembers.size());
+	}
+	@isTest static void CreateServiceResourceAutoTest() {
+		Test.startTest();
+			List<User> users = CommunityUsersService.createCommunityPlusUser(new List<String>{ '01011800001' });
+		Test.stopTest();
 
+		User officeUser = [SELECT Id, Department, LastName, UserRoleId FROM User WHERE Department = '4718' AND LastName = 'admin'];
+        System.runAs(officeUser) {
+			HOT_ServiceResourceHandler.createServiceResource(new List<String>{ '01011800001' }, true, 'AUTO');
+		}
+
+		List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource];
+		List<ServiceTerritoryMember> serviceTerritoryMembers = [SELECT Id FROM ServiceTerritoryMember];
+		System.assertEquals(1, serviceResources.size());
+		System.assertEquals(1, serviceTerritoryMembers.size());
 	}
 
 }
