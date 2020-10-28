@@ -56,8 +56,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		for(ServiceAppointment sa:serviceAppointments){
 			sa.HOT_ServiceResource__c = null;
 			sa.HOT_AssignedResourceId__c = null;
-			System.assertEquals(serviceAppointment.SchedStartTime, serviceAppointment.EarliestStartTime, 'Could not set EarliestStartTime onAfterdelete');
-			System.assertEquals(serviceAppointment.SchedEndTime, serviceAppointment.DueDate, 'Could not set SchedEndTime onAfterdelete');
+			sa.SchedStartTime = sa.EarliestStartTime;
+			sa.SchedEndTime = sa.DueDate;
 		}
 		update serviceAppointments;
 	}
