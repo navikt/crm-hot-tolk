@@ -40,7 +40,7 @@ public without sharing class HOT_ServiceResourceHandler {
 			serviceResource.IsActive = true;
             serviceResource.HOT_IsEmployedInterpreter__c = !isFreelance;
             serviceResource.HOT_IsFreelanceInterpreter__c = isFreelance;
-			//if(!Test.isRunningTest()){ serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : ''); }
+			if(!Test.isRunningTest()){ serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : ''); }
 
 			serviceResources.add(serviceResource);
 			departmentByUser.put(serviceResource.RelatedRecordId, user.Department);
@@ -65,15 +65,18 @@ public without sharing class HOT_ServiceResourceHandler {
 			insert serviceResourceSkills;
 		}
 		
+		//Oppretter ServiceTerritoryMember basert på serviceResource.User.Department
 		if(serviceTerritoryDeveloperName == 'AUTO'){
 			
+			//Kobling mellom ServiceTerritory Developer name og Id
 			Map<String, Id> serviceTerritoryIdByDeveloperName = new Map<String, Id>();
 			List<ServiceTerritory> serviceTerritories = [SELECT Id, HOT_DeveloperName__c FROM ServiceTerritory];
 			for(ServiceTerritory st:serviceTerritories){
 				serviceTerritoryIdByDeveloperName.put(st.HOT_DeveloperName__c, st.Id);
 			}
-			List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = [SELECT Queue__c, ServiceTerritory__c FROM HOT_ServiceTerritoryByQueue__mdt];
 
+			//Kobling mellom ServiceTerritory.DeveloperName og Avdeling
+			List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = [SELECT Queue__c, ServiceTerritory__c FROM HOT_ServiceTerritoryByQueue__mdt];
 			Map<String, Id> serviceTerritoryByDepartment = new Map<String, Id>();
 			for(HOT_ServiceTerritoryByQueue__mdt stq:serviceTerritoryByQueueList){
 				String department = stq.Queue__c.removeStart('queue_');
@@ -82,6 +85,7 @@ public without sharing class HOT_ServiceResourceHandler {
 				}
 			}
 
+			//Oppretter ServiceTerritoryMember
 			List<ServiceTerritoryMember> serviceTerritoryMembers = new List<ServiceTerritoryMember>();
 			for(ServiceResource serviceResource:serviceResources){
 				ServiceTerritoryMember serviceTerritoryMember = new ServiceTerritoryMember();
@@ -92,8 +96,8 @@ public without sharing class HOT_ServiceResourceHandler {
 			}
 			insert serviceTerritoryMembers;
 		}
+		
 		else if(serviceTerritoryDeveloperName != null){
-
 			Id serviceTerritoryId = [SELECT Id FROM ServiceTerritory WHERE HOT_DeveloperName__c = :serviceTerritoryDeveloperName].Id;
 			List<ServiceTerritoryMember> serviceTerritoryMembers = new List<ServiceTerritoryMember>();
 			for(ServiceResource serviceResource:serviceResources){
