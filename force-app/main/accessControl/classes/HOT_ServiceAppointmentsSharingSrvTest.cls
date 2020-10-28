@@ -14,9 +14,12 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 	private static void testGrantAccess() {
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
+		Account account = HOT_TestDataFactory.createAccount(true);
+		insert account;
 		HOT_Request__c request = HOT_TestDataFactory.createRequest( 'TEST', workType );
 		insert request;
 		WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder( request, workType );
+		workOrder.AccountId = account.Id;
 		insert workOrder;
 		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem( workOrder, workType );
 		insert workOrderLineItem;
@@ -41,6 +44,7 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_1.Id AND RowCause = 'Manual'] );
 		System.assertEquals( 1, [SELECT count() FROM ServiceAppointmentShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : serviceAppointment_2.Id AND RowCause = 'Manual'] );
 		System.assertEquals( 1, [SELECT count() FROM WorkOrderShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND ParentId = : workOrder.Id AND RowCause = 'Manual'] );
+		System.assertEquals( 1, [SELECT count() FROM AccountShare WHERE UserOrGroupId = : serviceResources[0].RelatedRecordId AND AccountId = : account.Id AND RowCause = 'Manual'] );
 	}
 
 	@IsTest
