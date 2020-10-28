@@ -10,19 +10,13 @@
         <processMetadataValues>
             <name>recipientCategory</name>
             <value>
-                <stringValue>queue</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>recipientSelection</name>
-            <value>
-                <stringValue>HOT_Tolk_Admin</stringValue>
+                <stringValue>owner</stringValue>
             </value>
         </processMetadataValues>
         <processMetadataValues>
             <name>recipientType</name>
             <value>
-                <stringValue>record</stringValue>
+                <stringValue>reference</stringValue>
             </value>
         </processMetadataValues>
         <name>myRule_1_A1</name>
@@ -113,7 +107,7 @@
             <assignToReference>myCollection_myRule_1_A1recipientIds</assignToReference>
             <operator>Add</operator>
             <value>
-                <stringValue>00G1x000004DL9YEAW</stringValue>
+                <elementReference>myVariable_current.OwnerId</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -163,7 +157,7 @@
 &amp;&amp;
 {!myVariable_current.Owner:Queue.DeveloperName} = &quot;HOT_Tolk_Admin&quot;</expression>
     </formulas>
-    <interviewLabel>Request_Initiator-2_InterviewLabel</interviewLabel>
+    <interviewLabel>Request_Initiator-3_InterviewLabel</interviewLabel>
     <label>Request Initiator</label>
     <processMetadataValues>
         <name>ObjectType</name>
