@@ -45,7 +45,8 @@ private class HOT_RequestApprovedHandlerTest{
 		WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
 		HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c LIMIT 1];
 		WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-
+		workOrder.HOT_NumberOfInterpreters__c = 2;
+		
 		Test.startTest();
 		insert workOrder;
 		Test.stopTest();
