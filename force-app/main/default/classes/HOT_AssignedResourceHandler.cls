@@ -4,7 +4,15 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
 	}
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
-		updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
+		List<AssignedResource> assignedResourcesFiltered = new List<AssignedResource>();
+		for(AssignedResource assignedResource:(List<AssignedResource>) records){
+			if(assignedResource.ServiceResourceId != triggerOldMap.get(assignedResource.Id).get('ServiceResourceId')){
+				assignedResourcesFiltered.add(assignedResource);
+			}
+		}
+		if(assignedResourcesFiltered.size()>0){
+			updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
+		}
 	}
 
 
@@ -13,13 +21,25 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		update serviceAppointments;
 		List<HOT_InterestedResource__c> interestedResource = createInterestedResources((List<AssignedResource>) records);
 		insert interestedResource;
+		List<HOT_InterestedResource__c> interestedResources = updateInterestedResourceStatus(List<AssignedResource> assignedResources);
+		update interestedResources;
 	}
 
 	public override void onAfterUpdate(Map<Id, sObject> triggerOldMap){
-		List<ServiceAppointment> serviceAppointments = setServiceResourceFieldsOnServiceAppointment((List<AssignedResource>) records);
-		update serviceAppointments;
-		List<HOT_InterestedResource__c> interestedResource = createInterestedResources((List<AssignedResource>) records);
-		insert interestedResource;
+		List<AssignedResource> assignedResourcesFiltered = new List<AssignedResource>();
+		for(AssignedResource assignedResource:(List<AssignedResource>) records){
+			if(assignedResource.ServiceResourceId != triggerOldMap.get(assignedResource.Id).get('ServiceResourceId')){
+				assignedResourcesFiltered.add(assignedResource);
+			}
+		}
+		if(assignedResourcesFiltered.size()>0){
+			List<ServiceAppointment> serviceAppointments = setServiceResourceFieldsOnServiceAppointment((List<AssignedResource>) records);
+			update serviceAppointments;
+			List<HOT_InterestedResource__c> interestedResource = createInterestedResources((List<AssignedResource>) records);
+			insert interestedResource;
+			List<HOT_InterestedResource__c> interestedResources = updateInterestedResourceStatus(List<AssignedResource> assignedResources);
+			update interestedResources;
+		}
 	}
 	
 	public List<ServiceAppointment> setServiceResourceFieldsOnServiceAppointment(List<AssignedResource> records){
@@ -100,6 +120,27 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		}
 		return interestedResources;
 	}
+	
+	static public List<HOT_InterestedResource__c> updateInterestedResourceStatus(List<AssignedResource> assignedResources) {
+		List<Id> serviceAppointmentIds = new List<Id>();
+		for(AssignedResource assignedResource:assignedResources){
+			serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+		}
+		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__c =IN :serviceAppointmentIds];
+		for(AssignedResource assignedResource:assignedResources){
+			for(HOT_InterestedResource__c interestedResource:interestedResources){
+				if(assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c){
+					if(interestedResource.ServiceResource__c == assignedResource.ServiceResourceId){
+						interestedResource.Status__c = 'Assigned';
+					}
+					else{
+						interestedResource.Status__c = 'Not Assigned';
+					}
+				}
+			}
+		}
+		return interestedResources;	
+    	}
 
 	public static void updateServiceTerritoryOnServiceAppointment(List<AssignedResource> assignedResources){
 		List<Id> serviceAppointmentIds = new List<Id>();
