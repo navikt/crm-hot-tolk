@@ -335,6 +335,10 @@
         <object>Person__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <recordTypeVisibilities>
+        <recordType>Task.HOT_Task</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
     <tabSettings>
         <tab>HOT_Request__c</tab>
         <visibility>Visible</visibility>

@@ -1345,6 +1345,10 @@
         <recordType>PersonAccount.PersonAccount</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Task.HOT_Task</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
     <tabSettings>
         <tab>HOT_InterestedResource__c</tab>
         <visibility>Visible</visibility>
