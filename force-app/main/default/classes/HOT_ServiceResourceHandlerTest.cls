@@ -3,6 +3,11 @@ private class HOT_ServiceResourceHandlerTest{
 
 	@testSetup static void setup(){
 		
+		TestDataFactory.getPublicGroup( 'HMS Troms og Finmark', 'group_4719' );
+		TestDataFactory.getQueue( 'HMS Troms og Finmark', 'queue_4719', 'ServiceResource' );
+		TestDataFactory.getPublicGroup( 'HMS Nordland', 'group_4718' );
+		TestDataFactory.getQueue( 'HMS Nordland', 'queue_4718', 'ServiceResource' );
+		
 		Profile adminProfile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator'];
 		UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
 		User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
