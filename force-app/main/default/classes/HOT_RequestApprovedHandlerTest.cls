@@ -7,6 +7,7 @@ private class HOT_RequestApprovedHandlerTest{
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+		request.NumberOfInterpreters__c = 2;
 		insert request;
 
 
@@ -36,7 +37,7 @@ private class HOT_RequestApprovedHandlerTest{
 		//Checking that the FSL-records have been created
 		System.assertEquals(1, workOrders.size());
 		System.assertEquals(1, workOrderLineItems.size());
-		System.assertEquals(1, serviceAppointments.size());
+		System.assertEquals(2, serviceAppointments.size());
 
 	}
 
@@ -44,7 +45,8 @@ private class HOT_RequestApprovedHandlerTest{
 		WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
 		HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c LIMIT 1];
 		WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-
+		workOrder.HOT_NumberOfInterpreters__c = 2;
+		
 		Test.startTest();
 		insert workOrder;
 		Test.stopTest();
@@ -52,7 +54,7 @@ private class HOT_RequestApprovedHandlerTest{
 		List<WorkOrderLineItem> workOrderLineItems = [SELECT Id FROM WorkOrderLineItem];
 		List<ServiceAppointment> serviceAppointments = [SELECT Id FROM ServiceAppointment];
 		System.assertEquals(1, workOrderLineItems.size());
-		System.assertEquals(1, serviceAppointments.size());
+		System.assertEquals(2, serviceAppointments.size());
 
 	}
 
