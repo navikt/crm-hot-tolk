@@ -114,6 +114,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 					HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c();
 					interestedResource.ServiceAppointment__c = assignedResource.ServiceAppointmentId;
 					interestedResource.ServiceResource__c = assignedResource.ServiceResourceId;
+					interestedResource.Status__c = 'Assigned';
 					interestedResources.add(interestedResource);
 				}
 			}
