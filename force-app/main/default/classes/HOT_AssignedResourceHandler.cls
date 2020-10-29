@@ -21,7 +21,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		update serviceAppointments;
 		List<HOT_InterestedResource__c> interestedResource = createInterestedResources((List<AssignedResource>) records);
 		insert interestedResource;
-		List<HOT_InterestedResource__c> interestedResources = updateInterestedResourceStatus(List<AssignedResource> assignedResources);
+		List<HOT_InterestedResource__c> interestedResources = updateInterestedResourceStatus((List<AssignedResource>) records);
 		update interestedResources;
 	}
 
@@ -37,7 +37,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 			update serviceAppointments;
 			List<HOT_InterestedResource__c> interestedResource = createInterestedResources((List<AssignedResource>) records);
 			insert interestedResource;
-			List<HOT_InterestedResource__c> interestedResources = updateInterestedResourceStatus(List<AssignedResource> assignedResources);
+			List<HOT_InterestedResource__c> interestedResources = updateInterestedResourceStatus((List<AssignedResource>) records);
 			update interestedResources;
 		}
 	}
@@ -127,9 +127,9 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		for(AssignedResource assignedResource:assignedResources){
 			serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
 		}
-		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__c =IN :serviceAppointmentIds];
-		for(AssignedResource assignedResource:assignedResources){
-			for(HOT_InterestedResource__c interestedResource:interestedResources){
+		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__c IN :serviceAppointmentIds];
+		for(AssignedResource assignedResource : assignedResources){
+			for(HOT_InterestedResource__c interestedResource : interestedResources){
 				if(assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c){
 					if(interestedResource.ServiceResource__c == assignedResource.ServiceResourceId){
 						interestedResource.Status__c = 'Assigned';
