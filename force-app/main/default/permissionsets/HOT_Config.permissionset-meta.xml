@@ -116,6 +116,10 @@
         <object>WorkType</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <recordTypeVisibilities>
+        <recordType>Task.HOT_Task</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
     <tabSettings>
         <tab>standard-Dashboard</tab>
         <visibility>Visible</visibility>
