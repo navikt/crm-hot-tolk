@@ -19,7 +19,7 @@ public class HOT_TestDataFactory {
 		WorkOrder workOrder = new WorkOrder();
 		workOrder.HOT_Request__c = request.Id;
 		workOrder.Status = 'New';
-		workOrder.HOT_NumberOfInterpreters__c = 1;
+		workOrder.HOT_NumberOfInterpreters__c = request.NumberOfInterpreters__c;
 		workOrder.StartDate = Datetime.now().addHours( 1 );
 		workOrder.EndDate = workOrder.StartDate.addHours( 2 );
 		workOrder.WorkTypeId = workType.Id;
