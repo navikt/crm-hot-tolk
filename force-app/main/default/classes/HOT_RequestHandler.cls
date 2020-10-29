@@ -53,11 +53,16 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 	}
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
+		List<HOT_Request__c> godkjentRequests = new List<HOT_Request__c>();
 		List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
 		List<HOT_Request__c> annullertRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> finishedRequests = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+			// Filter for Godkjent requests
+            if (triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' && request.Status__c == 'Godkjent') {
+                godkjentRequests.add(request);
+			}
 			// Filter for Avlyst requests
             if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
                 avlystRequests.add(request);
@@ -67,6 +72,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 annullertRequests.add(request);
 			}
         }
+        if (godkjentRequests.size() > 0) {
+            createChildRecords(godkjentRequests);
+		}
         if (avlystRequests.size() > 0) {
             updateChildRecords(avlystRequests, 'Canceled');
 		}
@@ -111,6 +119,34 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (serviceAppointments.size() > 0) {
             update serviceAppointments;
 		}
+	}
+
+	public static void createChildRecords(List<HOT_Request__c> requests){
+		List<WorkOrder> workOrders = new List<WorkOrder>();
+		for(HOT_Request__c request:requests){
+			WorkOrder workOrder = new WorkOrder();
+
+			workOrder.AccountId = request.Account__c;
+			workOrder.City = request.MeetingPostalCity__c;
+			workOrder.ContactId = request.Account__c == null ? null : request.Account__r.PersonContactId;
+			workOrder.Description = request.Description__c;
+			workOrder.EndDate = request.EndTime__c;
+			workOrder.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
+			workOrder.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
+			workOrder.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
+			workOrder.HOT_NumberOfInterpreters__c = request.NumberOfInterpreters__c;
+			workOrder.HOT_Request__c = request.Id;
+			workOrder.OwnerId = request.OwnerId;
+			workOrder.PostalCode = request.MeetingPostalCode__c;
+			workOrder.StartDate = request.StartTime__c;
+			workOrder.Street = request.MeetingStreet__c;
+			workOrder.Subject = request.Subject__c;
+			workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
+			workOrder.WorkTypeId = request.InterpretationMethod__c;
+
+			workOrders.add(workOrder);
+		}
+		insert workOrders;
 	}
 	
 	public static void setServiceTerritory(List<HOT_Request__c> requests){
