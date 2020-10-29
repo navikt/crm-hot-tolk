@@ -1,0 +1,258 @@
+name: "[PUSH] Create Package"
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "force-app/**"
+jobs:
+  # ################################################################# #
+  # ######################## CREATE PACKAGE ######################### #
+  # ################################################################# #
+  create-package:
+    name: Create Package
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # Install SFDX
+      - name: Install SFDX
+        uses: sfdx-actions/setup-sfdx@v1
+
+      # Authenticate prod
+      - name: Authenticate prod
+        run: |
+          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./PROD_SFDX_URL.txt
+
+      # Delete unpackagable and scratch-org folder
+      - name: Delete unpackagable
+        run: |
+          rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/scratch-org
+
+      # Create package version
+      - name: Create package version
+        id: package-version-create
+        run: |
+          sfdx force:package:version:create -f config/project-scratch-def.json -p $(cat sfdx-project.json | jq '.packageDirectories[0].package' -r) -k ${{ secrets.PACKAGE_KEY }} -w 90 -c --json | tee output
+
+          if [ $(cat output |jq '.status') == "1" ]; then
+            exit 125
+          fi
+
+          packageId=$(cat output | jq -r '.result.SubscriberPackageVersionId')
+          echo "::set-output name=packageId::$(echo $packageId)"
+          echo "::set-output name=betaVersionNumber::$(cat sfdx-project.json | jq -r '.packageAliases | keys_unsorted[-1]' | sed 's/.*-//')"
+          echo "::set-output name=codeCoverage::$( sfdx force:package:version:report -p $(echo $packageId) --json | jq -r '.result.CodeCoverage.apexCodeCoveragePercentage' )"
+
+    outputs:
+      packageId: ${{ steps.package-version-create.outputs.packageId }}
+      betaVersionNumber: ${{ steps.package-version-create.outputs.betaVersionNumber }}
+      codeCoverage: ${{ steps.package-version-create.outputs.codeCoverage }}
+
+  # ################################################################# #
+  # ######################## INSTALL TO SIT ######################### #
+  # ################################################################# #
+  validate-in-sit:
+    name: Validate in SIT Sandbox
+    needs: [create-package]
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+       # Install SFDX
+      - name: Install SFDX
+        uses: sfdx-actions/setup-sfdx@v1
+
+      # Authenticate prod
+      - name: Authenticate prod
+        run: |
+          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./PROD_SFDX_URL.txt
+
+     # Authenticate integration-sandbox
+      - name: Authenticate integration-sandbox
+        run: |
+          echo ${{ secrets.INTEGRATION_SANDBOX_SFDX_URL}} > ./INTEGRATION_SANDBOX_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./INTEGRATION_SANDBOX_SFDX_URL.txt -a integration-sandbox -s
+          rm -f ./INTEGRATION_SANDBOX_SFDX_URL.txt
+
+      # Install new package version into integration org
+      - name: Install new package version into integration org
+        id: integration-installation
+        run: |
+          sfdx force:package:install --package ${{ needs.create-package.outputs.packageId }} -w 20 -b 20 -u integration-sandbox -r -k ${{ secrets.PACKAGE_KEY }} --json | tee output
+
+          if [ $(cat output | jq '.status') == "0" ]; then
+            echo "::set-output name=successfullyInstalled::true"
+          fi
+
+    outputs:
+      successfullyInstalled: ${{ steps.integration-installation.outputs.successfullyInstalled }}
+
+  # ################################################################# #
+  # ######################### CREATE RELEASE ######################## #
+  # ################################################################# #
+  create-release:
+    name: Create release
+    needs: [create-package, validate-in-sit]
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # set release variables
+      - name: Set release fields
+        id: release-fields
+        run: |
+          versionNumber=$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')
+          betaVersionNumber=${{ needs.create-package.outputs.betaVersionNumber }}
+
+          echo "::set-output name=tagName::v$(echo $versionNumber)-beta$(echo $betaVersionNumber)"
+          echo "::set-output name=releaseName::$(echo $versionNumber)-beta$(echo $betaVersionNumber)"
+          echo "::set-output name=bodyVersion::$(echo $versionNumber).$(echo $betaVersionNumber)"
+          echo "::set-output name=bodyPackage::${{ needs.create-package.outputs.packageId }}"
+
+          echo "::set-output name=packageCreation::✅ Package Creation"
+
+          if [ ${{ needs.validate-in-sit.outputs.successfullyInstalled }} == "true" ]; then
+            echo "::set-output name=integrationInstallation::✅ Package Installation (Integration Sandbox)"
+          else
+            echo "::set-output name=integrationInstallation::❌ Package Installation (Integration Sandbox)"
+          fi
+
+      # Generate changelog from commits
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v0.4.3
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # create github release
+      - name: Create Release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release-fields.outputs.tagName }}
+          release_name: ${{ steps.release-fields.outputs.releaseName }}
+          body: |
+            **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
+            **Package ID**: ${{ steps.release-fields.outputs.bodyPackage }}
+            **Code Coverage**: ${{ needs.create-package.outputs.codeCoverage }}%
+
+            **Author**: ${{ github.actor }}
+
+            ${{ steps.release-fields.outputs.packageCreation }}
+            ${{ steps.release-fields.outputs.integrationInstallation }}
+
+            ## Changelog
+
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: true
+
+  # ################################################################# #
+  # #################### CHECK DEPLOYMENT SECRETS ################### #
+  # ################################################################# #
+  check-deployment-secrets:
+    name: Check Deployment Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check sandboxes for deployment
+        id: checkSecret
+        run: |
+          echo "Install in dev sandbox: ${{ env.DEV == '1' }}"
+          echo "Install in UAT sandbox: ${{ env.UAT == '1' }}"
+          echo "::set-output name=deployToUAT::${{ env.UAT == '1' }}"
+          echo "::set-output name=deployToDev::${{ env.DEV == '1' }}"
+        env:
+          DEV: ${{ secrets.DEPLOY_TO_DEV_AFTER_PACKAGE_CREATION }}
+          UAT: ${{ secrets.DEPLOY_TO_UAT_AFTER_PACKAGE_CREATION }}
+    outputs:
+      deployToUAT: ${{ steps.checkSecret.outputs.deployToUAT }}
+      deployToDev: ${{ steps.checkSecret.outputs.deployToDev }}
+
+  # ################################################################# #
+  # ######################### DEPLOY PACKAGE ######################## #
+  # ################################################################# #
+  deploy-package-to-sandboxes:
+    name: Deploy Package to Sandboxes
+    runs-on: ubuntu-latest
+    needs: [create-package, check-deployment-secrets]
+    if: ${{ needs.check-deployment-secrets.outputs.deployToUAT == 'true' || needs.check-deployment-secrets.outputs.deployToDev == 'true' }}
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # Install SFDX
+      - name: Install SFDX
+        uses: sfdx-actions/setup-sfdx@v1
+
+      # Authenticate prod
+      - name: Authenticate prod
+        run: |
+          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./PROD_SFDX_URL.txt
+
+      # Authenticate dev sandbox
+      - name: Authenticate dev sandbox
+        if: ${{ needs.check-deployment-secrets.outputs.deployToDev == 'true' }}
+        run: |
+          echo ${{ secrets.DEV_SFDX_URL}} > ./DEV_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./DEV_SFDX_URL.txt -a dev -s
+          rm -f ./DEV_SFDX_URL.txt
+
+      # Authenticate UAT sandbox
+      - name: Authenticate UAT sandbox
+        if: ${{ needs.check-deployment-secrets.outputs.deployToUAT == 'true' }}
+        run: |
+          echo ${{ secrets.UAT_SFDX_URL}} > ./UAT_SFDX_URL.txt
+          sfdx force:auth:sfdxurl:store -f ./UAT_SFDX_URL.txt -a uat -s
+          rm -f ./UAT_SFDX_URL.txt
+
+      # Install sfpowerkit plugin used to install multiple packages only by version number
+      - name: Install sfpowerkit plugin
+        run: echo y | sfdx plugins:install sfpowerkit
+
+      # Get package keys
+      - name: Get package keys
+        id: install-keys
+        run: |
+          keys=""
+          for p in $(jq '.result | .[].Name' -r <<< "$(sfdx force:package:list --json)"); do
+              keys+=$p":${{ secrets.PACKAGE_KEY }} "
+          done
+          echo "::set-output name=keys::$(echo $keys)"
+
+      # Install dependant packages to dev sandbox
+      - name: Install dependant packages to dev sandbox
+        if: ${{ needs.check-deployment-secrets.outputs.deployToDev == 'true' }}
+        run: sfdx sfpowerkit:package:dependencies:install -u dev -r -a -w 60 -k '${{ steps.install-keys.outputs.keys }}'
+
+      # Install package in dev sandbox org
+      - name: Install package in dev sandbox org
+        if: ${{ needs.check-deployment-secrets.outputs.deployToDev == 'true' }}
+        run: sfdx force:package:install --package ${{ needs.create-package.outputs.packageId }} -k ${{ secrets.PACKAGE_KEY }} -u dev -w 10 -b 10 -r
+
+      # Install dependant packages to UAT sandbox
+      - name: Install dependant packages to UAT sandbox
+        if: ${{ needs.check-deployment-secrets.outputs.deployToUAT == 'true' }}
+        run: sfdx sfpowerkit:package:dependencies:install -u uat -r -a -w 60 -k '${{ steps.install-keys.outputs.keys }}'
+
+      # Install package in UAT sandbox org
+      - name: Install package in UAT sandbox org
+        if: ${{ needs.check-deployment-secrets.outputs.deployToUAT == 'true' }}
+        run: sfdx force:package:install --package ${{ needs.create-package.outputs.packageId }} -k ${{ secrets.PACKAGE_KEY }} -u uat -w 10 -b 10 -r
+
