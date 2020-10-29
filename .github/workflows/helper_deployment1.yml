@@ -6,7 +6,7 @@ on:
         description: "Package ID"
         required: true
       org:
-        description: "Org (prod, preprod, devhot, uathot, sit)"
+        description: "Org (prod, preprod, dev, uat, sit)"
         required: true
 jobs:
   debug:
@@ -23,29 +23,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Set SFDX Auth URL
-      - name: "Set SFDX Auth URL"
+      - name: Set SFDX Auth URL
         id: auth-url
         run: |
-          if [ ${{ github.event.inputs.org }} == "prod" ]
-          then
+          if [ ${{ github.event.inputs.org }} == "prod" ];then
             echo "::set-output name=target::$(echo ${{ secrets.PROD_SFDX_URL }})"
             echo "'prod' was set"
-          elif [ ${{ github.event.inputs.org }} == "preprod" ]
-          then
+          elif [ ${{ github.event.inputs.org }} == "preprod" ];then
             echo "::set-output name=target::$(echo ${{ secrets.PREPROD_SFDX_URL }})"
             echo "'preprod' was set"
-          elif [ ${{ github.event.inputs.org }} == "sit" ]
-          then
-            echo "::set-output name=target::$(echo ${{ secrets.INTEGRATION_SANDBOX_SFDX_URL }})"
-            echo "'sit' was set"
-          elif [ ${{ github.event.inputs.org }} == "devhot" ]
-          then
-            echo "::set-output name=target::$(echo ${{ secrets.DEVHOT_SFDX_URL }})"
-            echo "'devhot' was set"
-          elif [ ${{ github.event.inputs.org }} == "uathot" ]
-          then
-            echo "::set-output name=target::$(echo ${{ secrets.UATHOT_SFDX_URL }})"
-            echo "'uathot' was set"
+          elif [ ${{ github.event.inputs.org }} == "dev" ];then
+            echo "::set-output name=target::$(echo ${{ secrets.DEV_SFDX_URL }})"
+            echo "'dev' was set"
+          elif [ ${{ github.event.inputs.org }} == "uat" ];then
+            echo "::set-output name=target::$(echo ${{ secrets.UAT_SFDX_URL }})"
+            echo "'preprod' was set"
+          elif [ ${{ github.event.inputs.org }} == "sit" ];then
+            echo "::set-output name=target::$(echo ${{ secrets.SIT_SFDX_URL }})"
+            echo "'preprod' was set"
           fi
 
       # Authorize SFDX
@@ -55,5 +50,5 @@ jobs:
           sfdx-auth-url: ${{ steps.auth-url.outputs.target }}
 
       # Install package in target org
-      - name: "Install package in target org"
-        run: "sfdx force:package:install --package ${{ github.event.inputs.packageId }} -k ${{ secrets.PACKAGE_KEY }} -w 10 -b 10 -r"
+      - name: Install package in target org
+        run: sfdx force:package:install --package ${{ github.event.inputs.packageId }} -k ${{ secrets.PACKAGE_KEY }} -w 10 -b 10 -r
