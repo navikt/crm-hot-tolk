@@ -133,10 +133,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		for(AssignedResource assignedResource : assignedResources){
 			for(HOT_InterestedResource__c interestedResource : interestedResources){
 				if(assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c){
-					if(interestedResource.ServiceResource__c == assignedResource.ServiceResourceId){
+					if(interestedResource.ServiceResource__c == assignedResource.ServiceResourceId && interestedResource.Status__c != 'Assigned'){
 						interestedResource.Status__c = 'Assigned';
 					}
-					else{
+					else if(interestedResource.Status__c != 'Not Assigned'){
 						interestedResource.Status__c = 'Not Assigned';
 					}
 				}
