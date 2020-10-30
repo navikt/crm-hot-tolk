@@ -86,6 +86,12 @@ jobs:
       - name: Authenticate scratch org
         run: sfdx force:auth:sfdxurl:store -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt -a scratch-org -s
 
+      # Delete unpackagable and scratch-org folder
+      - name: Delete unpackagable
+        run: |
+          rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/scratch-org
+
       # Deploy source to scratch org
       - name: Push source to scratch org
         run: sfdx force:source:push
