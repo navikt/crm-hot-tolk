@@ -22,10 +22,6 @@
                 <behavior>Edit</behavior>
                 <field>ActivityDate</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>CRM_NAV_Department__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -139,7 +135,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h4E000001EZ40</masterLabel>
+        <masterLabel>00h1x000001L8sa</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
