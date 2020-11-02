@@ -4,6 +4,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 		setStatusDefault((List<HOT_Request__c>) records);
 		setOrdererField((List<HOT_Request__c>) records);
 		setServiceTerritory((List<HOT_Request__c>) records);
+		setFieldsToBlank((List<HOT_Request__c>) records, new List<String>{'MessageToDispatcher__c'});
 	}
 
 	public override void onAfterInsert(){
@@ -186,6 +187,15 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 		for(HOT_Request__c request:requests){
 			if(request.Type__c == 'Me' && request.Orderer__c == null && request.Account__c != null){
 				request.Orderer__c = request.Account__c;
+			}
+		}
+	}
+	public static void setFieldsToBlank(List<HOT_Request__c> requests, List<String> fields){
+		for(HOT_Request__c request:requests){
+			for(String field:fields){
+				if(request.get(field) != ''){
+					request.put(field, '');
+				}
 			}
 		}
 	}
