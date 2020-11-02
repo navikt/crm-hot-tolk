@@ -165,7 +165,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		update serviceAppointmentsToUpdate;
 	}
 	
-	public static void setResourceTypeOnServiceAppointment((List<AssignedResource>) records){
+	public static void setResourceTypeOnServiceAppointment(List<AssignedResource> assignedResources){
 		List<Id> serviceAppointmentIds = new List<Id>();
 		List<Id> serviceResourceIds = new List<Id>();
 		for(AssignedResource assignedResource:assignedResources){
