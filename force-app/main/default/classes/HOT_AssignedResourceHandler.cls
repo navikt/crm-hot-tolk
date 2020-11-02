@@ -2,6 +2,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 	
 	public override void onBeforeInsert(){
 		updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
+		setResourceTypeOnServiceAppointment((List<AssignedResource>) records);
 	}
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
 		List<AssignedResource> assignedResourcesFiltered = new List<AssignedResource>();
@@ -12,6 +13,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		}
 		if(assignedResourcesFiltered.size()>0){
 			updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
+			setResourceTypeOnServiceAppointment((List<AssignedResource>) records);
 		}
 	}
 
@@ -165,6 +167,26 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		update serviceAppointmentsToUpdate;
 	}
 	
+	public static void setResourceTypeOnServiceAppointment(List<AssignedResource> assignedResources){
+		List<Id> serviceAppointmentIds = new List<Id>();
+		List<Id> serviceResourceIds = new List<Id>();
+		for(AssignedResource assignedResource:assignedResources){
+			serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+			serviceResourceIds.add(assignedResource.ServiceResourceId);
+		}
+		Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>([SELECT Id, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c FROM ServiceAppointment WHERE Id IN :serviceAppointmentIds]);
+		Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>([SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c FROM ServiceResource WHERE Id IN :serviceResourceIds]);
+		
+		List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
+		for(AssignedResource assignedResource:assignedResources){
+			if(serviceResources.get(assignedResource.ServiceResourceId).HOT_IsEmployedInterpreter__c != serviceAppointments.get(assignedResource.ServiceAppointmentId).HOT_IsEmployedInterpreter__c){
+				serviceAppointments.get(assignedResource.ServiceAppointmentId).HOT_IsEmployedInterpreter__c = serviceResources.get(assignedResource.ServiceResourceId).HOT_IsEmployedInterpreter__c;
+				serviceAppointments.get(assignedResource.ServiceAppointmentId).HOT_IsReleasedToFreelance__c = serviceResources.get(assignedResource.ServiceResourceId).HOT_IsFreelanceInterpreter__c;
+				serviceAppointmentsToUpdate.add(serviceAppointments.get(assignedResource.ServiceAppointmentId));
+			}
+		}
+		update serviceAppointmentsToUpdate;
+	}
 
 
 }
