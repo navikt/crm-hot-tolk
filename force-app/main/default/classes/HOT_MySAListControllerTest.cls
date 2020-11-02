@@ -62,7 +62,6 @@ private class HOT_MySAListControllerTest{
 
 		ServiceAppointment saDummy = [SELECT Id FROM ServiceAppointment LIMIT 1];
 		List<ServiceAppointment> assignedAppointments = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
-		Map<String, List<ServiceAppointmentHistory>> historyMap = HOT_MyServiceAppointmentListController.getMyServiceAppointmentFieldHistories(saDummy.Id);
 		List<WorkOrderLineItem> workOrderLineItems = HOT_MyServiceAppointmentListController.getParentWorkOrderLineItems();
 		System.assertEquals(0, 0);
 	}
