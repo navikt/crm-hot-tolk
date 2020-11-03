@@ -9,9 +9,6 @@ private class HOT_RequestApprovedHandlerTest{
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
 		request.NumberOfInterpreters__c = 2;
 		insert request;
-
-
-		
 	}
 
 	@isTest static void requestStatusApproved() {
@@ -22,7 +19,7 @@ private class HOT_RequestApprovedHandlerTest{
 		List<ServiceAppointment> serviceAppointments = [SELECT Id FROM ServiceAppointment];
 		
 		//Checking that the FSL-records have not been created yet
-		System.assertEquals(1, workOrders.size());
+		System.assertEquals(0, workOrders.size());
 		System.assertEquals(0, workOrderLineItems.size());
 		System.assertEquals(0, serviceAppointments.size());
 
@@ -61,8 +58,8 @@ private class HOT_RequestApprovedHandlerTest{
 		workOrderLineItems = [SELECT Id FROM WorkOrderLineItem];
 		serviceAppointments = [SELECT Id FROM ServiceAppointment];
 		//Checking that the FSL-records have been created
-		System.assertEquals(2, workOrderLineItems.size());
-		System.assertEquals(4, serviceAppointments.size());
+		System.assertEquals(1, workOrderLineItems.size());
+		System.assertEquals(2, serviceAppointments.size());
 	}
 
 	@isTest static void requestApproved_newWorkOrder() {
