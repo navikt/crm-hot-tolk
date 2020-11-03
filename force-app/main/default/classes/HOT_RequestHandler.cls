@@ -30,6 +30,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             KRRCalloutQueuable krr = new KRRCalloutQueuable(requestsToGetContactInformationFor);
             System.enqueueJob(krr);
 		}
+		createChildRecords((List<HOT_Request__c>) records);
 	}
 
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
@@ -74,7 +75,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 			}
         }
         if (godkjentRequests.size() > 0) {
-            createChildRecords(godkjentRequests);
+            createWOLI_SA(godkjentRequests);
 		}
         if (avlystRequests.size() > 0) {
             updateChildRecords(avlystRequests, 'Canceled');
@@ -97,7 +98,17 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     }
 
-    private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
+    private static void createWOLI_SA(List<HOT_Request__c> godkjentRequests) {
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, Subject, Description, EndDate, StartDate, 
+									  Address, City, PostalCode, Street,
+									  HOT_InterpretationPostalCity__c, HOT_InterpretationPostalCode__c, HOT_InterpretationStreet__c,
+									  HOT_NumberOfInterpreters__c, WorkTypeId FROM WorkOrder WHERE HOT_Request__c IN :godkjentRequests];
+		System.debug(workOrders);
+		HOT_WorkOrderHandler.createChildRecords(workOrders);
+	}
+		
+		
+	private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
         List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder WHERE HOT_Request__c IN :changedRequests AND Status != :newStatus];
         List<WorkOrderLineItem> workOrderLineItems = [SELECT Status FROM WorkOrderLineItem WHERE WorkOrderId IN :workOrders AND Status != :newStatus];
         List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment WHERE ParentRecordId IN :workOrderLineItems AND Status != :newStatus];
