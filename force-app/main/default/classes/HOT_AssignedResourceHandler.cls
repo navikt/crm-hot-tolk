@@ -12,8 +12,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 			}
 		}
 		if(assignedResourcesFiltered.size()>0){
-			updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
-			setResourceTypeOnServiceAppointment((List<AssignedResource>) records);
+			updateServiceTerritoryOnServiceAppointment(assignedResourcesFiltered);
+			setResourceTypeOnServiceAppointment(assignedResourcesFiltered);
 		}
 	}
 

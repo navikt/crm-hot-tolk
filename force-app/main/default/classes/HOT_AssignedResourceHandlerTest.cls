@@ -21,6 +21,7 @@ private class HOT_AssignedResourceHandlerTest{
 		ServiceResource serviceResourceAdmin = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
 		insert serviceResourceAdmin;
 		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+		serviceResource.HOT_IsFreelanceInterpreter__c = true;
 		insert serviceResource;
 
 	}
