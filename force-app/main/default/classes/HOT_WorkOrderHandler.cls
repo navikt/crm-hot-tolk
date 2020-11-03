@@ -1,7 +1,20 @@
 public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 	
 	public override void onAfterInsert() {
-		createChildRecords((List<WorkOrder>) records);
+		List<Id> requestIds = new List<Id>();
+		for(WorkOrder workOrder:(List<WorkOrder>) records){
+			requestIds.add(workOrder.HOT_Request__c);
+		}
+		List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();
+		Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>([SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]);
+		for(WorkOrder workOrder:(List<WorkOrder>) records){
+			if(requests.get(workOrder.HOT_Request__c).Status__c == 'Godkjent'){
+				approvedWorkOrders.add(workOrder);
+			}
+		}
+		if(approvedWorkOrders.size()>0){
+			createChildRecords(approvedWorkOrders);
+		}
 	}
 
 	public static void createChildRecords(List<WorkOrder> workOrders){
