@@ -30,7 +30,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             KRRCalloutQueuable krr = new KRRCalloutQueuable(requestsToGetContactInformationFor);
             System.enqueueJob(krr);
 		}
-		createChildRecords((List<HOT_Request__c>) records);
 	}
 
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
@@ -103,8 +102,12 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 									  Address, City, PostalCode, Street,
 									  HOT_InterpretationPostalCity__c, HOT_InterpretationPostalCode__c, HOT_InterpretationStreet__c,
 									  HOT_NumberOfInterpreters__c, WorkTypeId FROM WorkOrder WHERE HOT_Request__c IN :godkjentRequests];
-		System.debug(workOrders);
-		HOT_WorkOrderHandler.createChildRecords(workOrders);
+		if(workOrders.size()>0){
+			HOT_WorkOrderHandler.createChildRecords(workOrders);
+		}
+		else{
+			createChildRecords(godkjentRequests);
+		}
 	}
 		
 		
