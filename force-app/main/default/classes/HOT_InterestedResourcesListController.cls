@@ -6,8 +6,8 @@ public without sharing class HOT_InterestedResourcesListController {
 		List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId=:userId];
 		
 		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Name, Comments__c, toLabel(Status__c), ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c, ServiceAppointmentAddress__c,
-		ServiceAppointment__r.HOT_FreelanceSubject__c, IsNewComment__c, ServiceAppointment__c, AppointmentNumber__c, NumberOfInterestedResources__c,
-		ServiceAppointment__r.HOT_WorkTypeName__c, ServiceAppointment__r.HOT_DeadlineDate__c
+		ServiceAppointmentFreelanceSubject__c, IsNewComment__c, ServiceAppointment__c, AppointmentNumber__c, NumberOfInterestedResources__c,
+		WorkTypeName__c, ServiceAppointment__r.HOT_DeadlineDate__c, ServiceAppointmentCity__c
 		FROM HOT_InterestedResource__c 
 		WHERE 
 		ServiceResource__c IN: serviceResource
