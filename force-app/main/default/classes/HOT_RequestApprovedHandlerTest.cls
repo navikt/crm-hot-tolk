@@ -5,7 +5,11 @@ private class HOT_RequestApprovedHandlerTest{
 	static void setup(){
 
 		WorkType workType = HOT_TestDataFactory.createWorkType();
+		workType.Name = 'Work Type Name';
 		insert workType;
+		WorkType workType2 = HOT_TestDataFactory.createWorkType();
+		workType2.Name = 'Work Type Name 2';
+		insert workType2;
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
 		request.NumberOfInterpreters__c = 2;
 		insert request;
@@ -42,7 +46,7 @@ private class HOT_RequestApprovedHandlerTest{
 	}
 
 	@isTest static void workOrder_workOrderLineItem_serviceAppointment_Test() {
-		WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
+		WorkType workType = [SELECT Id FROM WorkType WHERE Name = 'Work Type Name' LIMIT 1];
 		HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c LIMIT 1];
 		WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
 		workOrder.HOT_NumberOfInterpreters__c = 2;
@@ -55,6 +59,24 @@ private class HOT_RequestApprovedHandlerTest{
 		List<ServiceAppointment> serviceAppointments = [SELECT Id FROM ServiceAppointment];
 		System.assertEquals(1, workOrderLineItems.size());
 		System.assertEquals(2, serviceAppointments.size());
+
+	}
+
+	@isTest static void multipleWorkTypeTest() {
+		WorkType workType2 = [SELECT Id FROM WorkType WHERE Name = 'Work Type Name 2' LIMIT 1];
+		HOT_Request__c request = [SELECT Id, Status__c, InterpretationMethodSecondary__c, NumberOfInterpretersSecondary__c FROM HOT_Request__c LIMIT 1];
+		request.InterpretationMethodSecondary__c = workType2.Id;
+		request.NumberOfInterpretersSecondary__c = 2;
+		request.Status__c = 'Godkjent';
+
+		Test.startTest();
+		update request;
+		Test.stopTest();
+
+		List<WorkOrderLineItem> workOrderLineItems = [SELECT Id FROM WorkOrderLineItem];
+		List<ServiceAppointment> serviceAppointments = [SELECT Id FROM ServiceAppointment];
+		System.assertEquals(2, workOrderLineItems.size());
+		System.assertEquals(4, serviceAppointments.size());
 
 	}
 
