@@ -70,6 +70,10 @@
                 <behavior>Edit</behavior>
                 <field>HOT_Processed__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HOT_IsScreenInterpreter__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
