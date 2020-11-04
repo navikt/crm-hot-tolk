@@ -99,8 +99,30 @@
 			tabindex="-1" role="dialog">
 			<section>
 				<div>
-					<h2 class="typo-undertittel">Tema</h2>
-					<p class="typo-normal">{subject}</p>
+					<span class="slds-form-element__label lightning-output-field__label">Oppdragsnummer</span>
+					</br>
+					<lightning-formatted-text value={serviceAppointmentDetails.AppointmentNumber}
+						class="lightning-output-field">
+					</lightning-formatted-text>
+					</br>
+					<span class="slds-form-element__label lightning-output-field__label">Adresse</span>
+					</br>
+					<lightning-formatted-text value={serviceAppointmentDetails.PostalCode}
+						class="lightning-output-field">
+					</lightning-formatted-text>
+					</br>
+					<span class="slds-form-element__label lightning-output-field__label">Antall påmeldte</span>
+					</br>
+					<lightning-formatted-number value={serviceAppointmentDetails.HOT_NumberOfInterestedResources__c}
+						class="lightning-output-field">
+					</lightning-formatted-number>
+					</br>
+					<span class="slds-form-element__label lightning-output-field__label">Region</span>
+					</br>
+					<lightning-formatted-text value={serviceAppointmentDetails.ServiceTerritory.Name}
+						class="lightning-output-field">
+					</lightning-formatted-text>
+					</br>
 				</div>
 			</section>
 			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
