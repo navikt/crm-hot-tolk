@@ -156,19 +156,23 @@ export default class Hot_openServiceAppointments extends LightningElement {
 	@track sortDirection = 'desc';
 	@track sortedBy = 'HOT_ReleaseDate__c';
 
-	mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
+	mobileSortingDefaultValue = '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ';
 	get sortingOptions() {
 		return [
+			{ label: 'Frigitt dato stigende', value: '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "asc"} ' },
+			{ label: 'Frigitt dato synkende', value: '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ' },
 			{ label: 'Start tid stigende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ' },
 			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
 			{ label: 'Slutt tid stigende', value: '{"fieldName": "DueDate", "sortDirection": "asc"} ' },
 			{ label: 'Slutt tid synkende', value: '{"fieldName": "DueDate", "sortDirection": "desc"} ' },
-			{ label: 'Adresse A - Å', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "asc"} ' },
-			{ label: 'Adresse Å - A', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "desc"} ' },
+			{ label: 'Poststed A - Å', value: '{"fieldName": "City", "sortDirection": "asc"} ' },
+			{ label: 'Poststed A - Å', value: '{"fieldName": "City", "sortDirection": "desc"} ' },
 			{ label: 'Arbeidstype A - Å', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} ' },
 			{ label: 'Arbeidstype Å - A', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} ' },
-			{ label: 'Antall påmeldte stigende', value: '{"fieldName": "HOT_NumberOfInterestedResources__c", "sortDirection": "asc"} ' },
-			{ label: 'Antall påmeldte synkende', value: '{"fieldName": "HOT_NumberOfInterestedResources__c", "sortDirection": "desc"} ' },
+			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "asc"} ' },
+			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "desc"} ' },
+			{ label: 'Frist dato stigende', value: '{"fieldName": "HOT_DeadlineDate__c", "sortDirection": "asc"} ' },
+			{ label: 'Frist dato synkende', value: '{"fieldName": "HOT_DeadlineDate__c", "sortDirection": "desc"} ' },
 		];
 	}
 	handleMobileSorting(event) {
