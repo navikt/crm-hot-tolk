@@ -55,8 +55,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			}
 		},
 		{
-			label: 'Postnr',
-			fieldName: 'PostalCode',
+			label: 'Poststed',
+			fieldName: 'City',
 			type: 'text',
 			sortable: true,
 		},
