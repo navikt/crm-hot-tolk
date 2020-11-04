@@ -12,12 +12,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
 	@track columns = [
 		{
-			label: 'Oppdragsnummer',
-			fieldName: 'AppointmentNumber',
-			type: 'text',
-			sortable: true,
-		},
-		{
 			label: 'Start Tid',
 			fieldName: 'EarliestStartTime',
 			type: 'date',
@@ -46,14 +40,20 @@ export default class Hot_myServiceAppointments extends LightningElement {
 			}
 		},
 		{
-			label: 'Adresse',
-			fieldName: 'HOT_AddressFormated__c',
+			label: 'Poststed',
+			fieldName: 'City',
 			type: 'text',
 			sortable: true,
 		},
 		{
-			label: 'Status',
-			fieldName: 'Status',
+			label: 'Tema',
+			fieldName: 'Subject',
+			type: 'text',
+			sortable: true,
+		},
+		{
+			label: 'Arbeidstype',
+			fieldName: 'HOT_WorkTypeName__c',
 			type: 'text',
 			sortable: true,
 		},
