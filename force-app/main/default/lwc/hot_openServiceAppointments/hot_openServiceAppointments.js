@@ -7,7 +7,7 @@ import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointme
 
 
 var actions = [
-	{ label: 'Tema', name: 'details' },
+	{ label: 'Detaljer', name: 'details' },
 ];
 
 export default class Hot_openServiceAppointments extends LightningElement {
@@ -16,10 +16,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
 	@track columns = [
 		{
-			label: 'Oppdragsnummer',
-			fieldName: 'AppointmentNumber',
-			type: 'text',
+			label: 'Frigitt dato',
+			fieldName: 'HOT_ReleaseDate__c',
+			type: 'date',
 			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric'
+			}
 		},
 		{
 			label: 'Start Tid',
@@ -50,8 +55,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			}
 		},
 		{
-			label: 'Adresse',
-			fieldName: 'HOT_AddressFormated__c',
+			label: 'Postnr',
+			fieldName: 'PostalCode',
 			type: 'text',
 			sortable: true,
 		},
@@ -62,11 +67,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			sortable: true,
 		},
 		{
-			label: 'Påmeldte',
-			fieldName: 'HOT_NumberOfInterestedResources__c',
-			type: 'number',
+			label: 'Tema',
+			fieldName: 'HOT_FreelanceSubject__c',
+			type: 'text',
 			sortable: true,
-			cellAttributes: { alignment: 'left' }
 		},
 		{
 			label: 'Frist',
@@ -148,8 +152,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
 	}
 	//Sorting methods
 	@track defaultSortDirection = 'asc';
-	@track sortDirection = 'asc';
-	@track sortedBy = 'EarliestStartTime';
+	@track sortDirection = 'desc';
+	@track sortedBy = 'HOT_ReleaseDate__c';
 
 	mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
 	get sortingOptions() {
@@ -216,11 +220,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
 	@track subject = "Ingen ytterligere informasjon";
 	@track isDetails = false;
+	@track serviceAppointmentDetails = null;
 	showDetails(row) {
 		const { Id } = row;
-		if (row.HOT_FreelanceSubject__c) {
-			this.subject = row.HOT_FreelanceSubject__c;
-		}
+		this.serviceAppointmentDetails = row;
 		this.isDetails = true;
 	}
 	abortShowDetails() {
