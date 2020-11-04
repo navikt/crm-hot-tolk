@@ -17,13 +17,6 @@ var actions = [
 export default class Hot_interestedResourcesList extends LightningElement {
 
 	@track columns = [
-
-		{
-			label: 'Oppdragsnummer',
-			fieldName: 'AppointmentNumber__c',
-			type: 'text',
-			sortable: true,
-		},
 		{
 			label: 'Start tid',
 			fieldName: 'ServiceAppointmentStartTime__c',
@@ -53,8 +46,20 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			}
 		},
 		{
-			label: 'Adresse',
-			fieldName: 'ServiceAppointmentAddress__c',
+			label: 'Poststed',
+			fieldName: 'ServiceAppointmentCity__c',
+			type: 'text',
+			sortable: true,
+		},
+		{
+			label: 'Tema',
+			fieldName: 'ServiceAppointmentFreelanceSubject__c',
+			type: 'text',
+			sortable: true,
+		},
+		{
+			label: 'Arbeidstype',
+			fieldName: 'WorkTypeName__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -63,13 +68,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			fieldName: 'Status__c',
 			type: 'text',
 			sortable: true,
-		},
-		{
-			label: 'Påmeldte',
-			fieldName: 'NumberOfInterestedResources__c',
-			type: 'number',
-			sortable: true,
-			cellAttributes: { alignment: 'left' }
 		},
 		{
 			label: 'Ny kommentar',
