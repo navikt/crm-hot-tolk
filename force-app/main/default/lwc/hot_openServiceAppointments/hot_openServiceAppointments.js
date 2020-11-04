@@ -89,7 +89,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		},
 	];
 
-	columnLabels = ["'Oppdragsnummer'", "''", "'Start Tid'", "'Slutt Tid'", "'Adresse'", "'Arbeidstype'", "'Påmeldte'", "'Frist"];
+	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Arbeidstype'", "'Tema'", "'Frist"];
 
 	@track serviceResource;
 	@wire(getServiceResource)
