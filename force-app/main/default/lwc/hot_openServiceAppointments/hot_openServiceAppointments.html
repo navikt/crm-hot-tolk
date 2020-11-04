@@ -4,9 +4,15 @@
 			<lightning-button title="Meld interesse" class="right-button" variant="brand" label="Meld interesse"
 				onclick={sendInterest}>
 			</lightning-button>
-			<lightning-input type="checkbox" class="filter-list-checkbox" label={checkBoxLabel} name="toggleTerritory"
-				onchange={handleChecked}>
-			</lightning-input>
+
+			<lightning-button label="Regioner" name="filterRegionButton" onclick={handleShowRegionFilter}>
+			</lightning-button>
+			<div if:true={showRegionFilter}
+				style="z-index: 9999; position: fixed; background-color: white; padding: 1rem; border: 1px solid grey; border-radius: 0 0 4px 4px;">
+				<lightning-checkbox-group name="RegionFilter" options={regionOptions} value={regions}
+					onchange={handleRegionFilter}></lightning-checkbox-group>
+			</div>
+
 			<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
 				value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
 			</lightning-combobox>
