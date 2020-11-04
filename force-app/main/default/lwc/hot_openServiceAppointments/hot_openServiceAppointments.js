@@ -3,7 +3,7 @@ import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointm
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
-
+import getServiceTerritories from '@salesforce/apex/HOT_Utility.getServiceTerritories';
 
 
 var actions = [
@@ -97,6 +97,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		if (result.data) {
 			this.serviceResource = result.data;
 			console.log(JSON.stringify(this.serviceResource));
+			this.regions.push(result.data.HOT_ServiceTerritory__r.HOT_DeveloperName__c);
 		}
 	}
 
@@ -126,7 +127,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		console.log("filterServiceAppointments");
 		var tempServiceAppointments = [];
 		for (var i = 0; i < this.allServiceAppointments.length; i++) {
-			if (this.serviceResource.ServiceTerritories && JSON.stringify(this.serviceResource.ServiceTerritories).includes(this.allServiceAppointments[i].ServiceTerritoryId)) {
+			if (this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c)) {
 				tempServiceAppointments.push(this.allServiceAppointments[i]);
 			}
 		}
@@ -206,6 +207,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		this.showHideAll();
 	}
 
+
 	//Row action methods
 	handleRowAction(event) {
 		const actionName = event.detail.action.name;
@@ -218,7 +220,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		}
 	}
 
-	@track subject = "Ingen ytterligere informasjon";
 	@track isDetails = false;
 	@track serviceAppointmentDetails = null;
 	showDetails(row) {
@@ -228,7 +229,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 	}
 	abortShowDetails() {
 		this.isDetails = false;
-		this.subject = "Ingen ytterligere informasjon";
 	}
 
 	@track selectedRows = [];
@@ -281,6 +281,30 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			//this.checkBoxLabel = "Vis oppdrag fra alle regioner";
 			this.filterServiceAppointments();
 		}
+	}
+	@track showRegionFilter = false;
+	@track regions = [];
+	@track regionOptions = [];
+
+	@wire(getServiceTerritories)
+	wiredServiceTerritories(result) {
+		if (result.data) {
+			for (let territory of result.data) {
+				let tempTerritory = { value: territory.HOT_DeveloperName__c, label: territory.Name };
+				this.regionOptions.push(tempTerritory);
+			}
+		}
+		console.log(this.regionOptions);
+	}
+
+	handleShowRegionFilter(event) {
+		console.log("handleShowRegionFilter")
+		this.showRegionFilter = !this.showRegionFilter;
+	}
+	handleRegionFilter(event) {
+		this.regions = event.detail.value;
+		console.log(this.regions);
+		this.filterServiceAppointments();
 	}
 
 
