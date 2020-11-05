@@ -8,7 +8,7 @@ public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 		List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();
 		Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>([SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]);
 		for(WorkOrder workOrder:(List<WorkOrder>) records){
-			if(requests.get(workOrder.HOT_Request__c).Status__c == 'Godkjent' || requests.get(workOrder.HOT_Request__c).Status__c == 'Reservert' || requests.get(workOrder.HOT_Request__c).Status__c == 'Tildelt'){
+			if(requests.get(workOrder.HOT_Request__c).Status__c != 'Åpen' && requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' && requests.get(workOrder.HOT_Request__c).Status__c != 'Annullert'){
 				approvedWorkOrders.add(workOrder);
 			}
 		}
