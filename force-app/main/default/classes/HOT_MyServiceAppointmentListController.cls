@@ -27,7 +27,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
 		List<ServiceAppointment> serviceAppointments = [
 			SELECT AppointmentNumber, Subject, toLabel(Status), ParentRecordId,
 				   HOT_AddressFormated__c, EarliestStartTime, DueDate, HOT_AssignedResourceId__c, HOT_WorkTypeName__c,
-				   SchedStartTime, SchedEndTime, ActualEndTime, ActualStartTime, HOT_TermsOfAgreement__c,
+				   SchedStartTime, SchedEndTime, ActualEndTime, ActualStartTime, HOT_TermsOfAgreement__c, City, ServiceTerritory.Name,
 				   HOT_DegreeOfHearingAndVisualImpairment__c, HOT_HapticCommunication__c, HOT_Escort__c, HOT_AssignmentType__c
 			FROM ServiceAppointment 
 			WHERE Id IN :serviceAppointmentIds

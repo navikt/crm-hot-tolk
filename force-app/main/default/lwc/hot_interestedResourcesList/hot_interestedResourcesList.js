@@ -17,13 +17,6 @@ var actions = [
 export default class Hot_interestedResourcesList extends LightningElement {
 
 	@track columns = [
-
-		{
-			label: 'Oppdragsnummer',
-			fieldName: 'AppointmentNumber__c',
-			type: 'text',
-			sortable: true,
-		},
 		{
 			label: 'Start tid',
 			fieldName: 'ServiceAppointmentStartTime__c',
@@ -53,8 +46,20 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			}
 		},
 		{
-			label: 'Adresse',
-			fieldName: 'ServiceAppointmentAddress__c',
+			label: 'Poststed',
+			fieldName: 'ServiceAppointmentCity__c',
+			type: 'text',
+			sortable: true,
+		},
+		{
+			label: 'Tema',
+			fieldName: 'ServiceAppointmentFreelanceSubject__c',
+			type: 'text',
+			sortable: true,
+		},
+		{
+			label: 'Arbeidstype',
+			fieldName: 'WorkTypeName__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -63,13 +68,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			fieldName: 'Status__c',
 			type: 'text',
 			sortable: true,
-		},
-		{
-			label: 'Påmeldte',
-			fieldName: 'NumberOfInterestedResources__c',
-			type: 'number',
-			sortable: true,
-			cellAttributes: { alignment: 'left' }
 		},
 		{
 			label: 'Ny kommentar',
@@ -137,19 +135,21 @@ export default class Hot_interestedResourcesList extends LightningElement {
 	//Sorting methods
 	@track defaultSortDirection = 'asc';
 	@track sortDirection = 'asc';
-	@track sortedBy = 'EarliestStartTime';
+	@track sortedBy = 'ServiceAppointmentStartTime__c';
 
-	mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
+	mobileSortingDefaultValue = '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "asc"} ';
 	get sortingOptions() {
 		return [
-			{ label: 'Oppdragsnummer stigende', value: '{"fieldName": "Name", "sortDirection": "asc"} ' },
-			{ label: 'Oppdragsnummer synkende', value: '{"fieldName": "Name", "sortDirection": "desc"} ' },
 			{ label: 'Start tid stigende', value: '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "asc"} ' },
 			{ label: 'Start tid synkende', value: '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "desc"} ' },
 			{ label: 'Slutt tid stigende', value: '{"fieldName": "ServiceAppointmentEndTime__c", "sortDirection": "asc"} ' },
 			{ label: 'Slutt tid synkende', value: '{"fieldName": "ServiceAppointmentEndTime__c", "sortDirection": "desc"} ' },
-			{ label: 'Adresse A - Å', value: '{"fieldName": "ServiceAppointmentAddress__c", "sortDirection": "asc"} ' },
-			{ label: 'Adresse Å - A', value: '{"fieldName": "ServiceAppointmentAddress__c", "sortDirection": "desc"} ' },
+			{ label: 'Poststed A - Å', value: '{"fieldName": "ServiceAppointmentCity__c", "sortDirection": "asc"} ' },
+			{ label: 'Poststed A - Å', value: '{"fieldName": "ServiceAppointmentCity__c", "sortDirection": "desc"} ' },
+			{ label: 'Tema A - Å', value: '{"fieldName": "ServiceAppointmentFreelanceSubject__c", "sortDirection": "asc"} ' },
+			{ label: 'Tema A - Å', value: '{"fieldName": "ServiceAppointmentFreelanceSubject__c", "sortDirection": "desc"} ' },
+			{ label: 'Arbeidstype A - Å', value: '{"fieldName": "WorkTypeName__c", "sortDirection": "asc"} ' },
+			{ label: 'Arbeidstype Å - A', value: '{"fieldName": "WorkTypeName__c", "sortDirection": "desc"} ' },
 			{ label: 'Status A - Å', value: '{"fieldName": "Status__c", "sortDirection": "asc"} ' },
 			{ label: 'Status Å - A', value: '{"fieldName": "Status__c", "sortDirection": "desc"} ' },
 		];
