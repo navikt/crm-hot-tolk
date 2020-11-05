@@ -330,9 +330,14 @@
     </quickActionList>
     <relatedLists>
         <fields>Name</fields>
+        <fields>StartDate</fields>
+        <fields>EndDate</fields>
         <fields>Status</fields>
         <fields>Subject</fields>
         <fields>WorkType</fields>
+        <fields>HOT_InterpretationStreet__c</fields>
+        <fields>HOT_InterpretationPostalCode__c</fields>
+        <fields>HOT_InterpretationPostalCity__c</fields>
         <relatedList>WorkOrder.HOT_Request__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -353,7 +358,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1X000001V1CT</masterLabel>
+        <masterLabel>00h1X000001VRPl</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
