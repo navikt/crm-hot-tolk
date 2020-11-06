@@ -3,7 +3,6 @@ import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointm
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
-import getServiceTerritories from '@salesforce/apex/HOT_Utility.getServiceTerritories';
 
 
 var actions = [
@@ -61,14 +60,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			sortable: true,
 		},
 		{
-			label: 'Arbeidstype',
-			fieldName: 'HOT_WorkTypeName__c',
+			label: 'Tema',
+			fieldName: 'HOT_FreelanceSubject__c',
 			type: 'text',
 			sortable: true,
 		},
 		{
-			label: 'Tema',
-			fieldName: 'HOT_FreelanceSubject__c',
+			label: 'Arbeidstype',
+			fieldName: 'HOT_WorkTypeName__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -89,7 +88,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		},
 	];
 
-	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Arbeidstype'", "'Tema'", "'Frist"];
+	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "'Frist"];
 
 	@track serviceResource;
 	@wire(getServiceResource)
@@ -97,7 +96,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		if (result.data) {
 			this.serviceResource = result.data;
 			console.log(JSON.stringify(this.serviceResource));
-			this.regions.push(result.data.HOT_ServiceTerritory__r.HOT_DeveloperName__c);
+			let tempRegions = result.data.HOT_PreferredRegions__c.split(';');
+			for (let tempRegion of tempRegions) {
+				this.regions.push(tempRegion);
+			}
 		}
 	}
 
@@ -288,27 +290,22 @@ export default class Hot_openServiceAppointments extends LightningElement {
 	}
 	@track showRegionFilter = false;
 	@track regions = [];
-	@track regionOptions = [];
-
-	@wire(getServiceTerritories)
-	wiredServiceTerritories(result) {
-		if (result.data) {
-			for (let territory of result.data) {
-				let tempTerritory = { value: territory.HOT_DeveloperName__c, label: territory.Name };
-				this.regionOptions.push(tempTerritory);
-			}
-		}
-		console.log(this.regionOptions);
-	}
-
 	handleShowRegionFilter(event) {
-		console.log("handleShowRegionFilter")
 		this.showRegionFilter = !this.showRegionFilter;
 	}
-	handleRegionFilter(event) {
-		this.regions = event.detail.value;
-		console.log(this.regions);
+	handleSubmit(event) {
+		event.preventDefault();
+		const fields = event.detail.fields;
+		this.regions = fields.HOT_PreferredRegions__c;
 		this.filterServiceAppointments();
+		this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
+		this.handleHideRegionFilter();
+	}
+	handleHideRegionFilter() {
+		this.showRegionFilter = !this.showRegionFilter;
+	}
+	savePrefferedRegions() {
+		this.handleHideRegionFilter();
 	}
 
 
