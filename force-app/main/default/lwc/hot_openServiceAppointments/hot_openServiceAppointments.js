@@ -61,14 +61,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			sortable: true,
 		},
 		{
-			label: 'Arbeidstype',
-			fieldName: 'HOT_WorkTypeName__c',
+			label: 'Tema',
+			fieldName: 'HOT_FreelanceSubject__c',
 			type: 'text',
 			sortable: true,
 		},
 		{
-			label: 'Tema',
-			fieldName: 'HOT_FreelanceSubject__c',
+			label: 'Arbeidstype',
+			fieldName: 'HOT_WorkTypeName__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -89,7 +89,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		},
 	];
 
-	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Arbeidstype'", "'Tema'", "'Frist"];
+	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "'Frist"];
 
 	@track serviceResource;
 	@wire(getServiceResource)
