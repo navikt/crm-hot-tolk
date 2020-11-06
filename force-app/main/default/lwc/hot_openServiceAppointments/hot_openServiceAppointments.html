@@ -7,10 +7,24 @@
 
 			<lightning-button label="Regioner" name="filterRegionButton" onclick={handleShowRegionFilter}>
 			</lightning-button>
-			<div if:true={showRegionFilter}
-				style="z-index: 9999; position: fixed; background-color: white; padding: 1rem; border: 1px solid grey; border-radius: 0 0 4px 4px;">
-				<lightning-checkbox-group name="RegionFilter" options={regionOptions} value={regions}
-					onchange={handleRegionFilter}></lightning-checkbox-group>
+			<div if:true={showRegionFilter} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+				style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
+				<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
+					tabindex="-1" role="dialog">
+					<section>
+						<lightning-record-edit-form object-api-name="ServiceResource" density="comfy"
+							onsubmit={handleSubmit} record-id={serviceResource.Id}>
+							<lightning-input-field field-name="HOT_PreferredRegions__c">
+							</lightning-input-field>
+							<lightning-button title="Lagre" variant="brand" label="Lagre" type="submit">
+							</lightning-button>
+						</lightning-record-edit-form>
+					</section>
+					<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
+						onclick={handleHideRegionFilter}>
+						<span class="text-hide">Lukk</span>
+					</button>
+				</div>
 			</div>
 
 			<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
@@ -123,7 +137,8 @@
 							value={serviceAppointmentDetails.HOT_ReleaseDate__c} class="lightning-output-field">
 						</lightning-formatted-date-time>
 						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Antall påmeldte</span>
+						<span class="slds-form-element__label lightning-output-field__label">Antall
+							påmeldte</span>
 						</br>
 						<lightning-formatted-number value={serviceAppointmentDetails.HOT_NumberOfInterestedResources__c}
 							class="lightning-output-field">
