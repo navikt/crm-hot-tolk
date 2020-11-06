@@ -56,6 +56,13 @@
                 <stringValue>Released to Freelance</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_ReleaseDate__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>UpdateServiceAppointment</targetReference>
         </connector>
@@ -289,6 +296,12 @@ Status == &quot;Ingen&quot;</description>
         </value>
     </processMetadataValues>
     <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
         <name>OriginBuilderType</name>
         <value>
             <stringValue>LightningFlowBuilder</stringValue>
@@ -362,6 +375,7 @@ Status == &quot;Ingen&quot;</description>
         <queriedFields>EarliestStartTime</queriedFields>
         <queriedFields>HOT_FreelanceSubject__c</queriedFields>
         <queriedFields>Subject</queriedFields>
+        <queriedFields>HOT_ReleaseDate__c</queriedFields>
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>

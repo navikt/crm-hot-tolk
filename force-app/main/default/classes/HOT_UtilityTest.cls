@@ -82,4 +82,19 @@ private class HOT_UtilityTest{
 		System.assertEquals(null, ordererDetails.get('OrdererPhone__c'));
 	}
 
+	@isTest
+     static void getServiceTerritoriesTest() {
+
+		OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+		insert operatingHours;
+		ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+		insert serviceTerritory;
+
+		Test.startTest();
+		List<ServiceTerritory> serviceTerritories = HOT_Utility.getServiceTerritories();
+		Test.stopTest();
+
+		System.assertEquals(1, serviceTerritories.size(), 'Could not get ServiceTerritories');
+	}
+
 }
