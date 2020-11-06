@@ -90,4 +90,32 @@ private class HOT_RequestApprovedHandlerTest{
 
 	}
 
+	@isTest static void requestApproved2Times() {
+		HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c LIMIT 1];
+
+		request.Status__c = 'Godkjent';
+		update request;
+
+		List<WorkOrderLineItem> workOrderLineItems = [SELECT Id FROM WorkOrderLineItem];
+		List<ServiceAppointment> serviceAppointments = [SELECT Id FROM ServiceAppointment];
+		System.assertEquals(1, workOrderLineItems.size());
+		System.assertEquals(2, serviceAppointments.size());
+
+
+		request.Status__c = 'Åpen';
+		update request;
+
+		Test.startTest();
+		request.Status__c = 'Godkjent';
+		update request;
+		Test.stopTest();
+
+		workOrderLineItems = [SELECT Id FROM WorkOrderLineItem];
+		serviceAppointments = [SELECT Id FROM ServiceAppointment];
+		//Checking that the FSL-records have been created
+		System.assertEquals(1, workOrderLineItems.size());
+		System.assertEquals(2, serviceAppointments.size());
+
+	}
+
 }
