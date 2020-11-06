@@ -25,7 +25,7 @@
             <connector>
                 <targetReference>myRule_1_A1</targetReference>
             </connector>
-            <label>Not New</label>
+            <label>No criteria</label>
         </rules>
     </decisions>
     <description>Update Duration field when Work Order is created or edited</description>
@@ -36,23 +36,17 @@
                 <stringValue>([WorkOrder].EndDate-  [WorkOrder].StartDate )*24</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_2_myRule_1_A1_7237608232</name>
+        <name>formula_2_myRule_1_A1_3506885104</name>
         <dataType>Number</dataType>
         <expression>({!myVariable_current.EndDate}-  {!myVariable_current.StartDate} )*24</expression>
         <scale>18</scale>
     </formulas>
     <formulas>
-        <processMetadataValues>
-            <name>originalFormula</name>
-            <value>
-                <stringValue>!ISNEW() </stringValue>
-            </value>
-        </processMetadataValues>
         <name>formula_myRule_1</name>
         <dataType>Boolean</dataType>
-        <expression>!ISNEW()</expression>
+        <expression>true</expression>
     </formulas>
-    <interviewLabel>WorkOrder_Processor_c-2_InterviewLabel</interviewLabel>
+    <interviewLabel>WorkOrder_Processor_c-1_InterviewLabel</interviewLabel>
     <label>WorkOrder Processor</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -154,7 +148,7 @@
             </processMetadataValues>
             <field>Duration</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_7237608232</elementReference>
+                <elementReference>formula_2_myRule_1_A1_3506885104</elementReference>
             </value>
         </inputAssignments>
         <object>WorkOrder</object>
