@@ -1,5 +1,9 @@
 public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 	
+	public override void onBeforeInsert(){
+		setStatusDefault((List<WorkOrder>) records);
+	}
+	
 	public override void onAfterInsert() {
 		List<Id> requestIds = new List<Id>();
 		for(WorkOrder workOrder:(List<WorkOrder>) records){
@@ -41,7 +45,11 @@ public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 			}
 		}
 		insert workOrderLineItems;
-
 	}
 
+	public static void setStatusDefault(List<WorkOrder> workOrders){
+		for(WorkOrder workOrder : workOrders){
+			workOrder.Status = 'New';
+		}
+	}
 }

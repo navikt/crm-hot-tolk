@@ -78,7 +78,7 @@
 							class="lightning-output-field">
 						</lightning-formatted-date-time>
 						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Sted</span>
+						<span class="slds-form-element__label lightning-output-field__label">Adresse</span>
 						</br>
 						<lightning-formatted-text value={detailInterestedResource.ServiceAppointmentAddress__c}
 							class="lightning-output-field">
@@ -86,8 +86,7 @@
 						</br>
 						<span class="slds-form-element__label lightning-output-field__label">Oppdragstype</span>
 						</br>
-						<lightning-formatted-text
-							value={detailInterestedResource.ServiceAppointment__r.HOT_WorkTypeName__c}
+						<lightning-formatted-text value={detailInterestedResource.WorkTypeName__c}
 							class="lightning-output-field">
 						</lightning-formatted-text>
 					</div>
@@ -107,11 +106,19 @@
 						<span class="slds-form-element__label lightning-output-field__label">Fristdato</span>
 						</br>
 						<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit"
-							value={detailInterestedResource.HOT_DeadlineDate__c} class="lightning-output-field">
+							value={detailInterestedResource.ServiceAppointment__r.HOT_DeadlineDate__c}
+							class="lightning-output-field">
 						</lightning-formatted-date-time>
 						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Region</span>
+						</br>
+						<lightning-formatted-text
+							value={detailInterestedResource.ServiceAppointment__r.ServiceTerritory.Name}
+							class="lightning-output-field">
+						</lightning-formatted-text>
 					</div>
 				</div>
+				</br>
 				<span class="slds-form-element__label lightning-output-field__label">Tema</span>
 				</br>
 				<lightning-formatted-text value={detailInterestedResource.ServiceAppointment__r.HOT_FreelanceSubject__c}
