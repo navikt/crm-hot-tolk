@@ -10,7 +10,7 @@ import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.
 
 var actions = [
 	//{ label: 'Kommenter', name: 'comment' },
-	{ label: 'Se mer', name: 'details' },
+	{ label: 'Detaljer', name: 'details' },
 	//{ label: 'Send Interesse', name: 'resendInterest' },
 ];
 
