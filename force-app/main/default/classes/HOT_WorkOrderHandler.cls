@@ -1,5 +1,9 @@
 public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 	
+	public override void onBeforeInsert(){
+		setStatusDefault((List<WorkOrder>) records);
+	}
+	
 	public override void onAfterInsert() {
 		createChildRecords((List<WorkOrder>) records);
 	}
@@ -26,7 +30,11 @@ public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 			workOrderLineItems.add(workOrderLineItem);
 		}
 		insert workOrderLineItems;
-
 	}
 
+	public static void setStatusDefault(List<WorkOrder> workOrders){
+		for(WorkOrder workOrder : workOrders){
+			workOrder.Status = 'New';
+		}
+	}
 }
