@@ -98,6 +98,13 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     private static void createWOLI_SA(List<HOT_Request__c> godkjentRequests) {
+		Map<Id, HOT_Request__c> requestMap = new Map<Id, HOT_Request__c>(godkjentRequests);
+		List<ServiceAppointment> serviceAppointments = [SELECT HOT_Request__c FROM ServiceAppointment WHERE HOT_Request__c IN :godkjentRequests];
+		for(ServiceAppointment serviceAppointment:serviceAppointments){
+			requestMap.remove(serviceAppointment.HOT_Request__c);
+		}
+		godkjentRequests = requestMap.values();
+
 		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, Subject, Description, EndDate, StartDate, 
 									  Address, City, PostalCode, Street,
 									  HOT_InterpretationPostalCity__c, HOT_InterpretationPostalCode__c, HOT_InterpretationStreet__c,
