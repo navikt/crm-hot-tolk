@@ -12,10 +12,11 @@
 				<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
 					tabindex="-1" role="dialog">
 					<section>
-						<lightning-record-edit-form object-api-name="ServiceResource" density="comfy"
+						<lightning-record-edit-form class="no-padding" object-api-name="ServiceResource" density="comfy"
 							onsubmit={handleSubmit} record-id={serviceResource.Id}>
 							<lightning-input-field field-name="HOT_PreferredRegions__c">
 							</lightning-input-field>
+							</br>
 							<lightning-button title="Lagre" variant="brand" label="Lagre" type="submit">
 							</lightning-button>
 						</lightning-record-edit-form>
