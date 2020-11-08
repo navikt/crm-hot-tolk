@@ -2,6 +2,7 @@ public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 	
 	public override void onBeforeInsert(){
 		setStatusDefault((List<WorkOrder>) records);
+		setOwner((List<WorkOrder>) records);
 	}
 	
 	public override void onAfterInsert() {
@@ -50,6 +51,14 @@ public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 	public static void setStatusDefault(List<WorkOrder> workOrders){
 		for(WorkOrder workOrder : workOrders){
 			workOrder.Status = 'New';
+		}
+	}
+
+	public static void setOwner(List<WorkOrder> workOrders){
+		for(WorkOrder workOrder : workOrders){
+			if(WorkOrder.HOT_Request__c != null) {
+				workOrder.OwnerId = workOrder.HOT_RequestOwnerId__c;
+			}
 		}
 	}
 }
