@@ -50,13 +50,6 @@
                 <value>true</value>
             </componentInstanceProperties>
             <componentName>force:relatedListSingleContainer</componentName>
-            <visibilityRule>
-                <criteria>
-                    <leftValue>{!Record.CRM_Person__r.HOT_HasEntitlement__c}</leftValue>
-                    <operator>EQUAL</operator>
-                    <rightValue>true</rightValue>
-                </criteria>
-            </visibilityRule>
         </componentInstances>
         <componentInstances>
             <componentInstanceProperties>
