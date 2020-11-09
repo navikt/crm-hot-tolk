@@ -4,6 +4,8 @@ import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequest
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
+import createWorkOrdersFromCommunity from '@salesforce/apex/HOT_RequestHandler.createWorkOrdersFromCommunity';
+
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
@@ -295,7 +297,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
 				this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 			}
-
 			const isDuplicate = this.isDuplicate(this.fieldValues);
 			if (isDuplicate == null) {
 				console.log("Sumbitting")
@@ -389,6 +390,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleError(event) {
 		console.log("handleError");
+		console.log(JSON.stringify(event));
 		this.spin = false;
 	}
 
@@ -401,6 +403,17 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		x = this.template.querySelector(".submitted-false");
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
+
+		let requestId = event.detail.id;
+		let times = [];
+		for (let dateTime of this.times) {
+			times.push({
+				"startTime": new Date(dateTime.date + ", " + dateTime.startTime).getTime(),
+				"endTime": new Date(dateTime.date + ", " + dateTime.endTime).getTime(),
+			});
+		}
+		createWorkOrdersFromCommunity({ requestId, times });
+
 		window.scrollTo(0, 0);
 
 	}
