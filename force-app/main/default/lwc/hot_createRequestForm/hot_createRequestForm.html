@@ -104,27 +104,34 @@
 							value={fieldValues.Subject__c} title="Hva trenger du tolk til?" required>
 						</lightning-input-field>
 						</br>
-						<template iterator:it={times}>
-							<div class="informasjonstavle__bildepaneler form-element" key={it.value.id}>
-								<lightning-input type="date" class="tolk-skjema-input date" date-style="short"
-									onchange={setDate} name={it.value.id} value="" required>
-								</lightning-input>
-								<lightning-input style="margin-left: 2rem;" type="time"
-									class="tolk-skjema-input start-tid" onchange={setStartTime} name={it.value.id}
-									value="" required>
-								</lightning-input>
-								<lightning-input style="margin-left: 2rem;" type="time"
-									class="tolk-skjema-input slutt-tid" onchange={setEndTime} name={it.value.id}
-									value="" required>
-								</lightning-input>
-								<lightning-button variant="base" icon-name="utility:close"
-									class="slds-m-left_x-small remove-time" onclick={removeTime} name={it.value.id}>
-								</lightning-button>
+						<div style="margin-bottom: 0.5rem;">
+							<div style="margin-bottom: 0.5rem;">
+								<template iterator:it={times}>
+									<div class="dynamic-time-inputs-with-line_button " key={it.value.id}>
+										<div class="dynamic-time-inputs ">
+											<lightning-input label="Dato" type="date" class="tolk-skjema-input date"
+												date-style="short" onchange={setDate} name={it.value.id} value=""
+												required>
+											</lightning-input>
+											<lightning-input label="Fra" style="margin-left: 2rem;" type="time"
+												class="tolk-skjema-input start-tid" onchange={setStartTime}
+												name={it.value.id} value="" required>
+											</lightning-input>
+											<lightning-input label="Til" style="margin-left: 2rem;" type="time"
+												class="tolk-skjema-input slutt-tid" onchange={setEndTime}
+												name={it.value.id} value="" required>
+											</lightning-input>
+										</div>
+										<lightning-button variant="base" icon-name="utility:close"
+											class="remove-time__button" onclick={removeTime} name={it.value.id}>
+										</lightning-button>
+									</div>
+								</template>
 							</div>
-						</template>
-						<lightning-button label="Legg til tider" icon-name="utility:add"
-							class="slds-m-left_x-small add-times" onclick={addTime}>
-						</lightning-button>
+							<lightning-button label="Legg til tider" icon-name="utility:add" class="add-times"
+								onclick={addTime}>
+							</lightning-button>
+						</div>
 
 						</br>
 						<lightning-input-field class="tolk-skjema-input adressefelt-hjelp" field-name="MeetingStreet__c"
