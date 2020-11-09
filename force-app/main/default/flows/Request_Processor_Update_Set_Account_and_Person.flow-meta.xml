@@ -283,7 +283,7 @@
                 <stringValue>[HOT_Request__c].Account__c.CRM_Person__c </stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_5_myRule_4_A1_3080705876</name>
+        <name>formula_5_myRule_4_A1_8747120873</name>
         <dataType>String</dataType>
         <expression>{!myVariable_current.Account__r.CRM_Person__c}</expression>
     </formulas>
@@ -291,18 +291,16 @@
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue>[HOT_Request__c].Account__c &lt;&gt; null &amp;&amp; (
-IsChanged([HOT_Request__c].Account__c)=true
-|| ISNEW()
-)</stringValue>
+                <stringValue>[HOT_Request__c].Account__c &lt;&gt; null
+&amp;&amp;
+ISCHANGED([HOT_Request__c].Account__c)</stringValue>
             </value>
         </processMetadataValues>
         <name>formula_myRule_4</name>
         <dataType>Boolean</dataType>
-        <expression>{!myVariable_current.Account__c} &lt;&gt; null &amp;&amp; (
-IsChanged({!myVariable_current.Account__c})=true
-|| ISNEW()
-)</expression>
+        <expression>{!myVariable_current.Account__c} &lt;&gt; null
+&amp;&amp;
+ISCHANGED({!myVariable_current.Account__c})</expression>
     </formulas>
     <interviewLabel>Request_Processor_Update_Set_Account_and_Person-2_InterviewLabel</interviewLabel>
     <label>Request Processor - Update - Set Account and Person</label>
@@ -447,6 +445,19 @@ IsChanged({!myVariable_current.Account__c})=true
             <processMetadataValues>
                 <name>implicit</name>
                 <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </processMetadataValues>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <processMetadataValues>
+                <name>implicit</name>
+                <value>
                     <booleanValue>false</booleanValue>
                 </value>
             </processMetadataValues>
@@ -492,19 +503,6 @@ IsChanged({!myVariable_current.Account__c})=true
                 <booleanValue>false</booleanValue>
             </value>
         </filters>
-        <filters>
-            <processMetadataValues>
-                <name>implicit</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </processMetadataValues>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>myVariable_current.Id</elementReference>
-            </value>
-        </filters>
         <inputAssignments>
             <processMetadataValues>
                 <name>dataType</name>
@@ -538,7 +536,7 @@ IsChanged({!myVariable_current.Account__c})=true
             </processMetadataValues>
             <field>Person__c</field>
             <value>
-                <elementReference>formula_5_myRule_4_A1_3080705876</elementReference>
+                <elementReference>formula_5_myRule_4_A1_8747120873</elementReference>
             </value>
         </inputAssignments>
         <object>HOT_Request__c</object>

@@ -338,13 +338,16 @@
     </quickActionList>
     <relatedLists>
         <fields>Name</fields>
+        <fields>StartDate</fields>
+        <fields>EndDate</fields>
         <fields>Status</fields>
-        <fields>Subject</fields>
-        <fields>WorkType</fields>
         <relatedList>WorkOrder.HOT_Request__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>Name</fields>
+        <fields>EarliestStartTime</fields>
+        <fields>LatestEndTime</fields>
+        <fields>WorkType</fields>
         <fields>Status</fields>
         <fields>HOT_ServiceResource__c</fields>
         <relatedList>ServiceAppointment.HOT_Request__c</relatedList>

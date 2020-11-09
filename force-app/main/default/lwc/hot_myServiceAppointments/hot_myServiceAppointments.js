@@ -12,12 +12,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
 	@track columns = [
 		{
-			label: 'Oppdragsnummer',
-			fieldName: 'AppointmentNumber',
-			type: 'text',
-			sortable: true,
-		},
-		{
 			label: 'Start Tid',
 			fieldName: 'EarliestStartTime',
 			type: 'date',
@@ -46,14 +40,20 @@ export default class Hot_myServiceAppointments extends LightningElement {
 			}
 		},
 		{
-			label: 'Adresse',
-			fieldName: 'HOT_AddressFormated__c',
+			label: 'Poststed',
+			fieldName: 'City',
 			type: 'text',
 			sortable: true,
 		},
 		{
-			label: 'Status',
-			fieldName: 'Status',
+			label: 'Tema',
+			fieldName: 'Subject',
+			type: 'text',
+			sortable: true,
+		},
+		{
+			label: 'Arbeidstype',
+			fieldName: 'HOT_WorkTypeName__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -118,16 +118,16 @@ export default class Hot_myServiceAppointments extends LightningElement {
 	mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
 	get sortingOptions() {
 		return [
-			{ label: 'Oppdragsnummer stigende', value: '{"fieldName": "AppointmentNumber", "sortDirection": "asc"} ' },
-			{ label: 'Oppdragsnummer synkende', value: '{"fieldName": "AppointmentNumber", "sortDirection": "desc"} ' },
 			{ label: 'Start tid stigende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ' },
 			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
 			{ label: 'Slutt tid stigende', value: '{"fieldName": "DueDate", "sortDirection": "asc"} ' },
 			{ label: 'Slutt tid synkende', value: '{"fieldName": "DueDate", "sortDirection": "desc"} ' },
-			{ label: 'Adresse A - Å', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "asc"} ' },
-			{ label: 'Adresse Å - A', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "desc"} ' },
-			{ label: 'Status A - Å', value: '{"fieldName": "Status", "sortDirection": "asc"} ' },
-			{ label: 'Status Å - A', value: '{"fieldName": "Status", "sortDirection": "desc"} ' },
+			{ label: 'Poststed A - Å', value: '{"fieldName": "City", "sortDirection": "asc"} ' },
+			{ label: 'Poststed A - Å', value: '{"fieldName": "City", "sortDirection": "desc"} ' },
+			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "asc"} ' },
+			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "desc"} ' },
+			{ label: 'Arbeidstype A - Å', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} ' },
+			{ label: 'Arbeidstype Å - A', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} ' },
 		];
 	}
 	handleMobileSorting(event) {
@@ -179,11 +179,13 @@ export default class Hot_myServiceAppointments extends LightningElement {
 	}
 
 	@track recordId;
+	@track record;
 	@track isDetails = false;
 	showDetails(row) {
 		console.log("showDetails");
 		this.recordId = row.Id;
 		this.isDetails = true;
+		this.record = row;
 
 	}
 	abortShowDetails() {

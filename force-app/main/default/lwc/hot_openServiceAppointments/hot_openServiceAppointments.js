@@ -5,9 +5,8 @@ import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 
 
-
 var actions = [
-	{ label: 'Tema', name: 'details' },
+	{ label: 'Detaljer', name: 'details' },
 ];
 
 export default class Hot_openServiceAppointments extends LightningElement {
@@ -16,10 +15,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
 	@track columns = [
 		{
-			label: 'Oppdragsnummer',
-			fieldName: 'AppointmentNumber',
-			type: 'text',
+			label: 'Frigitt dato',
+			fieldName: 'HOT_ReleaseDate__c',
+			type: 'date',
 			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric'
+			}
 		},
 		{
 			label: 'Start Tid',
@@ -50,8 +54,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			}
 		},
 		{
-			label: 'Adresse',
-			fieldName: 'HOT_AddressFormated__c',
+			label: 'Poststed',
+			fieldName: 'City',
+			type: 'text',
+			sortable: true,
+		},
+		{
+			label: 'Tema',
+			fieldName: 'HOT_FreelanceSubject__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -60,13 +70,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			fieldName: 'HOT_WorkTypeName__c',
 			type: 'text',
 			sortable: true,
-		},
-		{
-			label: 'Påmeldte',
-			fieldName: 'HOT_NumberOfInterestedResources__c',
-			type: 'number',
-			sortable: true,
-			cellAttributes: { alignment: 'left' }
 		},
 		{
 			label: 'Frist',
@@ -85,7 +88,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		},
 	];
 
-	columnLabels = ["'Oppdragsnummer'", "''", "'Start Tid'", "'Slutt Tid'", "'Adresse'", "'Arbeidstype'", "'Påmeldte'", "'Frist"];
+	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "'Frist"];
 
 	@track serviceResource;
 	@wire(getServiceResource)
@@ -93,6 +96,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		if (result.data) {
 			this.serviceResource = result.data;
 			console.log(JSON.stringify(this.serviceResource));
+			let tempRegions = result.data.HOT_PreferredRegions__c.split(';');
+			for (let tempRegion of tempRegions) {
+				this.regions.push(tempRegion);
+			}
 		}
 	}
 
@@ -122,7 +129,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		console.log("filterServiceAppointments");
 		var tempServiceAppointments = [];
 		for (var i = 0; i < this.allServiceAppointments.length; i++) {
-			if (this.serviceResource.ServiceTerritories && JSON.stringify(this.serviceResource.ServiceTerritories).includes(this.allServiceAppointments[i].ServiceTerritoryId)) {
+			if (this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c)) {
 				tempServiceAppointments.push(this.allServiceAppointments[i]);
 			}
 		}
@@ -148,22 +155,26 @@ export default class Hot_openServiceAppointments extends LightningElement {
 	}
 	//Sorting methods
 	@track defaultSortDirection = 'asc';
-	@track sortDirection = 'asc';
-	@track sortedBy = 'EarliestStartTime';
+	@track sortDirection = 'desc';
+	@track sortedBy = 'HOT_ReleaseDate__c';
 
-	mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
+	mobileSortingDefaultValue = '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ';
 	get sortingOptions() {
 		return [
+			{ label: 'Frigitt dato stigende', value: '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "asc"} ' },
+			{ label: 'Frigitt dato synkende', value: '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ' },
 			{ label: 'Start tid stigende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ' },
 			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
 			{ label: 'Slutt tid stigende', value: '{"fieldName": "DueDate", "sortDirection": "asc"} ' },
 			{ label: 'Slutt tid synkende', value: '{"fieldName": "DueDate", "sortDirection": "desc"} ' },
-			{ label: 'Adresse A - Å', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "asc"} ' },
-			{ label: 'Adresse Å - A', value: '{"fieldName": "HOT_AddressFormated__c", "sortDirection": "desc"} ' },
+			{ label: 'Poststed A - Å', value: '{"fieldName": "City", "sortDirection": "asc"} ' },
+			{ label: 'Poststed A - Å', value: '{"fieldName": "City", "sortDirection": "desc"} ' },
 			{ label: 'Arbeidstype A - Å', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} ' },
 			{ label: 'Arbeidstype Å - A', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} ' },
-			{ label: 'Antall påmeldte stigende', value: '{"fieldName": "HOT_NumberOfInterestedResources__c", "sortDirection": "asc"} ' },
-			{ label: 'Antall påmeldte synkende', value: '{"fieldName": "HOT_NumberOfInterestedResources__c", "sortDirection": "desc"} ' },
+			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "asc"} ' },
+			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "desc"} ' },
+			{ label: 'Frist dato stigende', value: '{"fieldName": "HOT_DeadlineDate__c", "sortDirection": "asc"} ' },
+			{ label: 'Frist dato synkende', value: '{"fieldName": "HOT_DeadlineDate__c", "sortDirection": "desc"} ' },
 		];
 	}
 	handleMobileSorting(event) {
@@ -202,6 +213,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		this.showHideAll();
 	}
 
+
 	//Row action methods
 	handleRowAction(event) {
 		const actionName = event.detail.action.name;
@@ -214,18 +226,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		}
 	}
 
-	@track subject = "Ingen ytterligere informasjon";
 	@track isDetails = false;
+	@track serviceAppointmentDetails = null;
 	showDetails(row) {
 		const { Id } = row;
-		if (row.HOT_FreelanceSubject__c) {
-			this.subject = row.HOT_FreelanceSubject__c;
-		}
+		this.serviceAppointmentDetails = row;
 		this.isDetails = true;
 	}
 	abortShowDetails() {
 		this.isDetails = false;
-		this.subject = "Ingen ytterligere informasjon";
 	}
 
 	@track selectedRows = [];
@@ -278,6 +287,25 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			//this.checkBoxLabel = "Vis oppdrag fra alle regioner";
 			this.filterServiceAppointments();
 		}
+	}
+	@track showRegionFilter = false;
+	@track regions = [];
+	handleShowRegionFilter(event) {
+		this.showRegionFilter = !this.showRegionFilter;
+	}
+	handleSubmit(event) {
+		event.preventDefault();
+		const fields = event.detail.fields;
+		this.regions = fields.HOT_PreferredRegions__c;
+		this.filterServiceAppointments();
+		this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
+		this.handleHideRegionFilter();
+	}
+	handleHideRegionFilter() {
+		this.showRegionFilter = !this.showRegionFilter;
+	}
+	savePrefferedRegions() {
+		this.handleHideRegionFilter();
 	}
 
 

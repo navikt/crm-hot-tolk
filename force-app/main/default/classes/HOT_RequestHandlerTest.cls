@@ -81,4 +81,21 @@ private class HOT_RequestHandlerTest {
 		
 	}
 	
+	@isTest
+    private static void testTriggerOfKrrIntegration() {
+		Person__c person = HOT_TestDataFactory.createPerson();
+		insert person;
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+
+		person = [SELECT Id, CRM_Account__c, INT_KrrIntegrationStatus__c FROM Person__c WHERE Id = :person.Id];
+		System.assertEquals('Not Started', person.INT_KrrIntegrationStatus__c);
+
+		request.Account__c = person.CRM_Account__c;
+		insert request;
+
+		person = [SELECT Id, CRM_Account__c, INT_KrrIntegrationStatus__c FROM Person__c WHERE Id = :person.Id];
+		System.assertEquals('Queued', person.INT_KrrIntegrationStatus__c);
+	}
 }
