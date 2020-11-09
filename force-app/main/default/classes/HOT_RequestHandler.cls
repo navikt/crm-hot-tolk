@@ -136,6 +136,24 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 		}
 	}
 
+	@AuraEnabled
+	public static void createWorkOrdersFromCommunity(Id requestId, List<Map<String, Long>> times){
+		System.debug('createWorkOrdersFromCommunity');
+		HOT_Request__c request = [SELECT Id, Account__c, Account__r.PersonContactId, OwnerId, ServiceTerritory__c, InterpretationMethod__c, NumberOfInterpreters__c,
+								  MeetingPostalCity__c, MeetingPostalCode__c, MeetingStreet__c, InterpretationPostalCity__c, InterpretationPostalCode__c, InterpretationStreet__c,
+								  Subject__c, Description__c, StartTime__c, EndTime__c FROM HOT_Request__c WHERE Id = :requestId];
+		List<HOT_Request__c> requests = new List<HOT_Request__c>();
+		for(Map<String, Long> t : times){
+			HOT_Request__c newRequest = request.clone(false, true, false, false);
+			newRequest.Id = requestId;
+			newRequest.OwnerId = UserInfo.getUserId();
+			newRequest.StartTime__c = DateTime.newInstance(t.get('startTime'));
+			newRequest.EndTime__c = DateTime.newInstance(t.get('endTime'));
+			requests.add(newRequest);
+		}
+		createChildRecords(requests);
+	}
+
 	public static void createChildRecords(List<HOT_Request__c> requests){
 		List<WorkOrder> workOrders = new List<WorkOrder>();
 		for(HOT_Request__c request:requests){
