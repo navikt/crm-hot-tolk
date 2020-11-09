@@ -43,7 +43,7 @@
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>rowsToDisplay</name>
-                <value>10</value>
+                <value>30</value>
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>showActionBar</name>
@@ -73,7 +73,7 @@
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>rowsToDisplay</name>
-                <value>10</value>
+                <value>30</value>
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>showActionBar</name>

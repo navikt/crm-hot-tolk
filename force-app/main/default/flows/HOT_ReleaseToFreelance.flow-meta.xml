@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignments>
+        <name>Add_to_update_list</name>
+        <label>Add to update list</label>
+        <locationX>1595</locationX>
+        <locationY>475</locationY>
+        <assignmentItems>
+            <assignToReference>UpdatedInterestedResources</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>interatorRelatedInterestedResource</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_Over_RelatedInterestedResources</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>AssignFieldValues</name>
         <label>AssignFieldValues</label>
         <locationX>1138</locationX>
@@ -40,6 +56,13 @@
                 <stringValue>Released to Freelance</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_ReleaseDate__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>UpdateServiceAppointment</targetReference>
         </connector>
@@ -47,8 +70,8 @@
     <assignments>
         <name>RemoveAssignedResourceAssignment</name>
         <label>RemoveAssignedResourceAssignment</label>
-        <locationX>785</locationX>
-        <locationY>624</locationY>
+        <locationX>806</locationX>
+        <locationY>739</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
@@ -57,14 +80,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>DeleteAssignedResource</targetReference>
+            <targetReference>Get_Assigned_Resource_Id</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>setInterestedResourceStatusInterested</name>
         <label>setInterestedResourceStatusInterested</label>
-        <locationX>1394</locationX>
-        <locationY>541</locationY>
+        <locationX>1491</locationX>
+        <locationY>574</locationY>
         <assignmentItems>
             <assignToReference>interatorRelatedInterestedResource.Status__c</assignToReference>
             <operator>Assign</operator>
@@ -73,7 +96,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>updateRelatedInterestedResource</targetReference>
+            <targetReference>Add_to_update_list</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -93,13 +116,38 @@
         </value>
     </choices>
     <decisions>
+        <name>Assigned_Resources_to_Delete</name>
+        <label>Assigned Resources to Delete?</label>
+        <locationX>1074</locationX>
+        <locationY>644</locationY>
+        <defaultConnector>
+            <targetReference>Sett_frist_for_pamelding</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>AssignedResourceId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>DeleteAssignedResource</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
         <description>Checking if 
 !isReleasedToFreelance
 Status == &quot;Ingen&quot;</description>
         <name>Check_isReleasedToFreelance</name>
         <label>Check isReleasedToFreelance</label>
-        <locationX>605</locationX>
-        <locationY>126</locationY>
+        <locationX>647</locationX>
+        <locationY>159</locationY>
         <defaultConnector>
             <targetReference>ServiceAppointment_already_Released</targetReference>
         </defaultConnector>
@@ -123,8 +171,8 @@ Status == &quot;Ingen&quot;</description>
     <decisions>
         <name>Check_Status</name>
         <label>Check Status</label>
-        <locationX>771</locationX>
-        <locationY>125</locationY>
+        <locationX>841</locationX>
+        <locationY>73</locationY>
         <defaultConnector>
             <targetReference>AlreadyScheduled</targetReference>
         </defaultConnector>
@@ -148,8 +196,8 @@ Status == &quot;Ingen&quot;</description>
     <decisions>
         <name>Check_Status_of_InterestedResource</name>
         <label>Check Status of InterestedResource</label>
-        <locationX>1227</locationX>
-        <locationY>463</locationY>
+        <locationX>1237</locationX>
+        <locationY>570</locationY>
         <defaultConnector>
             <targetReference>Loop_Over_RelatedInterestedResources</targetReference>
         </defaultConnector>
@@ -180,8 +228,8 @@ Status == &quot;Ingen&quot;</description>
     <decisions>
         <name>CheckChoice</name>
         <label>CheckChoice</label>
-        <locationX>775</locationX>
-        <locationY>453</locationY>
+        <locationX>796</locationX>
+        <locationY>568</locationY>
         <defaultConnector>
             <targetReference>OutScreen</targetReference>
         </defaultConnector>
@@ -230,7 +278,7 @@ Status == &quot;Ingen&quot;</description>
         <name>Loop_Over_RelatedInterestedResources</name>
         <label>Loop Over RelatedInterestedResources</label>
         <locationX>1406</locationX>
-        <locationY>312</locationY>
+        <locationY>311</locationY>
         <assignNextValueToReference>interatorRelatedInterestedResource</assignNextValueToReference>
         <collectionReference>getRelatedInterestedResources</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -238,7 +286,7 @@ Status == &quot;Ingen&quot;</description>
             <targetReference>Check_Status_of_InterestedResource</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
-            <targetReference>SuccessScreen</targetReference>
+            <targetReference>Update_Interesserte_Ressursers</targetReference>
         </noMoreValuesConnector>
     </loops>
     <processMetadataValues>
@@ -263,8 +311,8 @@ Status == &quot;Ingen&quot;</description>
     <recordDeletes>
         <name>DeleteAssignedResource</name>
         <label>DeleteAssignedResource</label>
-        <locationX>1014</locationX>
-        <locationY>626</locationY>
+        <locationX>914</locationX>
+        <locationY>448</locationY>
         <connector>
             <targetReference>Sett_frist_for_pamelding</targetReference>
         </connector>
@@ -277,6 +325,30 @@ Status == &quot;Ingen&quot;</description>
         </filters>
         <object>AssignedResource</object>
     </recordDeletes>
+    <recordLookups>
+        <name>Get_Assigned_Resource_Id</name>
+        <label>Get Assigned Resource Id</label>
+        <locationX>975</locationX>
+        <locationY>739</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assigned_Resources_to_Delete</targetReference>
+        </connector>
+        <filters>
+            <field>ServiceAppointmentId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>AssignedResource</object>
+        <outputAssignments>
+            <assignToReference>AssignedResourceId</assignToReference>
+            <field>Id</field>
+        </outputAssignments>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+    </recordLookups>
     <recordLookups>
         <name>GetCurrentServiceAppointment</name>
         <label>GetCurrentServiceAppointment</label>
@@ -303,6 +375,7 @@ Status == &quot;Ingen&quot;</description>
         <queriedFields>EarliestStartTime</queriedFields>
         <queriedFields>HOT_FreelanceSubject__c</queriedFields>
         <queriedFields>Subject</queriedFields>
+        <queriedFields>HOT_ReleaseDate__c</queriedFields>
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
@@ -327,14 +400,14 @@ Status == &quot;Ingen&quot;</description>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
-        <name>updateRelatedInterestedResource</name>
-        <label>updateRelatedInterestedResource</label>
-        <locationX>1541</locationX>
-        <locationY>524</locationY>
+        <name>Update_Interesserte_Ressursers</name>
+        <label>Update Interesserte Ressursers</label>
+        <locationX>1622</locationX>
+        <locationY>271</locationY>
         <connector>
-            <targetReference>Loop_Over_RelatedInterestedResources</targetReference>
+            <targetReference>SuccessScreen</targetReference>
         </connector>
-        <inputReference>interatorRelatedInterestedResource</inputReference>
+        <inputReference>UpdatedInterestedResources</inputReference>
     </recordUpdates>
     <recordUpdates>
         <name>UpdateServiceAppointment</name>
@@ -377,8 +450,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>OutScreen</name>
         <label>OutScreen</label>
-        <locationX>551</locationX>
-        <locationY>560</locationY>
+        <locationX>572</locationX>
+        <locationY>675</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -460,8 +533,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>1668</locationX>
-        <locationY>127</locationY>
+        <locationX>1788</locationX>
+        <locationY>111</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -481,6 +554,13 @@ Status == &quot;Ingen&quot;</description>
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>AssignedResourceId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>Continue</name>
         <dataType>Boolean</dataType>
@@ -513,5 +593,13 @@ Status == &quot;Ingen&quot;</description>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>UpdatedInterestedResources</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>HOT_InterestedResource__c</objectType>
     </variables>
 </Flow>

@@ -1,7 +1,10 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
 
 	public override void onBeforeInsert(){
+		setStatusDefault((List<HOT_Request__c>) records);
+		setOrdererField((List<HOT_Request__c>) records);
 		setServiceTerritory((List<HOT_Request__c>) records);
+		setFieldsToBlank((List<HOT_Request__c>) records, new List<String>{'MessageToDispatcher__c', 'CanceledDate__c'});
 	}
 
 	public override void onAfterInsert(){
@@ -51,11 +54,16 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 	}
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
+		List<HOT_Request__c> godkjentRequests = new List<HOT_Request__c>();
 		List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
 		List<HOT_Request__c> annullertRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> finishedRequests = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+			// Filter for Godkjent requests
+            if (triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' && request.Status__c == 'Godkjent') {
+                godkjentRequests.add(request);
+			}
 			// Filter for Avlyst requests
             if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
                 avlystRequests.add(request);
@@ -65,6 +73,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 annullertRequests.add(request);
 			}
         }
+        if (godkjentRequests.size() > 0) {
+            createWOLI_SA(godkjentRequests);
+		}
         if (avlystRequests.size() > 0) {
             updateChildRecords(avlystRequests, 'Canceled');
 		}
@@ -86,7 +97,21 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     }
 
-    private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
+    private static void createWOLI_SA(List<HOT_Request__c> godkjentRequests) {
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, Subject, Description, EndDate, StartDate, 
+									  Address, City, PostalCode, Street, LineItemCount,
+									  HOT_InterpretationPostalCity__c, HOT_InterpretationPostalCode__c, HOT_InterpretationStreet__c,
+									  HOT_NumberOfInterpreters__c, WorkTypeId FROM WorkOrder WHERE HOT_Request__c IN :godkjentRequests];
+		if(workOrders.size()>0){
+			HOT_WorkOrderHandler.createChildRecords(workOrders);
+		}
+		else{
+			createChildRecords(godkjentRequests);
+		}
+	}
+		
+		
+	private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
         List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder WHERE HOT_Request__c IN :changedRequests AND Status != :newStatus];
         List<WorkOrderLineItem> workOrderLineItems = [SELECT Status FROM WorkOrderLineItem WHERE WorkOrderId IN :workOrders AND Status != :newStatus];
         List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment WHERE ParentRecordId IN :workOrderLineItems AND Status != :newStatus];
@@ -109,6 +134,34 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (serviceAppointments.size() > 0) {
             update serviceAppointments;
 		}
+	}
+
+	public static void createChildRecords(List<HOT_Request__c> requests){
+		List<WorkOrder> workOrders = new List<WorkOrder>();
+		for(HOT_Request__c request:requests){
+			WorkOrder workOrder = new WorkOrder();
+
+			workOrder.AccountId = request.Account__c;
+			workOrder.City = request.MeetingPostalCity__c;
+			workOrder.ContactId = request.Account__c == null ? null : request.Account__r.PersonContactId;
+			workOrder.Description = request.Description__c;
+			workOrder.EndDate = request.EndTime__c;
+			workOrder.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
+			workOrder.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
+			workOrder.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
+			workOrder.HOT_NumberOfInterpreters__c = request.NumberOfInterpreters__c;
+			workOrder.HOT_Request__c = request.Id;
+			workOrder.OwnerId = request.OwnerId;
+			workOrder.PostalCode = request.MeetingPostalCode__c;
+			workOrder.StartDate = request.StartTime__c;
+			workOrder.Street = request.MeetingStreet__c;
+			workOrder.Subject = request.Subject__c;
+			workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
+			workOrder.WorkTypeId = request.InterpretationMethod__c;
+
+			workOrders.add(workOrder);
+		}
+		insert workOrders;
 	}
 	
 	public static void setServiceTerritory(List<HOT_Request__c> requests){
@@ -139,4 +192,27 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 			request.CanceledDate__c = Date.today();
 		}
 	}
+	public static void setStatusDefault(List<HOT_Request__c> requests){
+		for(HOT_Request__c request:requests){
+			request.Status__c = 'Åpen';
+		}
+	}
+	public static void setOrdererField(List<HOT_Request__c> requests){
+		for(HOT_Request__c request:requests){
+			if(request.Type__c == 'Me' && request.Orderer__c == null && request.Account__c != null){
+				request.Orderer__c = request.Account__c;
+			}
+		}
+	}
+	public static void setFieldsToBlank(List<HOT_Request__c> requests, List<String> fields){
+		for(HOT_Request__c request:requests){
+			for(String field:fields){
+				if(request.get(field) != null){
+					request.put(field, null);
+				}
+			}
+		}
+	}
+
+	
 }

@@ -4,9 +4,30 @@
 			<lightning-button title="Meld interesse" class="right-button" variant="brand" label="Meld interesse"
 				onclick={sendInterest}>
 			</lightning-button>
-			<lightning-input type="checkbox" class="filter-list-checkbox" label={checkBoxLabel} name="toggleTerritory"
-				onchange={handleChecked}>
-			</lightning-input>
+
+			<lightning-button label="Regioner" name="filterRegionButton" onclick={handleShowRegionFilter}>
+			</lightning-button>
+			<div if:true={showRegionFilter} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+				style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
+				<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
+					tabindex="-1" role="dialog">
+					<section>
+						<lightning-record-edit-form class="no-padding" object-api-name="ServiceResource" density="comfy"
+							onsubmit={handleSubmit} record-id={serviceResource.Id}>
+							<lightning-input-field field-name="HOT_PreferredRegions__c">
+							</lightning-input-field>
+							</br>
+							<lightning-button title="Lagre" variant="brand" label="Lagre" type="submit">
+							</lightning-button>
+						</lightning-record-edit-form>
+					</section>
+					<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
+						onclick={handleHideRegionFilter}>
+						<span class="text-hide">Lukk</span>
+					</button>
+				</div>
+			</div>
+
 			<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
 				value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
 			</lightning-combobox>
@@ -29,51 +50,56 @@
 
 						<lightning-record-edit-form class="comment-form" key={it.value.Id}
 							object-api-name="HOT_InterestedResource__c" density="comfy">
-							<div>
-								<span class="slds-form-element__label lightning-output-field__label">Start tid</span>
-								</br>
-								<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit"
-									hour12="false" hour="2-digit" minute="2-digit" value={it.value.EarliestStartTime}
-									class="lightning-output-field">
-								</lightning-formatted-date-time>
-								</br>
-								<span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
-								</br>
-								<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit"
-									hour12="false" hour="2-digit" minute="2-digit" value={it.value.DueDate}
-									class="lightning-output-field">
-								</lightning-formatted-date-time>
-								</br>
-								<span class="slds-form-element__label lightning-output-field__label">Adresse</span>
-								</br>
-								<lightning-formatted-text value={it.value.HOT_AddressFormated__c}
-									class="lightning-output-field">
-								</lightning-formatted-text>
-								</br>
-								<span class="slds-form-element__label lightning-output-field__label">Arbeidstype</span>
-								</br>
-								<lightning-formatted-text value={it.value.HOT_WorkTypeName__c}
-									class="lightning-output-field">
-								</lightning-formatted-text>
-								</br>
-								<span class="slds-form-element__label lightning-output-field__label">Påmeldte</span>
-								</br>
-								<lightning-formatted-number value={it.value.HOT_NumberOfInterestedResources__c}
-									class="lightning-output-field">
-								</lightning-formatted-number>
-								</br>
-								<span class="slds-form-element__label lightning-output-field__label">Frist</span>
-								</br>
-								<lightning-formatted-text value={it.value.HOT_DeadlineDate__c}
-									class="lightning-output-field">
-								</lightning-formatted-text>
-								</br>
-								<span class="slds-form-element__label lightning-output-field__label">Tema</span>
-								</br>
-								<lightning-formatted-text value={it.value.HOT_FreelanceSubject__c}
-									class="lightning-output-field">
-								</lightning-formatted-text>
+							<div class="slds-grid slds-gutters">
+								<div class="slds-col slds-size_1-of-2">
+									<span class="slds-form-element__label lightning-output-field__label">Start
+										tid</span>
+									</br>
+									<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit"
+										hour12="false" hour="2-digit" minute="2-digit"
+										value={it.value.EarliestStartTime} class="lightning-output-field">
+									</lightning-formatted-date-time>
+									</br>
+									<span class="slds-form-element__label lightning-output-field__label">Slutt
+										tid</span>
+									</br>
+									<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit"
+										hour12="false" hour="2-digit" minute="2-digit" value={it.value.DueDate}
+										class="lightning-output-field">
+									</lightning-formatted-date-time>
+									</br>
+									<span class="slds-form-element__label lightning-output-field__label">Adresse</span>
+									</br>
+									<lightning-formatted-text value={it.value.HOT_AddressFormated__c}
+										class="lightning-output-field">
+									</lightning-formatted-text>
+								</div>
+								<div class="slds-col slds-size_1-of-2">
+									<span
+										class="slds-form-element__label lightning-output-field__label">Arbeidstype</span>
+									</br>
+									<lightning-formatted-text value={it.value.HOT_WorkTypeName__c}
+										class="lightning-output-field">
+									</lightning-formatted-text>
+									</br>
+									<span class="slds-form-element__label lightning-output-field__label">Påmeldte</span>
+									</br>
+									<lightning-formatted-number value={it.value.HOT_NumberOfInterestedResources__c}
+										class="lightning-output-field">
+									</lightning-formatted-number>
+									</br>
+									<span class="slds-form-element__label lightning-output-field__label">Frist</span>
+									</br>
+									<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit"
+										value={it.value.HOT_DeadlineDate__c} class="lightning-output-field">
+									</lightning-formatted-date-time>
+								</div>
 							</div>
+							<span class="slds-form-element__label lightning-output-field__label">Tema</span>
+							</br>
+							<lightning-formatted-text value={it.value.HOT_FreelanceSubject__c}
+								class="lightning-output-field">
+							</lightning-formatted-text>
 							<lightning-input-field class="ikke-sensitive-opplysninger" field-name="Comments__c">
 							</lightning-input-field>
 
@@ -98,9 +124,68 @@
 		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
 			tabindex="-1" role="dialog">
 			<section>
-				<div>
-					<h2 class="typo-undertittel">Tema</h2>
-					<p class="typo-normal">{subject}</p>
+				<div class="slds-grid slds-gutters">
+					<div class="slds-col slds-size_1-of-2">
+						<span class="slds-form-element__label lightning-output-field__label">Oppdragsnummer</span>
+						</br>
+						<lightning-formatted-text value={serviceAppointmentDetails.AppointmentNumber}
+							class="lightning-output-field">
+						</lightning-formatted-text>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Frigitt dato</span>
+						</br>
+						<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit"
+							value={serviceAppointmentDetails.HOT_ReleaseDate__c} class="lightning-output-field">
+						</lightning-formatted-date-time>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Antall
+							påmeldte</span>
+						</br>
+						<lightning-formatted-number value={serviceAppointmentDetails.HOT_NumberOfInterestedResources__c}
+							class="lightning-output-field">
+						</lightning-formatted-number>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Arbeidstype</span>
+						</br>
+						<lightning-formatted-text value={serviceAppointmentDetails.HOT_WorkTypeName__c}
+							class="lightning-output-field">
+						</lightning-formatted-text>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Region</span>
+						</br>
+						<lightning-formatted-text value={serviceAppointmentDetails.ServiceTerritory.Name}
+							class="lightning-output-field">
+						</lightning-formatted-text>
+					</div>
+					<div class="slds-col slds-size_1-of-2">
+						<span class="slds-form-element__label lightning-output-field__label">Start
+							tid</span>
+						</br>
+						<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit" hour12="false"
+							hour="2-digit" minute="2-digit" value={serviceAppointmentDetails.EarliestStartTime}
+							class="lightning-output-field">
+						</lightning-formatted-date-time>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Slutt
+							tid</span>
+						</br>
+						<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit" hour12="false"
+							hour="2-digit" minute="2-digit" value={serviceAppointmentDetails.DueDate}
+							class="lightning-output-field">
+						</lightning-formatted-date-time>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Adresse</span>
+						</br>
+						<lightning-formatted-text value={serviceAppointmentDetails.HOT_AddressFormated__c}
+							class="lightning-output-field">
+						</lightning-formatted-text>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Tema</span>
+						</br>
+						<lightning-formatted-text value={serviceAppointmentDetails.HOT_FreelanceSubject__c}
+							class="lightning-output-field">
+						</lightning-formatted-text>
+					</div>
 				</div>
 			</section>
 			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
