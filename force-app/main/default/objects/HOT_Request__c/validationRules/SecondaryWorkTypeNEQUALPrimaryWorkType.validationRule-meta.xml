@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>SecondaryWorkTypeNEQUALPrimaryWorkType</fullName>
-    <active>true</active>
-    <description>Ensures that secondary workType is different from primary workType</description>
-    <errorConditionFormula>InterpretationMethod__c != InterpretationMethodSecondary__c</errorConditionFormula>
-    <errorDisplayField>InterpretationMethodSecondary__c</errorDisplayField>
-    <errorMessage>Sekundær tolkemetode kan ikke være det samme som primær tolkemetode.</errorMessage>
-</ValidationRule>
