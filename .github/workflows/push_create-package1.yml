@@ -253,7 +253,7 @@ jobs:
         run: |
           if [ -d "./force-app/unpackagable-with-auto-deploy" ]; then
             echo "Starting deployment of ./force-app/unpackagable-with-auto-deploy"
-            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u dev
+            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u dev -l RunLocalTests
           fi
 
       # Install dependant packages to UAT sandbox
@@ -272,5 +272,5 @@ jobs:
         run: |
           if [ -d "./force-app/unpackagable-with-auto-deploy" ]; then
             echo "Starting deployment of ./force-app/unpackagable-with-auto-deploy"
-            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u uat
+            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u uat -l RunLocalTests
           fi
