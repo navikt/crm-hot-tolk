@@ -5,6 +5,8 @@ import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterControll
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createWorkOrdersFromCommunity from '@salesforce/apex/HOT_RequestHandler.createWorkOrdersFromCommunity';
+import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
+
 
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
@@ -494,6 +496,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				}
 				else {
 					this.recordId = this.fieldValues.Id;
+					let requests = [];
+					requests.push(this.fieldValues);
+					this.times = this.formatDateTimes(getTimes({ requests }));
 				}
 
 				if (this.fieldValues.Type__c == 'PublicEvent') {
@@ -505,7 +510,16 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	}
 
-
+	formatDateTimes(apexTimes) {
+		for (apexTime of apexTimes) {
+			let dateTime = {
+				"date": new Date(apexTime.startTime),
+				"startTime": new Date(apexTime.startTime),
+				"date": new Date(apexTime.startTime),
+			}
+		}
+	}
+	//??????????????????????????
 
 	//Navigation functions
 	goToNewRequest(event) {

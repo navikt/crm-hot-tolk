@@ -118,5 +118,8 @@ private class HOT_RequestHandlerTest {
 		HOT_RequestHandler.createWorkOrdersFromCommunity(request.Id, times);
 		List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :request.Id];
 		System.assertEquals(2, workOrders.size(), 'Could not insert workOrders');
+		request = [SELECT Id, NumberOfWorkOrders__c FROM HOT_Request__c WHERE Id = :request.Id];
+		System.assertEquals(2, request.NumberOfWorkOrders__c, 'Could not set NumberOfWorkOrders on request');
+
 	}
 }

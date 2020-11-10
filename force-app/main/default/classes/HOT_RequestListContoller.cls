@@ -6,7 +6,7 @@ public without sharing class HOT_RequestListContoller {
 		User user = [SELECT Id, AccountId, Name FROM User WHERE Id = : userId];
 		List<HOT_Request__c> requests = new List<HOT_Request__c>();
 		if(user.AccountId != null){
-			requests = [SELECT Name, Subject__c, StartTime__c, EndTime__c, MeetingStreet__c, MeetingPostalCode__c, 
+			requests = [SELECT Name, Subject__c, StartTime__c, EndTime__c, MeetingStreet__c, MeetingPostalCode__c, NumberOfWorkOrders__c,
 			MeetingPostalCity__c, InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, 
 			Description__c, Status__c, ExternalRequestStatus__c, Account__c, (SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
 			Source__c, Type__c, toLabel(EventType__c), Orderer__r.Name, OrdererPhone__c, OrdererEmail__c, UserName__c, UserPersonNumber__c, Company__r.Name, OrganizationNumber__c, InvoiceReference__c, AdditionalInvoicetext__c
@@ -23,6 +23,25 @@ public without sharing class HOT_RequestListContoller {
 		
 		return requests;
 	}
+
+	@AuraEnabled(cacheable = true)
+	public static List<Map<String, Long>> getTimes(List<HOT_Request__c> requests) {
+		List<Map<String, Long>> times = new List<Map<String, Long>>();
+		List<Id> requestIds = new List<Id>();
+		for(HOT_Request__c request:requests){
+			requestIds.add(request.Id);
+		}
+		List<WorkOrder> workOrders = [SELECT Id, StartDate, EndDate FROM WorkOrder WHERE HOT_Request__c IN :requestIds];
+		for(WorkOrder workOrder:workOrders){
+			Map<String, Long> timeMap = new Map<String, Long>();
+			timeMap.put('startTime', workOrder.StartDate.getTime());
+			timeMap.put('endTime', workOrder.EndDate.getTime());
+			times.add(timeMap);
+		}
+		return times;
+	}
+
+
 
 	@AuraEnabled(cacheable = true)
 	public static List<HOT_Request__c> getRequestListFromAccountFromRequestId(Id recordId) {
