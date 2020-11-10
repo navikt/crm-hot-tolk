@@ -133,10 +133,14 @@ private class HOT_RequestApprovedHandlerTest{
 		update request;
 		Test.stopTest();
 
-		List<WorkOrderLineItem> workOrderLineItems = [SELECT Id FROM WorkOrderLineItem];
-		List<ServiceAppointment> serviceAppointments = [SELECT Id FROM ServiceAppointment];
-		System.assertEquals(2, workOrderLineItems.size());
-		System.assertEquals(4, serviceAppointments.size());
+		List<WorkOrderLineItem> workOrderLineItems = [SELECT Id FROM WorkOrderLineItem WHERE WorkTypeId != :workType2.Id];
+		List<ServiceAppointment> serviceAppointments = [SELECT Id FROM ServiceAppointment WHERE WorkTypeId != :workType2.Id];
+		List<WorkOrderLineItem> workOrderLineItems2 = [SELECT Id FROM WorkOrderLineItem WHERE WorkTypeId = :workType2.Id];
+		List<ServiceAppointment> serviceAppointments2 = [SELECT Id FROM ServiceAppointment WHERE WorkTypeId = :workType2.Id];
+		System.assertEquals(1, workOrderLineItems.size());
+		System.assertEquals(2, serviceAppointments.size());
+		System.assertEquals(1, workOrderLineItems2.size());
+		System.assertEquals(2, serviceAppointments2.size());
 
 	}
 
