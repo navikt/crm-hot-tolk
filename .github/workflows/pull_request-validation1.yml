@@ -90,6 +90,7 @@ jobs:
       - name: Delete unpackagable
         run: |
           rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/unpackagable-with-auto-deploy
           rm -rf ./force-app/scratch-org
 
       # Deploy source to scratch org
@@ -126,6 +127,7 @@ jobs:
       - name: Delete unpackagable
         run: |
           rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/unpackagable-with-auto-deploy
           rm -rf ./force-app/scratch-org
 
       # Get all test classes from current repo
@@ -146,7 +148,7 @@ jobs:
 
       # Upload Apex test results
       - name: Upload Apex test results
-        if: steps.test-classes-in-repo.outputs.classes
+        if: steps.test-classes-in-repo.outputs.classes && success() || steps.test-classes-in-repo.outputs.classes && failure() # uploads tests results even if tests fail
         uses: actions/upload-artifact@v2
         with:
           name: apex-tests
@@ -178,8 +180,9 @@ jobs:
       - name: Delete unpackagable
         run: |
           rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/unpackagable-with-auto-deploy
           rm -rf ./force-app/scratch-org
-          
+
       # Get code coverage
       - name: Get code coverage
         id: getCodeCoverage
