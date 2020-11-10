@@ -23,19 +23,27 @@ public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 	}
 
 	public static void createChildRecords(List<WorkOrder> workOrders){
+
+		//Getting parent requests
 		List<Id> requestIds = new List<Id>();
 		for(WorkOrder workOrder : workOrders){
 			requestIds.add(workOrder.HOT_Request__c);
 		}
 		Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>([SELECT Id, InterpretationMethod__r.Id, InterpretationMethodSecondary__r.Id, NumberOfInterpreters__c, NumberOfInterpretersSecondary__c 
 																		FROM HOT_Request__c WHERE Id IN :requestIds]);
+
+		//Each workOrder should have 1 or more childs (workOrderLineItems)
 		List<WorkOrderLineItem> workOrderLineItems = new List<WorkOrderLineItem>();
 		for(WorkOrder workOrder:workOrders){
+
+			//Fetching the workTypes from parent requests. If the request only has 1 workType, only one child workOrderLineItem should be created
 			Map<Id, Decimal> workTypes = new Map<Id, Decimal>();
 			workTypes.put(requests.get(workOrder.HOT_Request__c).InterpretationMethod__r.Id, requests.get(workOrder.HOT_Request__c).NumberOfInterpreters__c);
 			if(requests.get(workOrder.HOT_Request__c).InterpretationMethodSecondary__c != null){
 				workTypes.put(requests.get(workOrder.HOT_Request__c).InterpretationMethodSecondary__r.Id, requests.get(workOrder.HOT_Request__c).NumberOfInterpretersSecondary__c);
 			}
+
+			//If there are no child workOrderLineItems for this workOrder, they should be created 
 			if(workOrder.LineItemCount == 0){
 				for(Id workTypeId:workTypes.keySet()){
 					WorkOrderLineItem workOrderLineItem = new WorkOrderLineItem();
