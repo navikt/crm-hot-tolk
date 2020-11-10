@@ -74,7 +74,7 @@ jobs:
         run: |
           if [ -d "./force-app/unpackagable-with-auto-deploy" ]; then
             echo "Starting deployment of ./force-app/unpackagable-with-auto-deploy"
-            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u preprod
+            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u preprod -l RunLocalTests
           fi
 
   push-new-version-number-to-master:
