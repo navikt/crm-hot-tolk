@@ -410,6 +410,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		let times = [];
 		for (let dateTime of this.times) {
 			times.push({
+				"id": this.times.Id,
 				"startTime": new Date(dateTime.date + ", " + dateTime.startTime).getTime(),
 				"endTime": new Date(dateTime.date + ", " + dateTime.endTime).getTime(),
 			});
@@ -479,7 +480,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				if (!this.sameLocation) {
 					this.value = 'no';
 				}
-
+				this.isEditMode = parsed_params.edit != null;
 				this.showNextButton = !(parsed_params.edit != null || parsed_params.copy != null);
 				if (!this.showNextButton) {
 					this.requestForm = true;
@@ -513,13 +514,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	formatDateTimes(apexTimes) {
 		for (apexTime of apexTimes) {
 			let dateTime = {
+				"id": apexTime.id,
 				"date": new Date(apexTime.startTime),
 				"startTime": new Date(apexTime.startTime),
-				"date": new Date(apexTime.startTime),
+				"endTime": new Date(apexTime.endTime),
 			}
 		}
 	}
-	//??????????????????????????
 
 	//Navigation functions
 	goToNewRequest(event) {

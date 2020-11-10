@@ -25,17 +25,18 @@ public without sharing class HOT_RequestListContoller {
 	}
 
 	@AuraEnabled(cacheable = true)
-	public static List<Map<String, Long>> getTimes(List<HOT_Request__c> requests) {
-		List<Map<String, Long>> times = new List<Map<String, Long>>();
+	public static List<Map<String, String>> getTimes(List<HOT_Request__c> requests) {
+		List<Map<String, String>> times = new List<Map<String, String>>();
 		List<Id> requestIds = new List<Id>();
 		for(HOT_Request__c request:requests){
 			requestIds.add(request.Id);
 		}
 		List<WorkOrder> workOrders = [SELECT Id, StartDate, EndDate FROM WorkOrder WHERE HOT_Request__c IN :requestIds];
 		for(WorkOrder workOrder:workOrders){
-			Map<String, Long> timeMap = new Map<String, Long>();
-			timeMap.put('startTime', workOrder.StartDate.getTime());
-			timeMap.put('endTime', workOrder.EndDate.getTime());
+			Map<String, String> timeMap = new Map<String, String>();
+			timeMap.put('id', (String) workOrder.Id);
+			timeMap.put('startTime', String.valueOf(workOrder.StartDate.getTime()));
+			timeMap.put('endTime', String.valueOf(workOrder.EndDate.getTime()));
 			times.add(timeMap);
 		}
 		return times;
