@@ -35,13 +35,14 @@ jobs:
       - name: Authenticate DEVHOT
         run: |
           echo ${{ secrets.DEVHOT_SFDX_URL}} > ./DEVHOT_SFDX_URL.txt
-          sfdx force:auth:sfdxurl:store -f ./DEVHOT_SFDX_URL.txt -a devhot -s
+          sfdx force:auth:sfdxurl:store -f ./DEVHOT_SFDX_URL.txt -a dev -s
           rm -f ./DEVHOT_SFDX_URL.txt
 
       # Delete unpackagable and scratch-org folder
       - name: "Delete unpackagable"
         run: |
           rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/unpackagable-with-auto-deploy
           rm -rf ./force-app/scratch-org
 
       # Create package version
@@ -67,16 +68,32 @@ jobs:
         with:
           json: ${{steps.package-version-create.outputs.result}}
 
-      # Install new package version into devhot
-      - name: "Install new package version into devhot"
-        id: devhot-installation
+      # Install sfpowerkit plugin used to install multiple packages only by version number
+      - name: Install sfpowerkit plugin
+        run: echo y | sfdx plugins:install sfpowerkit
+
+      # Get package keys
+      - name: Get package keys
+        id: install-keys
         run: |
-          sfdx force:package:install --package ${{ steps.extract-data-package-version-create.outputs.packageVersionId }} -w 20 -b 20 -u devhot -r -k ${{ secrets.PACKAGE_KEY }} --json | tee output
+          keys=""
+          for p in $(jq '.result | .[].Name' -r <<< "$(sfdx force:package:list --json)"); do
+              keys+=$p":${{ secrets.PACKAGE_KEY }} "
+          done
+          echo "::set-output name=keys::$(echo $keys)"
 
-          status=$(cat output |jq '.status')
+      # Install dependant packages to dev sandbox
+      - name: Install dependant packages to dev sandbox
+        run: sfdx sfpowerkit:package:dependencies:install -u dev -r -a -w 60 -k '${{ steps.install-keys.outputs.keys }}'
 
-          if [ $status == "0" ]
-          then
-            echo "::set-output name=isSuccess::true"
+      # Install package in dev sandbox org
+      - name: Install package in dev sandbox org
+        run: sfdx force:package:install --package ${{ needs.create-package.outputs.packageId }} -k ${{ secrets.PACKAGE_KEY }} -u dev -w 10 -b 10 -r
+
+      # Deploy unpackagable content to dev sandbox org
+      - name: Deploy unpackagable content to dev sandbox org
+        run: |
+          if [ -d "./force-app/unpackagable-with-auto-deploy" ]; then
+            echo "Starting deployment of ./force-app/unpackagable-with-auto-deploy"
+            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u dev -l RunLocalTests
           fi
-          rm output
