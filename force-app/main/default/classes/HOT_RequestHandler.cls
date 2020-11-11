@@ -181,7 +181,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
 			workOrder.AccountId = request.Account__c;
 			workOrder.City = request.MeetingPostalCity__c;
-			workOrder.ContactId = request.Account__c == null ? null : request.Account__r.PersonContactId;
+			workOrder.ContactId = request.HOT_PersonContactId__c;
 			workOrder.Description = request.Description__c;
 			workOrder.EndDate = request.EndTime__c;
 			workOrder.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;

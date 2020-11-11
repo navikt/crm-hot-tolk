@@ -65,6 +65,18 @@ jobs:
       - name: Install package version to preprod
         run: sfdx force:package:install --package ${{ github.event.inputs.packageId }} -w 20 -b 20 -u preprod -r -k ${{ secrets.PACKAGE_KEY }} --json
 
+      # Checkout source code
+      - name: Checkout source code from master
+        uses: actions/checkout@v2
+
+      # Deploy unpackagable content
+      - name: Deploy unpackagable content
+        run: |
+          if [ -d "./force-app/unpackagable-with-auto-deploy" ]; then
+            echo "Starting deployment of ./force-app/unpackagable-with-auto-deploy"
+            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u preprod -l RunLocalTests
+          fi
+
   push-new-version-number-to-master:
     name: Push new version number to master
     runs-on: ubuntu-latest
