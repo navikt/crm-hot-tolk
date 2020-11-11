@@ -25,13 +25,12 @@ public without sharing class HOT_RequestListContoller {
 	}
 
 	@AuraEnabled(cacheable = true)
-	public static List<Map<String, String>> getTimes(List<HOT_Request__c> requests) {
+	public static List<Map<String, String>> getTimes(List<String> requestIds) {
+		System.debug('getTimes');
 		List<Map<String, String>> times = new List<Map<String, String>>();
-		List<Id> requestIds = new List<Id>();
-		for(HOT_Request__c request:requests){
-			requestIds.add(request.Id);
-		}
-		List<WorkOrder> workOrders = [SELECT Id, StartDate, EndDate FROM WorkOrder WHERE HOT_Request__c IN :requestIds];
+		System.debug(requestIds);
+		List<WorkOrder> workOrders = [SELECT Id, StartDate, EndDate FROM WorkOrder WHERE HOT_Request__r.Id IN :requestIds];
+		System.debug(workOrders.size());
 		for(WorkOrder workOrder:workOrders){
 			Map<String, String> timeMap = new Map<String, String>();
 			timeMap.put('id', (String) workOrder.Id);
@@ -39,6 +38,7 @@ public without sharing class HOT_RequestListContoller {
 			timeMap.put('endTime', String.valueOf(workOrder.EndDate.getTime()));
 			times.add(timeMap);
 		}
+		System.debug(times.size());
 		return times;
 	}
 

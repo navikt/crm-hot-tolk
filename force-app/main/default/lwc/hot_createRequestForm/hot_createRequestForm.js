@@ -5,6 +5,7 @@ import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterControll
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createWorkOrdersFromCommunity from '@salesforce/apex/HOT_RequestHandler.createWorkOrdersFromCommunity';
+import updateRelatedWorkOrders from '@salesforce/apex/HOT_RequestHandler.updateRelatedWorkOrders';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
 
 
@@ -396,6 +397,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.spin = false;
 	}
 
+	@track isEditMode = false;
 	handleSuccess(event) {
 		console.log("handleSuccess");
 		this.spin = false;
@@ -407,15 +409,21 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.recordId = event.detail.id;
 
 		let requestId = event.detail.id;
-		let times = [];
+		let times = {};
 		for (let dateTime of this.times) {
-			times.push({
-				"id": this.times.Id,
+			times[dateTime.id.toString()] = {
 				"startTime": new Date(dateTime.date + ", " + dateTime.startTime).getTime(),
 				"endTime": new Date(dateTime.date + ", " + dateTime.endTime).getTime(),
-			});
+			};
 		}
-		createWorkOrdersFromCommunity({ requestId, times });
+		if (this.isEditMode) {
+			console.log("updateRelatedWorkOrders");
+			updateRelatedWorkOrders({ requestId, times });
+		}
+		else {
+			console.log("createWorkOrdersFromCommunity");
+			createWorkOrdersFromCommunity({ requestId, times });
+		}
 
 		window.scrollTo(0, 0);
 
@@ -497,9 +505,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				}
 				else {
 					this.recordId = this.fieldValues.Id;
-					let requests = [];
-					requests.push(this.fieldValues);
-					this.times = this.formatDateTimes(getTimes({ requests }));
+					let requestIds = [];
+					requestIds.push(this.fieldValues.Id);
+					console.log(requestIds)
+					let apexTimes = getTimes({ requestIds });
+					console.log(JSON.stringify(apexTimes));
+					this.formatDateTimes(apexTimes);
+					console.log("formatDateTimes SUCCESS")
 				}
 
 				if (this.fieldValues.Type__c == 'PublicEvent') {
@@ -512,13 +524,19 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	formatDateTimes(apexTimes) {
+		console.log("formatDateTimes");
+		console.log(JSON.stringify(apexTimes));
 		for (apexTime of apexTimes) {
+			console.log("for");
 			let dateTime = {
 				"id": apexTime.id,
 				"date": new Date(apexTime.startTime),
 				"startTime": new Date(apexTime.startTime),
 				"endTime": new Date(apexTime.endTime),
-			}
+			};
+			console.log("apexTime");
+			this.times.push(dateTime);
+			console.log(this.times);
 		}
 	}
 
