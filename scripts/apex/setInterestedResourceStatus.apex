@@ -1,5 +1,5 @@
 
-List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c, ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Status__c = 'Interested' AND ServiceAppointment__r.Status NOT IN ('None', 'Released to Freelance')];
+List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c, ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Status__c = 'Not Assigned' AND ServiceAppointment__r.Status NOT IN ('None', 'Released to Freelance')];
 
 System.debug(interestedResources);
 List<Id> serviceAppointmentIds = new List<Id>();
