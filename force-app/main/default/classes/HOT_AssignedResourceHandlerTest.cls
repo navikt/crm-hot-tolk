@@ -15,14 +15,26 @@ private class HOT_AssignedResourceHandlerTest{
 		request2.Status__c = 'Godkjent';
 		update request2;
 
+		OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+		insert operatingHours;
+		ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+		insert serviceTerritory;
+
 		Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator'];
 		User user = HOT_TestDataFactory.createUser('User2', profile);
 		insert user;
 		ServiceResource serviceResourceAdmin = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+		serviceResourceAdmin.HOT_IsFreelanceInterpreter__c = true;
 		insert serviceResourceAdmin;
 		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
 		serviceResource.HOT_IsFreelanceInterpreter__c = true;
+		serviceResource.HOT_ServiceTerritory__c = serviceTerritory.Id;
 		insert serviceResource;
+
+
+		ServiceAppointment serviceAppointment = [SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
+		HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(serviceAppointment.Id, serviceResource.Id);
+		insert interestedResource;
 
 	}
 
@@ -46,6 +58,17 @@ private class HOT_AssignedResourceHandlerTest{
 		System.assertEquals(testResource.Id, serviceAppointment.HOT_ServiceResource__c, 'Could not set HOT_ServiceResource__c onAfterUpdate');
 		System.assertEquals(testResource.RelatedRecordId, serviceAppointment.HOT_AssignedResourceId__c, 'Could not set HOT_AssignedResourceId__c onAfterUpdate');
 		
+		//Testing updates on InterestedResources
+		List<HOT_InterestedResource__c> interestedResources = [SELECT Id, ServiceResource__c, Status__c FROM HOT_InterestedResource__c];
+		System.assertEquals(2, interestedResources.size(), 'Could not create interested resources correctly');
+		Map<Id, HOT_InterestedResource__c> irBySR = new Map<Id, HOT_InterestedResource__c>();
+		for(HOT_InterestedResource__c interestedResource:interestedResources){
+			irBySR.put(interestedResource.ServiceResource__c, interestedResource);
+		}
+		System.assertEquals('Assigned', irBySR.get(testResource.Id).Status__c, 'Could not set correct status on InterestedResources');
+		System.assertEquals('Not Assigned', irBySR.get(adminResource.Id).Status__c, 'Could not set correct status on InterestedResources');
+
+
 		//Testing onAfterdelete()
 		delete assignedResource;
 		serviceAppointment = [SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c, EarliestStartTime, DueDate, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Id = :serviceAppointment.Id LIMIT 1];
@@ -53,6 +76,8 @@ private class HOT_AssignedResourceHandlerTest{
 		System.assertEquals(null, serviceAppointment.HOT_AssignedResourceId__c, 'Could not set HOT_AssignedResourceId__c onAfterdelete');
 		System.assertEquals(serviceAppointment.SchedStartTime, serviceAppointment.EarliestStartTime, 'Could not set EarliestStartTime onAfterdelete');
         System.assertEquals(serviceAppointment.SchedEndTime, serviceAppointment.DueDate, 'Could not set SchedEndTime onAfterdelete');
+
+
 	}
 
 	@isTest static void createInterestedResourcesTest(){
