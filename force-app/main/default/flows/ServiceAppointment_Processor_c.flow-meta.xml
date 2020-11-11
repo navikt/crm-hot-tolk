@@ -542,7 +542,7 @@
                 <stringValue>([ServiceAppointment].DueDate - [ServiceAppointment].EarliestStartTime )*24</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_2_myRule_1_A1_8688218326</name>
+        <name>formula_2_myRule_1_A1_8471767266</name>
         <dataType>Number</dataType>
         <expression>({!myVariable_current.DueDate} - {!myVariable_current.EarliestStartTime} )*24</expression>
         <scale>18</scale>
@@ -554,7 +554,7 @@
                 <stringValue>[ServiceAppointment].Owner:Queue.Id </stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_6_myRule_4_A2_7026748487</name>
+        <name>formula_6_myRule_4_A2_1530932674</name>
         <dataType>String</dataType>
         <expression>{!myVariable_current.Owner:Queue.Id}</expression>
     </formulas>
@@ -563,7 +563,7 @@
         <dataType>Boolean</dataType>
         <expression>true</expression>
     </formulas>
-    <interviewLabel>ServiceAppointment_Processor_c-2_InterviewLabel</interviewLabel>
+    <interviewLabel>ServiceAppointment_Processor_c-3_InterviewLabel</interviewLabel>
     <label>ServiceAppointment Processor</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -661,7 +661,7 @@
             </processMetadataValues>
             <field>OwnerId</field>
             <value>
-                <elementReference>formula_6_myRule_4_A2_7026748487</elementReference>
+                <elementReference>formula_6_myRule_4_A2_1530932674</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -793,7 +793,43 @@
             </processMetadataValues>
             <field>WhatId</field>
             <value>
-                <elementReference>myVariable_current.Contact.AccountId</elementReference>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Name ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue>Contact;Lead</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Reference</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>WhoId</field>
+            <value>
+                <elementReference>myVariable_current.ContactId</elementReference>
             </value>
         </inputAssignments>
         <object>Task</object>
@@ -998,7 +1034,43 @@
             </processMetadataValues>
             <field>WhatId</field>
             <value>
-                <elementReference>myVariable_current.Contact.AccountId</elementReference>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Name ID</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue>Contact;Lead</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Reference</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>WhoId</field>
+            <value>
+                <elementReference>myVariable_current.ContactId</elementReference>
             </value>
         </inputAssignments>
         <object>Task</object>
@@ -1081,7 +1153,7 @@
             </processMetadataValues>
             <field>Duration</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_8688218326</elementReference>
+                <elementReference>formula_2_myRule_1_A1_8471767266</elementReference>
             </value>
         </inputAssignments>
         <object>ServiceAppointment</object>
