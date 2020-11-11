@@ -33,6 +33,7 @@ jobs:
       - name: Delete unpackagable
         run: |
           rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/unpackagable-with-auto-deploy
           rm -rf ./force-app/scratch-org
 
       # Create package version
@@ -67,7 +68,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
 
-       # Install SFDX
+        # Install SFDX
       - name: Install SFDX
         uses: sfdx-actions/setup-sfdx@v1
 
@@ -78,7 +79,7 @@ jobs:
           sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
           rm -f ./PROD_SFDX_URL.txt
 
-     # Authenticate integration-sandbox
+      # Authenticate integration-sandbox
       - name: Authenticate integration-sandbox
         run: |
           echo ${{ secrets.INTEGRATION_SANDBOX_SFDX_URL}} > ./INTEGRATION_SANDBOX_SFDX_URL.txt
@@ -246,6 +247,15 @@ jobs:
         if: ${{ needs.check-deployment-secrets.outputs.deployToDev == 'true' }}
         run: sfdx force:package:install --package ${{ needs.create-package.outputs.packageId }} -k ${{ secrets.PACKAGE_KEY }} -u dev -w 10 -b 10 -r
 
+      # Deploy unpackagable content to dev sandbox org
+      - name: Deploy unpackagable content to dev sandbox org
+        if: ${{ needs.check-deployment-secrets.outputs.deployToDev == 'true' }}
+        run: |
+          if [ -d "./force-app/unpackagable-with-auto-deploy" ]; then
+            echo "Starting deployment of ./force-app/unpackagable-with-auto-deploy"
+            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u dev -l RunLocalTests
+          fi
+
       # Install dependant packages to UAT sandbox
       - name: Install dependant packages to UAT sandbox
         if: ${{ needs.check-deployment-secrets.outputs.deployToUAT == 'true' }}
@@ -256,3 +266,11 @@ jobs:
         if: ${{ needs.check-deployment-secrets.outputs.deployToUAT == 'true' }}
         run: sfdx force:package:install --package ${{ needs.create-package.outputs.packageId }} -k ${{ secrets.PACKAGE_KEY }} -u uat -w 10 -b 10 -r
 
+      # Deploy unpackagable content to UAT sandbox org
+      - name: Deploy unpackagable content to UAT sandbox org
+        if: ${{ needs.check-deployment-secrets.outputs.deployToUAT == 'true' }}
+        run: |
+          if [ -d "./force-app/unpackagable-with-auto-deploy" ]; then
+            echo "Starting deployment of ./force-app/unpackagable-with-auto-deploy"
+            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u uat -l RunLocalTests
+          fi

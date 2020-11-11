@@ -52,3 +52,15 @@ jobs:
       # Install package in target org
       - name: Install package in target org
         run: sfdx force:package:install --package ${{ github.event.inputs.packageId }} -k ${{ secrets.PACKAGE_KEY }} -w 10 -b 10 -r
+
+      # Checkout source code
+      - name: Checkout source code from master
+        uses: actions/checkout@v2
+
+      # Deploy unpackagable content
+      - name: Deploy unpackagable content
+        run: |
+          if [ -d "./force-app/unpackagable-with-auto-deploy" ]; then
+            echo "Starting deployment of ./force-app/unpackagable-with-auto-deploy"
+            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -l RunLocalTests
+          fi

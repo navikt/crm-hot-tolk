@@ -57,4 +57,4 @@ jobs:
         if: success()
         id: dev-installation
         run: |
-          sfdx force:source:deploy -p force-app -u dev
+          sfdx force:source:deploy -p force-app -u dev -l RunLocalTests
