@@ -4,7 +4,7 @@
         <name>Assign_new_values_Avlyst_Bruker</name>
         <label>Assign new values - Avlyst - Bruker</label>
         <locationX>1018</locationX>
-        <locationY>878</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
             <operator>Assign</operator>
@@ -108,7 +108,7 @@
         <name>Assign_new_values_Pagar</name>
         <label>Assign new values - Pågår</label>
         <locationX>754</locationX>
-        <locationY>758</locationY>
+        <locationY>878</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
@@ -282,7 +282,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Assign_new_values_Pagar</targetReference>
+                <targetReference>Create_Historically_Assigned_Resource_Pagar</targetReference>
             </connector>
             <label>Pågår</label>
         </rules>
@@ -344,8 +344,42 @@
     </processMetadataValues>
     <processType>FieldServiceMobile</processType>
     <recordCreates>
-        <name>Create_Historically_Assigned_Resource_Avlyst</name>
-        <label>Create Historically Assigned Resource - Avlyst</label>
+        <name>Create_Historically_Assigned_Resource_Avlyst_Bruker</name>
+        <label>Create Historically Assigned Resource - Avlyst av bruker</label>
+        <locationX>1018</locationX>
+        <locationY>878</locationY>
+        <connector>
+            <targetReference>Assign_new_values_Avlyst_Bruker</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>ServiceAppointment__c</field>
+            <value>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ServiceResource__c</field>
+            <value>
+                <elementReference>ServiceResourceId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>StatusComment__c</field>
+            <value>
+                <elementReference>Cancel_Comment_Bruker</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Avlyst av bruker</stringValue>
+            </value>
+        </inputAssignments>
+        <object>HOT_HistoricallyAssignedResource__c</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Historically_Assigned_Resource_Avlyst_Tolk</name>
+        <label>Create Historically Assigned Resource - Avlyst av tolk</label>
         <locationX>1370</locationX>
         <locationY>878</locationY>
         <connector>
@@ -372,7 +406,7 @@
         <inputAssignments>
             <field>Status__c</field>
             <value>
-                <stringValue>Avlyst</stringValue>
+                <stringValue>Avlyst av tolk</stringValue>
             </value>
         </inputAssignments>
         <object>HOT_HistoricallyAssignedResource__c</object>
@@ -407,6 +441,34 @@
             <field>Status__c</field>
             <value>
                 <stringValue>Dekket</stringValue>
+            </value>
+        </inputAssignments>
+        <object>HOT_HistoricallyAssignedResource__c</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Historically_Assigned_Resource_Pagar</name>
+        <label>Create Historically Assigned Resource - Pågår</label>
+        <locationX>754</locationX>
+        <locationY>758</locationY>
+        <connector>
+            <targetReference>Assign_new_values_Pagar</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>ServiceAppointment__c</field>
+            <value>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ServiceResource__c</field>
+            <value>
+                <elementReference>ServiceResourceId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Pågår</stringValue>
             </value>
         </inputAssignments>
         <object>HOT_HistoricallyAssignedResource__c</object>
@@ -530,7 +592,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Assign_new_values_Avlyst_Bruker</targetReference>
+            <targetReference>Create_Historically_Assigned_Resource_Avlyst_Bruker</targetReference>
         </connector>
         <fields>
             <name>Cancel_Comment_Bruker</name>
@@ -551,7 +613,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Create_Historically_Assigned_Resource_Avlyst</targetReference>
+            <targetReference>Create_Historically_Assigned_Resource_Avlyst_Tolk</targetReference>
         </connector>
         <fields>
             <name>Cancel_Comment_Tolk</name>
