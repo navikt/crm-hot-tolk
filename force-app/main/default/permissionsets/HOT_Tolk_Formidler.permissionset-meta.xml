@@ -268,6 +268,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.InterpretationMethodSecondary__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.InterpretationPostalCity__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -334,6 +339,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.NumberOfInterpreters__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.NumberOfInterpretersSecondary__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

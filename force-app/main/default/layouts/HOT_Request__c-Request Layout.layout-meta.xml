@@ -138,6 +138,11 @@
             </layoutItems>
             <layoutItems>
                 <emptySpace>true</emptySpace>
+                <field>InterpretationMethodSecondary__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>NumberOfInterpretersSecondary__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
