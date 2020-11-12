@@ -3,7 +3,11 @@
     <fullName>SecondaryWorkTypeUNEQUALPrimaryWorkType</fullName>
     <active>true</active>
     <description>Ensures that secondary workType is different from primary workType</description>
-    <errorConditionFormula>InterpretationMethod__c != InterpretationMethodSecondary__c</errorConditionFormula>
+    <errorConditionFormula>InterpretationMethod__c != InterpretationMethodSecondary__c
+&amp;&amp;
+InterpretationMethod__c != null
+&amp;&amp;
+InterpretationMethodSecondary__c != null</errorConditionFormula>
     <errorDisplayField>InterpretationMethodSecondary__c</errorDisplayField>
     <errorMessage>Sekundær tolkemetode kan ikke være det samme som primær tolkemetode.</errorMessage>
 </ValidationRule>
