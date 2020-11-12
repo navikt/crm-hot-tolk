@@ -11,9 +11,11 @@ ISPICKVAL(AssignmentType__c, &quot;&quot;)
 ||
 ISBLANK(NumberOfInterpreters__c)
 ||
-ISBLANK( EndTime__c)
+ISBLANK(EndTime__c)
 ||
-ISBLANK( StartTime__c)
+ISBLANK(StartTime__c)
+||
+(NOT(ISBLANK(InterpretationMethodSecondary__c)) &amp;&amp; ISBLANK(NumberOfInterpretersSecondary__c))
 )</errorConditionFormula>
     <errorMessage>Du må fylle ut feltene antall tolker, tolkemetode, oppdragstype, start tid og slutt tid før du kan godkjenne forespørselen.</errorMessage>
 </ValidationRule>
