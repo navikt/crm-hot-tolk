@@ -182,6 +182,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.InterpretationMethodSecondary__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.InterpretationMethod__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -226,6 +231,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsScreenInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.MeetingPostalCity__c</field>
         <readable>true</readable>
@@ -243,6 +253,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.MessageToDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.NumberOfInterpretersSecondary__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -453,11 +468,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Request__c.IsScreenInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
