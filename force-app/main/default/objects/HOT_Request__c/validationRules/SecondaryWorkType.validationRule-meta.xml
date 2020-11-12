@@ -3,9 +3,9 @@
     <fullName>SecondaryWorkType</fullName>
     <active>true</active>
     <description>Ensures that the user fills in Number of Interpreters (secondary), if the secondary work Type is not null.</description>
-    <errorConditionFormula>NumberOfInterpretersSecondary__c == null
+    <errorConditionFormula>NumberOfInterpretersSecondary__c = null
 &amp;&amp;
- InterpretationMethodSecondary__c != null</errorConditionFormula>
+InterpretationMethodSecondary__c != null</errorConditionFormula>
     <errorDisplayField>NumberOfInterpretersSecondary__c</errorDisplayField>
     <errorMessage>Fyll ut antall tolker for sekundær tolkemetode</errorMessage>
 </ValidationRule>
