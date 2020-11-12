@@ -1,5 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import { refreshApex } from '@salesforce/apex';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
@@ -172,13 +173,35 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@track startTime;
 	@track endTime;
 	@track date;
-	@track times = [{
-		"id": 0, "date": null, "startTime": null, "endTime": null
-	}];
+	@track times = [];
 	@track uniqueIdCounter = 1;
+	@track requestIds = [];
+
+	wiredTimesValue;
+	@wire(getTimes, { requestIds: '$requestIds' })
+	wiredTimes(result) {
+		console.log('wiredTimes')
+		this.wiredTimesValue = result.data;
+		if (result.data) {
+			if (result.data.length == 0) {
+				console.log('result is empty')
+				this.times = [{ "id": 0, "date": null, "startTime": null, "endTime": null }];
+			}
+			else {
+				console.log('Setting Times')
+				this.times = result.data;
+				console.log(JSON.stringify(this.times))
+			}
+			this.error = undefined;
+		} else if (result.error) {
+			this.error = result.error;
+			this.times = undefined;
+		}
+	}
 
 	setDate(event) {
-		const index = this.getIndexById(event.target.name);
+		//console.log(event.detail.value)
+		let index = this.getIndexById(event.target.name);
 		this.times[index].date = event.detail.value;
 
 		var now = new Date();
@@ -214,9 +237,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.updateValues(event, index);
 	}
 	setStartTime(event) {
+		console.log(event.detail.value)
 		const index = this.getIndexById(event.target.name);
 		var tempTime = event.detail.value.split("");
+		console.log(this.times[index].startTime)
 		this.times[index].startTime = event.detail.value;
+		console.log(this.times[index].startTime)
 
 		if (event.detail.value > this.times[index].endTime || this.times[index].endTime == null) {
 			var first = parseFloat(tempTime[0]);
@@ -233,6 +259,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	setEndTime(event) {
+		console.log(event.detail.value)
 		const index = this.getIndexById(event.target.name);
 		this.times[index].endTime = event.detail.value;
 		this.updateValues(event, index);
@@ -280,6 +307,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleSubmit(event) {
 		console.log("handleSubmit");
+		event.preventDefault();
+		console.log(JSON.stringify(this.times));
+	}
+	handleSubmit2(event) {
+		console.log("handleSubmit");
+		console.log(this.times);
 		this.spin = true;
 		event.preventDefault();
 		const fields = event.detail.fields;
@@ -422,6 +455,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 		else {
 			console.log("createWorkOrdersFromCommunity");
+			console.log(requestId);
+			console.log(times);
 			createWorkOrdersFromCommunity({ requestId, times });
 		}
 
@@ -504,14 +539,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					delete this.fieldValues.Id;
 				}
 				else {
+					console.log('Is Edit: Refreshing apex times')
 					this.recordId = this.fieldValues.Id;
 					let requestIds = [];
 					requestIds.push(this.fieldValues.Id);
-					console.log(requestIds)
-					let apexTimes = getTimes({ requestIds });
-					console.log(JSON.stringify(apexTimes));
-					this.formatDateTimes(apexTimes);
-					console.log("formatDateTimes SUCCESS")
+					this.requestIds = requestIds;
+					refreshApex(this.wiredTimesValue);
 				}
 
 				if (this.fieldValues.Type__c == 'PublicEvent') {
@@ -521,23 +554,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 		}
 
-	}
-
-	formatDateTimes(apexTimes) {
-		console.log("formatDateTimes");
-		console.log(JSON.stringify(apexTimes));
-		for (apexTime of apexTimes) {
-			console.log("for");
-			let dateTime = {
-				"id": apexTime.id,
-				"date": new Date(apexTime.startTime),
-				"startTime": new Date(apexTime.startTime),
-				"endTime": new Date(apexTime.endTime),
-			};
-			console.log("apexTime");
-			this.times.push(dateTime);
-			console.log(this.times);
-		}
 	}
 
 	//Navigation functions

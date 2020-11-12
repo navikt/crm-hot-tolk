@@ -141,7 +141,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 		System.debug('createWorkOrdersFromCommunity');
 		HOT_Request__c request = [SELECT Id, Account__c, Account__r.PersonContactId, OwnerId, ServiceTerritory__c, InterpretationMethod__c, NumberOfInterpreters__c,
 								  MeetingPostalCity__c, MeetingPostalCode__c, MeetingStreet__c, InterpretationPostalCity__c, InterpretationPostalCode__c, InterpretationStreet__c,
-								  Subject__c, Description__c, StartTime__c, EndTime__c FROM HOT_Request__c WHERE Id = :requestId];
+								  HOT_PersonContactId__c, Subject__c, Description__c, StartTime__c, EndTime__c FROM HOT_Request__c WHERE Id = :requestId];
 		List<HOT_Request__c> requests = new List<HOT_Request__c>();
 		for(String key : times.keySet()){
 			HOT_Request__c newRequest = request.clone(false, true, false, false);
@@ -161,13 +161,14 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 		List<WorkOrder> workOrders = [SELECT Id, Status, StartDate, EndDate FROM WorkOrder WHERE HOT_Request__r.Id = :requestId];
 		List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
 		for(WorkOrder workOrder:workOrders){
-			if(!times.keySet().contains(workOrder.Id)){
+			String workOrderId = (String) workOrder.Id;
+			if(!times.keySet().contains(workOrderId)){
 				workOrder.Status = 'Canceled';
 				updatedWorkOrders.add(workOrder);
 			}
-			else if(workOrder.StartDate != DateTime.newInstance(times.get(workOrder.Id).get('startTime')) || workOrder.EndDate != DateTime.newInstance(times.get(workOrder.Id).get('endTime'))){
-				workOrder.StartDate = DateTime.newInstance(times.get(workOrder.Id).get('startTime'));
-				workOrder.EndDate = DateTime.newInstance(times.get(workOrder.Id).get('endTime'));
+			else if(workOrder.StartDate != DateTime.newInstance(times.get(workOrderId).get('startTime')) || workOrder.EndDate != DateTime.newInstance(times.get(workOrder.Id).get('endTime'))){
+				workOrder.StartDate = DateTime.newInstance(times.get(workOrderId).get('startTime'));
+				workOrder.EndDate = DateTime.newInstance(times.get(workOrderId).get('endTime'));
 				updatedWorkOrders.add(workOrder);
 			}
 		}

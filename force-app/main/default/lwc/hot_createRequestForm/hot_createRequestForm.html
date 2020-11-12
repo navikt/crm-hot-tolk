@@ -110,16 +110,16 @@
 									<div class="dynamic-time-inputs-with-line_button " key={it.value.id}>
 										<div class="dynamic-time-inputs ">
 											<lightning-input label="Dato" type="date" class="tolk-skjema-input date"
-												date-style="short" onchange={setDate} name={it.value.id} value=""
-												required>
+												date-style="short" onchange={setDate} name={it.value.id}
+												value={it.value.date} required>
 											</lightning-input>
 											<lightning-input label="Fra" style="margin-left: 2rem;" type="time"
 												class="tolk-skjema-input start-tid" onchange={setStartTime}
-												name={it.value.id} value="" required>
+												name={it.value.id} value={it.value.startTime} required>
 											</lightning-input>
 											<lightning-input label="Til" style="margin-left: 2rem;" type="time"
 												class="tolk-skjema-input slutt-tid" onchange={setEndTime}
-												name={it.value.id} value="" required>
+												name={it.value.id} value={it.value.endTime} required>
 											</lightning-input>
 										</div>
 										<lightning-button variant="base" icon-name="utility:close"
