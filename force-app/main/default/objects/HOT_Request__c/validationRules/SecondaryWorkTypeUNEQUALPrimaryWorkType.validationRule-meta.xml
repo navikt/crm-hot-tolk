@@ -3,7 +3,7 @@
     <fullName>SecondaryWorkTypeUNEQUALPrimaryWorkType</fullName>
     <active>true</active>
     <description>Ensures that secondary workType is different from primary workType</description>
-    <errorConditionFormula>InterpretationMethod__c != InterpretationMethodSecondary__c
+    <errorConditionFormula>InterpretationMethod__c = InterpretationMethodSecondary__c
 &amp;&amp;
 InterpretationMethod__c != null
 &amp;&amp;
