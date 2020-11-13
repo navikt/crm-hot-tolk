@@ -170,11 +170,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 
-	@track startTime;
-	@track endTime;
-	@track date;
 	@track times = [];
-	@track uniqueIdCounter = 1;
+	@track uniqueIdCounter = 0;
 	@track requestIds = [];
 
 	wiredTimesValue;
@@ -189,7 +186,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 			else {
 				console.log('Setting Times')
-				this.times = result.data;
+				//this.times = [...result.data];
+				for (let timeMap of result.data) {
+					let temp = new Object({ "id": timeMap.id, "date": timeMap.date, "startTime": timeMap.startTime, "endTime": timeMap.endTime });
+					this.times.push(temp);
+				}
+
 				console.log(JSON.stringify(this.times))
 			}
 			this.error = undefined;
@@ -237,13 +239,21 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.updateValues(event, index);
 	}
 	setStartTime(event) {
+		let index = this.getIndexById(event.target.name);
 		console.log(event.detail.value)
-		const index = this.getIndexById(event.target.name);
-		var tempTime = event.detail.value.split("");
 		console.log(this.times[index].startTime)
+
+		console.log('Types:')
+		console.log(typeof event.detail.value)
+		console.log(typeof this.times[index].startTime)
+
+		console.log(JSON.stringify(this.times[index].startTime))
+		//delete this.times[index]["startTime"];
 		this.times[index].startTime = event.detail.value;
 		console.log(this.times[index].startTime)
 
+
+		var tempTime = event.detail.value.split("");
 		if (event.detail.value > this.times[index].endTime || this.times[index].endTime == null) {
 			var first = parseFloat(tempTime[0]);
 			var second = parseFloat(tempTime[1]);
@@ -283,6 +293,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				j = i;
 			}
 		}
+		console.log("index: " + j);
 		return j;
 	}
 
@@ -305,12 +316,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track spin = false;
 
-	handleSubmit(event) {
+	handleSubmit2(event) {
 		console.log("handleSubmit");
 		event.preventDefault();
 		console.log(JSON.stringify(this.times));
 	}
-	handleSubmit2(event) {
+	handleSubmit(event) {
 		console.log("handleSubmit");
 		console.log(this.times);
 		this.spin = true;
@@ -534,8 +545,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					}
 				}
 				if (!!parsed_params.copy) {
-					this.startTime = "";
-					this.endTime = "";
 					delete this.fieldValues.Id;
 				}
 				else {
