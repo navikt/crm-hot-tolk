@@ -10,9 +10,7 @@ public without sharing class HOT_InterestedResourcesListController {
 		WorkTypeName__c, ServiceAppointment__r.HOT_DeadlineDate__c, ServiceAppointmentCity__c, ServiceAppointment__r.ServiceTerritory.Name
 		FROM HOT_InterestedResource__c 
 		WHERE 
-		ServiceResource__c IN: serviceResource
-		AND
-		Status__c NOT IN ('Assigned')];
+		ServiceResource__c IN: serviceResource];
 		return interestedResources;
 	}
 	
