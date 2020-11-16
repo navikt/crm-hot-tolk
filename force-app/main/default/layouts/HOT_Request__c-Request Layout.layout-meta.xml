@@ -130,6 +130,14 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>InterpretationMethodSecondary__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>NumberOfInterpretersSecondary__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>AssignmentType__c</field>
             </layoutItems>
             <layoutItems>
@@ -298,14 +306,14 @@
             <sortOrder>5</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>Delete</actionName>
-            <actionType>StandardButton</actionType>
-            <sortOrder>6</sortOrder>
-        </platformActionListItems>
-        <platformActionListItems>
             <actionName>Clone</actionName>
             <actionType>StandardButton</actionType>
             <sortOrder>7</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Delete</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>6</sortOrder>
         </platformActionListItems>
     </platformActionList>
     <quickActionList>
@@ -337,11 +345,11 @@
     </relatedLists>
     <relatedLists>
         <fields>Name</fields>
-        <fields>EarliestStartTime</fields>
-        <fields>LatestEndTime</fields>
-        <fields>WorkType</fields>
         <fields>Status</fields>
         <fields>HOT_ServiceResource__c</fields>
+        <fields>WorkType</fields>
+        <fields>EarliestStartTime</fields>
+        <fields>LatestEndTime</fields>
         <relatedList>ServiceAppointment.HOT_Request__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -356,7 +364,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1X000001VRPl</masterLabel>
+        <masterLabel>00h3N000001fcGS</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

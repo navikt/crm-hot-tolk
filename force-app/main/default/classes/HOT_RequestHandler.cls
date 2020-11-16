@@ -198,7 +198,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 			workOrder.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
 			workOrder.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
 			workOrder.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
-			workOrder.HOT_NumberOfInterpreters__c = request.NumberOfInterpreters__c;
 			workOrder.HOT_Request__c = request.Id;
 			workOrder.OwnerId = request.OwnerId;
 			workOrder.PostalCode = request.MeetingPostalCode__c;
@@ -206,7 +205,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 			workOrder.Street = request.MeetingStreet__c;
 			workOrder.Subject = request.Subject__c;
 			workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
-			workOrder.WorkTypeId = request.InterpretationMethod__c;
 
 			workOrders.add(workOrder);
 		}
