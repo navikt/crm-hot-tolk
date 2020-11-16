@@ -5,8 +5,7 @@ import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequest
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
-import createWorkOrdersFromCommunity from '@salesforce/apex/HOT_RequestHandler.createWorkOrdersFromCommunity';
-import updateRelatedWorkOrders from '@salesforce/apex/HOT_RequestHandler.updateRelatedWorkOrders';
+import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
 
 
@@ -182,13 +181,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		if (result.data) {
 			if (result.data.length == 0) {
 				console.log('result is empty')
-				this.times = [{ "id": 0, "date": null, "startTime": null, "endTime": null }];
+				this.times = [{ "id": 0, "date": null, "startTime": null, "endTime": null, "isNew": 1 }];
 			}
 			else {
 				console.log('Setting Times')
 				//this.times = [...result.data];
 				for (let timeMap of result.data) {
-					let temp = new Object({ "id": timeMap.id, "date": timeMap.date, "startTime": timeMap.startTime, "endTime": timeMap.endTime });
+					let temp = new Object({ "id": timeMap.id, "date": timeMap.date, "startTime": timeMap.startTime, "endTime": timeMap.endTime, "isNew": 0 });
 					this.times.push(temp);
 				}
 
@@ -243,15 +242,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		console.log(event.detail.value)
 		console.log(this.times[index].startTime)
 
-		console.log('Types:')
-		console.log(typeof event.detail.value)
-		console.log(typeof this.times[index].startTime)
-
 		console.log(JSON.stringify(this.times[index].startTime))
 		//delete this.times[index]["startTime"];
 		this.times[index].startTime = event.detail.value;
 		console.log(this.times[index].startTime)
-
 
 		var tempTime = event.detail.value.split("");
 		if (event.detail.value > this.times[index].endTime || this.times[index].endTime == null) {
@@ -278,7 +272,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	updateValues(event, index) {
 		console.log(JSON.stringify(this.times));
-		var elements = event.target.parentElement.querySelector('.start-tid');
+		let elements = event.target.parentElement.querySelector('.start-tid');
+		console.log(elements);
 		elements.value = this.times[index].startTime;
 		elements = event.target.parentElement.querySelector('.date');
 		elements.value = this.times[index].date;
@@ -298,11 +293,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	addTime(event) {
+		this.uniqueIdCounter += 1;
 		var newTime = {
-			"id": this.uniqueIdCounter, "date": null, "startTime": null, "endTime": null
+			"id": this.uniqueIdCounter, "date": null, "startTime": null, "endTime": null, "isNew": 1
 		};
 		this.times.push(newTime);
-		this.uniqueIdCounter += 1;
 	}
 
 	removeTime(event) {
@@ -316,11 +311,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track spin = false;
 
-	handleSubmit2(event) {
-		console.log("handleSubmit");
-		event.preventDefault();
-		console.log(JSON.stringify(this.times));
-	}
 	handleSubmit(event) {
 		console.log("handleSubmit");
 		console.log(this.times);
@@ -454,21 +444,17 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 		let requestId = event.detail.id;
 		let times = {};
+		let newTimes = {};
 		for (let dateTime of this.times) {
 			times[dateTime.id.toString()] = {
 				"startTime": new Date(dateTime.date + ", " + dateTime.startTime).getTime(),
 				"endTime": new Date(dateTime.date + ", " + dateTime.endTime).getTime(),
+				"isNew": dateTime.isNew,
 			};
 		}
-		if (this.isEditMode) {
-			console.log("updateRelatedWorkOrders");
-			updateRelatedWorkOrders({ requestId, times });
-		}
-		else {
-			console.log("createWorkOrdersFromCommunity");
-			console.log(requestId);
-			console.log(times);
-			createWorkOrdersFromCommunity({ requestId, times });
+		if (times != {}) {
+			console.log("createAndUpdateWorkOrders");
+			createAndUpdateWorkOrders({ requestId, times });
 		}
 
 		window.scrollTo(0, 0);
