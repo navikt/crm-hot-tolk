@@ -112,11 +112,13 @@ private class HOT_RequestHandlerTest {
 		Map<String, Long> timeMap = new Map<String, Long>();
 		timeMap.put('startTime', DateTime.now().addHours(1).getTime());
 		timeMap.put('endTime', DateTime.now().addHours(2).getTime());
+		timeMap.put('isNew', 1);
 		times.put('1', timeMap);	
 		timeMap.put('startTime', DateTime.now().addDays(1).addHours(1).getTime());
 		timeMap.put('endTime', DateTime.now().addDays(1).addHours(2).getTime());
+		timeMap.put('isNew', 1);
 		times.put('2', timeMap);	
-		HOT_RequestHandler.createWorkOrdersFromCommunity(request.Id, times);
+		HOT_RequestHandler.createAndUpdateWorkOrders(request.Id, times);
 		List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :request.Id];
 		System.assertEquals(2, workOrders.size(), 'Could not insert workOrders');
 		request = [SELECT Id, NumberOfWorkOrders__c FROM HOT_Request__c WHERE Id = :request.Id];
