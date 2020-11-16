@@ -21,10 +21,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 	}
 
 	private static void updateCancelledByInterpreter(List<ServiceAppointment> recievedNewInterpreter) {
-		List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
 		for(ServiceAppointment serviceAppointment : recievedNewInterpreter) {
-			serviceAppointment.HOT_CanceledByInterpreter__c = false;
-			serviceAppointmentsToUpdate.add(serviceAppointment);			
+			serviceAppointment.HOT_CanceledByInterpreter__c = false;		
 		}
 	}
 
