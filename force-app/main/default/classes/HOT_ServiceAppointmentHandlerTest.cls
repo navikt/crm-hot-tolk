@@ -31,21 +31,11 @@ private class HOT_ServiceAppointmentHandlerTest{
 	
 		@isTest static void cancelServiceAppointment() {
 			ServiceAppointment sa = [SELECT Id, Status, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c FROM ServiceAppointment LIMIT 1];
-			System.debug('SRCSA:' + sa.HOT_ServiceResource__c);
             sa.HOT_CanceledByInterpreter__c = true;
-			sa.HOT_ServiceResource__c = null;
-            System.debug('SR:'+ sa.HOT_ServiceResource__c);
-			sa.Status = 'Cancelled';
 			update sa;
 	
 			//Checking if SA is cancelled etc
 			system.assertEquals(true, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to true');
-			system.assertEquals(null, sa.HOT_ServiceResource__c, 'Could not set SR');
-			system.assertEquals('Cancelled', sa.Status, 'Could not set Status to Cancelled');
-
-			//Re-schedules the SA
-			sa.Status = 'Scheduled';
-			update sa;
 
 			Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator'];
 			User user2 = HOT_TestDataFactory.createUser('User2', profile);
@@ -54,9 +44,10 @@ private class HOT_ServiceAppointmentHandlerTest{
 			ServiceResource sr = HOT_TestDataFactory.createServiceResource(user2.Id);
 			insert sr;
 
-			sa.HOT_ServiceResource__c = sr.Id;
-			update sa;
-			System.debug('SA with new SR' + sa);
+			AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
+			insert ar;
+
+			sa = [SELECT Id, Status, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c FROM ServiceAppointment LIMIT 1];
 
 			//Checks if HOT_CancelledByInterpreter is no longer checked
 			System.assertEquals(false, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to false');

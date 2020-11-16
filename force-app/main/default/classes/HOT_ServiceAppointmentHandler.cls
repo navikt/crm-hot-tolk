@@ -2,14 +2,10 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 	public override void onBeforeUpdate(Map<Id,sObject> triggerOldMap) {
 		List<ServiceAppointment> recievedNewInterpreter= new List<ServiceAppointment>();
 		
-		for(SObject record : records) {
-			if(record.getSObjectType() == Schema.ServiceAppointment.getSObjectType()
-				&& record.get('ParentRecordId') != null
-				&& record.get('Status') != triggerOldMap.get(record.Id).get('Status')
-				&& record.get('Status') != 'Annul' 
-				&& record.get('Status') != 'Cancelled' 
-				&& record.get('HOT_ServiceResource__c') != triggerOldMap.get(record.Id).get('HOT_ServiceResource__c')) {
-					recievedNewInterpreter.add((ServiceAppointment)record);
+		for(ServiceAppointment serviceApp:(List<ServiceAppointment>) records) {
+			if(serviceApp.get('HOT_ServiceResource__c') != null &&
+				serviceApp.get('HOT_ServiceResource__c') != triggerOldMap.get(serviceApp.Id).get('HOT_ServiceResource__c')) {
+					recievedNewInterpreter.add(serviceApp);
 			}
 		}
 
@@ -24,7 +20,6 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			serviceAppointment.HOT_CanceledByInterpreter__c = false;
 			serviceAppointmentsToUpdate.add(serviceAppointment);			
 		}
-		update serviceAppointmentsToUpdate;
 	}
 
 	public override void onBeforeInsert(){
