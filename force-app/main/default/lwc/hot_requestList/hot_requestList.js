@@ -73,6 +73,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			sortable: true,
 		},
 		{
+			label: 'Antall tider',
+			fieldName: 'NumberOfWorkOrders__c',
+			type: 'number',
+			sortable: true,
+			cellAttributes: { alignment: 'left' }
+		},
+		{
 			label: 'Status',
 			fieldName: 'ExternalRequestStatus__c',
 			type: 'text',

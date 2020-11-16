@@ -98,4 +98,31 @@ private class HOT_RequestHandlerTest {
 		person = [SELECT Id, CRM_Account__c, INT_KrrIntegrationStatus__c FROM Person__c WHERE Id = :person.Id];
 		System.assertEquals('Queued', person.INT_KrrIntegrationStatus__c);
 	}
+
+	@isTest
+	public static void createWorkOrdersFromCommunityTest(){
+		
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+	
+		Map<String, Map<String, Long>> times = new Map<String, Map<String, Long>>();
+		Map<String, Long> timeMap = new Map<String, Long>();
+		timeMap.put('startTime', DateTime.now().addHours(1).getTime());
+		timeMap.put('endTime', DateTime.now().addHours(2).getTime());
+		timeMap.put('isNew', 1);
+		times.put('1', timeMap);	
+		timeMap.put('startTime', DateTime.now().addDays(1).addHours(1).getTime());
+		timeMap.put('endTime', DateTime.now().addDays(1).addHours(2).getTime());
+		timeMap.put('isNew', 1);
+		times.put('2', timeMap);	
+		HOT_RequestHandler.createAndUpdateWorkOrders(request.Id, times);
+		List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :request.Id];
+		System.assertEquals(2, workOrders.size(), 'Could not insert workOrders');
+		request = [SELECT Id, NumberOfWorkOrders__c FROM HOT_Request__c WHERE Id = :request.Id];
+		System.assertEquals(2, request.NumberOfWorkOrders__c, 'Could not set NumberOfWorkOrders on request');
+
+	}
 }

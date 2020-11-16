@@ -20,6 +20,7 @@ public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 		if(approvedWorkOrders.size()>0){
 			createChildRecords(approvedWorkOrders);
 		}
+		updateNumberOfWorkOrdersOnRequest((List<WorkOrder>) records);
 	}
 
 	public static void createChildRecords(List<WorkOrder> workOrders){
@@ -81,4 +82,18 @@ public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 			}
 		}
 	}
+	public static void updateNumberOfWorkOrdersOnRequest(List<WorkOrder> workOrders){
+		List<Id> requestIds = new List<Id>();
+		for(WorkOrder workOrder:workOrders){
+			requestIds.add(workOrder.HOT_Request__c);
+		}
+		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, (SELECT Id FROM HOT_Request__c.Work_Orders__r WHERE Status NOT IN ('Annul', 'Canceled')) FROM HOT_Request__c WHERE Id IN :requestIds];
+		for(HOT_Request__c request:requests){
+			request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
+		}
+		update requests;
+	}
+
 }
+
+
