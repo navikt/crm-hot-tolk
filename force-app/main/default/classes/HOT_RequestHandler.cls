@@ -137,22 +137,32 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 	}
 
 	@AuraEnabled
-	public static void createWorkOrdersFromCommunity(Id requestId, Map<String, Map<String, Long>> times){
-		System.debug('createWorkOrdersFromCommunity');
+	public static void createAndUpdateWorkOrders(Id requestId, Map<String, Map<String, Long>> times){
+		System.debug('createAndUpdateWorkOrders');
 		HOT_Request__c request = [SELECT Id, Account__c, Account__r.PersonContactId, OwnerId, ServiceTerritory__c, InterpretationMethod__c, NumberOfInterpreters__c,
 								  MeetingPostalCity__c, MeetingPostalCode__c, MeetingStreet__c, InterpretationPostalCity__c, InterpretationPostalCode__c, InterpretationStreet__c,
 								  HOT_PersonContactId__c, Subject__c, Description__c, StartTime__c, EndTime__c FROM HOT_Request__c WHERE Id = :requestId];
 		List<HOT_Request__c> requests = new List<HOT_Request__c>();
+		Map<String, Map<String, Long>> updatedTimesMap = new Map<String, Map<String, Long>>();
 		for(String key : times.keySet()){
-			HOT_Request__c newRequest = request.clone(false, true, false, false);
-			newRequest.Id = requestId;
-			newRequest.OwnerId = UserInfo.getUserId();
-			newRequest.StartTime__c = DateTime.newInstance(times.get(key).get('startTime'));
-			newRequest.EndTime__c = DateTime.newInstance(times.get(key).get('endTime'));
-			requests.add(newRequest);
+			if(times.get(key).get('isNew') == 1){
+				HOT_Request__c newRequest = request.clone(false, true, false, false);
+				newRequest.Id = requestId;
+				newRequest.OwnerId = UserInfo.getUserId();
+				newRequest.StartTime__c = DateTime.newInstance(times.get(key).get('startTime'));
+				newRequest.EndTime__c = DateTime.newInstance(times.get(key).get('endTime'));
+				requests.add(newRequest);
+			}
+			else{
+				updatedTimesMap.put(key, times.get(key));
+			}
 		}
-		System.debug(requests);
-		createChildRecords(requests);
+		if(!requests.isEmpty()){
+			createChildRecords(requests);
+		}
+		if(!updatedTimesMap.isEmpty()){
+			updateRelatedWorkOrders(requestId, updatedTimesMap);
+		}
 	}
 
 	@AuraEnabled
