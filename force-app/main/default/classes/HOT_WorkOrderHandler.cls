@@ -72,8 +72,6 @@ public with sharing class HOT_WorkOrderHandler extends MyTriggers {
 			request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
 		}
 		update requests;
-
-
 	}
 
 }
