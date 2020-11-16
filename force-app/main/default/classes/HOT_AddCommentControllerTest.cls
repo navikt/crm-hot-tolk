@@ -9,8 +9,10 @@ private class HOT_AddCommentControllerTest{
 		
 	}
 
+//Endre til SOQL (tekst)
 	@isTest static void addCommentTest() {
-		HOT_Request__c request = [SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Subject__c = 'Adding comment'];
+		String requestSOQL = 'SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Subject__c = \'Adding comment\'';
+		SObject request = Database.query(requestSOQL)[0];
 		String newComment = 'New Comment';
 		String fieldName = 'MessageToDispatcher__c';
 		HOT_AddCommentController inputVariables = new HOT_AddCommentController();
@@ -20,13 +22,17 @@ private class HOT_AddCommentControllerTest{
 		List<HOT_AddCommentController> inputVariablesList = new List<HOT_AddCommentController>();
 		inputVariablesList.add(inputVariables);
 		HOT_AddCommentController.addComment(inputVariablesList);
-		HOT_Request__c updatedRequest = [SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Id = :request.Id];
-		System.assertEquals(true, updatedRequest.MessageToDispatcher__c.contains('New Comment'), 'Comment was not updated');
+		requestSOQL = 'SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Id = \'' + request.Id + '\'';
+		SObject updatedRequest = Database.query(requestSOQL)[0];
+		String comment = (String) updatedRequest.get('MessageToDispatcher__c');
+		System.assertEquals(true, comment.contains('New Comment'), 'Comment was not updated');
 		
 		newComment = 'Another Comment';
 		HOT_AddCommentController.addComment(request, newComment, fieldName);
-		HOT_Request__c updatedRequest2 = [SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Id = :request.Id];
-		System.assertEquals(true, updatedRequest2.MessageToDispatcher__c.contains('Another Comment'), 'Comment was not updated');
+		requestSOQL = 'SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Id = \'' + request.Id + '\'';
+		SObject updatedRequest2 = Database.query(requestSOQL)[0];
+		String comment2 = (String) updatedRequest2.get('MessageToDispatcher__c');
+		System.assertEquals(true, comment2.contains('Another Comment'), 'Comment was not updated');
 
 	}
 }
