@@ -1,4 +1,4 @@
-sList<ServiceAppointment> serviceAppointments = [SELECT Id, ParentRecordId, HOT_Request__c FROM ServiceAppointment WHERE HOT_Request__c = null];
+List<ServiceAppointment> serviceAppointments = [SELECT Id, ParentRecordId, HOT_Request__c FROM ServiceAppointment WHERE HOT_Request__c = null];
 Map<Id, ServiceAppointment> IdtoSA = new Map<Id, ServiceAppointment>();
 for(ServiceAppointment sa:serviceAppointments){
     IdtoSA.put(sa.Id, sa);
