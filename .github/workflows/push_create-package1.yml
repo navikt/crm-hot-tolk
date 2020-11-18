@@ -51,16 +51,19 @@ jobs:
           echo "::set-output name=betaVersionNumber::$(cat sfdx-project.json | jq -r '.packageAliases | keys_unsorted[-1]' | sed 's/.*-//')"
           echo "::set-output name=codeCoverage::$( sfdx force:package:version:report -p $(echo $packageId) --json | jq -r '.result.CodeCoverage.apexCodeCoveragePercentage' )"
 
+          echo
+          echo Package ID: $packageId
+
     outputs:
       packageId: ${{ steps.package-version-create.outputs.packageId }}
       betaVersionNumber: ${{ steps.package-version-create.outputs.betaVersionNumber }}
       codeCoverage: ${{ steps.package-version-create.outputs.codeCoverage }}
 
   # ################################################################# #
-  # ######################## INSTALL TO SIT ######################### #
+  # ####################### VALIDATE IN SIT ######################### #
   # ################################################################# #
   validate-in-sit:
-    name: Validate in SIT Sandbox
+    name: Validate install in SIT Sandbox
     needs: [create-package]
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +71,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
 
-        # Install SFDX
+      # Install SFDX
       - name: Install SFDX
         uses: sfdx-actions/setup-sfdx@v1
 
@@ -92,75 +95,37 @@ jobs:
         run: |
           sfdx force:package:install --package ${{ needs.create-package.outputs.packageId }} -w 20 -b 20 -u integration-sandbox -r -k ${{ secrets.PACKAGE_KEY }} --json | tee output
 
+          echo "::set-output name=installOutput::$(cat output | jq '.message')"
           if [ $(cat output | jq '.status') == "0" ]; then
             echo "::set-output name=successfullyInstalled::true"
           fi
-
     outputs:
       successfullyInstalled: ${{ steps.integration-installation.outputs.successfullyInstalled }}
+      installOutput: ${{ steps.integration-installation.outputs.installOutput }}
 
   # ################################################################# #
-  # ######################### CREATE RELEASE ######################## #
+  # ################# REPORT SIT INSTALLATION STATUS ################ #
   # ################################################################# #
-  create-release:
-    name: Create release
-    needs: [create-package, validate-in-sit]
+  report-sit-status:
+    name: Report install in SIT Sandbox
+    needs: [validate-in-sit]
     runs-on: ubuntu-latest
     steps:
-      # Checkout source code
-      - name: Checkout source code
-        uses: actions/checkout@v2
-
-      # set release variables
-      - name: Set release fields
-        id: release-fields
+      # Report SIT Status
+      - name: Report SIT Status
         run: |
-          versionNumber=$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')
-          betaVersionNumber=${{ needs.create-package.outputs.betaVersionNumber }}
-
-          echo "::set-output name=tagName::v$(echo $versionNumber)-beta$(echo $betaVersionNumber)"
-          echo "::set-output name=releaseName::$(echo $versionNumber)-beta$(echo $betaVersionNumber)"
-          echo "::set-output name=bodyVersion::$(echo $versionNumber).$(echo $betaVersionNumber)"
-          echo "::set-output name=bodyPackage::${{ needs.create-package.outputs.packageId }}"
-
-          echo "::set-output name=packageCreation::✅ Package Creation"
-
           if [ ${{ needs.validate-in-sit.outputs.successfullyInstalled }} == "true" ]; then
-            echo "::set-output name=integrationInstallation::✅ Package Installation (Integration Sandbox)"
+            echo
+            echo SUCCESSFUL INSTALLATION OF PACKAGE IN SIT SANDBOX
+            echo
           else
-            echo "::set-output name=integrationInstallation::❌ Package Installation (Integration Sandbox)"
+            echo
+            echo FAILED TO INSTALL PACKAGE IN SIT SANDBOX
+            echo
+            echo ${{ needs.validate-in-sit.outputs.installOutput }}
+
+            exit 125
           fi
-
-      # Generate changelog from commits
-      - name: Generate changelog
-        id: changelog
-        uses: metcalfc/changelog-generator@v0.4.3
-        with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
-
-      # create github release
-      - name: Create Release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.release-fields.outputs.tagName }}
-          release_name: ${{ steps.release-fields.outputs.releaseName }}
-          body: |
-            **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
-            **Package ID**: ${{ steps.release-fields.outputs.bodyPackage }}
-            **Code Coverage**: ${{ needs.create-package.outputs.codeCoverage }}%
-
-            **Author**: ${{ github.actor }}
-
-            ${{ steps.release-fields.outputs.packageCreation }}
-            ${{ steps.release-fields.outputs.integrationInstallation }}
-
-            ## Changelog
-
-            ${{ steps.changelog.outputs.changelog }}
-          draft: false
-          prerelease: true
 
   # ################################################################# #
   # #################### CHECK DEPLOYMENT SECRETS ################### #
@@ -168,6 +133,7 @@ jobs:
   check-deployment-secrets:
     name: Check Deployment Secrets
     runs-on: ubuntu-latest
+    needs: [create-package]
     steps:
       - name: Check sandboxes for deployment
         id: checkSecret
@@ -274,3 +240,66 @@ jobs:
             echo "Starting deployment of ./force-app/unpackagable-with-auto-deploy"
             sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -u uat -l RunLocalTests
           fi
+
+  # ################################################################# #
+  # ######################### CREATE RELEASE ######################## #
+  # ################################################################# #
+  create-release:
+    name: Create release
+    needs: [create-package, validate-in-sit]
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # set release variables
+      - name: Set release fields
+        id: release-fields
+        run: |
+          versionNumber=$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')
+          betaVersionNumber=${{ needs.create-package.outputs.betaVersionNumber }}
+
+          echo "::set-output name=tagName::v$(echo $versionNumber)-beta$(echo $betaVersionNumber)"
+          echo "::set-output name=releaseName::$(echo $versionNumber)-beta$(echo $betaVersionNumber)"
+          echo "::set-output name=bodyVersion::$(echo $versionNumber).$(echo $betaVersionNumber)"
+          echo "::set-output name=bodyPackage::${{ needs.create-package.outputs.packageId }}"
+
+          echo "::set-output name=packageCreation::✅ Package Creation"
+
+          if [ ${{ needs.validate-in-sit.outputs.successfullyInstalled }} == "true" ]; then
+            echo "::set-output name=integrationInstallation::✅ Package Installation (Integration Sandbox)"
+          else
+            echo "::set-output name=integrationInstallation::❌ Package Installation (Integration Sandbox)"
+          fi
+
+      # Generate changelog from commits
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v0.4.3
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # create github release
+      - name: Create Release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release-fields.outputs.tagName }}
+          release_name: ${{ steps.release-fields.outputs.releaseName }}
+          body: |
+            **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
+            **Package ID**: ${{ steps.release-fields.outputs.bodyPackage }}
+            **Code Coverage**: ${{ needs.create-package.outputs.codeCoverage }}%
+
+            **Author**: ${{ github.actor }}
+
+            ${{ steps.release-fields.outputs.packageCreation }}
+            ${{ steps.release-fields.outputs.integrationInstallation }}
+
+            ## Changelog
+
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: true
