@@ -6,8 +6,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		setFieldsByPreferredInterpreter((List<ServiceAppointment>) records);
 	}
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
+		List<ServiceAppointment> recievedNewInterpreter= new List<ServiceAppointment>();
 		List<ServiceAppointment> updatedServiceAppointment = new List<ServiceAppointment>();
 		for(ServiceAppointment serviceAppointment:(List<ServiceAppointment>) records){
+			if(serviceAppointment.get('HOT_ServiceResource__c') != null &&
+			serviceAppointment.get('HOT_ServiceResource__c') != triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) {
+					recievedNewInterpreter.add(serviceAppointment);
+			}
 			if(triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredInterpreter__c') != ServiceAppointment.HOT_PreferredInterpreter__c && ServiceAppointment.HOT_PreferredInterpreter__c != null){
 				updatedServiceAppointment.add(serviceAppointment);
 			}
@@ -15,18 +20,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		if(!updatedServiceAppointment.isEmpty()){
 			updatedServiceAppointment = setFieldsByPreferredInterpreter(updatedServiceAppointment);
 		}
-	}
-
-	public override void onBeforeUpdate(Map<Id,sObject> triggerOldMap) {
-		List<ServiceAppointment> recievedNewInterpreter= new List<ServiceAppointment>();
-		
-		for(ServiceAppointment serviceApp:(List<ServiceAppointment>) records) {
-			if(serviceApp.get('HOT_ServiceResource__c') != null &&
-				serviceApp.get('HOT_ServiceResource__c') != triggerOldMap.get(serviceApp.Id).get('HOT_ServiceResource__c')) {
-					recievedNewInterpreter.add(serviceApp);
-			}
-		}
-
 		if(recievedNewInterpreter.size() > 0) {
 			updateCancelledByInterpreter(recievedNewInterpreter);
 		}
