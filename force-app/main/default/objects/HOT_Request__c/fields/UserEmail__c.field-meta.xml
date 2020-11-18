@@ -6,7 +6,7 @@
     <inlineHelpText>Email of the user in need of interpretation.</inlineHelpText>
     <label>User Email</label>
     <required>false</required>
-    <trackHistory>true</trackHistory>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Email</type>
     <unique>false</unique>
