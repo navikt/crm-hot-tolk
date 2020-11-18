@@ -22,6 +22,14 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		}
 		updateNumberOfWorkOrdersOnRequest((List<WorkOrder>) records);
 	}
+	public override void onAfterDelete() {
+		updateNumberOfWorkOrdersOnRequest((List<WorkOrder>) records);
+	}
+
+	public override void onAfterUndelete() {
+		updateNumberOfWorkOrdersOnRequest((List<WorkOrder>) records);
+	}
+
 
 	public static void createChildRecords(List<WorkOrder> workOrders){
 
