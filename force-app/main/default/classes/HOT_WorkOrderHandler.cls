@@ -1,4 +1,4 @@
-public with sharing class HOT_WorkOrderHandler extends MyTriggers {
+public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 	
 	public override void onBeforeInsert(){
 		setStatusDefault((List<WorkOrder>) records);
