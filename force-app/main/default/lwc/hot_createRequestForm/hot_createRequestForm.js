@@ -168,7 +168,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	}
 
-
+	@track isOnlyOneTime = true;
 	@track times = [];
 	@track uniqueIdCounter = 0;
 	@track requestIds = [];
@@ -193,6 +193,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 				console.log(JSON.stringify(this.times))
 			}
+			this.isOnlyOneTime = this.times.length == 1;
 			this.error = undefined;
 		} else if (result.error) {
 			this.error = result.error;
@@ -298,6 +299,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			"id": this.uniqueIdCounter, "date": null, "startTime": null, "endTime": null, "isNew": 1
 		};
 		this.times.push(newTime);
+		this.isOnlyOneTime = this.times.length == 1;
 	}
 
 	removeTime(event) {
@@ -307,6 +309,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.times.splice(index, 1);
 			}
 		}
+		this.isOnlyOneTime = this.times.length == 1;
 	}
 
 	@track spin = false;
