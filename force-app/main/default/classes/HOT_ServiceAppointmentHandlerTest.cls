@@ -95,7 +95,7 @@ private class HOT_ServiceAppointmentHandlerTest{
 		request.Status__c = 'Godkjent';
 		update request;
 
-		ServiceAppointment serviceAppointment = [SELECT Id, Status FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
+		ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
 
 		Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
 		User user = HOT_TestDataFactory.createUser( 'TEST', profile );
@@ -125,7 +125,7 @@ private class HOT_ServiceAppointmentHandlerTest{
 		request.Status__c = 'Godkjent';
 		update request;
 
-		ServiceAppointment serviceAppointment = [SELECT Id, Status FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
+		ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
 
 		Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
 		User user = HOT_TestDataFactory.createUser( 'TEST', profile );

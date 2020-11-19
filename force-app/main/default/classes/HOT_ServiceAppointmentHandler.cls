@@ -72,7 +72,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 					HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
 					historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
 					historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
-					historicallyAssignedResource.Status__c = serviceAppointment.Status;
+					historicallyAssignedResource.Status__c = getTranslatedStatus(serviceAppointment.Status);
 					newHistoricallyAssignedResources.add(historicallyAssignedResource);
 				}
 				// Same resource, but status has changed
@@ -80,7 +80,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 					HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
 					historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
 					historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
-					historicallyAssignedResource.Status__c = serviceAppointment.Status;
+					historicallyAssignedResource.Status__c = getTranslatedStatus(serviceAppointment.Status);
 					newHistoricallyAssignedResources.add(historicallyAssignedResource);
 				}
 				// Changed resource
@@ -94,7 +94,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 					HOT_HistoricallyAssignedResource__c historicallyAssignedResourceNew = new HOT_HistoricallyAssignedResource__c();
 					historicallyAssignedResourceNew.ServiceAppointment__c = serviceAppointment.Id;
 					historicallyAssignedResourceNew.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
-					historicallyAssignedResourceNew.Status__c = serviceAppointment.Status;
+					historicallyAssignedResourceNew.Status__c = getTranslatedStatus(serviceAppointment.Status);
 					newHistoricallyAssignedResources.add(historicallyAssignedResourceNew);
 				}
 				// Removed resource
@@ -112,6 +112,20 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			}
 		}
 		insert newHistoricallyAssignedResources;
+	}
+
+	private static String getTranslatedStatus (String status) {
+		if(status == 'Annul') return 'Annullert';
+		if(status == 'Canceled') return 'Avlyst';
+		if(status == 'Cannot Complete') return 'Udekket';
+		if(status == 'Completed') return 'Dekket';
+		if(status == 'Dispatched') return 'Tildelt';
+		if(status == 'In Progress') return 'Pågår';
+		if(status == 'None') return 'Åpen';
+		if(status == 'Released to Freelance') return 'Frigitt til frilanstolker';
+		if(status == 'Scheduled') return 'Reservert';
+
+		return '';
 	}
 
 	public static List<ServiceAppointment> setFieldsByPreferredInterpreter(List<ServiceAppointment> serviceAppointments) {
