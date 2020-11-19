@@ -1,5 +1,6 @@
 @isTest
 private class HOT_ServiceAppointmentHandlerTest{
+	
 	@testSetup static void setup(){
 		OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
 		insert operatingHours;
@@ -85,8 +86,7 @@ private class HOT_ServiceAppointmentHandlerTest{
 		System.assertEquals(false, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to false');
 	}
 
-	@isTest
-    private static void testCreateHistoricallyAssignedResources() {
+	@isTest private static void testCreateHistoricallyAssignedResources() {
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
 
