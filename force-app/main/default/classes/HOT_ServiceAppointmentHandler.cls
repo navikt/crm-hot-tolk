@@ -59,48 +59,56 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		List<HOT_HistoricallyAssignedResource__c> newHistoricallyAssignedResources = new List<HOT_HistoricallyAssignedResource__c>();
 		
 		for(ServiceAppointment serviceAppointment : serviceAppointments) {
+			
 			ServiceAppointment oldServiceAppointment = (ServiceAppointment)triggerOldMap.get(serviceAppointment.Id);
-			// Added resource
-			if(!serviceAppointment.HOT_DoNotCreateHAR__c && serviceAppointment.HOT_ServiceResource__c != null && oldServiceAppointment.HOT_ServiceResource__c == null) {
-				HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
-				historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
-				historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
-				historicallyAssignedResource.Status__c = serviceAppointment.Status;
-				newHistoricallyAssignedResources.add(historicallyAssignedResource);
-			}
-			// Same resource, but status has changed
-			if(!serviceAppointment.HOT_DoNotCreateHAR__c && serviceAppointment.HOT_ServiceResource__c != null && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
-				HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
-				historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
-				historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
-				historicallyAssignedResource.Status__c = serviceAppointment.Status;
-				newHistoricallyAssignedResources.add(historicallyAssignedResource);
-			}
-			// Changed resource
-			if(!serviceAppointment.HOT_DoNotCreateHAR__c && serviceAppointment.HOT_ServiceResource__c != null && oldServiceAppointment.HOT_ServiceResource__c != null && serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c) {
-				HOT_HistoricallyAssignedResource__c historicallyAssignedResourceOld = new HOT_HistoricallyAssignedResource__c();
-				historicallyAssignedResourceOld.ServiceAppointment__c = serviceAppointment.Id;
-				historicallyAssignedResourceOld.ServiceResource__c = oldServiceAppointment.HOT_ServiceResource__c;
-				historicallyAssignedResourceOld.Status__c = 'Tolk tatt av oppdraget';
-				newHistoricallyAssignedResources.add(historicallyAssignedResourceOld);
+			
+			// First check if we sould create a Historically Assigned Resource for this change
+			if(serviceAppointment.HOT_DoNotCreateHAR__c) {
+				serviceAppointment.HOT_DoNotCreateHAR__c = false;
 
-				HOT_HistoricallyAssignedResource__c historicallyAssignedResourceNew = new HOT_HistoricallyAssignedResource__c();
-				historicallyAssignedResourceNew.ServiceAppointment__c = serviceAppointment.Id;
-				historicallyAssignedResourceNew.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
-				historicallyAssignedResourceNew.Status__c = serviceAppointment.Status;
-				newHistoricallyAssignedResources.add(historicallyAssignedResourceNew);
-			}
-			// Removed resource
-			if(!serviceAppointment.HOT_DoNotCreateHAR__c && serviceAppointment.HOT_ServiceResource__c == null && oldServiceAppointment.HOT_ServiceResource__c != null) {
-				HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
-				historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
-				historicallyAssignedResource.ServiceResource__c = oldServiceAppointment.HOT_ServiceResource__c;
-				historicallyAssignedResource.Status__c = 'Tolk tatt av oppdraget';
-				newHistoricallyAssignedResources.add(historicallyAssignedResource);
-			}
-			// Only status change, no resource connected to service appointment
-			if(!serviceAppointment.HOT_DoNotCreateHAR__c && serviceAppointment.HOT_ServiceResource__c == null && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
-				// Do noting
+			} else {
+				// Added resource
+				if(serviceAppointment.HOT_ServiceResource__c != null && oldServiceAppointment.HOT_ServiceResource__c == null) {
+					HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
+					historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
+					historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+					historicallyAssignedResource.Status__c = serviceAppointment.Status;
+					newHistoricallyAssignedResources.add(historicallyAssignedResource);
+				}
+				// Same resource, but status has changed
+				if(serviceAppointment.HOT_ServiceResource__c != null && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+					HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
+					historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
+					historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+					historicallyAssignedResource.Status__c = serviceAppointment.Status;
+					newHistoricallyAssignedResources.add(historicallyAssignedResource);
+				}
+				// Changed resource
+				if(serviceAppointment.HOT_ServiceResource__c != null && oldServiceAppointment.HOT_ServiceResource__c != null && serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c) {
+					HOT_HistoricallyAssignedResource__c historicallyAssignedResourceOld = new HOT_HistoricallyAssignedResource__c();
+					historicallyAssignedResourceOld.ServiceAppointment__c = serviceAppointment.Id;
+					historicallyAssignedResourceOld.ServiceResource__c = oldServiceAppointment.HOT_ServiceResource__c;
+					historicallyAssignedResourceOld.Status__c = 'Tolk tatt av oppdraget';
+					newHistoricallyAssignedResources.add(historicallyAssignedResourceOld);
+
+					HOT_HistoricallyAssignedResource__c historicallyAssignedResourceNew = new HOT_HistoricallyAssignedResource__c();
+					historicallyAssignedResourceNew.ServiceAppointment__c = serviceAppointment.Id;
+					historicallyAssignedResourceNew.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+					historicallyAssignedResourceNew.Status__c = serviceAppointment.Status;
+					newHistoricallyAssignedResources.add(historicallyAssignedResourceNew);
+				}
+				// Removed resource
+				if(serviceAppointment.HOT_ServiceResource__c == null && oldServiceAppointment.HOT_ServiceResource__c != null) {
+					HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
+					historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
+					historicallyAssignedResource.ServiceResource__c = oldServiceAppointment.HOT_ServiceResource__c;
+					historicallyAssignedResource.Status__c = 'Tolk tatt av oppdraget';
+					newHistoricallyAssignedResources.add(historicallyAssignedResource);
+				}
+				// Only status change, no resource connected to service appointment
+				if(serviceAppointment.HOT_ServiceResource__c == null && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+					// Do noting
+				}					
 			}
 		}
 		insert newHistoricallyAssignedResources;
