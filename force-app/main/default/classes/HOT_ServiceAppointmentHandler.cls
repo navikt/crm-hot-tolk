@@ -5,7 +5,7 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		setOwner((List<ServiceAppointment>) records);
 	}
 
-	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
+	public override void onBeforeUpdate(Map<Id,sObject> triggerOldMap) {
 		
 		List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
 		
@@ -36,13 +36,12 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
 	private static void createHistoricallyAssignedResources(List<ServiceAppointment> serviceAppointments, Map<Id,sObject> triggerOldMap) {
 		
-		List<HOT_HistoricallyAssignedResource__c> existingHistoricallyAssignedResources = [SELECT Id, ServiceAppointment__c, ServiceResource__c, Status__c, StatusComment__c FROM HOT_HistoricallyAssignedResource__c WHERE ServiceAppointment__c IN :serviceAppointments];
 		List<HOT_HistoricallyAssignedResource__c> newHistoricallyAssignedResources = new List<HOT_HistoricallyAssignedResource__c>();
 		
 		for(ServiceAppointment serviceAppointment : serviceAppointments) {
 			ServiceAppointment oldServiceAppointment = (ServiceAppointment)triggerOldMap.get(serviceAppointment.Id);
 			// Added resource
-			if(serviceAppointment.HOT_ServiceResource__c != null && oldServiceAppointment.HOT_ServiceResource__c == null) {
+			if(!serviceAppointment.HOT_DoNotCreateHAR__c && serviceAppointment.HOT_ServiceResource__c != null && oldServiceAppointment.HOT_ServiceResource__c == null) {
 				HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
 				historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
 				historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
@@ -50,7 +49,7 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 				newHistoricallyAssignedResources.add(historicallyAssignedResource);
 			}
 			// Same resource, but status has changed
-			if(serviceAppointment.HOT_ServiceResource__c != null && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+			if(!serviceAppointment.HOT_DoNotCreateHAR__c && serviceAppointment.HOT_ServiceResource__c != null && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
 				HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
 				historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
 				historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
@@ -58,7 +57,7 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 				newHistoricallyAssignedResources.add(historicallyAssignedResource);
 			}
 			// Changed resource
-			if(serviceAppointment.HOT_ServiceResource__c != null && oldServiceAppointment.HOT_ServiceResource__c != null && serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c) {
+			if(!serviceAppointment.HOT_DoNotCreateHAR__c && serviceAppointment.HOT_ServiceResource__c != null && oldServiceAppointment.HOT_ServiceResource__c != null && serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c) {
 				HOT_HistoricallyAssignedResource__c historicallyAssignedResourceOld = new HOT_HistoricallyAssignedResource__c();
 				historicallyAssignedResourceOld.ServiceAppointment__c = serviceAppointment.Id;
 				historicallyAssignedResourceOld.ServiceResource__c = oldServiceAppointment.HOT_ServiceResource__c;
@@ -72,7 +71,7 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 				newHistoricallyAssignedResources.add(historicallyAssignedResourceNew);
 			}
 			// Removed resource
-			if(serviceAppointment.HOT_ServiceResource__c == null && oldServiceAppointment.HOT_ServiceResource__c != null) {
+			if(!serviceAppointment.HOT_DoNotCreateHAR__c && serviceAppointment.HOT_ServiceResource__c == null && oldServiceAppointment.HOT_ServiceResource__c != null) {
 				HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
 				historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
 				historicallyAssignedResource.ServiceResource__c = oldServiceAppointment.HOT_ServiceResource__c;
@@ -80,7 +79,7 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 				newHistoricallyAssignedResources.add(historicallyAssignedResource);
 			}
 			// Only status change, no resource connected to service appointment
-			if(serviceAppointment.HOT_ServiceResource__c == null && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+			if(!serviceAppointment.HOT_DoNotCreateHAR__c && serviceAppointment.HOT_ServiceResource__c == null && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
 				// Do noting
 			}
 		}
