@@ -1,11 +1,11 @@
-public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
+public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 	
 	public override void onBeforeInsert() {
 		setStatusDefault((List<ServiceAppointment>) records);
 		setOwner((List<ServiceAppointment>) records);
 		setFieldsByPreferredInterpreter((List<ServiceAppointment>) records);
 	}
-	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap){
+	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
 		
 		List<ServiceAppointment> recievedNewInterpreter= new List<ServiceAppointment>();
 		List<ServiceAppointment> updatedServiceAppointment = new List<ServiceAppointment>();
@@ -23,7 +23,7 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 				serviceAppointmentsWithChangedStatusOrResource.add(serviceAppointment);
 			}
 		}
-		if(!updatedServiceAppointment.isEmpty()){
+		if(!updatedServiceAppointment.isEmpty()) {
 			updatedServiceAppointment = setFieldsByPreferredInterpreter(updatedServiceAppointment);
 		}
 		if(recievedNewInterpreter.size() > 0) {
@@ -38,11 +38,6 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		for(ServiceAppointment serviceAppointment : recievedNewInterpreter) {
 			serviceAppointment.HOT_CanceledByInterpreter__c = false;		
 		}
-	}
-
-	public override void onBeforeUpdate(Map<Id,sObject> triggerOldMap) {
-		
-		
 	}
 
 	private static void setStatusDefault(List<ServiceAppointment> serviceAppointments) {
@@ -110,7 +105,8 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		}
 		insert newHistoricallyAssignedResources;
 	}
-	public static List<ServiceAppointment> setFieldsByPreferredInterpreter(List<ServiceAppointment> serviceAppointments){
+
+	public static List<ServiceAppointment> setFieldsByPreferredInterpreter(List<ServiceAppointment> serviceAppointments) {
 			List<Id> preferredResourceId = new List<Id>();
 		List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
 		for(ServiceAppointment serviceAppointment : serviceAppointments){
@@ -132,5 +128,4 @@ public with sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		}
 		return serviceAppointmentsToUpdate;
 	}
-
 }
