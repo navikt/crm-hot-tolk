@@ -70,7 +70,9 @@ private class HOT_AssignedResourceHandlerTest{
 
 
 		//Testing onAfterdelete()
+		Test.startTest();
 		delete assignedResource;
+		Test.stopTest();
 		serviceAppointment = [SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c, EarliestStartTime, DueDate, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Id = :serviceAppointment.Id LIMIT 1];
 		System.assertEquals(null, serviceAppointment.HOT_ServiceResource__c, 'Could not set HOT_ServiceResource__c onAfterdelete');
 		System.assertEquals(null, serviceAppointment.HOT_AssignedResourceId__c, 'Could not set HOT_AssignedResourceId__c onAfterdelete');
