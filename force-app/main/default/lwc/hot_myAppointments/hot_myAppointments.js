@@ -13,20 +13,6 @@ var actions = [
 export default class Hot_myAppointments extends NavigationMixin(LightningElement) {
 
 	@track workOrders = [];
-	@wire(getWorkOrders)
-	wiredWorkOrders(result) {
-		console.log("hei")
-		if (result.data) {
-			console.log(result.data)
-			this.error = undefined;
-			this.workOrders = result.data;
-
-		} else {
-			console.log(result.error)
-			this.error = result.error;
-			this.workOrders = undefined;
-		}
-	}
 
 	@track columns = [
 		{
@@ -87,7 +73,53 @@ export default class Hot_myAppointments extends NavigationMixin(LightningElement
 		},
 	];
 
+	@track requestNumber;
+	@track showAll = true;
+	connectedCallback() {
+		let testURL = window.location.href;
+		let params = testURL.split("?")[1];
 
+		function parse_query_string(query) {
+			var vars = query.split("&");
+			var query_string = {};
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split("=");
+				var key = decodeURIComponent(pair[0]);
+				var value = decodeURIComponent(pair[1]);
+				// If first entry with this name
+				if (typeof query_string[key] === "undefined") {
+					query_string[key] = decodeURIComponent(value);
+					// If second entry with this name
+				} else if (typeof query_string[key] === "string") {
+					var arr = [query_string[key], decodeURIComponent(value)];
+					query_string[key] = arr;
+					// If third or later entry with this name
+				} else {
+					query_string[key].push(decodeURIComponent(value));
+				}
+			}
+			return query_string;
+		}
+
+		if (params != undefined) {
+			var parsed_params = parse_query_string(params);
+			let requestNumber = parsed_params.id;
+			if (parsed_params.id != null) {
+				this.requestNumber = parsed_params.id;
+			}
+			getWorkOrders({ requestNumber: requestNumber }).then(result => {
+				this.workOrders = result;
+			});
+			this.showAll = false;
+		}
+		else {
+			this.showAll = true;
+			getWorkOrders({ requestNumber: null }).then(result => {
+				this.workOrders = result;
+			});
+		}
+
+	}
 	goToHome(event) {
 		if (!this.isProd) {
 			event.preventDefault();
@@ -111,4 +143,16 @@ export default class Hot_myAppointments extends NavigationMixin(LightningElement
 			});
 		}
 	}
+	goToMyRequests(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'mine-bestillinger'
+				}
+			});
+		}
+	}
+	@track thisURL = window.location.href;
 }
