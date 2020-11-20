@@ -257,18 +257,13 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.HOT_PersonContactId__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.InterpretationMethod__c</field>
+        <field>HOT_Request__c.InterpretationMethodSecondary__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.InterpretationMethodSecondary__c</field>
+        <field>HOT_Request__c.InterpretationMethod__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -338,12 +333,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.NumberOfInterpreters__c</field>
+        <field>HOT_Request__c.NumberOfInterpretersSecondary__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.NumberOfInterpretersSecondary__c</field>
+        <field>HOT_Request__c.NumberOfInterpreters__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -657,6 +652,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_DoNotCreateHAR__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_Escort__c</field>
         <readable>true</readable>
@@ -723,18 +723,8 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_Processed__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_ReleaseDate__c</field>
         <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_RequestOwnerId__c</field>
-        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>

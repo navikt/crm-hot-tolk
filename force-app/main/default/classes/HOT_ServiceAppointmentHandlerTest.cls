@@ -1,5 +1,6 @@
 @isTest
 private class HOT_ServiceAppointmentHandlerTest{
+	
 	@testSetup static void setup(){
 		OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
 		insert operatingHours;
@@ -83,5 +84,68 @@ private class HOT_ServiceAppointmentHandlerTest{
 
 		//Checks if HOT_CancelledByInterpreter is no longer checked
 		System.assertEquals(false, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to false');
+	}
+
+	@isTest private static void testCreateHistoricallyAssignedResources() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
+
+		ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
+
+		Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+		User user = HOT_TestDataFactory.createUser( 'TEST', profile );
+		insert user;
+
+		ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+		insert resource;
+		
+		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, resource.Id);
+		
+		Test.startTest();
+		insert assignedResource;
+		Test.stopTest();
+
+		List<HOT_HistoricallyAssignedResource__c> harList = [SELECT Id, ServiceResource__c, ServiceAppointment__c, Status__c FROM HOT_HistoricallyAssignedResource__c];
+		System.assertEquals(1, harList.size(), 'Det ble ikke opprette en Historically Assigned Resource');
+		System.assertEquals(resource.Id, harList[0].ServiceResource__c, 'HAR ble ikke knyttet til korrekt ressurs');
+		System.assertEquals(serviceAppointment.Id, harList[0].ServiceAppointment__c, 'HAR ble ikke knyttet til korrekt oppdrag');
+	}
+
+	@isTest private static void testDoNotCreateHAR() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
+
+		ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
+
+		Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+		User user = HOT_TestDataFactory.createUser( 'TEST', profile );
+		insert user;
+
+		ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+		insert resource;
+		
+		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, resource.Id);
+		insert assignedResource;
+
+		Test.startTest();
+		serviceAppointment.Status = 'Cancel';
+		serviceAppointment.HOT_DoNotCreateHAR__c = true;
+		Test.stopTest();
+
+		List<HOT_HistoricallyAssignedResource__c> harList = [SELECT Id, ServiceResource__c, ServiceAppointment__c, Status__c FROM HOT_HistoricallyAssignedResource__c];
+		serviceAppointment = [SELECT Id, HOT_DoNotCreateHAR__c FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
+
+		System.assertEquals(1, harList.size());
+		System.assertEquals(false, serviceAppointment.HOT_DoNotCreateHAR__c);
 	}
 }
