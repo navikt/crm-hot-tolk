@@ -67,10 +67,6 @@ export default class Hot_myAppointments extends NavigationMixin(LightningElement
 			type: 'text',
 			sortable: true,
 		},
-		{
-			type: 'action',
-			typeAttributes: { rowActions: actions },
-		},
 	];
 
 	@track requestNumber;
