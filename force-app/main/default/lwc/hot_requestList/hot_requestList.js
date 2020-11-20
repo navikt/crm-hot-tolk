@@ -8,6 +8,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 import getAssignedResources from '@salesforce/apex/HOT_Utility.getAssignedResources';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
+import getWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getWorkOrders';
 
 
 var actions = [
@@ -429,7 +430,43 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		}
 		this.isDetails = true;
+		let requestNumber = row.Name;
+		getWorkOrders({ requestNumber: requestNumber }).then(result => {
+			this.workOrders = result;
+		});
 	}
+	@track workOrders = [];
+	@track workOrderColumns = [
+		{
+			label: 'Start tid',
+			fieldName: 'StartDate',
+			type: 'date',
+			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+		{
+			label: 'Slutt tid',
+			fieldName: 'EndDate',
+			type: 'date',
+			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+	]
+
 
 	abortShowDetails() {
 		this.isDetails = false;
@@ -448,7 +485,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		});
 
 	}
-
 
 	goToMyRequests(event) {
 		if (!this.isProd) {
