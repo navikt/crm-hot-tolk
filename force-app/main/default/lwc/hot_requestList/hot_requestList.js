@@ -15,6 +15,7 @@ var actions = [
 	{ label: 'Kopier', name: 'clone_order' },
 	{ label: 'Rediger', name: 'edit_order' },
 	{ label: 'Detaljer', name: 'details' },
+	{ label: 'Se tider', name: 'see_times' },
 ];
 export default class RequestList extends NavigationMixin(LightningElement) {
 	@track isProd;
@@ -105,6 +106,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 
 		actions.push({ label: 'Detaljer', name: 'details' });
+		if (row.NumberOfWorkOrders__c > 1) {
+			actions.push({ label: 'Se tider', name: 'see_times' });
+		}
 
 		console.log(JSON.stringify(actions));
 		doneCallback(actions);
@@ -301,6 +305,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			case 'details':
 				this.showDetails(row);
 				break;
+			case 'see_times':
+				this.showTimes(row);
+				break;
 			default:
 		}
 	}
@@ -427,6 +434,19 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	abortShowDetails() {
 		this.isDetails = false;
 		this.showInterpreters = false;
+	}
+
+	showTimes(row) {
+		this[NavigationMixin.Navigate]({
+			type: 'comm__namedPage',
+			attributes: {
+				pageName: 'mine-avtaler'
+			},
+			state: {
+				id: row.Name,
+			}
+		});
+
 	}
 
 
