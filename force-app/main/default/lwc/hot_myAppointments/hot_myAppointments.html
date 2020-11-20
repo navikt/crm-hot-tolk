@@ -1,0 +1,17 @@
+<template>
+
+	<div class="brodsmulesti">
+		<lightning-breadcrumbs class="liste-max-width">
+			<lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}>
+			</lightning-breadcrumb>
+			<lightning-breadcrumb label="Mine avtaler" href="/s/mine-avtaler" onclick={goToMyAppointments}>
+			</lightning-breadcrumb>
+		</lightning-breadcrumbs>
+	</div>
+	<div class="liste liste-max-width">
+		<lightning-datatable key-field="Id" data={workOrders} columns={columns} hide-checkbox-column="true"
+			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
+			onsort={onHandleSort} onrowaction={handleRowAction}>
+		</lightning-datatable>
+	</div>
+</template>
