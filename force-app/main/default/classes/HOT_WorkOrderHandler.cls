@@ -44,6 +44,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		//Each workOrder should have 1 or more childs (workOrderLineItems)
 		List<WorkOrderLineItem> workOrderLineItems = new List<WorkOrderLineItem>();
 		for(WorkOrder workOrder:workOrders){
+			
+			//Check if status New
 
 			//Fetching the workTypes from parent requests. If the request only has 1 workType, only one child workOrderLineItem should be created
 			Map<Id, Decimal> workTypes = new Map<Id, Decimal>();
