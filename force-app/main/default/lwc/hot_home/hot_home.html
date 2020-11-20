@@ -94,6 +94,24 @@
 						</div>
 					</div>
 				</a>
+				<a class="panelMedBilde" href="/s/mine-avtaler" onclick={goToMyAppointments}>
+					<div class="tolketjenesten panelMedBilde__imageOnPanel">
+						<div class="panelMedBilde__svgContainer">
+							<img if:false={isProd} class="illustrasjon"
+								src="/sfsites/c/resource/1602568081000/MinSide"></img>
+							<img if:true={isProd} class="illustrasjon"
+								src="/s/sfsites/c/resource/1602568081000/MinSide"></img>
+						</div>
+					</div>
+					<div class="panel panelMedBilde__panelOnPanel">
+						<h2 class="typo-undertittel">Mine avtaler</h2>
+						<div>
+							<p class="typo-normal">
+								Her finner du oversikt over dine avtaler.
+							</p>
+						</div>
+					</div>
+				</a>
 				<a class="panelMedBilde" href="https://www.kunnskapsbanken.net/tolk/" target="_blank">
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
