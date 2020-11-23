@@ -76,7 +76,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 					newHistoricallyAssignedResources.add(historicallyAssignedResource);
 				}
 				// Same resource, but status has changed
-				if(serviceAppointment.HOT_ServiceResource__c != null && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+				if(serviceAppointment.HOT_ServiceResource__c != null && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c && serviceAppointment.Status != 'None') {
 					HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
 					historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
 					historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
