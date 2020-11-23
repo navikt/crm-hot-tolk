@@ -43,6 +43,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 
 		for(HOT_Request__c request : requests) {
 			Integer numberOfWorkOrder = workOrdersMaps.get(request.Id).size();
+			Integer numberOfNew = 0;
 			Integer numberOfScheduled = 0;
 			Integer numberOfDispatched = 0;
 			Integer numberOfInProgress = 0;
@@ -52,6 +53,9 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 			Integer numberOfCanceled = 0;
 			
 			for(WorkOrder workOrder : workOrdersMaps.get(request.Id)) {
+				if(workOrder.Status == 'New') {
+					numberOfNew++;
+				}
 				if(workOrder.Status == 'Scheduled') {
 					numberOfScheduled++;
 				}
@@ -76,6 +80,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 			}
 
 			System.debug('numberOfWorkOrder: ' + numberOfWorkOrder);
+			System.debug('numberOfNew: ' + numberOfNew);
 			System.debug('numberOfScheduled: ' + numberOfScheduled);
 			System.debug('numberOfDispatched: ' + numberOfDispatched);
 			System.debug('numberOfInProgress: ' + numberOfInProgress);
@@ -114,6 +119,10 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 			}
 			if(numberOfCanceled == numberOfWorkOrder) {
 				request.Status__c = statusMap.get('Canceled');
+				continue;
+			}
+			if(numberOfNew == numberOfWorkOrder) {
+				request.Status__c = statusMap.get('New');
 				continue;
 			}
 			request.IsUpdateStatus__c = false;

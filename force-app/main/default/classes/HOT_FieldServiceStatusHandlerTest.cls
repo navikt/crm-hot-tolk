@@ -287,4 +287,38 @@ private class HOT_FieldServiceStatusHandlerTest {
 		request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 		System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
 	}
+
+	@isTest
+    private static void testStatusChangeToNone() {
+		WorkType workType1 = HOT_TestDataFactory.createWorkType('workTypeName1');
+		insert workType1;
+		WorkType workType2 = HOT_TestDataFactory.createWorkType('workTypeName2');
+		insert workType2;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType1, 2, workType2, 2);
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
+
+		List<ServiceAppointment> serviceAppointments = [SELECT Id, Status FROM serviceAppointment WHERE HOT_Request__c = :request.Id];
+
+		for (ServiceAppointment serviceAppointment : serviceAppointments) {
+			serviceAppointment.Status = 'Dispatched';
+		}
+
+		update serviceAppointments;
+
+		request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+		System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
+
+		for (ServiceAppointment serviceAppointment : serviceAppointments) {
+			serviceAppointment.Status = 'None';
+		}
+
+		update serviceAppointments;
+		
+		request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+		System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
+	}
 }

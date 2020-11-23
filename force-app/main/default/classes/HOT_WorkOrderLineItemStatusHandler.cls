@@ -57,6 +57,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 
 		for(WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
 			Integer numberOfServiceAppointments = serviceAppointmentMaps.get(workOrderLineItem.Id).size();
+			Integer numberOfNone = 0;
 			Integer numberOfScheduled = 0;
 			Integer numberOfDispatched = 0;
 			Integer numberOfInProgress = 0;
@@ -66,6 +67,9 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 			Integer numberOfCanceled = 0;
 			
 			for(ServiceAppointment serviceAppointment : serviceAppointmentMaps.get(workOrderLineItem.Id)) {
+				if(serviceAppointment.Status == 'None') {
+					numberOfNone++;
+				}
 				if(serviceAppointment.Status == 'Scheduled') {
 					numberOfScheduled++;
 				}
@@ -90,6 +94,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 			}
 
 			System.debug('numberOfServiceAppointments: ' + numberOfServiceAppointments);
+			System.debug('numberOfNone: ' + numberOfNone);
 			System.debug('numberOfScheduled: ' + numberOfScheduled);
 			System.debug('numberOfDispatched: ' + numberOfDispatched);
 			System.debug('numberOfInProgress: ' + numberOfInProgress);
@@ -128,6 +133,10 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 			}
 			if(numberOfCanceled == numberOfServiceAppointments) {
 				workOrderLineItem.Status = 'Canceled';
+				continue;
+			}
+			if(numberOfNone == numberOfServiceAppointments) {
+				workOrderLineItem.Status = 'New';
 				continue;
 			}
 			workOrderLineItem.HOT_IsUpdateStatus__c = false;
