@@ -7,18 +7,44 @@ private class HOT_FieldServiceStatusHandlerTest {
 		insert workType;
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
 		insert request;
-		WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-		insert workOrder;
+		WorkOrder workOrder1 = HOT_TestDataFactory.createWorkOrder(request, workType);
+		insert workOrder1;
+		WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+		insert workOrder2;
 
-		workOrder.Status = 'Scheduled';
-		update workOrder;
+		workOrder1.Status = 'Scheduled';
+		update workOrder1;
 
 		request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
 		System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
 
-		workOrder.Status = 'Completed';
-		update workOrder;
+		workOrder2.Status = 'Dispatched';
+		update workOrder2;
+
+		request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+		System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
+
+		workOrder1.Status = 'Dispatched';
+		update workOrder1;
+
+		request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+		System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
+
+		workOrder1.Status = 'Completed';
+		update workOrder1;
+
+		workOrder2.Status = 'Cannot Completed';
+		update workOrder2;
+
+		request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+		System.assertEquals('Delvis dekket', request.Status__c, 'Status on the request did not update to correct value');
+
+		workOrder2.Status = 'Completed';
+		update workOrder2;
 
 		request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 

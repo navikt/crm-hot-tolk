@@ -33,24 +33,12 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 		}
 	}
 
-	public static void updateRequestStatus(List<WorkOrder> changedWorkOrders) {
-		Map<String, String> statusMap = new Map<String, String>(); // Map<Work Order Status, Request Status>
-		statusMap.put('New', 'Godkjent');
-		statusMap.put('Scheduled', 'Reservert');
-		statusMap.put('Dispatched', 'Tildelt');
-		statusMap.put('In Progress', 'Pågår');
-		statusMap.put('Completed', 'Dekket');
-		statusMap.put('Partially Complete', 'Delvis dekket');
-		statusMap.put('Cannot Complete', 'Udekket');
-		statusMap.put('Canceled', 'Avlyst');
-
+	private static void updateRequestStatus(List<WorkOrder> changedWorkOrders) {
 		List<HOT_Request__c> requestsToUpdate = new List<HOT_Request__c>();
 		for(WorkOrder workOrder : changedWorkOrders) {
-			if(statusMap.containsKey(workOrder.Status)) {
-				HOT_Request__c requestToAdd = new HOT_Request__c(Id = workOrder.HOT_Request__c, Status__c = statusMap.get(workOrder.Status)); 
-				if(!requestsToUpdate.contains(requestToAdd)) {
-					requestsToUpdate.add(requestToAdd);
-				}
+			HOT_Request__c requestToAdd = new HOT_Request__c(Id = workOrder.HOT_Request__c, IsUpdateStatus__c = true);
+			if(!requestsToUpdate.contains(requestToAdd)) {
+				requestsToUpdate.add(requestToAdd);
 			}
 		}
 		update requestsToUpdate;
@@ -122,20 +110,28 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 			if(numberOfCannotComplete > 0) {
 				workOrder.Status = 'Partially Complete';
 			}
+			if(numberOfCompleted > 0) {
+				workOrder.Status = 'Partially Complete';
+			}
 			if(numberOfDispatched == numberOfWorkOrderLineItem) {
 				workOrder.Status = 'Dispatched';
+				continue;
 			}
 			if(numberOfInProgress == numberOfWorkOrderLineItem) {
 				workOrder.Status = 'In Progress';
+				continue;
 			}
 			if(numberOfCompleted == numberOfWorkOrderLineItem) {
 				workOrder.Status = 'Completed';
+				continue;
 			}
 			if(numberOfCannotComplete == numberOfWorkOrderLineItem) {
 				workOrder.Status = 'Cannot Complete';
+				continue;
 			}
 			if(numberOfCanceled == numberOfWorkOrderLineItem) {
 				workOrder.Status = 'Canceled';
+				continue;
 			}
 			workOrder.HOT_IsUpdateStatus__c = false;
 		}
