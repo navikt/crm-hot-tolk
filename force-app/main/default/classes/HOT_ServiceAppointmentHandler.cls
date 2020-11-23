@@ -114,6 +114,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		insert newHistoricallyAssignedResources;
 	}
 
+	@TestVisible 
 	private static String getTranslatedStatus (String status) {
 		if(status == 'Annul') return 'Annullert';
 		if(status == 'Canceled') return 'Avlyst av bruker';
