@@ -254,16 +254,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.PreferredInterpreter1__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Request__c.PreferredInterpreter2__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>HOT_Request__c.ServiceTerritory__c</field>
         <readable>true</readable>
     </fieldPermissions>
