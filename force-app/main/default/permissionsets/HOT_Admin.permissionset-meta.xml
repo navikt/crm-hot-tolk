@@ -673,6 +673,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_DoNotCreateHAR__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_Escort__c</field>
         <readable>true</readable>
@@ -715,6 +720,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsScreenInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
