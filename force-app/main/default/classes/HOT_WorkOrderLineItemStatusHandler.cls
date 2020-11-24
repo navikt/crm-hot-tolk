@@ -2,14 +2,28 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 	
 	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
 		List<WorkOrderLineItem> changedStatusWorkOrderLineItems = new List<WorkOrderLineItem>();
-		
-		for(SObject record : records) {
-			if(record.getSObjectType() == Schema.WorkOrderLineItem.getSObjectType()
-				&& record.get('WorkOrderId') != null
-				&& record.get('Status') != triggerOldMap.get(record.Id).get('Status')
-				&& record.get('Status') != 'Annul') {
-					changedStatusWorkOrderLineItems.add((WorkOrderLineItem)record);
+		List<WorkOrderLineItem> canceledWorkOrderLineItems = new List<WorkOrderLineItem>();
+		List<WorkOrderLineItem> annulWorkOrderLineItems = new List<WorkOrderLineItem>();
+
+		for(WorkOrderLineItem workOrderLineItem : (List<WorkOrderLineItem>) records) {
+			// Filter for status change
+			if(workOrderLineItem.WorkOrderId != null	&& workOrderLineItem.Status != triggerOldMap.get(workOrderLineItem.Id).get('Status') && workOrderLineItem.Status != 'Annul') {
+				changedStatusWorkOrderLineItems.add(workOrderLineItem);
 			}
+			// Filter for canceled work orders
+            if (workOrderLineItem.Status != triggerOldMap.get(workOrderLineItem.Id).get('Status') && workOrderLineItem.Status == 'Canceled') {
+                canceledWorkOrderLineItems.add(workOrderLineItem);
+			}
+			// Filter for annul work orders
+            if (workOrderLineItem.Status != triggerOldMap.get(workOrderLineItem.Id).get('Status') && workOrderLineItem.Status == 'Annul') {
+                annulWorkOrderLineItems.add(workOrderLineItem);
+			}
+        }
+        if (canceledWorkOrderLineItems.size() > 0) {
+            updateChildRecords(canceledWorkOrderLineItems, 'Canceled');
+		}
+		if (annulWorkOrderLineItems.size() > 0) {
+            updateChildRecords(annulWorkOrderLineItems, 'Annul');
 		}
 		if(changedStatusWorkOrderLineItems.size() > 0) {
 			updateWorkOrderStatus(changedStatusWorkOrderLineItems);
@@ -140,6 +154,18 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 				continue;
 			}
 			workOrderLineItem.HOT_IsUpdateStatus__c = false;
+		}
+	}
+
+	private static void updateChildRecords(List<WorkOrderLineItem> changedWorkOrderLineItems, String newStatus) {
+        
+        List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment WHERE ParentRecordId IN :changedWorkOrderLineItems AND Status != :newStatus AND Status != 'Annul'];
+
+		for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.Status = newStatus;
+        }
+        if (serviceAppointments.size() > 0) {
+            update serviceAppointments;
 		}
 	}
 }

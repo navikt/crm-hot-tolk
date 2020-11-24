@@ -16,6 +16,28 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 		}
 	}
 
+	public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
+		List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
+		List<HOT_Request__c> annullertRequests = new List<HOT_Request__c>();
+
+        for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+			// Filter for Avlyst requests
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
+                avlystRequests.add(request);
+			}
+			// Filter for Annullert requests
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Annullert') {
+                annullertRequests.add(request);
+			}
+        }
+        if (avlystRequests.size() > 0) {
+            updateChildRecords(avlystRequests, 'Canceled');
+		}
+		if (annullertRequests.size() > 0) {
+            updateChildRecords(annullertRequests, 'Annul');
+		}
+    }
+
 	private static void updateRequestStatus(List<HOT_Request__c> requests) {
 
 		Map<String, String> statusMap = new Map<String, String>(); // Map<Work Order Status, Request Status>
@@ -123,5 +145,17 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 			}
 			request.IsUpdateStatus__c = false;
 		}
+	}
+
+	private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
+		
+		List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder WHERE HOT_Request__c IN :changedRequests AND Status != :newStatus AND Status != 'Annul'];
+
+		for (WorkOrder workOrder : workOrders) {
+            workOrder.Status = newStatus;
+        }
+        if (workOrders.size() > 0) {
+            update workOrders;
+        }
 	}
 }

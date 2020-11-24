@@ -2,16 +2,29 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 	
 	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
 		List<WorkOrder> changedStatusWorkOrders = new List<WorkOrder>();
-		
-		for(SObject record : records) {
-			if(record.getSObjectType() == Schema.WorkOrder.getSObjectType()
-				&& record.get('HOT_Request__c') != null
-				&& record.get('Status') != triggerOldMap.get(record.Id).get('Status')
-				&& record.get('Status') != 'Annul') {
-					changedStatusWorkOrders.add((WorkOrder)record);
-			}
-		}
+		List<WorkOrder> canceledWorkOrders = new List<WorkOrder>();
+		List<WorkOrder> annulWorkOrders = new List<WorkOrder>();
 
+		for(WorkOrder workOrder : (List<WorkOrder>) records) {
+			// Filter for status change
+			if(workOrder.HOT_Request__c != null	&& workOrder.Status != triggerOldMap.get(workOrder.Id).get('Status') && workOrder.Status != 'Annul') {
+					changedStatusWorkOrders.add(WorkOrder);
+			}
+			// Filter for canceled work orders
+            if (workOrder.Status != triggerOldMap.get(workOrder.Id).get('Status') && workOrder.Status == 'Canceled') {
+                canceledWorkOrders.add(workOrder);
+			}
+			// Filter for annul work orders
+            if (workOrder.Status != triggerOldMap.get(workOrder.Id).get('Status') && workOrder.Status == 'Annul') {
+                annulWorkOrders.add(workOrder);
+			}
+        }
+        if (canceledWorkOrders.size() > 0) {
+            updateChildRecords(canceledWorkOrders, 'Canceled');
+		}
+		if (annulWorkOrders.size() > 0) {
+            updateChildRecords(annulWorkOrders, 'Annul');
+		}
 		if(changedStatusWorkOrders.size() > 0) {
 			updateRequestStatus(changedStatusWorkOrders);
 		}
@@ -143,6 +156,18 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 				continue;
 			}
 			workOrder.HOT_IsUpdateStatus__c = false;
+		}
+	}
+
+	private static void updateChildRecords(List<WorkOrder> changedWorkOrders, String newStatus) {
+        
+        List<WorkOrderLineItem> workOrderLineItems = [SELECT Status FROM WorkOrderLineItem WHERE WorkOrderId IN :changedWorkOrders AND Status != :newStatus AND Status != 'Annul'];
+
+		for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
+            workOrderLineItem.Status = newStatus;
+        }
+        if (workOrderLineItems.size() > 0) {
+            update workOrderLineItems;
 		}
 	}
 }
