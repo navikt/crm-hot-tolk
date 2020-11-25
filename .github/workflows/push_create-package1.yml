@@ -191,7 +191,7 @@ jobs:
 
       # Install sfpowerkit plugin used to install multiple packages only by version number
       - name: Install sfpowerkit plugin
-        run: echo y | sfdx plugins:install sfpowerkit
+        run: echo y | sfdx plugins:install sfpowerkit@2.0.1
 
       # Get package keys
       - name: Get package keys
