@@ -4,8 +4,8 @@
 		<lightning-breadcrumbs class="liste-max-width">
 			<lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}>
 			</lightning-breadcrumb>
-			<lightning-breadcrumb if:true={showAll} label="Mine avtaler" href="/s/mine-avtaler"
-				onclick={goToMyAppointments}>
+			<lightning-breadcrumb if:true={showAll} label="Min tidsplan" href="/s/min-tidsplan"
+				onclick={goToMyWorkOrders}>
 			</lightning-breadcrumb>
 			<lightning-breadcrumb if:false={showAll} label="Mine bestillinger" href="/s/mine-bestillinger"
 				onclick={goToMyRequests}>

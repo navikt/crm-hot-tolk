@@ -7,10 +7,10 @@ import getWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getWorkO
 
 var actions = [
 	{ label: 'Avlys', name: 'delete' },
-	{ label: 'Detaljer', name: 'details' },
+	//{ label: 'Detaljer', name: 'details' },
 ];
 
-export default class Hot_myAppointments extends NavigationMixin(LightningElement) {
+export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) {
 
 	@track workOrders = [];
 
@@ -50,22 +50,26 @@ export default class Hot_myAppointments extends NavigationMixin(LightningElement
 			sortable: true,
 		},
 		{
-			label: 'Adresse',
-			fieldName: 'Street',
+			label: 'Bestilling',
+			fieldName: 'HOT_RequestName__c',
 			type: 'text',
 			sortable: true,
 		},
 		{
-			label: 'Postnr',
-			fieldName: 'PostalCode',
+			label: 'Status',
+			fieldName: 'Status',
 			type: 'text',
 			sortable: true,
 		},
 		{
-			label: 'Poststed',
-			fieldName: 'City',
+			label: 'Tolker',
+			fieldName: 'HOT_Interpreters__c',
 			type: 'text',
 			sortable: true,
+		},
+		{
+			type: 'action',
+			typeAttributes: { rowActions: actions },
 		},
 	];
 
@@ -114,8 +118,8 @@ export default class Hot_myAppointments extends NavigationMixin(LightningElement
 				this.workOrders = result;
 			});
 		}
-
 	}
+
 	goToHome(event) {
 		if (!this.isProd) {
 			event.preventDefault();
@@ -128,13 +132,13 @@ export default class Hot_myAppointments extends NavigationMixin(LightningElement
 		}
 	}
 
-	goToMyAppointments(event) {
+	goToMyWorkOrders(event) {
 		if (!this.isProd) {
 			event.preventDefault();
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
-					pageName: 'mine-avtaler'
+					pageName: 'min-tidsplan'
 				}
 			});
 		}
