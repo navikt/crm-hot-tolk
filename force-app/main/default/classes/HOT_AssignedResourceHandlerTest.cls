@@ -20,7 +20,7 @@ private class HOT_AssignedResourceHandlerTest{
 		ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
 		insert serviceTerritory;
 
-		Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator'];
+		Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'];
 		User user = HOT_TestDataFactory.createUser('User2', profile);
 		insert user;
 		ServiceResource serviceResourceAdmin = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
