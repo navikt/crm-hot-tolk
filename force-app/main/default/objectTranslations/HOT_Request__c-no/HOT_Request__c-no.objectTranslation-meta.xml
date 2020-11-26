@@ -76,16 +76,20 @@
         <name>RequestStatusApproved</name>
     </validationRules>
     <validationRules>
+        <errorMessage><!-- Forespørselen må være koblet til en person eller virksomhet. Fyll ut Bruker-, Bestiller- eller Virksomhet-feltet. --></errorMessage>
+        <name>RequireAccountLookup</name>
+    </validationRules>
+    <validationRules>
         <errorMessage><!-- Fant ingen virksomhet med dette organisasjonsnummeret. --></errorMessage>
         <name>RequireCompanyIfCompanyFromCommunity</name>
     </validationRules>
     <validationRules>
-        <errorMessage><!-- Bestiller må alltid fylles ut. --></errorMessage>
-        <name>RequireOrderer</name>
-    </validationRules>
-    <validationRules>
         <errorMessage><!-- Lagre forespørselen før du godkjenner den. --></errorMessage>
         <name>SaveRequestBeforeApproving</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Sekundær tolkemetode kan ikke være det samme som primær tolkemetode. --></errorMessage>
+        <name>SecondaryWorkTypeUNEQUALPrimaryWorkType</name>
     </validationRules>
     <validationRules>
         <errorMessage><!-- Du kan bare endre fakturastatus når manuell fakturering er krysset av. --></errorMessage>
