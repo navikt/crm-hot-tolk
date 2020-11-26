@@ -113,13 +113,13 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 	}
 
-	goToMyAppointments(event) {
+	goToMyTimeplan(event) {
 		if (!this.isProd) {
 			event.preventDefault();
 			this[NavigationMixin.Navigate]({
 				type: 'comm__namedPage',
 				attributes: {
-					pageName: 'mine-avtaler'
+					pageName: 'min-tidsplan'
 				}
 			});
 		}
