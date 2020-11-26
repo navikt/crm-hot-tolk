@@ -35,6 +35,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	@track columns = [
 		{
+			label: 'Bestilling',
+			fieldName: 'Name',
+			type: 'text',
+			sortable: true,
+		},
+		{
 			label: 'Start tid',
 			fieldName: 'StartTime__c',
 			type: 'date',
@@ -382,7 +388,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
 			if (row.Orderer__c == this.userRecord.AccountId) {
-				if (this.requests[index].ExternalRequestStatus__c == "Åpen") {
+				if (this.requests[index].ExternalRequestStatus__c.includes("Åpen")) {
 					//Here we should get the entire record from salesforce, to get entire interpretation address.
 					let clone = this.requests[index];
 					this[NavigationMixin.Navigate]({
@@ -477,7 +483,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		this[NavigationMixin.Navigate]({
 			type: 'comm__namedPage',
 			attributes: {
-				pageName: 'mine-avtaler'
+				pageName: 'min-tidsplan'
 			},
 			state: {
 				id: row.Name,
