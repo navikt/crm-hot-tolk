@@ -1,8 +1,8 @@
 @IsTest
 private class HOT_AssignedResourceAccessHandlerTest {
 
-	@TestSetup
-	static void makeData() {
+	@IsTest
+	private static void testAssignedResourceHasAccessToServiceAppointmentAfterInsert() {
 		Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
 		User user1 = HOT_TestDataFactory.createUser( 'user1', profile );
 		insert user1;
@@ -19,10 +19,6 @@ private class HOT_AssignedResourceAccessHandlerTest {
 		insert request;
 		request.Status__c = 'Godkjent';
 		update request;
-	}
-
-	@IsTest
-	private static void testAssignedResourceHasAccessToServiceAppointmentAfterInsert() {
 
 		Id serviceAppointmentId = [SELECT Id FROM ServiceAppointment LIMIT 1].Id;
 		Id serviceResourceId = [SELECT Id FROM ServiceResource LIMIT 1].Id;
@@ -35,6 +31,23 @@ private class HOT_AssignedResourceAccessHandlerTest {
 
 	@IsTest
 	private static void testUserLoseAccessWhenAssignedResourceIsDeleted() {
+		Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+		User user1 = HOT_TestDataFactory.createUser( 'user1', profile );
+		insert user1;
+		ServiceResource resource1 = HOT_TestDataFactory.createServiceResource( user1.Id );
+		insert resource1;
+		User user2 = HOT_TestDataFactory.createUser( 'user2', profile );
+		insert user2;
+		ServiceResource resource2 = HOT_TestDataFactory.createServiceResource( user2.Id );
+		insert resource2;
+
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest( 'TEST', workType );
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
+
 		Id serviceAppointmentId = [SELECT Id FROM ServiceAppointment LIMIT 1].Id;
 		Id serviceResourceId = [SELECT Id FROM ServiceResource LIMIT 1].Id;
 		Id userId = [SELECT RelatedRecordId FROM ServiceResource LIMIT 1].RelatedRecordId;
@@ -51,6 +64,23 @@ private class HOT_AssignedResourceAccessHandlerTest {
 
 	@IsTest
 	private static void testWhenAssignedResourceIsChanged() {
+		Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+		User user1 = HOT_TestDataFactory.createUser( 'user1', profile );
+		insert user1;
+		ServiceResource resource1 = HOT_TestDataFactory.createServiceResource( user1.Id );
+		insert resource1;
+		User user2 = HOT_TestDataFactory.createUser( 'user2', profile );
+		insert user2;
+		ServiceResource resource2 = HOT_TestDataFactory.createServiceResource( user2.Id );
+		insert resource2;
+
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest( 'TEST', workType );
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
+		
 		Id serviceAppointmentId = [SELECT Id FROM ServiceAppointment LIMIT 1].Id;
 		List<ServiceResource> serviceResources = [SELECT Id, RelatedRecordId FROM ServiceResource];
 		Id serviceResourceId1 = serviceResources[0].Id;

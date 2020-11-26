@@ -70,7 +70,7 @@ private class HOT_ServiceAppointmentHandlerTest{
 		//Checking if SA is cancelled etc
 		system.assertEquals(true, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to true');
 
-		Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator'];
+		Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'];
 		User user2 = HOT_TestDataFactory.createUser('User2', profile);
 		insert user2;
 

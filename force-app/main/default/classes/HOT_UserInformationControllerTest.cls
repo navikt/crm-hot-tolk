@@ -2,7 +2,7 @@
 private class HOT_UserInformationControllerTest{
 
 	@testSetup static void setup(){
-		Profile adminProfile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator'];
+		Profile adminProfile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'];
 		UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
 		User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
 		admin.UserRoleId = role.Id;
