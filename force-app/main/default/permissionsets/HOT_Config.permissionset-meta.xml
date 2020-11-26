@@ -10,6 +10,16 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.PreferredInterpreter1__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.PreferredInterpreter2__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.INT_KrrIntegrationStatus__c</field>
         <readable>true</readable>
@@ -17,6 +27,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.INT_LastUpdatedFromKRR__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_PreferredInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
