@@ -7,7 +7,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 
 		for(WorkOrder workOrder : (List<WorkOrder>) records) {
 			// Filter for status change
-			if(workOrder.HOT_Request__c != null	&& workOrder.Status != triggerOldMap.get(workOrder.Id).get('Status') && workOrder.Status != 'Annul') {
+			if(workOrder.HOT_Request__c != null	&& workOrder.Status != triggerOldMap.get(workOrder.Id).get('Status')) {
 					changedStatusWorkOrders.add(WorkOrder);
 			}
 			// Filter for canceled work orders
@@ -72,90 +72,91 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 		}
 
 		for(WorkOrder workOrder : workOrders) {
-			Integer numberOfWorkOrderLineItem = workOrderLineItemsMaps.get(workOrder.Id).size();
-			Integer numberOfNew = 0;
-			Integer numberOfScheduled = 0;
-			Integer numberOfDispatched = 0;
-			Integer numberOfInProgress = 0;
-			Integer numberOfCompleted = 0;
-			Integer numberOfPartiallyComplete = 0;
-			Integer numberOfCannotComplete = 0;
-			Integer numberOfCanceled = 0;
-			
-			for(WorkOrderLineItem workOrderLineItem : workOrderLineItemsMaps.get(workOrder.Id)) {
-				if(workOrderLineItem.Status == 'New') {
-					numberOfNew++;
+			if(workOrderLineItemsMaps.get(workOrder.Id) != null) {
+				Integer numberOfWorkOrderLineItem = workOrderLineItemsMaps.get(workOrder.Id).size();
+				Integer numberOfNew = 0;
+				Integer numberOfScheduled = 0;
+				Integer numberOfDispatched = 0;
+				Integer numberOfInProgress = 0;
+				Integer numberOfCompleted = 0;
+				Integer numberOfPartiallyComplete = 0;
+				Integer numberOfCannotComplete = 0;
+				Integer numberOfCanceled = 0;
+				
+				for(WorkOrderLineItem workOrderLineItem : workOrderLineItemsMaps.get(workOrder.Id)) {
+					if(workOrderLineItem.Status == 'New') {
+						numberOfNew++;
+					}
+					if(workOrderLineItem.Status == 'Scheduled') {
+						numberOfScheduled++;
+					}
+					if(workOrderLineItem.Status == 'Dispatched') {
+						numberOfDispatched++;
+					}
+					if(workOrderLineItem.Status == 'In Progress') {
+						numberOfInProgress++;
+					}
+					if(workOrderLineItem.Status == 'Completed') {
+						numberOfCompleted++;
+					}
+					if(workOrderLineItem.Status == 'Partially Complete') {
+						numberOfPartiallyComplete++;
+					}
+					if(workOrderLineItem.Status == 'Cannot Complete') {
+						numberOfCannotComplete++;
+					}
+					if(workOrderLineItem.Status == 'Canceled') {
+						numberOfCanceled++;
+					}
 				}
-				if(workOrderLineItem.Status == 'Scheduled') {
-					numberOfScheduled++;
-				}
-				if(workOrderLineItem.Status == 'Dispatched') {
-					numberOfDispatched++;
-				}
-				if(workOrderLineItem.Status == 'In Progress') {
-					numberOfInProgress++;
-				}
-				if(workOrderLineItem.Status == 'Completed') {
-					numberOfCompleted++;
-				}
-				if(workOrderLineItem.Status == 'Partially Complete') {
-					numberOfPartiallyComplete++;
-				}
-				if(workOrderLineItem.Status == 'Cannot Complete') {
-					numberOfCannotComplete++;
-				}
-				if(workOrderLineItem.Status == 'Canceled') {
-					numberOfCanceled++;
-				}
-			}
 
-			System.debug('numberOfWorkOrderLineItem: ' + numberOfWorkOrderLineItem);
-			System.debug('numberOfNew: ' + numberOfNew);
-			System.debug('numberOfScheduled: ' + numberOfScheduled);
-			System.debug('numberOfDispatched: ' + numberOfDispatched);
-			System.debug('numberOfInProgress: ' + numberOfInProgress);
-			System.debug('numberOfCompleted: ' + numberOfCompleted);
-			System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
-			System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
-			System.debug('numberOfCanceled: ' + numberOfCanceled);
-			
-			if(numberOfScheduled > 0) {
-				workOrder.Status = 'Scheduled';
+				System.debug('numberOfWorkOrderLineItem: ' + numberOfWorkOrderLineItem);
+				System.debug('numberOfNew: ' + numberOfNew);
+				System.debug('numberOfScheduled: ' + numberOfScheduled);
+				System.debug('numberOfDispatched: ' + numberOfDispatched);
+				System.debug('numberOfInProgress: ' + numberOfInProgress);
+				System.debug('numberOfCompleted: ' + numberOfCompleted);
+				System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
+				System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
+				System.debug('numberOfCanceled: ' + numberOfCanceled);
+				
+				if(numberOfScheduled > 0) {
+					workOrder.Status = 'Scheduled';
+				}
+				if(numberOfDispatched > 0) {
+					workOrder.Status = 'Dispatched';
+				}
+				if(numberOfPartiallyComplete > 0) {
+					workOrder.Status = 'Partially Complete';
+				}
+				if(numberOfCannotComplete > 0) {
+					workOrder.Status = 'Partially Complete';
+				}
+				if(numberOfCompleted > 0) {
+					workOrder.Status = 'Partially Complete';
+				}
+				if(numberOfInProgress == numberOfWorkOrderLineItem) {
+					workOrder.Status = 'In Progress';
+					continue;
+				}
+				if(numberOfCompleted == numberOfWorkOrderLineItem) {
+					workOrder.Status = 'Completed';
+					continue;
+				}
+				if(numberOfCannotComplete == numberOfWorkOrderLineItem) {
+					workOrder.Status = 'Cannot Complete';
+					continue;
+				}
+				if(numberOfCanceled == numberOfWorkOrderLineItem) {
+					workOrder.Status = 'Canceled';
+					continue;
+				}
+				if(numberOfNew == numberOfWorkOrderLineItem) {
+					workOrder.Status = 'New';
+					continue;
+				}
+				workOrder.HOT_IsUpdateStatus__c = false;
 			}
-			if(numberOfPartiallyComplete > 0) {
-				workOrder.Status = 'Partially Complete';
-			}
-			if(numberOfCannotComplete > 0) {
-				workOrder.Status = 'Partially Complete';
-			}
-			if(numberOfCompleted > 0) {
-				workOrder.Status = 'Partially Complete';
-			}
-			if(numberOfDispatched == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'Dispatched';
-				continue;
-			}
-			if(numberOfInProgress == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'In Progress';
-				continue;
-			}
-			if(numberOfCompleted == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'Completed';
-				continue;
-			}
-			if(numberOfCannotComplete == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'Cannot Complete';
-				continue;
-			}
-			if(numberOfCanceled == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'Canceled';
-				continue;
-			}
-			if(numberOfNew == numberOfWorkOrderLineItem) {
-				workOrder.Status = 'New';
-				continue;
-			}
-			workOrder.HOT_IsUpdateStatus__c = false;
 		}
 	}
 

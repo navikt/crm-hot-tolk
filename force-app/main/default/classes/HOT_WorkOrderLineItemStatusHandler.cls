@@ -7,7 +7,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 
 		for(WorkOrderLineItem workOrderLineItem : (List<WorkOrderLineItem>) records) {
 			// Filter for status change
-			if(workOrderLineItem.WorkOrderId != null	&& workOrderLineItem.Status != triggerOldMap.get(workOrderLineItem.Id).get('Status') && workOrderLineItem.Status != 'Annul') {
+			if(workOrderLineItem.WorkOrderId != null	&& workOrderLineItem.Status != triggerOldMap.get(workOrderLineItem.Id).get('Status')) {
 				changedStatusWorkOrderLineItems.add(workOrderLineItem);
 			}
 			// Filter for canceled work orders
@@ -70,90 +70,91 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 		}
 
 		for(WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
-			Integer numberOfServiceAppointments = serviceAppointmentMaps.get(workOrderLineItem.Id).size();
-			Integer numberOfNone = 0;
-			Integer numberOfScheduled = 0;
-			Integer numberOfDispatched = 0;
-			Integer numberOfInProgress = 0;
-			Integer numberOfCompleted = 0;
-			Integer numberOfPartiallyComplete = 0;
-			Integer numberOfCannotComplete = 0;
-			Integer numberOfCanceled = 0;
-			
-			for(ServiceAppointment serviceAppointment : serviceAppointmentMaps.get(workOrderLineItem.Id)) {
-				if(serviceAppointment.Status == 'None') {
-					numberOfNone++;
+			if(serviceAppointmentMaps.get(workOrderLineItem.Id) != null) {
+				Integer numberOfServiceAppointments = serviceAppointmentMaps.get(workOrderLineItem.Id).size();
+				Integer numberOfNone = 0;
+				Integer numberOfScheduled = 0;
+				Integer numberOfDispatched = 0;
+				Integer numberOfInProgress = 0;
+				Integer numberOfCompleted = 0;
+				Integer numberOfPartiallyComplete = 0;
+				Integer numberOfCannotComplete = 0;
+				Integer numberOfCanceled = 0;
+				
+				for(ServiceAppointment serviceAppointment : serviceAppointmentMaps.get(workOrderLineItem.Id)) {
+					if(serviceAppointment.Status == 'None') {
+						numberOfNone++;
+					}
+					if(serviceAppointment.Status == 'Scheduled') {
+						numberOfScheduled++;
+					}
+					if(serviceAppointment.Status == 'Dispatched') {
+						numberOfDispatched++;
+					}
+					if(serviceAppointment.Status == 'In Progress') {
+						numberOfInProgress++;
+					}
+					if(serviceAppointment.Status == 'Completed') {
+						numberOfCompleted++;
+					}
+					if(serviceAppointment.Status == 'Partially Complete') {
+						numberOfPartiallyComplete++;
+					}
+					if(serviceAppointment.Status == 'Cannot Complete') {
+						numberOfCannotComplete++;
+					}
+					if(serviceAppointment.Status == 'Canceled') {
+						numberOfCanceled++;
+					}
 				}
-				if(serviceAppointment.Status == 'Scheduled') {
-					numberOfScheduled++;
-				}
-				if(serviceAppointment.Status == 'Dispatched') {
-					numberOfDispatched++;
-				}
-				if(serviceAppointment.Status == 'In Progress') {
-					numberOfInProgress++;
-				}
-				if(serviceAppointment.Status == 'Completed') {
-					numberOfCompleted++;
-				}
-				if(serviceAppointment.Status == 'Partially Complete') {
-					numberOfPartiallyComplete++;
-				}
-				if(serviceAppointment.Status == 'Cannot Complete') {
-					numberOfCannotComplete++;
-				}
-				if(serviceAppointment.Status == 'Canceled') {
-					numberOfCanceled++;
-				}
-			}
 
-			System.debug('numberOfServiceAppointments: ' + numberOfServiceAppointments);
-			System.debug('numberOfNone: ' + numberOfNone);
-			System.debug('numberOfScheduled: ' + numberOfScheduled);
-			System.debug('numberOfDispatched: ' + numberOfDispatched);
-			System.debug('numberOfInProgress: ' + numberOfInProgress);
-			System.debug('numberOfCompleted: ' + numberOfCompleted);
-			System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
-			System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
-			System.debug('numberOfCanceled: ' + numberOfCanceled);
-			
-			if(numberOfScheduled > 0) {
-				workOrderLineItem.Status = 'Scheduled';
+				System.debug('numberOfServiceAppointments: ' + numberOfServiceAppointments);
+				System.debug('numberOfNone: ' + numberOfNone);
+				System.debug('numberOfScheduled: ' + numberOfScheduled);
+				System.debug('numberOfDispatched: ' + numberOfDispatched);
+				System.debug('numberOfInProgress: ' + numberOfInProgress);
+				System.debug('numberOfCompleted: ' + numberOfCompleted);
+				System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
+				System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
+				System.debug('numberOfCanceled: ' + numberOfCanceled);
+				
+				if(numberOfScheduled > 0) {
+					workOrderLineItem.Status = 'Scheduled';
+				}
+				if(numberOfDispatched > 0) {
+					workOrderLineItem.Status = 'Dispatched';
+				}
+				if(numberOfPartiallyComplete > 0) {
+					workOrderLineItem.Status = 'Partially Complete';
+				}
+				if(numberOfCannotComplete > 0) {
+					workOrderLineItem.Status = 'Partially Complete';
+				}
+				if(numberOfCompleted > 0) {
+					workOrderLineItem.Status = 'Partially Complete';
+				}
+				if(numberOfInProgress == numberOfServiceAppointments) {
+					workOrderLineItem.Status = 'In Progress';
+					continue;
+				}
+				if(numberOfCompleted == numberOfServiceAppointments) {
+					workOrderLineItem.Status = 'Completed';
+					continue;
+				}
+				if(numberOfCannotComplete == numberOfServiceAppointments) {
+					workOrderLineItem.Status = 'Cannot Complete';
+					continue;
+				}
+				if(numberOfCanceled == numberOfServiceAppointments) {
+					workOrderLineItem.Status = 'Canceled';
+					continue;
+				}
+				if(numberOfNone == numberOfServiceAppointments) {
+					workOrderLineItem.Status = 'New';
+					continue;
+				}
+				workOrderLineItem.HOT_IsUpdateStatus__c = false;
 			}
-			if(numberOfPartiallyComplete > 0) {
-				workOrderLineItem.Status = 'Partially Complete';
-			}
-			if(numberOfCannotComplete > 0) {
-				workOrderLineItem.Status = 'Partially Complete';
-			}
-			if(numberOfCompleted > 0) {
-				workOrderLineItem.Status = 'Partially Complete';
-			}
-			if(numberOfDispatched == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'Dispatched';
-				continue;
-			}
-			if(numberOfInProgress == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'In Progress';
-				continue;
-			}
-			if(numberOfCompleted == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'Completed';
-				continue;
-			}
-			if(numberOfCannotComplete == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'Cannot Complete';
-				continue;
-			}
-			if(numberOfCanceled == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'Canceled';
-				continue;
-			}
-			if(numberOfNone == numberOfServiceAppointments) {
-				workOrderLineItem.Status = 'New';
-				continue;
-			}
-			workOrderLineItem.HOT_IsUpdateStatus__c = false;
 		}
 	}
 

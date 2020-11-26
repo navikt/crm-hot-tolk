@@ -7,8 +7,7 @@ public without sharing class HOT_ServiceAppointmentStatusHandler extends MyTrigg
 		for(SObject record : records) {
 			if(record.getSObjectType() == Schema.ServiceAppointment.getSObjectType()
 				&& record.get('ParentRecordId') != null
-				&& record.get('Status') != triggerOldMap.get(record.Id).get('Status')
-				&& record.get('Status') != 'Annul') {
+				&& record.get('Status') != triggerOldMap.get(record.Id).get('Status')) {
 					changedStatusServiceAppointments.add((ServiceAppointment)record);
 					if(record.get('Status') == 'Canceled'){
 						canceledServiceAppointments.add((ServiceAppointment)record);
