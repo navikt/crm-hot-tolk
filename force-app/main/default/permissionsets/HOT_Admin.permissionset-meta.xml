@@ -208,6 +208,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.Dispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.Duration__c</field>
         <readable>true</readable>
@@ -280,6 +285,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsManuallyInvoiced__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsMyRequest__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
