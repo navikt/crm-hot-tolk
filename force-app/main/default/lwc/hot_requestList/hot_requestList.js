@@ -19,6 +19,9 @@ var actions = [
 	{ label: 'Se tider', name: 'see_times' },
 ];
 export default class RequestList extends NavigationMixin(LightningElement) {
+	rerenderCallback() {
+		refreshApex(this.wiredRequestsResult);
+	}
 	@track isProd;
 	@track error;
 	@wire(isProdFunction)
@@ -342,8 +345,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
+			let tempEndDate = new Date(this.requests[index].EndTime__c)
+			console.log(tempEndDate.getTime() > Date.now())
 			if (this.requests[index].ExternalRequestStatus__c != "Avlyst" && this.requests[index].ExternalRequestStatus__c != "Dekket"
-				&& this.requests[index].EndTime__c > Date.now()) {
+				&& tempEndDate.getTime() > Date.now()) {
 				if (confirm("Er du sikker på at du vil avlyse bestillingen?")) {
 					const fields = {};
 					fields[REQUEST_ID.fieldApiName] = Id;
@@ -360,7 +365,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 				}
 			}
 			else {
-
 				alert("Du kan ikke avlyse denne bestillingen.");
 			}
 		}
