@@ -57,7 +57,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 		},
 		{
 			label: 'Status',
-			fieldName: 'Status',
+			fieldName: 'ExternalWorkOrderStatus__c',
 			type: 'text',
 			sortable: true,
 		},
