@@ -2,11 +2,19 @@
 public class HOT_TestDataFactory {
 
 	public static HOT_Request__c createRequest( String subject, WorkType workType ) {
+		return createRequest(subject, workType, 1, null, null);
+	}
+
+	public static HOT_Request__c createRequest(String subject, WorkType workType, Integer numberOfInter, WorkType workTypeSecondary, Integer numberOfInterSecondary) {
 		HOT_Request__c request = new HOT_Request__c();
 		request.Subject__c = subject;
 		request.Status__c = 'Åpen';
-		request.NumberOfInterpreters__c = 1;
 		request.InterpretationMethod__c = workType.Id;
+		request.NumberOfInterpreters__c = numberOfInter;
+		if(workTypeSecondary != null) {
+			request.InterpretationMethodSecondary__c = workTypeSecondary.Id;
+			request.NumberOfInterpretersSecondary__c = numberOfInterSecondary;
+		}
 		request.StartTime__c = Datetime.now().addHours( 1 );
 		request.EndTime__c = request.StartTime__c.addHours( 2 );
 		request.AssignmentType__c = 'Work';
@@ -50,17 +58,14 @@ public class HOT_TestDataFactory {
 	}
 
 	public static WorkType createWorkType() {
-		WorkType workType = new WorkType();
-		workType.Name = 'workTypeName';
-		workType.EstimatedDuration = 1;
-
-		return workType;
+		return createWorkType('workTypeName');
 	}
 
-	public static WorkType createWorkType(String name) {
+	public static WorkType createWorkType(String workTypeName) {
 		WorkType workType = new WorkType();
-		workType.Name = name;
+		workType.Name = workTypeName;
 		workType.EstimatedDuration = 1;
+
 		return workType;
 	}
 
