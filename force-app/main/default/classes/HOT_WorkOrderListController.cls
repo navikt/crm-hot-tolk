@@ -7,10 +7,10 @@ public without sharing class HOT_WorkOrderListController {
 		Id userId = UserInfo.getUserId();
 		User user = [SELECT Id, AccountId, Name FROM User WHERE Id = : userId];
 		if(requestNumber == null){
-			workOrders = new Map<Id, WorkOrder>([SELECT Id, StartDate, EndDate, Subject, Address, Street, City, PostalCode, Status, HOT_RequestName__c, HOT_Interpreters__c FROM WorkOrder WHERE AccountId = :user.AccountId AND StartDate >= :DateTime.NOW() ORDER BY StartDate]);
+			workOrders = new Map<Id, WorkOrder>([SELECT Id, StartDate, EndDate, Subject, Address, Street, City, PostalCode, toLabel(Status), HOT_RequestName__c, HOT_Interpreters__c FROM WorkOrder WHERE AccountId = :user.AccountId AND StartDate >= :DateTime.NOW() ORDER BY StartDate]);
 		}
 		else{
-			workOrders = new Map<Id, WorkOrder>([SELECT Id, StartDate, EndDate, Subject, Address, Street, City, PostalCode, Status, HOT_RequestName__c, HOT_Interpreters__c FROM WorkOrder WHERE AccountId = :user.AccountId AND StartDate >= :DateTime.NOW() AND HOT_Request__r.Name = :requestNumber ORDER BY StartDate]);
+			workOrders = new Map<Id, WorkOrder>([SELECT Id, StartDate, EndDate, Subject, Address, Street, City, PostalCode, toLabel(Status), HOT_RequestName__c, HOT_Interpreters__c FROM WorkOrder WHERE AccountId = :user.AccountId AND StartDate >= :DateTime.NOW() AND HOT_Request__r.Name = :requestNumber ORDER BY StartDate]);
 		}
 		workOrders = getAndSetInterpreters(workOrders);
 		return workOrders.values();
