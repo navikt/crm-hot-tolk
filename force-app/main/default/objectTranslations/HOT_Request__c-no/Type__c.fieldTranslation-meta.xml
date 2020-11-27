@@ -7,15 +7,15 @@
         <translation><!-- Arrangement (annen betaler) --></translation>
     </picklistValues>
     <picklistValues>
-        <masterLabel>Bruker på vegne av seg selv</masterLabel>
-        <translation><!-- Bruker på vegne av seg selv --></translation>
-    </picklistValues>
-    <picklistValues>
         <masterLabel>Bestiller på vegne av bruker</masterLabel>
         <translation><!-- Bestiller på vegne av bruker --></translation>
     </picklistValues>
     <picklistValues>
+        <masterLabel>Bruker på vegne av seg selv</masterLabel>
+        <translation><!-- Bruker på vegne av seg selv --></translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>Virksomhet på vegne av bruker (annen betaler)</masterLabel>
-        <translation><!-- Virksomhet på vegne av bruker (annen betaler)--></translation>
+        <translation><!-- Virksomhet på vegne av bruker (annen betaler) --></translation>
     </picklistValues>
 </CustomFieldTranslation>

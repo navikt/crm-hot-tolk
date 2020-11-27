@@ -2,7 +2,7 @@
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Virksomhet</label>
     <lookupFilter>
-        <errorMessage><!-- Betaler må være en virksomhet, ikke en bruker --></errorMessage>
+        <errorMessage><!-- Virksomheten kan ikke være en person. --></errorMessage>
     </lookupFilter>
     <name>Company__c</name>
     <relationshipLabel>Virksomhetens forespørsler</relationshipLabel>
