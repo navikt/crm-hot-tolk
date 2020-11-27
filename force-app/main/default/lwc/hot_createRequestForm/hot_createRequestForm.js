@@ -237,6 +237,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.times[index].endTime = tempTime.join("").substring(11, 23);
 		}
 		this.updateValues(event, index);
+		this.validateDate(event, index);
 	}
 	setStartTime(event) {
 		let index = this.getIndexById(event.target.name);
@@ -272,9 +273,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 
 	updateValues(event, index) {
-		console.log(JSON.stringify(this.times));
 		let elements = event.target.parentElement.querySelector('.start-tid');
-		console.log(elements);
 		elements.value = this.times[index].startTime;
 		elements = event.target.parentElement.querySelector('.date');
 		elements.value = this.times[index].date;
@@ -289,7 +288,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				j = i;
 			}
 		}
-		console.log("index: " + j);
 		return j;
 	}
 
@@ -414,6 +412,21 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			radioButtonGroup.focus();
 		}
 		radioButtonGroup.reportValidity();
+	}
+
+	validateDate(event, index) {
+		let dateElement = event.target;
+		let tempDate = new Date(event.detail.value)
+		if (tempDate.getTime() < Date.now()) {
+			dateElement.setCustomValidity("Du kan ikke bestille tolk i fortiden.");
+			dateElement.focus();
+			this.times[index].isValid = false;
+		}
+		else {
+			dateElement.setCustomValidity("");
+			this.times[index].isValid = true;
+		}
+		dateElements.reportValidity();
 	}
 
 	formatDateTime(dateTime) {
