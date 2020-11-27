@@ -342,7 +342,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
-			if (this.requests[index].ExternalRequestStatus__c != "Avlyst" && this.requests[index].ExternalRequestStatus__c != "Dekket") {
+			if (this.requests[index].ExternalRequestStatus__c != "Avlyst" && this.requests[index].ExternalRequestStatus__c != "Dekket"
+				&& this.requests[index].EndTime__c > Date.now()) {
 				if (confirm("Er du sikker på at du vil avlyse bestillingen?")) {
 					const fields = {};
 					fields[REQUEST_ID.fieldApiName] = Id;
@@ -357,6 +358,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 						});
 				}
+			}
+			else {
+
+				alert("Du kan ikke avlyse denne bestillingen.");
 			}
 		}
 	}
