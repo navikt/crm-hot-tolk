@@ -155,4 +155,64 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 		}
 	}
 	@track thisURL = window.location.href;
+
+
+	@track defaultSortDirection = 'asc';
+	@track sortDirection = 'asc';
+	@track sortedBy = 'StartDate';
+
+	mobileSortingDefaultValue = '{"fieldName": "StartDate", "sortDirection": "asc"} ';
+	get sortingOptions() {
+		return [
+		];
+	}
+	handleMobileSorting(event) {
+		this.sortList(JSON.parse(event.detail.value));
+	}
+
+
+	sortBy(field, reverse) {
+		const key = function (x) {
+			return x[field];
+		};
+		const valueStatus = ["åpen", "under behandling", "tildelt", "pågår", "dekket", "delvis dekket", "udekket", "avlyst", "avslått"];
+		if (field == 'ExternalRequestStatus__c') {
+			return function (a, b) {
+				a = key(a).toLowerCase();
+				b = key(b).toLowerCase();
+				a = valueStatus.indexOf(a);
+				b = valueStatus.indexOf(b);
+				//console.log(a + ", " + b);
+				//console.log(reverse * ((a > b) - (b > a)));
+				return reverse * ((a > b) - (b > a));
+			};
+		}
+		else {
+			return function (a, b) {
+				a = key(a).toLowerCase();
+				b = key(b).toLowerCase();
+				//console.log(a + ", " + b);
+				//console.log(reverse * ((a > b) - (b > a)));
+				return reverse * ((a > b) - (b > a));
+			};
+		}
+	}
+
+	onHandleSort(event) {
+		this.sortList(event.detail);
+	}
+
+	sortList(input) {
+		const { fieldName: sortedBy, sortDirection } = input;
+		let cloneData = [...this.workOrders];
+		//console.log("sortedBy: " + sortedBy + ", sortDirection: " + sortDirection);
+		cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
+
+		this.workOrders = cloneData;
+		this.sortDirection = sortDirection;
+		this.sortedBy = sortedBy;
+	}
+
+
+
 }
