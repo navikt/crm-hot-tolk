@@ -15,8 +15,12 @@ var actions = [
 	{ label: 'Kopier', name: 'clone_order' },
 	{ label: 'Rediger', name: 'edit_order' },
 	{ label: 'Detaljer', name: 'details' },
+	{ label: 'Se tider', name: 'see_times' },
 ];
 export default class RequestList extends NavigationMixin(LightningElement) {
+	rerenderCallback() {
+		refreshApex(this.wiredRequestsResult);
+	}
 	@track isProd;
 	@track error;
 	@wire(isProdFunction)
@@ -32,6 +36,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	}
 
 	@track columns = [
+		{
+			label: 'Bestilling',
+			fieldName: 'Name',
+			type: 'text',
+			sortable: true,
+		},
 		{
 			label: 'Start tid',
 			fieldName: 'StartTime__c',
@@ -105,6 +115,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 
 		actions.push({ label: 'Detaljer', name: 'details' });
+		if (row.NumberOfWorkOrders__c > 1) {
+			actions.push({ label: 'Se tider', name: 'see_times' });
+		}
 
 		console.log(JSON.stringify(actions));
 		doneCallback(actions);
@@ -301,6 +314,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			case 'details':
 				this.showDetails(row);
 				break;
+			case 'see_times':
+				this.showTimes(row);
+				break;
 			default:
 		}
 	}
@@ -328,7 +344,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const { Id } = row;
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
-			if (this.requests[index].ExternalRequestStatus__c != "Avlyst" && this.requests[index].ExternalRequestStatus__c != "Dekket") {
+			let tempEndDate = new Date(this.requests[index].EndTime__c)
+			console.log(tempEndDate.getTime() > Date.now())
+			if (this.requests[index].ExternalRequestStatus__c != "Avlyst" && this.requests[index].ExternalRequestStatus__c != "Dekket"
+				&& tempEndDate.getTime() > Date.now()) {
 				if (confirm("Er du sikker på at du vil avlyse bestillingen?")) {
 					const fields = {};
 					fields[REQUEST_ID.fieldApiName] = Id;
@@ -343,6 +362,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 						});
 				}
+			}
+			else {
+				alert("Du kan ikke avlyse denne bestillingen.");
 			}
 		}
 	}
@@ -374,7 +396,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
 			if (row.Orderer__c == this.userRecord.AccountId) {
-				if (this.requests[index].ExternalRequestStatus__c == "Åpen") {
+				if (this.requests[index].ExternalRequestStatus__c.includes("Åpen")) {
 					//Here we should get the entire record from salesforce, to get entire interpretation address.
 					let clone = this.requests[index];
 					this[NavigationMixin.Navigate]({
@@ -424,11 +446,24 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		this.isDetails = true;
 	}
 
+
 	abortShowDetails() {
 		this.isDetails = false;
 		this.showInterpreters = false;
 	}
 
+	showTimes(row) {
+		this[NavigationMixin.Navigate]({
+			type: 'comm__namedPage',
+			attributes: {
+				pageName: 'min-tidsplan'
+			},
+			state: {
+				id: row.Name,
+			}
+		});
+
+	}
 
 	goToMyRequests(event) {
 		if (!this.isProd) {

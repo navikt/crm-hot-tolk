@@ -113,6 +113,17 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 		}
 	}
 
+	goToMyTimeplan(event) {
+		if (!this.isProd) {
+			event.preventDefault();
+			this[NavigationMixin.Navigate]({
+				type: 'comm__namedPage',
+				attributes: {
+					pageName: 'min-tidsplan'
+				}
+			});
+		}
+	}
 
 
 }

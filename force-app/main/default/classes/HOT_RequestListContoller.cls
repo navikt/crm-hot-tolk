@@ -15,6 +15,9 @@ public without sharing class HOT_RequestListContoller {
 			//Setting the helping-field to control the users access to row-actions in requestList (lwc)
 			for(HOT_Request__c request: requests){
 				request.TempAccountId__c = user.AccountId;
+				if(request.NumberOfWorkOrders__c == 0 || request.NumberOfWorkOrders__c == null){
+					request.NumberOfWorkOrders__c = 1;
+				}
 			}
 		}
 		else{

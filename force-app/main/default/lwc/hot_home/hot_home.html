@@ -76,6 +76,24 @@
 						</div>
 					</div>
 				</a>
+				<a class="panelMedBilde" href="/s/min-tidsplan" onclick={goToMyTimeplan}>
+					<div class="tolketjenesten panelMedBilde__imageOnPanel">
+						<div class="panelMedBilde__svgContainer">
+							<img if:false={isProd} class="illustrasjon"
+								src="/sfsites/c/resource/1584959850000/MineBestillinger"></img>
+							<img if:true={isProd} class="illustrasjon"
+								src="/s/sfsites/c/resource/1584959850000/MineBestillinger"></img>
+						</div>
+					</div>
+					<div class="panel panelMedBilde__panelOnPanel">
+						<h2 class="typo-undertittel">Min tidsplan</h2>
+						<div>
+							<p class="typo-normal">
+								Her finner du oversikt over din tidsplan.
+							</p>
+						</div>
+					</div>
+				</a>
 				<a class="panelMedBilde" href="/s/min-side" onclick={goToMyPage}>
 					<div class="tolketjenesten panelMedBilde__imageOnPanel">
 						<div class="panelMedBilde__svgContainer">
