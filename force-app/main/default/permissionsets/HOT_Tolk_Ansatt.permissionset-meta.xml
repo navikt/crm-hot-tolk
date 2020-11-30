@@ -619,7 +619,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.IsMyRequestDispatcher__c</field>
+        <field>ServiceAppointment.HOT_IsMyRequestDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
