@@ -108,7 +108,7 @@
 							<div style="margin-bottom: 0.5rem;">
 								<template iterator:it={times}>
 									<div class="dynamic-time-inputs-with-line_button " key={it.value.id}>
-										<div class="dynamic-time-inputs ">
+										<div class="dynamic-time-inputs" aria-live>
 											<lightning-input label="Dato" type="date" class="tolk-skjema-input date"
 												date-style="short" onchange={setDate} name={it.value.id}
 												value={it.value.date} required>
