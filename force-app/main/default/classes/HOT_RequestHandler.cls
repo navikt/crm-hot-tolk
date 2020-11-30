@@ -57,43 +57,29 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 		List<HOT_Request__c> godkjentRequests = new List<HOT_Request__c>();
 		List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
 		List<HOT_Request__c> annullertRequests = new List<HOT_Request__c>();
-        List<HOT_Request__c> finishedRequests = new List<HOT_Request__c>();
+        // List<HOT_Request__c> finishedRequests = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
 			// Filter for Godkjent requests
             if (triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' && request.Status__c == 'Godkjent') {
                 godkjentRequests.add(request);
 			}
-			// Filter for Avlyst requests
-            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
-                avlystRequests.add(request);
-			}
-			// Filter for Annullert requests
-            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Annullert') {
-                annullertRequests.add(request);
-			}
         }
         if (godkjentRequests.size() > 0) {
             createWOLI_SA(godkjentRequests);
 		}
-        if (avlystRequests.size() > 0) {
-            updateChildRecords(avlystRequests, 'Canceled');
-		}
-		if (annullertRequests.size() > 0) {
-            updateChildRecords(annullertRequests, 'Annul');
-		}
 
-		if (finishedRequests.size() > 0) {
-			for (HOT_Request__c request : finishedRequests) {
-				List<ContentDocumentLink> files = [Select Id, ContentDocumentId From ContentDocumentLink where LinkedEntityId=:request.Id];
-				List<Id> documentIds = new List<Id>();
-				for(ContentDocumentLink f :files){
-					documentIds.add(f.ContentDocumentId);
-				}
-				List<ContentDocument> relatedFiles = [Select id, Title From ContentDocument where Id in: documentIds];
-				delete relatedFiles;
-			}
-		}
+		// if (finishedRequests.size() > 0) {
+		// 	for (HOT_Request__c request : finishedRequests) {
+		// 		List<ContentDocumentLink> files = [Select Id, ContentDocumentId From ContentDocumentLink where LinkedEntityId=:request.Id];
+		// 		List<Id> documentIds = new List<Id>();
+		// 		for(ContentDocumentLink f :files){
+		// 			documentIds.add(f.ContentDocumentId);
+		// 		}
+		// 		List<ContentDocument> relatedFiles = [Select id, Title From ContentDocument where Id in: documentIds];
+		// 		delete relatedFiles;
+		// 	}
+		// }
 
     }
 
@@ -107,32 +93,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 		}
 		else{
 			createChildRecords(godkjentRequests);
-		}
-	}
-		
-		
-	private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
-        List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder WHERE HOT_Request__c IN :changedRequests AND Status != :newStatus];
-        List<WorkOrderLineItem> workOrderLineItems = [SELECT Status FROM WorkOrderLineItem WHERE WorkOrderId IN :workOrders AND Status != :newStatus];
-        List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment WHERE ParentRecordId IN :workOrderLineItems AND Status != :newStatus];
-
-		for (WorkOrder workOrder : workOrders) {
-            workOrder.Status = newStatus;
-        }
-        if (workOrders.size() > 0) {
-            update workOrders;
-        }
-		for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
-            workOrderLineItem.Status = newStatus;
-        }
-        if (workOrderLineItems.size() > 0) {
-            update workOrderLineItems;
-		}
-		for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.Status = newStatus;
-        }
-        if (serviceAppointments.size() > 0) {
-            update serviceAppointments;
 		}
 	}
 

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Bestiller</label>
+    <lookupFilter>
+        <errorMessage><!-- Bestiller må være en person --></errorMessage>
+    </lookupFilter>
     <name>Orderer__c</name>
     <relationshipLabel>Bestillers forespørsler</relationshipLabel>
 </CustomFieldTranslation>

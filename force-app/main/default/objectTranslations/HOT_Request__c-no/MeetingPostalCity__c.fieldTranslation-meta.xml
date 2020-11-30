@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-	<label>Poststed</label>
-	<name>MeetingPostalCity__c</name>
+    <label>Poststed</label>
+    <name>MeetingPostalCity__c</name>
 </CustomFieldTranslation>

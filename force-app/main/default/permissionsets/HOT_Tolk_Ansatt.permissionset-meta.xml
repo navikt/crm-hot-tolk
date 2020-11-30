@@ -113,6 +113,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.Dispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.Duration__c</field>
         <readable>true</readable>
@@ -180,6 +185,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsManuallyInvoiced__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsMyRequest__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -608,6 +618,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.IsMyRequestDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.SchedEndTime</field>
         <readable>true</readable>
@@ -770,11 +785,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.HOT_InterpretationStreet__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>WorkOrder.HOT_IsUpdateStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -950,11 +960,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrderLineItem.HOT_InterpretationPostalStreet__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrderLineItem.HOT_IsUpdateStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
