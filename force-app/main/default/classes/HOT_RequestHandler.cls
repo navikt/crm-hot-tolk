@@ -117,11 +117,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 				updatedTimesMap.put(key, times.get(key));
 			}
 		}
-		if(!updatedTimesMap.isEmpty()){
-			updateRelatedWorkOrders(requestId, updatedTimesMap);
-		}
 		if(!requests.isEmpty()){
 			createChildRecords(requests);
+		}
+		if(!updatedTimesMap.isEmpty()){
+			updateRelatedWorkOrders(requestId, updatedTimesMap);
 		}
 	}
 
