@@ -167,13 +167,14 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 		return getMobileSortingOptions(this.columns)
 	}
 	handleMobileSorting(event) {
-		const { fieldName: sortedBy, sortDirection } = event.detail.value;
-		[this.workOrders, this.sortedBy, this.sortDirection] = sortList(this.workOrders, sortedBy, sortDirection);
+		this.sortDirection = event.detail.value.sortDirection;
+		this.sortedBy = event.detail.value.fieldName;
+		this.workOrders = sortList(this.workOrders, this.sortedBy, this.sortDirection);
 	}
-
 	onHandleSort(event) {
-		const { fieldName: sortedBy, sortDirection } = event.detail;
-		[this.workOrders, this.sortedBy, this.sortDirection] = sortList(this.workOrders, sortedBy, sortDirection);
+		this.sortDirection = event.detail.sortDirection;
+		this.sortedBy = event.detail.fieldName;
+		this.workOrders = sortList(this.workOrders, this.sortedBy, this.sortDirection);
 	}
 
 }
