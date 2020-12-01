@@ -1,6 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getWorkOrders';
+import { sortList, getMobileSortingOptions } from 'c/sortController'
 
 
 
@@ -163,56 +164,17 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 
 	mobileSortingDefaultValue = '{"fieldName": "StartDate", "sortDirection": "asc"} ';
 	get sortingOptions() {
-		return [
-		];
+		return getMobileSortingOptions(this.columns)
 	}
 	handleMobileSorting(event) {
-		this.sortList(JSON.parse(event.detail.value));
+		this.sortDirection = event.detail.value.sortDirection;
+		this.sortedBy = event.detail.value.fieldName;
+		this.workOrders = sortList(this.workOrders, this.sortedBy, this.sortDirection);
 	}
-
-
-	sortBy(field, reverse) {
-		const key = function (x) {
-			return x[field];
-		};
-		const valueStatus = ["åpen", "under behandling", "tildelt", "pågår", "dekket", "delvis dekket", "udekket", "avlyst", "avslått"];
-		if (field == 'ExternalRequestStatus__c') {
-			return function (a, b) {
-				a = key(a).toLowerCase();
-				b = key(b).toLowerCase();
-				a = valueStatus.indexOf(a);
-				b = valueStatus.indexOf(b);
-				//console.log(a + ", " + b);
-				//console.log(reverse * ((a > b) - (b > a)));
-				return reverse * ((a > b) - (b > a));
-			};
-		}
-		else {
-			return function (a, b) {
-				a = key(a).toLowerCase();
-				b = key(b).toLowerCase();
-				//console.log(a + ", " + b);
-				//console.log(reverse * ((a > b) - (b > a)));
-				return reverse * ((a > b) - (b > a));
-			};
-		}
-	}
-
 	onHandleSort(event) {
-		this.sortList(event.detail);
+		this.sortDirection = event.detail.sortDirection;
+		this.sortedBy = event.detail.fieldName;
+		this.workOrders = sortList(this.workOrders, this.sortedBy, this.sortDirection);
 	}
-
-	sortList(input) {
-		const { fieldName: sortedBy, sortDirection } = input;
-		let cloneData = [...this.workOrders];
-		//console.log("sortedBy: " + sortedBy + ", sortDirection: " + sortDirection);
-		cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
-
-		this.workOrders = cloneData;
-		this.sortDirection = sortDirection;
-		this.sortedBy = sortedBy;
-	}
-
-
 
 }
