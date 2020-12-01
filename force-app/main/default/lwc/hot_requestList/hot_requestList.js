@@ -8,6 +8,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 import getAssignedResources from '@salesforce/apex/HOT_Utility.getAssignedResources';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
+import { sortList, getMobileSortingOptions } from 'c/sortController'
 
 
 var actions = [
@@ -237,62 +238,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "asc"} ';
 	get sortingOptions() {
-		return [
-			{ label: 'Start tid stigende', value: '{"fieldName": "StartTime__c", "sortDirection": "asc"} ' },
-			{ label: 'Start tid synkende', value: '{"fieldName": "StartTime__c", "sortDirection": "desc"} ' },
-			{ label: 'Tema A - Å', value: '{"fieldName": "Subject__c", "sortDirection": "asc"} ' },
-			{ label: 'Tema Å - A', value: '{"fieldName": "Subject__c", "sortDirection": "desc"} ' },
-			{ label: 'Oppmøtested A - Å', value: '{"fieldName": "MeetingStreet__c", "sortDirection": "asc"} ' },
-			{ label: 'Oppmøtested Å - A', value: '{"fieldName": "MeetingStreet__c", "sortDirection": "desc"} ' },
-			{ label: 'Status stigende', value: '{"fieldName": "ExternalRequestStatus__c", "sortDirection": "asc"} ' },
-			{ label: 'Status synkende', value: '{"fieldName": "ExternalRequestStatus__c", "sortDirection": "desc"} ' },
-		];
+		return getMobileSortingOptions(this.columns)
 	}
 	handleMobileSorting(event) {
-		this.sortList(JSON.parse(event.detail.value));
+		this.sortDirection = event.detail.value.sortDirection;
+		this.sortedBy = event.detail.value.fieldName;
+		this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
+		this.showHideInactives();
 	}
-
-
-	sortBy(field, reverse) {
-		const key = function (x) {
-			return x[field];
-		};
-		const valueStatus = ["åpen", "under behandling", "tildelt", "pågår", "dekket", "delvis dekket", "udekket", "avlyst", "avslått"];
-		if (field == 'ExternalRequestStatus__c') {
-			return function (a, b) {
-				a = key(a).toLowerCase();
-				b = key(b).toLowerCase();
-				a = valueStatus.indexOf(a);
-				b = valueStatus.indexOf(b);
-				//console.log(a + ", " + b);
-				//console.log(reverse * ((a > b) - (b > a)));
-				return reverse * ((a > b) - (b > a));
-			};
-		}
-		else {
-			return function (a, b) {
-				a = key(a).toLowerCase();
-				b = key(b).toLowerCase();
-				//console.log(a + ", " + b);
-				//console.log(reverse * ((a > b) - (b > a)));
-				return reverse * ((a > b) - (b > a));
-			};
-		}
-	}
-
 	onHandleSort(event) {
-		this.sortList(event.detail);
-	}
-
-	sortList(input) {
-		const { fieldName: sortedBy, sortDirection } = input;
-		let cloneData = [...this.allRequests];
-		//console.log("sortedBy: " + sortedBy + ", sortDirection: " + sortDirection);
-		cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
-
-		this.allRequests = cloneData;
-		this.sortDirection = sortDirection;
-		this.sortedBy = sortedBy;
+		this.sortDirection = event.detail.sortDirection;
+		this.sortedBy = event.detail.fieldName;
+		this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
 		this.showHideInactives();
 	}
 
