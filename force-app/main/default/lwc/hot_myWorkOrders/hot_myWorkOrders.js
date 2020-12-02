@@ -1,7 +1,8 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import getWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getWorkOrders';
-import { sortList, getMobileSortingOptions } from 'c/sortController'
+import getWorkOrdersFromRequest from '@salesforce/apex/HOT_WorkOrderListController.getWorkOrdersFromRequest';
+import getMyWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrders';
+import { sortList, getMobileSortingOptions } from 'c/sortController';
 
 
 
@@ -13,7 +14,6 @@ var actions = [
 
 export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) {
 
-	@track workOrders = [];
 
 	@track columns = [
 		{
@@ -74,6 +74,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 		},
 	];
 
+	@track workOrders = [];
 	@track requestNumber;
 	@track showAll = true;
 	connectedCallback() {
@@ -108,14 +109,14 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			if (parsed_params.id != null) {
 				this.requestNumber = parsed_params.id;
 			}
-			getWorkOrders({ requestNumber: requestNumber }).then(result => {
+			getWorkOrdersFromRequest({ requestNumber: requestNumber }).then(result => {
 				this.workOrders = result;
 			});
 			this.showAll = false;
 		}
 		else {
 			this.showAll = true;
-			getWorkOrders({ requestNumber: null }).then(result => {
+			getMyWorkOrders().then(result => {
 				this.workOrders = result;
 			});
 		}
