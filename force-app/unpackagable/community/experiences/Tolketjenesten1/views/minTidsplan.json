@@ -1,0 +1,92 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "cad27f3a-0886-4706-99c2-8854fabfe491",
+  "label" : "Min Tidsplan",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "258075e9-8541-4f36-a052-c7506a442118",
+          "columns" : [ {
+            "UUID" : "adeabb10-53c4-4c37-96d2-7b78a04d3a38",
+            "columnName" : "Column 1",
+            "columnKey" : "1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "258075e9-8541-4f36-a052-c7506a442118",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "NAVarea" : "Privatperson"
+          },
+          "componentName" : "c:globalCommunityHeader",
+          "id" : "09b27e14-5bee-4cf1-bc95-81099e9fb0b0",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:hot_tolketjenestenHovedBanner",
+          "id" : "d9cdf9f2-234d-4578-bd29-6e9bcaefc0aa",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:hot_myWorkOrders",
+          "id" : "9f6891ed-c3da-422e-8377-e4a946ba09b3",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : {
+            "NAVarea" : "Privatperson"
+          },
+          "componentName" : "c:globalCommunityFooter",
+          "id" : "dfe23847-92ec-4edd-9bbf-ef70fded5905",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "adeabb10-53c4-4c37-96d2-7b78a04d3a38",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "2ac0edf3-6cfa-4f5e-8cec-c7bf0a0e415a",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "description" : "",
+        "metaTags" : "",
+        "title" : "Min Tidsplan"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "ba64e9f1-048d-49d5-8f80-e08b34605917",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "da0a9caa-0588-49a2-8902-420bcec22da1",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-min-tidsplan"
+}
