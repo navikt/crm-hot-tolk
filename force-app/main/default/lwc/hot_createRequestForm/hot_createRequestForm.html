@@ -124,12 +124,12 @@
 										</div>
 										<lightning-button if:false={isOnlyOneTime} variant="base"
 											icon-name="utility:close" class="remove-time__button" onclick={removeTime}
-											name={it.value.id}>
+											name={it.value.id} aria-label="Fjern tid">
 										</lightning-button>
 									</div>
 								</template>
 							</div>
-							<lightning-button label="Legg til tider" icon-name="utility:add" class="add-times"
+							<lightning-button label="Legg til flere tider" icon-name="utility:add" class="add-times"
 								onclick={addTime}>
 							</lightning-button>
 						</div>
