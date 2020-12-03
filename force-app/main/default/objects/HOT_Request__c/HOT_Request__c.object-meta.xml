@@ -168,7 +168,15 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Requests</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <searchResultsAdditionalFields>Account__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>StartTime__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>EndTime__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>AssignmentType__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>MeetingStreet__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Dispatcher__c</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>Private</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>
