@@ -6,7 +6,7 @@ public without sharing class HOT_WorkOrderListController {
 		Id userId = UserInfo.getUserId();
 		User user = [SELECT Id, AccountId, Name FROM User WHERE Id = : userId];
 		if(user.AccountId != null){
-			workOrders = new Map<Id, WorkOrder>([SELECT Id, StartDate, EndDate, Subject, Address, Street, City, PostalCode, ExternalWorkOrderStatus__c, HOT_RequestName__c, HOT_Interpreters__c FROM WorkOrder WHERE HOT_Request__r.Account__c = :user.AccountId AND StartDate >= :DateTime.NOW() ORDER BY StartDate]);
+			workOrders = new Map<Id, WorkOrder>([SELECT Id, StartDate, EndDate, Subject, Address, Street, City, PostalCode, Status, HOT_ExternalWorkOrderStatus__c, HOT_RequestName__c, HOT_Interpreters__c FROM WorkOrder WHERE HOT_Request__r.Account__c = :user.AccountId AND StartDate >= :DateTime.NOW() ORDER BY StartDate]);
 		}
 		workOrders = getAndSetInterpreters(workOrders);
 		return workOrders.values();
@@ -17,8 +17,8 @@ public without sharing class HOT_WorkOrderListController {
 		Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>();
 		Id userId = UserInfo.getUserId();
 		User user = [SELECT Id, AccountId, Name FROM User WHERE Id = : userId];
-		if(user.AccountId != null && requestNumber == null){
-			workOrders = new Map<Id, WorkOrder>([SELECT Id, StartDate, EndDate, Subject, Address, Street, City, PostalCode, ExternalWorkOrderStatus__c, HOT_RequestName__c, HOT_Interpreters__c FROM WorkOrder WHERE (HOT_Request__r.Account__c = :user.AccountId OR HOT_Request__r.Orderer__c = :user.AccountId) AND StartDate >= :DateTime.NOW() ORDER BY StartDate]);
+		if(user.AccountId != null && requestNumber != null){
+			workOrders = new Map<Id, WorkOrder>([SELECT Id, StartDate, EndDate, Subject, Address, Street, City, PostalCode, Status, HOT_ExternalWorkOrderStatus__c, HOT_RequestName__c, HOT_Interpreters__c FROM WorkOrder WHERE (HOT_Request__r.Account__c = :user.AccountId OR HOT_Request__r.Orderer__c = :user.AccountId) AND StartDate >= :DateTime.NOW() ORDER BY StartDate]);
 		}
 		workOrders = getAndSetInterpreters(workOrders);
 		return workOrders.values();
