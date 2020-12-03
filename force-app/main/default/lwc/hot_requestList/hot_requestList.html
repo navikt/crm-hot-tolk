@@ -27,7 +27,7 @@
 				onchange={handleRequestType} style="margin-bottom: 1.25rem;"></lightning-radio-group>
 
 		</div>
-		<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
+		<lightning-datatable key-field="Id" data={requests} columns={columns} hide-checkbox-column="true"
 			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
 			onsort={onHandleSort} onrowaction={handleRowAction}>
 		</lightning-datatable>
