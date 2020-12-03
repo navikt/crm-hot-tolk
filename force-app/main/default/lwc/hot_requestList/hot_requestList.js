@@ -121,7 +121,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			this.filterRequests();
 			this.showHideInactives();
 			this.error = undefined;
-			console.log(JSON.stringify(this.allRequests));
+			//console.log(JSON.stringify(this.allRequests));
 			var requestIds = [];
 			for (var request of result.data) {
 				requestIds.push(request.Id);
