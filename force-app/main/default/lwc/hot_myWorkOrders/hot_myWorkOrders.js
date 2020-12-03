@@ -53,7 +53,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			sortable: true,
 		},
 		{
-			label: 'Bestilling',
+			label: 'Bestillingsnummer',
 			fieldName: 'HOT_RequestName__c',
 			type: 'text',
 			sortable: true,
@@ -69,11 +69,13 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			fieldName: 'HOT_Interpreters__c',
 			type: 'text',
 			sortable: true,
-		},
+		}
+		/*
 		{
 			type: 'action',
 			typeAttributes: { rowActions: actions },
 		},
+		*/
 	];
 
 	@track workOrders = [];
@@ -111,12 +113,15 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			if (parsed_params.id != null) {
 				this.requestNumber = parsed_params.id;
 			}
+			console.log("getWorkOrdersFromRequest")
+			console.log(requestNumber)
 			getWorkOrdersFromRequest({ requestNumber: requestNumber }).then(result => {
 				this.workOrders = result;
 			});
 			this.showAll = false;
 		}
 		else {
+			console.log("getMyWorkOrders")
 			this.showAll = true;
 			getMyWorkOrders().then(result => {
 				this.workOrders = result;
