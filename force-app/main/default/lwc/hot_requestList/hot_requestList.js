@@ -76,8 +76,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	getRowActions(row, doneCallback) {
 		let actions = [];
+		let tempEndDate = new Date(row["EndTime__c"])
 		if (row["Orderer__c"] == row["TempAccountId__c"]) {
-			if (row["Status__c"] != "Avlyst" && row["Status__c"] != "Dekket" && row["Status__c"] != "Delvis dekket") {
+			if (row["Status__c"] != "Avlyst" && row["Status__c"] != "Dekket" && row["Status__c"] != "Delvis dekket" 
+				&& tempEndDate.getTime() > Date.now()) {
 				actions.push({ label: 'Avlys', name: 'delete' });
 			}
 			if (row["Status__c"] == "Åpen") {
@@ -89,7 +91,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		actions.push({ label: 'Detaljer', name: 'details' });
 		actions.push({ label: 'Se tider', name: 'see_times' });
 
-		console.log(JSON.stringify(actions));
 		doneCallback(actions);
 
 	}
