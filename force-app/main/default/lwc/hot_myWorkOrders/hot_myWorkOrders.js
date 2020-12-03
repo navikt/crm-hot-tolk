@@ -16,7 +16,6 @@ var actions = [
 
 export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) {
 
-
 	@track columns = [
 		{
 			label: 'Start tid',
