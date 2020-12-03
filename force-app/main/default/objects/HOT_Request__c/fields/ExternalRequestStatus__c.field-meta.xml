@@ -13,9 +13,7 @@
 &quot;Avlyst&quot;, &quot;Avlyst&quot;,
 &quot;Avslått&quot;, &quot;Avslått&quot;,
 &quot;Dekket&quot;, &quot;Ferdig&quot;,
-&quot;Ukjent&quot;)
-+
-IF(NumberOfWorkOrders__c &gt; 1, &apos; (Serieoppdrag)&apos;, &apos;&apos;)</formula>
+&quot;Ukjent&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <inlineHelpText>Status som vises for bruker på nav.no</inlineHelpText>
     <label>External Request Status</label>
