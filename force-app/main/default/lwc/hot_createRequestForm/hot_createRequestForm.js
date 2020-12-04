@@ -1,9 +1,14 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import { refreshApex } from '@salesforce/apex';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
+import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
+import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
+
+
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
 	@track reRender = 0;
@@ -163,20 +168,63 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	}
 
+	@track isOnlyOneTime = true;
+	@track times = [];
+	@track uniqueIdCounter = 0;
+	@track requestIds = [];
 
-	@track startTime;
-	@track endTime;
-	handleChange(event) {
+	wiredTimesValue;
+	@wire(getTimes, { requestIds: '$requestIds' })
+	wiredTimes(result) {
+		console.log('wiredTimes')
+		this.wiredTimesValue = result.data;
+		if (result.data) {
+			if (result.data.length == 0) {
+				console.log('result is empty')
+				this.times = [{ "id": 0, "date": null, "startTime": null, "endTime": null, "isNew": 1 }];
+			}
+			else {
+				console.log('Setting Times')
+				//this.times = [...result.data];
+				for (let timeMap of result.data) {
+					let temp = new Object({ "id": timeMap.id, "date": timeMap.date, "startTime": timeMap.startTime, "endTime": timeMap.endTime, "isNew": 0 });
+					this.times.push(temp);
+				}
+
+				console.log(JSON.stringify(this.times))
+			}
+			this.isOnlyOneTime = this.times.length == 1;
+			this.error = undefined;
+		} else if (result.error) {
+			this.error = result.error;
+			this.times = undefined;
+		}
+	}
+
+	setDate(event) {
+		//console.log(event.detail.value)
+		let index = this.getIndexById(event.target.name);
+		this.times[index].date = event.detail.value;
 		var now = new Date();
-		var tempTime = event.detail.value;
+		var tempTime = JSON.parse(JSON.stringify(now));
 		tempTime = tempTime.split("");
 
-		if (this.startTime == null || this.startTime == "") {
+		if (this.times[index].startTime == null || this.times[index].startTime == "") {
 			if (Math.abs(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes()) <= 1) {
 				tempTime[14] = '0';
 				tempTime[15] = '0';
 			}
-			this.startTime = tempTime.join("");
+
+			var first = parseFloat(tempTime[11]);
+			var second = parseFloat(tempTime[12]);
+			second = (second + 2) % 10;
+			if (second == 0 || second == 1) {
+				first = first + 1;
+			}
+			tempTime[11] = first.toString();
+			tempTime[12] = second.toString();
+
+			this.times[index].startTime = tempTime.join("").substring(11, 23);
 			var first = parseFloat(tempTime[11]);
 			var second = parseFloat(tempTime[12]);
 			second = (second + 1) % 10;
@@ -185,34 +233,92 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 			tempTime[11] = first.toString();
 			tempTime[12] = second.toString();
-			this.endTime = tempTime.join("");
+			this.times[index].endTime = tempTime.join("").substring(11, 23);
 		}
-		else {
-			this.startTime = event.detail.value;
-		}
-		if (event.detail.value > this.endTime) {
-			var first = parseFloat(tempTime[11]);
-			var second = parseFloat(tempTime[12]);
-			second = (second + 1) % 10;
-			if (second == 0) {
-				first = first + 1;
-			}
-			tempTime[11] = first.toString();
-			tempTime[12] = second.toString();
-			this.endTime = tempTime.join("");
-		}
+		this.updateValues(event, index);
+		this.validateDate(event, index);
 	}
+	setStartTime(event) {
+		let index = this.getIndexById(event.target.name);
+		console.log(event.detail.value)
+		console.log(this.times[index].startTime)
+
+		console.log(JSON.stringify(this.times[index].startTime))
+		//delete this.times[index]["startTime"];
+		this.times[index].startTime = event.detail.value;
+		console.log(this.times[index].startTime)
+
+		var tempTime = event.detail.value.split("");
+		if (event.detail.value > this.times[index].endTime || this.times[index].endTime == null) {
+			var first = parseFloat(tempTime[0]);
+			var second = parseFloat(tempTime[1]);
+			second = (second + 1) % 10;
+			if (second == 0) {
+				first = first + 1;
+			}
+			tempTime[0] = first.toString();
+			tempTime[1] = second.toString();
+			this.times[index].endTime = tempTime.join("");
+		}
+		this.updateValues(event, index);
+	}
+
 	setEndTime(event) {
-		this.endTime = event.detail.value;
+		console.log(event.detail.value)
+		const index = this.getIndexById(event.target.name);
+		this.times[index].endTime = event.detail.value;
+		this.updateValues(event, index);
+	}
+
+
+	updateValues(event, index) {
+		let elements = event.target.parentElement.querySelector('.start-tid');
+		elements.value = this.times[index].startTime;
+		elements = event.target.parentElement.querySelector('.date');
+		elements.value = this.times[index].date;
+		elements = event.target.parentElement.querySelector('.slutt-tid');
+		elements.value = this.times[index].endTime;
+	}
+
+	getIndexById(id) {
+		var j = -1;
+		for (var i = 0; i < this.times.length; i++) {
+			if (this.times[i].id == id) {
+				j = i;
+			}
+		}
+		return j;
+	}
+
+	addTime(event) {
+		this.uniqueIdCounter += 1;
+		var newTime = {
+			"id": this.uniqueIdCounter, "date": null, "startTime": null, "endTime": null, "isNew": 1
+		};
+		this.times.push(newTime);
+		this.isOnlyOneTime = this.times.length == 1;
+	}
+
+	removeTime(event) {
+		if (this.times.length > 1) {
+			const index = this.getIndexById(event.target.name);
+			if (index != -1) {
+				this.times.splice(index, 1);
+			}
+		}
+		this.isOnlyOneTime = this.times.length == 1;
 	}
 
 	@track spin = false;
 
 	handleSubmit(event) {
 		console.log("handleSubmit");
+		console.log(this.times);
 		this.spin = true;
 		event.preventDefault();
 		const fields = event.detail.fields;
+		fields.StartTime__c = this.times[0].date + "T" + this.times[0].startTime + "Z";
+		fields.EndTime__c = this.times[0].date + "T" + this.times[0].endTime + "Z";
 
 		if (fields) {
 
@@ -228,7 +334,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
 				this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 			}
-
 			const isDuplicate = this.isDuplicate(this.fieldValues);
 			if (isDuplicate == null) {
 				console.log("Sumbitting")
@@ -308,6 +413,21 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		radioButtonGroup.reportValidity();
 	}
 
+	validateDate(event, index) {
+		let dateElement = event.target;
+		let tempDate = new Date(event.detail.value)
+		if (tempDate.getTime() < Date.now()) {
+			dateElement.setCustomValidity("Du kan ikke bestille tolk i fortiden.");
+			dateElement.focus();
+			this.times[index].isValid = false;
+		}
+		else {
+			dateElement.setCustomValidity("");
+			this.times[index].isValid = true;
+		}
+		dateElements.reportValidity();
+	}
+
 	formatDateTime(dateTime) {
 		const year = dateTime.substring(0, 4);
 		const month = dateTime.substring(5, 7);
@@ -322,9 +442,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleError(event) {
 		console.log("handleError");
+		console.log(JSON.stringify(event));
 		this.spin = false;
 	}
 
+	@track isEditMode = false;
 	handleSuccess(event) {
 		console.log("handleSuccess");
 		this.spin = false;
@@ -334,6 +456,22 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		x = this.template.querySelector(".submitted-false");
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
+
+		let requestId = event.detail.id;
+		let times = {};
+		let newTimes = {};
+		for (let dateTime of this.times) {
+			times[dateTime.id.toString()] = {
+				"startTime": new Date(dateTime.date + ", " + dateTime.startTime).getTime(),
+				"endTime": new Date(dateTime.date + ", " + dateTime.endTime).getTime(),
+				"isNew": dateTime.isNew,
+			};
+		}
+		if (times != {}) {
+			console.log("createAndUpdateWorkOrders");
+			createAndUpdateWorkOrders({ requestId, times });
+		}
+
 		window.scrollTo(0, 0);
 
 	}
@@ -397,7 +535,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				if (!this.sameLocation) {
 					this.value = 'no';
 				}
-
+				this.isEditMode = parsed_params.edit != null;
 				this.showNextButton = !(parsed_params.edit != null || parsed_params.copy != null);
 				if (!this.showNextButton) {
 					this.requestForm = true;
@@ -408,12 +546,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					}
 				}
 				if (!!parsed_params.copy) {
-					this.startTime = "";
-					this.endTime = "";
 					delete this.fieldValues.Id;
 				}
 				else {
+					console.log('Is Edit: Refreshing apex times')
 					this.recordId = this.fieldValues.Id;
+					let requestIds = [];
+					requestIds.push(this.fieldValues.Id);
+					this.requestIds = requestIds;
+					refreshApex(this.wiredTimesValue);
 				}
 
 				if (this.fieldValues.Type__c == 'PublicEvent') {
@@ -424,8 +565,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 
 	}
-
-
 
 	//Navigation functions
 	goToNewRequest(event) {

@@ -6,15 +6,18 @@ public without sharing class HOT_RequestListContoller {
 		User user = [SELECT Id, AccountId, Name FROM User WHERE Id = : userId];
 		List<HOT_Request__c> requests = new List<HOT_Request__c>();
 		if(user.AccountId != null){
-			requests = [SELECT Name, Subject__c, StartTime__c, EndTime__c, MeetingStreet__c, MeetingPostalCode__c, 
-			MeetingPostalCity__c, InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, 
+			requests = [SELECT Name, Subject__c, StartTime__c, EndTime__c, MeetingStreet__c, MeetingPostalCode__c, NumberOfWorkOrders__c,
+			MeetingPostalCity__c, InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, IsSerieoppdrag__c,
 			Description__c, Status__c, ExternalRequestStatus__c, Account__c, (SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
 			Source__c, Type__c, toLabel(EventType__c), Orderer__r.Name, OrdererPhone__c, OrdererEmail__c, UserName__c, UserPersonNumber__c, Company__r.Name, OrganizationNumber__c, InvoiceReference__c, AdditionalInvoicetext__c
 			,EconomicalProvider__c, ActualUserName__c, TempAccountId__c
-			FROM HOT_Request__c WHERE Account__c = : user.AccountId OR Orderer__c = :user.AccountId ORDER BY StartTime__c ASC];
+			FROM HOT_Request__c WHERE Account__c = : user.AccountId OR Orderer__c = :user.AccountId ORDER BY Name DESC];
 			//Setting the helping-field to control the users access to row-actions in requestList (lwc)
 			for(HOT_Request__c request: requests){
 				request.TempAccountId__c = user.AccountId;
+				if(request.NumberOfWorkOrders__c == 0 || request.NumberOfWorkOrders__c == null){
+					request.NumberOfWorkOrders__c = 1;
+				}
 			}
 		}
 		else{
@@ -23,6 +26,24 @@ public without sharing class HOT_RequestListContoller {
 		
 		return requests;
 	}
+
+	@AuraEnabled(cacheable = true)
+	public static List<Map<String, String>> getTimes(List<String> requestIds) {
+		List<Map<String, String>> times = new List<Map<String, String>>();
+		List<WorkOrder> workOrders = [SELECT Id, StartDate, EndDate, Status FROM WorkOrder WHERE HOT_Request__r.Id IN :requestIds ORDER BY StartDate ASC];
+		for(WorkOrder workOrder:workOrders){
+			Map<String, String> timeMap = new Map<String, String>();
+			timeMap.put('id', (String) workOrder.Id);
+			Date tempDate = workOrder.StartDate.date();
+			timeMap.put('date', String.valueOf(tempDate.year()) + '-' + String.valueOf(tempDate.month()) + '-' + String.valueOf(tempDate.day()));
+			timeMap.put('startTime', String.valueOf(workOrder.StartDate.time()).removeEnd('Z'));
+			timeMap.put('endTime', String.valueOf(workOrder.EndDate.time()).removeEnd('Z'));
+			timeMap.put('status', workOrder.Status);
+			times.add(timeMap);
+		}
+		return times;
+	}
+
 
 	@AuraEnabled(cacheable = true)
 	public static List<HOT_Request__c> getRequestListFromAccountFromRequestId(Id recordId) {

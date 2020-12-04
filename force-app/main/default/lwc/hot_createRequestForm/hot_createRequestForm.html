@@ -104,12 +104,36 @@
 							value={fieldValues.Subject__c} title="Hva trenger du tolk til?" required>
 						</lightning-input-field>
 						</br>
-						<lightning-input-field class="tolk-skjema-input start-tid" field-name="StartTime__c"
-							date-style="short" onchange={handleChange} value={startTime} required>
-						</lightning-input-field>
-						<lightning-input-field class="tolk-skjema-input slutt-tid" field-name="EndTime__c"
-							date-style="short" value={endTime} onchange={setEndTime} required>
-						</lightning-input-field>
+						<div style="margin-bottom: 0.5rem;">
+							<div style="margin-bottom: 0.5rem;">
+								<template iterator:it={times}>
+									<div class="dynamic-time-inputs-with-line_button " key={it.value.id}>
+										<div class="dynamic-time-inputs" aria-live>
+											<lightning-input label="Dato" type="date" class="tolk-skjema-input date"
+												date-style="short" onchange={setDate} name={it.value.id}
+												value={it.value.date} required>
+											</lightning-input>
+											<lightning-input label="Fra" style="margin-left: 2rem;" type="time"
+												class="tolk-skjema-input start-tid" onchange={setStartTime}
+												name={it.value.id} value={it.value.startTime} required>
+											</lightning-input>
+											<lightning-input label="Til" style="margin-left: 2rem;" type="time"
+												class="tolk-skjema-input slutt-tid" onchange={setEndTime}
+												name={it.value.id} value={it.value.endTime} required>
+											</lightning-input>
+										</div>
+										<lightning-button if:false={isOnlyOneTime} variant="base"
+											icon-name="utility:close" class="remove-time__button" onclick={removeTime}
+											name={it.value.id} aria-label="Fjern tid">
+										</lightning-button>
+									</div>
+								</template>
+							</div>
+							<lightning-button label="Legg til flere tider" icon-name="utility:add" class="add-times"
+								onclick={addTime}>
+							</lightning-button>
+						</div>
+
 						</br>
 						<lightning-input-field class="tolk-skjema-input adressefelt-hjelp" field-name="MeetingStreet__c"
 							value={fieldValues.MeetingStreet__c} required>
