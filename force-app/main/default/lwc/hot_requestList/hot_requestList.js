@@ -78,7 +78,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		let actions = [];
 		let tempEndDate = new Date(row["EndTime__c"])
 		if (row["Orderer__c"] == row["TempAccountId__c"]) {
-			if (row["Status__c"] != "Avlyst" && row["Status__c"] != "Dekket" && row["Status__c"] != "Delvis dekket" 
+			if (row["Status__c"] != "Avlyst" && row["Status__c"] != "Dekket" && row["Status__c"] != "Delvis dekket"
 				&& tempEndDate.getTime() > Date.now()) {
 				actions.push({ label: 'Avlys', name: 'delete' });
 			}
@@ -114,7 +114,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	@wire(getRequestList)
 	async wiredRequest(result) {
 		console.log("wiredRequests")
-		console.log(JSON.stringify(result));
+		//console.log(JSON.stringify(result));
 		this.wiredRequestsResult = result;
 		if (result.data) {
 
@@ -202,11 +202,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 	}
 
-	@track defaultSortDirection = 'asc';
-	@track sortDirection = 'asc';
-	@track sortedBy = 'StartTime__c';
+	@track defaultSortDirection = 'desc';
+	@track sortDirection = 'desc';
+	@track sortedBy = 'Name';
 
-	mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "asc"} ';
+	mobileSortingDefaultValue = '{"fieldName": "Name", "sortDirection": "desc"} ';
 	get sortingOptions() {
 		return getMobileSortingOptions(this.columns)
 	}
@@ -272,7 +272,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
 			let tempEndDate = new Date(this.requests[index].EndTime__c)
-			console.log(tempEndDate.getTime() > Date.now())
 			if (this.requests[index].ExternalRequestStatus__c != "Avlyst" && this.requests[index].ExternalRequestStatus__c != "Dekket"
 				&& tempEndDate.getTime() > Date.now()) {
 				if (confirm("Er du sikker på at du vil avlyse bestillingen?")) {
