@@ -1,19 +1,20 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import getWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getWorkOrders';
-import { sortList, getMobileSortingOptions } from 'c/sortController'
+import STATUS from '@salesforce/schema/WorkOrder.Status';
+import { updateRecord } from 'lightning/uiRecordApi';
+import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
+import getWorkOrdersFromRequest from '@salesforce/apex/HOT_WorkOrderListController.getWorkOrdersFromRequest';
+import getMyWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrders';
+import { sortList, getMobileSortingOptions } from 'c/sortController';
 
 
 
 
 var actions = [
-	{ label: 'Avlys', name: 'delete' },
-	//{ label: 'Detaljer', name: 'details' },
+	{ label: 'Avlys', name: 'delete' }
 ];
 
 export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) {
-
-	@track workOrders = [];
 
 	@track columns = [
 		{
@@ -51,14 +52,14 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			sortable: true,
 		},
 		{
-			label: 'Bestilling',
+			label: 'Bestillingsnummer',
 			fieldName: 'HOT_RequestName__c',
 			type: 'text',
 			sortable: true,
 		},
 		{
 			label: 'Status',
-			fieldName: 'ExternalWorkOrderStatus__c',
+			fieldName: 'HOT_ExternalWorkOrderStatus__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -67,13 +68,16 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			fieldName: 'HOT_Interpreters__c',
 			type: 'text',
 			sortable: true,
-		},
+		}
+		/*
 		{
 			type: 'action',
 			typeAttributes: { rowActions: actions },
 		},
+		*/
 	];
 
+	@track workOrders = [];
 	@track requestNumber;
 	@track showAll = true;
 	connectedCallback() {
@@ -108,14 +112,14 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			if (parsed_params.id != null) {
 				this.requestNumber = parsed_params.id;
 			}
-			getWorkOrders({ requestNumber: requestNumber }).then(result => {
+			getWorkOrdersFromRequest({ requestNumber: requestNumber }).then(result => {
 				this.workOrders = result;
 			});
 			this.showAll = false;
 		}
 		else {
 			this.showAll = true;
-			getWorkOrders({ requestNumber: null }).then(result => {
+			getMyWorkOrders().then(result => {
 				this.workOrders = result;
 			});
 		}
@@ -175,6 +179,57 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 		this.sortDirection = event.detail.sortDirection;
 		this.sortedBy = event.detail.fieldName;
 		this.workOrders = sortList(this.workOrders, this.sortedBy, this.sortDirection);
+	}
+
+	handleRowAction(event) {
+		const actionName = event.detail.action.name;
+		const row = event.detail.row;
+
+		switch (actionName) {
+			case 'delete':
+				this.cancelWorkOrder(row);
+				break;
+		}
+	}
+	cancelWorkOrder(row) {
+		const { Id } = row;
+		console.log(JSON.stringify(this.workOrders))
+		const index = this.findRowIndexById(Id);
+		console.log(index)
+		if (index != -1) {
+			console.log("index != -1")
+			if (this.workOrders[index].HOT_ExternalWorkOrderStatus__c != "Avlyst" && this.workOrders[index].HOT_ExternalWorkOrderStatus__c != "Dekket") {
+				console.log("confirm")
+				if (confirm("Er du sikker på at du vil avlyse?")) {
+					const fields = {};
+					fields[WORKORDER_ID.fieldApiName] = Id;
+					fields[STATUS.fieldApiName] = "Avlyst";
+					const recordInput = { fields };
+					updateRecord(recordInput)
+						.then(() => {
+							refreshApex(this.workOrders);
+						})
+						.catch(error => {
+							alert("Kunne ikke avlyse.");
+
+						});
+				}
+			}
+			else {
+				alert("Du kan ikke avlyse denne bestillingen.");
+			}
+		}
+	}
+	findRowIndexById(Id) {
+		let ret = -1;
+		this.workOrders.some((row, index) => {
+			if (row.Id === Id) {
+				ret = index;
+				return true;
+			}
+			return false;
+		});
+		return ret;
 	}
 
 }

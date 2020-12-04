@@ -27,7 +27,7 @@
 				onchange={handleRequestType} style="margin-bottom: 1.25rem;"></lightning-radio-group>
 
 		</div>
-		<lightning-datatable key-field="StartTime__c" data={requests} columns={columns} hide-checkbox-column="true"
+		<lightning-datatable key-field="Id" data={requests} columns={columns} hide-checkbox-column="true"
 			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
 			onsort={onHandleSort} onrowaction={handleRowAction}>
 		</lightning-datatable>
@@ -133,34 +133,12 @@
 							<lightning-formatted-text value={record.Description__c} class="lightning-output-field">
 							</lightning-formatted-text>
 							</br>
-							<span class="slds-form-element__label lightning-output-field__label">Start tid</span>
-							</br>
-							<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit" hour12="false"
-								hour="2-digit" minute="2-digit" value={record.StartTime__c}
-								class="lightning-output-field">
-							</lightning-formatted-date-time>
-							</br>
-							<span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
-							</br>
-							<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit" hour12="false"
-								hour="2-digit" minute="2-digit" value={record.EndTime__c}
-								class="lightning-output-field">
-							</lightning-formatted-date-time>
-							</br>
 							<span class="slds-form-element__label lightning-output-field__label">Status</span>
 							</br>
 							<lightning-formatted-text value={record.ExternalRequestStatus__c}
 								class="lightning-output-field">
 							</lightning-formatted-text>
-							<div if:true={showInterpreters} style="display: flex; flex-direction: column;">
-								<span class="slds-form-element__label lightning-output-field__label">Tolker</span>
-								</br>
-								<template iterator:it={interpreters}>
-									<lightning-formatted-text key={it.value} value={it.value}
-										class="lightning-output-field">
-									</lightning-formatted-text>
-								</template>
-							</div>
+							
 						</div>
 						<div class="slds-col slds-size_1-of-2">
 							<span class="slds-form-element__label lightning-output-field__label">Oppmøteadresse</span>

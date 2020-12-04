@@ -44,34 +44,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			sortable: true,
 		},
 		{
-			label: 'Start tid',
-			fieldName: 'StartTime__c',
-			type: 'date',
-			sortable: true,
-			typeAttributes: {
-				day: 'numeric',
-				month: 'numeric',
-				year: 'numeric',
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false
-			}
-		},
-		{
-			label: 'Slutt tid',
-			fieldName: 'EndTime__c',
-			type: 'date',
-			sortable: true,
-			typeAttributes: {
-				day: 'numeric',
-				month: 'numeric',
-				year: 'numeric',
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false
-			}
-		},
-		{
 			label: 'Oppmøtested',
 			fieldName: 'MeetingStreet__c',
 			type: 'text',
@@ -84,11 +56,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			sortable: true,
 		},
 		{
-			label: 'Antall tider',
-			fieldName: 'NumberOfWorkOrders__c',
-			type: 'number',
+			label: 'Serieoppdrag',
+			fieldName: 'IsSerieoppdrag__c',
+			type: 'boolean',
 			sortable: true,
-			cellAttributes: { alignment: 'left' }
 		},
 		{
 			label: 'Status',
@@ -105,8 +76,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	getRowActions(row, doneCallback) {
 		let actions = [];
+		let tempEndDate = new Date(row["EndTime__c"])
 		if (row["Orderer__c"] == row["TempAccountId__c"]) {
-			if (row["Status__c"] != "Avlyst" && row["Status__c"] != "Dekket" && row["Status__c"] != "Udekket") {
+			if (row["Status__c"] != "Avlyst" && row["Status__c"] != "Dekket" && row["Status__c"] != "Delvis dekket"
+				&& tempEndDate.getTime() > Date.now()) {
 				actions.push({ label: 'Avlys', name: 'delete' });
 			}
 			if (row["Status__c"] == "Åpen") {
@@ -116,11 +89,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 
 		actions.push({ label: 'Detaljer', name: 'details' });
-		if (row.NumberOfWorkOrders__c > 1) {
-			actions.push({ label: 'Se tider', name: 'see_times' });
-		}
+		actions.push({ label: 'Se tider', name: 'see_times' });
 
-		console.log(JSON.stringify(actions));
 		doneCallback(actions);
 
 	}
@@ -144,7 +114,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	@wire(getRequestList)
 	async wiredRequest(result) {
 		console.log("wiredRequests")
-		console.log(JSON.stringify(result));
+		//console.log(JSON.stringify(result));
 		this.wiredRequestsResult = result;
 		if (result.data) {
 
@@ -232,11 +202,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 	}
 
-	@track defaultSortDirection = 'asc';
-	@track sortDirection = 'asc';
-	@track sortedBy = 'StartTime__c';
+	@track defaultSortDirection = 'desc';
+	@track sortDirection = 'desc';
+	@track sortedBy = 'Name';
 
-	mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "asc"} ';
+	mobileSortingDefaultValue = '{"fieldName": "Name", "sortDirection": "desc"} ';
 	get sortingOptions() {
 		return getMobileSortingOptions(this.columns)
 	}
@@ -302,7 +272,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		const index = this.findRowIndexById(Id);
 		if (index != -1) {
 			let tempEndDate = new Date(this.requests[index].EndTime__c)
-			console.log(tempEndDate.getTime() > Date.now())
 			if (this.requests[index].ExternalRequestStatus__c != "Avlyst" && this.requests[index].ExternalRequestStatus__c != "Dekket"
 				&& tempEndDate.getTime() > Date.now()) {
 				if (confirm("Er du sikker på at du vil avlyse bestillingen?")) {
@@ -374,8 +343,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			}
 		}
 	}
-	@track interpreters = [];
-	@track showInterpreters = false;
 	@track isDetails = false;
 	@track record = null;
 	@track userForm = false;
@@ -384,29 +351,16 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	@track publicEvent = false;
 	showDetails(row) {
 		this.record = row;
-		console.log(JSON.stringify(this.record));
-
 		this.myRequest = this.record.Orderer__c == this.userRecord.AccountId;
 		this.userForm = this.record.Type__c == 'User' || this.record.Type__c == 'Company';
 		this.companyForm = this.record.Type__c == 'Company' || this.record.Type__c == 'PublicEvent';
 		this.publicEvent = this.record.Type__c == 'PublicEvent';
-
-		this.interpreters = [];
-		if (this.requestAssignedResources[row.Id] != null) {
-			for (var interpreter of this.requestAssignedResources[row.Id]) {
-				this.interpreters.push(interpreter);
-			}
-			if (this.interpreters.length > 0) {
-				this.showInterpreters = true;
-			}
-		}
 		this.isDetails = true;
 	}
 
 
 	abortShowDetails() {
 		this.isDetails = false;
-		this.showInterpreters = false;
 	}
 
 	showTimes(row) {
