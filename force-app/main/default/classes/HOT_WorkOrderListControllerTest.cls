@@ -9,8 +9,12 @@ private class HOT_WorkOrderListControllerTest{
         DefaultCommunityPlusProfile__c = 'Trial Customer Portal User', DefaultCommunityPlusPermissionSetGroup__c = 'Test');
 		insert defaultCommunityProfile;
 		
-		Profile adminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
-		User admin = [SELECT Id FROM User WHERE ProfileId = :adminProfile.Id LIMIT 1];
+		User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+		if(admin.UserRoleId == null){
+			UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
+			admin.UserRoleId = role.Id;
+			update admin;
+		}
 
 		Person__c person = HOT_TestDataFactory.createPerson();
 		person.INT_KrrEmail__c = 'getPersonTest@nav.no';
