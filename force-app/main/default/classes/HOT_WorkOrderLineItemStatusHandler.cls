@@ -160,7 +160,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 
 	private static void updateChildRecords(List<WorkOrderLineItem> changedWorkOrderLineItems, String newStatus) {
         
-        List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment WHERE ParentRecordId IN :changedWorkOrderLineItems AND Status != :newStatus AND Status != 'Annul'];
+        List<ServiceAppointment> serviceAppointments = [SELECT Status FROM ServiceAppointment WHERE ParentRecordId IN :changedWorkOrderLineItems AND Status != :newStatus AND Status != 'Annul' AND Status != 'Completed'];
 
 		for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.Status = newStatus;
