@@ -142,11 +142,7 @@
     <relatedLists>
         <fields>Name</fields>
         <fields>HOT_ServiceResource__c</fields>
-        <fields>Account</fields>
         <fields>Status</fields>
-        <fields>SchedStartTime</fields>
-        <fields>SchedEndTime</fields>
-        <fields>EarliestStartTime</fields>
         <relatedList>ServiceAppointments</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
@@ -154,7 +150,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h2o00000jClJS</masterLabel>
+        <masterLabel>00h1x000000Uf5s</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
