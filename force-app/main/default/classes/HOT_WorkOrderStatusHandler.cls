@@ -162,7 +162,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 
 	private static void updateChildRecords(List<WorkOrder> changedWorkOrders, String newStatus) {
         
-        List<WorkOrderLineItem> workOrderLineItems = [SELECT Status FROM WorkOrderLineItem WHERE WorkOrderId IN :changedWorkOrders AND Status != :newStatus AND Status != 'Annul'];
+        List<WorkOrderLineItem> workOrderLineItems = [SELECT Status FROM WorkOrderLineItem WHERE WorkOrderId IN :changedWorkOrders AND Status != :newStatus AND Status != 'Annul' AND Status != 'Completed' AND Status != 'Partially Complete'];
 
 		for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
             workOrderLineItem.Status = newStatus;

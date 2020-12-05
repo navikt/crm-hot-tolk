@@ -150,7 +150,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 
 	private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
 		
-		List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder WHERE HOT_Request__c IN :changedRequests AND Status != :newStatus AND Status != 'Annul'];
+		List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder WHERE HOT_Request__c IN :changedRequests AND Status != :newStatus AND Status != 'Annul' AND Status != 'Completed' AND Status != 'Partially Complete'];
 
 		for (WorkOrder workOrder : workOrders) {
             workOrder.Status = newStatus;
