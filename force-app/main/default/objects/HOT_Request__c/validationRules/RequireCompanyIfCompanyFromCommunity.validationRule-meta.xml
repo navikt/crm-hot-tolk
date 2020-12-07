@@ -10,7 +10,7 @@ ISBLANK(Company__c)
 &amp;&amp;
 !ISBLANK(OrganizationNumber__c)
 &amp;&amp;
-!ISPICKVAL(Status__c, &quot;Annullert&quot;)</errorConditionFormula>
+ISNEW()</errorConditionFormula>
     <errorDisplayField>OrganizationNumber__c</errorDisplayField>
     <errorMessage>Fant ingen virksomhet med dette organisasjonsnummeret.</errorMessage>
 </ValidationRule>

@@ -313,12 +313,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	handleSubmit(event) {
 		console.log("handleSubmit");
-		console.log(this.times);
 		this.spin = true;
 		event.preventDefault();
 		const fields = event.detail.fields;
-		fields.StartTime__c = this.times[0].date + "T" + this.times[0].startTime + "Z";
-		fields.EndTime__c = this.times[0].date + "T" + this.times[0].endTime + "Z";
 
 		if (fields) {
 

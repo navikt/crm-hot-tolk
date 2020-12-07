@@ -784,6 +784,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>WorkOrder.HOT_ExternalWorkOrderStatus__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>WorkOrder.HOT_InterpretationPostalCity__c</field>
         <readable>true</readable>
     </fieldPermissions>
