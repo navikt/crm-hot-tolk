@@ -20,33 +20,32 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		if(approvedWorkOrders.size()>0){
 			createChildRecords(approvedWorkOrders);
 		}
-		updateMasterRequest((List<WorkOrder>) records);
+		updateRequests((List<WorkOrder>) records);
 	}
 	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
 		List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
 
-		for(SObject record : records) {
+		//Om status eller tidspunkt på WorkOrder er endret, kan det ha ført til at den førstkommende, ikke-avlyste WorkOrderen har endret seg
+		for(WorkOrder record : (List<WorkOrder>) records) {
 			System.debug('record: ' + record);
-			if(record.getSObjectType() == Schema.WorkOrder.getSObjectType()
-				&& 
-				(record.get('Status') != triggerOldMap.get(record.Id).get('Status')
+			if(record.Status != triggerOldMap.get(record.Id).get('Status')
 				||
-				record.get('StartDate') != triggerOldMap.get(record.Id).get('StartDate')
+				record.StartDate != triggerOldMap.get(record.Id).get('StartDate')
 				||
-				record.get('EndDate') != triggerOldMap.get(record.Id).get('EndDate'))) {
-					updatedWorkOrders.add((WorkOrder)record);
+				record.EndDate != triggerOldMap.get(record.Id).get('EndDate')) {
+					updatedWorkOrders.add(record);
 			}
 		}
 
 		if(updatedWorkOrders.size() > 0) {
-			updateMasterRequest(updatedWorkOrders);
+			updateRequests(updatedWorkOrders);
 		}
 	}
 	public override void onAfterDelete() {
-		updateMasterRequest((List<WorkOrder>) records);
+		updateRequests((List<WorkOrder>) records);
 	}
 	public override void onAfterUndelete() {
-		updateMasterRequest((List<WorkOrder>) records);
+		updateRequests((List<WorkOrder>) records);
 	}
 
 
@@ -111,7 +110,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 			}
 		}
 	}
-	public static void updateMasterRequest(List<WorkOrder> workOrders){
+	public static void updateRequests(List<WorkOrder> workOrders){
 		List<Id> requestIds = new List<Id>();
 		for(WorkOrder workOrder:workOrders){
 			requestIds.add(workOrder.HOT_Request__c);
