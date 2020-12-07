@@ -30,12 +30,12 @@ public without sharing class HOT_RequestListContoller {
 	@AuraEnabled(cacheable = true)
 	public static List<Map<String, String>> getTimes(List<String> requestIds) {
 		List<Map<String, String>> times = new List<Map<String, String>>();
-		List<WorkOrder> workOrders = [SELECT Id, StartDate, EndDate, Status FROM WorkOrder WHERE HOT_Request__r.Id IN :requestIds ORDER BY StartDate ASC];
+		List<WorkOrder> workOrders = [SELECT Id, StartDate, EndDate, Status FROM WorkOrder WHERE HOT_Request__r.Id IN :requestIds AND Status != 'Annul' AND Status != 'Canceled' ORDER BY StartDate ASC];
 		for(WorkOrder workOrder:workOrders){
 			Map<String, String> timeMap = new Map<String, String>();
 			timeMap.put('id', (String) workOrder.Id);
 			Date tempDate = workOrder.StartDate.date();
-			timeMap.put('date', String.valueOf(tempDate.year()) + '-' + String.valueOf(tempDate.month()) + '-' + String.valueOf(tempDate.day()));
+			timeMap.put('date', Datetime.newInstance(tempDate, Time.newInstance(0,0,0,0)).format('yyyy-MM-dd'));
 			timeMap.put('startTime', String.valueOf(workOrder.StartDate.time()).removeEnd('Z'));
 			timeMap.put('endTime', String.valueOf(workOrder.EndDate.time()).removeEnd('Z'));
 			timeMap.put('status', workOrder.Status);
