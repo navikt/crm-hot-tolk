@@ -5,9 +5,6 @@ private class HOT_WorkOrderListControllerTest{
 	@testSetup static void setup(){
 
         Profile communityProfile = [SELECT Name FROM Profile WHERE Name='Personbruker Login' OR Name='Trial Customer Portal User' LIMIT 1];
-        DefaultCommunityProfile__c defaultCommunityProfile=new DefaultCommunityProfile__c(DefaultProfile__c=communityProfile.Name, DefaultPermissionSet__c='CRM_ManageAsyncRequests',
-        DefaultCommunityPlusProfile__c = 'Trial Customer Portal User', DefaultCommunityPlusPermissionSetGroup__c = 'Test');
-		insert defaultCommunityProfile;
 		
 		User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 		if(admin.UserRoleId == null){

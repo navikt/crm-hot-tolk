@@ -8,7 +8,9 @@
 &amp;&amp;
 ISBLANK(Company__c) 
 &amp;&amp;
-!ISBLANK(OrganizationNumber__c)</errorConditionFormula>
+!ISBLANK(OrganizationNumber__c)
+&amp;&amp;
+ISNEW()</errorConditionFormula>
     <errorDisplayField>OrganizationNumber__c</errorDisplayField>
     <errorMessage>Fant ingen virksomhet med dette organisasjonsnummeret.</errorMessage>
 </ValidationRule>
