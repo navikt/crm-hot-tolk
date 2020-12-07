@@ -20,15 +20,33 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		if(approvedWorkOrders.size()>0){
 			createChildRecords(approvedWorkOrders);
 		}
-		updateNumberOfWorkOrdersOnRequest((List<WorkOrder>) records);
-		updateTimeFieldsOnRequest((List<WorkOrder>) records);
+		updateMasterRequest((List<WorkOrder>) records);
+	}
+	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
+		List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
+
+		for(SObject record : records) {
+			System.debug('record: ' + record);
+			if(record.getSObjectType() == Schema.WorkOrder.getSObjectType()
+				&& 
+				(record.get('Status') != triggerOldMap.get(record.Id).get('Status')
+				||
+				record.get('StartDate') != triggerOldMap.get(record.Id).get('StartDate')
+				||
+				record.get('EndDate') != triggerOldMap.get(record.Id).get('EndDate'))) {
+					updatedWorkOrders.add((WorkOrder)record);
+			}
+		}
+
+		if(updatedWorkOrders.size() > 0) {
+			updateMasterRequest(updatedWorkOrders);
+		}
 	}
 	public override void onAfterDelete() {
-		updateNumberOfWorkOrdersOnRequest((List<WorkOrder>) records);
+		updateMasterRequest((List<WorkOrder>) records);
 	}
-
 	public override void onAfterUndelete() {
-		updateNumberOfWorkOrdersOnRequest((List<WorkOrder>) records);
+		updateMasterRequest((List<WorkOrder>) records);
 	}
 
 
@@ -93,24 +111,14 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 			}
 		}
 	}
-	public static void updateNumberOfWorkOrdersOnRequest(List<WorkOrder> workOrders){
-		List<Id> requestIds = new List<Id>();
-		for(WorkOrder workOrder:workOrders){
-			requestIds.add(workOrder.HOT_Request__c);
-		}
-		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, (SELECT Id FROM HOT_Request__c.Work_Orders__r WHERE Status NOT IN ('Annul', 'Canceled')) FROM HOT_Request__c WHERE Id IN :requestIds];
-		for(HOT_Request__c request:requests){
-			request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
-		}
-		update requests;
-	}
-	public static void updateTimeFieldsOnRequest(List<WorkOrder> workOrders){
+	public static void updateMasterRequest(List<WorkOrder> workOrders){
 		List<Id> requestIds = new List<Id>();
 		for(WorkOrder workOrder:workOrders){
 			requestIds.add(workOrder.HOT_Request__c);
 		}
 		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, StartTime__c, EndTime__c, (SELECT Id, StartDate, EndDate FROM HOT_Request__c.Work_Orders__r WHERE Status NOT IN ('Annul', 'Canceled') ORDER BY StartDate) FROM HOT_Request__c WHERE Id IN :requestIds];
 		for(HOT_Request__c request:requests){
+			request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
 			if(request.Work_Orders__r.size()>0){
 				request.StartTime__c = request.Work_Orders__r[0].StartDate;
 				request.EndTime__c = request.Work_Orders__r[0].EndDate;
