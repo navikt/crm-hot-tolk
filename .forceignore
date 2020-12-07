@@ -1,3 +1,5 @@
+# .forceignore v2
+
 # Profiles
 **/profiles/*
 !**/profiles/Admin.profile-meta.xml
@@ -9,12 +11,9 @@
 # LWC configuration files
 **/jsconfig.json
 **/.eslintrc.json
+
 # LWC Jest
 **/__tests__/**
-
-
-# bug with pushing app switching, do not upload
-**/AppSwitcher.appMenu*
 
 # community classes
 #          **/classes/ChangePasswordController.cls

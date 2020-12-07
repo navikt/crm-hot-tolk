@@ -13,7 +13,8 @@
 &quot;Completed&quot;, &quot;Ferdig&quot;,
 &quot;Ukjent&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>External WorkOrder Status</label>
+	<inlineHelpText>Status som vises for bruker på nav.no</inlineHelpText>
+	<label>External WorkOrder Status</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <type>Text</type>
