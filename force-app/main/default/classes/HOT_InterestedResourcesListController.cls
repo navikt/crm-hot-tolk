@@ -41,8 +41,11 @@ public without sharing class HOT_InterestedResourcesListController {
 
 	@AuraEnabled
 	public static void dispatcherReadComment(Id recordId){
-		HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(Id = recordId, IsDispatcherNewComment__c = false);
-		update interestedResource;
+		HOT_InterestedResource__c interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c WHERE Id = :recordId];
+		if(interestedResource.IsDispatcherNewComment__c) {
+			interestedResource.IsDispatcherNewComment__c = false;
+			update interestedResource;
+		}
 	}
 
 	@AuraEnabled
