@@ -35,8 +35,11 @@ public without sharing class HOT_InterestedResourcesListController {
 
 	@AuraEnabled
 	public static void readComment(Id interestedResourceId){
-		HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(Id = interestedResourceId, IsNewComment__c = false);
-		update interestedResource;
+		HOT_InterestedResource__c interestedResource = [SELECT Id, IsNewComment__c FROM HOT_InterestedResource__c WHERE Id =: interestedResourceId];
+		if(interestedResource.IsNewComment__c) {
+			interestedResource.IsNewComment__c = false;
+			update interestedResource;
+		}
 	}
 
 	@AuraEnabled
