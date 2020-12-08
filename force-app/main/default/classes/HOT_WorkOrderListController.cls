@@ -51,7 +51,7 @@ public without sharing class HOT_WorkOrderListController {
 	
 	public static Map<Id, WorkOrder> getRowActions(Map<Id, WorkOrder> workOrders){
 		User user = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-		if(user != null){
+		if(user.AccountId != null){
 			Id accountId = user.AccountId;
 			for(Id workOrderId:workOrders.keySet()){
 				if(workOrders.get(workOrderId).Status != 'Canceled' && workOrders.get(workOrderId).HOT_Request__r.Orderer__c == AccountId){
