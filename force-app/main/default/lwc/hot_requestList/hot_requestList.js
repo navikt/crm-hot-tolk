@@ -100,7 +100,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			typeAttributes: { rowActions: this.getRowActions },
 		},
 	];
-	columnLabels = ["'Start tid'", "'Slutt tid'", "'Bestilling'", "'Oppmøtested'", "'Tema'", "'Status'"];
+	columnLabels = ["'Start tid'", "'Slutt tid'", "'Bestilling'", "'Oppmøtested'", "'Tema'", "'Serieoppdrag *'", "'Status'"];
 
 	getRowActions(row, doneCallback) {
 		let actions = [];
