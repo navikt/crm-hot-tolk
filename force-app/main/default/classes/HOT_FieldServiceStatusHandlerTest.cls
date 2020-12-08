@@ -128,6 +128,8 @@ private class HOT_FieldServiceStatusHandlerTest {
 		List<ServiceAppointment> serviceAppointmentsToDelete = [SELECT Id FROM ServiceAppointment WHERE Id != :serviceAppointment_1.Id AND Id != :serviceAppointment_2.Id];
 		delete serviceAppointmentsToDelete;
 
+		Test.startTest();
+
 		serviceAppointment_1.Status = 'Scheduled';
 		update serviceAppointment_1;
 
@@ -169,6 +171,7 @@ private class HOT_FieldServiceStatusHandlerTest {
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
 		System.assertEquals('Cannot Complete', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
+		Test.stopTest();
 	}
 	
     @isTest
