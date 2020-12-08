@@ -38,6 +38,34 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	@track columns = [
 		{
+			label: 'Start tid',
+			fieldName: 'StartTime__c',
+			type: 'date',
+			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+		{
+			label: 'Slutt tid',
+			fieldName: 'EndTime__c',
+			type: 'date',
+			sortable: true,
+			typeAttributes: {
+				day: 'numeric',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}
+		},
+		{
 			label: 'Bestilling',
 			fieldName: 'Name',
 			type: 'text',
@@ -56,7 +84,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			sortable: true,
 		},
 		{
-			label: 'Serieoppdrag',
+			label: 'Serieoppdrag *',
 			fieldName: 'IsSerieoppdrag__c',
 			type: 'boolean',
 			sortable: true,
@@ -72,7 +100,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			typeAttributes: { rowActions: this.getRowActions },
 		},
 	];
-	columnLabels = ["'Start tid'", "'Slutt tid'", "'Oppmøtested'", "'Tema'", "'Status'"];
+	columnLabels = ["'Start tid'", "'Slutt tid'", "'Bestilling'", "'Oppmøtested'", "'Tema'", "'Serieoppdrag *'", "'Status'"];
 
 	getRowActions(row, doneCallback) {
 		let actions = [];
@@ -204,9 +232,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
 	@track defaultSortDirection = 'desc';
 	@track sortDirection = 'desc';
-	@track sortedBy = 'Name';
+	@track sortedBy = 'StartTime__c';
 
-	mobileSortingDefaultValue = '{"fieldName": "Name", "sortDirection": "desc"} ';
+	mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "desc"} ';
 	get sortingOptions() {
 		return getMobileSortingOptions(this.columns)
 	}

@@ -77,10 +77,16 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 		*/
 	];
 
+	columnLabels = ["'Start tid'", "'Slutt tid'", "'Tema'", "'Bestillingsnummer'", "'Status'", "'Tolker'", "''"];
+
 	@track workOrders = [];
 	@track requestNumber;
 	@track showAll = true;
 	connectedCallback() {
+		for (var i = 0; i < this.columnLabels.length; i++) {
+			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		}
+
 		let testURL = window.location.href;
 		let params = testURL.split("?")[1];
 
