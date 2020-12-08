@@ -5,15 +5,17 @@ private class HOT_AssignedResourceHandlerTest{
 
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
+
+		List<HOT_Request__c> requests = new List<HOT_Request__c>();
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('subject', workType);
-		insert request;
-		request.Status__c = 'Godkjent';
-		update request;
-		
 		HOT_Request__c request2 = HOT_TestDataFactory.createRequest('subject 2', workType);
-		insert request2;
+		requests.add(request);
+		requests.add(request2);
+		insert requests;
+
+		request.Status__c = 'Godkjent';
 		request2.Status__c = 'Godkjent';
-		update request2;
+		update requests;
 
 		OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
 		insert operatingHours;
@@ -23,13 +25,16 @@ private class HOT_AssignedResourceHandlerTest{
 		Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'];
 		User user = HOT_TestDataFactory.createUser('User2', profile);
 		insert user;
+
+		List<ServiceResource> serviceResources = new List<ServiceResource>();
 		ServiceResource serviceResourceAdmin = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
 		serviceResourceAdmin.HOT_IsFreelanceInterpreter__c = true;
-		insert serviceResourceAdmin;
 		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
 		serviceResource.HOT_IsFreelanceInterpreter__c = true;
 		serviceResource.HOT_ServiceTerritory__c = serviceTerritory.Id;
-		insert serviceResource;
+		serviceResources.add(serviceResourceAdmin);
+		serviceResources.add(serviceResource);
+		insert serviceResources;
 
 
 		ServiceAppointment serviceAppointment = [SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
@@ -44,6 +49,8 @@ private class HOT_AssignedResourceHandlerTest{
 		ServiceResource testResource = [SELECT Id, RelatedRecordId FROM ServiceResource WHERE RelatedRecordId != :UserInfo.getUserId()];
 		ServiceResource adminResource = [SELECT Id, RelatedRecordId FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()];
 
+		Test.startTest();
+		
 		//Testing onAfterInsert()
 		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, adminResource.Id);
 		insert assignedResource;
@@ -70,9 +77,9 @@ private class HOT_AssignedResourceHandlerTest{
 
 
 		//Testing onAfterdelete()
-		Test.startTest();
 		delete assignedResource;
 		Test.stopTest();
+		
 		serviceAppointment = [SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c, EarliestStartTime, DueDate, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Id = :serviceAppointment.Id LIMIT 1];
 		System.assertEquals(null, serviceAppointment.HOT_ServiceResource__c, 'Could not set HOT_ServiceResource__c onAfterdelete');
 		System.assertEquals(null, serviceAppointment.HOT_AssignedResourceId__c, 'Could not set HOT_AssignedResourceId__c onAfterdelete');
