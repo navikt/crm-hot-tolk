@@ -112,7 +112,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 			workOrder.Status = 'New';
 			if(workOrder.HOT_Request__c != null) {
 				//Setting owner of WorkOrder based on owner of Request
-				workOrder.OwnerId = workOrder.HOT_RequestOwnerId__c;
+					workOrder.OwnerId = workOrder.HOT_RequestOwnerId__c;
+					System.debug('workOrder.OwnerId: ' + workOrder.OwnerId);
 
 				//Setting fields of WorkOrder based on Request, if the fields are not filled in, and the fields on Request have values.
 				if(workOrder.ServiceTerritory == null && requests.get(workOrder.HOT_Request__c).ServiceTerritory__c != null){
