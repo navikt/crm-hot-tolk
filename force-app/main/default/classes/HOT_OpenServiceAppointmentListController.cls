@@ -37,6 +37,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 														ServiceTerritory.Name, ServiceTerritory.HOT_DeveloperName__c, HOT_ReleaseDate__c, City, Street, PostalCode
 														FROM ServiceAppointment WHERE HOT_IsReleasedToFreelance__c = true AND Status = 'Released To Freelance' 
 														AND HOT_DeadlineDate__c >= :DATE.TODAY() AND Id NOT IN: interestedServiceAppointmentIds
+														AND ServiceTerritoryId != null
 														ORDER BY HOT_ReleaseDate__c DESC];
 		System.debug('serviceAppointments: ' + serviceAppointments);
 
