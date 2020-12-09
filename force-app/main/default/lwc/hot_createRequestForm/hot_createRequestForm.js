@@ -201,8 +201,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 	}
 
+
 	setDate(event) {
-		//console.log(event.detail.value)
+		console.log(event.detail.value)
 		let index = this.getIndexById(event.target.name);
 		this.times[index].date = event.detail.value;
 		var now = new Date();
@@ -241,12 +242,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	setStartTime(event) {
 		let index = this.getIndexById(event.target.name);
 		console.log(event.detail.value)
-		console.log(this.times[index].startTime)
 
-		console.log(JSON.stringify(this.times[index].startTime))
 		//delete this.times[index]["startTime"];
 		this.times[index].startTime = event.detail.value;
-		console.log(this.times[index].startTime)
 
 		var tempTime = event.detail.value.split("");
 		if (event.detail.value > this.times[index].endTime || this.times[index].endTime == null) {
@@ -339,10 +337,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 
 			else {
-				if (confirm("Du har allerede en bestilling på samme tidspunkt\nTema: " + this.requests[isDuplicate].Subject__c +
-					"\nFra: " + this.formatDateTime(this.requests[isDuplicate].StartTime__c) +
-					"\nTil: " + this.formatDateTime(this.requests[isDuplicate].EndTime__c)
-					+ "\n\nFortsett?")) {
+				if (confirm("Du har allerede en bestilling på samme tidspunkt\n\nFortsett?")) {
 					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
 				}
 				else {
@@ -426,15 +421,21 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	formatDateTime(dateTime) {
-		const year = dateTime.substring(0, 4);
-		const month = dateTime.substring(5, 7);
-		const day = dateTime.substring(8, 10);
+		const year = dateTime.date.substring(0, 4);
+		const month = dateTime.date.substring(5, 7);
+		const day = dateTime.date.substring(8, 10);
 
-		var time = dateTime.substring(11, 16).split("");
-		time[1] = ((parseFloat(time[1]) + 2) % 10).toString();
-		time[0] = (parseFloat(time[0]) + ((parseFloat(time[1]) + 2) > 9) ? 1 : 0).toString();
-		time = time.join("");
-		return day + "." + month + "." + year + " " + time;
+		const startHour = dateTime.startTime.substring(0, 2);
+		const startMinute = dateTime.startTime.substring(3, 5);
+		const endHour = dateTime.endTime.substring(0, 2);
+		const endMinute = dateTime.endTime.substring(3, 5);
+
+		const newDateTime = dateTime;
+		newDateTime["date"] = month + "/" + day + "/" + year;
+		newDateTime["startTime"] = startHour + ":" + startMinute;
+		newDateTime["endTime"] = endHour + ":" + endMinute;
+
+		return newDateTime;
 	}
 
 	handleError(event) {
@@ -454,19 +455,20 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		x.classList.add('hidden');
 		this.recordId = event.detail.id;
 
+
 		let requestId = event.detail.id;
 		let times = {};
-		let newTimes = {};
 		for (let dateTime of this.times) {
+			dateTime = this.formatDateTime(dateTime);
 			times[dateTime.id.toString()] = {
-				"startTime": new Date(dateTime.date + ", " + dateTime.startTime).getTime(),
-				"endTime": new Date(dateTime.date + ", " + dateTime.endTime).getTime(),
+				"startTime": new Date(dateTime.date + " " + dateTime.startTime).getTime(),
+				"endTime": new Date(dateTime.date + " " + dateTime.endTime).getTime(),
 				"isNew": dateTime.isNew,
 			};
 		}
 		if (times != {}) {
 			console.log("createAndUpdateWorkOrders");
-			createAndUpdateWorkOrders({ requestId, times });
+			createAndUpdateWorkOrders({ requestId, times })
 		}
 
 		window.scrollTo(0, 0);
@@ -488,8 +490,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	connectedCallback() {
 		console.log("connectedCallback");
+
 		window.scrollTo(0, 0);
-		//this.personAccount.Name = "rolf";
 		let testURL = window.location.href;
 		let params = testURL.split("?")[1];
 
