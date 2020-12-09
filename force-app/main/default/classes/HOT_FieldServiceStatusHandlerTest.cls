@@ -120,8 +120,10 @@ private class HOT_FieldServiceStatusHandlerTest {
 		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
 		insert workOrderLineItem;
 		ServiceAppointment serviceAppointment_1 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+		serviceAppointment_1.HOT_Request__c = request.Id;
 		insert serviceAppointment_1;
 		ServiceAppointment serviceAppointment_2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+		serviceAppointment_2.HOT_Request__c = request.Id;
 		insert serviceAppointment_2;
 
 		// Delete extra ServiceAppointments created by process to get full controll
@@ -187,6 +189,7 @@ private class HOT_FieldServiceStatusHandlerTest {
 		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
 		insert serviceResource;
 		ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+		serviceAppointment.HOT_Request__c = request.Id;
 		insert serviceAppointment;
 		HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(serviceAppointment.Id, serviceResource.Id);
 		insert interestedResource;
