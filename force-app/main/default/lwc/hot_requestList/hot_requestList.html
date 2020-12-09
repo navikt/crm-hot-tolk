@@ -24,17 +24,17 @@
 			</lightning-combobox>
 
 			<lightning-radio-group class="horizontal" name="radioGroup" options={requestTypes} value="my" type="radio"
-				onchange={handleRequestType} style="margin-bottom: 1.25rem;"></lightning-radio-group>
+				onchange={handleRequestType}></lightning-radio-group>
 
 		</div>
+		<p style="align-self: flex-start;" class="typo-normal">* For serieoppdrag vises start- og sluttid for den første
+			forekomsten. For å se alle tidene under en bestilling, inkludert status og tildelt tolk, kan du velge Se
+			tider i menyen til høyre på raden.</p>
+		</br>
 		<lightning-datatable key-field="Id" data={requests} columns={columns} hide-checkbox-column="true"
 			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
 			onsort={onHandleSort} onrowaction={handleRowAction}>
 		</lightning-datatable>
-		</br>
-		<p style="align-self: flex-start;" class="typo-normal">* For serieoppdrag vises start- og sluttid for den første
-			forekomsten. For å se alle tidene under en bestilling, inkludert status og tildelt tolk, kan du velge Se
-			tider i menyen til høyre på raden.</p>
 
 	</div>
 
