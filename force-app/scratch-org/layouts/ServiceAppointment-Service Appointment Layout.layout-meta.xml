@@ -15,7 +15,7 @@
                 <field>ParentRecordId</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>HOT_Request__c</field>
             </layoutItems>
             <layoutItems>
@@ -49,7 +49,7 @@
                 <field>OwnerId</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>ServiceTerritoryId</field>
             </layoutItems>
             <layoutItems>
@@ -301,7 +301,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1X000001Yhea</masterLabel>
+        <masterLabel>00h1j000001XDjg</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
