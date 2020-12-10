@@ -132,6 +132,7 @@ private class HOT_FieldServiceStatusHandlerTest {
 		update serviceAppointment_1;
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+		Test.startTest();
 		System.assertEquals('Scheduled', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
 
 		serviceAppointment_2.Status = 'Dispatched';
@@ -169,6 +170,7 @@ private class HOT_FieldServiceStatusHandlerTest {
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
 		System.assertEquals('Cannot Complete', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
+		Test.stopTest();
 	}
 	
     @isTest
