@@ -54,7 +54,7 @@ public without sharing class HOT_WorkOrderListController {
 		if(user.AccountId != null){
 			Id accountId = user.AccountId;
 			for(Id workOrderId:workOrders.keySet()){
-				if(workOrders.get(workOrderId).Status != 'Canceled' && workOrders.get(workOrderId).HOT_Request__r.Orderer__c == AccountId){
+				if(workOrders.get(workOrderId).Status != 'Canceled' && workOrders.get(workOrderId).Status != 'Partially Complete' && workOrders.get(workOrderId).Status != 'Completed' && workOrders.get(workOrderId).HOT_Request__r.Orderer__c == AccountId){
 					workOrders.get(workOrderId).HOT_IsCancelable__c = true;
 				}
 			}
