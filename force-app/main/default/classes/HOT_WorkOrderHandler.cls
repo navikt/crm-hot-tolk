@@ -22,13 +22,16 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		}
 		updateRequests((List<WorkOrder>) records);
 	}
-	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
+	
+	public static void onAfterUpdateTemp(Map<Id,sObject> triggerOldMap, List<WorkOrder> records) {
+		System.debug('derp');
 		List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
 
 		//Om status eller tidspunkt på WorkOrder er endret, kan det ha ført til at den førstkommende, ikke-avlyste WorkOrderen har endret seg
-		for(WorkOrder record : (List<WorkOrder>) records) {
+		for(WorkOrder record : records) {
 			System.debug('record: ' + record);
-			if(record.Status != triggerOldMap.get(record.Id).get('Status')
+			if(
+				record.Status != triggerOldMap.get(record.Id).get('Status')
 				||
 				record.StartDate != triggerOldMap.get(record.Id).get('StartDate')
 				||
@@ -38,7 +41,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		}
 
 		if(updatedWorkOrders.size() > 0) {
+			System.debug('updateRequests(updatedWorkOrders)');
 			updateRequests(updatedWorkOrders);
+			runLikeTheWind(updatedWorkOrders);
 		}
 	}
 	public override void onAfterDelete() {
@@ -49,8 +54,19 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 	}
 
 
-	public static void createChildRecords(List<WorkOrder> workOrders){
+	public static void runLikeTheWind(List<WorkOrder> workOrders){
+		List<Id> requestIds = new List<Id>();
+		for(WorkOrder workOrder : workOrders){
+			requestIds.add(workOrder.HOT_Request__c);
+		}
+		List<HOT_Request__c> requests = [SELECT Id, Subject__c FROM HOT_Request__c WHERE Id IN :requestIds];
+		for(HOT_Request__c request:requests){
+			request.Subject__c = 'I ran';
+		}
+		update requests;
+	}
 
+	public static void createChildRecords(List<WorkOrder> workOrders){
 		//Getting parent requests
 		List<Id> requestIds = new List<Id>();
 		for(WorkOrder workOrder : workOrders){
@@ -111,16 +127,30 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		}
 	}
 	public static void updateRequests(List<WorkOrder> workOrders){
+		System.debug('updateRequests');
 		List<Id> requestIds = new List<Id>();
+		List<Id> deletedWorkOrders = new List<Id>();
 		for(WorkOrder workOrder:workOrders){
 			requestIds.add(workOrder.HOT_Request__c);
+			if(workOrder.IsDeleted){
+				deletedWorkOrders.add(workOrder.Id);
+			}
 		}
-		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, StartTime__c, EndTime__c, (SELECT Id, StartDate, EndDate FROM HOT_Request__c.Work_Orders__r WHERE Status NOT IN ('Annul', 'Canceled') ORDER BY StartDate) FROM HOT_Request__c WHERE Id IN :requestIds];
+		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, StartTime__c, EndTime__c, Subject__c, Description__c,
+											(SELECT Id, StartDate, EndDate, Status FROM HOT_Request__c.Work_Orders__r
+											WHERE Id NOT IN :deletedWorkOrders ORDER BY StartDate) 
+										FROM HOT_Request__c WHERE Id IN :requestIds];
 		for(HOT_Request__c request:requests){
-			request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
-			if(request.Work_Orders__r.size()>0){
-				request.StartTime__c = request.Work_Orders__r[0].StartDate;
-				request.EndTime__c = request.Work_Orders__r[0].EndDate;
+			System.debug(request.Work_Orders__r);
+			if(request.NumberOfWorkOrders__c != request.Work_Orders__r.size()){
+				request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
+			}
+			for(WorkOrder workOrder:request.Work_Orders__r){
+				if(workOrder.Status != 'Annul' && workOrder.Status != 'Canceled'){
+					request.StartTime__c = workOrder.StartDate;
+					request.EndTime__c = workOrder.EndDate;
+					break;
+				}
 			}
 		}
 		update requests;
