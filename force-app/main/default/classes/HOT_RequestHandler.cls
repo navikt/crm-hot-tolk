@@ -84,14 +84,10 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     private static void createWOLI_SA(List<HOT_Request__c> godkjentRequests) {
-            List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, Subject, EndDate, StartDate, 
-                                      Address, City, PostalCode, Street, LineItemCount,
-                                      HOT_InterpretationPostalCity__c, HOT_InterpretationPostalCode__c, HOT_InterpretationStreet__c,
-                                      HOT_NumberOfInterpreters__c, WorkTypeId FROM WorkOrder WHERE HOT_Request__c IN :godkjentRequests];
-//        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, Subject, Description, EndDate, StartDate, 
-//                                     Address, City, PostalCode, Street, LineItemCount,
-//                                    HOT_InterpretationPostalCity__c, HOT_InterpretationPostalCode__c, HOT_InterpretationStreet__c,
-//                                      HOT_NumberOfInterpreters__c, WorkTypeId FROM WorkOrder WHERE HOT_Request__c IN :godkjentRequests];
+       List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, Subject, Description, EndDate, StartDate, 
+                                    Address, City, PostalCode, Street, LineItemCount,
+                                   HOT_InterpretationPostalCity__c, HOT_InterpretationPostalCode__c, HOT_InterpretationStreet__c,
+                                     HOT_NumberOfInterpreters__c, WorkTypeId FROM WorkOrder WHERE HOT_Request__c IN :godkjentRequests];
         if(workOrders.size()>0){
             HOT_WorkOrderHandler.createChildRecords(workOrders);
         }
@@ -103,12 +99,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     @AuraEnabled
     public static void createAndUpdateWorkOrders(Id requestId, Map<String, Map<String, Long>> times){
         System.debug('createAndUpdateWorkOrders');
-//        HOT_Request__c request = [SELECT Id, Account__c, Account__r.PersonContactId, OwnerId, ServiceTerritory__c, InterpretationMethod__c, NumberOfInterpreters__c,
-//                                  MeetingPostalCity__c, MeetingPostalCode__c, MeetingStreet__c, InterpretationPostalCity__c, InterpretationPostalCode__c, InterpretationStreet__c,
-//                                  HOT_PersonContactId__c, Subject__c, Description__c, StartTime__c, EndTime__c FROM HOT_Request__c WHERE Id = :requestId];
-HOT_Request__c request = [SELECT Id, Account__c, Account__r.PersonContactId, OwnerId, ServiceTerritory__c, InterpretationMethod__c, NumberOfInterpreters__c,
-                                  MeetingPostalCity__c, MeetingPostalCode__c, MeetingStreet__c, InterpretationPostalCity__c, InterpretationPostalCode__c, InterpretationStreet__c,
-                                  HOT_PersonContactId__c, Subject__c, StartTime__c, EndTime__c FROM HOT_Request__c WHERE Id = :requestId];
+       HOT_Request__c request = [SELECT Id, Account__c, Account__r.PersonContactId, OwnerId, ServiceTerritory__c, InterpretationMethod__c, NumberOfInterpreters__c,
+                                 MeetingPostalCity__c, MeetingPostalCode__c, MeetingStreet__c, InterpretationPostalCity__c, InterpretationPostalCode__c, InterpretationStreet__c,
+                                 HOT_PersonContactId__c, Subject__c, Description__c, StartTime__c, EndTime__c FROM HOT_Request__c WHERE Id = :requestId];
         List<HOT_Request__c> requests = new List<HOT_Request__c>();
         Map<String, Map<String, Long>> updatedTimesMap = new Map<String, Map<String, Long>>();
         for(String key : times.keySet()){
@@ -160,7 +153,7 @@ HOT_Request__c request = [SELECT Id, Account__c, Account__r.PersonContactId, Own
             workOrder.AccountId = request.Account__c;
             workOrder.City = request.MeetingPostalCity__c;
             workOrder.ContactId = request.HOT_PersonContactId__c;
-//            workOrder.Description = request.Description__c;
+            workOrder.Description = request.Description__c;
             workOrder.EndDate = request.EndTime__c;
             workOrder.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
             workOrder.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
