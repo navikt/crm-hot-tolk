@@ -77,7 +77,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 					WorkOrderLineItem workOrderLineItem = new WorkOrderLineItem();
 					workOrderLineItem.WorkOrderId = workOrder.Id;
 					workOrderLineItem.City = workOrder.City;
-					workOrderLineItem.Description = workOrder.Description;
+			//		workOrderLineItem.Description = workOrder.Description;
 					workOrderLineItem.EndDate = workOrder.EndDate;
 					workOrderLineItem.HOT_InterpretationPostalCity__c = workOrder.HOT_InterpretationPostalCity__c;
 					workOrderLineItem.HOT_InterpretationPostalCode__c = workOrder.HOT_InterpretationPostalCode__c;
