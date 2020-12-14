@@ -3,7 +3,7 @@
     <fullName>HOT_IsInvoiced__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <inlineHelpText>Settes av faktura-prosessen (RPA). Vises om en arbeidsordre er fakturert eller ikke.</inlineHelpText>
+    <inlineHelpText>Settes av faktura-prosessen (RPA). Viser om en arbeidsordre er fakturert eller ikke.</inlineHelpText>
     <label>Invoiced?</label>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
