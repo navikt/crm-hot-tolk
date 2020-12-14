@@ -607,7 +607,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>WorkOrder.ContactId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>WorkOrder.Description</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.EndDate</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -632,6 +642,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>WorkOrder.HOT_IsInvoiced__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>WorkOrder.HOT_NumberOfInterpreters__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -643,6 +658,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.ServiceTerritoryId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.StartDate</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -14,7 +14,7 @@ export default class Hot_warningBannerAccount extends LightningElement {
 	}
 
 	get hasSecurityMeasures() {
-		return getFieldValue(this.record.data, securityMeasures) != null;
+		return getFieldValue(this.record.data, securityMeasures) != null && getFieldValue(this.record.data, securityMeasures) != '[]';
 	}
 
 	get reservations() {
