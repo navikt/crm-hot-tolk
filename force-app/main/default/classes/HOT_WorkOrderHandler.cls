@@ -98,13 +98,10 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
 	public static void setDefaultFields(List<WorkOrder> workOrders){
 		List<Id> requestIds = new List<Id>();
-		List<Id> accountIds = new List<Id>();
 		for(WorkOrder workOrder : workOrders){
 			requestIds.add(workOrder.HOT_Request__c);
-			accountIds.add(workOrder.AccountId);
 		}
-		Map<Id, Account> accounts = new Map<Id, Account>([SELECT Id, PersonContactId FROM Account WHERE Id IN :accountIds]);
-		Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>([SELECT Id, ServiceTerritory__c, Status__c, OwnerId, Subject__c, Description__c, Account__c, 
+		Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>([SELECT Id, ServiceTerritory__c, Status__c, OwnerId, Subject__c, Description__c, Account__c, Account__r.PersonContactId,
 																		InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, MeetingStreet__c, MeetingPostalCity__c, MeetingPostalCode__c
 																		FROM HOT_Request__c WHERE Id IN :requestIds]);
 		for(WorkOrder workOrder : workOrders){
@@ -128,8 +125,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 				if(workOrder.AccountId == null && requests.get(workOrder.HOT_Request__c).Account__c != null){
 					workOrder.AccountId = requests.get(workOrder.HOT_Request__c).Account__c;
 				}
-				if(workOrder.ContactId == null && requests.get(workOrder.HOT_Request__c).Account__c != null && accounts.get(requests.get(workOrder.HOT_Request__c).Account__c).PersonContactId != null){
-					workOrder.ContactId = accounts.get(requests.get(workOrder.HOT_Request__c).Account__c).PersonContactId;
+				if(workOrder.ContactId == null && requests.get(workOrder.HOT_Request__c).Account__c != null && requests.get(workOrder.HOT_Request__c).Account__r.PersonContactId != null){
+					workOrder.ContactId = requests.get(workOrder.HOT_Request__c).Account__r.PersonContactId;
 				}
 				if(workOrder.HOT_InterpretationStreet__c == null && requests.get(workOrder.HOT_Request__c).InterpretationStreet__c != null){
 					workOrder.HOT_InterpretationStreet__c = requests.get(workOrder.HOT_Request__c).InterpretationStreet__c;
