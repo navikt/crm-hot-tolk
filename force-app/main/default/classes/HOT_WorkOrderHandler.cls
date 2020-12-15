@@ -1,8 +1,7 @@
 public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 	
 	public override void onBeforeInsert(){
-		setStatusDefault((List<WorkOrder>) records);
-		setOwner((List<WorkOrder>) records);
+		setDefaultFields((List<WorkOrder>) records);
 	}
 	
 	public override void onAfterInsert() {
@@ -97,19 +96,60 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		insert workOrderLineItems;
 	}
 
-	public static void setStatusDefault(List<WorkOrder> workOrders){
+	public static void setDefaultFields(List<WorkOrder> workOrders){
+		List<Id> requestIds = new List<Id>();
 		for(WorkOrder workOrder : workOrders){
-			workOrder.Status = 'New';
+			requestIds.add(workOrder.HOT_Request__c);
 		}
-	}
-
-	public static void setOwner(List<WorkOrder> workOrders){
+		Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>([SELECT Id, ServiceTerritory__c, Status__c, OwnerId, Subject__c, Description__c, Account__c, Account__r.PersonContactId,
+																		InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, MeetingStreet__c, MeetingPostalCity__c, MeetingPostalCode__c
+																		FROM HOT_Request__c WHERE Id IN :requestIds]);
 		for(WorkOrder workOrder : workOrders){
-			if(WorkOrder.HOT_Request__c != null) {
-				workOrder.OwnerId = workOrder.HOT_RequestOwnerId__c;
+			//Setting default status for WorkOrder
+			workOrder.Status = 'New';
+			if(workOrder.HOT_Request__c != null) {
+				//Setting owner of WorkOrder based on owner of Request
+					workOrder.OwnerId = workOrder.HOT_RequestOwnerId__c;
+					System.debug('workOrder.OwnerId: ' + workOrder.OwnerId);
+
+				//Setting fields of WorkOrder based on Request, if the fields are not filled in, and the fields on Request have values.
+				if(workOrder.ServiceTerritory == null && requests.get(workOrder.HOT_Request__c).ServiceTerritory__c != null){
+					workOrder.ServiceTerritoryId = requests.get(workOrder.HOT_Request__c).ServiceTerritory__c;
+				}
+				if(workOrder.Subject == null && requests.get(workOrder.HOT_Request__c).Subject__c != null){
+					workOrder.Subject = requests.get(workOrder.HOT_Request__c).Subject__c;
+				}
+				if(workOrder.Description == null && requests.get(workOrder.HOT_Request__c).Description__c != null){
+					workOrder.Description = requests.get(workOrder.HOT_Request__c).Description__c;
+				}
+				if(workOrder.AccountId == null && requests.get(workOrder.HOT_Request__c).Account__c != null){
+					workOrder.AccountId = requests.get(workOrder.HOT_Request__c).Account__c;
+				}
+				if(workOrder.ContactId == null && requests.get(workOrder.HOT_Request__c).Account__c != null && requests.get(workOrder.HOT_Request__c).Account__r.PersonContactId != null){
+					workOrder.ContactId = requests.get(workOrder.HOT_Request__c).Account__r.PersonContactId;
+				}
+				if(workOrder.HOT_InterpretationStreet__c == null && requests.get(workOrder.HOT_Request__c).InterpretationStreet__c != null){
+					workOrder.HOT_InterpretationStreet__c = requests.get(workOrder.HOT_Request__c).InterpretationStreet__c;
+				}
+				if(workOrder.HOT_InterpretationPostalCode__c == null && requests.get(workOrder.HOT_Request__c).InterpretationPostalCode__c != null){
+					workOrder.HOT_InterpretationPostalCode__c = requests.get(workOrder.HOT_Request__c).InterpretationPostalCode__c;
+				}
+				if(workOrder.HOT_InterpretationPostalCity__c == null && requests.get(workOrder.HOT_Request__c).InterpretationPostalCity__c != null){
+					workOrder.HOT_InterpretationPostalCity__c = requests.get(workOrder.HOT_Request__c).InterpretationPostalCity__c;
+				}
+				if(workOrder.Street == null && requests.get(workOrder.HOT_Request__c).MeetingStreet__c != null){
+					workOrder.Street = requests.get(workOrder.HOT_Request__c).MeetingStreet__c;
+				}
+				if(workOrder.City == null && requests.get(workOrder.HOT_Request__c).MeetingPostalCity__c != null){
+					workOrder.City = requests.get(workOrder.HOT_Request__c).MeetingPostalCity__c;
+				}
+				if(workOrder.PostalCode == null && requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c != null){
+					workOrder.PostalCode = requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c;
+				}
 			}
 		}
 	}
+
 	public static void updateRequests(List<WorkOrder> workOrders){
 		List<Id> requestIds = new List<Id>();
 		for(WorkOrder workOrder:workOrders){
