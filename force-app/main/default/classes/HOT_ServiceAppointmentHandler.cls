@@ -10,8 +10,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		List<ServiceAppointment> recievedNewInterpreter= new List<ServiceAppointment>();
 		List<ServiceAppointment> updatedServiceAppointment = new List<ServiceAppointment>();
 		List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
+		List<ServiceAppointment> updatedStatusCanceled = new List<ServiceAppointment>();
 		
-		for(ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records){
+		for(ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
 			if(serviceAppointment.get('HOT_ServiceResource__c') != null &&
 			serviceAppointment.get('HOT_ServiceResource__c') != triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) {
 					recievedNewInterpreter.add(serviceAppointment);
@@ -22,7 +23,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			if(serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') || serviceAppointment.HOT_ServiceResource__c != triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) {
 				serviceAppointmentsWithChangedStatusOrResource.add(serviceAppointment);
 			}
+
+			if(serviceAppointment.StatusCategory == 'Cannot Complete' || serviceAppointment.StatusCategory == 'CannotComplete' || serviceAppointment.StatusCategory == 'Canceled') {
+				updatedStatusCanceled.add(serviceAppointment);
+			}
 		}
+
 		if(!updatedServiceAppointment.isEmpty()) {
 			updatedServiceAppointment = setFieldsByPreferredInterpreter(updatedServiceAppointment);
 		}
@@ -32,8 +38,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		if(serviceAppointmentsWithChangedStatusOrResource.size()>0) {
 			createHistoricallyAssignedResources(serviceAppointmentsWithChangedStatusOrResource, triggerOldMap);
 		}
+		if(updatedStatusCanceled.size() > 0) {
+			removeInterpreter(updatedStatusCanceled);
+		}
 	}
 
+	private static void removeInterpreter(List<ServiceAppointment> updatedStatusCanceled) {
+		for(ServiceAppointment serviceAppointment : updatedStatusCanceled) {
+			serviceAppointment.HOT_ServiceResource__c = '';
+		}
+	}
 	private static void updateCancelledByInterpreter(List<ServiceAppointment> recievedNewInterpreter) {
 		for(ServiceAppointment serviceAppointment : recievedNewInterpreter) {
 			serviceAppointment.HOT_CanceledByInterpreter__c = false;		

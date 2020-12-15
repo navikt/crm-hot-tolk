@@ -86,6 +86,37 @@ private class HOT_ServiceAppointmentHandlerTest{
 		System.assertEquals(false, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to false');
 	}
 
+	@isTest static void changeStatusAndRemoveSR() {
+		WorkType wt = HOT_TestDataFactory.createWorkType();
+		HOT_Request__c req = HOT_TestDataFactory.createRequest('Test', wt);
+		WorkOrder wo = HOT_TestDataFactory.createWorkOrder(req, wt);
+		WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, wt);
+		ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+
+		sa = [SELECT Id, Status, StatusCategory, HOT_ServiceResource__c FROM ServiceAppointment LIMIT 1];
+
+		sa.Status = 'Scheduled';
+		upsert sa;
+
+		Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'];
+		User user2 = HOT_TestDataFactory.createUser('User2', profile);
+		insert user2;
+
+		ServiceResource sr = HOT_TestDataFactory.createServiceResource(user2.Id);
+		insert sr;
+
+		AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
+		insert ar;
+
+		sa.Status = 'Canceled';
+		update sa;
+
+		sa = [SELECT Id, Status, StatusCategory, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c FROM ServiceAppointment WHERE Id = :sa.Id LIMIT 1];
+		System.assertEquals('Canceled', sa.StatusCategory, 'Could not set Status');		
+		sa = [SELECT Id, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c FROM ServiceAppointment WHERE Id = :sa.Id LIMIT 1];
+		System.assertEquals('', sa.HOT_ServiceResource__c, 'Could not set SR to blank');
+	}
+
 	@isTest private static void testCreateHistoricallyAssignedResources_addResource() {
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
