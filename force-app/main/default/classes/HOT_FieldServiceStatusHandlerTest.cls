@@ -120,13 +120,17 @@ private class HOT_FieldServiceStatusHandlerTest {
 		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
 		insert workOrderLineItem;
 		ServiceAppointment serviceAppointment_1 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+		serviceAppointment_1.HOT_Request__c = request.Id;
 		insert serviceAppointment_1;
 		ServiceAppointment serviceAppointment_2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+		serviceAppointment_2.HOT_Request__c = request.Id;
 		insert serviceAppointment_2;
 
 		// Delete extra ServiceAppointments created by process to get full controll
 		List<ServiceAppointment> serviceAppointmentsToDelete = [SELECT Id FROM ServiceAppointment WHERE Id != :serviceAppointment_1.Id AND Id != :serviceAppointment_2.Id];
 		delete serviceAppointmentsToDelete;
+
+		Test.startTest();
 
 		serviceAppointment_1.Status = 'Scheduled';
 		update serviceAppointment_1;
@@ -169,6 +173,7 @@ private class HOT_FieldServiceStatusHandlerTest {
 
 		workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
 		System.assertEquals('Cannot Complete', workOrderLineItem.Status, 'Status on the work order line item did not update to correct value');
+		Test.stopTest();
 	}
 	
     @isTest
@@ -184,6 +189,7 @@ private class HOT_FieldServiceStatusHandlerTest {
 		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
 		insert serviceResource;
 		ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+		serviceAppointment.HOT_Request__c = request.Id;
 		insert serviceAppointment;
 		HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(serviceAppointment.Id, serviceResource.Id);
 		insert interestedResource;
