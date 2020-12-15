@@ -1,7 +1,7 @@
 public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 	
 	public override void onBeforeInsert() {
-		setStatusDefault((List<ServiceAppointment>) records);
+		setDefaultFields((List<ServiceAppointment>) records);
 		setOwner((List<ServiceAppointment>) records);
 		setFieldsByPreferredInterpreter((List<ServiceAppointment>) records);
 	}
@@ -40,9 +40,58 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		}
 	}
 
-	private static void setStatusDefault(List<ServiceAppointment> serviceAppointments) {
+	private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
+		List<Id> workOrderLineItemIds = new List<Id>();														
+		for(ServiceAppointment serviceAppointment : serviceAppointments) {
+			workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
+		}
+		Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>([SELECT Id, WorkOrder.HOT_Request__c, WorkOrder.OwnerId, Subject, Description, StartDate, EndDate,
+																Street, City, PostalCode, HOT_InterpretationPostalCity__c, HOT_InterpretationPostalCode__c, HOT_InterpretationPostalStreet__c
+																FROM WorkOrderLineItem WHERE Id IN :workOrderLineItemIds]);
+
 		for(ServiceAppointment serviceAppointment : serviceAppointments) {
 			serviceAppointment.Status = 'None';
+			if(serviceAppointment.ParentRecordId != null){
+				if(serviceAppointment.HOT_Request__c == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.HOT_Request__c != null){
+					serviceAppointment.HOT_Request__c = workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.HOT_Request__c;
+				}
+				if(serviceAppointment.Subject == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).Subject != null){
+					serviceAppointment.Subject = workOrderLineItems.get(serviceAppointment.ParentRecordId).Subject;
+				}
+				if(serviceAppointment.Description == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).Description != null){
+					serviceAppointment.Description = workOrderLineItems.get(serviceAppointment.ParentRecordId).Description;
+				}
+				if(serviceAppointment.HOT_InterpretationPostalCity__c == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalCity__c != null){
+					serviceAppointment.HOT_InterpretationPostalCity__c = workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalCity__c;
+				}
+				if(serviceAppointment.HOT_InterpretationPostalCode__c == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalCode__c != null){
+					serviceAppointment.HOT_InterpretationPostalCode__c = workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalCode__c;
+				}
+				if(serviceAppointment.HOT_InterpretationStreet__c == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalStreet__c != null){
+					serviceAppointment.HOT_InterpretationStreet__c = workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalStreet__c;
+				}
+				if(serviceAppointment.City == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).City != null){
+					serviceAppointment.City = workOrderLineItems.get(serviceAppointment.ParentRecordId).City;
+				}
+				if(serviceAppointment.PostalCode == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).PostalCode != null){
+					serviceAppointment.PostalCode = workOrderLineItems.get(serviceAppointment.ParentRecordId).PostalCode;
+				}
+				if(serviceAppointment.Street == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).Street != null){
+					serviceAppointment.Street = workOrderLineItems.get(serviceAppointment.ParentRecordId).Street;
+				}
+				if(serviceAppointment.EarliestStartTime == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).StartDate != null){
+					serviceAppointment.EarliestStartTime = workOrderLineItems.get(serviceAppointment.ParentRecordId).StartDate;
+				}
+				if(serviceAppointment.DueDate == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).EndDate != null){
+					serviceAppointment.DueDate = workOrderLineItems.get(serviceAppointment.ParentRecordId).EndDate;
+				}
+				if(serviceAppointment.SchedStartTime == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).StartDate != null){
+					serviceAppointment.SchedStartTime = workOrderLineItems.get(serviceAppointment.ParentRecordId).StartDate;
+				}
+				if(serviceAppointment.SchedEndTime == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).EndDate != null){
+					serviceAppointment.SchedEndTime = workOrderLineItems.get(serviceAppointment.ParentRecordId).EndDate;
+				}
+			}
 		}
 	}
 

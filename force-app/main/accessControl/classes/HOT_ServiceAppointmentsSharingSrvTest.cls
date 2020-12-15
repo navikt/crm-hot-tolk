@@ -24,8 +24,10 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem( workOrder, workType );
 		insert workOrderLineItem;
 		ServiceAppointment serviceAppointment_1 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
+		serviceAppointment_1.HOT_Request__c = request.Id;
 		insert serviceAppointment_1;
 		ServiceAppointment serviceAppointment_2 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
+		serviceAppointment_2.HOT_Request__c = request.Id;
 		insert serviceAppointment_2;
 
 		List<ServiceResource> serviceResources = [SELECT Id, RelatedRecordId FROM ServiceResource];
@@ -58,10 +60,13 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem( workOrder, workType );
 		insert workOrderLineItem;
 		ServiceAppointment serviceAppointment_1 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
+		serviceAppointment_1.HOT_Request__c = request.Id;
 		insert serviceAppointment_1;
 		ServiceAppointment serviceAppointment_2 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
+		serviceAppointment_2.HOT_Request__c = request.Id;
 		insert serviceAppointment_2;
 		ServiceAppointment serviceAppointment_3 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
+		serviceAppointment_3.HOT_Request__c = request.Id;
 		insert serviceAppointment_3;
 
 		List<ServiceResource> serviceResources = [SELECT Id, RelatedRecordId FROM ServiceResource];
@@ -117,8 +122,10 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
 		WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem( workOrder, workType );
 		insert workOrderLineItem;
 		ServiceAppointment serviceAppointment_1 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
+		serviceAppointment_1.HOT_Request__c = request.Id;
 		insert serviceAppointment_1;
 		ServiceAppointment serviceAppointment_2 = HOT_TestDataFactory.createServiceAppointment( workOrderLineItem );
+		serviceAppointment_2.HOT_Request__c = request.Id;
 		insert serviceAppointment_2;
 
 		List<ServiceResource> serviceResources = [SELECT Id, RelatedRecordId FROM ServiceResource];
