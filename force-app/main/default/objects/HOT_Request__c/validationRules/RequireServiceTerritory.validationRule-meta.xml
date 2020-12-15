@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RequireServiceTerritory</fullName>
+    <active>true</active>
+    <errorConditionFormula>!ISNEW()
+&amp;&amp;
+ISBLANK(ServiceTerritory__c)
+&amp;&amp;
+ISCHANGED(ServiceTerritory__c)
+&amp;&amp;
+($Profile.Name == &apos;HOT Tolk Formidler&apos;
+||
+$Profile.Name == &apos;HOT Tolk Ansatt&apos;)</errorConditionFormula>
+    <errorDisplayField>ServiceTerritory__c</errorDisplayField>
+    <errorMessage>Tjenesteområde kan ikke være tomt</errorMessage>
+</ValidationRule>
