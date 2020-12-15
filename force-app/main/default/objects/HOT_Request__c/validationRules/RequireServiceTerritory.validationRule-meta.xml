@@ -6,11 +6,7 @@
 &amp;&amp;
 ISBLANK(ServiceTerritory__c)
 &amp;&amp;
-ISCHANGED(ServiceTerritory__c)
-&amp;&amp;
-($Profile.Name == &apos;HOT Tolk Formidler&apos;
-||
-$Profile.Name == &apos;HOT Tolk Ansatt&apos;)</errorConditionFormula>
+!Contains($Profile.Name, &apos;admin&apos;)</errorConditionFormula>
     <errorDisplayField>ServiceTerritory__c</errorDisplayField>
     <errorMessage>Tjenesteområde kan ikke være tomt</errorMessage>
 </ValidationRule>
