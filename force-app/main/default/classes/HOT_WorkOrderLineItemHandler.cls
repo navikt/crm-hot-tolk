@@ -1,7 +1,7 @@
 public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
 	
 	public override void onBeforeInsert(){
-		setStatusDefault((List<WorkOrderLineItem>) records);
+		setDefaultFields((List<WorkOrderLineItem>) records);
 	}
 
 	public override void onAfterInsert() {
@@ -51,9 +51,49 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
 		insert serviceAppointments;
 	}
 
-	public static void setStatusDefault(List<WorkOrderLineItem> workOrderLines){
-		for(WorkOrderLineItem workOrderLine : workOrderLines){
-			workOrderLine.Status = 'New';
+
+	public static void setDefaultFields(List<WorkOrderLineItem> workOrderLineItems){
+		List<Id> workOrderIds = new List<Id>();
+		for(WorkOrderLineItem workOrderLineItem : workOrderLineItems){
+			workOrderIds.add(workOrderLineItem.WorkOrderId);
+		}
+		Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>([SELECT Id, OwnerId, Subject, Description, StartDate, EndDate, 
+																Street, City, PostalCode, HOT_InterpretationPostalCity__c, HOT_InterpretationPostalCode__c, HOT_InterpretationStreet__c
+																FROM WorkOrder WHERE Id IN :workOrderIds]);
+		 for(WorkOrderLineItem workOrderLineItem :workOrderLineItems){	
+			workOrderLineItem.Status = 'New';
+			if(workOrderLineItem.WorkOrderId != null){
+				if(workOrderLineItem.Subject == null && workOrders.get(workOrderLineItem.WorkOrderId).Subject != null){
+					workOrderLineItem.Subject = workOrders.get(workOrderLineItem.WorkOrderId).Subject;
+				}
+				if(workOrderLineItem.Description == null && workOrders.get(workOrderLineItem.WorkOrderId).Description != null){
+					workOrderLineItem.Description = workOrders.get(workOrderLineItem.WorkOrderId).Description;
+				}
+				if(workOrderLineItem.StartDate == null && workOrders.get(workOrderLineItem.WorkOrderId).StartDate != null){
+					workOrderLineItem.StartDate = workOrders.get(workOrderLineItem.WorkOrderId).StartDate;
+				}
+				if(workOrderLineItem.EndDate == null && workOrders.get(workOrderLineItem.WorkOrderId).EndDate != null){
+					workOrderLineItem.EndDate = workOrders.get(workOrderLineItem.WorkOrderId).EndDate;
+				}
+				if(workOrderLineItem.HOT_InterpretationPostalCity__c == null && workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationPostalCity__c != null){
+					workOrderLineItem.HOT_InterpretationPostalCity__c = workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationPostalCity__c;
+				}
+				if(workOrderLineItem.HOT_InterpretationPostalCode__c == null && workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationPostalCode__c != null){
+					workOrderLineItem.HOT_InterpretationPostalCode__c = workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationPostalCode__c;
+				}
+				if(workOrderLineItem.HOT_InterpretationPostalStreet__c == null && workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationStreet__c != null){
+					workOrderLineItem.HOT_InterpretationPostalStreet__c = workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationStreet__c;
+				}
+				if(workOrderLineItem.PostalCode == null && workOrders.get(workOrderLineItem.WorkOrderId).PostalCode != null){
+					workOrderLineItem.PostalCode = workOrders.get(workOrderLineItem.WorkOrderId).PostalCode;
+				}
+				if(workOrderLineItem.Street == null && workOrders.get(workOrderLineItem.WorkOrderId).Street != null){
+					workOrderLineItem.Street = workOrders.get(workOrderLineItem.WorkOrderId).Street;
+				}
+				if(workOrderLineItem.City == null && workOrders.get(workOrderLineItem.WorkOrderId).City != null){
+					workOrderLineItem.City = workOrders.get(workOrderLineItem.WorkOrderId).City;
+				}
+			}
 		}
 	}
 }
