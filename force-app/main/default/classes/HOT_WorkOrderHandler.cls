@@ -24,7 +24,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 	}
 	
 	public static void onAfterUpdateTemp(Map<Id,sObject> triggerOldMap, List<WorkOrder> records) {
-		System.debug('derp');
 		List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
 
 		//Om status eller tidspunkt på WorkOrder er endret, kan det ha ført til at den førstkommende, ikke-avlyste WorkOrderen har endret seg
@@ -41,29 +40,15 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		}
 
 		if(updatedWorkOrders.size() > 0) {
-			System.debug('updateRequests(updatedWorkOrders)');
 			updateRequests(updatedWorkOrders);
-			runLikeTheWind(updatedWorkOrders);
 		}
 	}
+
 	public override void onAfterDelete() {
 		updateRequests((List<WorkOrder>) records);
 	}
 	public override void onAfterUndelete() {
 		updateRequests((List<WorkOrder>) records);
-	}
-
-
-	public static void runLikeTheWind(List<WorkOrder> workOrders){
-		List<Id> requestIds = new List<Id>();
-		for(WorkOrder workOrder : workOrders){
-			requestIds.add(workOrder.HOT_Request__c);
-		}
-		List<HOT_Request__c> requests = [SELECT Id, Subject__c FROM HOT_Request__c WHERE Id IN :requestIds];
-		for(HOT_Request__c request:requests){
-			request.Subject__c = 'I ran';
-		}
-		update requests;
 	}
 
 	public static void createChildRecords(List<WorkOrder> workOrders){
@@ -127,7 +112,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		}
 	}
 	public static void updateRequests(List<WorkOrder> workOrders){
-		System.debug('updateRequests');
 		List<Id> requestIds = new List<Id>();
 		List<Id> deletedWorkOrders = new List<Id>();
 		for(WorkOrder workOrder:workOrders){
@@ -141,7 +125,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 											WHERE Id NOT IN :deletedWorkOrders ORDER BY StartDate) 
 										FROM HOT_Request__c WHERE Id IN :requestIds];
 		for(HOT_Request__c request:requests){
-			System.debug(request.Work_Orders__r);
 			if(request.NumberOfWorkOrders__c != request.Work_Orders__r.size()){
 				request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
 			}
