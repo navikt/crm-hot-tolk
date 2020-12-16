@@ -6,17 +6,45 @@ public without sharing class HOT_RequestListContoller {
 		User user = [SELECT Id, AccountId, Name FROM User WHERE Id = : userId];
 		List<HOT_Request__c> requests = new List<HOT_Request__c>();
 		if(user.AccountId != null){
-			requests = [SELECT Name, Subject__c, StartTime__c, EndTime__c, MeetingStreet__c, MeetingPostalCode__c, NumberOfWorkOrders__c,
-			MeetingPostalCity__c, InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, IsSerieoppdrag__c,
-			Description__c, Status__c, ExternalRequestStatus__c, Account__c, (SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
-			Source__c, Type__c, toLabel(EventType__c), Orderer__r.Name, OrdererPhone__c, OrdererEmail__c, UserName__c, UserPersonNumber__c, Company__r.Name, OrganizationNumber__c, InvoiceReference__c, AdditionalInvoicetext__c
-			,EconomicalProvider__c, ActualUserName__c, TempAccountId__c
-			FROM HOT_Request__c WHERE Account__c = : user.AccountId OR Orderer__c = :user.AccountId ORDER BY StartTime__c ASC];
+			List<HOT_Request__c> tempRequests = [SELECT Name, Subject__c, StartTime__c, EndTime__c, MeetingStreet__c, MeetingPostalCode__c, NumberOfWorkOrders__c, AdditionalInvoicetext__c,
+												MeetingPostalCity__c, InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, IsSerieoppdrag__c, InvoiceReference__c,
+												Description__c, Status__c, ExternalRequestStatus__c, Account__c,EconomicalProvider__c, ActualUserName__c, TempAccountId__c, OrganizationNumber__c,
+												Source__c, Type__c, toLabel(EventType__c), Orderer__r.Name, OrdererPhone__c, OrdererEmail__c, UserName__c, Company__r.Name,
+												(SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
+												(SELECT StartDate, EndDate FROM HOT_Request__c.Work_Orders__r WHERE Status != 'Annul' ORDER BY StartDate)
+												FROM HOT_Request__c WHERE Account__c = : user.AccountId OR Orderer__c = :user.AccountId ORDER BY StartTime__c ASC];
+
 			//Setting the helping-field to control the users access to row-actions in requestList (lwc)
-			for(HOT_Request__c request: requests){
+			//Hiding Users Name if the request happened 1 week ago
+			DateTime oneWeekAgo = DateTime.now().addDays(-7);
+			DateTime sixMonthsAgo = DateTime.now().addMonths(-6);
+			for(HOT_Request__c request: tempRequests){
+				request.UserName__c = request.ActualUserName__c;
 				request.TempAccountId__c = user.AccountId;
 				if(request.NumberOfWorkOrders__c == 0 || request.NumberOfWorkOrders__c == null){
 					request.NumberOfWorkOrders__c = 1;
+				}
+				if(request.Account__c != user.AccountId){
+					Integer numberOfWorkOrders = request.Work_Orders__r.size();
+					if(numberOfWorkOrders>0){
+						if(request.Work_Orders__r[numberOfWorkOrders-1].StartDate < oneWeekAgo){
+							request.UserName__c = '';
+						}
+						if(request.Work_Orders__r[numberOfWorkOrders-1].StartDate > sixMonthsAgo){
+							requests.add(request);
+						}
+					}
+					else{
+						if(request.StartTime__c < oneWeekAgo){
+							request.UserName__c = '';
+						}
+						if(request.StartTime__c > sixMonthsAgo){
+							requests.add(request);
+						}
+					}
+				}
+				else{
+					requests.add(request);
 				}
 			}
 		}
