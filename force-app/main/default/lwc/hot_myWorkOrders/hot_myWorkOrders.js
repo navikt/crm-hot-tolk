@@ -140,20 +140,10 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			if (parsed_params.id != null) {
 				this.requestNumber = parsed_params.id;
 			}
-			/*
-			getWorkOrdersFromRequest({ requestNumber: requestNumber }).then(result => {
-				this.workOrders = result;
-			});
-			*/
 			this.showAll = false;
 		}
 		else {
 			this.showAll = true;
-			/*
-			getMyWorkOrders().then(result => {
-				this.workOrders = result;
-			});
-			*/
 		}
 	}
 
