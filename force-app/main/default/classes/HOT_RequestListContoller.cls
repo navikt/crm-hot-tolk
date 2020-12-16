@@ -6,14 +6,14 @@ public without sharing class HOT_RequestListContoller {
 		User user = [SELECT Id, AccountId, Name FROM User WHERE Id = : userId];
 		List<HOT_Request__c> requests = new List<HOT_Request__c>();
 		if(user.AccountId != null){
-			List<HOT_Request__c> tempRequests = [SELECT Name, Subject__c, StartTime__c, EndTime__c, MeetingStreet__c, MeetingPostalCode__c, NumberOfWorkOrders__c,
-			MeetingPostalCity__c, InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, IsSerieoppdrag__c,
-			Description__c, Status__c, ExternalRequestStatus__c, Account__c, 
-			(SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
-			(SELECT StartDate, EndDate FROM HOT_Request__c.Work_Orders__r WHERE Status != 'Annul' ORDER BY StartDate),
-			Source__c, Type__c, toLabel(EventType__c), Orderer__r.Name, OrdererPhone__c, OrdererEmail__c, UserName__c, Company__r.Name, OrganizationNumber__c, InvoiceReference__c, AdditionalInvoicetext__c
-			,EconomicalProvider__c, ActualUserName__c, TempAccountId__c
-			FROM HOT_Request__c WHERE Account__c = : user.AccountId OR Orderer__c = :user.AccountId ORDER BY StartTime__c ASC];
+			List<HOT_Request__c> tempRequests = [SELECT Name, Subject__c, StartTime__c, EndTime__c, MeetingStreet__c, MeetingPostalCode__c, NumberOfWorkOrders__c, AdditionalInvoicetext__c,
+												MeetingPostalCity__c, InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c, IsSerieoppdrag__c, InvoiceReference__c,
+												Description__c, Status__c, ExternalRequestStatus__c, Account__c,EconomicalProvider__c, ActualUserName__c, TempAccountId__c, OrganizationNumber__c,
+												Source__c, Type__c, toLabel(EventType__c), Orderer__r.Name, OrdererPhone__c, OrdererEmail__c, UserName__c, Company__r.Name,
+												(SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
+												(SELECT StartDate, EndDate FROM HOT_Request__c.Work_Orders__r WHERE Status != 'Annul' ORDER BY StartDate)
+												FROM HOT_Request__c WHERE Account__c = : user.AccountId OR Orderer__c = :user.AccountId ORDER BY StartTime__c ASC];
+
 			//Setting the helping-field to control the users access to row-actions in requestList (lwc)
 			//Hiding Users Name if the request happened 1 week ago
 			DateTime oneWeekAgo = DateTime.now().addDays(-7);
