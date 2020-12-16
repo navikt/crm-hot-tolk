@@ -204,7 +204,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			tempColumnLabels.push("''");
 		}
 		else {
-			tempColumns.unshift({ label: 'Bruker', fieldName: 'ActualUserName__c', type: 'text', sortable: true, })
+			tempColumns.unshift({ label: 'Bruker', fieldName: 'UserName__c', type: 'text', sortable: true, })
 			tempColumnLabels.unshift("'Bruker'");
 		}
 		for (var i = 0; i < tempColumnLabels.length; i++) {
@@ -380,7 +380,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 	showDetails(row) {
 		this.record = row;
 		this.myRequest = this.record.Orderer__c == this.userRecord.AccountId;
-		this.userForm = this.record.Type__c == 'User' || this.record.Type__c == 'Company';
+		this.userForm = (this.record.Type__c == 'User' || this.record.Type__c == 'Company') && this.record.UserName__c != "";
 		this.companyForm = this.record.Type__c == 'Company' || this.record.Type__c == 'PublicEvent';
 		this.publicEvent = this.record.Type__c == 'PublicEvent';
 		this.isDetails = true;
