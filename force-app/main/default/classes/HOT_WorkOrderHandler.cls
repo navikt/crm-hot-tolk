@@ -21,6 +21,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		}
 		updateRequests((List<WorkOrder>) records);
 	}
+
+	//Issue 10 i MyTriggers-rammeverket fører til en feil ved manuel testing, hvor kun HOT_WorkOrderStatusHandler.onAfterUpdate blir kjørt.
+	//Vi gjør derfor om denne "trigger"-metoden til en statisk metode, og kaller på den fra HOT_WorkOrderStatusHandler.onAfterUpdate.
 	public static void onAfterUpdateTemp(Map<Id,sObject> triggerOldMap, List<WorkOrder> records) {
 		List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
 
@@ -159,7 +162,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 				deletedWorkOrders.add(workOrder.Id);
 			}
 		}
-		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, StartTime__c, EndTime__c, Subject__c, Description__c,
+		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, StartTime__c, EndTime__c,
 										(SELECT Id, StartDate, EndDate, Status FROM HOT_Request__c.Work_Orders__r
 										WHERE Id NOT IN :deletedWorkOrders ORDER BY StartDate) 
 										FROM HOT_Request__c WHERE Id IN :requestIds];
