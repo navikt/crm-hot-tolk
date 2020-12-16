@@ -13,10 +13,16 @@ public without sharing class HOT_RequestListContoller {
 			,EconomicalProvider__c, ActualUserName__c, TempAccountId__c
 			FROM HOT_Request__c WHERE Account__c = : user.AccountId OR Orderer__c = :user.AccountId ORDER BY StartTime__c ASC];
 			//Setting the helping-field to control the users access to row-actions in requestList (lwc)
+			//Hiding Users Name if the request happened 1 week ago
+			DateTime oneWeekAgo = DateTime.now().addDays(-7);
 			for(HOT_Request__c request: requests){
+				request.UserName__c = request.ActualUserName__c;
 				request.TempAccountId__c = user.AccountId;
 				if(request.NumberOfWorkOrders__c == 0 || request.NumberOfWorkOrders__c == null){
 					request.NumberOfWorkOrders__c = 1;
+				}
+				if(request.StartTime__c < oneWeekAgo){
+					request.UserName__c = '';
 				}
 			}
 		}
