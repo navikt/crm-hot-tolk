@@ -69,7 +69,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			fieldName: 'HOT_Interpreters__c',
 			type: 'text',
 			sortable: true,
-		}
+		},
 		{
 			type: 'action',
 			typeAttributes: { rowActions: this.getRowActions },
