@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>Service Appointment Changed</customNotifTypeName>
+    <desktop>true</desktop>
+    <masterLabel>Service Appointment Changed</masterLabel>
+    <mobile>true</mobile>
+</CustomNotificationType>
