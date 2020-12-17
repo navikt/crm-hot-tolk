@@ -156,11 +156,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 		let regExp = RegExp("[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]");
 		if (!regExp.test(inputComponent.value)) {
-			console.log("invalid")
 			inputComponent.setCustomValidity("Fødselsnummeret er ikke gyldig");
 			inputComponent.focus();
 		} else {
-			console.log("valid")
 			inputComponent.setCustomValidity("");
 			this.fieldValues.UserPersonNumber__c = inputComponent.value;
 		}
@@ -191,7 +189,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					this.times.push(temp);
 				}
 
-				console.log(JSON.stringify(this.times))
 			}
 			this.isOnlyOneTime = this.times.length == 1;
 			this.error = undefined;
@@ -237,7 +234,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.times[index].endTime = tempTime.join("").substring(11, 23);
 		}
 		this.updateValues(event, index);
-		this.validateDate(event, index);
+		this.validateDateInput(event, index);
 	}
 	setStartTime(event) {
 		let index = this.getIndexById(event.target.name);
@@ -329,24 +326,41 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
 				this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 			}
-			const isDuplicate = this.isDuplicate(this.fieldValues);
-			if (isDuplicate == null) {
-				console.log("Sumbitting")
-				this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-				console.log("submitted");
+
+			let invalidIndex = -1;
+			for (let time of this.times) {
+				if (!time.isValid) {
+					invalidIndex = this.times.indexOf(time);
+					break;
+				}
 			}
 
-			else {
-				if (confirm("Du har allerede en bestilling på samme tidspunkt\n\nFortsett?")) {
+			if (invalidIndex == -1) {
+				const isDuplicate = this.isDuplicate(this.fieldValues);
+				if (isDuplicate == null) {
+					console.log("Sumbitting")
 					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-				}
-				else {
+					console.log("submitted");
 					this.spin = false;
 				}
-
+				else {
+					if (confirm("Du har allerede en bestilling på samme tidspunkt\n\nFortsett?")) {
+						this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+						this.spin = false;
+					}
+					else {
+						this.spin = false;
+					}
+				}
+				window.scrollBy(0, 100);
+				window.scrollBy(0, -100);
 			}
-			window.scrollBy(0, 100);
-			window.scrollBy(0, -100);
+			else {
+				let inputList = this.template.querySelector('.skjema').querySelector('.time-inputs-container').querySelectorAll('.dynamic-time-inputs-with-line_button');
+				let dateInputElement = inputList[invalidIndex].querySelector('.dynamic-time-inputs').querySelector('.date');
+				this.throwInputValidationError(dateInputElement, 'DERPERINOPEPPERINO');
+				this.spin = false;
+			}
 		}
 	}
 
@@ -398,17 +412,26 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 		}
 		else {
-
 			radioButtonGroup.setCustomValidity("Du må velge type bestilling");
 			radioButtonGroup.focus();
 		}
 		radioButtonGroup.reportValidity();
 	}
-
-	validateDate(event, index) {
+	validateDate(dateTime) {
+		let nowTime = Date.now();
+		return dateTime.getTime() > nowTime
+	}
+	throwInputValidationError(element, errorText) {
+		element.setCustomValidity(errorText);
+		if (errorText != "") {
+			element.focus();
+		}
+		element.reportValidity();
+	}
+	validateDateInput(event, index) {
 		let dateElement = event.target;
 		let tempDate = new Date(event.detail.value)
-		if (tempDate.getTime() < Date.now()) {
+		if (!this.validateDate(tempDate)) {
 			dateElement.setCustomValidity("Du kan ikke bestille tolk i fortiden.");
 			dateElement.focus();
 			this.times[index].isValid = false;
@@ -439,7 +462,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	handleError(event) {
-		console.log("handleError");
 		console.log(JSON.stringify(event));
 		this.spin = false;
 	}
