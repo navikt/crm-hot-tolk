@@ -356,9 +356,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				window.scrollBy(0, -100);
 			}
 			else {
-				let inputList = this.template.querySelector('.skjema').querySelector('.time-inputs-container').querySelectorAll('.dynamic-time-inputs-with-line_button');
-				let dateInputElement = inputList[invalidIndex].querySelector('.dynamic-time-inputs').querySelector('.date');
-				this.throwInputValidationError(dateInputElement, 'DERPERINOPEPPERINO');
+				let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
+				let dateInputElement = inputList[invalidIndex].querySelector('.date');
+				this.throwInputValidationError(dateInputElement, dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.');
 				this.spin = false;
 			}
 		}
