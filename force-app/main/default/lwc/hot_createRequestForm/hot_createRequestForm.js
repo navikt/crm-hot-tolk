@@ -240,7 +240,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		let index = this.getIndexById(event.target.name);
 		console.log(event.detail.value)
 
-		//delete this.times[index]["startTime"];
 		this.times[index].startTime = event.detail.value;
 
 		var tempTime = event.detail.value.split("");
@@ -341,12 +340,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					console.log("Sumbitting")
 					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
 					console.log("submitted");
-					this.spin = false;
 				}
 				else {
 					if (confirm("Du har allerede en bestilling på samme tidspunkt\n\nFortsett?")) {
 						this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-						this.spin = false;
 					}
 					else {
 						this.spin = false;
