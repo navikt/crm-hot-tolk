@@ -222,7 +222,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			tempTime[11] = first.toString();
 			tempTime[12] = second.toString();
 
-			this.times[index].startTime = tempTime.join("").substring(11, 23);
+			this.times[index].startTime = tempTime.join("").substring(11, 16);
 			var first = parseFloat(tempTime[11]);
 			var second = parseFloat(tempTime[12]);
 			second = (second + 1) % 10;
@@ -231,7 +231,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 			tempTime[11] = first.toString();
 			tempTime[12] = second.toString();
-			this.times[index].endTime = tempTime.join("").substring(11, 23);
+			this.times[index].endTime = tempTime.join("").substring(11, 16);
 		}
 		this.updateValues(event, index);
 		this.validateDateInput(event, index);
@@ -252,7 +252,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 			tempTime[0] = first.toString();
 			tempTime[1] = second.toString();
-			this.times[index].endTime = tempTime.join("");
+			this.times[index].endTime = tempTime.join("").substring(0, 5);
 		}
 		this.updateValues(event, index);
 	}
@@ -260,7 +260,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	setEndTime(event) {
 		console.log(event.detail.value)
 		const index = this.getIndexById(event.target.name);
-		this.times[index].endTime = event.detail.value;
+		this.times[index].endTime = event.detail.value.substring(0, 5);
 		this.updateValues(event, index);
 	}
 
@@ -479,10 +479,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		let times = {};
 		for (let dateTime of this.times) {
 			dateTime = this.formatDateTime(dateTime);
-			let temp = new Date(dateTime.date + " " + dateTime.startTime).getTime()
-			console.log(temp);
-			temp = Math.floor(temp / 60000) * 60000
-			console.log(temp)
 			times[dateTime.id.toString()] = {
 				"startTime": new Date(dateTime.date + " " + dateTime.startTime).getTime(),
 				"endTime": new Date(dateTime.date + " " + dateTime.endTime).getTime(),
