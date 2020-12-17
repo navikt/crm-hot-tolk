@@ -479,6 +479,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		let times = {};
 		for (let dateTime of this.times) {
 			dateTime = this.formatDateTime(dateTime);
+			let temp = new Date(dateTime.date + " " + dateTime.startTime).getTime()
+			console.log(temp);
+			temp = Math.floor(temp / 60000) * 60000
+			console.log(temp)
 			times[dateTime.id.toString()] = {
 				"startTime": new Date(dateTime.date + " " + dateTime.startTime).getTime(),
 				"endTime": new Date(dateTime.date + " " + dateTime.endTime).getTime(),
