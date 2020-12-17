@@ -213,11 +213,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			ServiceAppointment oldServiceAppointment = (ServiceAppointment)triggerOldMap.get(serviceAppointment.Id);
 			
 			// Varsel ved avlyst av bruker
-			if(serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled' && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+			if(serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled' && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c && oldServiceAppointment.Status != 'Scheduled') {
 			
 				Messaging.CustomNotification notification = new Messaging.CustomNotification();
-				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' - ' + ' Avlyst');
-				notification.setBody('Oppdraget ' + serviceAppointment.AppointmentNumber + ' som skulle vært gjennomført ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' er avlyst.');
+				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.EarliestStartTime?.format('d.M.yyyy') + ' - ' + ' Avlyst');
+				notification.setBody('Oppdraget ' + serviceAppointment.AppointmentNumber + ' som skulle vært gjennomført ' + serviceAppointment.EarliestStartTime?.format('d.M.yyyy') + ' er avlyst.');
 				notification.setNotificationTypeId(notificationType.Id);
 				notification.setTargetId(serviceAppointment.Id);
 				
@@ -232,11 +232,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			}
 
 			// Varsel ved endring av tidspunkt
-			if((serviceAppointment.SchedStartTime != oldServiceAppointment.SchedStartTime || serviceAppointment.SchedEndTime != oldServiceAppointment.SchedEndTime) && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+			if((serviceAppointment.SchedStartTime != oldServiceAppointment.SchedStartTime || serviceAppointment.SchedEndTime != oldServiceAppointment.SchedEndTime) && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c && serviceAppointment.Status != 'Scheduled' && serviceAppointment.SchedStartTime != null) {
 			
 				Messaging.CustomNotification notification = new Messaging.CustomNotification();
-				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' - ' + ' Endret tidspunkt');
-				notification.setBody('Oppdraget ' + serviceAppointment.AppointmentNumber + ' den ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' har fått nytt tidspunkt.');
+				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.SchedStartTime?.format('d.M.yyyy') + ' - ' + ' Endret tidspunkt');
+				notification.setBody('Oppdraget ' + serviceAppointment.AppointmentNumber + ' den ' + serviceAppointment.SchedStartTime?.format('d.M.yyyy') + ' har fått nytt tidspunkt.');
 				notification.setNotificationTypeId(notificationType.Id);
 				notification.setTargetId(serviceAppointment.Id);
 				
@@ -251,11 +251,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			}
 
 			// Varsel ved endring av adresse
-			if(serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+			if(serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c && serviceAppointment.Status != 'Scheduled') {
 			
 				Messaging.CustomNotification notification = new Messaging.CustomNotification();
-				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' - ' + ' Endret adresse');
-				notification.setBody('Oppdraget ' + serviceAppointment.AppointmentNumber + ' den ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' har fått ny adresse.');
+				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.EarliestStartTime?.format('d.M.yyyy') + ' - ' + ' Endret adresse');
+				notification.setBody('Oppdraget ' + serviceAppointment.AppointmentNumber + ' den ' + serviceAppointment.EarliestStartTime?.format('d.M.yyyy') + ' har fått ny adresse.');
 				notification.setNotificationTypeId(notificationType.Id);
 				notification.setTargetId(serviceAppointment.Id);
 				
@@ -270,11 +270,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			}
 
 			// Varsel ved fjerning av tolk
-			if(serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c) {
+			if(serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c && serviceAppointment.Status != 'Scheduled') {
 			
 				Messaging.CustomNotification notification = new Messaging.CustomNotification();
-				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' - ' + ' Tatt av oppdraget');
-				notification.setBody('Du er tatt av oppdraget ' + serviceAppointment.AppointmentNumber + ' den ' + serviceAppointment.SchedStartTime.format('d.m.yyyy'));
+				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.EarliestStartTime?.format('d.M.yyyy') + ' - ' + ' Tatt av oppdraget');
+				notification.setBody('Du er tatt av oppdraget ' + serviceAppointment.AppointmentNumber + ' den ' + serviceAppointment.EarliestStartTime?.format('d.M.yyyy'));
 				notification.setNotificationTypeId(notificationType.Id);
 				notification.setTargetId(serviceAppointment.Id);
 				
