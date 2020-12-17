@@ -231,6 +231,7 @@ private class HOT_ServiceAppointmentHandlerTest{
 
 
 	@isTest private static void testDoNotCreateHAR() {
+		Test.startTest();
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
 
@@ -251,7 +252,7 @@ private class HOT_ServiceAppointmentHandlerTest{
 		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, resource.Id);
 		insert assignedResource;
 
-		Test.startTest();
+		
 		serviceAppointment.Status = 'Cancel';
 		serviceAppointment.HOT_DoNotCreateHAR__c = true;
 		update serviceAppointment;
@@ -278,5 +279,15 @@ private class HOT_ServiceAppointmentHandlerTest{
 		for(String key:correctStatuses.keySet()){
 			System.assertEquals(correctStatuses.get(key), HOT_ServiceAppointmentHandler.getTranslatedStatus(key));
 		}
+	}
+
+	@isTest private static void testNotifyUsers() {
+		Test.startTest();
+		ServiceAppointment serviceAppointment = [SELECT Id, Status, SchedStartTime, Street FROM ServiceAppointment LIMIT 1];
+		serviceAppointment.Status = 'Canceled';
+		serviceAppointment.SchedStartTime = Datetime.now();
+		serviceAppointment.Street = 'Street2789462894';
+		update serviceAppointment;
+		Test.stopTest();
 	}
 }

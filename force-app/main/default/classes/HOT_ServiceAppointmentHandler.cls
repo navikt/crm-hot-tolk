@@ -8,9 +8,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
 		
-		List<ServiceAppointment> recievedNewInterpreter= new List<ServiceAppointment>();
-		List<ServiceAppointment> updatedServiceAppointment = new List<ServiceAppointment>();
+		List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
+		List<ServiceAppointment> updatedServiceAppointments = new List<ServiceAppointment>();
 		List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
+		List<ServiceAppointment> allServiceAppointments = new List<ServiceAppointment>();
 		
 		for(ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
 			if(serviceAppointment.get('HOT_ServiceResource__c') != null &&
@@ -18,15 +19,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 					recievedNewInterpreter.add(serviceAppointment);
 			}
 			if(triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredInterpreter__c') != ServiceAppointment.HOT_PreferredInterpreter__c && ServiceAppointment.HOT_PreferredInterpreter__c != null){
-				updatedServiceAppointment.add(serviceAppointment);
+				updatedServiceAppointments.add(serviceAppointment);
 			}
 			if(serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') || serviceAppointment.HOT_ServiceResource__c != triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) {
 				serviceAppointmentsWithChangedStatusOrResource.add(serviceAppointment);
 			}
+			allServiceAppointments.add(serviceAppointment);
 		}
-
-		if(!updatedServiceAppointment.isEmpty()) {
-			updatedServiceAppointment = setFieldsByPreferredInterpreter(updatedServiceAppointment);
+		if(!updatedServiceAppointments.isEmpty()) {
+			updatedServiceAppointments = setFieldsByPreferredInterpreter(updatedServiceAppointments);
 		}
 		if(recievedNewInterpreter.size() > 0) {
 			updateCancelledByInterpreter(recievedNewInterpreter);
@@ -34,6 +35,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		if(serviceAppointmentsWithChangedStatusOrResource.size()>0) {
 			createHistoricallyAssignedResources(serviceAppointmentsWithChangedStatusOrResource, triggerOldMap);
 		}
+		notifyUsers(allServiceAppointments, triggerOldMap);
 	}
 
 	public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -221,4 +223,90 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		}
 		return serviceAppointmentsToUpdate;
 	}
+
+	public static void notifyUsers(List<ServiceAppointment> serviceAppointments, Map<Id,sObject> triggerOldMap) {
+
+		CustomNotificationType notificationType = [SELECT Id, DeveloperName FROM CustomNotificationType WHERE DeveloperName='HOT_Service_Appointment_Changed'];
+		
+		for(ServiceAppointment serviceAppointment : serviceAppointments) {
+			
+			ServiceAppointment oldServiceAppointment = (ServiceAppointment)triggerOldMap.get(serviceAppointment.Id);
+			
+			// Varsel ved avlyst av bruker
+			if(serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled' && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+			
+				Messaging.CustomNotification notification = new Messaging.CustomNotification();
+				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' - ' + ' Avlyst');
+				notification.setBody('Oppdraget ' + serviceAppointment.AppointmentNumber + ' som skulle vært gjennomført ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' er avlyst.');
+				notification.setNotificationTypeId(notificationType.Id);
+				notification.setTargetId(serviceAppointment.Id);
+				
+				Set<String> recipients = new Set<String>();
+				recipients.add(oldServiceAppointment.HOT_AssignedResourceId__c);
+				try {
+					notification.send(recipients);
+				}
+				catch (Exception e) {
+					System.debug('Problem sending notification: ' + e.getMessage());
+				}
+			}
+
+			// Varsel ved endring av tidspunkt
+			if((serviceAppointment.SchedStartTime != oldServiceAppointment.SchedStartTime || serviceAppointment.SchedEndTime != oldServiceAppointment.SchedEndTime) && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+			
+				Messaging.CustomNotification notification = new Messaging.CustomNotification();
+				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' - ' + ' Endret tidspunkt');
+				notification.setBody('Oppdraget ' + serviceAppointment.AppointmentNumber + ' den ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' har fått nytt tidspunkt.');
+				notification.setNotificationTypeId(notificationType.Id);
+				notification.setTargetId(serviceAppointment.Id);
+				
+				Set<String> recipients = new Set<String>();
+				recipients.add(oldServiceAppointment.HOT_AssignedResourceId__c);
+				try {
+					notification.send(recipients);
+				}
+				catch (Exception e) {
+					System.debug('Problem sending notification: ' + e.getMessage());
+				}
+			}
+
+			// Varsel ved endring av adresse
+			if(serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c && serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c) {
+			
+				Messaging.CustomNotification notification = new Messaging.CustomNotification();
+				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' - ' + ' Endret adresse');
+				notification.setBody('Oppdraget ' + serviceAppointment.AppointmentNumber + ' den ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' har fått ny adresse.');
+				notification.setNotificationTypeId(notificationType.Id);
+				notification.setTargetId(serviceAppointment.Id);
+				
+				Set<String> recipients = new Set<String>();
+				recipients.add(oldServiceAppointment.HOT_AssignedResourceId__c);
+				try {
+					notification.send(recipients);
+				}
+				catch (Exception e) {
+					System.debug('Problem sending notification: ' + e.getMessage());
+				}
+			}
+
+			// Varsel ved fjerning av tolk
+			if(serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c) {
+			
+				Messaging.CustomNotification notification = new Messaging.CustomNotification();
+				notification.setTitle(serviceAppointment.AppointmentNumber + ' - ' + serviceAppointment.SchedStartTime.format('d.m.yyyy') + ' - ' + ' Tatt av oppdraget');
+				notification.setBody('Du er tatt av oppdraget ' + serviceAppointment.AppointmentNumber + ' den ' + serviceAppointment.SchedStartTime.format('d.m.yyyy'));
+				notification.setNotificationTypeId(notificationType.Id);
+				notification.setTargetId(serviceAppointment.Id);
+				
+				Set<String> recipients = new Set<String>();
+				recipients.add(oldServiceAppointment.HOT_AssignedResourceId__c);
+				try {
+					notification.send(recipients);
+				}
+				catch (Exception e) {
+					System.debug('Problem sending notification: ' + e.getMessage());
+				}
+			}
+		}
+    }
 }

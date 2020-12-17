@@ -2,6 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import STATUS from '@salesforce/schema/WorkOrder.Status';
 import { updateRecord } from 'lightning/uiRecordApi';
+import { refreshApex } from '@salesforce/apex';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import getWorkOrdersFromRequest from '@salesforce/apex/HOT_WorkOrderListController.getWorkOrdersFromRequest';
 import getMyWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrders';
@@ -68,19 +69,40 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			fieldName: 'HOT_Interpreters__c',
 			type: 'text',
 			sortable: true,
-		}
-		/*
+		},
 		{
 			type: 'action',
-			typeAttributes: { rowActions: actions },
+			typeAttributes: { rowActions: this.getRowActions },
 		},
-		*/
 	];
+	getRowActions(row, doneCallback) {
+		let actions = [];
+		if (row["HOT_IsCancelable__c"]) {
+			actions.push({ label: 'Avlys', name: 'delete' });
+		}
+		doneCallback(actions);
+	}
 
 	columnLabels = ["'Start tid'", "'Slutt tid'", "'Tema'", "'Bestillingsnummer'", "'Status'", "'Tolker'", "''"];
 
+	wiredWorkOrderResult;
 	@track workOrders = [];
 	@track requestNumber;
+	@wire(getMyWorkOrders)
+	wiredGetMyWorkOrders(result) {
+		if (result.data && this.showAll) {
+			this.workOrders = result.data;
+			this.wiredWorkOrderResult = result;
+		}
+	}
+	@wire(getWorkOrdersFromRequest, { requestNumber: '$requestNumber' })
+	wiredGetWorkOrdersFromRequest(result) {
+		if (result.data && !this.showAll) {
+			this.workOrders = result.data;
+			this.wiredWorkOrderResult = result;
+		}
+	}
+
 	@track showAll = true;
 	connectedCallback() {
 		for (var i = 0; i < this.columnLabels.length; i++) {
@@ -118,16 +140,10 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 			if (parsed_params.id != null) {
 				this.requestNumber = parsed_params.id;
 			}
-			getWorkOrdersFromRequest({ requestNumber: requestNumber }).then(result => {
-				this.workOrders = result;
-			});
 			this.showAll = false;
 		}
 		else {
 			this.showAll = true;
-			getMyWorkOrders().then(result => {
-				this.workOrders = result;
-			});
 		}
 	}
 
@@ -209,11 +225,11 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 				if (confirm("Er du sikker på at du vil avlyse?")) {
 					const fields = {};
 					fields[WORKORDER_ID.fieldApiName] = Id;
-					fields[STATUS.fieldApiName] = "Avlyst";
+					fields[STATUS.fieldApiName] = "Canceled";
 					const recordInput = { fields };
 					updateRecord(recordInput)
 						.then(() => {
-							refreshApex(this.workOrders);
+							refreshApex(this.wiredWorkOrderResult);
 						})
 						.catch(error => {
 							alert("Kunne ikke avlyse.");

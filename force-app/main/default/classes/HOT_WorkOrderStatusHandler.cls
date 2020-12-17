@@ -28,6 +28,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 		if(changedStatusWorkOrders.size() > 0) {
 			updateRequestStatus(changedStatusWorkOrders);
 		}
+		HOT_WorkOrderHandler.onAfterUpdateTemp(triggerOldMap, (List<WorkOrder>) records);
 	}
 
 	public override void onBeforeUpdate(Map<Id,sObject> triggerOldMap) {
