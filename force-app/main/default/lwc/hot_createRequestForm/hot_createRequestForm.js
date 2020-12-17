@@ -529,6 +529,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 				delete this.fieldValues.Account__c;
 				delete this.fieldValues.Company__c;
+				this.fieldValues.StartTime__c = "";
+				this.fieldValues.EndTime__c = "";
 
 				this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
 				if (!this.sameLocation) {
