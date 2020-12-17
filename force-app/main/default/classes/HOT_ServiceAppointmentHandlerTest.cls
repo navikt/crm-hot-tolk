@@ -93,7 +93,7 @@ private class HOT_ServiceAppointmentHandlerTest{
 		WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, wt);
 		ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
 
-		sa = [SELECT Id, Status, StatusCategory, HOT_ServiceResource__c FROM ServiceAppointment LIMIT 1];
+		sa = [SELECT Id, Status FROM ServiceAppointment LIMIT 1];
 
 		sa.Status = 'Scheduled';
 		upsert sa;
@@ -110,11 +110,9 @@ private class HOT_ServiceAppointmentHandlerTest{
 
 		sa.Status = 'Canceled';
 		update sa;
-
-		sa = [SELECT Id, Status, StatusCategory, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c FROM ServiceAppointment WHERE Id = :sa.Id LIMIT 1];
-		System.assertEquals('Canceled', sa.StatusCategory, 'Could not set Status');		
-		sa = [SELECT Id, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c FROM ServiceAppointment WHERE Id = :sa.Id LIMIT 1];
-		System.assertEquals('', sa.HOT_ServiceResource__c, 'Could not set SR to blank');
+	
+		sa = [SELECT Id, HOT_AssignedResourceId__c FROM ServiceAppointment WHERE Id = :sa.Id LIMIT 1];
+		System.assertEquals(null, sa.HOT_AssignedResourceId__c, 'Could not set AR');
 	}
 
 	@isTest private static void testCreateHistoricallyAssignedResources_addResource() {

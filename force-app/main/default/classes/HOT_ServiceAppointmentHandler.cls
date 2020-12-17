@@ -5,12 +5,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		setOwner((List<ServiceAppointment>) records);
 		setFieldsByPreferredInterpreter((List<ServiceAppointment>) records);
 	}
+
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
 		
 		List<ServiceAppointment> recievedNewInterpreter= new List<ServiceAppointment>();
 		List<ServiceAppointment> updatedServiceAppointment = new List<ServiceAppointment>();
 		List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
-		List<ServiceAppointment> updatedStatusCanceled = new List<ServiceAppointment>();
 		
 		for(ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
 			if(serviceAppointment.get('HOT_ServiceResource__c') != null &&
@@ -23,10 +23,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			if(serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') || serviceAppointment.HOT_ServiceResource__c != triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) {
 				serviceAppointmentsWithChangedStatusOrResource.add(serviceAppointment);
 			}
-
-			if(serviceAppointment.StatusCategory == 'Cannot Complete' || serviceAppointment.StatusCategory == 'CannotComplete' || serviceAppointment.StatusCategory == 'Canceled') {
-				updatedStatusCanceled.add(serviceAppointment);
-			}
 		}
 
 		if(!updatedServiceAppointment.isEmpty()) {
@@ -38,16 +34,27 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		if(serviceAppointmentsWithChangedStatusOrResource.size()>0) {
 			createHistoricallyAssignedResources(serviceAppointmentsWithChangedStatusOrResource, triggerOldMap);
 		}
+	}
+
+	public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
+		List<ServiceAppointment> updatedStatusCanceled = new List<ServiceAppointment>();
+		
+		for(ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+			if(serviceAppointment.StatusCategory == 'CannotComplete' || serviceAppointment.StatusCategory == 'Canceled') {
+				updatedStatusCanceled.add(serviceAppointment);
+			}
+		}
+
 		if(updatedStatusCanceled.size() > 0) {
 			removeInterpreter(updatedStatusCanceled);
 		}
 	}
 
 	private static void removeInterpreter(List<ServiceAppointment> updatedStatusCanceled) {
-		for(ServiceAppointment serviceAppointment : updatedStatusCanceled) {
-			serviceAppointment.HOT_ServiceResource__c = '';
-		}
+		List<AssignedResource> arList = [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId IN :updatedStatusCanceled];
+		delete arList;
 	}
+
 	private static void updateCancelledByInterpreter(List<ServiceAppointment> recievedNewInterpreter) {
 		for(ServiceAppointment serviceAppointment : recievedNewInterpreter) {
 			serviceAppointment.HOT_CanceledByInterpreter__c = false;		
