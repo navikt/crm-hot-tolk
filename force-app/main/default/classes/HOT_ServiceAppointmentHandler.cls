@@ -24,6 +24,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			if(serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') || serviceAppointment.HOT_ServiceResource__c != triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) {
 				serviceAppointmentsWithChangedStatusOrResource.add(serviceAppointment);
 			}
+			if(serviceAppointment.Status == 'None' && triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Cannot Complete') {
+				serviceAppointment.Status = 'Cannot Complete';
+			}
+			if(serviceAppointment.Status == null && triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Cannot Complete') {
+				serviceAppointment.Status = 'Cannot Complete';
+			}
 			allServiceAppointments.add(serviceAppointment);
 		}
 		if(!updatedServiceAppointments.isEmpty()) {
@@ -39,21 +45,21 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 	}
 
 	public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
-		List<ServiceAppointment> updatedStatusCanceled = new List<ServiceAppointment>();
+		List<ServiceAppointment> serviceAppointmentsToRemoveAssignedResource = new List<ServiceAppointment>();
 		
 		for(ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
-			if(serviceAppointment.StatusCategory == 'CannotComplete' || serviceAppointment.StatusCategory == 'Canceled') {
-				updatedStatusCanceled.add(serviceAppointment);
+			if((serviceAppointment.Status == 'Cannot Complete' || serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') && serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
+				serviceAppointmentsToRemoveAssignedResource.add(serviceAppointment);
 			}
 		}
 
-		if(updatedStatusCanceled.size() > 0) {
-			removeAssignedResource(updatedStatusCanceled);
+		if(serviceAppointmentsToRemoveAssignedResource.size() > 0) {
+			removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
 		}
 	}
 
-	private static void removeAssignedResource(List<ServiceAppointment> updatedStatusCanceled) {
-		List<AssignedResource> arList = [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId IN :updatedStatusCanceled];
+	private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
+		List<AssignedResource> arList = [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId IN :serviceAppointments];
 		delete arList;
 	}
 
