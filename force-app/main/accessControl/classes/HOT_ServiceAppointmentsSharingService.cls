@@ -42,6 +42,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
 		Database.insert( accountShares, false );
 	}
 
+	@future
 	public static void removeAccessForSpecificUsers( Map<Id, Id > apppointmentByAssignment, Map<Id, Id> resourceByAssignment ) {
 		Map<Id, Id> userIdyResourceId = getUserIdyResourceId( resourceByAssignment.values() );
 		String soqlQuery = 'SELECT Id FROM ServiceAppointmentShare WHERE RowCause =\'Manual\' AND (';
