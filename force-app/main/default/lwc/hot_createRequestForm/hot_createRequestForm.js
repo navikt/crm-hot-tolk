@@ -188,7 +188,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 					let temp = new Object({ "id": timeMap.id, "date": timeMap.date, "startTime": timeMap.startTime, "endTime": timeMap.endTime, "isNew": 0 });
 					this.times.push(temp);
 				}
-
+				this.validateExistingDateTimes();
 			}
 			this.isOnlyOneTime = this.times.length == 1;
 			this.error = undefined;
@@ -326,15 +326,17 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 			}
 
-			let invalidIndex = -1;
+			let invalidIndex = [];
+			console.log("validating times")
 			for (let time of this.times) {
+				console.log(JSON.stringify(time))
 				if (!time.isValid) {
-					invalidIndex = this.times.indexOf(time);
-					break;
+					invalidIndex.unshift(this.times.indexOf(time));
 				}
 			}
 
-			if (invalidIndex == -1) {
+			console.log(invalidIndex)
+			if (invalidIndex.length == 0) {
 				const isDuplicate = this.isDuplicate(this.fieldValues);
 				if (isDuplicate == null) {
 					console.log("Sumbitting")
@@ -354,8 +356,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 			else {
 				let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
-				let dateInputElement = inputList[invalidIndex].querySelector('.date');
-				this.throwInputValidationError(dateInputElement, dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.');
+				for (let index of invalidIndex) {
+					let dateInputElement = inputList[index].querySelector('.date');
+					this.throwInputValidationError(dateInputElement, dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.');
+				}
 				this.spin = false;
 			}
 		}
@@ -413,6 +417,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			radioButtonGroup.focus();
 		}
 		radioButtonGroup.reportValidity();
+	}
+	validateExistingDateTimes() {
+		for (let i = 0; i < this.times.length; i++) {
+			let date = new Date(this.times[i].date);
+			this.times[i].isValid = this.validateDate(date);
+		}
 	}
 	validateDate(dateTime) {
 		let nowTime = Date.now();
