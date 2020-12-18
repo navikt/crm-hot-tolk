@@ -133,10 +133,10 @@ private class HOT_ServiceAppointmentHandlerTest{
 		ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
 		insert resource;
 		
+		Test.startTest();
 		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, resource.Id);
 		
 		//Added Resource
-		Test.startTest();
 		insert assignedResource;
 		Test.stopTest();
 
