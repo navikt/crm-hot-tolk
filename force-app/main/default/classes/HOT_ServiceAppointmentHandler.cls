@@ -48,11 +48,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		}
 
 		if(updatedStatusCanceled.size() > 0) {
-			removeInterpreter(updatedStatusCanceled);
+			removeAssignedResource(updatedStatusCanceled);
 		}
 	}
 
-	private static void removeInterpreter(List<ServiceAppointment> updatedStatusCanceled) {
+	private static void removeAssignedResource(List<ServiceAppointment> updatedStatusCanceled) {
 		List<AssignedResource> arList = [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId IN :updatedStatusCanceled];
 		delete arList;
 	}
