@@ -58,7 +58,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 			sortable: true,
 		},
 		{
-			label: 'Arbeidstype',
+			label: 'Tolkemetode',
 			fieldName: 'WorkTypeName__c',
 			type: 'text',
 			sortable: true,

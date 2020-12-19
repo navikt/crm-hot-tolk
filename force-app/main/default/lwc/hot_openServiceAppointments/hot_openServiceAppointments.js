@@ -66,7 +66,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			sortable: true,
 		},
 		{
-			label: 'Arbeidstype',
+			label: 'Tolkemetode',
 			fieldName: 'HOT_WorkTypeName__c',
 			type: 'text',
 			sortable: true,
