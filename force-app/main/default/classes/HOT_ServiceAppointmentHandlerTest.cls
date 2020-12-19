@@ -86,6 +86,23 @@ private class HOT_ServiceAppointmentHandlerTest{
 		System.assertEquals(false, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to false');
 	}
 
+	@isTest static void testRemoveAssignedResourceCancel() {
+		Test.startTest();
+		ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+		ServiceResource resource = [SELECT Id FROM ServiceResource LIMIT 1];
+
+		AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+		insert ar;
+
+		sa.Status = 'Canceled';
+		update sa;
+		Test.stopTest();
+		List<AssignedResource> arList  = [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId = :sa.Id];
+		sa = [SELECT Id, Status FROM ServiceAppointment WHERE Id = :sa.id];
+		System.assertEquals(0, arList.size(), 'Could not delete AR');
+		System.assertEquals('Canceled', sa.Status, 'Service Appointment did not retain correct status');
+	}
+
 	@isTest private static void testCreateHistoricallyAssignedResources_addResource() {
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
@@ -104,10 +121,10 @@ private class HOT_ServiceAppointmentHandlerTest{
 		ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
 		insert resource;
 		
+		Test.startTest();
 		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, resource.Id);
 		
 		//Added Resource
-		Test.startTest();
 		insert assignedResource;
 		Test.stopTest();
 

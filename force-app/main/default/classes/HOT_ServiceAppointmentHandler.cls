@@ -5,6 +5,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		setOwner((List<ServiceAppointment>) records);
 		setFieldsByPreferredInterpreter((List<ServiceAppointment>) records);
 	}
+
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
 		
 		List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
@@ -12,7 +13,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
 		List<ServiceAppointment> allServiceAppointments = new List<ServiceAppointment>();
 		
-		for(ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records){
+		for(ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
 			if(serviceAppointment.get('HOT_ServiceResource__c') != null &&
 			serviceAppointment.get('HOT_ServiceResource__c') != triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) {
 					recievedNewInterpreter.add(serviceAppointment);
@@ -35,6 +36,25 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			createHistoricallyAssignedResources(serviceAppointmentsWithChangedStatusOrResource, triggerOldMap);
 		}
 		notifyUsers(allServiceAppointments, triggerOldMap);
+	}
+
+	public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
+		List<ServiceAppointment> serviceAppointmentsToRemoveAssignedResource = new List<ServiceAppointment>();
+		
+		for(ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+			if((serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') && serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
+				serviceAppointmentsToRemoveAssignedResource.add(serviceAppointment);
+			}
+		}
+
+		if(serviceAppointmentsToRemoveAssignedResource.size() > 0) {
+			removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
+		}
+	}
+
+	private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
+		List<AssignedResource> arList = [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId IN :serviceAppointments];
+		delete arList;
 	}
 
 	private static void updateCancelledByInterpreter(List<ServiceAppointment> recievedNewInterpreter) {
