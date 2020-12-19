@@ -27,7 +27,8 @@ public without sharing class HOT_WorkOrderListController {
 	}
 
 	public static Map<Id, WorkOrder> getAndSetInterpreters(Map<Id, WorkOrder> workOrders){
-		Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>([SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE WorkOrderId IN :workOrders.keySet()]);
+		List<String> statuses = new List<String>{'Dispatched', 'In Progress', 'Completed', 'Partially Complete'};
+		Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>([SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE WorkOrderId IN :workOrders.keySet() AND WorkOrder.Status IN :statuses]);
 		List<ServiceAppointment> serviceAppointments = [SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name FROM ServiceAppointment WHERE ParentRecordId IN :workOrderLineItems.keySet()];
 		for(ServiceAppointment serviceAppointment:serviceAppointments){
 			if(serviceAppointment.HOT_ServiceResource__r.Name != null){
