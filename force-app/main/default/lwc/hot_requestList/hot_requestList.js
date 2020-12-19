@@ -207,8 +207,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 			tempColumns.unshift({ label: 'Bruker', fieldName: 'UserName__c', type: 'text', sortable: true, })
 			tempColumnLabels.unshift("'Bruker'");
 		}
-		for (var i = 0; i < tempColumnLabels.length; i++) {
-			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), tempColumnLabels[i]);
+		for (var i = 0; i < 10; i++) {
+			if (i < tempColumnLabels.length) {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), tempColumnLabels[i]);
+			}
+			else {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), "");
+			}
 		}
 		this.columns = [...tempColumns];
 		this.columnLabels = [...tempColumnLabels];
@@ -276,8 +281,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		}
 	}
 	connectedCallback() {
-		for (var i = 0; i < this.columnLabels.length; i++) {
-			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		for (var i = 0; i < 10; i++) {
+			if (i < this.columnLabels.length) {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+			}
+			else {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), "");
+			}
 		}
 		window.scrollTo(0, 0);
 		refreshApex(this.wiredRequestsResult);
