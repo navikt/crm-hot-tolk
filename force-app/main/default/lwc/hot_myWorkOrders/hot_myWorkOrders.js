@@ -105,8 +105,13 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 
 	@track showAll = true;
 	connectedCallback() {
-		for (var i = 0; i < this.columnLabels.length; i++) {
-			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+		for (var i = 0; i < 10; i++) {
+			if (i < this.columnLabels.length) {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+			}
+			else {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), "");
+			}
 		}
 
 		let testURL = window.location.href;

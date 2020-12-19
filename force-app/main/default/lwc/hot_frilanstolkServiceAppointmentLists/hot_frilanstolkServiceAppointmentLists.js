@@ -47,8 +47,13 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
 	onOpen() {
 		const columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "'Frist"];
-		for (var i = 0; i < columnLabels.length; i++) {
-			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
+		for (var i = 0; i < 10; i++) {
+			if (i < columnLabels.length) {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
+			}
+			else {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), "");
+			}
 		}
 
 		this[NavigationMixin.Navigate]({
@@ -63,8 +68,13 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 	}
 	onInterested() {
 		const columnLabels = ["'Start Tid'", "''", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "'Status'", "'Ny kommentar'"];
-		for (var i = 0; i < columnLabels.length; i++) {
-			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
+		for (var i = 0; i < 10; i++) {
+			if (i < columnLabels.length) {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
+			}
+			else {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), "");
+			}
 		}
 
 		this[NavigationMixin.Navigate]({
@@ -80,8 +90,13 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 	}
 	onMy() {
 		const columnLabels = ["'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "''", "''", "''"];
-		for (var i = 0; i < columnLabels.length; i++) {
-			document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
+		for (var i = 0; i < 10; i++) {
+			if (i < columnLabels.length) {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
+			}
+			else {
+				document.documentElement.style.setProperty('--columnlabel_' + i.toString(), "");
+			}
 		}
 
 		this[NavigationMixin.Navigate]({
