@@ -105,7 +105,7 @@
 						</lightning-input-field>
 						</br>
 						<div style="margin-bottom: 0.5rem;">
-							<div style="margin-bottom: 0.5rem;">
+							<div class="time-inputs-container" style="margin-bottom: 0.5rem;">
 								<template iterator:it={times}>
 									<div class="dynamic-time-inputs-with-line_button " key={it.value.id}>
 										<div class="dynamic-time-inputs" aria-live>
@@ -113,14 +113,16 @@
 												date-style="short" onchange={setDate} name={it.value.id}
 												value={it.value.date} required>
 											</lightning-input>
-											<lightning-input label="Fra" style="margin-left: 2rem;" type="time"
-												class="tolk-skjema-input start-tid" onchange={setStartTime}
-												name={it.value.id} value={it.value.startTime} required>
-											</lightning-input>
-											<lightning-input label="Til" style="margin-left: 2rem;" type="time"
-												class="tolk-skjema-input slutt-tid" onchange={setEndTime}
-												name={it.value.id} value={it.value.endTime} required>
-											</lightning-input>
+											<div class="dynamic-time-inputs__times">
+												<lightning-input label="Fra" type="time"
+													class="tolk-skjema-input start-tid" onchange={setStartTime}
+													name={it.value.id} value={it.value.startTime} required>
+												</lightning-input>
+												<lightning-input label="Til" type="time"
+													class="tolk-skjema-input slutt-tid" onchange={setEndTime}
+													name={it.value.id} value={it.value.endTime} required>
+												</lightning-input>
+											</div>
 										</div>
 										<lightning-button if:false={isOnlyOneTime} variant="base"
 											icon-name="utility:close" class="remove-time__button" onclick={removeTime}
