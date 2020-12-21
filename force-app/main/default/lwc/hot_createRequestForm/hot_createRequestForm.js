@@ -233,16 +233,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			tempTime[12] = second.toString();
 			this.times[index].endTime = tempTime.join("").substring(11, 16);
 		}
-		this.updateValues(event, index);
 		this.validateDateInput(event, index);
 	}
 	setStartTime(event) {
 		let index = this.getIndexById(event.target.name);
 		console.log(event.detail.value)
 
-		this.times[index].startTime = event.detail.value;
+		let tempTime = event.detail.value.split("");
+		this.times[index].startTime = tempTime.join("").substring(0, 5);
 
-		var tempTime = event.detail.value.split("");
 		if (event.detail.value > this.times[index].endTime || this.times[index].endTime == null) {
 			var first = parseFloat(tempTime[0]);
 			var second = parseFloat(tempTime[1]);
@@ -254,18 +253,18 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			tempTime[1] = second.toString();
 			this.times[index].endTime = tempTime.join("").substring(0, 5);
 		}
-		this.updateValues(event, index);
+		this.validateDateInput(event, index);
 	}
 
 	setEndTime(event) {
 		console.log(event.detail.value)
 		const index = this.getIndexById(event.target.name);
 		this.times[index].endTime = event.detail.value.substring(0, 5);
-		this.updateValues(event, index);
 	}
 
 
 	updateValues(event, index) {
+		console.log("updateValues")
 		let elements = event.target.parentElement.querySelector('.start-tid');
 		elements.value = this.times[index].startTime;
 		elements = event.target.parentElement.querySelector('.date');
@@ -418,15 +417,16 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 		radioButtonGroup.reportValidity();
 	}
+
 	validateExistingDateTimes() {
 		for (let i = 0; i < this.times.length; i++) {
-			let date = new Date(this.times[i].date);
+			let date = new Date(this.times[i].date + ' ' + this.times[i].startTime);
 			this.times[i].isValid = this.validateDate(date);
 		}
 	}
 	validateDate(dateTime) {
-		let nowTime = Date.now();
-		return dateTime.getTime() > nowTime
+		let nowTime = new Date();
+		return dateTime.getTime() > nowTime.getTime()
 	}
 	throwInputValidationError(element, errorText) {
 		element.setCustomValidity(errorText);
@@ -437,7 +437,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 	validateDateInput(event, index) {
 		let dateElement = event.target;
-		let tempDate = new Date(event.detail.value)
+		let tempDate = new Date(this.times[index].date + ' ' + this.times[index].startTime);
 		if (!this.validateDate(tempDate)) {
 			dateElement.setCustomValidity("Du kan ikke bestille tolk i fortiden.");
 			dateElement.focus();
