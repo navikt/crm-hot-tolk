@@ -76,7 +76,7 @@
 								</div>
 								<div class="slds-col slds-size_1-of-2">
 									<span
-										class="slds-form-element__label lightning-output-field__label">Arbeidstype</span>
+										class="slds-form-element__label lightning-output-field__label">Tolkemetode</span>
 									</br>
 									<lightning-formatted-text value={it.value.HOT_WorkTypeName__c}
 										class="lightning-output-field">
@@ -145,9 +145,15 @@
 							class="lightning-output-field">
 						</lightning-formatted-number>
 						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Arbeidstype</span>
+						<span class="slds-form-element__label lightning-output-field__label">Tolkemetode</span>
 						</br>
 						<lightning-formatted-text value={serviceAppointmentDetails.HOT_WorkTypeName__c}
+							class="lightning-output-field">
+						</lightning-formatted-text>
+						</br>
+						<span class="slds-form-element__label lightning-output-field__label">Oppdragstype</span>
+						</br>
+						<lightning-formatted-text value={serviceAppointmentDetails.HOT_AssignmentType__c}
 							class="lightning-output-field">
 						</lightning-formatted-text>
 						</br>

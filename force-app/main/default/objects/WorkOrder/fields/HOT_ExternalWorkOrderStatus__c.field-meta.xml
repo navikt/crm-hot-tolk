@@ -3,7 +3,7 @@
     <fullName>HOT_ExternalWorkOrderStatus__c</fullName>
     <externalId>false</externalId>
     <formula>CASE(TEXT(Status),
-&quot;New&quot;, &quot;Åpen&quot;,
+&quot;New&quot;, CASE(TEXT(HOT_Request__r.Status__c), &quot;Åpen&quot;, &quot;Åpen&quot;, &quot;Godkjent&quot;, &quot;Under behandling&quot;, &quot;Ukjent&quot;),
 &quot;Scheduled&quot;, &quot;Under behandling&quot;,
 &quot;Dispatched&quot;, &quot;Du har fått tolk&quot;,
 &quot;Partially Complete&quot;, &quot;Ferdig&quot;,
@@ -13,8 +13,8 @@
 &quot;Completed&quot;, &quot;Ferdig&quot;,
 &quot;Ukjent&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-	<inlineHelpText>Status som vises for bruker på nav.no</inlineHelpText>
-	<label>External WorkOrder Status</label>
+    <inlineHelpText>Status som vises for bruker på nav.no</inlineHelpText>
+    <label>External WorkOrder Status</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <type>Text</type>
