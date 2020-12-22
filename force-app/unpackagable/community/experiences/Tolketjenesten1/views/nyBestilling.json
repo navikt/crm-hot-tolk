@@ -25,7 +25,9 @@
       "id" : "33a95c1d-7f7d-4292-9d64-6bec8becea96",
       "regions" : [ {
         "components" : [ {
-          "componentAttributes" : { },
+          "componentAttributes" : {
+            "NAVarea" : "Privatperson"
+          },
           "componentName" : "c:globalCommunityHeader",
           "id" : "b56fd4ad-1b27-4a71-b272-1950339efc92",
           "renderPriority" : "NEUTRAL",
