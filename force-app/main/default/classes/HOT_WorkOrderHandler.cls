@@ -154,7 +154,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 	}
 
 	public static void updateRequests(List<WorkOrder> workOrders){
-		List<Id> requestIds = new List<Id>();
+		Set<Id> requestIds = new Set<Id>();
 		List<Id> deletedWorkOrders = new List<Id>();
 		for(WorkOrder workOrder:workOrders){
 			requestIds.add(workOrder.HOT_Request__c);
