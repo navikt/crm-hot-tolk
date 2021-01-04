@@ -164,14 +164,14 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		}
 		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, StartTime__c, EndTime__c,
 										(SELECT Id, StartDate, EndDate, Status FROM HOT_Request__c.Work_Orders__r
-										WHERE Id NOT IN :deletedWorkOrders ORDER BY StartDate) 
+										WHERE Id NOT IN :deletedWorkOrders AND Status != 'Annul' ORDER BY StartDate ASC) 
 										FROM HOT_Request__c WHERE Id IN :requestIds];
 		for(HOT_Request__c request:requests){
 			if(request.NumberOfWorkOrders__c != request.Work_Orders__r.size()){
 				request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
 			}
 			for(WorkOrder workOrder:request.Work_Orders__r){
-				if(workOrder.Status != 'Annul' && workOrder.Status != 'Canceled'){
+				if(workOrder.Status != 'Canceled'){
 					request.StartTime__c = workOrder.StartDate;
 					request.EndTime__c = workOrder.EndDate;
 					break;
