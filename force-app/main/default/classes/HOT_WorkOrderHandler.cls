@@ -96,7 +96,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 				}
 			}
 		}
-		insert workOrderLineItems;
+		if(workOrderLineItems.size()>0){
+			insert workOrderLineItems;
+		}
 	}
 
 	public static void setDefaultFields(List<WorkOrder> workOrders){
