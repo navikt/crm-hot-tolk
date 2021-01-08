@@ -221,10 +221,13 @@ export default class Hot_interestedResourcesList extends LightningElement {
 		this.detailInterestedResource = row;
 
 		this.recordId = row.Id;
-		this.prevComments = row.Comments__c.split("\n\n");
-
+		if (row["Comments__c"] != undefined) {
+			this.prevComments = row.Comments__c.split("\n\n");
+		}
+		else {
+			this.prevComments = "";
+		}
 		let interestedResourceId = this.recordId;
-		//console.log(interestedResourceId);
 		readComment({ interestedResourceId })
 			.then(() => {
 				refreshApex(this.wiredInterestedResourcesResult);
