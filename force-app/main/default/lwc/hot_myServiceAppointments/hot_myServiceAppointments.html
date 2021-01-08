@@ -52,8 +52,11 @@
 							</lightning-output-field>
 							<lightning-output-field field-name="HOT_DegreeOfHearingAndVisualImpairment__c">
 							</lightning-output-field>
-							<lightning-output-field field-name="HOT_AssignmentType__c">
-							</lightning-output-field>
+							<span class="slds-form-element__label lightning-output-field__label"
+								style="margin-top: 0.5rem;">Tolkemetode</span>
+							</br>
+							<lightning-formatted-text value={record.HOT_WorkTypeName__c} class="lightning-output-field">
+							</lightning-formatted-text>
 						</div>
 					</div>
 					</br>
