@@ -336,7 +336,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 			console.log(invalidIndex)
 			if (invalidIndex.length == 0) {
-				const isDuplicate = this.isDuplicate(this.fieldValues);
+				const isDuplicate = null; //this.isDuplicate(this.fieldValues); //Denne metoden fungerer ikke akkurat nå. Løses i TOLK-963
 				if (isDuplicate == null) {
 					console.log("Sumbitting")
 					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
@@ -558,8 +558,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 				delete this.fieldValues.Account__c;
 				delete this.fieldValues.Company__c;
-				this.fieldValues.StartTime__c = "";
-				this.fieldValues.EndTime__c = "";
+				delete this.fieldValues.StartTime__c;
+				delete this.fieldValues.EndTime__c;
 
 				this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
 				if (!this.sameLocation) {
