@@ -36,7 +36,7 @@ export default class Hot_warningBannerRequest extends LightningElement {
 	@api accountId;
 
 
-	@wire(getRequestListFromAccountFromRequestId, { recordId: '$recordId' })
+	@wire(getRequestListFromAccountFromRequestId, { accountId: '$recordId' })
 	wiredRequest(result) {
 		this.wiredRequestsResult = result;
 		if (result.data) {
