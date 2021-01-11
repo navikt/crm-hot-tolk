@@ -1,58 +1,40 @@
 @isTest
 private class HOT_OpenSAListControllerTest{
-
-	 
-
 	@testSetup static void setup(){
-	
-		/*
-		Serviceresource serviceresourceObj = new Serviceresource (
-			Name = 'test value'
-		);
-		insert serviceresourceObj;
-		 Serviceresourceskill serviceresourceskillObj = new Serviceresourceskill (
-			SkillId = 'Here is reference id', 
-			EffectiveStartDate = System.now()
-		);
-		insert serviceresourceskillObj;
-		 Skill skillObj = new Skill (
-			DeveloperName = 'test value', 
-			MasterLabel = 'test value'
-		);
-		insert skillObj;
-		 Serviceappointment serviceappointmentObj = new Serviceappointment (
-			ServiceTerritoryId = 'Here is reference id', 
-			HOT_InterpretationPostalCode__c = 'test value', 
-			HOT_InterpretationStreet__c = 'test value', 
-			EarliestStartTime = System.now(), 
-			DueDate = System.now()
-		);
-		insert serviceappointmentObj;
-		 Skillrequirement skillrequirementObj = new Skillrequirement (
-			SkillId = 'Here is reference id'
-		);
-		insert skillrequirementObj;
-		*/
+
+		OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+		insert operatingHours;
+		ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+		insert serviceTerritory;
 
 		Serviceresource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
 		insert serviceResource;
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('Bestilling', workType);
+		request.ServiceTerritory__c = serviceTerritory.Id;
+		request.NumberOfInterpreters__c = 2;
 		insert request;
 		request.Status__c = 'Godkjent';
 		update request;
- 
+		
+		List<ServiceAppointment> serviceAppointments = [SELECT Id, HOT_IsReleasedToFreelance__c, Status FROM ServiceAppointment];
+		for(ServiceAppointment serviceAppointment : serviceAppointments){
+			serviceAppointment.HOT_IsReleasedToFreelance__c = true;
+			serviceAppointment.Status = 'Released To Freelance';
+			serviceAppointment.HOT_DeadlineDate__c = Date.today().addDays(3);
+		}
+		update serviceAppointments;
 	}
 
 
 	//As Skill is not supported by Apex Metadata API or DML operations, we cannot make a proper test for the class
-		@isTest static void getOpenServiceAppointmentsTestMethod() {
+	@isTest static void getOpenServiceAppointmentsTest() {
 		List<ServiceAppointment> serviceAppointments = HOT_OpenServiceAppointmentListController.getOpenServiceAppointments();
-		System.assertEquals(0, 0);
+		System.assertEquals(2, serviceAppointments.size(), 'Could not get released ServiceAppointments');
 	}
 
-	@isTest static void createInterestedResourcesTestMethod() {
+	@isTest static void createInterestedResourcesTest() {
 		List<ServiceAppointment> serviceAppointments = [SELECT Id, AppointmentNumber FROM ServiceAppointment];
 		List<String> serviceAppointmentIds = new List<String>();
 		List<String> comments = new List<String>();
@@ -63,7 +45,7 @@ private class HOT_OpenSAListControllerTest{
 		HOT_OpenServiceAppointmentListController.createInterestedResources(serviceAppointmentIds, comments);
 
 		List<HOT_InterestedResource__c> interestedResources = [SELECT Id FROM HOT_InterestedResource__c];
-		System.assertNotEquals(0, interestedResources.size());
+		System.assertEquals(2, interestedResources.size(), 'Could not createInterestedResources');
 	}
 
 }

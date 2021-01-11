@@ -1,102 +1,104 @@
 @isTest
 private class HOT_RequestListControllerTest{
-	
-	/* Kommentert ut pga en bug i Scrach Org som fører til at man ikke kan sette rolle på brukeren (ERROR: portal account owner must have a role)
-	@TestSetup
-	private static void testSetup() {
-		Profile communityProfile = [SELECT Id FROM Profile WHERE Name='Customer Community User' LIMIT 1];
-		
-		Account account1 = HOT_TestDataFactory.createAccount(true);
-		account1.LastName='User1';
-		Account account2 = HOT_TestDataFactory.createAccount(true);
-		account2.LastName='User2';
-		insert account1; insert account2;
-		account1 = [SELECT Id, PersonContactId, FirstName, LastName, PersonEmail FROM Account WHERE LastName =: account1.LastName];
-		account2 = [SELECT Id, PersonContactId, FirstName, LastName, PersonEmail FROM Account WHERE LastName =: account2.LastName];
-		
-		Person__c person1 = HOT_TestDataFactory.createPerson(account1);
-		Person__c person2 = HOT_TestDataFactory.createPerson(account2);
-		insert person1; insert person2;
+
+	@testSetup 
+	static void setup(){
+		User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+		if(admin.UserRoleId == null){
+			UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
+			admin.UserRoleId = role.Id;
+			update admin;
+		}
+	}
+
+	@isTest
+	private static void getRequestListTest(){
+		User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+		Person__c person = HOT_TestDataFactory.createPerson();
+		insert person;
+		Person__c person2 = HOT_TestDataFactory.createPerson();
+		insert person2;
+
+		Account account = [SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c FROM Account WHERE CRM_Person__c = :person.Id];
+		Account account2 = [SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c FROM Account WHERE CRM_Person__c = :person2.Id];
 
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
-		Hot_request__c request1 = HOT_TestDataFactory.createRequest('Subject 1', workType);
-		request1.Account__c=account1.Id;
-		insert request1;
-		Hot_request__c request2 = HOT_TestDataFactory.createRequest('Subject 2', workType);
-		request2.Account__c=account2.Id;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+		request.Account__c = account.Id;
+		request.Orderer__c = account.Id;
+		insert request;
+		
+		HOT_Request__c request2 = HOT_TestDataFactory.createRequest('Subject 2', workType);
+		request2.Account__c = account2.Id;
+		request2.Orderer__c = account.Id;
+		request2.StartTime__c = request2.StartTime__c.addDays(-8);
 		insert request2;
-		Hot_request__c request2_2 = HOT_TestDataFactory.createRequest('Subject 2_2', workType);
-		request2_2.Account__c=account2.Id;
-		insert request2_2;
-
-		User user1 = HOT_TestDataFactory.createUser(communityProfile, account1);
-		user1.Alias = 'user1';
-		user1.Username = 'HOT_testuser1@nav.hot.no';
-		user1.CommunityNickname = 'user1';
-		User user2 = HOT_TestDataFactory.createUser(communityProfile, account2);
-		user2.Alias = 'user2';
-		user2.Username = 'HOT_testuser2@nav.hot.no';
-		user2.CommunityNickname = 'user2';
-		System.debug(account1);
-		System.debug(account2);
-		insert user1; 
-		insert user2;
-	}
-
-	@isTest
-	private static void testgetRequestListForUser1(){
-		User user1 = [SELECT Id FROM User WHERE Alias=:'user1'];
+		HOT_Request__c request3 = HOT_TestDataFactory.createRequest('Subject 3', workType);
+		request3.Account__c = account2.Id;
+		request3.Orderer__c = account.Id;
+		request3.StartTime__c = request3.StartTime__c.addDays(-8);
+		insert request3;
+		request3.Status__c = 'Godkjent';
+		update request3;
 		
-		PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Bruker'];
-		PermissionSetAssignment perm1 = new PermissionSetAssignment(AssigneeId = user1.Id, PermissionSetId = ps.Id);
-		insert perm1;
-		
-		System.runAs(user1){
-			List<HOT_Request__c> req1 = HOT_RequestListContoller.getRequestList();
-			System.assertEquals(req1.size(), 1, 'Was not able to select the request');
-			System.assertEquals(req1[0].Subject__c, 'Subject 1', 'Was not able to select the correct request');
+		Test.startTest();
+        Profile communityProfile = [SELECT Name FROM Profile WHERE Name='Personbruker Login' OR Name='Trial Customer Portal User' LIMIT 1];
+		User user = HOT_TestDataFactory.createUser(communityProfile, account);
+		user.Alias = 'userTest';
+		user.Username = 'HOT_testuser1@nav.hot.no';
+		user.CommunityNickname = 'userTest';
+		insert user; 
+		Test.stopTest();
+
+		System.runAs(user){
+			List<HOT_Request__c> requests = HOT_RequestListContoller.getRequestList();
+			System.assertEquals(3, requests.size(), 'Could not get my requests');
 		}
+		List<HOT_Request__c> requests = HOT_RequestListContoller.getRequestList();
+		System.assertEquals(null, requests, 'Falsly fetched requests');
+
 	}
 
-	@isTest
-	private static void testgetRequestListForUser2(){
-		User user2 = [SELECT Id FROM User WHERE Alias=:'user2'];
-		
-		PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Bruker'];
-		PermissionSetAssignment perm2 = new PermissionSetAssignment(AssigneeId = user2.Id, PermissionSetId = ps.Id);
-		insert perm2;
-		
-		System.runAs(user2){
-			List<HOT_Request__c> req2 = HOT_RequestListContoller.getRequestList();
-			System.assertEquals(req2.size(), 1, 'Was not able to select the request');
-			System.assertEquals(req2[0].Subject__c, 'Subject 2', 'Was not able to select the correct request');
-		}
-	}
-	
-	@isTest
-	private static void testgetRequestListFromAccountFromRequestId(){
-		HOT_Request__c record = [SELECT Id FROM HOT_Request__c WHERE Subject__c=:'Subject 2_2'];
-		List<HOT_Request__c> requests = HOT_RequestListContoller.getRequestListFromAccountFromRequestId(record.Id);
-		System.assertEquals(requests.size(), 2, 'Was not able to select the request');
-	}
-	*/
 
 	@isTest
-	private static void getRequestListTestMethodDummy(){
-		List<HOT_Request__c> req1 = HOT_RequestListContoller.getRequestList();
-		//List<HOT_Request__c> req2 = HOT_RequestListContoller.getRequestListFromAccountFromRequestId();
-	}
-
-	@isTest
-	private static void getRequestListFromAccountFromRequestIdDummy(){
+	private static void getTimesTest(){
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
-		Hot_request__c request1 = HOT_TestDataFactory.createRequest('Subject 1', workType);
-		insert request1;
-		HOT_Request__c req0 = [SELECT Id FROM HOT_Request__c];
+		Hot_request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
 
-		List<HOT_Request__c> req1 = HOT_RequestListContoller.getRequestListFromAccountFromRequestId(req0.Id);
+		List<Map<String, String>> times = HOT_RequestListContoller.getTimes(new List<String>{(String) request.Id});
+		System.assertEquals(1, times.size(), 'Could not get times');
+
+	}
+
+	@isTest
+	private static void getRequestListFromAccountFromRequestIdTest(){
+		Person__c person = HOT_TestDataFactory.createPerson();
+		insert person;
+		Account account = [SELECT Id FROM Account WHERE CRM_Person__c = :person.Id LIMIT 1];
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		Hot_request__c request1 = HOT_TestDataFactory.createRequest('My Request 1', workType);
+		request1.Account__c = account.Id;
+		insert request1;
+		Hot_request__c request2 = HOT_TestDataFactory.createRequest('My Request 2', workType);
+		request2.Account__c = account.Id;
+		insert request2;
+		Hot_request__c request3 = HOT_TestDataFactory.createRequest('NOT My Request', workType);
+		insert request3;
+		List<HOT_Request__c> requests = HOT_RequestListContoller.getRequestListFromAccountFromRequestId(request1.Id);
+		List<Id> requestIds = new List<Id>();
+		for(HOT_Request__c request:requests){
+			requestIds.add(request.Id);
+		}
+		System.assertEquals(true, requestIds.contains(request1.Id), 'Could not fetch Request 1');
+		System.assertEquals(true, requestIds.contains(request2.Id), 'Could not fetch Request 2');
+		System.assertEquals(false, requestIds.contains(request3.Id), 'Falsly fetched Request 3');
 	}
 
 	

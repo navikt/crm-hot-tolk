@@ -420,7 +420,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	validateExistingDateTimes() {
 		for (let i = 0; i < this.times.length; i++) {
-			let date = new Date(this.times[i].date + ' ' + this.times[i].startTime);
+			let tempDate = this.formatDateTime(this.times[i]);
+			tempDate = new Date(tempDate.date + ' ' + tempDate.startTime);
 			this.times[i].isValid = this.validateDate(date);
 		}
 	}
@@ -437,7 +438,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 	validateDateInput(event, index) {
 		let dateElement = event.target;
-		let tempDate = new Date(this.times[index].date + ' ' + this.times[index].startTime);
+		let tempDate = this.formatDateTime(this.times[index]);
+		tempDate = new Date(tempDate.date + ' ' + tempDate.startTime);
 		if (!this.validateDate(tempDate)) {
 			dateElement.setCustomValidity("Du kan ikke bestille tolk i fortiden.");
 			dateElement.focus();
@@ -460,10 +462,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		const endHour = dateTime.endTime.substring(0, 2);
 		const endMinute = dateTime.endTime.substring(3, 5);
 
-		const newDateTime = dateTime;
+		const newDateTime = {};
+		newDateTime["id"] = dateTime.id;
 		newDateTime["date"] = month + "/" + day + "/" + year;
 		newDateTime["startTime"] = startHour + ":" + startMinute;
 		newDateTime["endTime"] = endHour + ":" + endMinute;
+		newDateTime["isValid"] = dateTime.isValid;
+		newDateTime["isNew"] = dateTime.isNew;
 
 		return newDateTime;
 	}
