@@ -29,7 +29,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		}
 		System.debug('interestedServiceAppointmentIds: ' + interestedServiceAppointmentIds);
 
-		//Getting ServiceAppointments, filtered by isRealeased, Status, 
+		//Getting ServiceAppointments, filtered by isRealeased, Status, DeadlineDate
 		//and if the ServiceResource has already reported interest in the ServiceAppointment
 		List<ServiceAppointment> serviceAppointments = [SELECT 
 														Id, AppointmentNumber, ServiceTerritoryId, EarliestStartTime, DueDate, HOT_DeadlineDate__c, HOT_FreelanceSubject__c, HOT_AddressFormated__c,
@@ -69,7 +69,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 				if(sreq.RelatedRecordId == sa.WorkType.Id){
 					subNeededSkillIds.add(sreq.SkillId);
 					if(!mySkillIds.contains(sreq.SkillId)){
-					n++;
+						n++;
 					}
 				}
 			}

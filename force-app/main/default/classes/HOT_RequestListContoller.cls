@@ -12,7 +12,7 @@ public without sharing class HOT_RequestListContoller {
 												Source__c, Type__c, toLabel(EventType__c), Orderer__r.Name, OrdererPhone__c, OrdererEmail__c, UserName__c, Company__r.Name,
 												(SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
 												(SELECT StartDate, EndDate FROM HOT_Request__c.Work_Orders__r WHERE Status != 'Annul' ORDER BY StartDate)
-												FROM HOT_Request__c WHERE Account__c = : user.AccountId OR Orderer__c = :user.AccountId ORDER BY StartTime__c ASC];
+												FROM HOT_Request__c WHERE Account__c = :user.AccountId OR Orderer__c = :user.AccountId ORDER BY StartTime__c ASC];
 
 			//Setting the helping-field to control the users access to row-actions in requestList (lwc)
 			//Hiding Users Name if the request happened 1 week ago
@@ -74,10 +74,10 @@ public without sharing class HOT_RequestListContoller {
 
 
 	@AuraEnabled(cacheable = true)
-	public static List<HOT_Request__c> getRequestListFromAccountFromRequestId(Id recordId) {
-		HOT_Request__c currentRecord = [SELECT Id, Name, Account__c FROM HOT_Request__c WHERE Id = :recordId];
+	public static List<HOT_Request__c> getRequestListFromAccountFromRequestId(Id accountId) {
+		HOT_Request__c currentRequest = [SELECT Id, Name, Account__c FROM HOT_Request__c WHERE Id = :accountId];
 		List<HOT_Request__c> requests = [SELECT Name, Id, StartTime__c, EndTime__c, Status__c, Account__c, ExternalRequestStatus__c
-		FROM HOT_Request__c WHERE Account__c !=null AND Account__c = : currentRecord.Account__c];
+		FROM HOT_Request__c WHERE Account__c !=null AND Account__c = : currentRequest.Account__c];
 		return requests;
 	}
 }

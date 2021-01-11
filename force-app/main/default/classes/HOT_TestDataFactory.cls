@@ -146,14 +146,14 @@ public class HOT_TestDataFactory {
 		return person;
 	}
 
-	public static User createUser( Profile ProfileId, Account account ) {
-		User user = createUser( 'User', ProfileId );
+	public static User createUser( Profile profile, Account account ) {
+		User user = createUser( 'User', profile );
 		user.ContactId = account.PersonContactId;
 
 		return user;
 	}
 
-	public static User createUser( String lastName, Profile ProfileId ) {
+	public static User createUser( String lastName, Profile profile ) {
 		User user = new User (
 			Username = 'HOT.' + lastName + '@nav.hot.no',
 			LastName = lastName,
@@ -164,7 +164,7 @@ public class HOT_TestDataFactory {
 			LocaleSidKey = 'no_NO',
 			EmailEncodingKey = 'UTF-8',
 			LanguageLocaleKey = 'no',
-			ProfileId = ProfileId.id
+			ProfileId = profile.id
 			);
 
 		return user;
