@@ -463,6 +463,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		const endMinute = dateTime.endTime.substring(3, 5);
 
 		const newDateTime = {};
+		newDateTime["id"] = dateTime.id;
 		newDateTime["date"] = month + "/" + day + "/" + year;
 		newDateTime["startTime"] = startHour + ":" + startMinute;
 		newDateTime["endTime"] = endHour + ":" + endMinute;
