@@ -182,29 +182,29 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 	}
 
 	public static void updateWorkOrders(List<WorkOrder> workOrders){
-		Map<Id, WorkOrder> workOrderByRequestId = new Map<Id, WorkOrder>();
+		List<Id> requestIds = new List<Id>();
 		for(WorkOrder workOrder : workOrders){
-			workOrderByRequestId.put(workOrder.HOT_Request__c, workOrder);
+			requestIds.add(workOrder.HOT_Request__c);
 		}
 		Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>([SELECT Id, Account__c, MeetingPostalCity__c, HOT_PersonContactId__c, Description__c, InterpretationPostalCity__c,
 																		InterpretationPostalCode__c, InterpretationStreet__c, OwnerId, MeetingPostalCode__c, MeetingStreet__c, Subject__c, ServiceTerritory__c
-																		FROM HOT_Request__c WHERE Id IN :workOrderByRequestId.keySet()]);
+																		FROM HOT_Request__c WHERE Id IN :requestIds]);
 
-		for(Id requestId:workOrderByRequestId.keySet()){
-			workOrderByRequestId.get(requestId).AccountId = requests.get(requestId).Account__c;
-			workOrderByRequestId.get(requestId).City = requests.get(requestId).MeetingPostalCity__c;
-			workOrderByRequestId.get(requestId).ContactId = requests.get(requestId).HOT_PersonContactId__c;
-			workOrderByRequestId.get(requestId).Description = requests.get(requestId).Description__c;
-			workOrderByRequestId.get(requestId).HOT_InterpretationPostalCity__c = requests.get(requestId).InterpretationPostalCity__c;
-			workOrderByRequestId.get(requestId).HOT_InterpretationPostalCode__c = requests.get(requestId).InterpretationPostalCode__c;
-			workOrderByRequestId.get(requestId).HOT_InterpretationStreet__c = requests.get(requestId).InterpretationStreet__c;
-			workOrderByRequestId.get(requestId).OwnerId = requests.get(requestId).OwnerId;
-			workOrderByRequestId.get(requestId).PostalCode = requests.get(requestId).MeetingPostalCode__c;
-			workOrderByRequestId.get(requestId).Street = requests.get(requestId).MeetingStreet__c;
-			workOrderByRequestId.get(requestId).Subject = requests.get(requestId).Subject__c;
-			workOrderByRequestId.get(requestId).ServiceTerritoryId = requests.get(requestId).ServiceTerritory__c;
+		for(WorkOrder workOrder:workOrders){
+			workOrder.AccountId = requests.get(workOrder.HOT_Request__c).Account__c;
+			workOrder.City = requests.get(workOrder.HOT_Request__c).MeetingPostalCity__c;
+			workOrder.ContactId = requests.get(workOrder.HOT_Request__c).HOT_PersonContactId__c;
+			workOrder.Description = requests.get(workOrder.HOT_Request__c).Description__c;
+			workOrder.HOT_InterpretationPostalCity__c = requests.get(workOrder.HOT_Request__c).InterpretationPostalCity__c;
+			workOrder.HOT_InterpretationPostalCode__c = requests.get(workOrder.HOT_Request__c).InterpretationPostalCode__c;
+			workOrder.HOT_InterpretationStreet__c = requests.get(workOrder.HOT_Request__c).InterpretationStreet__c;
+			workOrder.OwnerId = requests.get(workOrder.HOT_Request__c).OwnerId;
+			workOrder.PostalCode = requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c;
+			workOrder.Street = requests.get(workOrder.HOT_Request__c).MeetingStreet__c;
+			workOrder.Subject = requests.get(workOrder.HOT_Request__c).Subject__c;
+			workOrder.ServiceTerritoryId = requests.get(workOrder.HOT_Request__c).ServiceTerritory__c;
 		}
-		update workOrderByRequestId.values();
+		update workOrders;
 	}
 
 }
