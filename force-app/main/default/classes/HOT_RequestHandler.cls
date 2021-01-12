@@ -89,6 +89,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 									  HOT_InterpretationPostalCity__c, HOT_InterpretationPostalCode__c, HOT_InterpretationStreet__c,
 									  HOT_NumberOfInterpreters__c, WorkTypeId FROM WorkOrder WHERE HOT_Request__c IN :godkjentRequests AND Status = 'New'];
 		if(workOrders.size()>0){
+			HOT_WorkOrderHandler.updateWorkOrders(workOrders);
 			HOT_WorkOrderHandler.createChildRecords(workOrders);
 		}
 		else{
