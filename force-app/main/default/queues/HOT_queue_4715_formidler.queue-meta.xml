@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>NAV HMS Møre og Romsdal - Formidler</name>
+    <queueMembers>
+        <publicGroups>
+            <publicGroup>HOT_group_4715_formidler</publicGroup>
+        </publicGroups>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>HOT_Request__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>ServiceAppointment</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>Task</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>WorkOrder</sobjectType>
+    </queueSobject>
+</Queue>
