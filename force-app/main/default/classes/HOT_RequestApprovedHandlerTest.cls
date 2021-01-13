@@ -55,15 +55,19 @@ private class HOT_RequestApprovedHandlerTest{
 		System.assertEquals(0, serviceAppointments.size());
 
 		Test.startTest();
+		request.Subject__c = 'Changed Subject';
 		request.Status__c = 'Godkjent';
 		update request;
 		Test.stopTest();
 
+		workOrder = [SELECT Id, Subject FROM WorkOrder];
 		workOrderLineItems = [SELECT Id FROM WorkOrderLineItem];
-		serviceAppointments = [SELECT Id FROM ServiceAppointment];
+		serviceAppointments = [SELECT Id, Subject FROM ServiceAppointment];
 		//Checking that the FSL-records have been created
-		System.assertEquals(1, workOrderLineItems.size());
-		System.assertEquals(2, serviceAppointments.size());
+		System.assertEquals(1, workOrderLineItems.size(), 'Could not create WorkOrderLineItems');
+		System.assertEquals(2, serviceAppointments.size(), 'Could not create WorkOrderLineItems');
+		System.assertEquals(request.Subject__c, WorkOrder.Subject, 'Could not update fields on WorkOrder');
+		System.assertEquals(request.Subject__c, serviceAppointments[0].Subject, 'Could not update fields on WorkOrder');
 	}
 
 	@isTest static void requestApproved_newWorkOrder() {
