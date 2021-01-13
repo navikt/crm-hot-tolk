@@ -8,15 +8,6 @@
         </publicGroups>
     </queueMembers>
     <queueSobject>
-        <sobjectType>HOT_Request__c</sobjectType>
-    </queueSobject>
-    <queueSobject>
-        <sobjectType>ServiceAppointment</sobjectType>
-    </queueSobject>
-    <queueSobject>
         <sobjectType>Task</sobjectType>
-    </queueSobject>
-    <queueSobject>
-        <sobjectType>WorkOrder</sobjectType>
     </queueSobject>
 </Queue>
