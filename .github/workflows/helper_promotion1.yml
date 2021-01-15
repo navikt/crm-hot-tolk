@@ -38,7 +38,7 @@ jobs:
       - name: Authenticate prod
         run: |
           echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
-          sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
           rm -f ./PROD_SFDX_URL.txt
 
       # Promote package
@@ -58,7 +58,7 @@ jobs:
       - name: Authenticate preprod
         run: |
           echo ${{ secrets.PREPROD_SFDX_URL}} > ./PREPROD_SFDX_URL.txt
-          sfdx force:auth:sfdxurl:store -f ./PREPROD_SFDX_URL.txt -a preprod -s
+          sfdx auth:sfdxurl:store -f ./PREPROD_SFDX_URL.txt -a preprod -s
           rm -f ./PREPROD_SFDX_URL.txt
 
       # Install package version to preprod
@@ -140,7 +140,7 @@ jobs:
       - name: Authenticate prod
         run: |
           echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
-          sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
           rm -f ./PROD_SFDX_URL.txt
 
       # Set release variables

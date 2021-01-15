@@ -23,7 +23,7 @@ jobs:
       - name: Authenticate Dev Hub
         run: |
           echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
-          sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
           rm -f ./PROD_SFDX_URL.txt
 
       # Create scratch org
@@ -84,7 +84,7 @@ jobs:
 
       # Authenticate scratch org
       - name: Authenticate scratch org
-        run: sfdx force:auth:sfdxurl:store -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt -a scratch-org -s
+        run: sfdx auth:sfdxurl:store -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt -a scratch-org -s
 
       # Delete unpackagable and scratch-org folder
       - name: Delete unpackagable
@@ -121,7 +121,7 @@ jobs:
 
       # Authenticate scratch org
       - name: Authenticate scratch org
-        run: sfdx force:auth:sfdxurl:store -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt -a scratch-org -s
+        run: sfdx auth:sfdxurl:store -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt -a scratch-org -s
 
       # Delete unpackagable and scratch-org folder
       - name: Delete unpackagable
@@ -251,7 +251,7 @@ jobs:
       - name: Authenticate Dev Hub
         run: |
           echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
-          sfdx force:auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
           rm -f ./PROD_SFDX_URL.txt
 
       # Download SCRATCH_ORG_SFDX_AUTH_URL.txt
@@ -262,7 +262,7 @@ jobs:
 
       # Authenticate scratch org
       - name: Authenticate scratch org
-        run: sfdx force:auth:sfdxurl:store -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt -a scratch-org -s
+        run: sfdx auth:sfdxurl:store -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt -a scratch-org -s
 
       # Delete SCRATCH_ORG_SFDX_AUTH_URL.txt
       - name: Delete SCRATCH_ORG_SFDX_AUTH_URL.txt
