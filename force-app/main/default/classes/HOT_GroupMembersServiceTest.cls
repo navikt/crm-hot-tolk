@@ -31,7 +31,7 @@ private class HOT_GroupMembersServiceTest{
 		Map<Id, User> users = new Map<Id, User>([SELECT Id, Department FROM User WHERE LastName IN ('User1', 'User2')]);
 
 		Test.startTest();
-		HOT_GroupMembersService.updateGroupMembers(users, 'HOT_Tolk_Test', 'formidler');
+		HOT_GroupMembersService.updateGroupMembers('HOT_Tolk_Test', 'HOT', 'formidler');
 		Test.stopTest();
 
 		Group grp = [SELECT Id, Name FROM Group WHERE Name = 'HOT_group_4719_formidler'];
@@ -54,7 +54,7 @@ private class HOT_GroupMembersServiceTest{
 		System.assertEquals(true, formidler2Member.size()>0, 'Could not create group member.');
 
 		Test.startTest();
-		HOT_GroupMembersService.updateGroupMembers(users, 'HOT_Tolk_Test', 'formidler');
+		HOT_GroupMembersService.updateGroupMembers('HOT_Tolk_Test', 'HOT', 'formidler');
 		Test.stopTest();
 
 		List<GroupMember> formidler1Member = [SELECT UserOrGroupId, GroupId FROM GroupMember WHERE GroupId = :grp.Id AND UserOrGroupId = :formidler1.Id];
@@ -76,7 +76,7 @@ private class HOT_GroupMembersServiceTest{
 		System.assertEquals(true, formidler1Member.size()>0, 'Could not create group member.');
 
 		Test.startTest();
-		HOT_GroupMembersService.updateGroupMembers(users, 'HOT_Tolk_Test', 'formidler');
+		HOT_GroupMembersService.updateGroupMembers('HOT_Tolk_Test', 'HOT', 'formidler');
 		Test.stopTest();
 
 		formidler1Member = [SELECT UserOrGroupId, GroupId FROM GroupMember WHERE GroupId = :grp.Id AND UserOrGroupId = :formidler1.Id];
