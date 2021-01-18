@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
     <assignments>
         <name>addToIterator</name>
         <label>addToIterator</label>
-        <locationX>410</locationX>
-        <locationY>265</locationY>
+        <locationX>446</locationX>
+        <locationY>493</locationY>
         <assignmentItems>
             <assignToReference>iterator</assignToReference>
             <operator>Assign</operator>
@@ -19,8 +20,8 @@
     <assignments>
         <name>TriggerErrorMessage</name>
         <label>TriggerErrorMessage</label>
-        <locationX>665</locationX>
-        <locationY>273</locationY>
+        <locationX>50</locationX>
+        <locationY>829</locationY>
         <assignmentItems>
             <assignToReference>$Record.HOT_TriggerValidation__c</assignToReference>
             <operator>Assign</operator>
@@ -32,8 +33,8 @@
     <assignments>
         <name>TriggerOverlappingValidation</name>
         <label>TriggerOverlappingValidation</label>
-        <locationX>1107</locationX>
-        <locationY>340</locationY>
+        <locationX>754</locationX>
+        <locationY>1309</locationY>
         <assignmentItems>
             <assignToReference>$Record.HOT_HasReservations__c</assignToReference>
             <operator>Assign</operator>
@@ -48,8 +49,8 @@
     <decisions>
         <name>checkNumberOfRecords</name>
         <label>checkNumberOfRecords</label>
-        <locationX>654</locationX>
-        <locationY>64</locationY>
+        <locationX>358</locationX>
+        <locationY>709</locationY>
         <defaultConnector>
             <targetReference>getReservations</targetReference>
         </defaultConnector>
@@ -73,15 +74,15 @@
     <decisions>
         <name>CheckTimeOverlap</name>
         <label>CheckTimeOverlap</label>
-        <locationX>1342</locationX>
-        <locationY>331</locationY>
+        <locationX>886</locationX>
+        <locationY>1189</locationY>
         <defaultConnector>
             <targetReference>LoopOverReservations</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>IsOverlapping</name>
-            <conditionLogic>( (1 AND 2) OR (3 AND 4) OR (5 AND 6) OR (9 AND 10) ) AND 7 AND 8</conditionLogic>
+            <conditionLogic>( (1 AND 2) OR (3 AND 4) OR (5 AND 6) OR (9 AND 10) ) AND 7 AND 8 AND (11 AND 12)</conditionLogic>
             <conditions>
                 <leftValueReference>Reservation.EarliestStartTime</leftValueReference>
                 <operator>LessThan</operator>
@@ -152,6 +153,20 @@
                     <elementReference>getThisServiceAppointment.DueDate</elementReference>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>getThisServiceAppointment.Status</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Completed</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Reservation.Status</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Completed</stringValue>
+                </rightValue>
+            </conditions>
             <connector>
                 <targetReference>TriggerOverlappingValidation</targetReference>
             </connector>
@@ -163,8 +178,8 @@
     <loops>
         <name>LoopOverRecords</name>
         <label>LoopOverRecords</label>
-        <locationX>409</locationX>
-        <locationY>51</locationY>
+        <locationX>358</locationX>
+        <locationY>373</locationY>
         <assignNextValueToReference>assignedResource</assignNextValueToReference>
         <collectionReference>getAssignedResources</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -178,8 +193,8 @@
     <loops>
         <name>LoopOverReservations</name>
         <label>LoopOverReservations</label>
-        <locationX>1229</locationX>
-        <locationY>66</locationY>
+        <locationX>666</locationX>
+        <locationY>1069</locationY>
         <assignNextValueToReference>Reservation</assignNextValueToReference>
         <collectionReference>getReservations</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -194,6 +209,12 @@
         </value>
     </processMetadataValues>
     <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
         <name>OriginBuilderType</name>
         <value>
             <stringValue>LightningFlowBuilder</stringValue>
@@ -203,8 +224,8 @@
     <recordLookups>
         <name>getAssignedResources</name>
         <label>getAssignedResources</label>
-        <locationX>222</locationX>
-        <locationY>54</locationY>
+        <locationX>358</locationX>
+        <locationY>253</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>LoopOverRecords</targetReference>
@@ -225,8 +246,8 @@
     <recordLookups>
         <name>getReservations</name>
         <label>getReservations</label>
-        <locationX>908</locationX>
-        <locationY>63</locationY>
+        <locationX>666</locationX>
+        <locationY>829</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>getThisServiceAppointment</targetReference>
@@ -247,8 +268,8 @@
     <recordLookups>
         <name>getThisServiceAppointment</name>
         <label>getThisServiceAppointment</label>
-        <locationX>1029</locationX>
-        <locationY>63</locationY>
+        <locationX>666</locationX>
+        <locationY>949</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>LoopOverReservations</targetReference>
@@ -265,8 +286,8 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
-        <locationX>50</locationX>
-        <locationY>50</locationY>
+        <locationX>232</locationX>
+        <locationY>0</locationY>
         <connector>
             <targetReference>getAssignedResources</targetReference>
         </connector>
