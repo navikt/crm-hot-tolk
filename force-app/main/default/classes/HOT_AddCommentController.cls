@@ -1,4 +1,4 @@
-public with sharing class HOT_AddCommentController {
+public without sharing class HOT_AddCommentController {
 	
 	@AuraEnabled
 	public static void addComment(SObject record, String newComment, String fieldName){
