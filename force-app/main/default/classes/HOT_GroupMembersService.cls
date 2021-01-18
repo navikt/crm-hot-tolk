@@ -35,23 +35,11 @@ public without sharing class HOT_GroupMembersService {
 
 	//Dette må vi ha ett eller annet sted, eventuelt hente det ut ved å sjekke gruppemedlemmer av grupper.
 	private static Map<String, String> getDepartmentMap(){
+		List<HOT_NewRegionNumber__mdt> regionMaps = [SELECT OldRegionNumber__c, NewRegionNumber__c FROM HOT_NewRegionNumber__mdt];
 		Map<String, String> departmentMap = new Map<String, String>();
-		departmentMap.put('4701', '4701');
-		departmentMap.put('4703', '4703');
-		departmentMap.put('4706', '4706');
-		departmentMap.put('4715', '4715');
-		departmentMap.put('4716', '4716');
-		departmentMap.put('4718', '4718');
-		departmentMap.put('4719', '4719');
-		departmentMap.put('4709', '47001');
-		departmentMap.put('4710', '47001');
-		departmentMap.put('4712', '47002');
-		departmentMap.put('4714', '47002');
-		departmentMap.put('4704', '47003');
-		departmentMap.put('4705', '47003');
-		departmentMap.put('4707', '47004');
-		departmentMap.put('4708', '47004');
-		departmentMap.put('4711', '47005');
+		for(HOT_NewRegionNumber__mdt regionMap : regionMaps){
+			departmentMap.put(regionMap.OldRegionNumber__c, regionMap.NewRegionNumber__c);
+		}
 		return departmentMap;
 	}
 
