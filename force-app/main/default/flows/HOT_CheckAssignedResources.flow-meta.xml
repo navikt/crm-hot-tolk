@@ -230,7 +230,6 @@
         <connector>
             <targetReference>LoopOverRecords</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
         <filters>
             <field>ServiceAppointmentId</field>
             <operator>EqualTo</operator>
@@ -253,7 +252,6 @@
         <connector>
             <targetReference>getThisServiceAppointment</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
         <filters>
             <field>HOT_ServiceResource__c</field>
             <operator>EqualTo</operator>
@@ -276,7 +274,6 @@
         <connector>
             <targetReference>LoopOverReservations</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
