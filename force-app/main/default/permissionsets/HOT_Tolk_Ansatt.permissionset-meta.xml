@@ -32,6 +32,7 @@
 		<field>Account.INT_OrganizationalStructure__c</field>
 		<readable>true</readable>
 	</fieldPermissions>
+<<<<<<< Updated upstream
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.INT_MunicipalityNumber__c</field>
@@ -47,12 +48,17 @@
         <field>Account.INT_OrganizationalStructure__c</field>
         <readable>true</readable>
     </fieldPermissions>
+=======
+>>>>>>> Stashed changes
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.INT_PersonIdent__c</field>
         <readable>true</readable>
 	</fieldPermissions>
+<<<<<<< Updated upstream
 	
+=======
+>>>>>>> Stashed changes
 	<fieldPermissions>
 		<editable>false</editable>
 		<field>Account.Industry</field>
@@ -78,6 +84,7 @@
 		<field>Account.ShippingAddress</field>
 		<readable>true</readable>
 	</fieldPermissions>
+<<<<<<< Updated upstream
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.Industry</field>
@@ -103,6 +110,8 @@
         <field>Account.ShippingAddress</field>
         <readable>true</readable>
     </fieldPermissions>
+=======
+>>>>>>> Stashed changes
     <fieldPermissions>
         <editable>false</editable>
         <field>Contact.AccountId</field>
