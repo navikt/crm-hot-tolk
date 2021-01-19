@@ -81,7 +81,7 @@ public without sharing class HOT_GroupMembersService {
 	}
 
 	private static Map<Id, GroupMember> getExistingGroupMembers(List<String> groupNames){
-		Map<Id, Group> groups = new Map<Id, Group>([SELECT Id FROM Group WHERE Name IN :groupNames]);
+		Map<Id, Group> groups = new Map<Id, Group>([SELECT Id FROM Group WHERE DeveloperName IN :groupNames]);
 		List<GroupMember> groupMembers = [SELECT UserOrGroupId, GroupId FROM GroupMember WHERE GroupId IN :groups.keySet()];
 		Map<Id, GroupMember> groupMemberByUser = new Map<Id, GroupMember>();
 		for(GroupMember groupMember:groupMembers){
@@ -92,10 +92,10 @@ public without sharing class HOT_GroupMembersService {
 
 	private static Map<Id, Group> getGroupMembers(Map<Id, User> users, Map<String, String> groupNames){
 		Map<Id, String> departmentNumberByUser = getDepartmentNameByUser(users);
-		Map<Id, Group> groups = new Map<Id, Group>([SELECT Id, Name FROM Group WHERE Name IN :groupNames.values()]);
+		Map<Id, Group> groups = new Map<Id, Group>([SELECT Id, DeveloperName FROM Group WHERE DeveloperName IN :groupNames.values()]);
 		Map<String, Id> groupByName = new Map<String, Id>();
 		for(Group grp:groups.values()){
-			groupByName.put(grp.Name, grp.Id);
+			groupByName.put(grp.DeveloperName, grp.Id);
 		}
 		Map<Id, Group> groupByUser = new Map<Id, Group>();
 		for(Id id:users.keySet()){
