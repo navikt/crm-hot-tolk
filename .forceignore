@@ -75,7 +75,7 @@
 **/workflows/*
 
 # Flexipages
-**flexipages/LightningService_UtilityBar.flexipage-meta.xml
+**/flexipages/LightningService_UtilityBar.flexipage-meta.xml
 
 # Community
 **/audience/*
