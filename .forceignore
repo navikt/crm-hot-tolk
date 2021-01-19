@@ -77,6 +77,9 @@
 # Flexipages
 **/flexipages/LightningService_UtilityBar.flexipage-meta.xml
 
+# AppSwitcher
+**/appMenus/AppSwitcher.appMenu-meta.xml
+
 # Community
 **/audience/*
 **/networks/*
