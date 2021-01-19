@@ -241,7 +241,7 @@
             <name>No</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>interestedResource.Id</leftValueReference>
+                <leftValueReference>interestedResource</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -578,6 +578,8 @@
         <outputReference>interestedResource</outputReference>
         <queriedFields>Id</queriedFields>
         <queriedFields>Status__c</queriedFields>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
     </recordLookups>
     <recordUpdates>
         <name>Save_Service_Appointment</name>
@@ -596,6 +598,7 @@
         </connector>
         <inputReference>interestedResource</inputReference>
     </recordUpdates>
+    <runInMode>DefaultMode</runInMode>
     <screens>
         <name>Already_Completed</name>
         <label>Already Completed</label>
