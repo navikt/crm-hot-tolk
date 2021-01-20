@@ -422,7 +422,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		for (let i = 0; i < this.times.length; i++) {
 			let tempDate = this.formatDateTime(this.times[i]);
 			tempDate = new Date(tempDate.date + ' ' + tempDate.startTime);
-			this.times[i].isValid = this.validateDate(date);
+			this.times[i].isValid = this.validateDate(tempDate);
 		}
 	}
 	validateDate(dateTime) {
