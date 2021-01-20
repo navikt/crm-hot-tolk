@@ -5,7 +5,11 @@
 				onclick={sendInterest}>
 			</lightning-button>
 
-			<lightning-button label="Regioner" name="filterRegionButton" onclick={handleShowRegionFilter}>
+			<lightning-button if:false={isRequestNumberNull} label="Tilbake" name="filterRegionButton"
+				onclick={handleBackToFullList}>
+			</lightning-button>
+			<lightning-button if:true={isRequestNumberNull} label="Regioner" name="filterRegionButton"
+				onclick={handleShowRegionFilter}>
 			</lightning-button>
 			<div if:true={showRegionFilter} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
 				style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
