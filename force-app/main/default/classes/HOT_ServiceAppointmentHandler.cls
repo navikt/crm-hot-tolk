@@ -114,6 +114,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 				if(serviceAppointment.SchedEndTime == null && workOrderLineItems.get(serviceAppointment.ParentRecordId).EndDate != null){
 					serviceAppointment.SchedEndTime = workOrderLineItems.get(serviceAppointment.ParentRecordId).EndDate;
 				}
+				if(serviceAppointment.HOT_WorkOrderLineItem__c == null && serviceAppointment.ParentRecordId != null){
+					serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
+				}
 			}
 		}
 	}
