@@ -31,9 +31,9 @@ public class HOT_TestData{
 	};
 
 	List<String> workTypeNames = new List<String>{
-		'Tegnspråk',
-		'Taktilt tegnspråk',
-		'Tegnspråk i begrenset synsfelt'
+		'TS - Tegnspråk',
+		'TT - Taktilt tegnspråk',
+		'TBS - Tegnspråk i begrenset synsfelt'
 	};
 	List<String> ServiceTerritoryNames = new List<String>{
 		'Tromso',
