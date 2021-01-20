@@ -5,9 +5,7 @@ import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 
 
-var actions = [
-	{ label: 'Detaljer', name: 'details' },
-];
+
 
 export default class Hot_openServiceAppointments extends LightningElement {
 
@@ -23,7 +21,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				day: 'numeric',
 				month: 'numeric',
 				year: 'numeric'
-			}
+			},
+			initialWidth: 150,
 		},
 		{
 			label: 'Start Tid',
@@ -37,7 +36,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				hour: '2-digit',
 				minute: '2-digit',
 				hour12: false
-			}
+			},
+			initialWidth: 150,
 		},
 		{
 			label: 'Slutt Tid',
@@ -51,23 +51,26 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				hour: '2-digit',
 				minute: '2-digit',
 				hour12: false
-			}
+			},
+			initialWidth: 150,
 		},
 		{
-			label: 'Poststed',
-			fieldName: 'City',
+			label: 'Forespørsel',
+			fieldName: 'HOT_RequestNumber__c',
 			type: 'text',
 			sortable: true,
+			initialWidth: 125,
+		},
+		{
+			label: 'Informasjon',
+			fieldName: 'HOT_Information__c',
+			type: 'text',
+			sortable: true,
+			initialWidth: 240,
 		},
 		{
 			label: 'Tema',
 			fieldName: 'HOT_FreelanceSubject__c',
-			type: 'text',
-			sortable: true,
-		},
-		{
-			label: 'Tolkemetode',
-			fieldName: 'HOT_WorkTypeName__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -80,15 +83,26 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				day: 'numeric',
 				month: 'numeric',
 				year: 'numeric',
-			}
+			},
+			initialWidth: 150,
 		},
 		{
 			type: 'action',
-			typeAttributes: { rowActions: actions },
+			typeAttributes: { rowActions: this.getRowActions },
 		},
 	];
 
 	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "'Frist"];
+
+	getRowActions(row, doneCallback) {
+		let actions = [];
+		if (row["HOT_IsSerieoppdrag__c"] == true) {
+			actions.push({ label: 'Se hele serien', name: 'series' });
+		}
+		actions.push({ label: 'Detaljer', name: 'details' });
+
+		doneCallback(actions);
+	}
 
 	@track serviceResource;
 	@wire(getServiceResource)
@@ -114,7 +128,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			this.allServiceAppointments = result.data;
 			this.error = undefined;
 			this.filterServiceAppointments();
-			this.showHideAll();
 			console.log("JSON.stringify(this.allServiceAppointments):");
 			console.log(JSON.stringify(this.allServiceAppointments));
 			console.log("JSON.stringify(this.allServiceAppointmentsFiltered):");
@@ -134,16 +147,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			}
 		}
 		this.allServiceAppointmentsFiltered = tempServiceAppointments;
-	}
-
-	showHideAll() {
-		console.log("showHideAll");
-		if (this.isChecked) {
-			this.allServiceAppointmentsFiltered = this.allServiceAppointments;
-		}
-		else {
-			this.filterServiceAppointments();
-		}
 	}
 
 	connectedCallback() {
@@ -215,7 +218,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		this.allServiceAppointments = cloneData;
 		this.sortDirection = sortDirection;
 		this.sortedBy = sortedBy;
-		this.showHideAll();
 	}
 
 
@@ -226,6 +228,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		switch (actionName) {
 			case 'details':
 				this.showDetails(row);
+				break;
+			case 'series':
+				this.showSeries(row);
+				break;
+			case 'handleBackToFullList_action':
+				this.handleBackToFullList();
 				break;
 			default:
 		}
@@ -240,6 +248,25 @@ export default class Hot_openServiceAppointments extends LightningElement {
 	}
 	abortShowDetails() {
 		this.isDetails = false;
+	}
+
+	@track requestNumber = null;
+	@track isRequestNumberNull = true;
+	showSeries(row) {
+		this.requestNumber = row.HOT_RequestNumber__c;
+		this.isRequestNumberNull = false;
+		let tempServiceAppointments = [];
+		for (let sa of this.allServiceAppointmentsFiltered) {
+			if (sa.HOT_RequestNumber__c == row.HOT_RequestNumber__c) {
+				tempServiceAppointments.push(sa);
+			}
+		}
+		this.allServiceAppointmentsFiltered = tempServiceAppointments;
+	}
+	handleBackToFullList() {
+		this.requestNumber = null;
+		this.isRequestNumberNull = true;
+		this.filterServiceAppointments();
 	}
 
 	@track selectedRows = [];
@@ -280,19 +307,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
 	}
 
-	isChecked = false;
-	@track checkBoxLabel = "Vis oppdrag fra alle regioner";
-	handleChecked(event) {
-		this.isChecked = event.detail.checked;
-		if (this.isChecked) {
-			//this.checkBoxLabel = "Vis oppdrag fra mine regioner";
-			this.allServiceAppointmentsFiltered = this.allServiceAppointments;
-		}
-		else {
-			//this.checkBoxLabel = "Vis oppdrag fra alle regioner";
-			this.filterServiceAppointments();
-		}
-	}
 	@track showRegionFilter = false;
 	@track regions = [];
 	handleShowRegionFilter(event) {
