@@ -63,6 +63,13 @@
                 <elementReference>$Flow.CurrentDate</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_ReleasedBy__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>{!$User.FirstName} {!$User.LastName}</stringValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>UpdateServiceAppointment</targetReference>
         </connector>
@@ -376,6 +383,7 @@ Status == &quot;Ingen&quot;</description>
         <queriedFields>HOT_FreelanceSubject__c</queriedFields>
         <queriedFields>Subject</queriedFields>
         <queriedFields>HOT_ReleaseDate__c</queriedFields>
+        <queriedFields>HOT_Information__c</queriedFields>
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
@@ -506,6 +514,11 @@ Status == &quot;Ingen&quot;</description>
         <connector>
             <targetReference>AssignFieldValues</targetReference>
         </connector>
+        <fields>
+            <name>InformationField</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;Følgende informasjon vil bli vist til frilanstolker.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>Frist_dato</name>
             <dataType>Date</dataType>
