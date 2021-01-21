@@ -3,6 +3,7 @@ import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointm
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
+import { sortList, getMobileSortingOptions } from 'c/sortController'
 
 
 
@@ -168,58 +169,21 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
 	mobileSortingDefaultValue = '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ';
 	get sortingOptions() {
-		return [
-			{ label: 'Frigitt dato stigende', value: '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "asc"} ' },
-			{ label: 'Frigitt dato synkende', value: '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ' },
-			{ label: 'Start tid stigende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ' },
-			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
-			{ label: 'Slutt tid stigende', value: '{"fieldName": "DueDate", "sortDirection": "asc"} ' },
-			{ label: 'Slutt tid synkende', value: '{"fieldName": "DueDate", "sortDirection": "desc"} ' },
-			{ label: 'Forespørsel stigende', value: '{"fieldName": "City", "sortDirection": "asc"} ' },
-			{ label: 'Forespørsel Synkende', value: '{"fieldName": "City", "sortDirection": "desc"} ' },
-			{ label: 'Informasjon A - Å', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} ' },
-			{ label: 'Informasjon Å - A', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} ' },
-			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "asc"} ' },
-			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "desc"} ' },
-			{ label: 'Frist dato stigende', value: '{"fieldName": "HOT_DeadlineDate__c", "sortDirection": "asc"} ' },
-			{ label: 'Frist dato synkende', value: '{"fieldName": "HOT_DeadlineDate__c", "sortDirection": "desc"} ' },
-		];
+		return getMobileSortingOptions(this.columns)
 	}
+
 	handleMobileSorting(event) {
-		this.sortList(JSON.parse(event.detail.value));
-	}
-	sortBy(field, reverse) {
-		const key = function (x) {
-			return x[field];
-		};
-		if (field == 'HOT_NumberOfInterestedResources__c') {
-			return function (a, b) {
-				a = key(a);
-				b = key(b);
-				return reverse * ((a > b) - (b > a));
-			};
-		}
-		else {
-			return function (a, b) {
-				a = key(a).toLowerCase();
-				b = key(b).toLowerCase();
-				return reverse * ((a > b) - (b > a));
-			};
-		}
+		this.sortDirection = event.detail.value.sortDirection;
+		this.sortedBy = event.detail.value.fieldName;
+		this.allServiceAppointments = sortList(this.allServiceAppointments, this.sortedBy, this.sortDirection);
+		this.filterServiceAppointments()
 	}
 	onHandleSort(event) {
-		this.sortList(event.detail);
+		this.sortDirection = event.detail.sortDirection;
+		this.sortedBy = event.detail.fieldName;
+		this.allServiceAppointments = sortList(this.allServiceAppointments, this.sortedBy, this.sortDirection);
+		this.filterServiceAppointments()
 	}
-	sortList(input) {
-		const { fieldName: sortedBy, sortDirection } = input;
-		let cloneData = [...this.allServiceAppointments];
-		cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
-
-		this.allServiceAppointments = cloneData;
-		this.sortDirection = sortDirection;
-		this.sortedBy = sortedBy;
-	}
-
 
 	//Row action methods
 	handleRowAction(event) {
