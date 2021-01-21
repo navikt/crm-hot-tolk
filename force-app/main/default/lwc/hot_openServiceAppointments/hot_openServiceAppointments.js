@@ -92,7 +92,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		},
 	];
 
-	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "'Frist"];
+	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Forespørsel'", "'Informasjon'", "'Tema'", "'Frist"];
 
 	getRowActions(row, doneCallback) {
 		let actions = [];
@@ -175,10 +175,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
 			{ label: 'Slutt tid stigende', value: '{"fieldName": "DueDate", "sortDirection": "asc"} ' },
 			{ label: 'Slutt tid synkende', value: '{"fieldName": "DueDate", "sortDirection": "desc"} ' },
-			{ label: 'Poststed A - Å', value: '{"fieldName": "City", "sortDirection": "asc"} ' },
-			{ label: 'Poststed A - Å', value: '{"fieldName": "City", "sortDirection": "desc"} ' },
-			{ label: 'Arbeidstype A - Å', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} ' },
-			{ label: 'Arbeidstype Å - A', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} ' },
+			{ label: 'Forespørsel stigende', value: '{"fieldName": "City", "sortDirection": "asc"} ' },
+			{ label: 'Forespørsel Synkende', value: '{"fieldName": "City", "sortDirection": "desc"} ' },
+			{ label: 'Informasjon A - Å', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} ' },
+			{ label: 'Informasjon Å - A', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} ' },
 			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "asc"} ' },
 			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "desc"} ' },
 			{ label: 'Frist dato stigende', value: '{"fieldName": "HOT_DeadlineDate__c", "sortDirection": "asc"} ' },
