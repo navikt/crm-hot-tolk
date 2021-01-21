@@ -4,13 +4,17 @@
 			<lightning-button title="Meld interesse" class="right-button" variant="brand" label="Meld interesse"
 				onclick={sendInterest}>
 			</lightning-button>
-
-			<lightning-button if:false={isRequestNumberNull} label="Tilbake" name="filterRegionButton"
-				onclick={handleBackToFullList}>
-			</lightning-button>
-			<lightning-button if:true={isRequestNumberNull} label="Regioner" name="filterRegionButton"
-				onclick={handleShowRegionFilter}>
-			</lightning-button>
+			<div style="display: flex; flex-direction: row;">
+				<lightning-button if:false={isRequestNumberNull} label="Vis alle" name="filterRegionButton"
+					onclick={handleBackToFullList}>
+				</lightning-button>
+				<lightning-button if:true={isRequestNumberNull} label="Regioner" name="filterRegionButton"
+					onclick={handleShowRegionFilter}>
+				</lightning-button>
+				<lightning-input if:true={isRequestNumberNull} type="checkbox" label="Skjermtolk-oppdrag"
+					style="margin-left: 1rem;" name="Skjermtolk" onchange={handleScreenInterpreter}>
+				</lightning-input>
+			</div>
 			<div if:true={showRegionFilter} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
 				style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
 				<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
@@ -40,6 +44,12 @@
 			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
 			onsort={onHandleSort} onrowaction={handleRowAction} onrowselection={getSelectedName}>
 		</lightning-datatable>
+
+		<div class="right-content" style="margin-top: 1rem;">
+			<lightning-button title="Meld interesse" class="right-button" variant="brand" label="Meld interesse"
+				onclick={sendInterest}>
+			</lightning-button>
+		</div>
 	</div>
 
 	<div if:true={isAddComments} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
