@@ -7,7 +7,7 @@
     <fields>WorkTypeId</fields>
     <fields>HOT_ServiceResource__c</fields>
     <fields>HOT_IsScreenInterpreterNew__c</fields>
-    <fields>EarliestStartTime</fields>
+    <fields>SchedStartTime</fields>
     <fields>CreatedDate</fields>
     <fields>HOT_IsReleasedToFreelance__c</fields>
     <fields>HOT_IsEmployedInterpreter__c</fields>
