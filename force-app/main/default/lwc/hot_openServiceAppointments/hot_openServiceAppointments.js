@@ -268,6 +268,25 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		this.isRequestNumberNull = true;
 		this.filterServiceAppointments();
 	}
+	@track isScreenInterpretation = false;
+	handleScreenInterpreter(event) {
+		this.isScreenInterpretation = event.detail.checked;
+		if (this.isScreenInterpretation) {
+			this.showScreenInterpretationServiceAppointments();
+		}
+		else {
+			this.filterServiceAppointments();
+		}
+	}
+	showScreenInterpretationServiceAppointments() {
+		var tempServiceAppointments = [];
+		for (var i = 0; i < this.allServiceAppointments.length; i++) {
+			if (this.allServiceAppointments[i].HOT_IsScreenInterpreter__c) {
+				tempServiceAppointments.push(this.allServiceAppointments[i]);
+			}
+		}
+		this.allServiceAppointmentsFiltered = tempServiceAppointments;
+	}
 
 	@track selectedRows = [];
 	getSelectedName(event) {
