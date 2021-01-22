@@ -109,7 +109,7 @@
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>showActionBar</name>
-                <value>true</value>
+                <value>false</value>
             </componentInstanceProperties>
             <componentName>force:relatedListSingleContainer</componentName>
         </componentInstances>
