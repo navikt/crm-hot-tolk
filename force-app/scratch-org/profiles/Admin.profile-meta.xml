@@ -42,6 +42,22 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_GroupMembersService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_GroupMembersServiceSchedulable</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_GroupMembersServiceSchedulableTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_GroupMembersServiceTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_IRListControllerTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -335,6 +351,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_InterestedResource__c.WorkTypeName__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_NewRegionNumber__mdt.NewRegionNumber__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_NewRegionNumber__mdt.OldRegionNumber__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -878,6 +904,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsScreenInterpreterNew__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_IsScreenInterpreter__c</field>
         <readable>false</readable>
@@ -1417,6 +1448,9 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>HOT_InterestedResource__c-Interested Resource Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>HOT_NewRegionNumber__mdt-HOT New Region Number Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>HOT_Request__c-Request Layout</layout>
