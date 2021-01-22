@@ -13,7 +13,7 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
 		for(WorkOrderLineItem workOrderLineItem:workOrderLineItems){
 			workOrderIds.add(workOrderLineItem.WorkOrderId);
 		}
-		Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>([SELECT Id, OwnerId, HOT_Request__c, HOT_Request__r.PreferredInterpreter1__c, HOT_Request__r.PreferredInterpreter2__c, HOT_Request__r.InterpretationMethod__c FROM WorkOrder WHERE Id IN :workOrderIds]);
+		Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>([SELECT Id, OwnerId, HOT_Request__c, HOT_Request__r.PreferredInterpreter1__c, HOT_Request__r.PreferredInterpreter2__c, HOT_Request__r.InterpretationMethod__c, HOT_Request__r.IsScreenInterpreter__c FROM WorkOrder WHERE Id IN :workOrderIds]);
 
 		List<ServiceAppointment> serviceAppointments = new List<ServiceAppointment>();
 		for(WorkOrderLineItem workOrderLineItem:workOrderLineItems){
@@ -36,6 +36,7 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
 				serviceAppointment.SchedEndTime = workOrderLineItem.EndDate;
 				serviceAppointment.HOT_Request__c = workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__c;
 				serviceAppointment.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
+				serviceAppointment.HOT_IsScreenInterpreterNew__c = workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.IsScreenInterpreter__c;
 				if(workOrderLineItem.WorkTypeId == workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.InterpretationMethod__c){
 					if(numberOfInterpreters == 1 && workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.PreferredInterpreter2__c != null){
 						serviceAppointment.HOT_PreferredInterpreter__c = workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.PreferredInterpreter2__c;
