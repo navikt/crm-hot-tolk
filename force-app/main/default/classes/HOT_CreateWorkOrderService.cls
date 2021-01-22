@@ -20,6 +20,21 @@ public without sharing class HOT_CreateWorkOrderService {
 		Integer maxNumberOfRecurrences = 200;
 		List<String> errors = new List<String>();
 
+		if(input.endDate <= input.startDate) {
+			errors.add('Slutt tid må være etter Start tid.');
+			return errors;
+		}
+
+		if(input.recurringType != 'Never' && input.recurringEndDate <= input.startDate.date()) {
+			errors.add('Sluttdato må være etter Startdato.');
+			return errors;
+		}
+
+		if(input.recurringType == 'Weekly' && !input.monday && !input.tuesday && !input.wendesday && !input.thursday && !input.friday && !input.saturday && !input.sunday) {
+			errors.add('Må velge minst en dag.');
+			return errors;
+		}
+
 		if(input.recurringType == 'Never') {
 			
 			WorkOrder workOrder = new workOrder(HOT_Request__c = input.requestId, StartDate = input.startDate, EndDate = input.endDate);

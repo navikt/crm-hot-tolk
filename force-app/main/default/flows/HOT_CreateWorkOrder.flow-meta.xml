@@ -182,7 +182,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Text</name>
-            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!Error}.&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Trykk tilbake for å prøve igjen.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!Error}&lt;/i&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -212,10 +212,6 @@
             <fieldText>Slutt</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
-            <validationRule>
-                <errorMessage>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt;Slutt tid må være etter Start tid&lt;/span&gt;&lt;/p&gt;</errorMessage>
-                <formulaExpression>{!StartBeforeEndDate}</formulaExpression>
-            </validationRule>
         </fields>
         <fields>
             <name>Gjenta</name>
@@ -369,10 +365,6 @@
             <fieldText>Sluttdato</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
-            <validationRule>
-                <errorMessage>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt;Sluttdato må være etter Startdato&lt;/span&gt;&lt;/p&gt;</errorMessage>
-                <formulaExpression>{!RecurringEndDateAfterStart}</formulaExpression>
-            </validationRule>
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
                 <conditions>
