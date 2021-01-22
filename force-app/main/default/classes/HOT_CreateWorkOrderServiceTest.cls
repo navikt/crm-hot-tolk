@@ -109,4 +109,297 @@ private class HOT_CreateWorkOrderServiceTest {
 		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
 		System.assertEquals(11, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
 	}
+	
+	@isTest
+	private static void Error_EndTimeBeforeStartTime() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = request.Id;
+		inputVariable.startDate = Datetime.now().addHours(1);
+		inputVariable.endDate = Datetime.now();
+		inputVariable.recurringType = 'Never';
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
+	@isTest
+	private static void Error_recurringEndDateEqualStartDate() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = request.Id;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Monthly';
+		inputVariable.recurringEndDate = Date.today();
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
+	@isTest
+	private static void Error_WeeklyAllDaysFalse() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = request.Id;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Weekly';
+		inputVariable.recurringEndDate = Date.today().addDays(7);
+		inputVariable.monday = false;
+		inputVariable.tuesday = false;
+		inputVariable.wendesday = false;
+		inputVariable.thursday = false;
+		inputVariable.friday = false;
+		inputVariable.saturday = false;
+		inputVariable.sunday = false;
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
+	@isTest
+	private static void Error_Daily201() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = request.Id;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Daily';
+		inputVariable.recurringEndDate = Date.today().addDays(201);
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
+	@isTest
+	private static void Error_Weekly201() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = request.Id;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Weekly';
+		inputVariable.recurringEndDate = Date.today().addDays(201);
+		inputVariable.monday = true;
+		inputVariable.tuesday = true;
+		inputVariable.wendesday = true;
+		inputVariable.thursday = true;
+		inputVariable.friday = true;
+		inputVariable.saturday = true;
+		inputVariable.sunday = true;
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
+	@isTest
+	private static void Error_Monthly201() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = null;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Monthly';
+		inputVariable.recurringEndDate = Date.today().addDays(6100);
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
+	@isTest
+	private static void Error_TypeNULL() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = request.Id;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(0, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
+	@isTest
+	private static void Error_NeverRequestNULL() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = null;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Never';
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
+	@isTest
+	private static void Error_DailyRequestNULL() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = null;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Daily';
+		inputVariable.recurringEndDate = Date.today().addDays(1);
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
+	@isTest
+	private static void Error_WeeklyRequestNULL() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = null;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Weekly';
+		inputVariable.recurringEndDate = Date.today().addDays(7);
+		inputVariable.monday = true;
+		inputVariable.tuesday = true;
+		inputVariable.wendesday = true;
+		inputVariable.thursday = true;
+		inputVariable.friday = true;
+		inputVariable.saturday = true;
+		inputVariable.sunday = true;
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
+	@isTest
+	private static void Error_MonthlyRequestNULL() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = null;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Monthly';
+		inputVariable.recurringEndDate = Date.today().addDays(60);
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+		System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
+	}
 }
