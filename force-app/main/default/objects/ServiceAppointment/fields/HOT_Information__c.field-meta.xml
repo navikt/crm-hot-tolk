@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_Information__c</fullName>
+    <externalId>false</externalId>
+    <formula>Text( HOT_WorkOrderLineItem__r.HOT_NumberOfInterpreters__c )
++
+LEFT(HOT_WorkTypeName__c  , FIND(&apos; - &apos;, HOT_WorkTypeName__c ))
++
+IF( HOT_Request__r.IsSerieoppdrag__c, 
+     &apos;, SO&apos; + Text( HOT_Request__r.NumberOfWorkOrders__c ),
+    &apos;&apos;)
++ &apos; - &apos; +
+IF( HOT_IsScreenInterpreterNew__c ,
+    &apos;Skjermtolk&apos;, Street)
++ &apos;, &apos; + 
+City</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Information</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

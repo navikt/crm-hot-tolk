@@ -3,11 +3,10 @@ import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointm
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
+import { sortList, getMobileSortingOptions } from 'c/sortController'
 
 
-var actions = [
-	{ label: 'Detaljer', name: 'details' },
-];
+
 
 export default class Hot_openServiceAppointments extends LightningElement {
 
@@ -23,7 +22,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				day: 'numeric',
 				month: 'numeric',
 				year: 'numeric'
-			}
+			},
+			initialWidth: 150,
 		},
 		{
 			label: 'Start Tid',
@@ -37,7 +37,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				hour: '2-digit',
 				minute: '2-digit',
 				hour12: false
-			}
+			},
+			initialWidth: 150,
 		},
 		{
 			label: 'Slutt Tid',
@@ -51,23 +52,26 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				hour: '2-digit',
 				minute: '2-digit',
 				hour12: false
-			}
+			},
+			initialWidth: 150,
 		},
 		{
-			label: 'Poststed',
-			fieldName: 'City',
+			label: 'Forespørsel',
+			fieldName: 'HOT_RequestNumber__c',
 			type: 'text',
 			sortable: true,
+			initialWidth: 125,
+		},
+		{
+			label: 'Informasjon',
+			fieldName: 'HOT_Information__c',
+			type: 'text',
+			sortable: true,
+			initialWidth: 240,
 		},
 		{
 			label: 'Tema',
 			fieldName: 'HOT_FreelanceSubject__c',
-			type: 'text',
-			sortable: true,
-		},
-		{
-			label: 'Tolkemetode',
-			fieldName: 'HOT_WorkTypeName__c',
 			type: 'text',
 			sortable: true,
 		},
@@ -80,15 +84,26 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				day: 'numeric',
 				month: 'numeric',
 				year: 'numeric',
-			}
+			},
+			initialWidth: 150,
 		},
 		{
 			type: 'action',
-			typeAttributes: { rowActions: actions },
+			typeAttributes: { rowActions: this.getRowActions },
 		},
 	];
 
-	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "'Frist"];
+	columnLabels = ["'Frigitt Dato'", "''", "'Start Tid'", "'Slutt Tid'", "'Forespørsel'", "'Informasjon'", "'Tema'", "'Frist"];
+
+	getRowActions(row, doneCallback) {
+		let actions = [];
+		if (row["HOT_IsSerieoppdrag__c"] == true) {
+			actions.push({ label: 'Se hele serien', name: 'series' });
+		}
+		actions.push({ label: 'Detaljer', name: 'details' });
+
+		doneCallback(actions);
+	}
 
 	@track serviceResource;
 	@wire(getServiceResource)
@@ -114,7 +129,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 			this.allServiceAppointments = result.data;
 			this.error = undefined;
 			this.filterServiceAppointments();
-			this.showHideAll();
 			console.log("JSON.stringify(this.allServiceAppointments):");
 			console.log(JSON.stringify(this.allServiceAppointments));
 			console.log("JSON.stringify(this.allServiceAppointmentsFiltered):");
@@ -136,16 +150,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		this.allServiceAppointmentsFiltered = tempServiceAppointments;
 	}
 
-	showHideAll() {
-		console.log("showHideAll");
-		if (this.isChecked) {
-			this.allServiceAppointmentsFiltered = this.allServiceAppointments;
-		}
-		else {
-			this.filterServiceAppointments();
-		}
-	}
-
 	connectedCallback() {
 		for (var i = 0; i < 10; i++) {
 			if (i < this.columnLabels.length) {
@@ -165,59 +169,21 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
 	mobileSortingDefaultValue = '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ';
 	get sortingOptions() {
-		return [
-			{ label: 'Frigitt dato stigende', value: '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "asc"} ' },
-			{ label: 'Frigitt dato synkende', value: '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ' },
-			{ label: 'Start tid stigende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ' },
-			{ label: 'Start tid synkende', value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} ' },
-			{ label: 'Slutt tid stigende', value: '{"fieldName": "DueDate", "sortDirection": "asc"} ' },
-			{ label: 'Slutt tid synkende', value: '{"fieldName": "DueDate", "sortDirection": "desc"} ' },
-			{ label: 'Poststed A - Å', value: '{"fieldName": "City", "sortDirection": "asc"} ' },
-			{ label: 'Poststed A - Å', value: '{"fieldName": "City", "sortDirection": "desc"} ' },
-			{ label: 'Arbeidstype A - Å', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} ' },
-			{ label: 'Arbeidstype Å - A', value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} ' },
-			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "asc"} ' },
-			{ label: 'Tema A - Å', value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "desc"} ' },
-			{ label: 'Frist dato stigende', value: '{"fieldName": "HOT_DeadlineDate__c", "sortDirection": "asc"} ' },
-			{ label: 'Frist dato synkende', value: '{"fieldName": "HOT_DeadlineDate__c", "sortDirection": "desc"} ' },
-		];
+		return getMobileSortingOptions(this.columns)
 	}
+
 	handleMobileSorting(event) {
-		this.sortList(JSON.parse(event.detail.value));
-	}
-	sortBy(field, reverse) {
-		const key = function (x) {
-			return x[field];
-		};
-		if (field == 'HOT_NumberOfInterestedResources__c') {
-			return function (a, b) {
-				a = key(a);
-				b = key(b);
-				return reverse * ((a > b) - (b > a));
-			};
-		}
-		else {
-			return function (a, b) {
-				a = key(a).toLowerCase();
-				b = key(b).toLowerCase();
-				return reverse * ((a > b) - (b > a));
-			};
-		}
+		this.sortDirection = event.detail.value.sortDirection;
+		this.sortedBy = event.detail.value.fieldName;
+		this.allServiceAppointments = sortList(this.allServiceAppointments, this.sortedBy, this.sortDirection);
+		this.filterServiceAppointments()
 	}
 	onHandleSort(event) {
-		this.sortList(event.detail);
+		this.sortDirection = event.detail.sortDirection;
+		this.sortedBy = event.detail.fieldName;
+		this.allServiceAppointments = sortList(this.allServiceAppointments, this.sortedBy, this.sortDirection);
+		this.filterServiceAppointments()
 	}
-	sortList(input) {
-		const { fieldName: sortedBy, sortDirection } = input;
-		let cloneData = [...this.allServiceAppointments];
-		cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
-
-		this.allServiceAppointments = cloneData;
-		this.sortDirection = sortDirection;
-		this.sortedBy = sortedBy;
-		this.showHideAll();
-	}
-
 
 	//Row action methods
 	handleRowAction(event) {
@@ -226,6 +192,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		switch (actionName) {
 			case 'details':
 				this.showDetails(row);
+				break;
+			case 'series':
+				this.showSeries(row);
+				break;
+			case 'handleBackToFullList_action':
+				this.handleBackToFullList();
 				break;
 			default:
 		}
@@ -240,6 +212,44 @@ export default class Hot_openServiceAppointments extends LightningElement {
 	}
 	abortShowDetails() {
 		this.isDetails = false;
+	}
+
+	@track requestNumber = null;
+	@track isRequestNumberNull = true;
+	showSeries(row) {
+		this.requestNumber = row.HOT_RequestNumber__c;
+		this.isRequestNumberNull = false;
+		let tempServiceAppointments = [];
+		for (let sa of this.allServiceAppointmentsFiltered) {
+			if (sa.HOT_RequestNumber__c == row.HOT_RequestNumber__c) {
+				tempServiceAppointments.push(sa);
+			}
+		}
+		this.allServiceAppointmentsFiltered = tempServiceAppointments;
+	}
+	handleBackToFullList() {
+		this.requestNumber = null;
+		this.isRequestNumberNull = true;
+		this.filterServiceAppointments();
+	}
+	@track isScreenInterpretation = false;
+	handleScreenInterpreter(event) {
+		this.isScreenInterpretation = event.detail.checked;
+		if (this.isScreenInterpretation) {
+			this.showScreenInterpretationServiceAppointments();
+		}
+		else {
+			this.filterServiceAppointments();
+		}
+	}
+	showScreenInterpretationServiceAppointments() {
+		var tempServiceAppointments = [];
+		for (var i = 0; i < this.allServiceAppointments.length; i++) {
+			if (this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c) {
+				tempServiceAppointments.push(this.allServiceAppointments[i]);
+			}
+		}
+		this.allServiceAppointmentsFiltered = tempServiceAppointments;
 	}
 
 	@track selectedRows = [];
@@ -280,19 +290,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
 	}
 
-	isChecked = false;
-	@track checkBoxLabel = "Vis oppdrag fra alle regioner";
-	handleChecked(event) {
-		this.isChecked = event.detail.checked;
-		if (this.isChecked) {
-			//this.checkBoxLabel = "Vis oppdrag fra mine regioner";
-			this.allServiceAppointmentsFiltered = this.allServiceAppointments;
-		}
-		else {
-			//this.checkBoxLabel = "Vis oppdrag fra alle regioner";
-			this.filterServiceAppointments();
-		}
-	}
 	@track showRegionFilter = false;
 	@track regions = [];
 	handleShowRegionFilter(event) {
