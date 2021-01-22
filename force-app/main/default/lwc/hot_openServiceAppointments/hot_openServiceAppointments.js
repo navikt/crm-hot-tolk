@@ -245,7 +245,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 	showScreenInterpretationServiceAppointments() {
 		var tempServiceAppointments = [];
 		for (var i = 0; i < this.allServiceAppointments.length; i++) {
-			if (this.allServiceAppointments[i].HOT_IsScreenInterpreter__c) {
+			if (this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c) {
 				tempServiceAppointments.push(this.allServiceAppointments[i]);
 			}
 		}
