@@ -10,7 +10,7 @@ IF( HOT_Request__r.IsSerieoppdrag__c,
      &apos;, SO&apos; + Text( HOT_Request__r.NumberOfWorkOrders__c ),
     &apos;&apos;)
 + &apos; - &apos; +
-IF( HOT_IsScreenInterpreter__c ,
+IF( HOT_IsScreenInterpreterNew__c ,
     &apos;Skjermtolk&apos;, Street)
 + &apos;, &apos; + 
 City</formula>
