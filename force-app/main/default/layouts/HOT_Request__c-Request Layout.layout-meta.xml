@@ -374,9 +374,10 @@
     </quickActionList>
     <relatedLists>
         <fields>Name</fields>
+        <fields>Status</fields>
+        <fields>HOT_DayOfWeek__c</fields>
         <fields>StartDate</fields>
         <fields>EndDate</fields>
-        <fields>Status</fields>
         <relatedList>WorkOrder.HOT_Request__c</relatedList>
         <sortField>StartDate</sortField>
         <sortOrder>Asc</sortOrder>
@@ -402,7 +403,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1x000001awcB</masterLabel>
+        <masterLabel>00h1j000001hEYA</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

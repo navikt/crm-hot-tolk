@@ -699,6 +699,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsScreenInterpreterNew__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_IsSerieoppdrag__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -740,11 +745,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_WorkTypeName__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_IsScreenInterpreterNew__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -895,6 +895,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.GrandTotal</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_DayOfWeek__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
