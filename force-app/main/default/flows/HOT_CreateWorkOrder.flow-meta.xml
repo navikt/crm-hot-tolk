@@ -96,6 +96,14 @@
         </value>
     </choices>
     <choices>
+        <name>Hver_andre_uke</name>
+        <choiceText>Hver 2. uke</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Biweekly</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Hver_dag</name>
         <choiceText>Hver dag</choiceText>
         <dataType>String</dataType>
@@ -218,7 +226,7 @@
             <choiceReferences>Aldri</choiceReferences>
             <choiceReferences>Hver_dag</choiceReferences>
             <choiceReferences>Hver_uke</choiceReferences>
-            <choiceReferences>Hver_maned</choiceReferences>
+            <choiceReferences>Hver_andre_uke</choiceReferences>
             <dataType>String</dataType>
             <defaultSelectedChoiceReference>Aldri</defaultSelectedChoiceReference>
             <fieldText>Gjenta</fieldText>
@@ -230,12 +238,19 @@
             <fieldText>&lt;p&gt;&lt;b&gt;Dager&lt;/b&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>Gjenta</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_andre_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -247,12 +262,19 @@
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>Gjenta</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_andre_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -264,12 +286,19 @@
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>Gjenta</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_andre_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -281,12 +310,19 @@
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>Gjenta</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_andre_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -298,12 +334,19 @@
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>Gjenta</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_andre_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -315,12 +358,19 @@
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>Gjenta</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_andre_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -332,12 +382,19 @@
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>Gjenta</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_andre_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -349,12 +406,19 @@
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>Gjenta</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_andre_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>

@@ -65,7 +65,7 @@ private class HOT_CreateWorkOrderServiceTest {
 		inputVariable.startDate = Datetime.now();
 		inputVariable.endDate = Datetime.now().addHours(1);
 		inputVariable.recurringType = 'Weekly';
-		inputVariable.recurringEndDate = Date.today().addDays(14);
+		inputVariable.recurringEndDate = Date.today().addDays(13);
 		inputVariable.monday = true;
 		inputVariable.tuesday = true;
 		inputVariable.wendesday = true;
@@ -82,7 +82,39 @@ private class HOT_CreateWorkOrderServiceTest {
 		Test.stopTest();
 
 		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
-		System.assertEquals(15, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
+		System.assertEquals(14, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
+	}
+
+	@isTest
+	private static void createWorkOrdersBiweekly() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = request.Id;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Biweekly';
+		inputVariable.recurringEndDate = Date.today().addDays(27);
+		inputVariable.monday = true;
+		inputVariable.tuesday = true;
+		inputVariable.wendesday = true;
+		inputVariable.thursday = true;
+		inputVariable.friday = true;
+		inputVariable.saturday = true;
+		inputVariable.sunday = true;
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(14, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
 	}
 
 	@isTest
