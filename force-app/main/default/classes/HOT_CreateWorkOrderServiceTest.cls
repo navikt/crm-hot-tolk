@@ -86,7 +86,7 @@ private class HOT_CreateWorkOrderServiceTest {
 	}
 
 	@isTest
-	private static void createWorkOrdersMonthly() {
+	private static void createWorkOrdersMonthly_1() {
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
@@ -98,6 +98,31 @@ private class HOT_CreateWorkOrderServiceTest {
 		inputVariable.endDate = Datetime.now().addHours(1);
 		inputVariable.recurringType = 'Monthly';
 		inputVariable.recurringEndDate = Date.today().addMonths(10);
+
+		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+		inputVariables.add(inputVariable);
+
+		Test.startTest();
+		HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+		Test.stopTest();
+
+		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+		System.assertEquals(11, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
+	}
+
+	@isTest
+	private static void createWorkOrdersMonthly_2() {
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+		insert request;
+
+		HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+		inputVariable.requestId = request.Id;
+		inputVariable.startDate = Datetime.now();
+		inputVariable.endDate = Datetime.now().addHours(1);
+		inputVariable.recurringType = 'Monthly';
+		inputVariable.recurringEndDate = Date.today().addMonths(10).addDays(10);
 
 		List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
 		inputVariables.add(inputVariable);

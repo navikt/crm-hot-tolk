@@ -132,7 +132,9 @@ public without sharing class HOT_CreateWorkOrderService {
 				Datetime startDate = input.startDate.addMonths(i);
 				Datetime endDate = input.endDate.addMonths(i);
 				WorkOrder workOrder = new workOrder(HOT_Request__c = input.requestId, StartDate = startDate, EndDate = endDate);
-				workOrders.add(workOrder);
+				if(startDate.date() <= input.recurringEndDate) {
+					workOrders.add(workOrder);
+				}
 			}
 			
 			try{
