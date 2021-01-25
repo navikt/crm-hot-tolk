@@ -35,6 +35,7 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
 				serviceAppointment.SchedStartTime = workOrderLineItem.StartDate;
 				serviceAppointment.SchedEndTime = workOrderLineItem.EndDate;
 				serviceAppointment.HOT_Request__c = workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__c;
+				serviceAppointment.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
 				serviceAppointment.HOT_IsScreenInterpreterNew__c = workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.IsScreenInterpreter__c;
 				if(workOrderLineItem.WorkTypeId == workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.InterpretationMethod__c){
 					if(numberOfInterpreters == 1 && workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.PreferredInterpreter2__c != null){
