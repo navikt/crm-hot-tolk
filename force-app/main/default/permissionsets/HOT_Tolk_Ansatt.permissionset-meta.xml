@@ -669,6 +669,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_Information__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_InterpretationPostalCity__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -695,6 +700,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsScreenInterpreterNew__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -739,12 +749,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_WorkTypeName__c</field>
+        <field>ServiceAppointment.HOT_WorkOrderLineItem__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_IsScreenInterpreterNew__c</field>
+        <field>ServiceAppointment.HOT_WorkTypeName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -895,6 +905,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.GrandTotal</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_DayOfWeek__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
