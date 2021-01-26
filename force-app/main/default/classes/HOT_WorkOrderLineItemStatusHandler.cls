@@ -118,6 +118,8 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 				System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
 				System.debug('numberOfCanceled: ' + numberOfCanceled);
 				
+				workOrderLineItem.HOT_IsUpdateStatus__c = false;
+				
 				if(numberOfScheduled > 0) {
 					workOrderLineItem.Status = 'Scheduled';
 				}
@@ -153,7 +155,6 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 					workOrderLineItem.Status = 'New';
 					continue;
 				}
-				workOrderLineItem.HOT_IsUpdateStatus__c = false;
 			}
 		}
 	}
