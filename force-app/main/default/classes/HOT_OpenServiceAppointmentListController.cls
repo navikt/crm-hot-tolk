@@ -32,9 +32,9 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 		//Getting ServiceAppointments, filtered by isRealeased, Status, DeadlineDate
 		//and if the ServiceResource has already reported interest in the ServiceAppointment
 		List<ServiceAppointment> serviceAppointments = [SELECT 
-														Id, AppointmentNumber, ServiceTerritoryId, EarliestStartTime, DueDate, HOT_DeadlineDate__c, HOT_FreelanceSubject__c, HOT_AddressFormated__c,
-														Address, HOT_InterpretationStreet__c, HOT_InterpretationPostalCode__c, HOT_WorkTypeName__c, HOT_NumberOfInterestedResources__c, WorkType.Id,
-														ServiceTerritory.Name, ServiceTerritory.HOT_DeveloperName__c, HOT_ReleaseDate__c, City, Street, PostalCode, HOT_AssignmentType__c
+														Id, AppointmentNumber, ServiceTerritoryId, EarliestStartTime, DueDate, HOT_DeadlineDate__c, HOT_FreelanceSubject__c, HOT_AddressFormated__c, HOT_IsSerieoppdrag__c,
+														Address, HOT_InterpretationStreet__c, HOT_InterpretationPostalCode__c, HOT_WorkTypeName__c, HOT_NumberOfInterestedResources__c, WorkType.Id, HOT_RequestNumber__c, HOT_ReleasedBy__c,
+														ServiceTerritory.Name, ServiceTerritory.HOT_DeveloperName__c, HOT_ReleaseDate__c, City, Street, PostalCode, HOT_AssignmentType__c, HOT_Information__c, HOT_IsScreenInterpreterNew__c
 														FROM ServiceAppointment WHERE HOT_IsReleasedToFreelance__c = true AND Status = 'Released To Freelance' 
 														AND HOT_DeadlineDate__c >= :DATE.TODAY() AND Id NOT IN: interestedServiceAppointmentIds
 														AND ServiceTerritoryId != null
