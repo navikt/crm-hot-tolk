@@ -403,11 +403,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-<<<<<<< HEAD
         <masterLabel>00h1j000001ZYxJ</masterLabel>
-=======
-        <masterLabel>00h1j000001hEYA</masterLabel>
->>>>>>> master
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
