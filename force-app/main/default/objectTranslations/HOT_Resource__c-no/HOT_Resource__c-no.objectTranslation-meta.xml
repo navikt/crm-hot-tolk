@@ -31,5 +31,5 @@
         <value>Ressurser</value>
     </caseValues>
     <gender>Masculine</gender>
-    <nameFieldLabel><!-- HOT_Resource Name --></nameFieldLabel>
+    <nameFieldLabel>Ressursnavn</nameFieldLabel>
 </CustomObjectTranslation>

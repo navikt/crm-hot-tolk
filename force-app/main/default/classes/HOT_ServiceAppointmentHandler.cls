@@ -206,13 +206,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
 		for(ServiceAppointment serviceAppointment : serviceAppointments){
 			if(serviceAppointment.HOT_PreferredResource__c != null){
-				PreferredResourceId.add(serviceAppointment.HOT_PreferredResource__c);
+				PreferredResourceId.add(serviceAppointment.HOT_PreferredResource__r.Service_Resource__c);
 				serviceAppointmentsToUpdate.add(serviceAppointment);
 			}
 		}
 		Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>([SELECT Id, HOT_ServiceTerritory__c, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c FROM ServiceResource WHERE Id IN :PreferredResourceId]);
 		for(ServiceAppointment serviceAppointment : serviceAppointmentsToUpdate){
-			if(serviceAppointment.ServiceTerritoryId != serviceResources.get(serviceAppointment.HOT_PreferredResource__c).HOT_ServiceTerritory__c){
+			if(serviceAppointment.ServiceTerritoryId != serviceResources.get(serviceAppointment.HOT_PreferredResource__r.Service_Resource__c).HOT_ServiceTerritory__c){
 				serviceAppointment.ServiceTerritoryId = serviceResources.get(serviceAppointment.HOT_PreferredResource__c).HOT_ServiceTerritory__c;
 			}
 
