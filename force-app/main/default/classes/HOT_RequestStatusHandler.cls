@@ -112,6 +112,8 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 				System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
 				System.debug('numberOfCanceled: ' + numberOfCanceled);
 				
+				request.IsUpdateStatus__c = false;
+				
 				if(numberOfScheduled > 0) {
 					request.Status__c = statusMap.get('Scheduled');
 				}
@@ -143,7 +145,6 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 					request.Status__c = statusMap.get('New');
 					continue;
 				}
-				request.IsUpdateStatus__c = false;
 			}
 		}
 	}
