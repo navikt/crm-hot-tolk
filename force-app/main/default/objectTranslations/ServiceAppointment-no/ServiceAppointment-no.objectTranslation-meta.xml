@@ -1,69 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <caseValues>
-        <article>Definite</article>
-        <plural>false</plural>
-        <value>Oppdraget</value>
-    </caseValues>
-    <caseValues>
-        <article>Indefinite</article>
-        <plural>false</plural>
-        <value>Oppdrag</value>
-    </caseValues>
-    <caseValues>
-        <article>None</article>
-        <plural>false</plural>
-        <value>Oppdrag</value>
-    </caseValues>
-    <caseValues>
-        <article>Definite</article>
-        <plural>true</plural>
-        <value>Oppdragene</value>
-    </caseValues>
-    <caseValues>
-        <article>Indefinite</article>
-        <plural>true</plural>
-        <value>Oppdrag</value>
-    </caseValues>
-    <caseValues>
-        <article>None</article>
-        <plural>true</plural>
-        <value>Oppdrag</value>
-    </caseValues>
-    <gender>Neuter</gender>
-    <layouts>
-        <layout>Service Appointment Layout</layout>
-        <sections>
-            <label><!-- Address --></label>
-            <section>Address</section>
-        </sections>
-        <sections>
-            <label><!-- Frilanstolk --></label>
-            <section>Frilanstolk</section>
-        </sections>
-        <sections>
-            <label><!-- Time Constraints --></label>
-            <section>Time Constraints</section>
-        </sections>
-    </layouts>
-    <quickActions>
-        <label>Frigi til frilanstolker</label>
-        <name>HOT_ReleaseToFreelance</name>
-    </quickActions>
-    <quickActions>
-        <label>Tilbaketrekk oppdrag</label>
-        <name>HOT_RetractServiceAppointment</name>
-    </quickActions>
-    <quickActions>
-        <label><!-- SendEmail --></label>
-        <name>SendEmail</name>
-    </quickActions>
-    <validationRules>
-        <errorMessage><!-- Du kan ikke endre Emne for frilanstolker før oppdraget er frigitt --></errorMessage>
-        <name>FreelanceRelease_before_FreelanceSubject</name>
-    </validationRules>
-    <validationRules>
-        <errorMessage><!-- Bruk knappen oppe til høyre når du skal frigi et oppdrag til frilanstolker. --></errorMessage>
-        <name>ReleaseToFreelanceWithButton</name>
-    </validationRules>
+	<caseValues>
+		<article>Definite</article>
+		<plural>false</plural>
+		<value>Oppdraget</value>
+	</caseValues>
+	<caseValues>
+		<article>Indefinite</article>
+		<plural>false</plural>
+		<value>Oppdrag</value>
+	</caseValues>
+	<caseValues>
+		<article>None</article>
+		<plural>false</plural>
+		<value>Oppdrag</value>
+	</caseValues>
+	<caseValues>
+		<article>Definite</article>
+		<plural>true</plural>
+		<value>Oppdragene</value>
+	</caseValues>
+	<caseValues>
+		<article>Indefinite</article>
+		<plural>true</plural>
+		<value>Oppdrag</value>
+	</caseValues>
+	<caseValues>
+		<article>None</article>
+		<plural>true</plural>
+		<value>Oppdrag</value>
+	</caseValues>
+	<gender>Neuter</gender>
+	<quickActions>
+		<label>Frigi til frilanstolker</label>
+		<name>HOT_ReleaseToFreelance</name>
+	</quickActions>
+	<quickActions>
+		<label>Tilbaketrekk oppdrag</label>
+		<name>HOT_RetractServiceAppointment</name>
+	</quickActions>
+	<validationRules>
+		<errorMessage>
+			<!-- Du kan ikke endre Emne for frilanstolker før oppdraget er frigitt -->
+		</errorMessage>
+		<name>FreelanceRelease_before_FreelanceSubject</name>
+	</validationRules>
 </CustomObjectTranslation>
