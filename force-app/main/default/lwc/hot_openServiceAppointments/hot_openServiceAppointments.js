@@ -23,7 +23,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				month: 'numeric',
 				year: 'numeric'
 			},
-			initialWidth: 150,
+			initialWidth: 135,
 		},
 		{
 			label: 'Start Tid',
@@ -38,7 +38,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				minute: '2-digit',
 				hour12: false
 			},
-			initialWidth: 150,
+			initialWidth: 135,
 		},
 		{
 			label: 'Slutt Tid',
@@ -53,7 +53,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				minute: '2-digit',
 				hour12: false
 			},
-			initialWidth: 150,
+			initialWidth: 135,
 		},
 		{
 			label: 'Forespørsel',
@@ -85,7 +85,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 				month: 'numeric',
 				year: 'numeric',
 			},
-			initialWidth: 150,
+			initialWidth: 90,
 		},
 		{
 			type: 'action',
@@ -143,7 +143,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
 		console.log("filterServiceAppointments");
 		var tempServiceAppointments = [];
 		for (var i = 0; i < this.allServiceAppointments.length; i++) {
-			if (this.isScreenInterpretation) {
+			if (this.isRequestNumberNull == false) {
+				if (this.allServiceAppointments[i].HOT_RequestNumber__c == this.requestNumber) {
+					tempServiceAppointments.push(this.allServiceAppointments[i]);
+				}
+			}
+			else if (this.isScreenInterpretation) {
 				if (this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c) {
 					tempServiceAppointments.push(this.allServiceAppointments[i]);
 				}
@@ -226,17 +231,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
 	showSeries(row) {
 		this.requestNumber = row.HOT_RequestNumber__c;
 		this.isRequestNumberNull = false;
-		let tempServiceAppointments = [];
-		for (let sa of this.allServiceAppointmentsFiltered) {
-			if (sa.HOT_RequestNumber__c == row.HOT_RequestNumber__c) {
-				tempServiceAppointments.push(sa);
-			}
-		}
-		this.allServiceAppointmentsFiltered = tempServiceAppointments;
+		this.filterServiceAppointments();
 	}
 	handleBackToFullList() {
 		this.requestNumber = null;
 		this.isRequestNumberNull = true;
+		this.isScreenInterpretation = false;
 		this.filterServiceAppointments();
 	}
 	@track isScreenInterpretation = false;
