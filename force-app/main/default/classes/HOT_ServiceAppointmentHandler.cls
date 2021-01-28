@@ -208,20 +208,20 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			List<Id> PreferredResourceId = new List<Id>();
 		List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
 		for(ServiceAppointment serviceAppointment : serviceAppointments){
-			if(serviceAppointment.HOT_PreferredResource__c != null){
-				PreferredResourceId.add(serviceAppointment.HOT_PreferredResource__r.Service_Resource__c);
+			if(serviceAppointment.HOT_PreferredServiceResourceId__c != null){
+				PreferredResourceId.add(serviceAppointment.HOT_PreferredServiceResourceId__c);
 				serviceAppointmentsToUpdate.add(serviceAppointment);
 			}
 		}
 		Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>([SELECT Id, HOT_ServiceTerritory__c, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c FROM ServiceResource WHERE Id IN :PreferredResourceId]);
 		for(ServiceAppointment serviceAppointment : serviceAppointmentsToUpdate){
-			if(serviceAppointment.ServiceTerritoryId != serviceResources.get(serviceAppointment.HOT_PreferredResource__r.Service_Resource__c).HOT_ServiceTerritory__c){
-				serviceAppointment.ServiceTerritoryId = serviceResources.get(serviceAppointment.HOT_PreferredResource__c).HOT_ServiceTerritory__c;
+			if(serviceAppointment.ServiceTerritoryId != serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_ServiceTerritory__c){
+				serviceAppointment.ServiceTerritoryId = serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_ServiceTerritory__c;
 			}
 
-			if(serviceAppointment.HOT_IsReleasedToFreelance__c != serviceResources.get(serviceAppointment.HOT_PreferredResource__c).HOT_IsFreelanceInterpreter__c){
-				serviceAppointment.HOT_IsReleasedToFreelance__c = serviceResources.get(serviceAppointment.HOT_PreferredResource__c).HOT_IsFreelanceInterpreter__c;
-				serviceAppointment.HOT_IsEmployedInterpreter__c = serviceResources.get(serviceAppointment.HOT_PreferredResource__c).HOT_IsEmployedInterpreter__c;
+			if(serviceAppointment.HOT_IsReleasedToFreelance__c != serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_IsFreelanceInterpreter__c){
+				serviceAppointment.HOT_IsReleasedToFreelance__c = serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_IsFreelanceInterpreter__c;
+				serviceAppointment.HOT_IsEmployedInterpreter__c = serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_IsEmployedInterpreter__c;
 			}
 		}
 		return serviceAppointmentsToUpdate;

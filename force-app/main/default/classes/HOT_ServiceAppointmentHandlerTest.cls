@@ -10,11 +10,21 @@ private class HOT_ServiceAppointmentHandlerTest{
 		Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
 		User user = HOT_TestDataFactory.createUser( 'user', profile );
 		insert user;
-		ServiceResource resource = HOT_TestDataFactory.createServiceResource( user.Id );
-		resource.HOT_IsFreelanceInterpreter__c = true;
-		insert resource;
-		ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(resource, serviceTerritory);
+		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource( user.Id );
+		serviceResource.HOT_IsFreelanceInterpreter__c = true;
+		insert serviceResource;
+		ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory);
 		insert serviceTerritoryMember;
+
+		HOT_Resource__c resource = new HOT_Resource__c();
+		resource.Name = 'Test';
+		resource.Service_Resource__c = serviceResource.Id;
+		insert resource;
+
+		HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
+		resourceMember.Resource__c = resource.Id;
+		resourceMember.Service_Resource__c = serviceResource.Id;
+		insert resourceMember;
 
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert WorkType;
@@ -45,12 +55,13 @@ private class HOT_ServiceAppointmentHandlerTest{
 	}
 	@isTest static void setFieldsByPreferredResourceTest_onUpdate() {
 		ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c, HOT_ServiceTerritory__c FROM ServiceResource];
+		HOT_Resource__c resource = [SELECT Id, Name, Service_Resource__c FROM HOT_Resource__c];
 		serviceResource.HOT_IsFreelanceInterpreter__c = false;
 		serviceResource.HOT_IsEmployedInterpreter__c = true;
 		//update serviceResource;
 
 		ServiceAppointment serviceAppointment = [SELECT Id, HOT_PreferredResource__c FROM ServiceAppointment WHERE HOT_PreferredResource__c = null];
-		serviceAppointment.HOT_PreferredResource__c = serviceResource.Id;
+		serviceAppointment.HOT_PreferredResource__c = resource.Id;
 
 		Test.startTest();
 		update serviceAppointment;
