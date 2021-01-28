@@ -431,6 +431,16 @@
         <editable>false</editable>
         <field>HOT_Request__c.Warning__c</field>
         <readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.PreferredResource1__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.PreferredResource2__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -640,6 +650,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_DeadlineDate__c</field>
+        <readable>true</readable>
+	</fieldPermissions>
+	<fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_PreferredResource__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
