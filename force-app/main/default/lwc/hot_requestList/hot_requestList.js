@@ -244,8 +244,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 		return getMobileSortingOptions(this.columns)
 	}
 	handleMobileSorting(event) {
-		this.sortDirection = event.detail.value.sortDirection;
-		this.sortedBy = event.detail.value.fieldName;
+		let value = JSON.parse(event.detail.value);
+		this.sortDirection = value.sortDirection;
+		this.sortedBy = value.fieldName;
 		this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
 		this.showHideInactives();
 	}
