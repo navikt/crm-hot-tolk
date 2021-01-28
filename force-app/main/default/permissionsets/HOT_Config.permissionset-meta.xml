@@ -28,8 +28,8 @@
         <editable>true</editable>
         <field>HOT_Request__c.PreferredInterpreter2__c</field>
         <readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.PreferredResource1__c</field>
         <readable>true</readable>
@@ -58,8 +58,8 @@
         <editable>true</editable>
         <field>ServiceAppointment.HOT_PreferredInterpreter__c</field>
         <readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_PreferredResource__c</field>
         <readable>true</readable>
@@ -183,6 +183,24 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>HOT_Request__c</object>
         <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>HOT_ResourceMember__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>HOT_Resource__c</object>
+        <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>true</allowCreate>

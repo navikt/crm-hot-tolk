@@ -379,6 +379,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.PreferredResource1__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.PreferredResource2__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.ServiceTerritory__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -430,16 +440,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.Warning__c</field>
-        <readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Request__c.PreferredResource1__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Request__c.PreferredResource2__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -651,11 +651,6 @@
         <editable>false</editable>
         <field>ServiceAppointment.HOT_DeadlineDate__c</field>
         <readable>true</readable>
-	</fieldPermissions>
-	<fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceAppointment.HOT_PreferredResource__c</field>
-        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -735,6 +730,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_NumberOfInterestedResources__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_PreferredResource__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1308,6 +1308,24 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>HOT_Request__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>HOT_ResourceMember__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>HOT_Resource__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
