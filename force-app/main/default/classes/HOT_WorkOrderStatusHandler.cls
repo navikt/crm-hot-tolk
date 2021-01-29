@@ -121,6 +121,8 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 				System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
 				System.debug('numberOfCanceled: ' + numberOfCanceled);
 				
+				workOrder.HOT_IsUpdateStatus__c = false;
+				
 				if(numberOfScheduled > 0) {
 					workOrder.Status = 'Scheduled';
 				}
@@ -156,7 +158,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 					workOrder.Status = 'New';
 					continue;
 				}
-				workOrder.HOT_IsUpdateStatus__c = false;
 			}
 		}
 	}
