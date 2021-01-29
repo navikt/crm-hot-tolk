@@ -21,16 +21,16 @@ public without sharing class HOT_CreateWorkOrderService {
 		List<String> errors = new List<String>();
 
 		if(input.endDate <= input.startDate) {
-			errors.add('Slutt tid må være etter Start tid.');
+			errors.add('Slutt tid må være etter start tid.');
 			return errors;
 		}
 
 		if(input.recurringType != 'Never' && input.recurringEndDate <= input.startDate.date()) {
-			errors.add('Sluttdato må være etter Startdato.');
+			errors.add('Sluttdato må være etter startdato.');
 			return errors;
 		}
 
-		if(input.recurringType == 'Weekly' && !input.monday && !input.tuesday && !input.wendesday && !input.thursday && !input.friday && !input.saturday && !input.sunday) {
+		if((input.recurringType == 'Weekly' || input.recurringType == 'Biweekly') && !input.monday && !input.tuesday && !input.wendesday && !input.thursday && !input.friday && !input.saturday && !input.sunday) {
 			errors.add('Må velge minst en dag.');
 			return errors;
 		}
