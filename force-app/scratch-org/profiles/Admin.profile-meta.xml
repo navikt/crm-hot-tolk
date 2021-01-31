@@ -174,10 +174,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_UpdateScreenSA_Batch</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_UserHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
