@@ -148,31 +148,50 @@
         </rules>
     </decisions>
     <decisions>
-        <description>Checking if 
-!isReleasedToFreelance
-Status == &quot;Ingen&quot;</description>
-        <name>Check_isReleasedToFreelance</name>
-        <label>Check isReleasedToFreelance</label>
+        <description>Checking if Dispatcher should be allowed to release</description>
+        <name>Check_Allowence_To_Release</name>
+        <label>Check_Allowence_To_Release</label>
         <locationX>647</locationX>
         <locationY>159</locationY>
         <defaultConnector>
-            <targetReference>ServiceAppointment_already_Released</targetReference>
+            <targetReference>Not_allowed_to_release</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Standardutfall</defaultConnectorLabel>
         <rules>
-            <name>Not_Previously_Released</name>
-            <conditionLogic>and</conditionLogic>
+            <name>Allowed</name>
+            <conditionLogic>or</conditionLogic>
             <conditions>
-                <leftValueReference>CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</leftValueReference>
+                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <booleanValue>false</booleanValue>
+                    <stringValue>None</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Released to Freelance</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Scheduled</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Dispatched</stringValue>
                 </rightValue>
             </conditions>
             <connector>
                 <targetReference>Check_Status</targetReference>
             </connector>
-            <label>Not Previously Released</label>
+            <label>Allowed</label>
         </rules>
     </decisions>
     <decisions>
@@ -186,12 +205,19 @@ Status == &quot;Ingen&quot;</description>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Status_None</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>or</conditionLogic>
             <conditions>
                 <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>None</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Released to Freelance</stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -263,7 +289,7 @@ Status == &quot;Ingen&quot;</description>
         <locationX>506</locationX>
         <locationY>83</locationY>
         <defaultConnector>
-            <targetReference>Check_isReleasedToFreelance</targetReference>
+            <targetReference>Check_Allowence_To_Release</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -456,6 +482,22 @@ Status == &quot;Ingen&quot;</description>
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>Not_allowed_to_release</name>
+        <label>Not allowed to release</label>
+        <locationX>614</locationX>
+        <locationY>357</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Error_message</name>
+            <fieldText>&lt;p&gt;Du kan ikke frigi dette oppdraget, ettersom det er {!CurrentServiceAppointment.Status}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>OutScreen</name>
         <label>OutScreen</label>
         <locationX>572</locationX>
@@ -482,22 +524,6 @@ Status == &quot;Ingen&quot;</description>
         <fields>
             <name>CloseWindowText</name>
             <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>ServiceAppointment_already_Released</name>
-        <label>ServiceAppointment already Released</label>
-        <locationX>614</locationX>
-        <locationY>357</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Error_message</name>
-            <fieldText>&lt;p&gt;Oppdraget er allerede frigitt til frilanstolk.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>false</showFooter>
