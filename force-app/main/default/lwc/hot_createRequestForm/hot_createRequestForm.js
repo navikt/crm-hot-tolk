@@ -421,6 +421,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			radioButtonGroup.focus();
 		}
 		radioButtonGroup.reportValidity();
+		if (this.currentRequestType != 'Me') {
+			this.isPersonNumberValid = false;
+		}
 	}
 
 	validateExistingDateTimes() {
