@@ -150,12 +150,17 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		Source__c: "Community", Type__c: "", EventType__c: "",
 	};
 
+	@track isPersonNumberValid = true;
 	checkPersonNumber(event) {
 		console.log("checkPersonNumber")
-		var inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
-
+		let inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
 		let regExp = RegExp("[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]");
-		if (!regExp.test(inputComponent.value)) {
+		this.isPersonNumberValid = regExp.test(inputComponent.value);
+		console.log("PersonNumber is valid? " + this.isPersonNumberValid);
+	}
+	reportValidityPersonNumberField() {
+		let inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
+		if (!this.isPersonNumberValid) {
 			inputComponent.setCustomValidity("Fødselsnummeret er ikke gyldig");
 			inputComponent.focus();
 		} else {
@@ -163,7 +168,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.fieldValues.UserPersonNumber__c = inputComponent.value;
 		}
 		inputComponent.reportValidity();
-
 	}
 
 	@track isOnlyOneTime = true;
@@ -335,7 +339,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 
 			console.log(invalidIndex)
-			if (invalidIndex.length == 0) {
+			this.reportValidityPersonNumberField();
+			if (invalidIndex.length == 0 && this.isPersonNumberValid) {
 				const isDuplicate = null; //this.isDuplicate(this.fieldValues); //Denne metoden fungerer ikke akkurat nå. Løses i TOLK-963
 				if (isDuplicate == null) {
 					console.log("Sumbitting")
