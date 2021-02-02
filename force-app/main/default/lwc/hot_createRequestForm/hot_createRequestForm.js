@@ -154,6 +154,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	checkPersonNumber(event) {
 		console.log("checkPersonNumber")
 		let inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
+		this.fieldValues.UserPersonNumber__c = inputComponent.value;
 		let regExp = RegExp("[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]");
 		this.isPersonNumberValid = regExp.test(inputComponent.value);
 		console.log("PersonNumber is valid? " + this.isPersonNumberValid);
@@ -165,7 +166,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			inputComponent.focus();
 		} else {
 			inputComponent.setCustomValidity("");
-			this.fieldValues.UserPersonNumber__c = inputComponent.value;
 		}
 		inputComponent.reportValidity();
 	}
