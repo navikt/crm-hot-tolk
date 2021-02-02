@@ -43,20 +43,6 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_IsEmployedInterpreter__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_AssignedResourceId__c</assignToReference>
             <operator>Assign</operator>
             <value>
@@ -241,7 +227,7 @@
             <name>No</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>interestedResource.Id</leftValueReference>
+                <leftValueReference>interestedResource</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -578,6 +564,8 @@
         <outputReference>interestedResource</outputReference>
         <queriedFields>Id</queriedFields>
         <queriedFields>Status__c</queriedFields>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
     </recordLookups>
     <recordUpdates>
         <name>Save_Service_Appointment</name>
@@ -596,6 +584,7 @@
         </connector>
         <inputReference>interestedResource</inputReference>
     </recordUpdates>
+    <runInMode>DefaultMode</runInMode>
     <screens>
         <name>Already_Completed</name>
         <label>Already Completed</label>

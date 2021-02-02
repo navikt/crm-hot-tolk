@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <excludeButtons>ChangeOwnerOne</excludeButtons>
+    <excludeButtons>ChangeRecordType</excludeButtons>
+    <excludeButtons>CreateCallList</excludeButtons>
+    <excludeButtons>CreateSurveyInvitation</excludeButtons>
     <excludeButtons>DataDotComAccountInsights</excludeButtons>
     <excludeButtons>DataDotComClean</excludeButtons>
     <excludeButtons>DataDotComCompanyHierarchy</excludeButtons>
+    <excludeButtons>Delete</excludeButtons>
+    <excludeButtons>DisableCustomerPortalAccount</excludeButtons>
+    <excludeButtons>Edit</excludeButtons>
+    <excludeButtons>EnableCustomerPortalUser</excludeButtons>
+    <excludeButtons>IncludeOffline</excludeButtons>
+    <excludeButtons>IsotopeSubscription</excludeButtons>
+    <excludeButtons>LoginToNetworkAsPersonUser</excludeButtons>
+    <excludeButtons>LoginToPortalAsPersonUser</excludeButtons>
+    <excludeButtons>PartnerScorecard</excludeButtons>
+    <excludeButtons>PrintableView</excludeButtons>
+    <excludeButtons>Share</excludeButtons>
+    <excludeButtons>StartOutboundConversation</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
+    <excludeButtons>ViewCustomerPortalUser</excludeButtons>
+    <excludeButtons>XClean</excludeButtons>
     <layoutSections>
         <customLabel>false</customLabel>
         <detailHeading>false</detailHeading>
@@ -70,27 +88,8 @@
     </layoutSections>
     <platformActionList>
         <actionListContext>Record</actionListContext>
-        <platformActionListItems>
-            <actionName>Edit</actionName>
-            <actionType>StandardButton</actionType>
-            <sortOrder>0</sortOrder>
-        </platformActionListItems>
-        <platformActionListItems>
-            <actionName>Delete</actionName>
-            <actionType>StandardButton</actionType>
-            <sortOrder>1</sortOrder>
-        </platformActionListItems>
-        <platformActionListItems>
-            <actionName>Account.Oppgrader_bruker_til_frilanstolk</actionName>
-            <actionType>QuickAction</actionType>
-            <sortOrder>2</sortOrder>
-        </platformActionListItems>
-        <platformActionListItems>
-            <actionName>LoginToNetworkAsPersonUser</actionName>
-            <actionType>StandardButton</actionType>
-            <sortOrder>3</sortOrder>
-        </platformActionListItems>
     </platformActionList>
+    <quickActionList/>
     <relatedLists>
         <fields>NAME</fields>
         <fields>Status__c</fields>
@@ -115,7 +114,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h3N000001WBFo</masterLabel>
+        <masterLabel>00h1x000001awcF</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

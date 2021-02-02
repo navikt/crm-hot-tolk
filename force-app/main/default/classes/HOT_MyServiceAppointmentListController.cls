@@ -34,31 +34,5 @@ public without sharing class HOT_MyServiceAppointmentListController {
 			ORDER BY SchedStartTime ASC];
 		return serviceAppointments;
 	}
-
-	
-	@AuraEnabled(cacheable = true)
-	public static Map<String, List<ServiceAppointmentHistory>> getMyServiceAppointmentFieldHistories(Id serviceAppointmentId) {
-		
-		List<String> statusList = new List<String>{'Canceled', 'Completed', 'Cannot Complete'};
-		List<ServiceAppointmentHistory> statusHistories = new List<ServiceAppointmentHistory>();
-		List<ServiceAppointmentHistory> allStatusHistories = 
-		[SELECT Id, ServiceAppointmentId, Field, CreatedById, CreatedDate, NewValue
-		FROM ServiceAppointmentHistory WHERE ServiceAppointmentId = :serviceAppointmentId AND Field = 'Status' ORDER BY CreatedDate ASC];
-
-		List<ServiceAppointmentHistory> termsOfAgreementHistories = [SELECT Id, ServiceAppointmentId, Field, CreatedById, CreatedDate, NewValue
-																	 FROM ServiceAppointmentHistory 
-																	 WHERE Field = 'HOT_TermsOfAgreement__c' 
-																	 ORDER BY CreatedDate ASC];
-
-		for(ServiceAppointmentHistory sah:allStatusHistories){
-			if(!statusList.contains((String)sah.NewValue)){
-				statusHistories.add(sah);
-			}
-		}
-		Map<String, List<ServiceAppointmentHistory>> history = new Map<String, List<ServiceAppointmentHistory>>();
-		history.put('Status', statusHistories);
-		history.put('HOT_TermsOfAgreement__c', termsOfAgreementHistories);
-		return history;
-	}
     
 }

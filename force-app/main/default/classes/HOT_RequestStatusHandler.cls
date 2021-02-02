@@ -64,6 +64,9 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 		}
 
 		for(HOT_Request__c request : requests) {
+			
+			request.IsUpdateStatus__c = false;
+
 			if(workOrdersMaps.get(request.Id) != null) {
 				Integer numberOfWorkOrder = workOrdersMaps.get(request.Id).size();
 				Integer numberOfNew = 0;
@@ -143,7 +146,6 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 					request.Status__c = statusMap.get('New');
 					continue;
 				}
-				request.IsUpdateStatus__c = false;
 			}
 		}
 	}

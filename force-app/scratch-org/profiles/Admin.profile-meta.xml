@@ -38,7 +38,31 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_CreateWorkOrderService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_CreateWorkOrderServiceTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_FieldServiceStatusHandlerTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_GroupMembersService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_GroupMembersServiceSchedulable</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_GroupMembersServiceSchedulableTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_GroupMembersServiceTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -102,7 +126,15 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_RequestStatusHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_ServiceAppointmentHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_ServiceAppointmentHandlerTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -178,6 +210,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_WorkOrderListController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_WorkOrderListControllerTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_WorkOrderStatusHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -244,6 +284,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_InterestedResource__c.Comments__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_InterestedResource__c.HOT_IsMyRequestDispatcher__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -318,6 +363,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_NewRegionNumber__mdt.NewRegionNumber__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_NewRegionNumber__mdt.OldRegionNumber__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.Account__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -353,6 +408,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.Dispatcher__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.Duration__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -374,6 +434,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.ExternalRequestStatus__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.HOT_PersonContactId__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.InterpretationMethodSecondary__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -418,12 +488,27 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.IsMyRequest__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.IsOtherEconomicProvicer__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.IsScreenInterpreter__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsSerieoppdrag__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsUpdateStatus__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -448,7 +533,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.NumberOfInterpretersSecondary__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.NumberOfInterpreters__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.NumberOfWorkOrders__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -479,6 +574,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.Person__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.PreferredInterpreter1__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.PreferredInterpreter2__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -753,6 +858,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_DoNotCreateHAR__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_Escort__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -765,6 +875,11 @@
         <editable>false</editable>
         <field>ServiceAppointment.HOT_HapticCommunication__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_Information__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -793,12 +908,27 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
+        <field>ServiceAppointment.HOT_IsMyRequestDispatcher__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsScreenInterpreterNew__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_IsScreenInterpreter__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsSerieoppdrag__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -812,6 +942,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_PreferredInterpreter__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_Processed__c</field>
         <readable>true</readable>
@@ -820,6 +955,16 @@
         <editable>false</editable>
         <field>ServiceAppointment.HOT_ReleaseDate__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_ReleasedBy__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_RequestNumber__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -845,6 +990,11 @@
         <editable>false</editable>
         <field>ServiceAppointment.HOT_Warning__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_WorkOrderLineItem__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -1073,6 +1223,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>WorkOrder.HOT_DayOfWeek__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_ExternalWorkOrderStatus__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>WorkOrder.HOT_InterpretationPostalCity__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -1088,12 +1248,32 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>WorkOrder.HOT_Interpreters__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_IsCancelable__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_IsInvoiced__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>WorkOrder.HOT_IsUpdateStatus__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.HOT_NumberOfInterpreters__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_RequestName__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1303,6 +1483,9 @@
         <layout>HOT_InterestedResource__c-Interested Resource Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>HOT_NewRegionNumber__mdt-HOT New Region Number Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>HOT_Request__c-Request Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -1312,7 +1495,7 @@
         <layout>MaskinportenClient__mdt-Maskinporten Client Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>PersonAccount-HOT Person Account Layout</layout>
+        <layout>PersonAccount-HOT Admin Person Account Layout</layout>
         <recordType>PersonAccount.PersonAccount</recordType>
     </layoutAssignments>
     <layoutAssignments>

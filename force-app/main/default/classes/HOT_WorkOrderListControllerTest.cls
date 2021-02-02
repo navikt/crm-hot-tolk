@@ -1,17 +1,18 @@
 @isTest
 private class HOT_WorkOrderListControllerTest{
 
-
 	@testSetup static void setup(){
-
-        Profile communityProfile = [SELECT Name FROM Profile WHERE Name='Personbruker Login' OR Name='Trial Customer Portal User' LIMIT 1];
-		
 		User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 		if(admin.UserRoleId == null){
 			UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
 			admin.UserRoleId = role.Id;
 			update admin;
 		}
+	}
+
+	@isTest static void getMyWorkOrdersTest() {
+		
+		User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
 		Person__c person = HOT_TestDataFactory.createPerson();
 		person.INT_KrrEmail__c = 'getPersonTest@nav.no';
@@ -25,17 +26,12 @@ private class HOT_WorkOrderListControllerTest{
 		account.OwnerId = admin.Id;
 		update account;
 
-
-		User user = HOT_TestDataFactory.createUser(communityProfile, account);
-		user.Alias = 'userTest';
-		user.Username = 'HOT_testuser1@nav.hot.no';
-		user.CommunityNickname = 'userTest';
-		insert user; 
-
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert workType;
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('WorkOrderListController', workType);
 		request.Account__c = account.Id;
+		request.Orderer__c = account.Id;
+		request.NumberOfInterpreters__c = 2;
 		insert request;
 		request.Status__c = 'Godkjent';
 		update request;
@@ -43,25 +39,85 @@ private class HOT_WorkOrderListControllerTest{
 		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
 		insert serviceResource;
 
-		ServiceAppointment serviceAppointments = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id LIMIT 1];
-		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointments.Id, serviceResource.Id);
-		insert assignedResource;
-	}
+		List<AssignedResource> assignedResources = new List<AssignedResource>();
+		List<ServiceAppointment> serviceAppointments = [SELECT Id, Status, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
+		ServiceAppointment serviceAppointment = serviceAppointments[0];
+		ServiceAppointment serviceAppointment2 = serviceAppointments[1];
+		serviceAppointment2.SchedStartTime = serviceAppointment.SchedStartTime.addDays(1);
+		serviceAppointment2.SchedEndTime = serviceAppointment.SchedEndTime.addDays(1);
+		update serviceAppointments;
+		
+		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, serviceResource.Id);
+		assignedResources.add(assignedResource);
+		serviceAppointment.Status = 'Dispatched';
+		AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(serviceAppointment2.Id, serviceResource.Id);
+		assignedResources.add(assignedResource2);
+		serviceAppointment2.Status = 'Dispatched';
+		insert assignedResources;
+		update serviceAppointments;
 
-	@isTest static void getMyWorkOrdersTest() {
-		User user = [SELECT Id FROM User WHERE Alias = 'userTest'];
+		Test.startTest();
+        Profile communityProfile = [SELECT Name FROM Profile WHERE Name='Personbruker Login' OR Name='Trial Customer Portal User' LIMIT 1];
+		User user = HOT_TestDataFactory.createUser(communityProfile, account);
+		user.Alias = 'userTest';
+		user.Username = 'HOT_testuser1@nav.hot.no';
+		user.CommunityNickname = 'userTest';
+		insert user; 
+		Test.stopTest();
 
 		System.runAs(user){
 			List<WorkOrder> workOrders = HOT_WorkOrderListController.getMyWorkOrders();
-			System.assertEquals(1, workOrders.size());
+			System.assertEquals(1, workOrders.size(), 'Could not get all my workOrders');
 		}
 	}
 	@isTest static void getWorkOrdersFromRequestTest() {
-		User user = [SELECT Id, AccountId FROM User WHERE Alias = 'userTest'];
-		HOT_Request__c request = [SELECT Id, Name FROM HOT_Request__c WHERE Account__c = :user.AccountId LIMIT 1];
+		
+		User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+		Person__c person = HOT_TestDataFactory.createPerson();
+		person.INT_KrrEmail__c = 'getPersonTest@nav.no';
+		person.HOT_WorkplaceInterpreter__c = true;
+		person.INT_Confidential__c = 'Ugradert';
+		person.INT_FirstName__c = 'Tolk';
+		person.INT_LastName__c = 'Bruker';
+		insert person;
+
+		Account account = [SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c FROM Account WHERE LastName =: 'Bruker'];
+		account.OwnerId = admin.Id;
+		update account;
+
+		WorkType workType = HOT_TestDataFactory.createWorkType();
+		insert workType;
+		HOT_Request__c request = HOT_TestDataFactory.createRequest('WorkOrderListController', workType);
+		request.Account__c = account.Id;
+		request.Orderer__c = account.Id;
+		insert request;
+		request.Status__c = 'Godkjent';
+		update request;
+
+		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
+		insert serviceResource;
+
+		ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id LIMIT 1];
+		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, serviceResource.Id);
+		insert assignedResource;
+		serviceAppointment.Status = 'Dispatched';
+		update serviceAppointment;
+
+		Test.startTest();
+        Profile communityProfile = [SELECT Name FROM Profile WHERE Name='Personbruker Login' OR Name='Trial Customer Portal User' LIMIT 1];
+		User user = HOT_TestDataFactory.createUser(communityProfile, account);
+		user.Alias = 'userTest';
+		user.Username = 'HOT_testuser1@nav.hot.no';
+		user.CommunityNickname = 'userTest';
+		insert user; 
+		Test.stopTest();
+
+		user = [SELECT Id, AccountId FROM User WHERE Alias = 'userTest'];
+		request = [SELECT Id, Name FROM HOT_Request__c WHERE Account__c = :user.AccountId LIMIT 1];
 		System.runAs(user){
 			List<WorkOrder> workOrders = HOT_WorkOrderListController.getWorkOrdersFromRequest((String) request.Name);
-			System.assertEquals(1, workOrders.size());
+			System.assertEquals(1, workOrders.size(), 'Could not get workOrders from Request');
 		}
 	}
 }

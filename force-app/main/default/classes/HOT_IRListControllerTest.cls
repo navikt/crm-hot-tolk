@@ -52,12 +52,32 @@ private class HOT_IRListControllerTest{
 		System.assertEquals(true, updatedInterestedResource.Comments__c.contains('New Comment'), 'Comment was not updated');
 	}
 
+	@isTest static void readCommentTest(){
+		HOT_InterestedResource__c interestedResource = [SELECT Id, IsNewComment__c FROM HOT_InterestedResource__c];
+		interestedResource.IsNewComment__c = true;
+		update interestedResource;
+		HOT_InterestedResourcesListController.readComment(interestedResource.Id);
+		interestedResource = [SELECT Id, IsNewComment__c FROM HOT_InterestedResource__c];
+		System.assertEquals(false, interestedResource.IsNewComment__c, 'Could not set IsNewComment__c');
+	}
+
 	@isTest static void dispatcherReadCommentTest(){
 		HOT_InterestedResource__c interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c];
 		interestedResource.IsDispatcherNewComment__c = true;
 		update interestedResource;
 		HOT_InterestedResourcesListController.dispatcherReadComment(interestedResource.Id);
 		interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c];
-		System.assertEquals(false, interestedResource.IsDispatcherNewComment__c);
+		System.assertEquals(false, interestedResource.IsDispatcherNewComment__c, 'Could not set IsDispatcherNewComment__c');
+	}
+
+	@isTest static void dispatcherAddCommentTest(){
+		HOT_InterestedResource__c interestedResource = [SELECT Id FROM HOT_InterestedResource__c];
+		HOT_InterestedResourcesListController interestedResourcesListController = new HOT_InterestedResourcesListController();
+		interestedResourcesListController.recordId = interestedResource.Id;
+		interestedResourcesListController.newComment = 'New Comment From Dispatcher';
+		HOT_InterestedResourcesListController.addComment(new List<HOT_InterestedResourcesListController>{interestedResourcesListController});
+		interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c];
+		System.assertEquals(true, interestedResource.IsDispatcherNewComment__c, 'Could not set IsDispatcherNewComment__c');
+
 	}
 }

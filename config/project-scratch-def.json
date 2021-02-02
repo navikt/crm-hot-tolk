@@ -53,6 +53,9 @@
 		},
 		"mobileSettings": {
 			"enableS1EncryptedStoragePref2": false
+		},
+		"apexSettings": {
+			"enableDisableParallelApexTesting": true
 		}
 	}
 }

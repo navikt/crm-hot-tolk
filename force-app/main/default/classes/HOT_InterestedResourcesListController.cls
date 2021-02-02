@@ -61,10 +61,10 @@ public without sharing class HOT_InterestedResourcesListController {
 				interestedResource.Comments__c = newComment;
 			}
 			else{
-			interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
+				interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
 			}
+			
 			if(Test.isRunningTest() ? true : UserInfo.getProfileId() == [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0].Id){
-					System.debug('IsDispatcherNewComment__c = true');
 				interestedResource.IsDispatcherNewComment__c = true;
 			}
 			else{

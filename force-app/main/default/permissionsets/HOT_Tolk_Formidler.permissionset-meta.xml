@@ -9,6 +9,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_CreateWorkOrderService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_InterestedResourcesListController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -44,6 +48,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.INT_PersonIdent__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.NumberOfEmployees</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -697,6 +706,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_Information__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_InterpretationPostalCity__c</field>
         <readable>true</readable>
@@ -732,8 +746,8 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_IsScreenInterpreter__c</field>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsScreenInterpreterNew__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -758,6 +772,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>ServiceAppointment.HOT_ReleasedBy__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>ServiceAppointment.HOT_Request__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -774,6 +793,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_Warning__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_WorkOrderLineItem__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1004,6 +1028,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.GrandTotal</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_DayOfWeek__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

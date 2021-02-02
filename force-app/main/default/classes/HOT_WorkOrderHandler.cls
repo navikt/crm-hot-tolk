@@ -154,7 +154,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 	}
 
 	public static void updateRequests(List<WorkOrder> workOrders){
-		List<Id> requestIds = new List<Id>();
+		Set<Id> requestIds = new Set<Id>();
 		List<Id> deletedWorkOrders = new List<Id>();
 		for(WorkOrder workOrder:workOrders){
 			requestIds.add(workOrder.HOT_Request__c);
@@ -164,14 +164,14 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 		}
 		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, StartTime__c, EndTime__c,
 										(SELECT Id, StartDate, EndDate, Status FROM HOT_Request__c.Work_Orders__r
-										WHERE Id NOT IN :deletedWorkOrders ORDER BY StartDate) 
+										WHERE Id NOT IN :deletedWorkOrders AND Status != 'Annul' ORDER BY StartDate ASC) 
 										FROM HOT_Request__c WHERE Id IN :requestIds];
 		for(HOT_Request__c request:requests){
 			if(request.NumberOfWorkOrders__c != request.Work_Orders__r.size()){
 				request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
 			}
 			for(WorkOrder workOrder:request.Work_Orders__r){
-				if(workOrder.Status != 'Annul' && workOrder.Status != 'Canceled'){
+				if(workOrder.Status != 'Canceled'){
 					request.StartTime__c = workOrder.StartDate;
 					request.EndTime__c = workOrder.EndDate;
 					break;
@@ -179,6 +179,32 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 			}
 		}
 		update requests;
+	}
+
+	public static void updateWorkOrders(List<WorkOrder> workOrders){
+		Set<Id> requestIds = new Set<Id>();
+		for(WorkOrder workOrder : workOrders){
+			requestIds.add(workOrder.HOT_Request__c);
+		}
+		Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>([SELECT Id, Account__c, MeetingPostalCity__c, HOT_PersonContactId__c, Description__c, InterpretationPostalCity__c,
+																		InterpretationPostalCode__c, InterpretationStreet__c, OwnerId, MeetingPostalCode__c, MeetingStreet__c, Subject__c, ServiceTerritory__c
+																		FROM HOT_Request__c WHERE Id IN :requestIds]);
+
+		for(WorkOrder workOrder:workOrders){
+			workOrder.AccountId = requests.get(workOrder.HOT_Request__c).Account__c;
+			workOrder.City = requests.get(workOrder.HOT_Request__c).MeetingPostalCity__c;
+			workOrder.ContactId = requests.get(workOrder.HOT_Request__c).HOT_PersonContactId__c;
+			workOrder.Description = requests.get(workOrder.HOT_Request__c).Description__c;
+			workOrder.HOT_InterpretationPostalCity__c = requests.get(workOrder.HOT_Request__c).InterpretationPostalCity__c;
+			workOrder.HOT_InterpretationPostalCode__c = requests.get(workOrder.HOT_Request__c).InterpretationPostalCode__c;
+			workOrder.HOT_InterpretationStreet__c = requests.get(workOrder.HOT_Request__c).InterpretationStreet__c;
+			workOrder.OwnerId = requests.get(workOrder.HOT_Request__c).OwnerId;
+			workOrder.PostalCode = requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c;
+			workOrder.Street = requests.get(workOrder.HOT_Request__c).MeetingStreet__c;
+			workOrder.Subject = requests.get(workOrder.HOT_Request__c).Subject__c;
+			workOrder.ServiceTerritoryId = requests.get(workOrder.HOT_Request__c).ServiceTerritory__c;
+		}
+		update workOrders;
 	}
 
 }

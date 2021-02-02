@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Innlandet-Gjøvik</label>
+    <protected>false</protected>
+    <values>
+        <field>NewRegionNumber__c</field>
+        <value xsi:type="xsd:string">47003</value>
+    </values>
+    <values>
+        <field>OldRegionNumber__c</field>
+        <value xsi:type="xsd:string">4705</value>
+    </values>
+</CustomMetadata>

@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <formula>HOT_Request__r.IsScreenInterpreter__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Screen Interpreter</label>
+    <label>Screen Interpreter from Request</label>
     <trackHistory>false</trackHistory>
     <type>Checkbox</type>
 </CustomField>

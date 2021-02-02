@@ -150,12 +150,17 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		Source__c: "Community", Type__c: "", EventType__c: "",
 	};
 
+	@track isPersonNumberValid = false;
 	checkPersonNumber(event) {
 		console.log("checkPersonNumber")
-		var inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
-
+		let inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
 		let regExp = RegExp("[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]");
-		if (!regExp.test(inputComponent.value)) {
+		this.isPersonNumberValid = regExp.test(inputComponent.value);
+		console.log("PersonNumber is valid? " + this.isPersonNumberValid);
+	}
+	reportValidityPersonNumberField() {
+		let inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
+		if (!this.isPersonNumberValid) {
 			inputComponent.setCustomValidity("Fødselsnummeret er ikke gyldig");
 			inputComponent.focus();
 		} else {
@@ -163,7 +168,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			this.fieldValues.UserPersonNumber__c = inputComponent.value;
 		}
 		inputComponent.reportValidity();
-
 	}
 
 	@track isOnlyOneTime = true;
@@ -335,8 +339,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 
 			console.log(invalidIndex)
-			if (invalidIndex.length == 0) {
-				const isDuplicate = this.isDuplicate(this.fieldValues);
+			if (invalidIndex.length == 0 && this.isPersonNumberValid) {
+				const isDuplicate = null; //this.isDuplicate(this.fieldValues); //Denne metoden fungerer ikke akkurat nå. Løses i TOLK-963
 				if (isDuplicate == null) {
 					console.log("Sumbitting")
 					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
@@ -354,10 +358,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				window.scrollBy(0, -100);
 			}
 			else {
-				let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
-				for (let index of invalidIndex) {
-					let dateInputElement = inputList[index].querySelector('.date');
-					this.throwInputValidationError(dateInputElement, dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.');
+				if (invalidIndex.length != 0) {
+					let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
+					for (let index of invalidIndex) {
+						let dateInputElement = inputList[index].querySelector('.date');
+						this.throwInputValidationError(dateInputElement, dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.');
+					}
+				}
+				if (!this.isPersonNumberValid) {
+					this.reportValidityPersonNumberField();
 				}
 				this.spin = false;
 			}
@@ -416,12 +425,16 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			radioButtonGroup.focus();
 		}
 		radioButtonGroup.reportValidity();
+		if (this.currentRequestType == 'Me' || this.currentRequestType == 'PublicEvent') {
+			this.isPersonNumberValid = true;
+		}
 	}
 
 	validateExistingDateTimes() {
 		for (let i = 0; i < this.times.length; i++) {
-			let date = new Date(this.times[i].date + ' ' + this.times[i].startTime);
-			this.times[i].isValid = this.validateDate(date);
+			let tempDate = this.formatDateTime(this.times[i]);
+			tempDate = new Date(tempDate.date + ' ' + tempDate.startTime);
+			this.times[i].isValid = this.validateDate(tempDate);
 		}
 	}
 	validateDate(dateTime) {
@@ -437,7 +450,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 	validateDateInput(event, index) {
 		let dateElement = event.target;
-		let tempDate = new Date(this.times[index].date + ' ' + this.times[index].startTime);
+		let tempDate = this.formatDateTime(this.times[index]);
+		tempDate = new Date(tempDate.date + ' ' + tempDate.startTime);
 		if (!this.validateDate(tempDate)) {
 			dateElement.setCustomValidity("Du kan ikke bestille tolk i fortiden.");
 			dateElement.focus();
@@ -460,10 +474,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		const endHour = dateTime.endTime.substring(0, 2);
 		const endMinute = dateTime.endTime.substring(3, 5);
 
-		const newDateTime = dateTime;
+		const newDateTime = {};
+		newDateTime["id"] = dateTime.id;
 		newDateTime["date"] = month + "/" + day + "/" + year;
 		newDateTime["startTime"] = startHour + ":" + startMinute;
 		newDateTime["endTime"] = endHour + ":" + endMinute;
+		newDateTime["isValid"] = dateTime.isValid;
+		newDateTime["isNew"] = dateTime.isNew;
 
 		return newDateTime;
 	}
@@ -558,8 +575,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 				delete this.fieldValues.Account__c;
 				delete this.fieldValues.Company__c;
-				this.fieldValues.StartTime__c = "";
-				this.fieldValues.EndTime__c = "";
+				delete this.fieldValues.StartTime__c;
+				delete this.fieldValues.EndTime__c;
 
 				this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
 				if (!this.sameLocation) {
