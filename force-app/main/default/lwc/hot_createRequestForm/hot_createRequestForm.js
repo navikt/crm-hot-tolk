@@ -150,10 +150,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		Source__c: "Community", Type__c: "", EventType__c: "",
 	};
 
-	@track isPersonNumberValid = true;
+	@track isPersonNumberValid = false;
 	checkPersonNumber(event) {
 		console.log("checkPersonNumber")
 		let inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
+		this.fieldValues.UserPersonNumber__c = inputComponent.value;
 		let regExp = RegExp("[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]");
 		this.isPersonNumberValid = regExp.test(inputComponent.value);
 		console.log("PersonNumber is valid? " + this.isPersonNumberValid);
@@ -165,7 +166,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			inputComponent.focus();
 		} else {
 			inputComponent.setCustomValidity("");
-			this.fieldValues.UserPersonNumber__c = inputComponent.value;
 		}
 		inputComponent.reportValidity();
 	}
@@ -339,7 +339,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			}
 
 			console.log(invalidIndex)
-			this.reportValidityPersonNumberField();
 			if (invalidIndex.length == 0 && this.isPersonNumberValid) {
 				const isDuplicate = null; //this.isDuplicate(this.fieldValues); //Denne metoden fungerer ikke akkurat nå. Løses i TOLK-963
 				if (isDuplicate == null) {
@@ -359,10 +358,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				window.scrollBy(0, -100);
 			}
 			else {
-				let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
-				for (let index of invalidIndex) {
-					let dateInputElement = inputList[index].querySelector('.date');
-					this.throwInputValidationError(dateInputElement, dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.');
+				if (invalidIndex.length != 0) {
+					let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
+					for (let index of invalidIndex) {
+						let dateInputElement = inputList[index].querySelector('.date');
+						this.throwInputValidationError(dateInputElement, dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.');
+					}
+				}
+				if (!this.isPersonNumberValid) {
+					this.reportValidityPersonNumberField();
 				}
 				this.spin = false;
 			}
@@ -421,6 +425,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			radioButtonGroup.focus();
 		}
 		radioButtonGroup.reportValidity();
+		if (this.currentRequestType == 'Me' || this.currentRequestType == 'PublicEvent') {
+			this.isPersonNumberValid = true;
+		}
 	}
 
 	validateExistingDateTimes() {
