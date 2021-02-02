@@ -660,7 +660,7 @@
             <name>Frist_dato</name>
             <dataType>Date</dataType>
             <defaultValue>
-                <elementReference>CurrentServiceAppointment.EarliestStartTime</elementReference>
+                <elementReference>deadlineDate_Old</elementReference>
             </defaultValue>
             <fieldText>Frist dato</fieldText>
             <fieldType>InputField</fieldType>
@@ -670,7 +670,7 @@
             <name>Frilanstema</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>CurrentServiceAppointment.Subject</elementReference>
+                <elementReference>freelanceSubject_Old</elementReference>
             </defaultValue>
             <fieldText>Opplysninger (ingen sensitive)</fieldText>
             <fieldType>InputField</fieldType>
