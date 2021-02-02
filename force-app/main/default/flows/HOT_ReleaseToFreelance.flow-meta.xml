@@ -406,9 +406,6 @@
             <conditions>
                 <leftValueReference>CurrentServiceAppointment.HOT_FreelanceSubject__c</leftValueReference>
                 <operator>NotEqualTo</operator>
-                <rightValue>
-                    <stringValue/>
-                </rightValue>
             </conditions>
             <connector>
                 <targetReference>Set_Old_Freelance_Subject</targetReference>
@@ -602,7 +599,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_message</name>
-            <fieldText>&lt;p&gt;Du kan ikke frigi dette oppdraget, ettersom det er {!CurrentServiceAppointment.Status}.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Du kan ikke frigi dette oppdraget, ettersom det er lukket.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>false</showFooter>
