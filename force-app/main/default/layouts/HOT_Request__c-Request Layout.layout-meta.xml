@@ -23,10 +23,6 @@
                 <behavior>Readonly</behavior>
                 <field>IsSerieoppdrag__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>PreferredResource3__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -143,6 +139,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>PreferredResource2__c</field>
+			</layoutItems>
+			<layoutItems>
+                <behavior>Edit</behavior>
+                <field>PreferredResource3__c</field>
             </layoutItems>
             <layoutItems>
                 <emptySpace>true</emptySpace>

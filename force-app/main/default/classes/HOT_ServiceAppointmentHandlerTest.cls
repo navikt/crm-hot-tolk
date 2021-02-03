@@ -30,7 +30,7 @@ private class HOT_ServiceAppointmentHandlerTest{
 		insert WorkType;
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
 		request.PreferredResource1__c = resource.Id;
-		request.NumberOfInterpreters__c = 2;
+		request.NumberOfInterpreters__c = 3;
 		insert request;
 
 		request.Status__c = 'Godkjent';
