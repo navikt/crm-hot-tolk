@@ -30,12 +30,13 @@
         <profile>admin</profile>
         <profile>nav bruker</profile>
         <profile>nav samhandler</profile>
+        <profile>nav administrator</profile>
     </networkMemberGroups>
     <networkPageOverrides>
         <changePasswordPageOverrideSetting>Standard</changePasswordPageOverrideSetting>
         <forgotPasswordPageOverrideSetting>Designer</forgotPasswordPageOverrideSetting>
         <homePageOverrideSetting>Designer</homePageOverrideSetting>
-        <loginPageOverrideSetting>Designer</loginPageOverrideSetting>
+        <loginPageOverrideSetting>Standard</loginPageOverrideSetting>
         <selfRegProfilePageOverrideSetting>Designer</selfRegProfilePageOverrideSetting>
     </networkPageOverrides>
     <picassoSite>Tolketjenesten1</picassoSite>
