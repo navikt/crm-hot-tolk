@@ -104,8 +104,16 @@
 							value={fieldValues.Subject__c} title="Hva trenger du tolk til?" required>
 						</lightning-input-field>
 						</br>
+
+						<div if:false={isEditMode} style="display: flex; justify-content: flex-end;">
+							<a if:false={isAdvancedTimes} onclick={advancedTimes}>Avansert
+							</a>
+							<a if:true={isAdvancedTimes} onclick={simpleTimes}>Enkel
+							</a>
+						</div>
 						<div style="margin-bottom: 0.5rem;">
-							<div class="time-inputs-container" style="margin-bottom: 0.5rem;">
+							<div if:false={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem;"
+								aria-live>
 								<template iterator:it={times}>
 									<div class="dynamic-time-inputs-with-line_button " key={it.value.id}>
 										<div class="dynamic-time-inputs" aria-live>
@@ -131,8 +139,50 @@
 									</div>
 								</template>
 							</div>
-							<lightning-button label="Legg til flere tider" icon-name="utility:add" class="add-times"
-								onclick={addTime}>
+
+							<div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem;"
+								aria-live>
+								<template iterator:it={times}>
+									<div class="dynamic-time-inputs-with-line_button " key={it.value.id}>
+										<div class="dynamic-time-inputs">
+											<lightning-input label="Dato" type="date" class="tolk-skjema-input date"
+												date-style="short" onchange={setDate} name={it.value.id}
+												value={it.value.date} required>
+											</lightning-input>
+											<div class="dynamic-time-inputs__times">
+												<lightning-input label="Fra" type="time"
+													class="tolk-skjema-input start-tid" onchange={setStartTime}
+													name={it.value.id} value={it.value.startTime} required>
+												</lightning-input>
+												<lightning-input label="Til" type="time"
+													class="tolk-skjema-input slutt-tid" onchange={setEndTime}
+													name={it.value.id} value={it.value.endTime} required>
+												</lightning-input>
+											</div>
+										</div>
+										<lightning-button if:false={isOnlyOneTime} variant="base"
+											icon-name="utility:close" class="remove-time__button" onclick={removeTime}
+											name={it.value.id} aria-label="Fjern tid">
+										</lightning-button>
+									</div>
+								</template>
+
+								<lightning-combobox name="repeatsEvery" label="Gjentas hver " options={repeatingOptions}
+									value={repeatingOptionChosen} onchange={handleRepeatChoiceMade}>
+								</lightning-combobox>
+								<div if:true={showWeekDays} aria-live>
+									<lightning-checkbox-group name="Checkbox Group" options={days} value={chosenDays}
+										onchange={handleDayChosen}>
+									</lightning-checkbox-group>
+								</div>
+								<lightning-input label="Slutt dato" type="date" class="tolk-skjema-input"
+									date-style="short" value={repeatingEndDate} onchange={setRepeatingEndDateDate}
+									required>
+								</lightning-input>
+							</div>
+
+							<lightning-button if:false={isAdvancedTimes} label="Legg til flere tider"
+								icon-name="utility:add" class="add-times" onclick={addTime}>
 							</lightning-button>
 						</div>
 
