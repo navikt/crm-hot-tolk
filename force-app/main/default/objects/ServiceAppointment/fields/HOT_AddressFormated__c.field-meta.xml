@@ -2,7 +2,11 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_AddressFormated__c</fullName>
     <externalId>false</externalId>
-    <formula>Street + &quot;, &quot; + PostalCode + &quot;, &quot; + City</formula>
+    <formula>Street
++ 
+IF(PostalCode != &quot;&quot;, &quot;, &quot; + PostalCode, &quot;&quot;)
++
+IF(City!= &quot;&quot;, &quot;, &quot; + City, &quot;&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Address</label>
     <required>false</required>

@@ -73,13 +73,15 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers{
 		for ( AssignedResource ar:(List<AssignedResource>) records ) {
 			serviceAppointmentIds.add(ar.ServiceAppointmentId);
 		}
-		List<ServiceAppointment> serviceAppointments = [SELECT Id, HOT_AssignedResourceId__c, HOT_ServiceResource__c, EarliestStartTime, DueDate, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Id IN :serviceAppointmentIds];
+		List<ServiceAppointment> serviceAppointments = [SELECT Id, HOT_AssignedResourceId__c, HOT_ServiceResource__c, EarliestStartTime, DueDate, SchedStartTime, SchedEndTime, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c FROM ServiceAppointment WHERE Id IN :serviceAppointmentIds];
 		
 		for(ServiceAppointment sa:serviceAppointments){
 			sa.HOT_ServiceResource__c = null;
 			sa.HOT_AssignedResourceId__c = null;
 			sa.SchedStartTime = sa.EarliestStartTime;
 			sa.SchedEndTime = sa.DueDate;
+			sa.HOT_IsReleasedToFreelance__c = false;
+			sa.HOT_IsEmployedInterpreter__c = true;
 		}
 		update serviceAppointments;
 	}
