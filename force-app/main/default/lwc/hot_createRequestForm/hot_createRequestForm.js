@@ -7,6 +7,7 @@ import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
+import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 
 
 
@@ -293,6 +294,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			"id": this.uniqueIdCounter, "date": null, "startTime": null, "endTime": null, "isNew": 1
 		};
 		this.times.push(newTime);
+		this.setIsOnlyOneTime();
+	}
+	setIsOnlyOneTime() {
 		this.isOnlyOneTime = this.times.length == 1;
 	}
 
@@ -303,7 +307,52 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 				this.times.splice(index, 1);
 			}
 		}
-		this.isOnlyOneTime = this.times.length == 1;
+		this.setIsOnlyOneTime();
+	}
+
+	@track isAdvancedTimes = false;
+	simpleTimes() {
+		this.isAdvancedTimes = false;
+		this.advancedTimeBackup = this.times;
+		this.times = this.timesBackup;
+		this.setIsOnlyOneTime();
+	}
+	@track timesBackup;
+	@track advancedTimeBackup = [{ "id": 0, "date": null, "startTime": null, "endTime": null, "isNew": 1 }];
+	advancedTimes() {
+		this.isAdvancedTimes = true;
+		this.timesBackup = this.times;
+		this.times = this.advancedTimeBackup;
+		this.setIsOnlyOneTime();
+	}
+	@track showWeekDays = false;
+	repeatingOptions = [{ label: "Aldri", value: "Never" }, { label: "Daglig", value: "Daily" }, { label: "Uke", value: "Weekly" }, { label: "2. Uke", value: "Biweekly" }];
+	repeatingOptionChosen = "";
+	handleRepeatChoiceMade(event) {
+		this.repeatingOptionChosen = event.detail.value;
+		if (event.detail.value == "Weekly" || event.detail.value == "Biweekly") {
+			this.showWeekDays = true;
+		}
+	}
+
+	chosenDays = [];
+	get days() {
+		return [
+			{ label: 'Mandag', value: 'monday' },
+			{ label: 'Tirsdag', value: 'tuesday' },
+			{ label: 'Onsdag', value: 'wednesday' },
+			{ label: 'Torsdag', value: 'thursday' },
+			{ label: 'Fredag', value: 'friday' },
+			{ label: 'Lørdag', value: 'saturday' },
+			{ label: 'Søndag', value: 'sunday' },
+		];
+	}
+	handleDayChosen(event) {
+		this.chosenDays = event.detail.value;
+	}
+	@track repeatingEndDate;
+	setRepeatingEndDateDate(event) {
+		this.repeatingEndDate = event.detail.value;
 	}
 
 	@track spin = false;
@@ -513,8 +562,24 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			};
 		}
 		if (times != {}) {
-			console.log("createAndUpdateWorkOrders");
-			createAndUpdateWorkOrders({ requestId, times })
+			if (this.isAdvancedTimes) {
+				console.log("createWorkOrders ADVANCED");
+				console.log(JSON.stringify(times));
+				//String requestId, Map<String, Long> times, String recurringType, List<String> recurringDays, Long recurringEndDate
+				let time = times["0"];
+				let recurringType = this.repeatingOptionChosen;
+				let recurringDays = this.chosenDays;
+				let recurringEndDate = new Date(this.repeatingEndDate).getTime();
+				console.log(requestId);
+				console.log(JSON.stringify(time));
+				console.log(recurringType);
+				console.log(recurringDays);
+				console.log(recurringEndDate);
+				createWorkOrders({ requestId, times: time, recurringType, recurringDays, recurringEndDate });
+			} else {
+				console.log("createAndUpdateWorkOrders");
+				createAndUpdateWorkOrders({ requestId, times })
+			}
 		}
 
 		window.scrollTo(0, 0);
