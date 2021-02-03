@@ -1,8 +1,8 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:dynamicLayout",
-  "id" : "8d6c51e4-b778-4519-8c17-a20a9f3bdcf5",
-  "label" : "Mine Oppdrag",
+  "id" : "4d22e0aa-f118-4729-9c3f-1ea08a14cd97",
+  "label" : "mine-oppdrag-default",
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
@@ -10,9 +10,9 @@
         "backgroundOverlay" : "rgba(0,0,0,0.5)",
         "contentAreaWidth" : 100,
         "sectionConfig" : {
-          "UUID" : "69d0f22d-94ba-42ac-a264-e85ae6112b4f",
+          "UUID" : "1537cb88-a2ab-4830-9110-d6816d4944dd",
           "columns" : [ {
-            "UUID" : "394db07a-60fb-4f8d-9943-958a4bc5c82e",
+            "UUID" : "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
             "columnName" : "Column 1",
             "columnKey" : "1",
             "columnWidth" : "12",
@@ -22,40 +22,19 @@
         "sectionHeight" : 300
       },
       "componentName" : "forceCommunity:section",
-      "id" : "69d0f22d-94ba-42ac-a264-e85ae6112b4f",
+      "id" : "1537cb88-a2ab-4830-9110-d6816d4944dd",
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : {
-            "NAVarea" : "Privatperson"
+            "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
           },
-          "componentName" : "c:globalCommunityHeader",
-          "id" : "5fd96a63-db89-40c9-8784-3b525bcb012b",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_tolketjenestenHovedBanner",
-          "id" : "652ba850-637b-4387-b666-8ceb830fef37",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_frilanstolkServiceAppointmentLists",
-          "id" : "f066fe97-2aea-41be-aa17-0bbf29583a25",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:globalCommunityFooter",
-          "id" : "a42f2172-073c-41a0-97be-ee00e98eba67",
+          "componentName" : "forceCommunity:richTextInline",
+          "id" : "c34975a4-7c91-48e0-87f4-572619ad0cb8",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         } ],
-        "id" : "394db07a-60fb-4f8d-9943-958a4bc5c82e",
+        "id" : "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
         "regionLabel" : "Column 1",
         "regionName" : "1",
         "renditionMap" : { },
@@ -65,7 +44,7 @@
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "10727df5-ccd8-47dd-b829-12465bd379db",
+    "id" : "9c3a179c-01b7-409e-9add-b7bdfb151350",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -76,11 +55,11 @@
         "title" : "Mine Oppdrag"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "20eb0bfe-f032-418b-856e-99f54d6a3c29",
+      "id" : "a26ac4bd-7c1c-47f1-ba95-8c069a2a1bdd",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "5ee0c293-e06f-4c5f-b104-49cab7b18648",
+    "id" : "bf3767b9-f42c-4af3-a4ab-11c894f5b6ac",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],

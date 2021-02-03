@@ -11,6 +11,7 @@
 	"type": "theme",
 	"views": [
 		{
+			"componentAttributes": {},
 			"componentName": "salesforceIdentity:loginBody2",
 			"id": "449546f5-4eb9-4116-a1ae-47a0fb602422",
 			"label": "Login",
@@ -34,6 +35,10 @@
 			"type": "view"
 		},
 		{
+			"componentAttributes": {
+				"fixedPageWidth": 1920,
+				"isPageWidthFixed": false
+			},
 			"componentName": "siteforce:starterBody",
 			"id": "bd0a18b5-caae-4cb6-b589-cc9fa3a26073",
 			"label": "Default",

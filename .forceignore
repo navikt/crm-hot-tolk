@@ -5,6 +5,7 @@
 !**/profiles/Admin.profile-meta.xml
 !**/profiles/NAV Bruker.profile-meta.xml
 !**/profiles/NAV Samhandler.profile-meta.xml
+!**/profiles/NAV Administrator.profile-meta.xml
 **/profilePasswordPolicies/*
 **/profileSessionSettings/*
 
