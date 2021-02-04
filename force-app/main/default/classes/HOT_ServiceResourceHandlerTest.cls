@@ -57,8 +57,12 @@ private class HOT_ServiceResourceHandlerTest{
 
 		List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource];
 		List<ServiceTerritoryMember> serviceTerritoryMembers = [SELECT Id FROM ServiceTerritoryMember];
+		List<HOT_Resource__c> resources = [SELECT Id FROM HOT_Resource__c];
+		List<HOT_ResourceMember__c> resourceMembers = [SELECT Id FROM HOT_ResourceMember__c];
 		System.assertEquals(1, serviceResources.size());
 		System.assertEquals(1, serviceTerritoryMembers.size());
+		System.assertEquals(1, resources.size());
+		System.assertEquals(1, resourceMembers.size());
 	}
 	@isTest static void CreateServiceResourceAutoTest() {
 		Test.startTest();
@@ -72,8 +76,12 @@ private class HOT_ServiceResourceHandlerTest{
 
 		List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource];
 		List<ServiceTerritoryMember> serviceTerritoryMembers = [SELECT Id FROM ServiceTerritoryMember];
+		List<HOT_Resource__c> resources = [SELECT Id FROM HOT_Resource__c];
+		List<HOT_ResourceMember__c> resourceMembers = [SELECT Id FROM HOT_ResourceMember__c];
 		System.assertEquals(1, serviceResources.size());
 		System.assertEquals(1, serviceTerritoryMembers.size());
+		System.assertEquals(1, resources.size());
+		System.assertEquals(1, resourceMembers.size());
 	}
 
 }
