@@ -10,6 +10,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		
 		List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
 		List<ServiceAppointment> updatedServiceAppointments = new List<ServiceAppointment>();
+		List<ServiceAppointment> serviceAppointmentsWithDeletedPreferredResources = new List<ServiceAppointment>();
 		List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
 		List<ServiceAppointment> allServiceAppointments = new List<ServiceAppointment>();
 		
@@ -18,9 +19,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			serviceAppointment.get('HOT_ServiceResource__c') != triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) {
 					recievedNewInterpreter.add(serviceAppointment);
 			}
-			if(triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredResource__c') != ServiceAppointment.HOT_PreferredResource__c && ServiceAppointment.HOT_PreferredResource__c != null){
+			if(triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredResource__c') != ServiceAppointment.HOT_PreferredResource__c && serviceAppointment.HOT_PreferredResource__c != null){
 				updatedServiceAppointments.add(serviceAppointment);
-			}
+			} 
+			if(triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredResource__c') != ServiceAppointment.HOT_PreferredResource__c && serviceAppointment.HOT_PreferredResource__c == null){
+				serviceAppointmentsWithDeletedPreferredResources.add(serviceAppointment);
+			} 
 			if(serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') || serviceAppointment.HOT_ServiceResource__c != triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) {
 				serviceAppointmentsWithChangedStatusOrResource.add(serviceAppointment);
 			}
@@ -28,6 +32,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		}
 		if(!updatedServiceAppointments.isEmpty()) {
 			updatedServiceAppointments = setFieldsByPreferredResource(updatedServiceAppointments);
+		}
+		if(!serviceAppointmentsWithDeletedPreferredResources.isEmpty()) {
+			serviceAppointmentsWithDeletedPreferredResources = setFieldsIfPreferredResourceDeleted(serviceAppointmentsWithDeletedPreferredResources);
 		}
 		if(recievedNewInterpreter.size() > 0) {
 			updateCancelledByInterpreter(recievedNewInterpreter);
@@ -205,7 +212,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 	}
 
 	public static List<ServiceAppointment> setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
-			List<Id> PreferredResourceId = new List<Id>();
+		List<Id> PreferredResourceId = new List<Id>();
 		List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
 		for(ServiceAppointment serviceAppointment : serviceAppointments){
 			if(serviceAppointment.HOT_PreferredServiceResourceId__c != null){
@@ -223,6 +230,25 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 				serviceAppointment.HOT_IsReleasedToFreelance__c = serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_IsFreelanceInterpreter__c;
 				serviceAppointment.HOT_IsEmployedInterpreter__c = serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_IsEmployedInterpreter__c;
 			}
+		}
+		return serviceAppointmentsToUpdate;
+	}
+
+	public static List<ServiceAppointment> setFieldsIfPreferredResourceDeleted(List<ServiceAppointment> serviceAppointments) {
+		List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
+		List<Id> requestIds = new List<Id>();
+		for (ServiceAppointment serviceAppointment : serviceAppointments){
+			requestIds.add(serviceAppointment.HOT_Request__c);
+		}
+
+		List<HOT_Request__c> requests = [SELECT Id, ServiceTerritory__c FROM HOT_Request__c WHERE Id IN :requestIds];
+		Map<Id,HOT_Request__c> requestMap = new Map<Id,HOT_Request__c>(requests);
+
+		for(ServiceAppointment serviceAppointment : serviceAppointments){
+				serviceAppointment.ServiceTerritoryId = requestMap.get(serviceAppointment.HOT_Request__c)?.ServiceTerritory__c;
+				serviceAppointment.HOT_IsReleasedToFreelance__c = false;
+				serviceAppointment.HOT_IsEmployedInterpreter__c = true;
+				serviceAppointmentsToUpdate.add(serviceAppointment);
 		}
 		return serviceAppointmentsToUpdate;
 	}
