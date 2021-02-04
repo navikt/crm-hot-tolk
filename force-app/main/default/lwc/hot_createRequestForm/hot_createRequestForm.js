@@ -325,13 +325,21 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		this.times = this.advancedTimeBackup;
 		this.setIsOnlyOneTime();
 	}
+	@track isRepeating = false;
 	@track showWeekDays = false;
-	repeatingOptions = [{ label: "Aldri", value: "Never" }, { label: "Daglig", value: "Daily" }, { label: "Uke", value: "Weekly" }, { label: "2. Uke", value: "Biweekly" }];
+	repeatingOptions = [{ label: "Aldri", value: "Never" }, { label: "Hver dag", value: "Daily" }, { label: "Hver uke", value: "Weekly" }, { label: "Hver 2. Uke", value: "Biweekly" }];
 	repeatingOptionChosen = "";
 	handleRepeatChoiceMade(event) {
 		this.repeatingOptionChosen = event.detail.value;
 		if (event.detail.value == "Weekly" || event.detail.value == "Biweekly") {
 			this.showWeekDays = true;
+		} else {
+			this.showWeekDays = false
+		}
+		if (event.detail.value != "Never") {
+			this.isRepeating = true;
+		} else {
+			this.isRepeating = false;
 		}
 	}
 
