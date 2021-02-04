@@ -386,9 +386,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		if (fields) {
 
 			this.setFieldValues(fields);
-			let invalidIndex = this.handleValidation();
+			let isValid = this.handleValidation();
 
-			if (invalidIndex.length == 0 && this.isPersonNumberValid) {
+			if (isValid) {
 				console.log("Sumbitting")
 				this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
 				console.log("submitted");
