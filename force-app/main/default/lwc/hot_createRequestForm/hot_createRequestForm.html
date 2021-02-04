@@ -168,7 +168,8 @@
 								</template>
 
 								<lightning-combobox name="repeatsEvery" label="Gjenta " options={repeatingOptions}
-									value={repeatingOptionChosen} onchange={handleRepeatChoiceMade} required>
+									value={repeatingOptionChosen} onchange={handleRepeatChoiceMade}
+									class="tolk-skjema-input third-width" required>
 								</lightning-combobox>
 								<div if:true={showWeekDays} aria-live>
 									<lightning-checkbox-group name="Checkbox Group" options={days} value={chosenDays}
@@ -176,9 +177,9 @@
 									</lightning-checkbox-group>
 								</div>
 								<div aria-live if:true={isRepeating}>
-									<lightning-input label="Slutt dato" type="date" class="tolk-skjema-input"
-										date-style="short" value={repeatingEndDate} onchange={setRepeatingEndDateDate}
-										required>
+									<lightning-input label="Slutt dato" type="date"
+										class="tolk-skjema-input third-width" date-style="short"
+										value={repeatingEndDate} onchange={setRepeatingEndDateDate} required>
 									</lightning-input>
 								</div>
 							</div>
