@@ -167,18 +167,20 @@
 									</div>
 								</template>
 
-								<lightning-combobox name="repeatsEvery" label="Gjentas hver " options={repeatingOptions}
-									value={repeatingOptionChosen} onchange={handleRepeatChoiceMade}>
+								<lightning-combobox name="repeatsEvery" label="Gjenta " options={repeatingOptions}
+									value={repeatingOptionChosen} onchange={handleRepeatChoiceMade} required>
 								</lightning-combobox>
 								<div if:true={showWeekDays} aria-live>
 									<lightning-checkbox-group name="Checkbox Group" options={days} value={chosenDays}
 										onchange={handleDayChosen}>
 									</lightning-checkbox-group>
 								</div>
-								<lightning-input label="Slutt dato" type="date" class="tolk-skjema-input"
-									date-style="short" value={repeatingEndDate} onchange={setRepeatingEndDateDate}
-									required>
-								</lightning-input>
+								<div aria-live if:true={isRepeating}>
+									<lightning-input label="Slutt dato" type="date" class="tolk-skjema-input"
+										date-style="short" value={repeatingEndDate} onchange={setRepeatingEndDateDate}
+										required>
+									</lightning-input>
+								</div>
 							</div>
 
 							<lightning-button if:false={isAdvancedTimes} label="Legg til flere tider"
