@@ -73,6 +73,9 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 		}
 
 		for(WorkOrder workOrder : workOrders) {
+
+			workOrder.HOT_IsUpdateStatus__c = false;
+			
 			if(workOrderLineItemsMaps.get(workOrder.Id) != null) {
 				Integer numberOfWorkOrderLineItem = workOrderLineItemsMaps.get(workOrder.Id).size();
 				Integer numberOfNew = 0;
@@ -120,8 +123,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 				System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
 				System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
 				System.debug('numberOfCanceled: ' + numberOfCanceled);
-				
-				workOrder.HOT_IsUpdateStatus__c = false;
 				
 				if(numberOfScheduled > 0) {
 					workOrder.Status = 'Scheduled';
