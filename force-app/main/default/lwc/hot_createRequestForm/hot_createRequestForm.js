@@ -365,6 +365,38 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track spin = false;
 
+	handleValidation() {
+		let datetimeValid = this.handleDatetimeValidation().length == 0;
+		let personNumberValid = this.handlePersonNumberValidation();
+
+		return datetimeValid && personNumberValid;
+	}
+
+	handleDatetimeValidation() {
+		let invalidIndex = [];
+		console.log("validating times")
+		for (let time of this.times) {
+			console.log(JSON.stringify(time))
+			if (!time.isValid) {
+				invalidIndex.unshift(this.times.indexOf(time));
+			}
+		}
+		if (invalidIndex.length != 0) {
+			let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
+			for (let index of invalidIndex) {
+				let dateInputElement = inputList[index].querySelector('.date');
+				this.throwInputValidationError(dateInputElement, dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.');
+			}
+		}
+		return invalidIndex;
+	}
+	handlePersonNumberValidation() {
+		if (!this.isPersonNumberValid) {
+			this.reportValidityPersonNumberField();
+		}
+		return this.isPersonNumberValid;
+	}
+
 	handleSubmit(event) {
 		console.log("handleSubmit");
 		this.spin = true;
@@ -373,60 +405,35 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 		if (fields) {
 
-			this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
-			this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
+			this.setFieldValues(fields);
+			let invalidIndex = this.handleValidation();
 
-			this.fieldValues.Orderer__c = this.personAccount.Id;
-			for (const k in fields) {
-				this.fieldValues[k] = fields[k];
-			}
-			if (this.sameLocation) {
-				this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
-				this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
-				this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
-			}
-
-			let invalidIndex = [];
-			console.log("validating times")
-			for (let time of this.times) {
-				console.log(JSON.stringify(time))
-				if (!time.isValid) {
-					invalidIndex.unshift(this.times.indexOf(time));
-				}
-			}
-
-			console.log(invalidIndex)
 			if (invalidIndex.length == 0 && this.isPersonNumberValid) {
-				const isDuplicate = null; //this.isDuplicate(this.fieldValues); //Denne metoden fungerer ikke akkurat nå. Løses i TOLK-963
-				if (isDuplicate == null) {
-					console.log("Sumbitting")
-					this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-					console.log("submitted");
-				}
-				else {
-					if (confirm("Du har allerede en bestilling på samme tidspunkt\n\nFortsett?")) {
-						this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-					}
-					else {
-						this.spin = false;
-					}
-				}
+				console.log("Sumbitting")
+				this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+				console.log("submitted");
+
 				window.scrollBy(0, 100);
 				window.scrollBy(0, -100);
 			}
 			else {
-				if (invalidIndex.length != 0) {
-					let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
-					for (let index of invalidIndex) {
-						let dateInputElement = inputList[index].querySelector('.date');
-						this.throwInputValidationError(dateInputElement, dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.');
-					}
-				}
-				if (!this.isPersonNumberValid) {
-					this.reportValidityPersonNumberField();
-				}
 				this.spin = false;
 			}
+		}
+	}
+
+	setFieldValues(fields) {
+		this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
+		this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
+
+		this.fieldValues.Orderer__c = this.personAccount.Id;
+		for (const k in fields) {
+			this.fieldValues[k] = fields[k];
+		}
+		if (this.sameLocation) {
+			this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
+			this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
+			this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
 		}
 	}
 
