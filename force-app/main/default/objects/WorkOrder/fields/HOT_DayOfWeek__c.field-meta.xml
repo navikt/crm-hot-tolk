@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_DayOfWeek__c</fullName>
     <externalId>false</externalId>
-    <formula>CASE(WEEKDAY(DATEVALUE(StartDate)),1,&quot;Søndag&quot;,2,&quot;Mandag&quot;,3, &quot;Tirsdag&quot;,4, &quot;Onsdag&quot;,5, &quot;Torsdag&quot;,6, &quot;Fredag&quot;,7,&quot;Lørsdag&quot;,&quot;Ukjent&quot;)</formula>
+    <formula>CASE(WEEKDAY(DATEVALUE(StartDate)),1,&quot;Søndag&quot;,2,&quot;Mandag&quot;,3, &quot;Tirsdag&quot;,4, &quot;Onsdag&quot;,5, &quot;Torsdag&quot;,6, &quot;Fredag&quot;,7,&quot;Lørdag&quot;,&quot;Ukjent&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Day Of Week</label>
     <required>false</required>
