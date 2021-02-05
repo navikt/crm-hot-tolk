@@ -1,65 +1,39 @@
+import { require } from 'c/validationController';
 
-//element is the html-element to be validated
-//validationRule is the function which calculates if the value is invalid, returns error message. "" if not trigger
-export function runValidation(element, validationRules) {
-	console.log("runValidation")
-	console.log("element.value: ");
-	console.log(element.value);
-	for (let validationRule of validationRules) {
-		console.log("checking")
-		let errorMessage = validationRule(element.value);
-		console.log("errorMessage: " + errorMessage)
-		element.setCustomValidity(errorMessage);
-		if (errorMessage != "") {
-			console.log("Send Error")
-			element.focus();
-		}
-		element.reportValidity();
+export let startDateValidations = [dateInPast, require];
+export let endDateValidations = [startBeforeEnd, require];
+export let recurringTypeValidations = [require];
+export let recurringDaysValidations = [requireDaysBasedOnRecurringType];
+export let recurringEndDateValidations = [startDateBeforeRecurringEndDate, requireEndDateBasedOnRecurringType];
+
+function dateInPast(date) {
+	return new Date(date).getTime() < new Date().now() ? "Du kan ikke bestille tid i fortiden" : "";
+}
+function startBeforeEnd(endDate, args) {
+	let startDate = args[0];
+	return new Date(startDate).getTime() < new Date(endDate) ? "Start tid må være før slutt tid." : "";
+}
+
+function requireDaysBasedOnRecurringType(days, ...args) {
+	let type = args[0];
+	if ((type == "Weekly" || type == "Biweekly") && days.length == 0) {
+		return "Du må velge minst én dag tolkebehover repeteres."
 	}
-}
-
-export function runValidationTest(input, validationRule) {
-	for (let valRule of validationRule) {
-		if (valRule(input) == "") {
-			console.log("was true")
-		}
-		else {
-			console.log("was false")
-		}
-
-	}
-}
-
-export function evaluate(input) {
-	console.log(input + " != run");
-	console.log(input != "run");
-	return input != "run" ? "Ikke riktig ord" : "";
-}
-export function giveFalse(input) {
-	console.log("givingFalse")
-	console.log(input);
 	return "";
 }
 
-export function test_date(output, fun) {
-	console.log(output)
-	console.log(fun)
+function startDateBeforeRecurringEndDate(recurringEndDate, args) {
+	let startDate = args[0];
+	return new Date(startDate).getTime() <= new Date(recurringEndDate) ? "Slutt dato for gjentakende tolkebehov må være før start tid" : "";
+}
+function requireEndDateBasedOnRecurringType(recurringEndDate, args) {
+	let type = args[0];
+	if (type != "Never" && (recurringEndDate == "" || recurringEndDate == null)) {
+		return "Fyll ut dette feltet."
+	}
+	return "";
 }
 
-export function no() {
-	return "no from function";
-}
-export function yes() {
-	return "yes from function";
-}
-
-
-function date_inPast(date) {
-	return new Date(date).getTime() < new Date().now()
-}
-function date_blank(date) {
-	return date == "" || date == null;
-}
 
 
 
