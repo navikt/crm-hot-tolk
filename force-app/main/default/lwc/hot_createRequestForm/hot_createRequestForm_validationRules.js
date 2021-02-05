@@ -1,31 +1,44 @@
 
 //element is the html-element to be validated
-//validationRule is the function which calculates if the value is invalid, returns true if errorMessage should be shown
-//errorMessage is the message to be shown
-export function runValidation(element, validationRule, errorMessage) {
-	let condition = false;//validationRule(element.detail.value);
-	if (condition) {
+//validationRule is the function which calculates if the value is invalid, returns error message. "" if not trigger
+export function runValidation(element, validationRules) {
+	console.log("runValidation")
+	console.log("element.value: ");
+	console.log(element.value);
+	for (let validationRule of validationRules) {
+		console.log("checking")
+		let errorMessage = validationRule(element.value);
+		console.log("errorMessage: " + errorMessage)
 		element.setCustomValidity(errorMessage);
-		element.focus();
-	} else {
-		element.setCustomValidity("");
+		if (errorMessage != "") {
+			console.log("Send Error")
+			element.focus();
+		}
+		element.reportValidity();
 	}
-	element.reportValidity();
 }
 
 export function runValidationTest(input, validationRule) {
-	if (validationRule(input)) {
-		console.log("was true")
-	}
-	else {
-		console.log("was false")
+	for (let valRule of validationRule) {
+		if (valRule(input) == "") {
+			console.log("was true")
+		}
+		else {
+			console.log("was false")
+		}
+
 	}
 }
 
 export function evaluate(input) {
-	console.log(input + " == run");
-	console.log(input == "run");
-	return input == run;
+	console.log(input + " != run");
+	console.log(input != "run");
+	return input != "run" ? "Ikke riktig ord" : "";
+}
+export function giveFalse(input) {
+	console.log("givingFalse")
+	console.log(input);
+	return "";
 }
 
 export function test_date(output, fun) {
