@@ -17,8 +17,15 @@
 		<div class="skjema skjema-max-width">
 
 
+			<lightning-input style="width: 30%;" label="Dato" type="date" class="tolk-skjema-input test_date"
+				date-style="short">
+			</lightning-input>
+			<button onclick={testDate}>TEST</button>
+
 			<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
 				onerror={handleError} onsubmit={handleSubmit} record-id={recordId}>
+
+
 
 				<section if:true={showNextButton} class="valg-av-bestillingstype__container sub-form">
 

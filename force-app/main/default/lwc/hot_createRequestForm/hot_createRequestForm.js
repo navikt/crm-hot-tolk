@@ -8,6 +8,7 @@ import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
+import { runValidation, date_blank, test_date, yes, no, runValidationTest, evaluate } from './hot_createRequestForm_validationRules';
 
 
 
@@ -19,6 +20,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	@wire(isProdFunction)
 	wiredIsProd({ error, data }) {
 		this.isProd = data;
+	}
+
+	testDate(event) {
+		console.log("Start Test")
+		let element = this.template.querySelector(".test_date");
+		console.log(JSON.stringify(element));
+		test_date("test: ", yes())
+		//runValidation();
+		console.log("Stop Test")
 	}
 
 
