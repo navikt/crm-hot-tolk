@@ -16,16 +16,8 @@
 		</div>
 		<div class="skjema skjema-max-width">
 
-
-			<lightning-input style="width: 30%;" label="test" type="text" class="tolk-skjema-input test_date"
-				date-style="short">
-			</lightning-input>
-			<button onclick={testDate}>TEST</button>
-
 			<lightning-record-edit-form object-api-name="HOT_Request__c" density="comfy" onsuccess={handleSuccess}
 				onerror={handleError} onsubmit={handleSubmit} record-id={recordId}>
-
-
 
 				<section if:true={showNextButton} class="valg-av-bestillingstype__container sub-form">
 
@@ -176,16 +168,16 @@
 
 								<lightning-combobox name="repeatsEvery" label="Gjenta " options={repeatingOptions}
 									value={repeatingOptionChosen} onchange={handleRepeatChoiceMade}
-									class="tolk-skjema-input third-width" required>
+									class="tolk-skjema-input third-width recurringType" required>
 								</lightning-combobox>
 								<div if:true={showWeekDays} aria-live>
-									<lightning-checkbox-group name="Checkbox Group" options={days} value={chosenDays}
-										onchange={handleDayChosen}>
+									<lightning-checkbox-group name="Days" options={days} value={chosenDays}
+										class="recurringDays" onchange={handleDayChosen}>
 									</lightning-checkbox-group>
 								</div>
 								<div aria-live if:true={isRepeating}>
-									<lightning-input label="Slutt dato" type="date"
-										class="tolk-skjema-input third-width" date-style="short"
+									<lightning-input label="Slutt dato" type="date" name="recurring End Date"
+										class="tolk-skjema-input third-width recurringEndDate" date-style="short"
 										value={repeatingEndDate} onchange={setRepeatingEndDateDate} required>
 									</lightning-input>
 								</div>
