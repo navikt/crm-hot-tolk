@@ -477,7 +477,7 @@ private class HOT_CreateWorkOrderServiceTest {
 		
 
 		Test.startTest();
-		HOT_CreateWorkOrderService.createWorkOrders(requestId, times, recurringType, recurringDays, recurringEndDate);
+		HOT_CreateWorkOrderService.createWorkOrdersFromCommunity(requestId, times, recurringType, recurringDays, recurringEndDate);
 		Test.stopTest();
 
 		List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
