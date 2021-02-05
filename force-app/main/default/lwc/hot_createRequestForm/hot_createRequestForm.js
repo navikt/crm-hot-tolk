@@ -150,7 +150,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		Source__c: "Community", Type__c: "", EventType__c: "",
 	};
 
-	@track isPersonNumberValid = false;
+	@track isPersonNumberValid = true;
 	checkPersonNumber(event) {
 		console.log("checkPersonNumber")
 		let inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
@@ -365,7 +365,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 						this.throwInputValidationError(dateInputElement, dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.');
 					}
 				}
-				if (!this.isPersonNumberValid) {
+				if (this.currentRequestType == 'User' || this.currentRequestType == 'Company') {
 					this.reportValidityPersonNumberField();
 				}
 				this.spin = false;
@@ -425,8 +425,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			radioButtonGroup.focus();
 		}
 		radioButtonGroup.reportValidity();
-		if (this.currentRequestType == 'Me' || this.currentRequestType == 'PublicEvent') {
-			this.isPersonNumberValid = true;
+		if (this.currentRequestType == 'User' || this.currentRequestType == 'Company') {
+			this.isPersonNumberValid = false;
 		}
 	}
 
