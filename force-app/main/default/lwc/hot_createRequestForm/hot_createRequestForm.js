@@ -8,7 +8,8 @@ import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
-import { runValidation, date_blank, test_date, yes, no, runValidationTest, evaluate, giveFalse } from './hot_createRequestForm_validationRules';
+import { validate, require } from 'c/validationController';
+import { recurringTypeValidations, recurringDaysValidations, recurringEndDateValidations } from './hot_createRequestForm_validationRules';
 
 
 
@@ -21,16 +22,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	wiredIsProd({ error, data }) {
 		this.isProd = data;
 	}
-
-	testDate(event) {
-		console.log("Start Test")
-		let element = this.template.querySelector(".test_date");
-		//runValidationTest("run", [evaluate, giveFalse]);
-		runValidation(element, [evaluate]);
-		//runValidation();
-		console.log("Stop Test")
-	}
-
 
 	@track submitted = false; // if:false={submitted}
 	acceptedFormat = '[.pdf, .png, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
@@ -142,12 +133,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track isPersonNumberValid = false;
 	checkPersonNumber(event) {
-		console.log("checkPersonNumber")
 		let inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
 		this.fieldValues.UserPersonNumber__c = inputComponent.value;
 		let regExp = RegExp("[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]");
 		this.isPersonNumberValid = regExp.test(inputComponent.value);
-		console.log("PersonNumber is valid? " + this.isPersonNumberValid);
 	}
 	reportValidityPersonNumberField() {
 		let inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
@@ -319,7 +308,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	repeatingOptions = [{ label: "Aldri", value: "Never" }, { label: "Hver dag", value: "Daily" }, { label: "Hver uke", value: "Weekly" }, { label: "Hver 2. Uke", value: "Biweekly" }];
 	repeatingOptionChosen = "";
 	handleRepeatChoiceMade(event) {
-		console.log("sadasdasdasda")
 		this.repeatingOptionChosen = event.detail.value;
 		if (event.detail.value == "Weekly" || event.detail.value == "Biweekly") {
 			this.showWeekDays = true;
@@ -355,18 +343,32 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 	@track spin = false;
 
+	handleAdvancedTimeValidations() {
+
+		let typeElement = this.template.querySelector(".recurringType");
+		let recurringTypeValid = validate(typeElement, recurringTypeValidations).length == 0;
+
+		let daysElement = this.template.querySelector(".recurringDays");
+		let recurringDaysValid = validate(daysElement, recurringDaysValidations, this.repeatingOptionChosen).length == 0;
+
+		let recurringEndDateElement = this.template.querySelector(".recurringEndDate");
+		let recurringEndDateValid = validate(recurringEndDateElement, recurringEndDateValidations).length == 0;
+
+		return recurringTypeValid && recurringDaysValid && recurringEndDateValid;
+	}
+
 	handleValidation() {
 		let datetimeValid = this.handleDatetimeValidation().length == 0;
-		let personNumberValid = this.handlePersonNumberValidation();
-
-		return datetimeValid && personNumberValid;
+		let advancedValid = true;
+		if (this.isAdvancedTimes) {
+			advancedValid = this.handleAdvancedTimeValidations();
+		}
+		return datetimeValid && this.handlePersonNumberValidation() && advancedValid
 	}
 
 	handleDatetimeValidation() {
 		let invalidIndex = [];
-		console.log("validating times")
 		for (let time of this.times) {
-			console.log(JSON.stringify(time))
 			if (!time.isValid) {
 				invalidIndex.unshift(this.times.indexOf(time));
 			}
@@ -397,7 +399,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
 			this.setFieldValues(fields);
 			let isValid = this.handleValidation();
-
+			console.log("isValid: " + isValid)
 			if (isValid) {
 				console.log("Sumbitting")
 				this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
@@ -568,21 +570,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		}
 		if (times != {}) {
 			if (this.isAdvancedTimes) {
-				console.log("createWorkOrders ADVANCED");
-				console.log(JSON.stringify(times));
 				//String requestId, Map<String, Long> times, String recurringType, List<String> recurringDays, Long recurringEndDate
 				let time = times["0"];
 				let recurringType = this.repeatingOptionChosen;
 				let recurringDays = this.chosenDays;
 				let recurringEndDate = new Date(this.repeatingEndDate).getTime();
-				console.log(requestId);
-				console.log(JSON.stringify(time));
-				console.log(recurringType);
-				console.log(recurringDays);
-				console.log(recurringEndDate);
 				createWorkOrders({ requestId, times: time, recurringType, recurringDays, recurringEndDate });
 			} else {
-				console.log("createAndUpdateWorkOrders");
 				createAndUpdateWorkOrders({ requestId, times })
 			}
 		}
