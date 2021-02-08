@@ -352,7 +352,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		let recurringDaysValid = validate(daysElement, recurringDaysValidations, this.repeatingOptionChosen).length == 0;
 
 		let recurringEndDateElement = this.template.querySelector(".recurringEndDate");
-		let recurringEndDateValid = validate(recurringEndDateElement, recurringEndDateValidations).length == 0;
+		let recurringEndDateValid = validate(recurringEndDateElement, recurringEndDateValidations, this.times[0].date).length == 0;
 
 		return recurringTypeValid && recurringDaysValid && recurringEndDateValid;
 	}
