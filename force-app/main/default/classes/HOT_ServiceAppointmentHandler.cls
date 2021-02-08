@@ -8,6 +8,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
 	public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
 		
+		List<ServiceAppointment> serviceAppointmentsWithStatusCannotCompleteOrNone = new List<ServiceAppointment>();
 		List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
 		List<ServiceAppointment> updatedServiceAppointments = new List<ServiceAppointment>();
 		List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
@@ -24,6 +25,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 			if(serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') || serviceAppointment.HOT_ServiceResource__c != triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) {
 				serviceAppointmentsWithChangedStatusOrResource.add(serviceAppointment);
 			}
+			if(triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Cannot Complete' && serviceAppointment.StatusCategory == 'None') {
+				serviceAppointmentsWithStatusCannotCompleteOrNone.add(serviceAppointment);
+			}
 			allServiceAppointments.add(serviceAppointment);
 		}
 		if(!updatedServiceAppointments.isEmpty()) {
@@ -34,6 +38,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 		}
 		if(serviceAppointmentsWithChangedStatusOrResource.size()>0) {
 			createHistoricallyAssignedResources(serviceAppointmentsWithChangedStatusOrResource, triggerOldMap);
+		}
+		if(serviceAppointmentsWithStatusCannotCompleteOrNone.size()>0) {
+			preserveSchedulesTimes(serviceAppointmentsWithStatusCannotCompleteOrNone, triggerOldMap);
 		}
 		notifyUsers(allServiceAppointments, triggerOldMap);
 	}
@@ -60,6 +67,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 	private static void updateCancelledByInterpreter(List<ServiceAppointment> recievedNewInterpreter) {
 		for(ServiceAppointment serviceAppointment : recievedNewInterpreter) {
 			serviceAppointment.HOT_CanceledByInterpreter__c = false;		
+		}
+	}
+
+	private static void preserveSchedulesTimes(List<ServiceAppointment> serviceAppointmentsWithStatusCannotCompleteOrNone,  Map<Id,sObject> triggerOldMap) {
+		for(ServiceAppointment serviceAppointment : serviceAppointmentsWithStatusCannotCompleteOrNone) {
+			ServiceAppointment oldServiceAppointment = (ServiceAppointment)triggerOldMap.get(serviceAppointment.Id);
+			serviceAppointment.SchedStartTime = oldServiceAppointment.SchedStartTime;
+			serviceAppointment.SchedEndTime = oldServiceAppointment.SchedEndTime;
 		}
 	}
 
