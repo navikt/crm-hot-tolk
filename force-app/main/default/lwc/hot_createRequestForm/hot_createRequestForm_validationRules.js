@@ -17,7 +17,7 @@ function startBeforeEnd(endDate, args) {
 function requireDaysBasedOnRecurringType(days, ...args) {
 	let type = args[0];
 	if ((type == "Weekly" || type == "Biweekly") && days.length == 0) {
-		return "Du må velge minst én dag tolkebehover repeteres."
+		return "Du må velge minst én dag tolkebehovet gjentas."
 	}
 	return "";
 }
