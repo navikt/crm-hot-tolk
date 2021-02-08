@@ -45,6 +45,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Resource__c.Service_Resource__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.INT_KrrIntegrationStatus__c</field>
         <readable>true</readable>
@@ -252,6 +257,10 @@
         <recordType>Task.HOT_Task</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
+    <tabSettings>
+        <tab>HOT_Resource__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
     <tabSettings>
         <tab>standard-Dashboard</tab>
         <visibility>Visible</visibility>

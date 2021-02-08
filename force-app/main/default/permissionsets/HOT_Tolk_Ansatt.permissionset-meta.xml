@@ -453,6 +453,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Resource__c.Service_Resource__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Person__c.CRM_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1437,6 +1442,10 @@
     </recordTypeVisibilities>
     <tabSettings>
         <tab>HOT_Request__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>HOT_Resource__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
