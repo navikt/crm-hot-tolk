@@ -84,6 +84,10 @@
         <name>RequireCompanyIfCompanyFromCommunity</name>
     </validationRules>
     <validationRules>
+        <errorMessage><!-- Tjenesteområde kan ikke være tomt --></errorMessage>
+        <name>RequireServiceTerritory</name>
+    </validationRules>
+    <validationRules>
         <errorMessage><!-- Lagre forespørselen før du godkjenner den. --></errorMessage>
         <name>SaveRequestBeforeApproving</name>
     </validationRules>

@@ -64,6 +64,24 @@ public without sharing class HOT_ServiceResourceHandler {
 			}
 			insert serviceResourceSkills;
 		}
+
+		List<HOT_Resource__c> rList = new List<HOT_Resource__c>();
+		for(ServiceResource sr : serviceResources) {
+			HOT_Resource__c resource = new HOT_Resource__c();
+			resource.Name = sr.Name;
+			resource.Service_Resource__c = sr.Id;
+			rList.add(resource);
+		}
+		insert rList;
+
+		List<HOT_ResourceMember__c> rmList = new List<HOT_ResourceMember__c>();
+		for(HOT_Resource__c resource : rList) {
+			HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
+			resourceMember.Resource__c = resource.Id;
+			resourceMember.Service_Resource__c = resource.Service_Resource__c;
+			rmList.add(resourceMember);
+		}
+		insert rmList;
 		
 		//Oppretter ServiceTerritoryMember basert på serviceResource.User.Department
 		if(serviceTerritoryDeveloperName == 'AUTO'){
