@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Formidler</label>
+    <lookupFilter>
+        <errorMessage><!-- Du kan kun velge en formidler --></errorMessage>
+    </lookupFilter>
     <name>Dispatcher__c</name>
-    <relationshipLabel><!-- Requests --></relationshipLabel>
+    <relationshipLabel><!-- Forespørsler --></relationshipLabel>
 </CustomFieldTranslation>

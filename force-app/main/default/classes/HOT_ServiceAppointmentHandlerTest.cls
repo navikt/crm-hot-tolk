@@ -10,17 +10,27 @@ private class HOT_ServiceAppointmentHandlerTest{
 		Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
 		User user = HOT_TestDataFactory.createUser( 'user', profile );
 		insert user;
-		ServiceResource resource = HOT_TestDataFactory.createServiceResource( user.Id );
-		resource.HOT_IsFreelanceInterpreter__c = true;
-		insert resource;
-		ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(resource, serviceTerritory);
+		ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource( user.Id );
+		serviceResource.HOT_IsFreelanceInterpreter__c = true;
+		insert serviceResource;
+		ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory);
 		insert serviceTerritoryMember;
+
+		HOT_Resource__c resource = new HOT_Resource__c();
+		resource.Name = 'Test';
+		resource.Service_Resource__c = serviceResource.Id;
+		insert resource;
+
+		HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
+		resourceMember.Resource__c = resource.Id;
+		resourceMember.Service_Resource__c = serviceResource.Id;
+		insert resourceMember;
 
 		WorkType workType = HOT_TestDataFactory.createWorkType();
 		insert WorkType;
 		HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-		request.PreferredInterpreter1__c = resource.Id;
-		request.NumberOfInterpreters__c = 2;
+		request.PreferredResource1__c = resource.Id;
+		request.NumberOfInterpreters__c = 3;
 		insert request;
 
 		request.Status__c = 'Godkjent';
@@ -28,38 +38,60 @@ private class HOT_ServiceAppointmentHandlerTest{
 	}
 
 	@isTest static void setStatusDefaultTest() {
-		ServiceAppointment serviceAppointment = [SELECT Status FROM ServiceAppointment WHERE HOT_PreferredInterpreter__c != null];
+		ServiceAppointment serviceAppointment = [SELECT Status FROM ServiceAppointment WHERE HOT_PreferredResource__c != null];
 		System.assertEquals('None', serviceAppointment.Status, 'Default status was not set on ServiceAppointment.');
 	}
 
 	@isTest static void setOwnerTest() {
 		HOT_Request__c request = [SELECT OwnerId FROM HOT_Request__c];
-		ServiceAppointment serviceAppointment = [SELECT OwnerId FROM ServiceAppointment WHERE HOT_PreferredInterpreter__c != null];
+		ServiceAppointment serviceAppointment = [SELECT OwnerId FROM ServiceAppointment WHERE HOT_PreferredResource__c != null];
 		System.assertEquals(request.OwnerId, serviceAppointment.OwnerId, 'Owner of ServiceAppointment was not set to owner of Request.');
 	}
-	@isTest static void setFieldsByPreferredInterpreterTest_onInsert() {
+	@isTest static void setFieldsByPreferredResourceTest_onInsert() {
 		ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_ServiceTerritory__c FROM ServiceResource];
-		ServiceAppointment serviceAppointment = [SELECT HOT_IsReleasedToFreelance__c, ServiceTerritoryId FROM ServiceAppointment WHERE HOT_PreferredInterpreter__c != null];
-		System.assertEquals(serviceResource.HOT_ServiceTerritory__c, serviceAppointment.ServiceTerritoryId, 'ServiceTerritory on ServiceAppointment was not set to ServiceTerritory on PreferredInterpreters.');
-		System.assertEquals(serviceResource.HOT_IsFreelanceInterpreter__c, serviceAppointment.HOT_IsReleasedToFreelance__c, 'IsFreelanceInterpreter on ServiceAppointment was not set to IsFreelanceInterpreter on PreferredInterpreters.');
+		ServiceAppointment serviceAppointment = [SELECT HOT_IsReleasedToFreelance__c, ServiceTerritoryId FROM ServiceAppointment WHERE HOT_PreferredResource__c != null];
+		System.assertEquals(serviceResource.HOT_ServiceTerritory__c, serviceAppointment.ServiceTerritoryId, 'ServiceTerritory on ServiceAppointment was not set to ServiceTerritory on PreferredResources.');
+		System.assertEquals(serviceResource.HOT_IsFreelanceInterpreter__c, serviceAppointment.HOT_IsReleasedToFreelance__c, 'IsFreelanceInterpreter on ServiceAppointment was not set to IsFreelanceInterpreter on PreferredResources.');
 	}
-	@isTest static void setFieldsByPreferredInterpreterTest_onUpdate() {
-		ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c, HOT_ServiceTerritory__c FROM ServiceResource];
-		serviceResource.HOT_IsFreelanceInterpreter__c = false;
-		serviceResource.HOT_IsEmployedInterpreter__c = true;
-		//update serviceResource;
+	@isTest static void setFieldsByPreferredResourceTest_onUpdate() {
+		HOT_Resource__c resource = [SELECT Id, Name, Service_Resource__c FROM HOT_Resource__c];
 
-		ServiceAppointment serviceAppointment = [SELECT Id, HOT_PreferredInterpreter__c FROM ServiceAppointment WHERE HOT_PreferredInterpreter__c = null];
-		serviceAppointment.HOT_PreferredInterpreter__c = serviceResource.Id;
+		ServiceAppointment serviceAppointment = [SELECT Id, HOT_PreferredResource__c FROM ServiceAppointment WHERE HOT_PreferredResource__c = null LIMIT 1];
+		serviceAppointment.HOT_PreferredResource__c = resource.Id;
 
 		Test.startTest();
 		update serviceAppointment;
 		Test.stopTest();
 
-		serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_ServiceTerritory__c FROM ServiceResource];
-		serviceAppointment = [SELECT HOT_IsReleasedToFreelance__c, ServiceTerritoryId FROM ServiceAppointment WHERE Id = :serviceAppointment.Id];
-		System.assertEquals(serviceResource.HOT_ServiceTerritory__c, serviceAppointment.ServiceTerritoryId, 'ServiceTerritory on ServiceAppointment was not set to ServiceTerritory on PreferredInterpreters.');
-		System.assertEquals(serviceResource.HOT_IsFreelanceInterpreter__c, serviceAppointment.HOT_IsReleasedToFreelance__c, 'IsFreelanceInterpreter on ServiceAppointment was not set to IsFreelanceInterpreter on PreferredInterpreters.');
+		ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_ServiceTerritory__c FROM ServiceResource];
+		serviceAppointment = [SELECT HOT_IsReleasedToFreelance__c, ServiceTerritoryId, HOT_Request__c FROM ServiceAppointment WHERE Id = :serviceAppointment.Id];
+		System.assertEquals(serviceResource.HOT_ServiceTerritory__c, serviceAppointment.ServiceTerritoryId, 'ServiceTerritory on ServiceAppointment was not set to ServiceTerritory on PreferredResources.');
+		System.assertEquals(serviceResource.HOT_IsFreelanceInterpreter__c, serviceAppointment.HOT_IsReleasedToFreelance__c, 'IsFreelanceInterpreter on ServiceAppointment was not set to IsFreelanceInterpreter on PreferredResources.');
+	}
+
+	@isTest static void setFieldsIfPreferredResourceDeletedTest_onUpdate() {
+		ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c, HOT_ServiceTerritory__c FROM ServiceResource LIMIT 1];
+		HOT_Resource__c resource = [SELECT Id, Name, Service_Resource__c FROM HOT_Resource__c WHERE Service_Resource__c = : serviceResource.Id];
+		update serviceResource;
+
+		ServiceAppointment serviceAppointment = [SELECT Id, HOT_PreferredResource__c, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c, ServiceTerritoryId FROM ServiceAppointment WHERE HOT_PreferredResource__c = null LIMIT 1];
+		serviceAppointment.HOT_PreferredResource__c = resource.Id;
+		Id saId = serviceAppointment.Id;
+		update serviceAppointment;
+
+		serviceAppointment = [SELECT Id, HOT_PreferredResource__c, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c, ServiceTerritoryId FROM ServiceAppointment WHERE Id = :saId];
+		system.assertEquals(resource.Id, serviceAppointment.HOT_PreferredResource__c);
+		system.assertEquals(serviceResource.HOT_ServiceTerritory__c,serviceAppointment.ServiceTerritoryId);
+		system.assertEquals(true, serviceAppointment.HOT_IsReleasedToFreelance__c);
+		system.assertEquals(false, serviceAppointment.HOT_IsEmployedInterpreter__c);
+
+		serviceAppointment.HOT_PreferredResource__c = null;
+		update serviceAppointment;
+
+		serviceAppointment = [SELECT Id, HOT_PreferredResource__c, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c, ServiceTerritoryId FROM ServiceAppointment WHERE Id = :saId];
+		system.assertEquals(null, serviceAppointment.HOT_PreferredResource__c);
+		system.assertEquals(false, serviceAppointment.HOT_IsReleasedToFreelance__c);
+		system.assertEquals(true, serviceAppointment.HOT_IsEmployedInterpreter__c);
 	}
 	
 	@isTest static void cancelServiceAppointment() {
