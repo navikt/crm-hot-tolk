@@ -37,6 +37,8 @@ public without sharing class HOT_CreateWorkOrderService {
 		HOT_CreateWorkOrderService input = inputVariables[0];
 		Integer maxNumberOfRecurrences = 200;
 		List<String> errors = new List<String>();
+		
+		TimeZone tz = UserInfo.getTimeZone();
 
 		if(input.endDate <= input.startDate) {
 			errors.add('Slutt tid må være etter start tid.');
@@ -79,6 +81,9 @@ public without sharing class HOT_CreateWorkOrderService {
 			for(Integer i = 0; i <= numberOfRecurrences; i++) {
 				Datetime startDate = input.startDate.addDays(i);
 				Datetime endDate = input.endDate.addDays(i);
+				Integer os = tz.getOffset(startDate);
+				startDate = startDate.addHours(1 - os/3600000);
+				endDate = endDate.addHours(1 - os/3600000);
 				WorkOrder workOrder = new workOrder(HOT_Request__c = input.requestId, StartDate = startDate, EndDate = endDate);
 				workOrders.add(workOrder);
 			}
@@ -101,6 +106,10 @@ public without sharing class HOT_CreateWorkOrderService {
 				Datetime startDate = input.startDate.addDays(i);
 				Datetime endDate = input.endDate.addDays(i);
 				String dayOfWeek = startDate.format('EEEE');
+				Integer os = tz.getOffset(startDate);
+				startDate = startDate.addHours(1 - os/3600000);
+				endDate = endDate.addHours(1 - os/3600000);
+
 				System.debug('dayOfWeek: '+ dayOfWeek);
 				if(
 					input.monday && dayOfWeek == 'Monday'
@@ -145,6 +154,9 @@ public without sharing class HOT_CreateWorkOrderService {
 				Datetime startDate = input.startDate.addDays(i);
 				Datetime endDate = input.endDate.addDays(i);
 				String dayOfWeek = startDate.format('EEEE');
+				Integer os = tz.getOffset(startDate);
+				startDate = startDate.addHours(1 - os/3600000);
+				endDate = endDate.addHours(1 - os/3600000);
 				System.debug('dayOfWeek: '+ dayOfWeek);
 				if(
 					input.monday && dayOfWeek == 'Monday'
@@ -196,6 +208,9 @@ public without sharing class HOT_CreateWorkOrderService {
 			for(Integer i = 0; i <= numberOfRecurrences; i++) {
 				Datetime startDate = input.startDate.addMonths(i);
 				Datetime endDate = input.endDate.addMonths(i);
+				Integer os = tz.getOffset(startDate);
+				startDate = startDate.addHours(1 - os/3600000);
+				endDate = endDate.addHours(1 - os/3600000);
 				WorkOrder workOrder = new workOrder(HOT_Request__c = input.requestId, StartDate = startDate, EndDate = endDate);
 				if(startDate.date() <= input.recurringEndDate) {
 					workOrders.add(workOrder);

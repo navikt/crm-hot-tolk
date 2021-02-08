@@ -131,7 +131,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 		Source__c: "Community", Type__c: "", EventType__c: "",
 	};
 
-	@track isPersonNumberValid = false;
+	@track isPersonNumberValid = true;
 	checkPersonNumber(event) {
 		let inputComponent = this.template.querySelector(".skjema").querySelector(".personNumber");
 		this.fieldValues.UserPersonNumber__c = inputComponent.value;
@@ -481,8 +481,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 			radioButtonGroup.focus();
 		}
 		radioButtonGroup.reportValidity();
-		if (this.currentRequestType == 'Me' || this.currentRequestType == 'PublicEvent') {
-			this.isPersonNumberValid = true;
+		if (this.currentRequestType == 'User' || this.currentRequestType == 'Company') {
+			this.isPersonNumberValid = false;
 		}
 	}
 
