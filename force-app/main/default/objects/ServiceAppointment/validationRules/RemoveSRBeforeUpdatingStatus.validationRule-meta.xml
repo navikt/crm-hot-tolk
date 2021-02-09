@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>UpdateShouldNotBeAllowed</fullName>
+    <fullName>RemoveSRBeforeUpdatingStatus</fullName>
     <active>true</active>
     <description>Får ikke satt status til &apos;Udekket&apos; dersom allerede tildelt ressurs</description>
     <errorConditionFormula>HOT_ServiceResource__c != null &amp;&amp; ISPICKVAL(Status, &apos;Cannot Complete&apos;) &amp;&amp; ISCHANGED(Status)</errorConditionFormula>
