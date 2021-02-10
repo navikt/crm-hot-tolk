@@ -47,18 +47,56 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
 	public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
 		List<ServiceAppointment> serviceAppointmentsToRemoveAssignedResource = new List<ServiceAppointment>();
+		List<ServiceAppointment> updatedServiceAppointments = new List<ServiceAppointment>();
 		
 		for(ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
 			if((serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') && serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
 				serviceAppointmentsToRemoveAssignedResource.add(serviceAppointment);
+				if(serviceAppointment.Status == 'Annul'){
+					updatedServiceAppointments.add(serviceAppointment);
+				}
 			}
 		}
 
 		if(serviceAppointmentsToRemoveAssignedResource.size() > 0) {
 			removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
 		}
+		if(updatedServiceAppointments.size() > 0) {
+			updateWorkOrderLineItems(updatedServiceAppointments);
+		}
+	}
+	
+	public override void onAfterInsert() {
+		updateWorkOrderLineItems((List<ServiceAppointment>) records);
+	}
+	public override void onAfterDelete() {
+		updateWorkOrderLineItems((List<ServiceAppointment>) records);
+	}
+	public override void onAfterUndelete() {
+		updateWorkOrderLineItems((List<ServiceAppointment>) records);
 	}
 
+	public static void updateWorkOrderLineItems(List<ServiceAppointment> serviceAppointments){
+		Set<Id> workOrderLineItemIds = new Set<Id>();
+		List<Id> deletedServiceAppointments = new List<Id>();
+		for(ServiceAppointment serviceAppointment:serviceAppointments){
+			workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
+			if(serviceAppointment.IsDeleted){
+				deletedServiceAppointments.add(serviceAppointment.Id);
+			}
+		}
+		List<WorkOrderLineItem> workOrderLineItems = [SELECT Id, HOT_NumberOfServiceAppointments__c, 
+										(SELECT Id, Status FROM WorkOrderLineItem.HOT_ServiceAppointments__r
+										WHERE Id NOT IN :deletedServiceAppointments AND Status != 'Annul') 
+										FROM WorkOrderLineItem WHERE Id IN :workOrderLineItemIds];
+		for(WorkOrderLineItem workOrderLineItem:workOrderLineItems){
+			if(workOrderLineItem.HOT_NumberOfServiceAppointments__c != workOrderLineItem.HOT_ServiceAppointments__r.size()){
+				workOrderLineItem.HOT_NumberOfServiceAppointments__c = workOrderLineItem.HOT_ServiceAppointments__r.size();
+			}
+		}
+		update workOrderLineItems;
+	}
+	
 	private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
 		List<AssignedResource> arList = [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId IN :serviceAppointments];
 		delete arList;
