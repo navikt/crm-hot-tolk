@@ -11,7 +11,7 @@ coverage/
 jsconfig.json
 
 # Only prettify specifc static resources
-force-app/main/default/staticresources/*
+**/staticresources/*
 
 # Exclude project config (edited by CI workflow)
 sfdx-project.json
