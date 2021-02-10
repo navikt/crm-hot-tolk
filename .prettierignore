@@ -10,8 +10,11 @@ coverage/
 .github
 jsconfig.json
 
-# Only prettify specifc static resources
 **/staticresources/*
+
+# flows in permsets will break the xml
+**/permissionsets/*
+**/permissionsetgroups/*
 
 # Exclude project config (edited by CI workflow)
 sfdx-project.json
