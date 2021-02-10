@@ -6,6 +6,70 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
 
 	public override void onAfterInsert() {
 		createChildRecords((List<WorkOrderLineItem>) records);
+		updateNumberOfWOLIonWO((List<WorkOrderLineItem>) records);
+	}
+	public override void onAfterUpdate(Map<Id,sObject> triggerOldMap) {
+		List<WorkOrderLineItem> statusChangedToAnnul = new List<WorkOrderLineItem>();
+		List<WorkOrderLineItem> numberOfSAUpdated = new List<WorkOrderLineItem>();
+		for(WorkOrderLineItem workOrderLineItem : (List<WorkOrderLineItem>) records){
+			if(workOrderLineItem.Status == 'Annul' && triggerOldMap.get(workOrderLineItem.Id).get('Status') != workOrderLineItem.Status){
+				statusChangedToAnnul.add(workOrderLineItem);
+			}
+			if(triggerOldMap.get(workOrderLineItem.Id).get('HOT_NumberOfServiceAppointments__c') != workOrderLineItem.HOT_NumberOfServiceAppointments__c){
+				numberOfSAUpdated.add(workOrderLineItem);
+			}
+		}
+		if(statusChangedToAnnul.size()>0){
+			updateNumberOfWOLIonWO(statusChangedToAnnul);
+		}
+		if(numberOfSAUpdated.size()>0){
+			updateNumberOfSAonWO(numberOfSAUpdated);
+		}
+	}
+	public override void onAfterDelete() {
+		updateNumberOfWOLIonWO((List<WorkOrderLineItem>) records);
+	}
+	public override void onAfterUndelete() {
+		updateNumberOfWOLIonWO((List<WorkOrderLineItem>) records);
+	}
+
+	public static void updateNumberOfWOLIonWO(List<WorkOrderLineItem> workOrderLineItems){
+		Set<Id> workOrderIds = new Set<Id>();
+		List<Id> deletedWorkOrderLineItems = new List<Id>();
+		for(WorkOrderLineItem workOrderLineItem:workOrderLineItems){
+			workOrderIds.add(workOrderLineItem.WorkOrderId);
+			if(workOrderLineItem.IsDeleted){
+				deletedWorkOrderLineItems.add(workOrderLineItem.Id);
+			}
+		}
+		List<WorkOrder> workOrders = [SELECT Id, HOT_NumberOfWorkOrderLineItems__c,
+										(SELECT Id, Status FROM WorkOrder.WorkOrderLineItems
+										WHERE Id NOT IN :deletedWorkOrderLineItems AND Status != 'Annul') 
+										FROM WorkOrder WHERE Id IN :workOrderIds];
+		for(WorkOrder workOrder:workOrders){
+			if(workOrder.HOT_NumberOfWorkOrderLineItems__c != workOrder.WorkOrderLineItems.size()){
+				workOrder.HOT_NumberOfWorkOrderLineItems__c = workOrder.WorkOrderLineItems.size();
+			}
+		}
+		update workOrders;
+	}
+	public static void updateNumberOfSAonWO(List<WorkOrderLineItem> workOrderLineItems){
+		Set<Id> workOrderIds = new Set<Id>();
+		for(WorkOrderLineItem workOrderLineItem:workOrderLineItems){
+			workOrderIds.add(workOrderLineItem.WorkOrderId);
+		}
+		List<WorkOrder> workOrders = [SELECT Id, HOT_NumberOfServiceAppointments__c,
+										(SELECT Id, HOT_NumberOfServiceAppointments__c FROM WorkOrder.WorkOrderLineItems WHERE Status != 'Annul') FROM WorkOrder WHERE Id IN :workOrderIds];
+		for(WorkOrder workOrder:workOrders){
+			Integer numberOfServiceAppointments = 0;
+			for(WorkOrderLineItem workOrderLineItem : workOrder.WorkOrderLineItems){
+				numberOfServiceAppointments += (Integer) workOrderLineItem.HOT_NumberOfServiceAppointments__c;
+			}
+			if(workOrder.HOT_NumberOfServiceAppointments__c != numberOfServiceAppointments){
+				workOrder.HOT_NumberOfServiceAppointments__c = numberOfServiceAppointments;
+			}
+		}
+		update workOrders;
 	}
 
 	public static void createChildRecords(List<WorkOrderLineItem> workOrderLineItems){
