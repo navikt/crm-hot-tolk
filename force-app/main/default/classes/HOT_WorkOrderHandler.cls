@@ -26,6 +26,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 	//Vi gjør derfor om denne "trigger"-metoden til en statisk metode, og kaller på den fra HOT_WorkOrderStatusHandler.onAfterUpdate.
 	public static void onAfterUpdateTemp(Map<Id,sObject> triggerOldMap, List<WorkOrder> records) {
 		List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
+		List<WorkOrder> numberOfSAUpdated = new List<WorkOrder>();
 
 		//Om status eller tidspunkt på WorkOrder er endret, kan det ha ført til at den førstkommende, ikke-avlyste WorkOrderen har endret seg
 		for(WorkOrder record : records) {
@@ -37,10 +38,16 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 				record.EndDate != triggerOldMap.get(record.Id).get('EndDate')) {
 					updatedWorkOrders.add(record);
 			}
+			if(record.HOT_NumberOfServiceAppointments__c != triggerOldMap.get(record.Id).get('HOT_NumberOfServiceAppointments__c')){
+				numberOfSAUpdated.add(record);
+			}
 		}
 
 		if(updatedWorkOrders.size() > 0) {
 			updateRequests(updatedWorkOrders);
+		}
+		if(numberOfSAUpdated.size() > 0) {
+			updateRequests(numberOfSAUpdated);
 		}
 	}
 	public override void onAfterDelete() {
@@ -162,20 +169,26 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 				deletedWorkOrders.add(workOrder.Id);
 			}
 		}
-		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, StartTime__c, EndTime__c,
-										(SELECT Id, StartDate, EndDate, Status FROM HOT_Request__c.Work_Orders__r
+		List<HOT_Request__c> requests = [SELECT Id, NumberOfWorkOrders__c, StartTime__c, EndTime__c, NumberOfServiceAppointments__c,
+										(SELECT Id, StartDate, EndDate, Status, HOT_NumberOfServiceAppointments__c FROM HOT_Request__c.Work_Orders__r
 										WHERE Id NOT IN :deletedWorkOrders AND Status != 'Annul' ORDER BY StartDate ASC) 
 										FROM HOT_Request__c WHERE Id IN :requestIds];
 		for(HOT_Request__c request:requests){
 			if(request.NumberOfWorkOrders__c != request.Work_Orders__r.size()){
 				request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
 			}
+			Integer numberOfServiceAppointments = 0;
+			Boolean datetimeFound = false;
 			for(WorkOrder workOrder:request.Work_Orders__r){
-				if(workOrder.Status != 'Canceled'){
+				numberOfServiceAppointments += (Integer) workOrder.HOT_NumberOfServiceAppointments__c;
+				if(workOrder.Status != 'Canceled' && datetimeFound == false){
 					request.StartTime__c = workOrder.StartDate;
 					request.EndTime__c = workOrder.EndDate;
-					break;
+					datetimeFound = true;
 				}
+			}
+			if(request.NumberOfServiceAppointments__c != numberOfServiceAppointments){
+				request.NumberOfServiceAppointments__c = numberOfServiceAppointments;
 			}
 		}
 		update requests;
