@@ -104,7 +104,8 @@
 						</lightning-input-field>
 						</br>
 
-						<div if:false={isEditMode} style="display: flex; justify-content: flex-end; margin-top: 8px;">
+						<div tabindex="0" if:false={isEditMode}
+							style="display: flex; justify-content: flex-end; margin-top: 8px;">
 							<a if:false={isAdvancedTimes} onclick={advancedTimes}>Gjentagende bestilling
 							</a>
 							<a if:true={isAdvancedTimes} onclick={simpleTimes}>Enkel bestilling
