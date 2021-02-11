@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <layoutSections>
         <customLabel>false</customLabel>
@@ -224,9 +224,9 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns/>
-        <layoutColumns/>
-        <layoutColumns/>
+        <layoutColumns />
+        <layoutColumns />
+        <layoutColumns />
         <style>CustomLinks</style>
     </layoutSections>
     <layoutSections>
@@ -279,12 +279,13 @@
             <sortOrder>3</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>ServiceAppointment.HOT_RetractServiceAppointment</actionName>
+            <actionName
+            >ServiceAppointment.HOT_RetractServiceAppointment</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>4</sortOrder>
         </platformActionListItems>
     </platformActionList>
-    <quickActionList/>
+    <quickActionList />
     <relatedLists>
         <fields>ServiceResource</fields>
         <fields>Name</fields>
@@ -297,14 +298,16 @@
         <fields>Status__c</fields>
         <fields>ServiceResource.HOT_ServiceTerritory__c</fields>
         <fields>IsDispatcherNewComment__c</fields>
-        <relatedList>HOT_InterestedResource__c.ServiceAppointment__c</relatedList>
+        <relatedList
+        >HOT_InterestedResource__c.ServiceAppointment__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
         <fields>ServiceResource__c</fields>
         <fields>Status__c</fields>
         <fields>StatusComment__c</fields>
-        <relatedList>HOT_HistoricallyAssignedResource__c.ServiceAppointment__c</relatedList>
+        <relatedList
+        >HOT_HistoricallyAssignedResource__c.ServiceAppointment__c</relatedList>
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedEntityHistoryList</relatedList>

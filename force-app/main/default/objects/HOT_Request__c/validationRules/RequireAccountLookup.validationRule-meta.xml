@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>RequireAccountLookup</fullName>
     <active>true</active>
@@ -11,5 +11,6 @@ ISBLANK(Orderer__c)
 ISPICKVAL(Source__c, &apos;Dispatcher&apos;)
 &amp;&amp;
 NOT(ISPICKVAL(Status__c, &apos;Annullert&apos;))</errorConditionFormula>
-    <errorMessage>Forespørselen må være koblet til en person eller virksomhet. Fyll ut Bruker-, Bestiller- eller Virksomhet-feltet.</errorMessage>
+    <errorMessage
+    >Forespørselen må være koblet til en person eller virksomhet. Fyll ut Bruker-, Bestiller- eller Virksomhet-feltet.</errorMessage>
 </ValidationRule>

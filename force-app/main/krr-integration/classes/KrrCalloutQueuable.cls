@@ -1,22 +1,34 @@
 public without sharing class KrrCalloutQueuable implements Queueable, Database.AllowsCallouts {
-
     private List<HOT_Request__c> requests;
 
     public KrrCalloutQueuable(List<HOT_Request__c> requests) {
-        this.requests = [SELECT Id, Person__c, Person__r.Name FROM HOT_Request__c WHERE Id IN: requests];
+        this.requests = [
+            SELECT Id, Person__c, Person__r.Name
+            FROM HOT_Request__c
+            WHERE Id IN :requests
+        ];
     }
 
     public void execute(QueueableContext context) {
         Map<String, Id> personIdByPersonalNumber = new Map<String, Id>();
         for (HOT_Request__c request : requests) {
-            personIdByPersonalNumber.put(String.valueOf(request.Person__r.Name), request.Person__c);
+            personIdByPersonalNumber.put(
+                String.valueOf(request.Person__r.Name),
+                request.Person__c
+            );
         }
-
 
         try {
             Map<String, KRRCalloutService.Personer> krrResponseByPersonalNumber = new Map<String, KRRCalloutService.Personer>();
-            for (KRRCalloutService.Personer person : KrrCalloutService.doPersonOppslag(new List<String>(personIdByPersonalNumber.keySet()))) {
-                krrResponseByPersonalNumber.put(person.personidentifikator, person);
+            for (
+                KRRCalloutService.Personer person : KrrCalloutService.doPersonOppslag(
+                    new List<String>(personIdByPersonalNumber.keySet())
+                )
+            ) {
+                krrResponseByPersonalNumber.put(
+                    person.personidentifikator,
+                    person
+                );
             }
             List<Person__c> personsToUpdate = new List<Person__c>();
             for (String personalNumber : personIdByPersonalNumber.keySet()) {
@@ -28,12 +40,27 @@ public without sharing class KrrCalloutQueuable implements Queueable, Database.A
                     person.INT_KrrIntegrationStatus__c = 'Completed';
 
                     // Map contact information fields if they were returned by krr
-                    if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon != null) {
-                        if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.epostadresse != null) {
-                            person.INT_KrrEmail__c = krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.epostadresse;
+                    if (
+                        krrResponseByPersonalNumber.get(personalNumber)
+                            .kontaktinformasjon != null
+                    ) {
+                        if (
+                            krrResponseByPersonalNumber.get(personalNumber)
+                                .kontaktinformasjon.epostadresse != null
+                        ) {
+                            person.INT_KrrEmail__c = krrResponseByPersonalNumber.get(
+                                    personalNumber
+                                )
+                                .kontaktinformasjon.epostadresse;
                         }
-                        if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.mobiltelefonnummer != null) {
-                            person.INT_KrrMobilePhone__c = krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.mobiltelefonnummer;
+                        if (
+                            krrResponseByPersonalNumber.get(personalNumber)
+                                .kontaktinformasjon.mobiltelefonnummer != null
+                        ) {
+                            person.INT_KrrMobilePhone__c = krrResponseByPersonalNumber.get(
+                                    personalNumber
+                                )
+                                .kontaktinformasjon.mobiltelefonnummer;
                         }
                     }
                     personsToUpdate.add(person);
@@ -53,5 +80,4 @@ public without sharing class KrrCalloutQueuable implements Queueable, Database.A
             update personsToUpdate;
         }
     }
-
 }

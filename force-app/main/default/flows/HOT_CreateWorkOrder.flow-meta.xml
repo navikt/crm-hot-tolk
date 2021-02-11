@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>CreateWorkOrderService</name>
@@ -190,7 +190,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Text</name>
-            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!Error}&lt;/i&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!Error}&lt;/i&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -228,7 +229,8 @@
             <choiceReferences>Hver_uke</choiceReferences>
             <choiceReferences>Hver_andre_uke</choiceReferences>
             <dataType>String</dataType>
-            <defaultSelectedChoiceReference>Aldri</defaultSelectedChoiceReference>
+            <defaultSelectedChoiceReference
+            >Aldri</defaultSelectedChoiceReference>
             <fieldText>Gjenta</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>

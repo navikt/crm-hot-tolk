@@ -1,5 +1,4 @@
 public class MaskinportenService {
-
     @TestVisible
     private String encodedJWT;
     @TestVisible
@@ -8,14 +7,22 @@ public class MaskinportenService {
     public MaskinportenService(String clientDeveloperName) {
         // Find MaskinportenClient custom metadata record for the given client
         this.clients = [
-                SELECT Id, Endpoint__c, Audience__c, Issuer__c, KeyId__c, PrivateKey__c, Scopes__c
-                FROM Maskinportenclient__mdt
-                WHERE DeveloperName = :clientDeveloperName
+            SELECT
+                Id,
+                Endpoint__c,
+                Audience__c,
+                Issuer__c,
+                KeyId__c,
+                PrivateKey__c,
+                Scopes__c
+            FROM Maskinportenclient__mdt
+            WHERE DeveloperName = :clientDeveloperName
         ];
     }
 
     public AuthResponse doMaskinportenJWTExchange() {
-        if (clients.isEmpty()) return null;
+        if (clients.isEmpty())
+            return null;
         Maskinportenclient__mdt client = clients[0];
 
         // Initialize HttpRequest
@@ -30,10 +37,12 @@ public class MaskinportenService {
         postBody += '&assertion=' + encodedJWT;
         req.setBody(postBody);
 
-
         // Do callout, parse body, and return parsed response
         HttpResponse res = new Http().send(req);
-        return (AuthResponse) Json.deserialize(res.getBody(), AuthResponse.class);
+        return (AuthResponse) Json.deserialize(
+            res.getBody(),
+            AuthResponse.class
+        );
     }
 
     public class AuthResponse {

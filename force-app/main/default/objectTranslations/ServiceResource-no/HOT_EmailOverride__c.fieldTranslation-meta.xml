@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <help><!-- Bruk dette feltet til å skrive inn en egen e-post for tolken --></help>
+    <help
+    ><!-- Bruk dette feltet til å skrive inn en egen e-post for tolken --></help>
     <label>Alternativ e-post</label>
     <name>HOT_EmailOverride__c</name>
 </CustomFieldTranslation>

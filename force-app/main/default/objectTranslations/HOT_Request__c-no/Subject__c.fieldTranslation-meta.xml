@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <help><!-- Beskriv hva du trenger tolk til så nøyaktig som mulig, f.eks. legetime, foreldremøte, forelesning, speidersamling, teaterforestilling osv. --></help>
+    <help
+    ><!-- Beskriv hva du trenger tolk til så nøyaktig som mulig, f.eks. legetime, foreldremøte, forelesning, speidersamling, teaterforestilling osv. --></help>
     <label>Tema</label>
     <name>Subject__c</name>
 </CustomFieldTranslation>

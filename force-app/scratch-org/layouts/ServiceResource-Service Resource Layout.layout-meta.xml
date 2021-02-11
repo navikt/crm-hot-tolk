@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <layoutSections>
         <customLabel>false</customLabel>
@@ -117,9 +117,9 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns/>
-        <layoutColumns/>
-        <layoutColumns/>
+        <layoutColumns />
+        <layoutColumns />
+        <layoutColumns />
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
@@ -131,7 +131,8 @@
         <fields>ServiceAppointment__c</fields>
         <fields>Status__c</fields>
         <fields>StatusComment__c</fields>
-        <relatedList>HOT_HistoricallyAssignedResource__c.ServiceResource__c</relatedList>
+        <relatedList
+        >HOT_HistoricallyAssignedResource__c.ServiceResource__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>ServiceAppointment</fields>

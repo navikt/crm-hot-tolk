@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>InvoiceReference__c</fullName>
     <externalId>false</externalId>
-    <inlineHelpText>Oppgi referanse, slik økonomitjenesten hos dere krever.</inlineHelpText>
+    <inlineHelpText
+    >Oppgi referanse, slik økonomitjenesten hos dere krever.</inlineHelpText>
     <label>Invoice Reference</label>
     <length>100</length>
     <required>false</required>

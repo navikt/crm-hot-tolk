@@ -1,6 +1,6 @@
 {
-  "defaultCode" : "no",
-  "defaultLabel" : "Norsk",
-  "id" : "b05c0da6-4257-4b97-ad2b-d1e3daeb57b6",
-  "type" : "languageContainer"
+    "defaultCode": "no",
+    "defaultLabel": "Norsk",
+    "id": "b05c0da6-4257-4b97-ad2b-d1e3daeb57b6",
+    "type": "languageContainer"
 }
