@@ -1,163 +1,295 @@
 <template>
-	<div class="main-content">
-		<div class="right-content">
-			<lightning-button title="Meld interesse" class="right-button" variant="brand" label="Tilbaketrekk interesse"
-				onclick={retractInterest}>
-			</lightning-button>
-			<lightning-input type="checkbox" class="filter-list-checkbox" label={checkBoxLabel} name="toggleTerritory"
-				onchange={handleChecked}>
-			</lightning-input>
-			<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
-				value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
-			</lightning-combobox>
-		</div>
-		<lightning-datatable key-field="Id" data={interestedResourcesFiltered} columns={columns}
-			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
-			onsort={onHandleSort} onrowaction={handleRowAction} onrowselection={getSelectedName}>
-		</lightning-datatable>
-	</div>
+    <div class="main-content">
+        <div class="right-content">
+            <lightning-button
+                title="Meld interesse"
+                class="right-button"
+                variant="brand"
+                label="Tilbaketrekk interesse"
+                onclick={retractInterest}
+            >
+            </lightning-button>
+            <lightning-input
+                type="checkbox"
+                class="filter-list-checkbox"
+                label={checkBoxLabel}
+                name="toggleTerritory"
+                onchange={handleChecked}
+            >
+            </lightning-input>
+            <lightning-combobox
+                class="mobile-only"
+                name="mobileSorting"
+                label="Sorter etter"
+                value={mobileSortingDefaultValue}
+                options={sortingOptions}
+                onchange={handleMobileSorting}
+            >
+            </lightning-combobox>
+        </div>
+        <lightning-datatable
+            key-field="Id"
+            data={interestedResourcesFiltered}
+            columns={columns}
+            default-sort-direction={defaultSortDirection}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={onHandleSort}
+            onrowaction={handleRowAction}
+            onrowselection={getSelectedName}
+        >
+        </lightning-datatable>
+    </div>
 
-	<div if:true={isAddComments} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
-		style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
-		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
-			tabindex="-1" role="dialog">
-			<section>
-				<div style="padding: 1rem;">
-					<h2 class="typo-undertittel">Emne</h2>
-					<p class="typo-normal">{AppointmentNumber__c}</p>
-					</br>
-					<div>
-						<h2 class="typo-undertittel">Diskusjon med formidler</h2>
-						<template iterator:it={prevComments}>
-							<p class="typo-normal" key={it.value}>{it.value}</p>
-							<p style="color: transparent;" key={it.value}>.</p>
-						</template>
-					</div>
-					<lightning-textarea style="margin-bottom: 1rem;" class="newComment" name="newComment">
-					</lightning-textarea>
-					<lightning-button onclick={sendComment} class="slds-m-left_x-small" variant="brand" type="submit"
-						label="Send inn">
-					</lightning-button>
+    <div
+        if:true={isAddComments}
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            tabindex="-1"
+            role="dialog"
+        >
+            <section>
+                <div style="padding: 1rem">
+                    <h2 class="typo-undertittel">Emne</h2>
+                    <p class="typo-normal">{AppointmentNumber__c}</p>
+                    <br />
+                    <div>
+                        <h2 class="typo-undertittel">
+                            Diskusjon med formidler
+                        </h2>
+                        <template iterator:it={prevComments}>
+                            <p class="typo-normal" key={it.value}>{it.value}</p>
+                            <p style="color: transparent" key={it.value}>.</p>
+                        </template>
+                    </div>
+                    <lightning-textarea
+                        style="margin-bottom: 1rem"
+                        class="newComment"
+                        name="newComment"
+                    >
+                    </lightning-textarea>
+                    <lightning-button
+                        onclick={sendComment}
+                        class="slds-m-left_x-small"
+                        variant="brand"
+                        type="submit"
+                        label="Send inn"
+                    >
+                    </lightning-button>
+                </div>
+            </section>
+            <button
+                class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
+                onclick={closeComments}
+            >
+                <span class="text-hide">Lukk</span>
+            </button>
+        </div>
+    </div>
 
-				</div>
-			</section>
-			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeComments}>
-				<span class="text-hide">Lukk</span>
-			</button>
-		</div>
-	</div>
-
-
-	<div if:true={isDetails} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
-		style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
-		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
-			tabindex="-1" role="dialog">
-			<section>
-				<h2 class="typo-undertittel">Detaljer</h2>
-				<div class="slds-grid slds-gutters">
-					<div class="slds-col slds-size_1-of-2">
-						<span class="slds-form-element__label lightning-output-field__label">Oppdrag</span>
-						</br>
-						<lightning-formatted-text value={detailInterestedResource.AppointmentNumber__c}
-							class="lightning-output-field">
-						</lightning-formatted-text>
-						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Start tid</span>
-						</br>
-						<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit" hour12="false"
-							hour="2-digit" minute="2-digit"
-							value={detailInterestedResource.ServiceAppointmentStartTime__c}
-							class="lightning-output-field">
-						</lightning-formatted-date-time>
-						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
-						</br>
-						<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit" hour12="false"
-							hour="2-digit" minute="2-digit"
-							value={detailInterestedResource.ServiceAppointmentEndTime__c}
-							class="lightning-output-field">
-						</lightning-formatted-date-time>
-						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Adresse</span>
-						</br>
-						<lightning-formatted-text value={detailInterestedResource.ServiceAppointmentAddress__c}
-							class="lightning-output-field">
-						</lightning-formatted-text>
-						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Tolkemetode</span>
-						</br>
-						<lightning-formatted-text value={detailInterestedResource.WorkTypeName__c}
-							class="lightning-output-field">
-						</lightning-formatted-text>
-						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Oppdragstype</span>
-						</br>
-						<lightning-formatted-text
-							value={detailInterestedResource.ServiceAppointment__r.HOT_AssignmentType__c}
-							class="lightning-output-field">
-						</lightning-formatted-text>
-					</div>
-					<div class="slds-col slds-size_1-of-2">
-						<span class="slds-form-element__label lightning-output-field__label">Status</span>
-						</br>
-						<lightning-formatted-text value={detailInterestedResource.Status__c}
-							class="lightning-output-field">
-						</lightning-formatted-text>
-						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Påmeldte</span>
-						</br>
-						<lightning-formatted-number value={detailInterestedResource.NumberOfInterestedResources__c}
-							class="lightning-output-field">
-						</lightning-formatted-number>
-						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Fristdato</span>
-						</br>
-						<lightning-formatted-date-time year="numeric" day="2-digit" month="2-digit"
-							value={detailInterestedResource.ServiceAppointment__r.HOT_DeadlineDate__c}
-							class="lightning-output-field">
-						</lightning-formatted-date-time>
-						</br>
-						<span class="slds-form-element__label lightning-output-field__label">Region</span>
-						</br>
-						<lightning-formatted-text
-							value={detailInterestedResource.ServiceAppointment__r.ServiceTerritory.Name}
-							class="lightning-output-field">
-						</lightning-formatted-text>
-					</div>
-				</div>
-				</br>
-				<span class="slds-form-element__label lightning-output-field__label">Tema</span>
-				</br>
-				<lightning-formatted-text value={detailInterestedResource.ServiceAppointment__r.HOT_FreelanceSubject__c}
-					class="lightning-output-field">
-				</lightning-formatted-text>
-				<section>
-					<div style="padding: 1rem;">
-						</br>
-						<div>
-							<h2 class="typo-undertittel ikke-sensitive-opplysninger__label">Dialog med formidler</h2>
-							<template iterator:it={prevComments}>
-								<p class="typo-normal" key={it.value}>{it.value}</p>
-								<p style="color: transparent;" key={it.value}>.</p>
-							</template>
-						</div>
-						<lightning-textarea label="Legg til ny kommentar" style="margin-bottom: 1rem;"
-							class="newComment" name="newComment">
-						</lightning-textarea>
-						<lightning-button onclick={sendComment} class="slds-m-left_x-small" variant="brand"
-							type="submit" label="Send inn">
-						</lightning-button>
-
-					</div>
-				</section>
-				<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeComments}>
-					<span class="text-hide">Lukk</span>
-				</button>
-			</section>
-			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
-				<span class="text-hide">Lukk</span>
-			</button>
-		</div>
-	</div>
-
+    <div
+        if:true={isDetails}
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            tabindex="-1"
+            role="dialog"
+        >
+            <section>
+                <h2 class="typo-undertittel">Detaljer</h2>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-2">
+                        <span
+                            class="slds-form-element__label lightning-output-field__label"
+                            >Oppdrag</span
+                        >
+                        <br />
+                        <lightning-formatted-text
+                            value={detailInterestedResource.AppointmentNumber__c}
+                            class="lightning-output-field"
+                        >
+                        </lightning-formatted-text>
+                        <br />
+                        <span
+                            class="slds-form-element__label lightning-output-field__label"
+                            >Start tid</span
+                        >
+                        <br />
+                        <lightning-formatted-date-time
+                            year="numeric"
+                            day="2-digit"
+                            month="2-digit"
+                            hour12="false"
+                            hour="2-digit"
+                            minute="2-digit"
+                            value={detailInterestedResource.ServiceAppointmentStartTime__c}
+                            class="lightning-output-field"
+                        >
+                        </lightning-formatted-date-time>
+                        <br />
+                        <span
+                            class="slds-form-element__label lightning-output-field__label"
+                            >Slutt tid</span
+                        >
+                        <br />
+                        <lightning-formatted-date-time
+                            year="numeric"
+                            day="2-digit"
+                            month="2-digit"
+                            hour12="false"
+                            hour="2-digit"
+                            minute="2-digit"
+                            value={detailInterestedResource.ServiceAppointmentEndTime__c}
+                            class="lightning-output-field"
+                        >
+                        </lightning-formatted-date-time>
+                        <br />
+                        <span
+                            class="slds-form-element__label lightning-output-field__label"
+                            >Adresse</span
+                        >
+                        <br />
+                        <lightning-formatted-text
+                            value={detailInterestedResource.ServiceAppointmentAddress__c}
+                            class="lightning-output-field"
+                        >
+                        </lightning-formatted-text>
+                        <br />
+                        <span
+                            class="slds-form-element__label lightning-output-field__label"
+                            >Tolkemetode</span
+                        >
+                        <br />
+                        <lightning-formatted-text
+                            value={detailInterestedResource.WorkTypeName__c}
+                            class="lightning-output-field"
+                        >
+                        </lightning-formatted-text>
+                        <br />
+                        <span
+                            class="slds-form-element__label lightning-output-field__label"
+                            >Oppdragstype</span
+                        >
+                        <br />
+                        <lightning-formatted-text
+                            value={detailInterestedResource.ServiceAppointment__r.HOT_AssignmentType__c}
+                            class="lightning-output-field"
+                        >
+                        </lightning-formatted-text>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <span
+                            class="slds-form-element__label lightning-output-field__label"
+                            >Status</span
+                        >
+                        <br />
+                        <lightning-formatted-text
+                            value={detailInterestedResource.Status__c}
+                            class="lightning-output-field"
+                        >
+                        </lightning-formatted-text>
+                        <br />
+                        <span
+                            class="slds-form-element__label lightning-output-field__label"
+                            >Påmeldte</span
+                        >
+                        <br />
+                        <lightning-formatted-number
+                            value={detailInterestedResource.NumberOfInterestedResources__c}
+                            class="lightning-output-field"
+                        >
+                        </lightning-formatted-number>
+                        <br />
+                        <span
+                            class="slds-form-element__label lightning-output-field__label"
+                            >Fristdato</span
+                        >
+                        <br />
+                        <lightning-formatted-date-time
+                            year="numeric"
+                            day="2-digit"
+                            month="2-digit"
+                            value={detailInterestedResource.ServiceAppointment__r.HOT_DeadlineDate__c}
+                            class="lightning-output-field"
+                        >
+                        </lightning-formatted-date-time>
+                        <br />
+                        <span
+                            class="slds-form-element__label lightning-output-field__label"
+                            >Region</span
+                        >
+                        <br />
+                        <lightning-formatted-text
+                            value={detailInterestedResource.ServiceAppointment__r.ServiceTerritory.Name}
+                            class="lightning-output-field"
+                        >
+                        </lightning-formatted-text>
+                    </div>
+                </div>
+                <br />
+                <span
+                    class="slds-form-element__label lightning-output-field__label"
+                    >Tema</span
+                >
+                <br />
+                <lightning-formatted-text
+                    value={detailInterestedResource.ServiceAppointment__r.HOT_FreelanceSubject__c}
+                    class="lightning-output-field"
+                >
+                </lightning-formatted-text>
+                <section>
+                    <div style="padding: 1rem">
+                        <br />
+                        <div>
+                            <h2
+                                class="typo-undertittel ikke-sensitive-opplysninger__label"
+                            >
+                                Dialog med formidler
+                            </h2>
+                            <template iterator:it={prevComments}>
+                                <p class="typo-normal" key={it.value}>
+                                    {it.value}
+                                </p>
+                                <p style="color: transparent" key={it.value}>
+                                    .
+                                </p>
+                            </template>
+                        </div>
+                        <lightning-textarea
+                            label="Legg til ny kommentar"
+                            style="margin-bottom: 1rem"
+                            class="newComment"
+                            name="newComment"
+                        >
+                        </lightning-textarea>
+                        <lightning-button
+                            onclick={sendComment}
+                            class="slds-m-left_x-small"
+                            variant="brand"
+                            type="submit"
+                            label="Send inn"
+                        >
+                        </lightning-button>
+                    </div>
+                </section>
+                <button
+                    class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
+                    onclick={closeComments}
+                >
+                    <span class="text-hide">Lukk</span>
+                </button>
+            </section>
+            <button
+                class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
+                onclick={abortShowDetails}
+            >
+                <span class="text-hide">Lukk</span>
+            </button>
+        </div>
+    </div>
 </template>
