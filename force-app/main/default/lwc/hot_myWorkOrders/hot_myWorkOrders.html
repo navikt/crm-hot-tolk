@@ -1,23 +1,46 @@
 <template>
-
-	<div class="brodsmulesti">
-		<lightning-breadcrumbs class="liste-max-width">
-			<lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}>
-			</lightning-breadcrumb>
-			<lightning-breadcrumb if:true={showAll} label="Min tidsplan" href="/s/min-tidsplan"
-				onclick={goToMyWorkOrders}>
-			</lightning-breadcrumb>
-			<lightning-breadcrumb if:false={showAll} label="Mine bestillinger" href="/s/mine-bestillinger"
-				onclick={goToMyRequests}>
-			</lightning-breadcrumb>
-			<lightning-breadcrumb if:false={showAll} label={requestNumber} href={thisURL}>
-			</lightning-breadcrumb>
-		</lightning-breadcrumbs>
-	</div>
-	<div class="liste liste-max-width">
-		<lightning-datatable key-field="Id" data={workOrders} columns={columns} hide-checkbox-column="true"
-			default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
-			onsort={onHandleSort} onrowaction={handleRowAction}>
-		</lightning-datatable>
-	</div>
+    <div class="brodsmulesti">
+        <lightning-breadcrumbs class="liste-max-width">
+            <lightning-breadcrumb
+                label="Tolketjenesten"
+                href="/s/"
+                onclick={goToHome}
+            >
+            </lightning-breadcrumb>
+            <lightning-breadcrumb
+                if:true={showAll}
+                label="Min tidsplan"
+                href="/s/min-tidsplan"
+                onclick={goToMyWorkOrders}
+            >
+            </lightning-breadcrumb>
+            <lightning-breadcrumb
+                if:false={showAll}
+                label="Mine bestillinger"
+                href="/s/mine-bestillinger"
+                onclick={goToMyRequests}
+            >
+            </lightning-breadcrumb>
+            <lightning-breadcrumb
+                if:false={showAll}
+                label={requestNumber}
+                href={thisURL}
+            >
+            </lightning-breadcrumb>
+        </lightning-breadcrumbs>
+    </div>
+    <div class="liste liste-max-width">
+        <lightning-datatable
+            key-field="Id"
+            data={workOrders}
+            columns={columns}
+            hide-checkbox-column="true"
+            default-sort-direction={defaultSortDirection}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={onHandleSort}
+            onrowaction={handleRowAction}
+        >
+        </lightning-datatable>
+    </div>
 </template>

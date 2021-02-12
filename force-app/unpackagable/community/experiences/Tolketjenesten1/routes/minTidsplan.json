@@ -1,10 +1,10 @@
 {
-  "activeViewId" : "ba70d545-d4b2-4c8e-a9b5-4f2a8b66706c",
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "id" : "002a7a30-db35-4878-9881-343a2c4aca6a",
-  "label" : "Min Tidsplan",
-  "pageAccess" : "UseParent",
-  "routeType" : "custom-min-tidsplan",
-  "type" : "route",
-  "urlPrefix" : "min-tidsplan"
+    "activeViewId": "ba70d545-d4b2-4c8e-a9b5-4f2a8b66706c",
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "id": "002a7a30-db35-4878-9881-343a2c4aca6a",
+    "label": "Min Tidsplan",
+    "pageAccess": "UseParent",
+    "routeType": "custom-min-tidsplan",
+    "type": "route",
+    "urlPrefix": "min-tidsplan"
 }

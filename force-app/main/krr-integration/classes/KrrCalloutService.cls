@@ -1,17 +1,25 @@
 public class KrrCalloutService {
-
-    public static List<Personer> doPersonOppslag(List<String> personIdentifikatorer) {
+    public static List<Personer> doPersonOppslag(
+        List<String> personIdentifikatorer
+    ) {
         // Initialize request format
-        if (personIdentifikatorer.isEmpty()) return null;
+        if (personIdentifikatorer.isEmpty())
+            return null;
         PersonOppslagRequest requestBody = new PersonOppslagRequest();
         requestBody.personidentifikatorer = personIdentifikatorer;
 
         // Obtain access token from Maskinporten
-        String access_token = new MaskinportenService(Test.isRunningTest() ? 'salesforce_krr_test' : 'salesforce_krr').doMaskinportenJWTExchange().access_token;
+        String access_token = new MaskinportenService(
+                Test.isRunningTest() ? 'salesforce_krr_test' : 'salesforce_krr'
+            )
+            .doMaskinportenJWTExchange()
+            .access_token;
 
         // Initialize HttpRequest
         HttpRequest req = new HttpRequest();
-        String endpoint = Test.isRunningTest() ? 'https://difiKrrExampleEndpoint.no' : 'callout:Kontaktregisteret_Oppslagstjenesten_REST'; // Use sample endpoint for tests in order to be able to mock response
+        String endpoint = Test.isRunningTest()
+            ? 'https://difiKrrExampleEndpoint.no'
+            : 'callout:Kontaktregisteret_Oppslagstjenesten_REST'; // Use sample endpoint for tests in order to be able to mock response
         req.setEndpoint(endpoint);
         req.setMethod('POST');
         req.setHeader('Content-type', 'application/json;charset=UTF-8');
@@ -19,7 +27,10 @@ public class KrrCalloutService {
         req.setHeader('Authorization', 'Bearer ' + access_token);
         req.setBody(JSON.serialize(requestBody));
         HttpResponse res = new Http().send(req);
-        PersonOppslagResponse response = (PersonOppslagResponse) Json.deserialize(res.getBody(), PersonOppslagResponse.class);
+        PersonOppslagResponse response = (PersonOppslagResponse) Json.deserialize(
+            res.getBody(),
+            PersonOppslagResponse.class
+        );
         return response.personer;
     }
 

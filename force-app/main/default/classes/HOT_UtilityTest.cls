@@ -1,86 +1,128 @@
 @isTest
-private class HOT_UtilityTest{
+private class HOT_UtilityTest {
+    @testSetup
+    static void setup() {
+        ServiceResource serviceresource = HOT_TestDataFactory.createServiceResource(
+            UserInfo.getUserId()
+        );
+        insert serviceresource;
+    }
 
-	@testSetup static void setup(){
-		ServiceResource serviceresource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-		insert serviceresource;
+    @isTest
+    static void testGetServiceResource() {
+        ServiceResource serviceResource = HOT_Utility.getServiceResource();
+        System.assertEquals(
+            UserInfo.getUserId(),
+            serviceResource.RelatedRecordId
+        );
+    }
 
-	}
+    @isTest
+    static void testCheckAssignedPermissionSet() {
+        PermissionSet ps = [
+            SELECT Id
+            FROM PermissionSet
+            WHERE Name = 'HOT_Tolk_Ansatt'
+        ];
+        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
+            AssigneeId = UserInfo.getUserId(),
+            PermissionSetId = ps.Id
+        );
+        insert permissionSetAssignment;
 
-	@isTest static void testGetServiceResource() {
-		ServiceResource serviceResource = HOT_Utility.getServiceResource();
-		System.assertEquals(UserInfo.getUserId(), serviceResource.RelatedRecordId);
-	}
+        Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSet(
+            'HOT_Tolk_Ansatt'
+        );
+        System.assertEquals(true, hasPermissionSet);
+    }
+    @isTest
+    static void testCheckAssignedPermissionSetGroup() {
+        PermissionSetGroup psg = [
+            SELECT Id
+            FROM PermissionSetGroup
+            WHERE DeveloperName = 'Test'
+        ];
+        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
+            AssigneeId = UserInfo.getUserId(),
+            PermissionSetGroupId = psg.Id
+        );
+        insert permissionSetAssignment;
 
-	@isTest static void testCheckAssignedPermissionSet() {
-		PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Ansatt'];
-		PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = UserInfo.getUserId(), PermissionSetId = ps.Id);
-		insert permissionSetAssignment;
-		
-		Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSet('HOT_Tolk_Ansatt');
-		System.assertEquals(true, hasPermissionSet);
-	}
-	@isTest static void testCheckAssignedPermissionSetGroup() {
-		PermissionSetGroup psg = [SELECT Id FROM PermissionSetGroup WHERE DeveloperName = 'Test'];
-		PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = UserInfo.getUserId(), PermissionSetGroupId = psg.Id);
-		insert permissionSetAssignment;
-		
-		Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSetGroup('Test');
-		System.assertEquals(true, hasPermissionSet);
-	}
+        Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSetGroup(
+            'Test'
+        );
+        System.assertEquals(true, hasPermissionSet);
+    }
 
-	@isTest static void testGetAssignedResource(){
-		WorkType workType = HOT_TestDataFactory.createWorkType();
-		insert workType;
-		HOT_Request__c request = HOT_TestDataFactory.createRequest('Bestilling', workType);
-		insert request;
-		request.Status__c = 'Godkjent';
-		update request;
-		List<Id> requestIds = new List<Id>{request.Id};
-		ServiceResource serviceResource = HOT_Utility.getServiceResource();
+    @isTest
+    static void testGetAssignedResource() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest(
+            'Bestilling',
+            workType
+        );
+        insert request;
+        request.Status__c = 'Godkjent';
+        update request;
+        List<Id> requestIds = new List<Id>{ request.Id };
+        ServiceResource serviceResource = HOT_Utility.getServiceResource();
 
-		ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id LIMIT 1];
-		AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, serviceResource.Id);
-		insert assignedResource;
-		serviceAppointment.Status = 'Dispatched';
-		update serviceAppointment;
+        ServiceAppointment serviceAppointment = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
 
-		Test.startTest();
-		Map<Id, List<String>> requestIdToServiceResources = HOT_Utility.getAssignedResources(requestIds);
-		Test.stopTest();
+        Test.startTest();
+        Map<Id, List<String>> requestIdToServiceResources = HOT_Utility.getAssignedResources(
+            requestIds
+        );
+        Test.stopTest();
 
-		System.assertEquals(1, requestIdToServiceResources.get(request.Id).size(), 'Could not get assigned resources');
+        System.assertEquals(
+            1,
+            requestIdToServiceResources.get(request.Id).size(),
+            'Could not get assigned resources'
+        );
+    }
 
-	}
+    @isTest
+    static void testCheckUserHasEntitlement() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        insert person;
 
-	@isTest static void testCheckUserHasEntitlement(){
+        Test.startTest();
+        Boolean hasVedtak = HOT_Utility.checkUserHasEntitlement();
+        Test.stopTest();
 
-		Person__c person = HOT_TestDataFactory.createPerson();
-		insert person;
+        System.assertEquals(false, hasVedtak);
+    }
 
-		Test.startTest();
-		Boolean hasVedtak = HOT_Utility.checkUserHasEntitlement();
-		Test.stopTest();
-		
-		System.assertEquals(false, hasVedtak);
-	}
+    //TODO: //TODO: Oppdatere asserts til å sjekke epost og mobil på orderer, men må da kunne kjøre testen som en Community-bruker, noe som vi ikke har fått til enda
+    @isTest
+    static void testGetOrdererDetails() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest(
+            'Testing getOrderDetails',
+            workType
+        );
+        insert request;
 
-	
-	//TODO: //TODO: Oppdatere asserts til å sjekke epost og mobil på orderer, men må da kunne kjøre testen som en Community-bruker, noe som vi ikke har fått til enda
-	@isTest static void testGetOrdererDetails(){
+        Test.startTest();
+        Map<String, String> ordererDetails = HOT_Utility.getOrdererDetails();
+        Test.stopTest();
 
-		WorkType workType = HOT_TestDataFactory.createWorkType();
-		insert workType;
-		HOT_Request__c request = HOT_TestDataFactory.createRequest('Testing getOrderDetails', workType);
-		insert request;
-
-		Test.startTest();
-		Map<String,String> ordererDetails = HOT_Utility.getOrdererDetails();
-		Test.stopTest();
-		
-		System.assertEquals(null, ordererDetails.get('OrdererEmail__c'));
-		System.assertEquals(null, ordererDetails.get('OrdererPhone__c'));
-	}
-
-
+        System.assertEquals(null, ordererDetails.get('OrdererEmail__c'));
+        System.assertEquals(null, ordererDetails.get('OrdererPhone__c'));
+    }
 }

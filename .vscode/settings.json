@@ -2,7 +2,7 @@
     "salesforcedx-vscode-apex.enable-sobject-refresh-on-startup": true,
     "salesforcedx-vscode-apex.enable-semantic-errors": true,
     "salesforcedx-vscode-core.retrieve-test-code-coverage": true,
-    "salesforcedx-vscode-core.push-or-deploy-on-save.enabled": true,
+    "salesforcedx-vscode-core.push-or-deploy-on-save.enabled": false,
     "salesforcedx-vscode-core.show-cli-success-msg": false,
     "workbench.tree.indent": 16,
     "workbench.startupEditor": "none",

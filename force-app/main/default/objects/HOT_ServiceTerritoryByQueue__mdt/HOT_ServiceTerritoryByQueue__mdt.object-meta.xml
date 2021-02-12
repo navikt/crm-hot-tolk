@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Used to connect a ServiceTerritory/Region with the correct NAV Hjelpemiddel Sentral. (HMS)</description>
+    <description
+    >Used to connect a ServiceTerritory/Region with the correct NAV Hjelpemiddel Sentral. (HMS)</description>
     <label>Service Territory By Queue</label>
     <pluralLabel>ServiceTerritory By Queue</pluralLabel>
     <visibility>Public</visibility>

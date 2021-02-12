@@ -1,47 +1,56 @@
 {
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "componentName" : "siteforce:sldsOneColLayout",
-  "id" : "7163b7d8-3d22-49a8-918c-b0f5a331b446",
-  "label" : "Record Detail",
-  "regions" : [ {
-    "id" : "5a14ac1e-8902-41da-8eed-402fa99405e2",
-    "regionName" : "header",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
-      },
-      "componentName" : "forceCommunity:richTextInline",
-      "id" : "ca84fe11-9b74-4867-9861-a09ae491a0e9",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "2b1a7cbf-0a57-4261-a0a1-bf9da5ed2030",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "id" : "c8466aed-e110-4ad5-b9b0-e35df29fe1f4",
-    "regionName" : "footer",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "description" : "",
-        "metaTags" : "",
-        "title" : "Finnes ikke (404)"
-      },
-      "componentName" : "forceCommunity:seoAssistant",
-      "id" : "23bd5084-41a5-4d9c-966c-1e0da559b399",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "2dc4496a-31f9-4f68-a985-c3af9a1fd1e0",
-    "regionName" : "sfdcHiddenRegion",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "detail"
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:sldsOneColLayout",
+    "id": "7163b7d8-3d22-49a8-918c-b0f5a331b446",
+    "label": "Record Detail",
+    "regions": [
+        {
+            "id": "5a14ac1e-8902-41da-8eed-402fa99405e2",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "richTextValue": "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
+                    },
+                    "componentName": "forceCommunity:richTextInline",
+                    "id": "ca84fe11-9b74-4867-9861-a09ae491a0e9",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "2b1a7cbf-0a57-4261-a0a1-bf9da5ed2030",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "id": "c8466aed-e110-4ad5-b9b0-e35df29fe1f4",
+            "regionName": "footer",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "description": "",
+                        "metaTags": "",
+                        "title": "Finnes ikke (404)"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "23bd5084-41a5-4d9c-966c-1e0da559b399",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "2dc4496a-31f9-4f68-a985-c3af9a1fd1e0",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "detail"
 }

@@ -3,19 +3,19 @@ import getPersonPhoneEmail from '@salesforce/apex/HOT_UserInformationController.
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 export default class hot_userContactInformation extends LightningElement {
-	@track person;
-	@track recordId;
-	@wire(getPersonPhoneEmail)
-	wiredPerson(result) {
-		if (result.data) {
-			this.person = result.data;
-			this.recordId = this.person.Id;
-		}
-	}
-	@track isProd;
-	@track error;
-	@wire(isProdFunction)
-	wiredIsProd({ error, data }) {
-		this.isProd = data;
-	}
+    @track person;
+    @track recordId;
+    @wire(getPersonPhoneEmail)
+    wiredPerson(result) {
+        if (result.data) {
+            this.person = result.data;
+            this.recordId = this.person.Id;
+        }
+    }
+    @track isProd;
+    @track error;
+    @wire(isProdFunction)
+    wiredIsProd({ error, data }) {
+        this.isProd = data;
+    }
 }
