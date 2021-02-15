@@ -22,6 +22,12 @@ System.debug(persons);
 List<Account> personAccounts = [
     SELECT Id, Name, INT_PersonIdent__c
     FROM Account
+    WHERE
+        RecordTypeId IN (
+            SELECT Id
+            FROM RecordType
+            WHERE DeveloperName = 'PersonAccount'
+        )
 ];
 
 List<Account> companies = testData.getCompanies(1);

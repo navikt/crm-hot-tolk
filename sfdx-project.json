@@ -11,7 +11,11 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.51.0.LATEST"
+                    "versionNumber": "0.61.0.LATEST"
+                },
+                {
+                    "package": "crm-platform-integration",
+                    "versionNumber": "0.34.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -31,7 +35,11 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.51.0.LATEST"
+                    "versionNumber": "0.61.0.LATEST"
+                },
+                {
+                    "package": "crm-platform-integration",
+                    "versionNumber": "0.34.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -50,6 +58,7 @@
         "crm-hot": "0Ho2o0000008OSVCA2",
         "crm-community-base": "0Ho2o0000008OSzCAM",
         "crm-hot-dev": "0Ho2o000000KylqCAC",
-        "crm-platform-reporting": "0Ho2o0000008OSfCAM"
+        "crm-platform-reporting": "0Ho2o0000008OSfCAM",
+        "crm-platform-integration": "0Ho2o0000008ORrCAM"
     }
 }
