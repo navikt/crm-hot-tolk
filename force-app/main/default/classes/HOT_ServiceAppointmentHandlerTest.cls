@@ -647,7 +647,50 @@ private class HOT_ServiceAppointmentHandlerTest {
             );
         }
     }
+    @isTest
+    static void preserveScheduledTimes_onUpdate() {
+        ServiceAppointment sa = [
+            SELECT Id, Status, SchedEndTime, SchedStartTime
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        datetime startTime = Datetime.newInstance(2021, 3, 2, 12, 30, 0);
+        datetime endTime = Datetime.newInstance(2021, 3, 2, 13, 30, 0);
+        sa.SchedStartTime = startTime;
+        sa.SchedEndTime = endTime;
+        sa.Status = 'Cannot Complete';
+        update sa;
 
+        sa = [
+            SELECT Id, Status, SchedEndTime, SchedStartTime
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
+        system.assertEquals(
+            startTime,
+            sa.SchedStartTime,
+            'Start time not set!'
+        );
+        system.assertEquals(endTime, sa.SchedEndTime, 'End time not set');
+        system.assertEquals('Cannot Complete', sa.Status, 'Status not set');
+
+        // Altering status to None/Åpen - should preserve start/end times
+        sa.Status = 'None';
+        update sa;
+
+        sa = [
+            SELECT Id, Status, SchedEndTime, SchedStartTime
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
+        system.assertEquals(
+            startTime,
+            sa.SchedStartTime,
+            'Start time not set!'
+        );
+        system.assertEquals(endTime, sa.SchedEndTime, 'End time not set');
+        system.assertEquals('None', sa.Status, 'Status not set');
+    }
     @isTest
     private static void testNotifyUsers() {
         Test.startTest();

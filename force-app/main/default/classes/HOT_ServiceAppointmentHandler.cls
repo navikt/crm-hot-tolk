@@ -6,6 +6,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
+        List<ServiceAppointment> serviceAppointmentsWithStatusCannotCompleteOrNone = new List<ServiceAppointment>();
         List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
         List<ServiceAppointment> updatedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithDeletedPreferredResources = new List<ServiceAppointment>();
@@ -42,6 +43,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 );
             }
             if (
+                triggerOldMap.get(serviceAppointment.Id).get('Status') ==
+                'Cannot Complete' &&
+                serviceAppointment.StatusCategory == 'None'
+            ) {
+                serviceAppointmentsWithStatusCannotCompleteOrNone.add(
+                    serviceAppointment
+                );
+            }
+            if (
                 serviceAppointment.Status !=
                 triggerOldMap.get(serviceAppointment.Id).get('Status') ||
                 serviceAppointment.HOT_ServiceResource__c !=
@@ -66,6 +76,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (recievedNewInterpreter.size() > 0) {
             updateCancelledByInterpreter(recievedNewInterpreter);
+        }
+        if (serviceAppointmentsWithStatusCannotCompleteOrNone.size() > 0) {
+            preserveSchedulesTimes(
+                serviceAppointmentsWithStatusCannotCompleteOrNone,
+                triggerOldMap
+            );
         }
         if (serviceAppointmentsWithChangedStatusOrResource.size() > 0) {
             createHistoricallyAssignedResources(
@@ -397,7 +413,20 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         insert newHistoricallyAssignedResources;
     }
-
+    private static void preserveSchedulesTimes(
+        List<ServiceAppointment> serviceAppointmentsWithStatusCannotCompleteOrNone,
+        Map<Id, sObject> triggerOldMap
+    ) {
+        for (
+            ServiceAppointment serviceAppointment : serviceAppointmentsWithStatusCannotCompleteOrNone
+        ) {
+            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(
+                serviceAppointment.Id
+            );
+            serviceAppointment.SchedStartTime = oldServiceAppointment.SchedStartTime;
+            serviceAppointment.SchedEndTime = oldServiceAppointment.SchedEndTime;
+        }
+    }
     @TestVisible
     private static String getTranslatedStatus(String status) {
         if (status == 'Annul')
