@@ -34,7 +34,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             update personsToUpdate;
 
             // Call out to KRR through Queuable Apex
-            KRRCalloutQueuable krr = new KRRCalloutQueuable(
+            HOT_KRRCalloutQueuable krr = new HOT_KRRCalloutQueuable(
                 requestsToGetContactInformationFor
             );
             System.enqueueJob(krr);
