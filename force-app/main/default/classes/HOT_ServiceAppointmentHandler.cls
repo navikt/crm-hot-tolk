@@ -45,7 +45,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('Status') !=
                 'None' &&
-                serviceAppointment.StatusCategory == 'None'
+                serviceAppointment.Status == 'None'
             ) {
                 serviceAppointmentsWithStatusCannotCompleteOrNone.add(
                     serviceAppointment
