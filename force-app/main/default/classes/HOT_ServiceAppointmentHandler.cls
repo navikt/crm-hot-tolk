@@ -43,8 +43,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 );
             }
             if (
-                triggerOldMap.get(serviceAppointment.Id).get('Status') ==
-                'Cannot Complete' &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') !=
+                'None' &&
                 serviceAppointment.StatusCategory == 'None'
             ) {
                 serviceAppointmentsWithStatusCannotCompleteOrNone.add(
@@ -423,8 +423,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(
                 serviceAppointment.Id
             );
-            serviceAppointment.SchedStartTime = oldServiceAppointment.SchedStartTime;
-            serviceAppointment.SchedEndTime = oldServiceAppointment.SchedEndTime;
+            if (
+                serviceAppointment.SchedStartTime == null &&
+                serviceAppointment.SchedEndTime == null
+            ) {
+                serviceAppointment.SchedStartTime = oldServiceAppointment.SchedStartTime;
+                serviceAppointment.SchedEndTime = oldServiceAppointment.SchedEndTime;
+            }
         }
     }
     @TestVisible

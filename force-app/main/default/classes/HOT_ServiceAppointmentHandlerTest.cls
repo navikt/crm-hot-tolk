@@ -654,8 +654,8 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM ServiceAppointment
             LIMIT 1
         ];
-        datetime startTime = Datetime.newInstance(2021, 3, 2, 12, 30, 0);
-        datetime endTime = Datetime.newInstance(2021, 3, 2, 13, 30, 0);
+        datetime startTime = Datetime.now().addHours(1);
+        datetime endTime = Datetime.now().addHours(2);
         sa.SchedStartTime = startTime;
         sa.SchedEndTime = endTime;
         sa.Status = 'Cannot Complete';
