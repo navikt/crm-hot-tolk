@@ -8,8 +8,6 @@ import getWorkOrdersFromRequest from '@salesforce/apex/HOT_WorkOrderListControll
 import getMyWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrders';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
 
-var actions = [{ label: 'Avlys', name: 'delete' }];
-
 export default class Hot_myWorkOrders extends NavigationMixin(
     LightningElement
 ) {
@@ -74,7 +72,9 @@ export default class Hot_myWorkOrders extends NavigationMixin(
     getRowActions(row, doneCallback) {
         let actions = [];
         if (row['HOT_IsCancelable__c']) {
-            actions.push({ label: 'Avlys', name: 'delete' });
+            actions.push({ label: 'Avlys', name: 'delete', disabled: false });
+        } else {
+            actions.push({ label: 'Avlys', name: 'delete', disabled: true });
         }
         doneCallback(actions);
     }
