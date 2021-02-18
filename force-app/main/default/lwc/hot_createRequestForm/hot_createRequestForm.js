@@ -289,18 +289,16 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 	}
 
 	@track isAdvancedTimes = false;
-	simpleTimes() {
-		this.isAdvancedTimes = false;
-		this.advancedTimeBackup = this.times;
-		this.times = this.timesBackup;
-		this.setIsOnlyOneTime();
-	}
 	@track timesBackup;
-	@track advancedTimeBackup = [{ "id": 0, "date": null, "startTime": null, "endTime": null, "isNew": 1 }];
-	advancedTimes() {
-		this.isAdvancedTimes = true;
-		this.timesBackup = this.times;
-		this.times = this.advancedTimeBackup;
+	advancedTimes(event) {
+		this.isAdvancedTimes = event.detail.checked;
+		if (this.isAdvancedTimes) {
+			this.timesBackup = this.times;
+			this.times = [this.times[0]];
+		}
+		else {
+			this.times = this.timesBackup;
+		}
 		this.setIsOnlyOneTime();
 	}
 	@track isRepeating = false;
