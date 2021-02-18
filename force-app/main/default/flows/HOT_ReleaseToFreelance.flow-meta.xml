@@ -492,7 +492,6 @@
         <connector>
             <targetReference>Sett_frist_for_pamelding</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
         <filters>
             <field>ServiceAppointmentId</field>
             <operator>EqualTo</operator>
@@ -512,7 +511,6 @@
         <connector>
             <targetReference>Assigned_Resources_to_Delete</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
         <filters>
             <field>ServiceAppointmentId</field>
             <operator>EqualTo</operator>
@@ -538,7 +536,6 @@
         <connector>
             <targetReference>checkIfFoundRecord</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
@@ -572,7 +569,6 @@
             <targetReference
             >Loop_Over_RelatedInterestedResources</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
         <filters>
             <field>ServiceAppointment__c</field>
             <operator>EqualTo</operator>
