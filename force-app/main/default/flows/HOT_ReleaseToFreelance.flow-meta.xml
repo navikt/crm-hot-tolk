@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
     <assignments>
         <name>Add_to_update_list</name>
         <label>Add to update list</label>
@@ -9,11 +10,13 @@
             <assignToReference>UpdatedInterestedResources</assignToReference>
             <operator>Add</operator>
             <value>
-                <elementReference>interatorRelatedInterestedResource</elementReference>
+                <elementReference
+                >interatorRelatedInterestedResource</elementReference>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Loop_Over_RelatedInterestedResources</targetReference>
+            <targetReference
+            >Loop_Over_RelatedInterestedResources</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -22,49 +25,56 @@
         <locationX>666</locationX>
         <locationY>2438</locationY>
         <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_DeadlineDate__c</assignToReference>
+            <assignToReference
+            >CurrentServiceAppointment.HOT_DeadlineDate__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>Frist_dato</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</assignToReference>
+            <assignToReference
+            >CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_IsEmployedInterpreter__c</assignToReference>
+            <assignToReference
+            >CurrentServiceAppointment.HOT_IsEmployedInterpreter__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>false</booleanValue>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_FreelanceSubject__c</assignToReference>
+            <assignToReference
+            >CurrentServiceAppointment.HOT_FreelanceSubject__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>Frilanstema</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.Status</assignToReference>
+            <assignToReference
+            >CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>Released to Freelance</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_ReleaseDate__c</assignToReference>
+            <assignToReference
+            >CurrentServiceAppointment.HOT_ReleaseDate__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>$Flow.CurrentDate</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_ReleasedBy__c</assignToReference>
+            <assignToReference
+            >CurrentServiceAppointment.HOT_ReleasedBy__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>{!$User.FirstName} {!$User.LastName}</stringValue>
@@ -80,7 +90,8 @@
         <locationX>743</locationX>
         <locationY>1550</locationY>
         <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.Status</assignToReference>
+            <assignToReference
+            >CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>None</stringValue>
@@ -93,29 +104,31 @@
     <assignments>
         <name>Set_Deadline_Date_to_Start_Date</name>
         <label>Set Deadline Date to Start Date</label>
-        <locationX>652</locationX>
-        <locationY>734</locationY>
+        <locationX>1122</locationX>
+        <locationY>854</locationY>
         <assignmentItems>
             <assignToReference>deadlineDate_Old</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>CurrentServiceAppointment.EarliestStartTime</elementReference>
+                <elementReference
+                >CurrentServiceAppointment.EarliestStartTime</elementReference>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>checkIfFoundRecord</targetReference>
+            <targetReference>Check_Allowence_To_Release</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Set_Freelance_Subject_to_Subject</name>
         <label>Set Freelance Subject to Subject</label>
-        <locationX>652</locationX>
-        <locationY>398</locationY>
+        <locationX>1122</locationX>
+        <locationY>518</locationY>
         <assignmentItems>
             <assignToReference>freelanceSubject_Old</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>CurrentServiceAppointment.Subject</elementReference>
+                <elementReference
+                >CurrentServiceAppointment.Subject</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -125,29 +138,31 @@
     <assignments>
         <name>Set_Old_Deadline_Date</name>
         <label>Set Old Deadline Date</label>
-        <locationX>388</locationX>
-        <locationY>734</locationY>
+        <locationX>858</locationX>
+        <locationY>854</locationY>
         <assignmentItems>
             <assignToReference>deadlineDate_Old</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>CurrentServiceAppointment.HOT_DeadlineDate__c</elementReference>
+                <elementReference
+                >CurrentServiceAppointment.HOT_DeadlineDate__c</elementReference>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>checkIfFoundRecord</targetReference>
+            <targetReference>Check_Allowence_To_Release</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Set_Old_Freelance_Subject</name>
         <label>Set Old Freelance Subject</label>
-        <locationX>388</locationX>
-        <locationY>398</locationY>
+        <locationX>858</locationX>
+        <locationY>518</locationY>
         <assignmentItems>
             <assignToReference>freelanceSubject_Old</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>CurrentServiceAppointment.HOT_FreelanceSubject__c</elementReference>
+                <elementReference
+                >CurrentServiceAppointment.HOT_FreelanceSubject__c</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -160,7 +175,8 @@
         <locationX>754</locationX>
         <locationY>3038</locationY>
         <assignmentItems>
-            <assignToReference>interatorRelatedInterestedResource.Status__c</assignToReference>
+            <assignToReference
+            >interatorRelatedInterestedResource.Status__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>Interested</stringValue>
@@ -180,7 +196,8 @@
     </choices>
     <choices>
         <name>RemoveAssignedResourceAndRelease</name>
-        <choiceText>Fjern tildelt ressurs og frigi oppdrag til frilanstolker</choiceText>
+        <choiceText
+        >Fjern tildelt ressurs og frigi oppdrag til frilanstolker</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>true</stringValue>
@@ -212,7 +229,8 @@
         </rules>
     </decisions>
     <decisions>
-        <description>Checking if Dispatcher should be allowed to release</description>
+        <description
+        >Checking if Dispatcher should be allowed to release</description>
         <name>Check_Allowence_To_Release</name>
         <label>Check_Allowence_To_Release</label>
         <locationX>990</locationX>
@@ -225,28 +243,32 @@
             <name>Allowed</name>
             <conditionLogic>or</conditionLogic>
             <conditions>
-                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
+                <leftValueReference
+                >CurrentServiceAppointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>None</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
+                <leftValueReference
+                >CurrentServiceAppointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Released to Freelance</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
+                <leftValueReference
+                >CurrentServiceAppointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Scheduled</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
+                <leftValueReference
+                >CurrentServiceAppointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Dispatched</stringValue>
@@ -271,14 +293,16 @@
             <name>Match_Filter</name>
             <conditionLogic>or</conditionLogic>
             <conditions>
-                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
+                <leftValueReference
+                >CurrentServiceAppointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>None</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
+                <leftValueReference
+                >CurrentServiceAppointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Released to Freelance</stringValue>
@@ -296,28 +320,32 @@
         <locationX>886</locationX>
         <locationY>2918</locationY>
         <defaultConnector>
-            <targetReference>Loop_Over_RelatedInterestedResources</targetReference>
+            <targetReference
+            >Loop_Over_RelatedInterestedResources</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Do Nothing</defaultConnectorLabel>
         <rules>
             <name>Status_is_Not_Assigned</name>
             <conditionLogic>or</conditionLogic>
             <conditions>
-                <leftValueReference>interatorRelatedInterestedResource.Status__c</leftValueReference>
+                <leftValueReference
+                >interatorRelatedInterestedResource.Status__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Not Assigned</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>interatorRelatedInterestedResource.Status__c</leftValueReference>
+                <leftValueReference
+                >interatorRelatedInterestedResource.Status__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Service Appointment Retracted</stringValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>setInterestedResourceStatusInterested</targetReference>
+                <targetReference
+                >setInterestedResourceStatusInterested</targetReference>
             </connector>
             <label>Status is Not Assigned or Retracted</label>
         </rules>
@@ -338,11 +366,13 @@
                 <leftValueReference>Handlinger</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>RemoveAssignedResourceAndRelease</elementReference>
+                    <elementReference
+                    >RemoveAssignedResourceAndRelease</elementReference>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>RemoveAssignedResourceAssignment</targetReference>
+                <targetReference
+                >RemoveAssignedResourceAssignment</targetReference>
             </connector>
             <label>RemoveAndRelease</label>
         </rules>
@@ -351,9 +381,9 @@
         <name>checkIfFoundRecord</name>
         <label>checkIfFoundRecord</label>
         <locationX>520</locationX>
-        <locationY>950</locationY>
+        <locationY>278</locationY>
         <defaultConnector>
-            <targetReference>Check_Allowence_To_Release</targetReference>
+            <targetReference>Freelance_Subject_hasValue</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Record Found</defaultConnectorLabel>
         <rules>
@@ -372,8 +402,8 @@
     <decisions>
         <name>Deadline_Date_has_value</name>
         <label>Deadline Date has value?</label>
-        <locationX>520</locationX>
-        <locationY>614</locationY>
+        <locationX>990</locationX>
+        <locationY>734</locationY>
         <defaultConnector>
             <targetReference>Set_Deadline_Date_to_Start_Date</targetReference>
         </defaultConnector>
@@ -382,7 +412,8 @@
             <name>Yes_DeadlineDate_old</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>CurrentServiceAppointment.HOT_DeadlineDate__c</leftValueReference>
+                <leftValueReference
+                >CurrentServiceAppointment.HOT_DeadlineDate__c</leftValueReference>
                 <operator>NotEqualTo</operator>
             </conditions>
             <connector>
@@ -394,8 +425,8 @@
     <decisions>
         <name>Freelance_Subject_hasValue</name>
         <label>Freelance Subject has Value?</label>
-        <locationX>520</locationX>
-        <locationY>278</locationY>
+        <locationX>990</locationX>
+        <locationY>398</locationY>
         <defaultConnector>
             <targetReference>Set_Freelance_Subject_to_Subject</targetReference>
         </defaultConnector>
@@ -404,7 +435,8 @@
             <name>Yes_freelanceSubject</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>CurrentServiceAppointment.HOT_FreelanceSubject__c</leftValueReference>
+                <leftValueReference
+                >CurrentServiceAppointment.HOT_FreelanceSubject__c</leftValueReference>
                 <operator>NotEqualTo</operator>
             </conditions>
             <connector>
@@ -413,18 +445,21 @@
             <label>Yes</label>
         </rules>
     </decisions>
-    <interviewLabel>Release To Freelance {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel
+    >Release To Freelance {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Release To Freelance</label>
     <loops>
         <name>Loop_Over_RelatedInterestedResources</name>
         <label>Loop Over RelatedInterestedResources</label>
         <locationX>666</locationX>
         <locationY>2798</locationY>
-        <assignNextValueToReference>interatorRelatedInterestedResource</assignNextValueToReference>
+        <assignNextValueToReference
+        >interatorRelatedInterestedResource</assignNextValueToReference>
         <collectionReference>getRelatedInterestedResources</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
-            <targetReference>Check_Status_of_InterestedResource</targetReference>
+            <targetReference
+            >Check_Status_of_InterestedResource</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
             <targetReference>Update_Interesserte_Ressursers</targetReference>
@@ -471,7 +506,8 @@
         <label>Get Assigned Resource Id</label>
         <locationX>743</locationX>
         <locationY>1670</locationY>
-        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound
+        >true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Assigned_Resources_to_Delete</targetReference>
         </connector>
@@ -495,9 +531,10 @@
         <label>GetCurrentServiceAppointment</label>
         <locationX>520</locationX>
         <locationY>158</locationY>
-        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound
+        >true</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Freelance_Subject_hasValue</targetReference>
+            <targetReference>checkIfFoundRecord</targetReference>
         </connector>
         <filters>
             <field>Id</field>
@@ -526,9 +563,11 @@
         <label>getRelatedInterestedResources</label>
         <locationX>666</locationX>
         <locationY>2678</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound
+        >false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Loop_Over_RelatedInterestedResources</targetReference>
+            <targetReference
+            >Loop_Over_RelatedInterestedResources</targetReference>
         </connector>
         <filters>
             <field>ServiceAppointment__c</field>
@@ -574,12 +613,14 @@
         </connector>
         <fields>
             <name>Info</name>
-            <fieldText>&lt;p&gt;Oppdraget er allerede planlagt.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Oppdraget er allerede planlagt.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
             <name>Handlinger</name>
-            <choiceReferences>RemoveAssignedResourceAndRelease</choiceReferences>
+            <choiceReferences
+            >RemoveAssignedResourceAndRelease</choiceReferences>
             <choiceReferences>DontExecute</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Handlinger</fieldText>
@@ -599,7 +640,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_message</name>
-            <fieldText>&lt;p&gt;Du kan ikke frigi dette oppdraget, ettersom det er lukket.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Du kan ikke frigi dette oppdraget, ettersom det er lukket.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>false</showFooter>
@@ -615,7 +657,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>OutMessage</name>
-            <fieldText>&lt;p&gt;Oppdrag ble ikke frigitt til frilanstolker.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Oppdrag ble ikke frigitt til frilanstolker.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>false</showFooter>
@@ -625,13 +668,14 @@
         <name>recordNOTfoundScreen</name>
         <label>recordNOTfoundScreen</label>
         <locationX>50</locationX>
-        <locationY>1070</locationY>
+        <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>CloseWindowText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>false</showFooter>
@@ -650,7 +694,8 @@
         </connector>
         <fields>
             <name>InformationField</name>
-            <fieldText>&lt;p&gt;&lt;b&gt;Følgende informasjon vil bli vist til frilanstolker.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;b&gt;Følgende informasjon vil bli vist til frilanstolker.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -671,7 +716,8 @@
             </defaultValue>
             <fieldText>Opplysninger (ingen sensitive)</fieldText>
             <fieldType>InputField</fieldType>
-            <helpText>&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
+            <helpText
+            >&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
@@ -687,7 +733,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Success</name>
-            <fieldText>&lt;p&gt;Oppdraget ble frigitt til frilanstolker.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Oppdraget ble frigitt til frilanstolker.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>false</showFooter>

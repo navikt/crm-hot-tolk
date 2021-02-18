@@ -1,32 +1,38 @@
 {
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "componentName" : "siteforce:sldsOneColLayout",
-  "id" : "5b4f4636-5b08-403d-9a37-aa15ea9481db",
-  "label" : "Create Record",
-  "regions" : [ {
-    "id" : "214012bc-014e-48ca-9ae9-d4440b05525f",
-    "regionName" : "header",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "actionApiName" : "{!actionApiName}"
-      },
-      "componentName" : "forceCommunity:createRecordForm",
-      "id" : "05e59901-0ddb-4443-9c82-d84d1d0d01cc",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "b58da182-3086-444a-afdf-2209fa39c976",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "id" : "6bf8613e-e943-4978-b745-7d0b2f21da45",
-    "regionName" : "footer",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "createrecord"
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:sldsOneColLayout",
+    "id": "5b4f4636-5b08-403d-9a37-aa15ea9481db",
+    "label": "Create Record",
+    "regions": [
+        {
+            "id": "214012bc-014e-48ca-9ae9-d4440b05525f",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "actionApiName": "{!actionApiName}"
+                    },
+                    "componentName": "forceCommunity:createRecordForm",
+                    "id": "05e59901-0ddb-4443-9c82-d84d1d0d01cc",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "b58da182-3086-444a-afdf-2209fa39c976",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "id": "6bf8613e-e943-4978-b745-7d0b2f21da45",
+            "regionName": "footer",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "createrecord"
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseValues>
         <article>Definite</article>
@@ -68,19 +68,23 @@
         <name>MessageToDispatcher</name>
     </quickActions>
     <validationRules>
-        <errorMessage><!-- Eieren av en forespørsel kan ikke settes til en bruker, den må settest til en kø. --></errorMessage>
+        <errorMessage
+        ><!-- Eieren av en forespørsel kan ikke settes til en bruker, den må settest til en kø. --></errorMessage>
         <name>OwnerIsQueue</name>
     </validationRules>
     <validationRules>
-        <errorMessage><!-- Du må fylle ut feltene antall tolker, tolkemetode, oppdragstype, start tid og slutt tid før du kan godkjenne forespørselen. --></errorMessage>
+        <errorMessage
+        ><!-- Du må fylle ut feltene antall tolker, tolkemetode, oppdragstype, start tid og slutt tid før du kan godkjenne forespørselen. --></errorMessage>
         <name>RequestStatusApproved</name>
     </validationRules>
     <validationRules>
-        <errorMessage><!-- Forespørselen må være koblet til en person eller virksomhet. Fyll ut Bruker-, Bestiller- eller Virksomhet-feltet. --></errorMessage>
+        <errorMessage
+        ><!-- Forespørselen må være koblet til en person eller virksomhet. Fyll ut Bruker-, Bestiller- eller Virksomhet-feltet. --></errorMessage>
         <name>RequireAccountLookup</name>
     </validationRules>
     <validationRules>
-        <errorMessage><!-- Fant ingen virksomhet med dette organisasjonsnummeret. --></errorMessage>
+        <errorMessage
+        ><!-- Fant ingen virksomhet med dette organisasjonsnummeret. --></errorMessage>
         <name>RequireCompanyIfCompanyFromCommunity</name>
     </validationRules>
     <validationRules>
@@ -88,15 +92,18 @@
         <name>RequireServiceTerritory</name>
     </validationRules>
     <validationRules>
-        <errorMessage><!-- Lagre forespørselen før du godkjenner den. --></errorMessage>
+        <errorMessage
+        ><!-- Lagre forespørselen før du godkjenner den. --></errorMessage>
         <name>SaveRequestBeforeApproving</name>
     </validationRules>
     <validationRules>
-        <errorMessage><!-- Sekundær tolkemetode kan ikke være det samme som primær tolkemetode. --></errorMessage>
+        <errorMessage
+        ><!-- Sekundær tolkemetode kan ikke være det samme som primær tolkemetode. --></errorMessage>
         <name>SecondaryWorkTypeUNEQUALPrimaryWorkType</name>
     </validationRules>
     <validationRules>
-        <errorMessage><!-- Du kan bare endre fakturastatus når manuell fakturering er krysset av. --></errorMessage>
+        <errorMessage
+        ><!-- Du kan bare endre fakturastatus når manuell fakturering er krysset av. --></errorMessage>
         <name>Set_invoice_status</name>
     </validationRules>
     <validationRules>
@@ -104,7 +111,8 @@
         <name>Start_time_before_end_time</name>
     </validationRules>
     <validationRules>
-        <errorMessage><!-- Du kan ikke bestille tolk i fortiden. --></errorMessage>
+        <errorMessage
+        ><!-- Du kan ikke bestille tolk i fortiden. --></errorMessage>
         <name>Start_time_in_future</name>
     </validationRules>
     <validationRules>

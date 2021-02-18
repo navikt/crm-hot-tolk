@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_Absence_Longer_Than_7_days</fullName>
     <active>true</active>
     <errorConditionFormula>(Start + 7) &lt; End</errorConditionFormula>
-    <errorMessage>Kan ikke legge inn fravær for mer enn 1 uke av gangen.</errorMessage>
+    <errorMessage
+    >Kan ikke legge inn fravær for mer enn 1 uke av gangen.</errorMessage>
 </ValidationRule>

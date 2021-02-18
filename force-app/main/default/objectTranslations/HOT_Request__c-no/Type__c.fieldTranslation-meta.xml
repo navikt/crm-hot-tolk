@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label><!-- Type --></label>
     <name>Type__c</name>
@@ -16,6 +16,7 @@
     </picklistValues>
     <picklistValues>
         <masterLabel>Virksomhet på vegne av bruker (annen betaler)</masterLabel>
-        <translation><!-- Virksomhet på vegne av bruker (annen betaler) --></translation>
+        <translation
+        ><!-- Virksomhet på vegne av bruker (annen betaler) --></translation>
     </picklistValues>
 </CustomFieldTranslation>

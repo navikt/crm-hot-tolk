@@ -1,61 +1,61 @@
 {
-	"orgName": "NAV HOT",
-	"edition": "Enterprise",
-	"release": "Current",
-	"adminEmail": "fakeemail@nav.no.scratchorg",
-	"features": [
-		"Sites",
-		"ForceComPlatform",
-		"Communities",
-		"CustomerCommunity",
-		"CustomerCommunityLogin",
-		"CustomerCommunityPlus",
-		"CustomerCommunityPlusLogin",
-		"PersonAccounts",
-		"ProcessBuilder",
-		"API",
-		"ServiceCloud",
-		"LiveAgent",
-		"LightningServiceConsole",
-		"ContactsToMultipleAccounts",
-		"FieldService:5",
-		"FieldServiceDispatcherUser:5",
-		"FieldServiceMobileUser:5",
-		"FieldServiceSchedulingUser:5"
-	],
-	"country": "NO",
-	"language": "en_US",
-	"settings": {
-		"experienceBundleSettings": {
-			"enableExperienceBundleMetadata": true
-		},
-		"communitiesSettings": {
-			"enableNetworksEnabled": true,
-			"enableOotbProfExtUserOpsEnable": true
-		},
-		"lightningExperienceSettings": {
-			"enableS1DesktopEnabled": true
-		},
-		"languageSettings": {
-			"enableTranslationWorkbench": true
-		},
-		"fieldServiceSettings": {
-			"fieldServiceOrgPref": true,
-			"doesShareSaParentWoWithAr": false,
-			"doesShareSaWithAr": false,
-			"enableWorkOrders": true,
-			"isGeoCodeSyncEnabled": false,
-			"isLocationHistoryEnabled": false,
-			"fieldServiceNotificationsOrgPref": true
-		},
-		"nameSettings": {
-			"enableMiddleName": true
-		},
-		"mobileSettings": {
-			"enableS1EncryptedStoragePref2": false
-		},
-		"apexSettings": {
-			"enableDisableParallelApexTesting": true
-		}
-	}
+    "orgName": "NAV HOT",
+    "edition": "Enterprise",
+    "release": "Current",
+    "adminEmail": "fakeemail@nav.no.scratchorg",
+    "features": [
+        "Sites",
+        "ForceComPlatform",
+        "Communities",
+        "CustomerCommunity",
+        "CustomerCommunityLogin",
+        "CustomerCommunityPlus",
+        "CustomerCommunityPlusLogin",
+        "PersonAccounts",
+        "ProcessBuilder",
+        "API",
+        "ServiceCloud",
+        "LiveAgent",
+        "LightningServiceConsole",
+        "ContactsToMultipleAccounts",
+        "FieldService:5",
+        "FieldServiceDispatcherUser:5",
+        "FieldServiceMobileUser:5",
+        "FieldServiceSchedulingUser:5"
+    ],
+    "country": "NO",
+    "language": "en_US",
+    "settings": {
+        "experienceBundleSettings": {
+            "enableExperienceBundleMetadata": true
+        },
+        "communitiesSettings": {
+            "enableNetworksEnabled": true,
+            "enableOotbProfExtUserOpsEnable": true
+        },
+        "lightningExperienceSettings": {
+            "enableS1DesktopEnabled": true
+        },
+        "languageSettings": {
+            "enableTranslationWorkbench": true
+        },
+        "fieldServiceSettings": {
+            "fieldServiceOrgPref": true,
+            "doesShareSaParentWoWithAr": false,
+            "doesShareSaWithAr": false,
+            "enableWorkOrders": true,
+            "isGeoCodeSyncEnabled": false,
+            "isLocationHistoryEnabled": false,
+            "fieldServiceNotificationsOrgPref": true
+        },
+        "nameSettings": {
+            "enableMiddleName": true
+        },
+        "mobileSettings": {
+            "enableS1EncryptedStoragePref2": false
+        },
+        "apexSettings": {
+            "enableDisableParallelApexTesting": true
+        }
+    }
 }

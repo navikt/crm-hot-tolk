@@ -1,14 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="35918fa9-dc2b-49cf-9c57-147963ccfa41" name="Default Changelist" comment="">
+    <list
+            default="true"
+            id="35918fa9-dc2b-49cf-9c57-147963ccfa41"
+            name="Default Changelist"
+            comment=""
+        >
       <change afterPath="$PROJECT_DIR$/newScratchOrg.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.forceignore" beforeDir="false" afterPath="$PROJECT_DIR$/.forceignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.prettierignore" beforeDir="false" afterPath="$PROJECT_DIR$/.prettierignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.prettierrc" beforeDir="false" afterPath="$PROJECT_DIR$/.prettierrc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/project-scratch-def.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/project-scratch-def.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sfdx-project.json" beforeDir="false" afterPath="$PROJECT_DIR$/sfdx-project.json" afterDir="false" />
+      <change
+                beforePath="$PROJECT_DIR$/.forceignore"
+                beforeDir="false"
+                afterPath="$PROJECT_DIR$/.forceignore"
+                afterDir="false"
+            />
+      <change
+                beforePath="$PROJECT_DIR$/.gitignore"
+                beforeDir="false"
+                afterPath="$PROJECT_DIR$/.gitignore"
+                afterDir="false"
+            />
+      <change
+                beforePath="$PROJECT_DIR$/.prettierignore"
+                beforeDir="false"
+                afterPath="$PROJECT_DIR$/.prettierignore"
+                afterDir="false"
+            />
+      <change
+                beforePath="$PROJECT_DIR$/.prettierrc"
+                beforeDir="false"
+                afterPath="$PROJECT_DIR$/.prettierrc"
+                afterDir="false"
+            />
+      <change
+                beforePath="$PROJECT_DIR$/config/project-scratch-def.json"
+                beforeDir="false"
+                afterPath="$PROJECT_DIR$/config/project-scratch-def.json"
+                afterDir="false"
+            />
+      <change
+                beforePath="$PROJECT_DIR$/sfdx-project.json"
+                beforeDir="false"
+                afterPath="$PROJECT_DIR$/sfdx-project.json"
+                afterDir="false"
+            />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +60,10 @@
           <value>
             <ModuleWorkspaceSettings>
               <option name="moduleContentsLastModified" value="1576566324278" />
-              <option name="serverMetadataLastPopulated" value="1576566324278" />
+              <option
+                                name="serverMetadataLastPopulated"
+                                value="1576566324278"
+                            />
             </ModuleWorkspaceSettings>
           </value>
         </entry>
@@ -61,7 +99,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="35918fa9-dc2b-49cf-9c57-147963ccfa41" name="Default Changelist" comment="" />
+      <changelist
+                id="35918fa9-dc2b-49cf-9c57-147963ccfa41"
+                name="Default Changelist"
+                comment=""
+            />
       <created>1576566321028</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -70,9 +112,19 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="1312" y="358" key="#Illuminated_Cloud_(hot-crm)" timestamp="1576567355361">
+    <state
+            x="1312"
+            y="358"
+            key="#Illuminated_Cloud_(hot-crm)"
+            timestamp="1576567355361"
+        >
       <screen x="0" y="0" width="3440" height="1400" />
     </state>
-    <state x="1312" y="358" key="#Illuminated_Cloud_(hot-crm)/0.0.3440.1400@0.0.3440.1400" timestamp="1576567355361" />
+    <state
+            x="1312"
+            y="358"
+            key="#Illuminated_Cloud_(hot-crm)/0.0.3440.1400@0.0.3440.1400"
+            timestamp="1576567355361"
+        />
   </component>
 </project>

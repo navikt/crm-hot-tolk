@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomSite xmlns="http://soap.sforce.com/2006/04/metadata">
     <active>true</active>
     <allowHomePage>false</allowHomePage>
@@ -19,7 +19,8 @@
     <inMaintenancePage>InMaintenance</inMaintenancePage>
     <indexPage>CommunitiesLanding</indexPage>
     <masterLabel>Tolketjenesten</masterLabel>
-    <referrerPolicyOriginWhenCrossOrigin>true</referrerPolicyOriginWhenCrossOrigin>
+    <referrerPolicyOriginWhenCrossOrigin
+    >true</referrerPolicyOriginWhenCrossOrigin>
     <requireHttps>true</requireHttps>
     <selfRegPage>CommunitiesSelfReg</selfRegPage>
     <siteType>ChatterNetwork</siteType>

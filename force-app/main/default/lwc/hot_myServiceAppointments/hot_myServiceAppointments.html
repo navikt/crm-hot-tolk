@@ -1,78 +1,128 @@
 <template>
-	<div class="main-content">
-		<div class="right-content">
-			<lightning-input type="checkbox" class="filter-list-checkbox" label="Vis historiske oppdrag" name="ShowAll"
-				onchange={handleChecked}>
-			</lightning-input>
-			<lightning-combobox class="mobile-only" name="mobileSorting" label="Sorter etter"
-				value={mobileSortingDefaultValue} options={sortingOptions} onchange={handleMobileSorting}>
-			</lightning-combobox>
-		</div>
-		<lightning-datatable key-field="AppointmentNumber" data={myServiceAppointmentsFiltered} columns={columns}
-			hide-checkbox-column="true" default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}
-			sorted-by={sortedBy} onsort={onHandleSort} onrowaction={handleRowAction}>
-		</lightning-datatable>
-	</div>
+    <div class="main-content">
+        <div class="right-content">
+            <lightning-input
+                type="checkbox"
+                class="filter-list-checkbox"
+                label="Vis historiske oppdrag"
+                name="ShowAll"
+                onchange={handleChecked}
+            >
+            </lightning-input>
+            <lightning-combobox
+                class="mobile-only"
+                name="mobileSorting"
+                label="Sorter etter"
+                value={mobileSortingDefaultValue}
+                options={sortingOptions}
+                onchange={handleMobileSorting}
+            >
+            </lightning-combobox>
+        </div>
+        <lightning-datatable
+            key-field="AppointmentNumber"
+            data={myServiceAppointmentsFiltered}
+            columns={columns}
+            hide-checkbox-column="true"
+            default-sort-direction={defaultSortDirection}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={onHandleSort}
+            onrowaction={handleRowAction}
+        >
+        </lightning-datatable>
+    </div>
 
-	<div if:true={isDetails} class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
-		style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8);">
-		<div class="ReactModal__Content ReactModal__Content--after-open  navno-dekorator comments-dialog-container"
-			tabindex="-1" role="dialog">
-			<section>
-				<h2 class="typo-undertittel">Detaljer</h2>
-				<lightning-record-edit-form class="comment-form" record-id={recordId}
-					object-api-name="ServiceAppointment" density="comfy">
-
-					<div class="slds-grid slds-gutters">
-						<div class="slds-col slds-size_1-of-2">
-							<lightning-output-field field-name="AppointmentNumber">
-							</lightning-output-field>
-							<lightning-output-field field-name="HOT_FreelanceSubject__c">
-							</lightning-output-field>
-							<lightning-output-field field-name="SchedStartTime">
-							</lightning-output-field>
-							<lightning-output-field field-name="SchedEndTime">
-							</lightning-output-field>
-							<lightning-output-field field-name="ActualStartTime">
-							</lightning-output-field>
-							<lightning-output-field field-name="ActualEndTime">
-							</lightning-output-field>
-							<lightning-output-field field-name="Address">
-							</lightning-output-field>
-							<span class="slds-form-element__label lightning-output-field__label">Region</span>
-							</br>
-							<lightning-formatted-text value={record.ServiceTerritory.Name}
-								class="lightning-output-field">
-							</lightning-formatted-text>
-						</div>
-						<div class="slds-col slds-size_1-of-2">
-							<lightning-output-field field-name="Status">
-							</lightning-output-field>
-							<lightning-output-field field-name="HOT_HapticCommunication__c">
-							</lightning-output-field>
-							<lightning-output-field field-name="HOT_Escort__c">
-							</lightning-output-field>
-							<lightning-output-field field-name="HOT_DegreeOfHearingAndVisualImpairment__c">
-							</lightning-output-field>
-							<span class="slds-form-element__label lightning-output-field__label"
-								style="margin-top: 0.5rem;">Tolkemetode</span>
-							</br>
-							<lightning-formatted-text value={record.HOT_WorkTypeName__c} class="lightning-output-field">
-							</lightning-formatted-text>
-						</div>
-					</div>
-					</br>
-					<lightning-output-field field-name="HOT_TermsOfAgreement__c">
-					</lightning-output-field>
-
-
-				</lightning-record-edit-form>
-
-			</section>
-			<button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
-				<span class="text-hide">Lukk</span>
-			</button>
-		</div>
-	</div>
-
+    <div
+        if:true={isDetails}
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            tabindex="-1"
+            role="dialog"
+        >
+            <section>
+                <h2 class="typo-undertittel">Detaljer</h2>
+                <lightning-record-edit-form
+                    class="comment-form"
+                    record-id={recordId}
+                    object-api-name="ServiceAppointment"
+                    density="comfy"
+                >
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-output-field
+                                field-name="AppointmentNumber"
+                            >
+                            </lightning-output-field>
+                            <lightning-output-field
+                                field-name="HOT_FreelanceSubject__c"
+                            >
+                            </lightning-output-field>
+                            <lightning-output-field field-name="SchedStartTime">
+                            </lightning-output-field>
+                            <lightning-output-field field-name="SchedEndTime">
+                            </lightning-output-field>
+                            <lightning-output-field
+                                field-name="ActualStartTime"
+                            >
+                            </lightning-output-field>
+                            <lightning-output-field field-name="ActualEndTime">
+                            </lightning-output-field>
+                            <lightning-output-field field-name="Address">
+                            </lightning-output-field>
+                            <span
+                                class="slds-form-element__label lightning-output-field__label"
+                                >Region</span
+                            >
+                            <br />
+                            <lightning-formatted-text
+                                value={record.ServiceTerritory.Name}
+                                class="lightning-output-field"
+                            >
+                            </lightning-formatted-text>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-output-field field-name="Status">
+                            </lightning-output-field>
+                            <lightning-output-field
+                                field-name="HOT_HapticCommunication__c"
+                            >
+                            </lightning-output-field>
+                            <lightning-output-field field-name="HOT_Escort__c">
+                            </lightning-output-field>
+                            <lightning-output-field
+                                field-name="HOT_DegreeOfHearingAndVisualImpairment__c"
+                            >
+                            </lightning-output-field>
+                            <span
+                                class="slds-form-element__label lightning-output-field__label"
+                                style="margin-top: 0.5rem"
+                                >Tolkemetode</span
+                            >
+                            <br />
+                            <lightning-formatted-text
+                                value={record.HOT_WorkTypeName__c}
+                                class="lightning-output-field"
+                            >
+                            </lightning-formatted-text>
+                        </div>
+                    </div>
+                    <br />
+                    <lightning-output-field
+                        field-name="HOT_TermsOfAgreement__c"
+                    >
+                    </lightning-output-field>
+                </lightning-record-edit-form>
+            </section>
+            <button
+                class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
+                onclick={abortShowDetails}
+            >
+                <span class="text-hide">Lukk</span>
+            </button>
+        </div>
+    </div>
 </template>
