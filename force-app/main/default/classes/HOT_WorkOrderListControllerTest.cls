@@ -2,19 +2,9 @@
 private class HOT_WorkOrderListControllerTest {
     @testSetup
     static void setup() {
-        User admin = [
-            SELECT Id, UserRoleId
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-            LIMIT 1
-        ];
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         if (admin.UserRoleId == null) {
-            UserRole role = [
-                SELECT Id
-                FROM UserRole
-                WHERE Name = 'Default'
-                LIMIT 1
-            ];
+            UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
             admin.UserRoleId = role.Id;
             update admin;
         }
@@ -22,12 +12,7 @@ private class HOT_WorkOrderListControllerTest {
 
     @isTest
     static void getMyWorkOrdersTest() {
-        User admin = [
-            SELECT Id, UserRoleId
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-            LIMIT 1
-        ];
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
         Person__c person = HOT_TestDataFactory.createPerson();
         person.INT_KrrEmail__c = 'getPersonTest@nav.no';
@@ -38,14 +23,7 @@ private class HOT_WorkOrderListControllerTest {
         insert person;
 
         Account account = [
-            SELECT
-                Id,
-                OwnerId,
-                PersonContactId,
-                FirstName,
-                LastName,
-                PersonEmail,
-                CRM_Person__c
+            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
             FROM Account
             WHERE LastName = :'Bruker'
         ];
@@ -54,10 +32,7 @@ private class HOT_WorkOrderListControllerTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'WorkOrderListController',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('WorkOrderListController', workType);
         request.Account__c = account.Id;
         request.Orderer__c = account.Id;
         request.NumberOfInterpreters__c = 2;
@@ -65,9 +40,7 @@ private class HOT_WorkOrderListControllerTest {
         request.Status__c = 'Godkjent';
         update request;
 
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(
-            admin.Id
-        );
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
         insert serviceResource;
 
         List<AssignedResource> assignedResources = new List<AssignedResource>();
@@ -78,12 +51,8 @@ private class HOT_WorkOrderListControllerTest {
         ];
         ServiceAppointment serviceAppointment = serviceAppointments[0];
         ServiceAppointment serviceAppointment2 = serviceAppointments[1];
-        serviceAppointment2.SchedStartTime = serviceAppointment.SchedStartTime.addDays(
-            1
-        );
-        serviceAppointment2.SchedEndTime = serviceAppointment.SchedEndTime.addDays(
-            1
-        );
+        serviceAppointment2.SchedStartTime = serviceAppointment.SchedStartTime.addDays(1);
+        serviceAppointment2.SchedEndTime = serviceAppointment.SchedEndTime.addDays(1);
         update serviceAppointments;
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
@@ -105,9 +74,7 @@ private class HOT_WorkOrderListControllerTest {
         Profile communityProfile = [
             SELECT Name
             FROM Profile
-            WHERE
-                Name = 'Personbruker Login'
-                OR Name = 'Trial Customer Portal User'
+            WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User'
             LIMIT 1
         ];
         User user = HOT_TestDataFactory.createUser(communityProfile, account);
@@ -119,21 +86,12 @@ private class HOT_WorkOrderListControllerTest {
 
         System.runAs(user) {
             List<WorkOrder> workOrders = HOT_WorkOrderListController.getMyWorkOrders();
-            System.assertEquals(
-                1,
-                workOrders.size(),
-                'Could not get all my workOrders'
-            );
+            System.assertEquals(1, workOrders.size(), 'Could not get all my workOrders');
         }
     }
     @isTest
     static void getWorkOrdersFromRequestTest() {
-        User admin = [
-            SELECT Id, UserRoleId
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-            LIMIT 1
-        ];
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
         Person__c person = HOT_TestDataFactory.createPerson();
         person.INT_KrrEmail__c = 'getPersonTest@nav.no';
@@ -144,14 +102,7 @@ private class HOT_WorkOrderListControllerTest {
         insert person;
 
         Account account = [
-            SELECT
-                Id,
-                OwnerId,
-                PersonContactId,
-                FirstName,
-                LastName,
-                PersonEmail,
-                CRM_Person__c
+            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
             FROM Account
             WHERE LastName = :'Bruker'
         ];
@@ -160,19 +111,14 @@ private class HOT_WorkOrderListControllerTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'WorkOrderListController',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('WorkOrderListController', workType);
         request.Account__c = account.Id;
         request.Orderer__c = account.Id;
         insert request;
         request.Status__c = 'Godkjent';
         update request;
 
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(
-            admin.Id
-        );
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
         insert serviceResource;
 
         ServiceAppointment serviceAppointment = [
@@ -193,9 +139,7 @@ private class HOT_WorkOrderListControllerTest {
         Profile communityProfile = [
             SELECT Name
             FROM Profile
-            WHERE
-                Name = 'Personbruker Login'
-                OR Name = 'Trial Customer Portal User'
+            WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User'
             LIMIT 1
         ];
         User user = HOT_TestDataFactory.createUser(communityProfile, account);
@@ -206,21 +150,10 @@ private class HOT_WorkOrderListControllerTest {
         Test.stopTest();
 
         user = [SELECT Id, AccountId FROM User WHERE Alias = 'userTest'];
-        request = [
-            SELECT Id, Name
-            FROM HOT_Request__c
-            WHERE Account__c = :user.AccountId
-            LIMIT 1
-        ];
+        request = [SELECT Id, Name FROM HOT_Request__c WHERE Account__c = :user.AccountId LIMIT 1];
         System.runAs(user) {
-            List<WorkOrder> workOrders = HOT_WorkOrderListController.getWorkOrdersFromRequest(
-                (String) request.Name
-            );
-            System.assertEquals(
-                1,
-                workOrders.size(),
-                'Could not get workOrders from Request'
-            );
+            List<WorkOrder> workOrders = HOT_WorkOrderListController.getWorkOrdersFromRequest((String) request.Name);
+            System.assertEquals(1, workOrders.size(), 'Could not get workOrders from Request');
         }
     }
 }

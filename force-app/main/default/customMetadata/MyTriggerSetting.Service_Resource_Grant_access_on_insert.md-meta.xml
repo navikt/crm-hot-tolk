@@ -20,9 +20,7 @@
     </values>
     <values>
         <field>Description__c</field>
-        <value
-            xsi:type="xsd:string"
-        >Grant access based on apex sharing rules</value>
+        <value xsi:type="xsd:string">Grant access based on apex sharing rules</value>
     </values>
     <values>
         <field>Event__c</field>

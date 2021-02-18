@@ -52,17 +52,9 @@
                             onsubmit={handleSubmit}
                             record-id={serviceResource.Id}
                         >
-                            <lightning-input-field
-                                field-name="HOT_PreferredRegions__c"
-                            >
-                            </lightning-input-field>
+                            <lightning-input-field field-name="HOT_PreferredRegions__c"> </lightning-input-field>
                             <br />
-                            <lightning-button
-                                title="Lagre"
-                                variant="brand"
-                                label="Lagre"
-                                type="submit"
-                            >
+                            <lightning-button title="Lagre" variant="brand" label="Lagre" type="submit">
                             </lightning-button>
                         </lightning-record-edit-form>
                     </section>
@@ -122,9 +114,7 @@
         >
             <section>
                 <div>
-                    <h2 class="typo-undertittel">
-                        Legg til kommentarer til oppdragene
-                    </h2>
+                    <h2 class="typo-undertittel">Legg til kommentarer til oppdragene</h2>
 
                     <template iterator:it={selectedRows}>
                         <lightning-record-edit-form
@@ -135,8 +125,7 @@
                         >
                             <div class="slds-grid slds-gutters">
                                 <div class="slds-col slds-size_1-of-2">
-                                    <span
-                                        class="slds-form-element__label lightning-output-field__label"
+                                    <span class="slds-form-element__label lightning-output-field__label"
                                         >Start tid</span
                                     >
                                     <br />
@@ -152,8 +141,7 @@
                                     >
                                     </lightning-formatted-date-time>
                                     <br />
-                                    <span
-                                        class="slds-form-element__label lightning-output-field__label"
+                                    <span class="slds-form-element__label lightning-output-field__label"
                                         >Slutt tid</span
                                     >
                                     <br />
@@ -169,10 +157,7 @@
                                     >
                                     </lightning-formatted-date-time>
                                     <br />
-                                    <span
-                                        class="slds-form-element__label lightning-output-field__label"
-                                        >Adresse</span
-                                    >
+                                    <span class="slds-form-element__label lightning-output-field__label">Adresse</span>
                                     <br />
                                     <lightning-formatted-text
                                         value={it.value.HOT_AddressFormated__c}
@@ -181,8 +166,7 @@
                                     </lightning-formatted-text>
                                 </div>
                                 <div class="slds-col slds-size_1-of-2">
-                                    <span
-                                        class="slds-form-element__label lightning-output-field__label"
+                                    <span class="slds-form-element__label lightning-output-field__label"
                                         >Tolkemetode</span
                                     >
                                     <br />
@@ -192,10 +176,7 @@
                                     >
                                     </lightning-formatted-text>
                                     <br />
-                                    <span
-                                        class="slds-form-element__label lightning-output-field__label"
-                                        >Påmeldte</span
-                                    >
+                                    <span class="slds-form-element__label lightning-output-field__label">Påmeldte</span>
                                     <br />
                                     <lightning-formatted-number
                                         value={it.value.HOT_NumberOfInterestedResources__c}
@@ -203,8 +184,7 @@
                                     >
                                     </lightning-formatted-number>
                                     <br />
-                                    <span
-                                        class="slds-form-element__label lightning-output-field__label"
+                                    <span class="slds-form-element__label lightning-output-field__label"
                                         >Frigitt av</span
                                     >
                                     <br />
@@ -214,10 +194,7 @@
                                     >
                                     </lightning-formatted-text>
                                     <br />
-                                    <span
-                                        class="slds-form-element__label lightning-output-field__label"
-                                        >Frist</span
-                                    >
+                                    <span class="slds-form-element__label lightning-output-field__label">Frist</span>
                                     <br />
                                     <lightning-formatted-date-time
                                         year="numeric"
@@ -229,20 +206,14 @@
                                     </lightning-formatted-date-time>
                                 </div>
                             </div>
-                            <span
-                                class="slds-form-element__label lightning-output-field__label"
-                                >Tema</span
-                            >
+                            <span class="slds-form-element__label lightning-output-field__label">Tema</span>
                             <br />
                             <lightning-formatted-text
                                 value={it.value.HOT_FreelanceSubject__c}
                                 class="lightning-output-field"
                             >
                             </lightning-formatted-text>
-                            <lightning-input-field
-                                class="ikke-sensitive-opplysninger"
-                                field-name="Comments__c"
-                            >
+                            <lightning-input-field class="ikke-sensitive-opplysninger" field-name="Comments__c">
                             </lightning-input-field>
                         </lightning-record-edit-form>
                     </template>
@@ -257,10 +228,7 @@
                     </lightning-button>
                 </div>
             </section>
-            <button
-                class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
-                onclick={abortSendingInterest}
-            >
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortSendingInterest}>
                 <span class="text-hide">Lukk</span>
             </button>
         </div>
@@ -279,10 +247,7 @@
             <section>
                 <div class="slds-grid slds-gutters">
                     <div class="slds-col slds-size_1-of-2">
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Oppdragsnummer</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Oppdragsnummer</span>
                         <br />
                         <lightning-formatted-text
                             value={serviceAppointmentDetails.AppointmentNumber}
@@ -290,10 +255,7 @@
                         >
                         </lightning-formatted-text>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Frigitt dato</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Frigitt dato</span>
                         <br />
                         <lightning-formatted-date-time
                             year="numeric"
@@ -304,10 +266,7 @@
                         >
                         </lightning-formatted-date-time>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Frigitt av</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Frigitt av</span>
                         <br />
                         <lightning-formatted-text
                             value={serviceAppointmentDetails.HOT_ReleasedBy__c}
@@ -315,10 +274,7 @@
                         >
                         </lightning-formatted-text>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Antall påmeldte</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Antall påmeldte</span>
                         <br />
                         <lightning-formatted-number
                             value={serviceAppointmentDetails.HOT_NumberOfInterestedResources__c}
@@ -326,10 +282,7 @@
                         >
                         </lightning-formatted-number>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Tolkemetode</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Tolkemetode</span>
                         <br />
                         <lightning-formatted-text
                             value={serviceAppointmentDetails.HOT_WorkTypeName__c}
@@ -337,10 +290,7 @@
                         >
                         </lightning-formatted-text>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Oppdragstype</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Oppdragstype</span>
                         <br />
                         <lightning-formatted-text
                             value={serviceAppointmentDetails.HOT_AssignmentType__c}
@@ -348,10 +298,7 @@
                         >
                         </lightning-formatted-text>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Region</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Region</span>
                         <br />
                         <lightning-formatted-text
                             value={serviceAppointmentDetails.ServiceTerritory.Name}
@@ -360,10 +307,7 @@
                         </lightning-formatted-text>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Start tid</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Start tid</span>
                         <br />
                         <lightning-formatted-date-time
                             year="numeric"
@@ -377,10 +321,7 @@
                         >
                         </lightning-formatted-date-time>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Slutt tid</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
                         <br />
                         <lightning-formatted-date-time
                             year="numeric"
@@ -394,10 +335,7 @@
                         >
                         </lightning-formatted-date-time>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Adresse</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Adresse</span>
                         <br />
                         <lightning-formatted-text
                             value={serviceAppointmentDetails.HOT_AddressFormated__c}
@@ -405,10 +343,7 @@
                         >
                         </lightning-formatted-text>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Tema</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Tema</span>
                         <br />
                         <lightning-formatted-text
                             value={serviceAppointmentDetails.HOT_FreelanceSubject__c}
@@ -418,10 +353,7 @@
                     </div>
                 </div>
             </section>
-            <button
-                class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
-                onclick={abortShowDetails}
-            >
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
                 <span class="text-hide">Lukk</span>
             </button>
         </div>

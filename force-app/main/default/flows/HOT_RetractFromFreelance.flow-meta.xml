@@ -6,24 +6,21 @@
         <locationX>1096</locationX>
         <locationY>121</locationY>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>false</booleanValue>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.HOT_IsEmployedInterpreter__c</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_IsEmployedInterpreter__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.Status</assignToReference>
+            <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>None</stringValue>
@@ -39,8 +36,7 @@
         <locationX>1360</locationX>
         <locationY>599</locationY>
         <assignmentItems>
-            <assignToReference
-            >interatorRelatedInterestedResources.Status__c</assignToReference>
+            <assignToReference>interatorRelatedInterestedResources.Status__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>Service Appointment Retracted</stringValue>
@@ -60,8 +56,7 @@
     </choices>
     <choices>
         <name>RemoveAssignedResourceAndRelease</name>
-        <choiceText
-        >Fjern tildelt ressurs og frigi oppdrag til frilanstolker</choiceText>
+        <choiceText>Fjern tildelt ressurs og frigi oppdrag til frilanstolker</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>true</stringValue>
@@ -91,8 +86,7 @@ Status == &quot;Ingen&quot;</description>
             <name>Not_Previously_Released</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference
-                >CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</leftValueReference>
+                <leftValueReference>CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -135,16 +129,14 @@ Status == &quot;Ingen&quot;</description>
         <locationX>1230</locationX>
         <locationY>507</locationY>
         <defaultConnector>
-            <targetReference
-            >Loop_Over_Related_Interested_Resources</targetReference>
+            <targetReference>Loop_Over_Related_Interested_Resources</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>ShouldChange</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference
-                >interatorRelatedInterestedResources.Status__c</leftValueReference>
+                <leftValueReference>interatorRelatedInterestedResources.Status__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Interested</stringValue>
@@ -156,16 +148,14 @@ Status == &quot;Ingen&quot;</description>
             <label>ShouldChange</label>
         </rules>
     </decisions>
-    <interviewLabel
-    >HOT_RetractFromFreelance {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel>HOT_RetractFromFreelance {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Retract From Freelance</label>
     <loops>
         <name>Loop_Over_Related_Interested_Resources</name>
         <label>Loop Over Related Interested Resources</label>
         <locationX>1401</locationX>
         <locationY>341</locationY>
-        <assignNextValueToReference
-        >interatorRelatedInterestedResources</assignNextValueToReference>
+        <assignNextValueToReference>interatorRelatedInterestedResources</assignNextValueToReference>
         <collectionReference>getRelatedInterestedResources</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -193,8 +183,7 @@ Status == &quot;Ingen&quot;</description>
         <label>GetCurrentServiceAppointment</label>
         <locationX>390</locationX>
         <locationY>82</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >true</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_isReleasedToFreelance</targetReference>
         </connector>
@@ -223,11 +212,9 @@ Status == &quot;Ingen&quot;</description>
         <label>getRelatedInterestedResources</label>
         <locationX>1229</locationX>
         <locationY>342</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference
-            >Loop_Over_Related_Interested_Resources</targetReference>
+            <targetReference>Loop_Over_Related_Interested_Resources</targetReference>
         </connector>
         <filters>
             <field>ServiceAppointment__c</field>
@@ -246,8 +233,7 @@ Status == &quot;Ingen&quot;</description>
         <locationX>1511</locationX>
         <locationY>542</locationY>
         <connector>
-            <targetReference
-            >Loop_Over_Related_Interested_Resources</targetReference>
+            <targetReference>Loop_Over_Related_Interested_Resources</targetReference>
         </connector>
         <inputReference>interatorRelatedInterestedResources</inputReference>
     </recordUpdates>
@@ -276,10 +262,8 @@ Status == &quot;Ingen&quot;</description>
             <name>Handlinger</name>
             <choiceReferences>Retract</choiceReferences>
             <dataType>String</dataType>
-            <defaultSelectedChoiceReference
-            >Retract</defaultSelectedChoiceReference>
-            <fieldText
-            >Er du sikker på at du vil tilbaketrekke oppdraget?</fieldText>
+            <defaultSelectedChoiceReference>Retract</defaultSelectedChoiceReference>
+            <fieldText>Er du sikker på at du vil tilbaketrekke oppdraget?</fieldText>
             <fieldType>RadioButtons</fieldType>
             <isRequired>true</isRequired>
         </fields>
@@ -313,8 +297,7 @@ Status == &quot;Ingen&quot;</description>
         <allowPause>false</allowPause>
         <fields>
             <name>OutMessage</name>
-            <fieldText
-            >&lt;p&gt;Oppdrag ble ikke tilbaketrukket.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Oppdrag ble ikke tilbaketrukket.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -330,8 +313,7 @@ Status == &quot;Ingen&quot;</description>
         <allowPause>false</allowPause>
         <fields>
             <name>Success</name>
-            <fieldText
-            >&lt;p&gt;Oppdraget ble tilbaketrukket.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Oppdraget ble tilbaketrukket.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>

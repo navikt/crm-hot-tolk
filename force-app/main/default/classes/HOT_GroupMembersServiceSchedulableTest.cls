@@ -25,11 +25,7 @@ public with sharing class HOT_GroupMembersServiceSchedulableTest {
                 DeveloperName = 'HOT_Tolk_Leder_Gruppe',
                 MasterLabel = 'HOT_Tolk_Leder_Gruppe'
             );
-            insert new List<PermissionSetGroup>{
-                formidlerPermsetGroup,
-                tolkPermsetGroup,
-                lederPermsetGroup
-            };
+            insert new List<PermissionSetGroup>{ formidlerPermsetGroup, tolkPermsetGroup, lederPermsetGroup };
         }
     }
 

@@ -4,10 +4,7 @@ private class HOT_AddCommentControllerTest {
     static void setup() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'Adding comment',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
         insert request;
     }
 
@@ -25,32 +22,16 @@ private class HOT_AddCommentControllerTest {
         List<HOT_AddCommentController> inputVariablesList = new List<HOT_AddCommentController>();
         inputVariablesList.add(inputVariables);
         HOT_AddCommentController.addComment(inputVariablesList);
-        requestSOQL =
-            'SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Id = \'' +
-            request.Id +
-            '\'';
+        requestSOQL = 'SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Id = \'' + request.Id + '\'';
         SObject updatedRequest = Database.query(requestSOQL)[0];
         String comment = (String) updatedRequest.get('MessageToDispatcher__c');
-        System.assertEquals(
-            true,
-            comment.contains('New Comment'),
-            'Comment was not updated'
-        );
+        System.assertEquals(true, comment.contains('New Comment'), 'Comment was not updated');
 
         newComment = 'Another Comment';
         HOT_AddCommentController.addComment(request, newComment, fieldName);
-        requestSOQL =
-            'SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Id = \'' +
-            request.Id +
-            '\'';
+        requestSOQL = 'SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Id = \'' + request.Id + '\'';
         SObject updatedRequest2 = Database.query(requestSOQL)[0];
-        String comment2 = (String) updatedRequest2.get(
-            'MessageToDispatcher__c'
-        );
-        System.assertEquals(
-            true,
-            comment2.contains('Another Comment'),
-            'Comment was not updated'
-        );
+        String comment2 = (String) updatedRequest2.get('MessageToDispatcher__c');
+        System.assertEquals(true, comment2.contains('Another Comment'), 'Comment was not updated');
     }
 }

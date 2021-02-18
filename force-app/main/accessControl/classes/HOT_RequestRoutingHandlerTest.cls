@@ -3,11 +3,7 @@ private class HOT_RequestRoutingHandlerTest {
     @TestSetup
     static void makeData() {
         TestDataFactory.getPublicGroup('HMS Troms og Finmark', 'group_4719');
-        TestDataFactory.getQueue(
-            'HMS Troms og Finmark',
-            'queue_4719',
-            'HOT_Request__c'
-        );
+        TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'HOT_Request__c');
     }
 
     @IsTest
@@ -19,25 +15,12 @@ private class HOT_RequestRoutingHandlerTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.Account__c = accountId;
         insert request;
 
-        Id queueId = [
-            SELECT Id
-            FROM Group
-            WHERE DeveloperName = 'queue_4719'
-            LIMIT 1
-        ]
-        .Id;
-        System.assertEquals(
-            queueId,
-            [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id]
-            .OwnerId
-        );
+        Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
+        System.assertEquals(queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id].OwnerId);
     }
 
     @IsTest
@@ -50,25 +33,12 @@ private class HOT_RequestRoutingHandlerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-        HOT_Request__c orderedRequest = HOT_TestDataFactory.createRequest(
-            'Orderer TEST',
-            workType
-        );
+        HOT_Request__c orderedRequest = HOT_TestDataFactory.createRequest('Orderer TEST', workType);
         orderedRequest.Orderer__c = accountId;
         insert orderedRequest;
 
-        Id queueId = [
-            SELECT Id
-            FROM Group
-            WHERE DeveloperName = 'queue_4719'
-            LIMIT 1
-        ]
-        .Id;
-        System.assertEquals(
-            queueId,
-            [SELECT OwnerId FROM HOT_Request__c WHERE Id = :orderedRequest.Id]
-            .OwnerId
-        );
+        Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
+        System.assertEquals(queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :orderedRequest.Id].OwnerId);
     }
 
     @IsTest
@@ -80,25 +50,12 @@ private class HOT_RequestRoutingHandlerTest {
         company.INT_RegionNumber__c = '54';
         insert company;
 
-        HOT_Request__c companyRequest = HOT_TestDataFactory.createRequest(
-            'Company TEST',
-            workType
-        );
+        HOT_Request__c companyRequest = HOT_TestDataFactory.createRequest('Company TEST', workType);
         companyRequest.Company__c = company.Id;
         insert companyRequest;
 
-        Id queueId = [
-            SELECT Id
-            FROM Group
-            WHERE DeveloperName = 'queue_4719'
-            LIMIT 1
-        ]
-        .Id;
-        System.assertEquals(
-            queueId,
-            [SELECT OwnerId FROM HOT_Request__c WHERE Id = :companyRequest.Id]
-            .OwnerId
-        );
+        Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
+        System.assertEquals(queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :companyRequest.Id].OwnerId);
     }
 
     @IsTest
@@ -106,24 +63,11 @@ private class HOT_RequestRoutingHandlerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'defaultRouting TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('defaultRouting TEST', workType);
         insert request;
 
-        Id queueId = [
-            SELECT Id
-            FROM Group
-            WHERE DeveloperName = 'HOT_Tolk_Admin'
-            LIMIT 1
-        ]
-        .Id;
-        System.assertEquals(
-            queueId,
-            [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id]
-            .OwnerId
-        );
+        Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'HOT_Tolk_Admin' LIMIT 1].Id;
+        System.assertEquals(queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id].OwnerId);
     }
 
     @IsTest
@@ -141,15 +85,9 @@ private class HOT_RequestRoutingHandlerTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c personRequest = HOT_TestDataFactory.createRequest(
-            'Person Test',
-            workType
-        );
+        HOT_Request__c personRequest = HOT_TestDataFactory.createRequest('Person Test', workType);
         personRequest.UserPersonNumber__c = '12015678999';
-        HOT_Request__c businessRequest = HOT_TestDataFactory.createRequest(
-            'Business Test',
-            workType
-        );
+        HOT_Request__c businessRequest = HOT_TestDataFactory.createRequest('Business Test', workType);
         businessRequest.OrganizationNumber__c = '987654321';
 
         Test.startTest();
@@ -157,27 +95,11 @@ private class HOT_RequestRoutingHandlerTest {
         insert businessRequest;
         Test.stopTest();
 
-        personRequest = [
-            SELECT Id, Account__c
-            FROM HOT_Request__c
-            WHERE Subject__c = 'Person Test'
-        ];
-        businessRequest = [
-            SELECT Id, Company__c
-            FROM HOT_Request__c
-            WHERE Subject__c = 'Person Test'
-        ];
+        personRequest = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'Person Test'];
+        businessRequest = [SELECT Id, Company__c FROM HOT_Request__c WHERE Subject__c = 'Person Test'];
 
         //TODO: Oppdatere asserts til å sjekke id på bruker eller virksomhet, men må da kunne kjøre testen som en Community-bruker, noe som vi ikke har fått til enda
-        System.assertEquals(
-            null,
-            personRequest.Account__c,
-            'Could not set Account__c field'
-        );
-        System.assertEquals(
-            null,
-            businessRequest.Company__c,
-            'Could not set Company__c field'
-        );
+        System.assertEquals(null, personRequest.Account__c, 'Could not set Account__c field');
+        System.assertEquals(null, businessRequest.Company__c, 'Could not set Company__c field');
     }
 }

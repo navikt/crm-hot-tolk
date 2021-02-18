@@ -33,24 +33,14 @@ public with sharing class MyProfilePageControllerTest {
                 WHERE id = :UserInfo.getUserId()
             ];
             MyProfilePageController controller = new MyProfilePageController();
-            System.assertEquals(
-                currentUser.Id,
-                controller.getUser().Id,
-                'Did not successfully load the current user'
-            );
-            System.assert(
-                controller.getIsEdit() == false,
-                'isEdit should default to false'
-            );
+            System.assertEquals(currentUser.Id, controller.getUser().Id, 'Did not successfully load the current user');
+            System.assert(controller.getIsEdit() == false, 'isEdit should default to false');
             controller.edit();
             System.assert(controller.getIsEdit() == true);
             controller.cancel();
             System.assert(controller.getIsEdit() == false);
 
-            System.assert(
-                Page.ChangePassword.getUrl()
-                    .equals(controller.changePassword().getUrl())
-            );
+            System.assert(Page.ChangePassword.getUrl().equals(controller.changePassword().getUrl()));
 
             String randFax = Math.rint(Math.random() * 1000) + '5551234';
             controller.getUser().Fax = randFax;
@@ -70,10 +60,7 @@ public with sharing class MyProfilePageControllerTest {
                     controller.getUser().Id,
                     'Did not successfully load the current user'
                 );
-                System.assert(
-                    controller.getIsEdit() == false,
-                    'isEdit should default to false'
-                );
+                System.assert(controller.getIsEdit() == false, 'isEdit should default to false');
                 controller.edit();
                 System.assert(controller.getIsEdit() == true);
 
@@ -86,11 +73,7 @@ public with sharing class MyProfilePageControllerTest {
             }
 
             // verify that the user was updated
-            existingPortalUser = [
-                SELECT id, fax
-                FROM User
-                WHERE id = :existingPortalUser.Id
-            ];
+            existingPortalUser = [SELECT id, fax FROM User WHERE id = :existingPortalUser.Id];
             System.assert(existingPortalUser.fax == randFax);
         }
     }

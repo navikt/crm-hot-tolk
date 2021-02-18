@@ -4,21 +4,14 @@ private class HOT_OpenSAListControllerTest {
     static void setup() {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(
-            operatingHours
-        );
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
         insert serviceTerritory;
 
-        Serviceresource serviceResource = HOT_TestDataFactory.createServiceResource(
-            UserInfo.getUserId()
-        );
+        Serviceresource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceResource;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'Bestilling',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Bestilling', workType);
         request.ServiceTerritory__c = serviceTerritory.Id;
         request.NumberOfInterpreters__c = 2;
         insert request;
@@ -41,38 +34,21 @@ private class HOT_OpenSAListControllerTest {
     @isTest
     static void getOpenServiceAppointmentsTest() {
         List<ServiceAppointment> serviceAppointments = HOT_OpenServiceAppointmentListController.getOpenServiceAppointments();
-        System.assertEquals(
-            2,
-            serviceAppointments.size(),
-            'Could not get released ServiceAppointments'
-        );
+        System.assertEquals(2, serviceAppointments.size(), 'Could not get released ServiceAppointments');
     }
 
     @isTest
     static void createInterestedResourcesTest() {
-        List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, AppointmentNumber
-            FROM ServiceAppointment
-        ];
+        List<ServiceAppointment> serviceAppointments = [SELECT Id, AppointmentNumber FROM ServiceAppointment];
         List<String> serviceAppointmentIds = new List<String>();
         List<String> comments = new List<String>();
         for (ServiceAppointment sa : serviceAppointments) {
             serviceAppointmentIds.add(sa.Id);
             comments.add('Comment 1');
         }
-        HOT_OpenServiceAppointmentListController.createInterestedResources(
-            serviceAppointmentIds,
-            comments
-        );
+        HOT_OpenServiceAppointmentListController.createInterestedResources(serviceAppointmentIds, comments);
 
-        List<HOT_InterestedResource__c> interestedResources = [
-            SELECT Id
-            FROM HOT_InterestedResource__c
-        ];
-        System.assertEquals(
-            2,
-            interestedResources.size(),
-            'Could not createInterestedResources'
-        );
+        List<HOT_InterestedResource__c> interestedResources = [SELECT Id FROM HOT_InterestedResource__c];
+        System.assertEquals(2, interestedResources.size(), 'Could not createInterestedResources');
     }
 }
