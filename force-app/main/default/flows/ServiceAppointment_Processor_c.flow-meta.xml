@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <processMetadataValues>
@@ -49,7 +49,8 @@
         <inputParameters>
             <name>body</name>
             <value>
-                <stringValue>{!myVariable_current.AppointmentNumber} {!myVariable_current.Subject} avlyst at {!myVariable_current.LastModifiedDate}</stringValue>
+                <stringValue
+                >{!myVariable_current.AppointmentNumber} {!myVariable_current.Subject} avlyst at {!myVariable_current.LastModifiedDate}</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -86,7 +87,7 @@
             <processMetadataValues>
                 <name>objectType</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -97,7 +98,8 @@
             </processMetadataValues>
             <name>recipientIds</name>
             <value>
-                <elementReference>myCollection_myRule_4_A1recipientIds</elementReference>
+                <elementReference
+                >myCollection_myRule_4_A1recipientIds</elementReference>
             </value>
         </inputParameters>
     </actionCalls>
@@ -150,7 +152,8 @@
         <inputParameters>
             <name>body</name>
             <value>
-                <stringValue>{!myVariable_current.AppointmentNumber} {!myVariable_current.Subject} avlyst at {!myVariable_current.LastModifiedDate}</stringValue>
+                <stringValue
+                >{!myVariable_current.AppointmentNumber} {!myVariable_current.Subject} avlyst at {!myVariable_current.LastModifiedDate}</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -187,7 +190,7 @@
             <processMetadataValues>
                 <name>objectType</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -198,7 +201,8 @@
             </processMetadataValues>
             <name>recipientIds</name>
             <value>
-                <elementReference>myCollection_myRule_8_A1recipientIds</elementReference>
+                <elementReference
+                >myCollection_myRule_8_A1recipientIds</elementReference>
             </value>
         </inputParameters>
     </actionCalls>
@@ -208,10 +212,12 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignmentItems>
-            <assignToReference>myCollection_myRule_4_A1recipientIds</assignToReference>
+            <assignToReference
+            >myCollection_myRule_4_A1recipientIds</assignToReference>
             <operator>Add</operator>
             <value>
-                <elementReference>myVariable_current.Owner:Queue.Id</elementReference>
+                <elementReference
+                >myVariable_current.Owner:Queue.Id</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -224,10 +230,12 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignmentItems>
-            <assignToReference>myCollection_myRule_8_A1recipientIds</assignToReference>
+            <assignToReference
+            >myCollection_myRule_8_A1recipientIds</assignToReference>
             <operator>Add</operator>
             <value>
-                <elementReference>myVariable_current.Owner:Queue.Id</elementReference>
+                <elementReference
+                >myVariable_current.Owner:Queue.Id</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -240,7 +248,8 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>isChangedDecision9_myRule_8_HOT_CanceledByInterpreter_c</targetReference>
+            <targetReference
+            >isChangedDecision9_myRule_8_HOT_CanceledByInterpreter_c</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
@@ -257,11 +266,13 @@
                 <leftValueReference>myVariable_old.Status</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <elementReference>myVariable_current.Status</elementReference>
+                    <elementReference
+                    >myVariable_current.Status</elementReference>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>isChangedDecision9_myRule_8_HOT_CanceledByInterpreter_c</targetReference>
+                <targetReference
+                >isChangedDecision9_myRule_8_HOT_CanceledByInterpreter_c</targetReference>
             </connector>
             <label>isChangedRule_5_myRule_4_Status</label>
         </rules>
@@ -286,10 +297,12 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>myVariable_old.HOT_CanceledByInterpreter__c</leftValueReference>
+                <leftValueReference
+                >myVariable_old.HOT_CanceledByInterpreter__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <elementReference>myVariable_current.HOT_CanceledByInterpreter__c</elementReference>
+                    <elementReference
+                    >myVariable_current.HOT_CanceledByInterpreter__c</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -372,7 +385,8 @@
                         <stringValue>Boolean</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference>isChangedRule_5_myRule_4_Status</leftValueReference>
+                <leftValueReference
+                >isChangedRule_5_myRule_4_Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -403,7 +417,8 @@
                         <stringValue>Picklist</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference>myVariable_current.Status</leftValueReference>
+                <leftValueReference
+                >myVariable_current.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Canceled</stringValue>
@@ -440,7 +455,8 @@
                         <stringValue>ID</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference>myVariable_current.OwnerId</leftValueReference>
+                <leftValueReference
+                >myVariable_current.OwnerId</leftValueReference>
                 <operator>StartsWith</operator>
                 <rightValue>
                     <stringValue>00G</stringValue>
@@ -492,7 +508,8 @@
                         <stringValue>Boolean</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference>myVariable_current.HOT_CanceledByInterpreter__c</leftValueReference>
+                <leftValueReference
+                >myVariable_current.HOT_CanceledByInterpreter__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -523,7 +540,8 @@
                         <stringValue>Boolean</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference>isChangedRule_9_myRule_8_HOT_CanceledByInterpreter_c</leftValueReference>
+                <leftValueReference
+                >isChangedRule_9_myRule_8_HOT_CanceledByInterpreter_c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -539,12 +557,14 @@
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue>([ServiceAppointment].DueDate - [ServiceAppointment].EarliestStartTime )*24</stringValue>
+                <stringValue
+                >([ServiceAppointment].DueDate - [ServiceAppointment].EarliestStartTime )*24</stringValue>
             </value>
         </processMetadataValues>
         <name>formula_2_myRule_1_A1_8471767266</name>
         <dataType>Number</dataType>
-        <expression>({!myVariable_current.DueDate} - {!myVariable_current.EarliestStartTime} )*24</expression>
+        <expression
+        >({!myVariable_current.DueDate} - {!myVariable_current.EarliestStartTime} )*24</expression>
         <scale>18</scale>
     </formulas>
     <formulas>
@@ -563,7 +583,8 @@
         <dataType>Boolean</dataType>
         <expression>true</expression>
     </formulas>
-    <interviewLabel>ServiceAppointment_Processor_c-3_InterviewLabel</interviewLabel>
+    <interviewLabel
+    >ServiceAppointment_Processor_c-3_InterviewLabel</interviewLabel>
     <label>ServiceAppointment Processor</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -620,7 +641,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -661,7 +682,8 @@
             </processMetadataValues>
             <field>OwnerId</field>
             <value>
-                <elementReference>formula_6_myRule_4_A2_1530932674</elementReference>
+                <elementReference
+                >formula_6_myRule_4_A2_1530932674</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -746,7 +768,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -757,7 +779,8 @@
             </processMetadataValues>
             <field>Subject</field>
             <value>
-                <elementReference>myVariable_current.AppointmentNumber</elementReference>
+                <elementReference
+                >myVariable_current.AppointmentNumber</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -782,7 +805,8 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue>Account;Asset;AssetRelationship;Campaign;Case;CommSubscriptionConsent;ContactRequest;Contract;ContractLineItem;Entitlement;Expense;ListEmail;Location;MaintenanceAsset;MaintenancePlan;Opportunity;Order;PartyConsent;Product2;ProductConsumed;ProductItem;ProductRequest;ProductRequestLineItem;ProductTransfer;ResourceAbsence;ReturnOrder;ReturnOrderLineItem;ServiceAppointment;ServiceContract;ServiceCrew;ServiceCrewMember;ServiceResource;Shift;Shipment;Solution;TimeSheet;TimeSheetEntry;WorkOrder;WorkOrderLineItem</stringValue>
+                    <stringValue
+                    >Account;Asset;AssetRelationship;Campaign;Case;CommSubscriptionConsent;ContactRequest;Contract;ContractLineItem;Entitlement;Expense;ListEmail;Location;MaintenanceAsset;MaintenancePlan;Opportunity;Order;PartyConsent;Product2;ProductConsumed;ProductItem;ProductRequest;ProductRequestLineItem;ProductTransfer;ResourceAbsence;ReturnOrder;ReturnOrderLineItem;ServiceAppointment;ServiceContract;ServiceCrew;ServiceCrewMember;ServiceResource;Shift;Shipment;Solution;TimeSheet;TimeSheetEntry;WorkOrder;WorkOrderLineItem</stringValue>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -829,7 +853,8 @@
             </processMetadataValues>
             <field>WhoId</field>
             <value>
-                <elementReference>myVariable_current.ContactId</elementReference>
+                <elementReference
+                >myVariable_current.ContactId</elementReference>
             </value>
         </inputAssignments>
         <object>Task</object>
@@ -861,7 +886,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -902,7 +927,8 @@
             </processMetadataValues>
             <field>OwnerId</field>
             <value>
-                <elementReference>myVariable_current.Owner:Queue.Id</elementReference>
+                <elementReference
+                >myVariable_current.Owner:Queue.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -987,7 +1013,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -998,7 +1024,8 @@
             </processMetadataValues>
             <field>Subject</field>
             <value>
-                <elementReference>myVariable_current.AppointmentNumber</elementReference>
+                <elementReference
+                >myVariable_current.AppointmentNumber</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1023,7 +1050,8 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue>Account;Asset;AssetRelationship;AssetWarranty;AssignedResource;Campaign;Case;CommSubscriptionConsent;ContactRequest;Contract;ContractLineItem;DelegatedAccount;Entitlement;Expense;ExpenseReport;ExpenseReportEntry;ListEmail;Location;MaintenanceAsset;MaintenancePlan;Opportunity;Order;PartyConsent;Product2;ProductConsumed;ProductItem;ProductRequest;ProductRequestLineItem;ProductTransfer;ResourceAbsence;ReturnOrder;ReturnOrderLineItem;ServiceAppointment;ServiceContract;ServiceCrew;ServiceCrewMember;ServiceResource;Shift;Shipment;Solution;TimeSheet;TimeSheetEntry;WarrantyTerm;WorkOrder;WorkOrderLineItem</stringValue>
+                    <stringValue
+                    >Account;Asset;AssetRelationship;AssetWarranty;AssignedResource;Campaign;Case;CommSubscriptionConsent;ContactRequest;Contract;ContractLineItem;DelegatedAccount;Entitlement;Expense;ExpenseReport;ExpenseReportEntry;ListEmail;Location;MaintenanceAsset;MaintenancePlan;Opportunity;Order;PartyConsent;Product2;ProductConsumed;ProductItem;ProductRequest;ProductRequestLineItem;ProductTransfer;ResourceAbsence;ReturnOrder;ReturnOrderLineItem;ServiceAppointment;ServiceContract;ServiceCrew;ServiceCrewMember;ServiceResource;Shift;Shipment;Solution;TimeSheet;TimeSheetEntry;WarrantyTerm;WorkOrder;WorkOrderLineItem</stringValue>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -1070,7 +1098,8 @@
             </processMetadataValues>
             <field>WhoId</field>
             <value>
-                <elementReference>myVariable_current.ContactId</elementReference>
+                <elementReference
+                >myVariable_current.ContactId</elementReference>
             </value>
         </inputAssignments>
         <object>Task</object>
@@ -1142,7 +1171,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -1153,12 +1182,14 @@
             </processMetadataValues>
             <field>Duration</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_8471767266</elementReference>
+                <elementReference
+                >formula_2_myRule_1_A1_8471767266</elementReference>
             </value>
         </inputAssignments>
         <object>ServiceAppointment</object>
     </recordUpdates>
-    <startElementReference>isChangedDecision5_myRule_4_Status</startElementReference>
+    <startElementReference
+    >isChangedDecision5_myRule_4_Status</startElementReference>
     <status>Active</status>
     <variables>
         <name>myCollection_myRule_4_A1recipientIds</name>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <decisions>
         <name>isChangedDecision2_myRule_1_INT_LastUpdatedFromKRR_c</name>
@@ -20,10 +20,12 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>myVariable_old.INT_LastUpdatedFromKRR__c</leftValueReference>
+                <leftValueReference
+                >myVariable_old.INT_LastUpdatedFromKRR__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <elementReference>myVariable_current.INT_LastUpdatedFromKRR__c</elementReference>
+                    <elementReference
+                    >myVariable_current.INT_LastUpdatedFromKRR__c</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -72,7 +74,8 @@
                         <stringValue>Boolean</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference>isChangedRule_2_myRule_1_INT_LastUpdatedFromKRR_c</leftValueReference>
+                <leftValueReference
+                >isChangedRule_2_myRule_1_INT_LastUpdatedFromKRR_c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -109,7 +112,8 @@
                         <stringValue>Boolean</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference>myVariable_current.CRM_Account__c</leftValueReference>
+                <leftValueReference
+                >myVariable_current.CRM_Account__c</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -187,7 +191,8 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>myVariable_current.CRM_Account__c</elementReference>
+                <elementReference
+                >myVariable_current.CRM_Account__c</elementReference>
             </value>
         </filters>
         <inputAssignments>
@@ -212,7 +217,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -223,7 +228,8 @@
             </processMetadataValues>
             <field>PersonEmail</field>
             <value>
-                <elementReference>myVariable_current.INT_KrrEmail__c</elementReference>
+                <elementReference
+                >myVariable_current.INT_KrrEmail__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -248,7 +254,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -259,12 +265,14 @@
             </processMetadataValues>
             <field>PersonMobilePhone</field>
             <value>
-                <elementReference>myVariable_current.INT_KrrMobilePhone__c</elementReference>
+                <elementReference
+                >myVariable_current.INT_KrrMobilePhone__c</elementReference>
             </value>
         </inputAssignments>
         <object>Account</object>
     </recordUpdates>
-    <startElementReference>isChangedDecision2_myRule_1_INT_LastUpdatedFromKRR_c</startElementReference>
+    <startElementReference
+    >isChangedDecision2_myRule_1_INT_LastUpdatedFromKRR_c</startElementReference>
     <status>Active</status>
     <variables>
         <name>myVariable_current</name>

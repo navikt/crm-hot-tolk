@@ -1,69 +1,82 @@
 {
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "componentName" : "siteforce:dynamicLayout",
-  "id" : "4d22e0aa-f118-4729-9c3f-1ea08a14cd97",
-  "label" : "mine-oppdrag-default",
-  "regions" : [ {
-    "components" : [ {
-      "componentAttributes" : {
-        "background" : "background: rgba(0,0,0,0)",
-        "backgroundOverlay" : "rgba(0,0,0,0.5)",
-        "contentAreaWidth" : 100,
-        "sectionConfig" : {
-          "UUID" : "1537cb88-a2ab-4830-9110-d6816d4944dd",
-          "columns" : [ {
-            "UUID" : "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
-            "columnName" : "Column 1",
-            "columnKey" : "1",
-            "columnWidth" : "12",
-            "seedComponents" : [ ]
-          } ]
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:dynamicLayout",
+    "id": "4d22e0aa-f118-4729-9c3f-1ea08a14cd97",
+    "label": "mine-oppdrag-default",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "background": "background: rgba(0,0,0,0)",
+                        "backgroundOverlay": "rgba(0,0,0,0.5)",
+                        "contentAreaWidth": 100,
+                        "sectionConfig": {
+                            "UUID": "1537cb88-a2ab-4830-9110-d6816d4944dd",
+                            "columns": [
+                                {
+                                    "UUID": "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
+                                    "columnName": "Column 1",
+                                    "columnKey": "1",
+                                    "columnWidth": "12",
+                                    "seedComponents": []
+                                }
+                            ]
+                        },
+                        "sectionHeight": 300
+                    },
+                    "componentName": "forceCommunity:section",
+                    "id": "1537cb88-a2ab-4830-9110-d6816d4944dd",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {
+                                        "richTextValue": "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
+                                    },
+                                    "componentName": "forceCommunity:richTextInline",
+                                    "id": "c34975a4-7c91-48e0-87f4-572619ad0cb8",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
+                            "regionLabel": "Column 1",
+                            "regionName": "1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "9c3a179c-01b7-409e-9add-b7bdfb151350",
+            "regionName": "content",
+            "type": "region"
         },
-        "sectionHeight" : 300
-      },
-      "componentName" : "forceCommunity:section",
-      "id" : "1537cb88-a2ab-4830-9110-d6816d4944dd",
-      "regions" : [ {
-        "components" : [ {
-          "componentAttributes" : {
-            "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
-          },
-          "componentName" : "forceCommunity:richTextInline",
-          "id" : "c34975a4-7c91-48e0-87f4-572619ad0cb8",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        } ],
-        "id" : "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
-        "regionLabel" : "Column 1",
-        "regionName" : "1",
-        "renditionMap" : { },
-        "type" : "region"
-      } ],
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "9c3a179c-01b7-409e-9add-b7bdfb151350",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "description" : "",
-        "metaTags" : "",
-        "title" : "Mine Oppdrag"
-      },
-      "componentName" : "forceCommunity:seoAssistant",
-      "id" : "a26ac4bd-7c1c-47f1-ba95-8c069a2a1bdd",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "bf3767b9-f42c-4af3-a4ab-11c894f5b6ac",
-    "regionName" : "sfdcHiddenRegion",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "custom-mine-oppdrag"
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "description": "",
+                        "metaTags": "",
+                        "title": "Mine Oppdrag"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "a26ac4bd-7c1c-47f1-ba95-8c069a2a1bdd",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "bf3767b9-f42c-4af3-a4ab-11c894f5b6ac",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-mine-oppdrag"
 }

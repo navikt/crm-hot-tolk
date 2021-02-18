@@ -7,11 +7,15 @@
             "path": "force-app",
             "default": true,
             "package": "crm-hot",
-            "versionNumber": "1.50.0.NEXT",
+            "versionNumber": "1.52.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.51.0.LATEST"
+                    "versionNumber": "0.61.0.LATEST"
+                },
+                {
+                    "package": "crm-platform-integration",
+                    "versionNumber": "0.34.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -19,7 +23,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.14.0.LATEST"
+                    "versionNumber": "0.15.0.LATEST"
                 }
             ]
         },
@@ -27,11 +31,15 @@
             "path": "force-app",
             "default": false,
             "package": "crm-hot-dev",
-            "versionNumber": "1.50.0.NEXT",
+            "versionNumber": "1.52.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.51.0.LATEST"
+                    "versionNumber": "0.61.0.LATEST"
+                },
+                {
+                    "package": "crm-platform-integration",
+                    "versionNumber": "0.34.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -39,7 +47,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.14.0.LATEST"
+                    "versionNumber": "0.15.0.LATEST"
                 }
             ]
         }
@@ -50,6 +58,7 @@
         "crm-hot": "0Ho2o0000008OSVCA2",
         "crm-community-base": "0Ho2o0000008OSzCAM",
         "crm-hot-dev": "0Ho2o000000KylqCAC",
-        "crm-platform-reporting": "0Ho2o0000008OSfCAM"
+        "crm-platform-reporting": "0Ho2o0000008OSfCAM",
+        "crm-platform-integration": "0Ho2o0000008ORrCAM"
     }
 }

@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsUpdateStatus__c</fullName>
     <defaultValue>false</defaultValue>
-    <description>Used in trigger to mark record for update of status</description>
+    <description
+    >Used in trigger to mark record for update of status</description>
     <externalId>false</externalId>
     <label>Update Status?</label>
     <trackHistory>true</trackHistory>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Set_invoice_status</fullName>
     <active>true</active>
@@ -8,5 +8,6 @@ NOT(IsManuallyInvoiced__c)
 &amp;&amp;
 NOT($Permission.HOT_SetInvoiceStatus)</errorConditionFormula>
     <errorDisplayField>InvoiceStatus__c</errorDisplayField>
-    <errorMessage>Du kan bare endre fakturastatus når manuell fakturering er krysset av.</errorMessage>
+    <errorMessage
+    >Du kan bare endre fakturastatus når manuell fakturering er krysset av.</errorMessage>
 </ValidationRule>

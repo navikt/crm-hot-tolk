@@ -1,13 +1,15 @@
 {
-  "componentVariants" : [ {
-    "id" : "5d0dfde1-3a25-4915-b900-3db5a6573f99",
-    "propertyOverrides" : {
-      "activeViewId" : "8d6c51e4-b778-4519-8c17-a20a9f3bdcf5"
-    },
-    "targetId" : "253a8f8d-fe68-409f-a416-c236166c3ca0",
-    "type" : "componentVariant"
-  } ],
-  "developerName" : "Mine_Oppdrag_Mine_Oppdrag_Page",
-  "id" : "e7924b07-cba3-4d37-b4fa-4be0f4bf647c",
-  "type" : "experienceVariation"
+    "componentVariants": [
+        {
+            "id": "5d0dfde1-3a25-4915-b900-3db5a6573f99",
+            "propertyOverrides": {
+                "activeViewId": "8d6c51e4-b778-4519-8c17-a20a9f3bdcf5"
+            },
+            "targetId": "253a8f8d-fe68-409f-a416-c236166c3ca0",
+            "type": "componentVariant"
+        }
+    ],
+    "developerName": "Mine_Oppdrag_Mine_Oppdrag_Page",
+    "id": "e7924b07-cba3-4d37-b4fa-4be0f4bf647c",
+    "type": "experienceVariation"
 }

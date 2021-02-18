@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <decisions>
         <processMetadataValues>
@@ -40,7 +40,8 @@
                         <stringValue>Picklist</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference>myVariable_current.TerritoryType</leftValueReference>
+                <leftValueReference
+                >myVariable_current.TerritoryType</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>P</stringValue>
@@ -63,7 +64,8 @@
         <dataType>DateTime</dataType>
         <expression>NOW()</expression>
     </formulas>
-    <interviewLabel>HOT_Service_Territory_Member_Processor-3_InterviewLabel</interviewLabel>
+    <interviewLabel
+    >HOT_Service_Territory_Member_Processor-3_InterviewLabel</interviewLabel>
     <label>Service Territory Member Processor</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -129,7 +131,8 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>myVariable_current.ServiceResourceId</elementReference>
+                <elementReference
+                >myVariable_current.ServiceResourceId</elementReference>
             </value>
         </filters>
         <inputAssignments>
@@ -154,7 +157,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -165,7 +168,8 @@
             </processMetadataValues>
             <field>HOT_ServiceTerritoryLastUpdated__c</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_3783134795</elementReference>
+                <elementReference
+                >formula_2_myRule_1_A1_3783134795</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -201,7 +205,8 @@
             </processMetadataValues>
             <field>HOT_ServiceTerritory__c</field>
             <value>
-                <elementReference>myVariable_current.ServiceTerritoryId</elementReference>
+                <elementReference
+                >myVariable_current.ServiceTerritoryId</elementReference>
             </value>
         </inputAssignments>
         <object>ServiceResource</object>

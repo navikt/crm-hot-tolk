@@ -1,38 +1,65 @@
 public without sharing class HOT_MyServiceAppointmentListController {
+    @AuraEnabled(cacheable=true)
+    public static List<WorkOrderLineItem> getParentWorkOrderLineItems() {
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT ParentRecordId
+            FROM ServiceAppointment
+            WHERE HOT_AssignedResourceId__c = :UserInfo.getUserId()
+        ];
+        List<Id> parentRecordIds = new List<Id>();
+        for (ServiceAppointment sa : serviceAppointments) {
+            parentRecordIds.add(sa.ParentRecordId);
+        }
+        List<WorkOrderLineItem> workOrderLineItems = [
+            SELECT Id, WorkOrder.HOT_Request__r.AssignmentType__c
+            FROM WorkOrderLineItem
+            WHERE Id IN :parentRecordIds
+        ];
+        return workOrderLineItems;
+    }
 
-	@AuraEnabled(cacheable = true)
-	public static List<WorkOrderLineItem> getParentWorkOrderLineItems(){
-		List<ServiceAppointment> serviceAppointments = [SELECT ParentRecordId FROM ServiceAppointment
-		WHERE HOT_AssignedResourceId__c = :UserInfo.getUserId()];
-		List<Id> parentRecordIds = new List<Id>();
-		for(ServiceAppointment sa: serviceAppointments){
-			parentRecordIds.add(sa.ParentRecordId);
-		}
-		List<WorkOrderLineItem> workOrderLineItems = [SELECT Id, WorkOrder.HOT_Request__r.AssignmentType__c 
-		FROM WorkOrderLineItem WHERE Id IN :parentRecordIds];
-		return workOrderLineItems;
-	}
-
-	
-	@AuraEnabled(cacheable = true)
-	public static List<ServiceAppointment> getMyServiceAppointments() {
-		ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId=:UserInfo.getUserId()];
-		List<AssignedResource> assignedResources = [SELECT ServiceAppointmentId, ServiceResourceId 
-													FROM AssignedResource
-													WHERE ServiceResourceId = :serviceResource.Id];
-		List<Id> serviceAppointmentIds = new List<Id>();
-		for(AssignedResource ar:assignedResources){
-			serviceAppointmentIds.add(ar.ServiceAppointmentId);
-		}
-		List<ServiceAppointment> serviceAppointments = [
-			SELECT AppointmentNumber, Subject, toLabel(Status), ParentRecordId,
-				   HOT_AddressFormated__c, EarliestStartTime, DueDate, HOT_AssignedResourceId__c, HOT_WorkTypeName__c,
-				   SchedStartTime, SchedEndTime, ActualEndTime, ActualStartTime, HOT_TermsOfAgreement__c, City, ServiceTerritory.Name,
-				   HOT_DegreeOfHearingAndVisualImpairment__c, HOT_HapticCommunication__c, HOT_Escort__c, HOT_AssignmentType__c
-			FROM ServiceAppointment 
-			WHERE Id IN :serviceAppointmentIds
-			ORDER BY SchedStartTime ASC];
-		return serviceAppointments;
-	}
-    
+    @AuraEnabled(cacheable=true)
+    public static List<ServiceAppointment> getMyServiceAppointments() {
+        ServiceResource serviceResource = [
+            SELECT Id, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        List<AssignedResource> assignedResources = [
+            SELECT ServiceAppointmentId, ServiceResourceId
+            FROM AssignedResource
+            WHERE ServiceResourceId = :serviceResource.Id
+        ];
+        List<Id> serviceAppointmentIds = new List<Id>();
+        for (AssignedResource ar : assignedResources) {
+            serviceAppointmentIds.add(ar.ServiceAppointmentId);
+        }
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT
+                AppointmentNumber,
+                Subject,
+                toLabel(Status),
+                ParentRecordId,
+                HOT_AddressFormated__c,
+                EarliestStartTime,
+                DueDate,
+                HOT_AssignedResourceId__c,
+                HOT_WorkTypeName__c,
+                SchedStartTime,
+                SchedEndTime,
+                ActualEndTime,
+                ActualStartTime,
+                HOT_TermsOfAgreement__c,
+                City,
+                ServiceTerritory.Name,
+                HOT_DegreeOfHearingAndVisualImpairment__c,
+                HOT_HapticCommunication__c,
+                HOT_Escort__c,
+                HOT_AssignmentType__c
+            FROM ServiceAppointment
+            WHERE Id IN :serviceAppointmentIds
+            ORDER BY SchedStartTime ASC
+        ];
+        return serviceAppointments;
+    }
 }
