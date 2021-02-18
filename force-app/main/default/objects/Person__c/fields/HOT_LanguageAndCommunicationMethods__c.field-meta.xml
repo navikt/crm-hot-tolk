@@ -2,8 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_LanguageAndCommunicationMethods__c</fullName>
     <externalId>false</externalId>
-    <inlineHelpText
-    >Dagbok (informasjon om språk- og kommunikasjonsmetoder)</inlineHelpText>
+    <inlineHelpText>Dagbok (informasjon om språk- og kommunikasjonsmetoder)</inlineHelpText>
     <label>Language and Communication Methods</label>
     <length>32768</length>
     <trackTrending>false</trackTrending>

@@ -6,14 +6,8 @@ private class HOT_AssignedResourceHandlerTest {
         insert workType;
 
         List<HOT_Request__c> requests = new List<HOT_Request__c>();
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'subject',
-            workType
-        );
-        HOT_Request__c request2 = HOT_TestDataFactory.createRequest(
-            'subject 2',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('subject', workType);
+        HOT_Request__c request2 = HOT_TestDataFactory.createRequest('subject 2', workType);
         requests.add(request);
         requests.add(request2);
         insert requests;
@@ -24,9 +18,7 @@ private class HOT_AssignedResourceHandlerTest {
 
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(
-            operatingHours
-        );
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
         insert serviceTerritory;
 
         Profile profile = [
@@ -38,13 +30,9 @@ private class HOT_AssignedResourceHandlerTest {
         insert user;
 
         List<ServiceResource> serviceResources = new List<ServiceResource>();
-        ServiceResource serviceResourceAdmin = HOT_TestDataFactory.createServiceResource(
-            UserInfo.getUserId()
-        );
+        ServiceResource serviceResourceAdmin = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         serviceResourceAdmin.HOT_IsFreelanceInterpreter__c = true;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(
-            user.Id
-        );
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
         serviceResource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         serviceResources.add(serviceResourceAdmin);
@@ -134,19 +122,10 @@ private class HOT_AssignedResourceHandlerTest {
             SELECT Id, ServiceResource__c, Status__c
             FROM HOT_InterestedResource__c
         ];
-        System.assertEquals(
-            2,
-            interestedResources.size(),
-            'Could not create interested resources correctly'
-        );
+        System.assertEquals(2, interestedResources.size(), 'Could not create interested resources correctly');
         Map<Id, HOT_InterestedResource__c> irBySR = new Map<Id, HOT_InterestedResource__c>();
-        for (
-            HOT_InterestedResource__c interestedResource : interestedResources
-        ) {
-            irBySR.put(
-                interestedResource.ServiceResource__c,
-                interestedResource
-            );
+        for (HOT_InterestedResource__c interestedResource : interestedResources) {
+            irBySR.put(interestedResource.ServiceResource__c, interestedResource);
         }
         System.assertEquals(
             'Assigned',
@@ -243,11 +222,7 @@ private class HOT_AssignedResourceHandlerTest {
             FROM HOT_InterestedResource__c
             WHERE ServiceAppointment__c = :serviceAppointment.Id
         ];
-        System.assertEquals(
-            1,
-            interestedResources.size(),
-            'Interested Resource was not created.'
-        );
+        System.assertEquals(1, interestedResources.size(), 'Interested Resource was not created.');
 
         HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
             serviceAppointment2.Id,
@@ -260,11 +235,7 @@ private class HOT_AssignedResourceHandlerTest {
             WHERE ServiceAppointment__c = :serviceAppointment2.Id
         ];
 
-        System.assertEquals(
-            1,
-            interestedResources.size(),
-            'Interested Resource should not have been created.'
-        );
+        System.assertEquals(1, interestedResources.size(), 'Interested Resource should not have been created.');
 
         assignedResource.ServiceResourceId = testResource.Id;
         update assignedResource;
@@ -273,10 +244,6 @@ private class HOT_AssignedResourceHandlerTest {
             FROM HOT_InterestedResource__c
             WHERE ServiceAppointment__c = :serviceAppointment2.Id
         ];
-        System.assertEquals(
-            1,
-            interestedResources.size(),
-            'Interested Resource should not have been created.'
-        );
+        System.assertEquals(1, interestedResources.size(), 'Interested Resource should not have been created.');
     }
 }

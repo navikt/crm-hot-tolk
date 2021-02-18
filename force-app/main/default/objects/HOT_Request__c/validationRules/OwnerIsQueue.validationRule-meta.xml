@@ -5,6 +5,5 @@
     <errorConditionFormula>LEFT(OwnerId  , 3) == &apos;005&apos;
 &amp;&amp;
  !Contains($Profile.Name, &apos;admin&apos;)</errorConditionFormula>
-    <errorMessage
-    >Eieren av en forespørsel kan ikke settes til en bruker, den må settest til en kø.</errorMessage>
+    <errorMessage>Eieren av en forespørsel kan ikke settes til en bruker, den må settest til en kø.</errorMessage>
 </ValidationRule>

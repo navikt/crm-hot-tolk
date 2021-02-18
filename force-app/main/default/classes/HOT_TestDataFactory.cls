@@ -1,9 +1,6 @@
 @istest
 public class HOT_TestDataFactory {
-    public static HOT_Request__c createRequest(
-        String subject,
-        WorkType workType
-    ) {
+    public static HOT_Request__c createRequest(String subject, WorkType workType) {
         return createRequest(subject, workType, 1, null, null);
     }
 
@@ -31,10 +28,7 @@ public class HOT_TestDataFactory {
         return request;
     }
 
-    public static WorkOrder createWorkOrder(
-        HOT_Request__c request,
-        WorkType workType
-    ) {
+    public static WorkOrder createWorkOrder(HOT_Request__c request, WorkType workType) {
         WorkOrder workOrder = new WorkOrder();
         workOrder.HOT_Request__c = request.Id;
         workOrder.Status = 'New';
@@ -46,10 +40,7 @@ public class HOT_TestDataFactory {
         return workOrder;
     }
 
-    public static WorkOrderLineItem createWorkOrderLineItem(
-        WorkOrder workOrder,
-        WorkType workType
-    ) {
+    public static WorkOrderLineItem createWorkOrderLineItem(WorkOrder workOrder, WorkType workType) {
         WorkOrderLineItem workOrderLineItem = new WorkOrderLineItem();
         workOrderLineItem.WorkOrderId = workOrder.Id;
         workOrderLineItem.Status = 'New';
@@ -61,16 +52,12 @@ public class HOT_TestDataFactory {
         return workOrderLineItem;
     }
 
-    public static ServiceAppointment createServiceAppointment(
-        WorkOrderLineItem workOrderLineItem
-    ) {
+    public static ServiceAppointment createServiceAppointment(WorkOrderLineItem workOrderLineItem) {
         ServiceAppointment serviceAppointment = new ServiceAppointment();
         serviceAppointment.ParentRecordId = workOrderLineItem.Id;
         serviceAppointment.Status = 'None';
         serviceAppointment.EarliestStartTime = Datetime.now().addHours(1);
-        serviceAppointment.DueDate = serviceAppointment.EarliestStartTime.addHours(
-            2
-        );
+        serviceAppointment.DueDate = serviceAppointment.EarliestStartTime.addHours(2);
 
         return serviceAppointment;
     }
@@ -102,9 +89,7 @@ public class HOT_TestDataFactory {
         return operatingHours;
     }
 
-    public static ServiceTerritory createServiceTerritory(
-        OperatingHours operatingHour
-    ) {
+    public static ServiceTerritory createServiceTerritory(OperatingHours operatingHour) {
         ServiceTerritory serviceTerritory = new ServiceTerritory();
         serviceTerritory.OperatingHoursId = operatingHour.Id;
         serviceTerritory.IsActive = true;
@@ -129,10 +114,7 @@ public class HOT_TestDataFactory {
         return skill;
     }
 
-    public static ServiceResourceSkill createServiceResourceSkill(
-        ServiceResource serviceResource,
-        Skill skill
-    ) {
+    public static ServiceResourceSkill createServiceResourceSkill(ServiceResource serviceResource, Skill skill) {
         ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
         serviceResourceSkill.ServiceResourceId = serviceResource.Id;
         serviceResourceSkill.SkillId = skill.Id;
@@ -140,10 +122,7 @@ public class HOT_TestDataFactory {
         return serviceResourceSkill;
     }
 
-    public static ServiceResourceSkill createServiceResourceSkill(
-        ServiceResource serviceResource,
-        WorkType workType
-    ) {
+    public static ServiceResourceSkill createServiceResourceSkill(ServiceResource serviceResource, WorkType workType) {
         ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
         serviceResourceSkill.ServiceResourceId = serviceResource.Id;
         serviceResourceSkill.SkillId = workType.Id;
@@ -173,10 +152,7 @@ public class HOT_TestDataFactory {
                 .getRecordTypeInfosByDeveloperName()
                 .get('Employer')
                 .getRecordTypeId();
-            return new Account(
-                RecordTypeId = businessAccountRecordTypeId,
-                Name = 'Test AS'
-            );
+            return new Account(RecordTypeId = businessAccountRecordTypeId, Name = 'Test AS');
         }
     }
 
@@ -214,10 +190,7 @@ public class HOT_TestDataFactory {
         return user;
     }
 
-    public static AssignedResource createAssignedResource(
-        Id serviceAppointmentId,
-        Id serviceResourceId
-    ) {
+    public static AssignedResource createAssignedResource(Id serviceAppointmentId, Id serviceResourceId) {
         AssignedResource assignedResource = new AssignedResource(
             ServiceAppointmentId = serviceAppointmentId,
             ServiceResourceId = serviceResourceId
@@ -226,10 +199,7 @@ public class HOT_TestDataFactory {
         return assignedResource;
     }
 
-    public static HOT_InterestedResource__c createInterestedResource(
-        Id serviceAppointmentId,
-        Id serviceResourceId
-    ) {
+    public static HOT_InterestedResource__c createInterestedResource(Id serviceAppointmentId, Id serviceResourceId) {
         HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(
             ServiceAppointment__c = serviceAppointmentId,
             ServiceResource__c = serviceResourceId

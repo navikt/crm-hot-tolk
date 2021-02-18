@@ -6,29 +6,24 @@
         <locationX>391</locationX>
         <locationY>83</locationY>
         <assignmentItems>
-            <assignToReference
-            >AssignedResource.ServiceResourceId</assignToReference>
+            <assignToReference>AssignedResource.ServiceResourceId</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference
-                >getInterestedResource.ServiceResource__c</elementReference>
+                <elementReference>getInterestedResource.ServiceResource__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >AssignedResource.ServiceAppointmentId</assignToReference>
+            <assignToReference>AssignedResource.ServiceAppointmentId</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference
-                >getInterestedResource.ServiceAppointment__c</elementReference>
+                <elementReference>getInterestedResource.ServiceAppointment__c</elementReference>
             </value>
         </assignmentItems>
         <connector>
             <targetReference>createAssignedResource</targetReference>
         </connector>
     </assignments>
-    <interviewLabel
-    >HOT_AssignInterestedResource {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel>HOT_AssignInterestedResource {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_AssignInterestedResource</label>
     <processMetadataValues>
         <name>BuilderType</name>
@@ -61,8 +56,7 @@
         <label>getInterestedResource</label>
         <locationX>227</locationX>
         <locationY>80</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>AssignResource</targetReference>
         </connector>
@@ -104,8 +98,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Success_message</name>
-            <fieldText
-            >&lt;p&gt;Ressursen ble tildelt oppdraget.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Ressursen ble tildelt oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>

@@ -13,10 +13,7 @@ export default class Hot_warningBannerAccount extends LightningElement {
     record;
 
     get securityMeasures() {
-        return getFieldValue(this.record.data, securityMeasures).replace(
-            /;/g,
-            ', '
-        );
+        return getFieldValue(this.record.data, securityMeasures).replace(/;/g, ', ');
     }
 
     get hasSecurityMeasures() {

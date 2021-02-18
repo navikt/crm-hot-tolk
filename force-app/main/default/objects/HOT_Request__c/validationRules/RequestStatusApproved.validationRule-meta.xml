@@ -2,8 +2,7 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>RequestStatusApproved</fullName>
     <active>true</active>
-    <description
-    >Required fields when status is changed to approved.</description>
+    <description>Required fields when status is changed to approved.</description>
     <errorConditionFormula>ISPICKVAL(Status__c ,&quot;Godkjent&quot;)&amp;&amp;
 (
 ISBLANK(InterpretationMethod__c)

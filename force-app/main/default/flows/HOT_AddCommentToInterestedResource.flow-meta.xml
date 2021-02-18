@@ -20,8 +20,7 @@
             </value>
         </inputParameters>
     </actionCalls>
-    <interviewLabel
-    >HOT_AddCommentToInterestedResource {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel>HOT_AddCommentToInterestedResource {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_AddCommentToInterestedResource</label>
     <processMetadataValues>
         <name>BuilderType</name>

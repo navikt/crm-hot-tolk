@@ -1,14 +1,7 @@
 public without sharing class HOT_ServiceAppointmentsSharingService {
-    public static void grantAccess(
-        Map<Id, Id> apppointmentIdByAssignment,
-        Map<Id, Id> resourceByAssignment
-    ) {
-        Map<Id, Id> userIdyResourceId = getUserIdyResourceId(
-            resourceByAssignment.values()
-        );
-        Map<Id, Id> woBySa = getWorkOrderIds(
-            apppointmentIdByAssignment.values()
-        );
+    public static void grantAccess(Map<Id, Id> apppointmentIdByAssignment, Map<Id, Id> resourceByAssignment) {
+        Map<Id, Id> userIdyResourceId = getUserIdyResourceId(resourceByAssignment.values());
+        Map<Id, Id> woBySa = getWorkOrderIds(apppointmentIdByAssignment.values());
         Map<Id, User> userByUserId = getUserById(userIdyResourceId.values());
         Map<Id, Id> accountIdByServiceAppointmentId = getAccountIdByServiceAppointmentId(
             apppointmentIdByAssignment.values()
@@ -19,9 +12,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         for (Id assignmentId : apppointmentIdByAssignment.keySet()) {
             Id resourceId = resourceByAssignment.get(assignmentId);
             Id userId = userIdyResourceId.get(resourceId);
-            Id serviceAppointmentId = apppointmentIdByAssignment.get(
-                assignmentId
-            );
+            Id serviceAppointmentId = apppointmentIdByAssignment.get(assignmentId);
             String workOrderAccessLevel = 'Edit';
             if (userByUserId.get(userId).IsPortalEnabled == true) {
                 workOrderAccessLevel = 'Read';
@@ -44,9 +35,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
             );
             accountShares.add(
                 new AccountShare(
-                    AccountId = accountIdByServiceAppointmentId.get(
-                        serviceAppointmentId
-                    ),
+                    AccountId = accountIdByServiceAppointmentId.get(serviceAppointmentId),
                     AccountAccessLevel = 'Read',
                     CaseAccessLevel = 'None',
                     OpportunityAccessLevel = 'None',
@@ -65,28 +54,17 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         Map<Id, Id> apppointmentByAssignment,
         Map<Id, Id> resourceByAssignment
     ) {
-        Map<Id, Id> userIdyResourceId = getUserIdyResourceId(
-            resourceByAssignment.values()
-        );
+        Map<Id, Id> userIdyResourceId = getUserIdyResourceId(resourceByAssignment.values());
         String soqlQuery = 'SELECT Id FROM ServiceAppointmentShare WHERE RowCause =\'Manual\' AND (';
         for (Id assignmentId : apppointmentByAssignment.keySet()) {
             Id resourceId = resourceByAssignment.get(assignmentId);
             Id userId = userIdyResourceId.get(resourceId);
-            Id serviceAppointmentId = apppointmentByAssignment.get(
-                assignmentId
-            );
-            soqlQuery +=
-                ' (UserOrGroupId=\'' +
-                userId +
-                '\' AND ParentId=\'' +
-                serviceAppointmentId +
-                '\') OR';
+            Id serviceAppointmentId = apppointmentByAssignment.get(assignmentId);
+            soqlQuery += ' (UserOrGroupId=\'' + userId + '\' AND ParentId=\'' + serviceAppointmentId + '\') OR';
         }
         soqlQuery = soqlQuery.removeEnd('OR');
         soqlQuery += ')';
-        List<ServiceAppointmentShare> serviceAppointmentShares = Database.query(
-            (soqlQuery)
-        );
+        List<ServiceAppointmentShare> serviceAppointmentShares = Database.query((soqlQuery));
         delete serviceAppointmentShares;
     }
 
@@ -101,11 +79,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
 
     private static Map<Id, Id> getUserIdyResourceId(List<Id> resourceIds) {
         Map<Id, Id> userIdyResourceId = new Map<Id, Id>();
-        for (ServiceResource sr : [
-            SELECT Id, RelatedRecordId
-            FROM ServiceResource
-            WHERE Id IN :resourceIds
-        ]) {
+        for (ServiceResource sr : [SELECT Id, RelatedRecordId FROM ServiceResource WHERE Id IN :resourceIds]) {
             userIdyResourceId.put(sr.Id, sr.RelatedRecordId);
         }
 
@@ -114,11 +88,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
 
     private static Map<Id, User> getUserById(List<Id> userIds) {
         Map<Id, User> userByUserId = new Map<Id, User>();
-        for (User user : [
-            SELECT Id, IsPortalEnabled
-            FROM User
-            WHERE Id IN :userIds
-        ]) {
+        for (User user : [SELECT Id, IsPortalEnabled FROM User WHERE Id IN :userIds]) {
             userByUserId.put(user.Id, user);
         }
 
@@ -145,18 +115,13 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         Map<Id, Id> workOrderByServiceAppointment = new Map<Id, Id>();
         for (Id saId : serviceApponntmentIds) {
             Id woliId = workOrderLineByServiceAppointment.get(saId);
-            workOrderByServiceAppointment.put(
-                saId,
-                workOrderByLine.get(woliId)
-            );
+            workOrderByServiceAppointment.put(saId, workOrderByLine.get(woliId));
         }
 
         return workOrderByServiceAppointment;
     }
 
-    private static Map<Id, Id> getAccountIdByServiceAppointmentId(
-        List<Id> serviceApponntmentIds
-    ) {
+    private static Map<Id, Id> getAccountIdByServiceAppointmentId(List<Id> serviceApponntmentIds) {
         Map<Id, Id> accountIdByServiceAppointmentId = new Map<Id, Id>();
         for (ServiceAppointment sa : [
             SELECT Id, AccountId

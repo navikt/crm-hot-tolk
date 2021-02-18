@@ -328,8 +328,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field
-        >HOT_InterestedResource__c.ServiceAppointmentFreelanceSubject__c</field>
+        <field>HOT_InterestedResource__c.ServiceAppointmentFreelanceSubject__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -829,8 +828,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field
-        >ServiceAppointment.HOT_AssignedServiceAppointmentFilter__c</field>
+        <field>ServiceAppointment.HOT_AssignedServiceAppointmentFilter__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -855,8 +853,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field
-        >ServiceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c</field>
+        <field>ServiceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1480,8 +1477,7 @@
         <readable>false</readable>
     </fieldPermissions>
     <layoutAssignments>
-        <layout
-        >HOT_HistoricallyAssignedResource__c-Historically Assigned Resource Layout</layout>
+        <layout>HOT_HistoricallyAssignedResource__c-Historically Assigned Resource Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>HOT_InterestedResource__c-Interested Resource Layout</layout>
@@ -1493,8 +1489,7 @@
         <layout>HOT_Request__c-Request Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout
-        >HOT_ServiceTerritoryByQueue__mdt-Service Territory By Queue Layout</layout>
+        <layout>HOT_ServiceTerritoryByQueue__mdt-Service Territory By Queue Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>MaskinportenClient__mdt-Maskinporten Client Layout</layout>
