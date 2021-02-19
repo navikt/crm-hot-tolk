@@ -5,8 +5,7 @@
     <externalId>false</externalId>
     <label>Preferred Interpreter</label>
     <referenceTo>ServiceResource</referenceTo>
-    <relationshipLabel
-    >Service Appointments (Preferred Interpreter)</relationshipLabel>
+    <relationshipLabel>Service Appointments (Preferred Interpreter)</relationshipLabel>
     <relationshipName>PreferredResource_ServiceAppointments</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>

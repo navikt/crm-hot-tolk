@@ -83,8 +83,7 @@
         <name>RequireAccountLookup</name>
     </validationRules>
     <validationRules>
-        <errorMessage
-        ><!-- Fant ingen virksomhet med dette organisasjonsnummeret. --></errorMessage>
+        <errorMessage><!-- Fant ingen virksomhet med dette organisasjonsnummeret. --></errorMessage>
         <name>RequireCompanyIfCompanyFromCommunity</name>
     </validationRules>
     <validationRules>
@@ -92,18 +91,15 @@
         <name>RequireServiceTerritory</name>
     </validationRules>
     <validationRules>
-        <errorMessage
-        ><!-- Lagre forespørselen før du godkjenner den. --></errorMessage>
+        <errorMessage><!-- Lagre forespørselen før du godkjenner den. --></errorMessage>
         <name>SaveRequestBeforeApproving</name>
     </validationRules>
     <validationRules>
-        <errorMessage
-        ><!-- Sekundær tolkemetode kan ikke være det samme som primær tolkemetode. --></errorMessage>
+        <errorMessage><!-- Sekundær tolkemetode kan ikke være det samme som primær tolkemetode. --></errorMessage>
         <name>SecondaryWorkTypeUNEQUALPrimaryWorkType</name>
     </validationRules>
     <validationRules>
-        <errorMessage
-        ><!-- Du kan bare endre fakturastatus når manuell fakturering er krysset av. --></errorMessage>
+        <errorMessage><!-- Du kan bare endre fakturastatus når manuell fakturering er krysset av. --></errorMessage>
         <name>Set_invoice_status</name>
     </validationRules>
     <validationRules>
@@ -111,8 +107,7 @@
         <name>Start_time_before_end_time</name>
     </validationRules>
     <validationRules>
-        <errorMessage
-        ><!-- Du kan ikke bestille tolk i fortiden. --></errorMessage>
+        <errorMessage><!-- Du kan ikke bestille tolk i fortiden. --></errorMessage>
         <name>Start_time_in_future</name>
     </validationRules>
     <validationRules>

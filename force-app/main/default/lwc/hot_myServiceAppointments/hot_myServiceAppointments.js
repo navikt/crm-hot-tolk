@@ -113,19 +113,16 @@ export default class Hot_myServiceAppointments extends LightningElement {
     @track sortDirection = 'asc';
     @track sortedBy = 'EarliestStartTime';
 
-    mobileSortingDefaultValue =
-        '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
+    mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
     get sortingOptions() {
         return [
             {
                 label: 'Start tid stigende',
-                value:
-                    '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} '
+                value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} '
             },
             {
                 label: 'Start tid synkende',
-                value:
-                    '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} '
+                value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} '
             },
             {
                 label: 'Slutt tid stigende',
@@ -145,23 +142,19 @@ export default class Hot_myServiceAppointments extends LightningElement {
             },
             {
                 label: 'Tema A - Å',
-                value:
-                    '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "asc"} '
+                value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "asc"} '
             },
             {
                 label: 'Tema A - Å',
-                value:
-                    '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "desc"} '
+                value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "desc"} '
             },
             {
                 label: 'Arbeidstype A - Å',
-                value:
-                    '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} '
+                value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} '
             },
             {
                 label: 'Arbeidstype Å - A',
-                value:
-                    '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} '
+                value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} '
             }
         ];
     }

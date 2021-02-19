@@ -15,9 +15,7 @@ import {
     recurringEndDateValidations
 } from './hot_createRequestForm_validationRules';
 
-export default class RecordFormCreateExample extends NavigationMixin(
-    LightningElement
-) {
+export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
     @track reRender = 0;
 
     @track isProd;
@@ -28,8 +26,7 @@ export default class RecordFormCreateExample extends NavigationMixin(
     }
 
     @track submitted = false; // if:false={submitted}
-    acceptedFormat =
-        '[.pdf, .png, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
+    acceptedFormat = '[.pdf, .png, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
 
     @track recordId = null;
     @track allRequests;
@@ -156,19 +153,13 @@ export default class RecordFormCreateExample extends NavigationMixin(
 
     @track isPersonNumberValid = true;
     checkPersonNumber(event) {
-        let inputComponent = this.template
-            .querySelector('.skjema')
-            .querySelector('.personNumber');
+        let inputComponent = this.template.querySelector('.skjema').querySelector('.personNumber');
         this.fieldValues.UserPersonNumber__c = inputComponent.value;
-        let regExp = RegExp(
-            '[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'
-        );
+        let regExp = RegExp('[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]');
         this.isPersonNumberValid = regExp.test(inputComponent.value);
     }
     reportValidityPersonNumberField() {
-        let inputComponent = this.template
-            .querySelector('.skjema')
-            .querySelector('.personNumber');
+        let inputComponent = this.template.querySelector('.skjema').querySelector('.personNumber');
         if (!this.isPersonNumberValid) {
             inputComponent.setCustomValidity('Fødselsnummeret er ikke gyldig');
             inputComponent.focus();
@@ -231,15 +222,8 @@ export default class RecordFormCreateExample extends NavigationMixin(
         var tempTime = JSON.parse(JSON.stringify(now));
         tempTime = tempTime.split('');
 
-        if (
-            this.times[index].startTime == null ||
-            this.times[index].startTime == ''
-        ) {
-            if (
-                Math.abs(
-                    parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes()
-                ) <= 1
-            ) {
+        if (this.times[index].startTime == null || this.times[index].startTime == '') {
+            if (Math.abs(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes()) <= 1) {
                 tempTime[14] = '0';
                 tempTime[15] = '0';
             }
@@ -273,10 +257,7 @@ export default class RecordFormCreateExample extends NavigationMixin(
         let tempTime = event.detail.value.split('');
         this.times[index].startTime = tempTime.join('').substring(0, 5);
 
-        if (
-            event.detail.value > this.times[index].endTime ||
-            this.times[index].endTime == null
-        ) {
+        if (event.detail.value > this.times[index].endTime || this.times[index].endTime == null) {
             var first = parseFloat(tempTime[0]);
             var second = parseFloat(tempTime[1]);
             second = (second + 1) % 10;
@@ -365,10 +346,7 @@ export default class RecordFormCreateExample extends NavigationMixin(
     repeatingOptionChosen = '';
     handleRepeatChoiceMade(event) {
         this.repeatingOptionChosen = event.detail.value;
-        if (
-            event.detail.value == 'Weekly' ||
-            event.detail.value == 'Biweekly'
-        ) {
+        if (event.detail.value == 'Weekly' || event.detail.value == 'Biweekly') {
             this.showWeekDays = true;
         } else {
             this.showWeekDays = false;
@@ -404,30 +382,17 @@ export default class RecordFormCreateExample extends NavigationMixin(
 
     handleAdvancedTimeValidations() {
         let typeElement = this.template.querySelector('.recurringType');
-        let recurringTypeValid =
-            validate(typeElement, recurringTypeValidations).length == 0;
+        let recurringTypeValid = validate(typeElement, recurringTypeValidations).length == 0;
 
         let daysElement = this.template.querySelector('.recurringDays');
         let recurringDaysValid =
-            validate(
-                daysElement,
-                recurringDaysValidations,
-                this.repeatingOptionChosen
-            ).length == 0;
+            validate(daysElement, recurringDaysValidations, this.repeatingOptionChosen).length == 0;
 
-        let recurringEndDateElement = this.template.querySelector(
-            '.recurringEndDate'
-        );
+        let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
         let recurringEndDateValid =
-            validate(
-                recurringEndDateElement,
-                recurringEndDateValidations,
-                this.times[0].date
-            ).length == 0;
+            validate(recurringEndDateElement, recurringEndDateValidations, this.times[0].date).length == 0;
 
-        return (
-            recurringTypeValid && recurringDaysValid && recurringEndDateValid
-        );
+        return recurringTypeValid && recurringDaysValid && recurringEndDateValid;
     }
 
     handleValidation() {
@@ -436,11 +401,7 @@ export default class RecordFormCreateExample extends NavigationMixin(
         if (this.isAdvancedTimes) {
             advancedValid = this.handleAdvancedTimeValidations();
         }
-        return (
-            datetimeValid &&
-            this.handlePersonNumberValidation() &&
-            advancedValid
-        );
+        return datetimeValid && this.handlePersonNumberValidation() && advancedValid;
     }
 
     handleDatetimeValidation() {
@@ -451,16 +412,12 @@ export default class RecordFormCreateExample extends NavigationMixin(
             }
         }
         if (invalidIndex.length != 0) {
-            let inputList = this.template.querySelectorAll(
-                '.dynamic-time-inputs-with-line_button'
-            );
+            let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
             for (let index of invalidIndex) {
                 let dateInputElement = inputList[index].querySelector('.date');
                 this.throwInputValidationError(
                     dateInputElement,
-                    dateInputElement.value
-                        ? 'Du kan ikke bestille tolk i fortiden.'
-                        : 'Fyll ut dette feltet.'
+                    dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.'
                 );
             }
         }
@@ -509,10 +466,8 @@ export default class RecordFormCreateExample extends NavigationMixin(
         }
         if (this.sameLocation) {
             this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
-            this.fieldValues.InterpretationPostalCode__c =
-                fields.MeetingPostalCode__c;
-            this.fieldValues.InterpretationPostalCity__c =
-                fields.MeetingPostalCity__c;
+            this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
+            this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
         }
     }
 
@@ -520,9 +475,7 @@ export default class RecordFormCreateExample extends NavigationMixin(
     onHandleNeste() {
         this.fieldValues.Type__c = this.currentRequestType;
 
-        let radioButtonGroup = this.template
-            .querySelector('.skjema')
-            .querySelector('.requestTypeChoice');
+        let radioButtonGroup = this.template.querySelector('.skjema').querySelector('.requestTypeChoice');
 
         //Pressed "NESTE"
         let valid = true;
@@ -538,13 +491,9 @@ export default class RecordFormCreateExample extends NavigationMixin(
                 this.companyForm = true;
                 this.fieldValues.IsOtherEconomicProvicer__c = true;
             } else if (this.currentRequestType == 'PublicEvent') {
-                let typeOfEventElement = this.template
-                    .querySelector('.skjema')
-                    .querySelector('.type-arrangement');
+                let typeOfEventElement = this.template.querySelector('.skjema').querySelector('.type-arrangement');
                 if (this.eventType == null) {
-                    typeOfEventElement.setCustomValidity(
-                        'Du må velge type arrangement'
-                    );
+                    typeOfEventElement.setCustomValidity('Du må velge type arrangement');
                     typeOfEventElement.focus();
                     this.spin = false;
                     valid = false;
@@ -568,10 +517,7 @@ export default class RecordFormCreateExample extends NavigationMixin(
             radioButtonGroup.focus();
         }
         radioButtonGroup.reportValidity();
-        if (
-            this.currentRequestType == 'User' ||
-            this.currentRequestType == 'Company'
-        ) {
+        if (this.currentRequestType == 'User' || this.currentRequestType == 'Company') {
             this.isPersonNumberValid = false;
         }
     }
@@ -599,9 +545,7 @@ export default class RecordFormCreateExample extends NavigationMixin(
         let tempDate = this.formatDateTime(this.times[index]);
         tempDate = new Date(tempDate.date + ' ' + tempDate.startTime);
         if (!this.validateDate(tempDate)) {
-            dateElement.setCustomValidity(
-                'Du kan ikke bestille tolk i fortiden.'
-            );
+            dateElement.setCustomValidity('Du kan ikke bestille tolk i fortiden.');
             dateElement.focus();
             this.times[index].isValid = false;
         } else {
@@ -653,12 +597,8 @@ export default class RecordFormCreateExample extends NavigationMixin(
         for (let dateTime of this.times) {
             dateTime = this.formatDateTime(dateTime);
             times[dateTime.id.toString()] = {
-                startTime: new Date(
-                    dateTime.date + ' ' + dateTime.startTime
-                ).getTime(),
-                endTime: new Date(
-                    dateTime.date + ' ' + dateTime.endTime
-                ).getTime(),
+                startTime: new Date(dateTime.date + ' ' + dateTime.startTime).getTime(),
+                endTime: new Date(dateTime.date + ' ' + dateTime.endTime).getTime(),
                 isNew: dateTime.isNew
             };
         }
@@ -668,9 +608,7 @@ export default class RecordFormCreateExample extends NavigationMixin(
                 let time = times['0'];
                 let recurringType = this.repeatingOptionChosen;
                 let recurringDays = this.chosenDays;
-                let recurringEndDate = new Date(
-                    this.repeatingEndDate
-                ).getTime();
+                let recurringEndDate = new Date(this.repeatingEndDate).getTime();
                 createWorkOrders({
                     requestId,
                     times: time,
@@ -741,25 +679,17 @@ export default class RecordFormCreateExample extends NavigationMixin(
                 delete this.fieldValues.StartTime__c;
                 delete this.fieldValues.EndTime__c;
 
-                this.sameLocation =
-                    this.fieldValues.MeetingStreet__c ==
-                    this.fieldValues.InterpretationStreet__c;
+                this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
                 if (!this.sameLocation) {
                     this.value = 'no';
                 }
                 this.isEditMode = parsed_params.edit != null;
-                this.showNextButton = !(
-                    parsed_params.edit != null || parsed_params.copy != null
-                );
+                this.showNextButton = !(parsed_params.edit != null || parsed_params.copy != null);
                 if (!this.showNextButton) {
                     this.requestForm = true;
-                    if (
-                        this.fieldValues.Type__c != 'Me' &&
-                        this.fieldValues.Type__c != null
-                    ) {
+                    if (this.fieldValues.Type__c != 'Me' && this.fieldValues.Type__c != null) {
                         this.ordererForm = true;
-                        this.userForm =
-                            this.fieldValues.Type__c != 'PublicEvent';
+                        this.userForm = this.fieldValues.Type__c != 'PublicEvent';
                         this.companyForm = this.fieldValues.Type__c != 'User';
                     }
                 }
@@ -776,9 +706,7 @@ export default class RecordFormCreateExample extends NavigationMixin(
 
                 if (this.fieldValues.Type__c == 'PublicEvent') {
                     this.fieldValues.EventType__c =
-                        this.fieldValues.EventType__c == 'Annet'
-                            ? 'OtherEvent'
-                            : 'SportingEvent';
+                        this.fieldValues.EventType__c == 'Annet' ? 'OtherEvent' : 'SportingEvent';
                 }
             }
         }

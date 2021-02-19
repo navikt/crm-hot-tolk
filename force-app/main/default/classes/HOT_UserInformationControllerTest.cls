@@ -7,12 +7,7 @@ private class HOT_UserInformationControllerTest {
             FROM Profile
             WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
         ];
-        UserRole role = [
-            SELECT Id
-            FROM UserRole
-            WHERE Name = 'Default'
-            LIMIT 1
-        ];
+        UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
         User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
         admin.UserRoleId = role.Id;
         insert admin;
@@ -21,12 +16,7 @@ private class HOT_UserInformationControllerTest {
     @isTest
     static void getPersonPhoneEmailTest() {
         Test.startTest();
-        Profile communityProfile = [
-            SELECT Id
-            FROM Profile
-            WHERE Name = 'Customer Community Login User'
-            LIMIT 1
-        ];
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
 
         Person__c person = HOT_TestDataFactory.createPerson();
@@ -38,14 +28,7 @@ private class HOT_UserInformationControllerTest {
         insert person;
 
         Account account = [
-            SELECT
-                Id,
-                OwnerId,
-                PersonContactId,
-                FirstName,
-                LastName,
-                PersonEmail,
-                CRM_Person__c
+            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
             FROM Account
             WHERE LastName = :'Bruker'
         ];
@@ -67,12 +50,7 @@ private class HOT_UserInformationControllerTest {
     @isTest
     static void getPersonTest() {
         Test.startTest();
-        Profile communityProfile = [
-            SELECT Id
-            FROM Profile
-            WHERE Name = 'Customer Community Login User'
-            LIMIT 1
-        ];
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
 
         Person__c person = HOT_TestDataFactory.createPerson();
@@ -84,14 +62,7 @@ private class HOT_UserInformationControllerTest {
         insert person;
 
         Account account = [
-            SELECT
-                Id,
-                OwnerId,
-                PersonContactId,
-                FirstName,
-                LastName,
-                PersonEmail,
-                CRM_Person__c
+            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
             FROM Account
             WHERE LastName = :'Bruker'
         ];

@@ -57,19 +57,13 @@
                     <p class="typo-normal">{AppointmentNumber__c}</p>
                     <br />
                     <div>
-                        <h2 class="typo-undertittel">
-                            Diskusjon med formidler
-                        </h2>
+                        <h2 class="typo-undertittel">Diskusjon med formidler</h2>
                         <template iterator:it={prevComments}>
                             <p class="typo-normal" key={it.value}>{it.value}</p>
                             <p style="color: transparent" key={it.value}>.</p>
                         </template>
                     </div>
-                    <lightning-textarea
-                        style="margin-bottom: 1rem"
-                        class="newComment"
-                        name="newComment"
-                    >
+                    <lightning-textarea style="margin-bottom: 1rem" class="newComment" name="newComment">
                     </lightning-textarea>
                     <lightning-button
                         onclick={sendComment}
@@ -81,10 +75,7 @@
                     </lightning-button>
                 </div>
             </section>
-            <button
-                class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
-                onclick={closeComments}
-            >
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeComments}>
                 <span class="text-hide">Lukk</span>
             </button>
         </div>
@@ -104,10 +95,7 @@
                 <h2 class="typo-undertittel">Detaljer</h2>
                 <div class="slds-grid slds-gutters">
                     <div class="slds-col slds-size_1-of-2">
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Oppdrag</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Oppdrag</span>
                         <br />
                         <lightning-formatted-text
                             value={detailInterestedResource.AppointmentNumber__c}
@@ -115,10 +103,7 @@
                         >
                         </lightning-formatted-text>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Start tid</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Start tid</span>
                         <br />
                         <lightning-formatted-date-time
                             year="numeric"
@@ -132,10 +117,7 @@
                         >
                         </lightning-formatted-date-time>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Slutt tid</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
                         <br />
                         <lightning-formatted-date-time
                             year="numeric"
@@ -149,10 +131,7 @@
                         >
                         </lightning-formatted-date-time>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Adresse</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Adresse</span>
                         <br />
                         <lightning-formatted-text
                             value={detailInterestedResource.ServiceAppointmentAddress__c}
@@ -160,10 +139,7 @@
                         >
                         </lightning-formatted-text>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Tolkemetode</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Tolkemetode</span>
                         <br />
                         <lightning-formatted-text
                             value={detailInterestedResource.WorkTypeName__c}
@@ -171,10 +147,7 @@
                         >
                         </lightning-formatted-text>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Oppdragstype</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Oppdragstype</span>
                         <br />
                         <lightning-formatted-text
                             value={detailInterestedResource.ServiceAppointment__r.HOT_AssignmentType__c}
@@ -183,10 +156,7 @@
                         </lightning-formatted-text>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Status</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Status</span>
                         <br />
                         <lightning-formatted-text
                             value={detailInterestedResource.Status__c}
@@ -194,10 +164,7 @@
                         >
                         </lightning-formatted-text>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Påmeldte</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Påmeldte</span>
                         <br />
                         <lightning-formatted-number
                             value={detailInterestedResource.NumberOfInterestedResources__c}
@@ -205,10 +172,7 @@
                         >
                         </lightning-formatted-number>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Fristdato</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Fristdato</span>
                         <br />
                         <lightning-formatted-date-time
                             year="numeric"
@@ -219,10 +183,7 @@
                         >
                         </lightning-formatted-date-time>
                         <br />
-                        <span
-                            class="slds-form-element__label lightning-output-field__label"
-                            >Region</span
-                        >
+                        <span class="slds-form-element__label lightning-output-field__label">Region</span>
                         <br />
                         <lightning-formatted-text
                             value={detailInterestedResource.ServiceAppointment__r.ServiceTerritory.Name}
@@ -232,10 +193,7 @@
                     </div>
                 </div>
                 <br />
-                <span
-                    class="slds-form-element__label lightning-output-field__label"
-                    >Tema</span
-                >
+                <span class="slds-form-element__label lightning-output-field__label">Tema</span>
                 <br />
                 <lightning-formatted-text
                     value={detailInterestedResource.ServiceAppointment__r.HOT_FreelanceSubject__c}
@@ -246,18 +204,10 @@
                     <div style="padding: 1rem">
                         <br />
                         <div>
-                            <h2
-                                class="typo-undertittel ikke-sensitive-opplysninger__label"
-                            >
-                                Dialog med formidler
-                            </h2>
+                            <h2 class="typo-undertittel ikke-sensitive-opplysninger__label">Dialog med formidler</h2>
                             <template iterator:it={prevComments}>
-                                <p class="typo-normal" key={it.value}>
-                                    {it.value}
-                                </p>
-                                <p style="color: transparent" key={it.value}>
-                                    .
-                                </p>
+                                <p class="typo-normal" key={it.value}>{it.value}</p>
+                                <p style="color: transparent" key={it.value}>.</p>
                             </template>
                         </div>
                         <lightning-textarea
@@ -277,17 +227,11 @@
                         </lightning-button>
                     </div>
                 </section>
-                <button
-                    class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
-                    onclick={closeComments}
-                >
+                <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeComments}>
                     <span class="text-hide">Lukk</span>
                 </button>
             </section>
-            <button
-                class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
-                onclick={abortShowDetails}
-            >
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
                 <span class="text-hide">Lukk</span>
             </button>
         </div>

@@ -1,9 +1,7 @@
 import { LightningElement } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
-export default class hot_userInformation extends NavigationMixin(
-    LightningElement
-) {
+export default class hot_userInformation extends NavigationMixin(LightningElement) {
     goToMyPage() {
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',

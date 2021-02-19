@@ -6,6 +6,5 @@
 &amp;&amp;
  HOT_IsReleasedToFreelance__c == false</errorConditionFormula>
     <errorDisplayField>Status</errorDisplayField>
-    <errorMessage
-    >Bruk knappen oppe til høyre når du skal frigi et oppdrag til frilanstolker.</errorMessage>
+    <errorMessage>Bruk knappen oppe til høyre når du skal frigi et oppdrag til frilanstolker.</errorMessage>
 </ValidationRule>

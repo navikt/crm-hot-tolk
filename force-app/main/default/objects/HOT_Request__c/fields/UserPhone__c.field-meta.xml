@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>UserPhone__c</fullName>
-    <description
-    >Phone number of the user in need of interpretation.</description>
+    <description>Phone number of the user in need of interpretation.</description>
     <externalId>false</externalId>
     <label>User Phone</label>
     <required>false</required>
