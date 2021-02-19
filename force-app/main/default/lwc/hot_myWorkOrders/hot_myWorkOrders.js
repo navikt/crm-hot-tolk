@@ -243,9 +243,9 @@ export default class Hot_myWorkOrders extends NavigationMixin(
         if (index !== -1) {
             console.log('index != -1');
             if (
-                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !=
+                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !==
                     'Avlyst' &&
-                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !=
+                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !==
                     'Dekket'
             ) {
                 console.log('confirm');
