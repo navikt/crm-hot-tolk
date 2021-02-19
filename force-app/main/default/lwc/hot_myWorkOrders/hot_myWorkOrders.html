@@ -33,4 +33,72 @@
         >
         </lightning-datatable>
     </div>
+
+    <div
+        if:true={isDetails}
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            tabindex="-1"
+            role="dialog"
+        >
+            <section>
+                <span class="slds-form-element__label lightning-output-field__label">Start tid</span>
+                <br />
+                <lightning-formatted-date-time
+                    year="numeric"
+                    day="2-digit"
+                    month="2-digit"
+                    hour12="false"
+                    hour="2-digit"
+                    minute="2-digit"
+                    value={workOrderDetails.StartDate}
+                    class="lightning-output-field"
+                >
+                </lightning-formatted-date-time>
+                <br />
+                <span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
+                <br />
+                <lightning-formatted-date-time
+                    year="numeric"
+                    day="2-digit"
+                    month="2-digit"
+                    hour12="false"
+                    hour="2-digit"
+                    minute="2-digit"
+                    value={workOrderDetails.EndDate}
+                    class="lightning-output-field"
+                >
+                </lightning-formatted-date-time>
+                <br />
+                <span class="slds-form-element__label lightning-output-field__label">Tema</span>
+                <br />
+                <lightning-formatted-text value={workOrderDetails.Subject} class="lightning-output-field">
+                </lightning-formatted-text>
+                <br />
+                <span class="slds-form-element__label lightning-output-field__label">Bestillingsnummer</span>
+                <br />
+                <lightning-formatted-text value={workOrderDetails.HOT_RequestName__c} class="lightning-output-field">
+                </lightning-formatted-text>
+                <br />
+                <span class="slds-form-element__label lightning-output-field__label">Status</span>
+                <br />
+                <lightning-formatted-text
+                    value={workOrderDetails.HOT_ExternalWorkOrderStatus__c}
+                    class="lightning-output-field"
+                >
+                </lightning-formatted-text>
+                <br />
+                <span class="slds-form-element__label lightning-output-field__label">Tolker</span>
+                <br />
+                <lightning-formatted-text value={workOrderDetails.HOT_Interpreters__c} class="lightning-output-field">
+                </lightning-formatted-text>
+            </section>
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
+                <span class="text-hide">Lukk</span>
+            </button>
+        </div>
+    </div>
 </template>

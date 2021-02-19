@@ -119,8 +119,7 @@ public without sharing class HOT_WorkOrderListController {
                     workOrders.get(workOrderId).Status != 'Canceled' &&
                     workOrders.get(workOrderId).Status != 'Partially Complete' &&
                     workOrders.get(workOrderId).Status != 'Completed' &&
-                    (workOrders.get(workOrderId).HOT_Request__r.Orderer__c == AccountId ||
-                    workOrders.get(workOrderId).HOT_Request__r.Account__c == AccountId)
+                    workOrders.get(workOrderId).HOT_Request__r.Orderer__c == AccountId
                 ) {
                     workOrders.get(workOrderId).HOT_IsCancelable__c = true;
                 }
