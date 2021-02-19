@@ -45,61 +45,56 @@
             role="dialog"
         >
             <section>
-                <div class="slds-grid slds-gutters">
-                    <span class="slds-form-element__label lightning-output-field__label">Start tid</span>
-                    <br />
-                    <lightning-formatted-date-time
-                        year="numeric"
-                        day="2-digit"
-                        month="2-digit"
-                        hour12="false"
-                        hour="2-digit"
-                        minute="2-digit"
-                        value={workOrderDetails.StartDate}
-                        class="lightning-output-field"
-                    >
-                    </lightning-formatted-date-time>
-                    <br />
-                    <span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
-                    <br />
-                    <lightning-formatted-date-time
-                        year="numeric"
-                        day="2-digit"
-                        month="2-digit"
-                        hour12="false"
-                        hour="2-digit"
-                        minute="2-digit"
-                        value={workOrderDetails.EndDate}
-                        class="lightning-output-field"
-                    >
-                    </lightning-formatted-date-time>
-                    <br />
-                    <span class="slds-form-element__label lightning-output-field__label">Tema</span>
-                    <br />
-                    <lightning-formatted-text value={workOrderDetails.Subject} class="lightning-output-field">
-                    </lightning-formatted-text>
-                    <span class="slds-form-element__label lightning-output-field__label">Bestillingsnummer</span>
-                    <br />
-                    <lightning-formatted-text
-                        value={workOrderDetails.HOT_RequestName__c}
-                        class="lightning-output-field"
-                    >
-                    </lightning-formatted-text>
-                    <span class="slds-form-element__label lightning-output-field__label">Status</span>
-                    <br />
-                    <lightning-formatted-text
-                        value={workOrderDetails.HOT_ExternalWorkOrderStatus__c}
-                        class="lightning-output-field"
-                    >
-                    </lightning-formatted-text>
-                    <span class="slds-form-element__label lightning-output-field__label">Tolker</span>
-                    <br />
-                    <lightning-formatted-text
-                        value={workOrderDetails.HOT_Interpreters__c}
-                        class="lightning-output-field"
-                    >
-                    </lightning-formatted-text>
-                </div>
+                <span class="slds-form-element__label lightning-output-field__label">Start tid</span>
+                <br />
+                <lightning-formatted-date-time
+                    year="numeric"
+                    day="2-digit"
+                    month="2-digit"
+                    hour12="false"
+                    hour="2-digit"
+                    minute="2-digit"
+                    value={workOrderDetails.StartDate}
+                    class="lightning-output-field"
+                >
+                </lightning-formatted-date-time>
+                <br />
+                <span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
+                <br />
+                <lightning-formatted-date-time
+                    year="numeric"
+                    day="2-digit"
+                    month="2-digit"
+                    hour12="false"
+                    hour="2-digit"
+                    minute="2-digit"
+                    value={workOrderDetails.EndDate}
+                    class="lightning-output-field"
+                >
+                </lightning-formatted-date-time>
+                <br />
+                <span class="slds-form-element__label lightning-output-field__label">Tema</span>
+                <br />
+                <lightning-formatted-text value={workOrderDetails.Subject} class="lightning-output-field">
+                </lightning-formatted-text>
+                <br />
+                <span class="slds-form-element__label lightning-output-field__label">Bestillingsnummer</span>
+                <br />
+                <lightning-formatted-text value={workOrderDetails.HOT_RequestName__c} class="lightning-output-field">
+                </lightning-formatted-text>
+                <br />
+                <span class="slds-form-element__label lightning-output-field__label">Status</span>
+                <br />
+                <lightning-formatted-text
+                    value={workOrderDetails.HOT_ExternalWorkOrderStatus__c}
+                    class="lightning-output-field"
+                >
+                </lightning-formatted-text>
+                <br />
+                <span class="slds-form-element__label lightning-output-field__label">Tolker</span>
+                <br />
+                <lightning-formatted-text value={workOrderDetails.HOT_Interpreters__c} class="lightning-output-field">
+                </lightning-formatted-text>
             </section>
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
                 <span class="text-hide">Lukk</span>
