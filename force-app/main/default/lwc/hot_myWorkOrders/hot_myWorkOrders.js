@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import STATUS from '@salesforce/schema/WorkOrder.Status';
 import { updateRecord } from 'lightning/uiRecordApi';
@@ -7,8 +7,6 @@ import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import getWorkOrdersFromRequest from '@salesforce/apex/HOT_WorkOrderListController.getWorkOrdersFromRequest';
 import getMyWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrders';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
-
-var actions = [{ label: 'Avlys', name: 'delete' }];
 
 export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) {
     @track columns = [
@@ -71,9 +69,10 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
     ];
     getRowActions(row, doneCallback) {
         let actions = [];
-        if (row['HOT_IsCancelable__c']) {
+        if (row.HOT_IsCancelable__c) {
             actions.push({ label: 'Avlys', name: 'delete' });
         }
+        actions.push({ label: 'Detaljer', name: 'details' });
         doneCallback(actions);
     }
 
@@ -99,7 +98,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 
     @track showAll = true;
     connectedCallback() {
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             if (i < this.columnLabels.length) {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
             } else {
@@ -111,18 +110,18 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
         let params = testURL.split('?')[1];
 
         function parse_query_string(query) {
-            var vars = query.split('&');
-            var query_string = {};
-            for (var i = 0; i < vars.length; i++) {
-                var pair = vars[i].split('=');
-                var key = decodeURIComponent(pair[0]);
-                var value = decodeURIComponent(pair[1]);
+            let vars = query.split('&');
+            let query_string = {};
+            for (let i = 0; i < vars.length; i++) {
+                let pair = vars[i].split('=');
+                let key = decodeURIComponent(pair[0]);
+                let value = decodeURIComponent(pair[1]);
                 // If first entry with this name
                 if (typeof query_string[key] === 'undefined') {
                     query_string[key] = decodeURIComponent(value);
                     // If second entry with this name
                 } else if (typeof query_string[key] === 'string') {
-                    var arr = [query_string[key], decodeURIComponent(value)];
+                    let arr = [query_string[key], decodeURIComponent(value)];
                     query_string[key] = arr;
                     // If third or later entry with this name
                 } else {
@@ -133,8 +132,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
         }
 
         if (params != undefined) {
-            var parsed_params = parse_query_string(params);
-            let requestNumber = parsed_params.id;
+            let parsed_params = parse_query_string(params);
             if (parsed_params.id != null) {
                 this.requestNumber = parsed_params.id;
             }
@@ -207,18 +205,34 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
             case 'delete':
                 this.cancelWorkOrder(row);
                 break;
+            case 'details':
+                this.showDetails(row);
+                break;
+            default:
+                break;
         }
     }
+
+    @track isDetails = false;
+    @track workOrderDetails = null;
+    showDetails(row) {
+        this.workOrderDetails = row;
+        this.isDetails = true;
+    }
+    abortShowDetails() {
+        this.isDetails = false;
+    }
+
     cancelWorkOrder(row) {
         const { Id } = row;
         console.log(JSON.stringify(this.workOrders));
         const index = this.findRowIndexById(Id);
         console.log(index);
-        if (index != -1) {
+        if (index !== -1) {
             console.log('index != -1');
             if (
-                this.workOrders[index].HOT_ExternalWorkOrderStatus__c != 'Avlyst' &&
-                this.workOrders[index].HOT_ExternalWorkOrderStatus__c != 'Dekket'
+                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Avlyst' &&
+                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Dekket'
             ) {
                 console.log('confirm');
                 if (confirm('Er du sikker på at du vil avlyse?')) {
