@@ -72,10 +72,9 @@ export default class Hot_myWorkOrders extends NavigationMixin(
     getRowActions(row, doneCallback) {
         let actions = [];
         if (row.HOT_IsCancelable__c) {
-            actions.push({ label: 'Avlys', name: 'delete', disabled: false });
-        } else {
-            actions.push({ label: 'Avlys', name: 'delete', disabled: true });
+            actions.push({ label: 'Avlys', name: 'delete' });
         }
+        actions.push({ label: 'Detaljer', name: 'details' });
         doneCallback(actions);
     }
 
@@ -231,10 +230,24 @@ export default class Hot_myWorkOrders extends NavigationMixin(
             case 'delete':
                 this.cancelWorkOrder(row);
                 break;
+            case 'details':
+                this.showDetails(row);
+                break;
             default:
                 break;
         }
     }
+
+    @track isDetails = false;
+    @track workOrderDetails = null;
+    showDetails(row) {
+        this.workOrderDetails = row;
+        this.isDetails = true;
+    }
+    abortShowDetails() {
+        this.isDetails = false;
+    }
+
     cancelWorkOrder(row) {
         const { Id } = row;
         console.log(JSON.stringify(this.workOrders));
