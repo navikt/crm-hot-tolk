@@ -2,8 +2,7 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>50.0</apiVersion>
 	<isExposed>true</isExposed>
-	<description
-    >Used to show a list of appointments (WorkOrder) in the Community</description>
+	<description>Used to show a list of appointments (WorkOrder) in the Community</description>
 	<masterLabel>List of WorkOrders</masterLabel>
 	<targets>
 		<target>lightningCommunity__Page</target>

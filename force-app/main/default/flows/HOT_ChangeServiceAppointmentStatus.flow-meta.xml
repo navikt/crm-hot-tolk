@@ -6,24 +6,21 @@
         <locationX>1018</locationX>
         <locationY>998</locationY>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>Cancel_Comment_Bruker</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.Status</assignToReference>
+            <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>Canceled</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.HOT_DoNotCreateHAR__c</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_DoNotCreateHAR__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
@@ -39,40 +36,35 @@
         <locationX>1370</locationX>
         <locationY>1574</locationY>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.Status</assignToReference>
+            <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>None</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.HOT_AssignedResourceId__c</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_AssignedResourceId__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue />
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.HOT_ServiceResource__c</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_ServiceResource__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue />
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.HOT_CanceledByInterpreter__c</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_CanceledByInterpreter__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.HOT_DoNotCreateHAR__c</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_DoNotCreateHAR__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
@@ -88,32 +80,28 @@
         <locationX>446</locationX>
         <locationY>1334</locationY>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.Status</assignToReference>
+            <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>Completed</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.ActualStartTime</assignToReference>
+            <assignToReference>CurrentServiceAppointment.ActualStartTime</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>New_start_time_dekket</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.ActualEndTime</assignToReference>
+            <assignToReference>CurrentServiceAppointment.ActualEndTime</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>New_end_time_dekket</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.HOT_DoNotCreateHAR__c</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_DoNotCreateHAR__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
@@ -129,16 +117,14 @@
         <locationX>754</locationX>
         <locationY>878</locationY>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.Status</assignToReference>
+            <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>In Progress</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference
-            >CurrentServiceAppointment.HOT_DoNotCreateHAR__c</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_DoNotCreateHAR__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
@@ -202,25 +188,21 @@
         <locationX>446</locationX>
         <locationY>878</locationY>
         <defaultConnector>
-            <targetReference
-            >Create_Historically_Assigned_Resource_Dekket</targetReference>
+            <targetReference>Create_Historically_Assigned_Resource_Dekket</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel
-        >No change in Start or End Time</defaultConnectorLabel>
+        <defaultConnectorLabel>No change in Start or End Time</defaultConnectorLabel>
         <rules>
             <name>ChangedStartorEndTime</name>
             <conditionLogic>or</conditionLogic>
             <conditions>
-                <leftValueReference
-                >CurrentServiceAppointment.SchedStartTime</leftValueReference>
+                <leftValueReference>CurrentServiceAppointment.SchedStartTime</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
                     <elementReference>New_start_time_dekket</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference
-                >CurrentServiceAppointment.SchedEndTime</leftValueReference>
+                <leftValueReference>CurrentServiceAppointment.SchedEndTime</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
                     <elementReference>New_end_time_dekket</elementReference>
@@ -270,8 +252,7 @@
             <name>Completed</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference
-                >CurrentServiceAppointment.Status</leftValueReference>
+                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Completed</stringValue>
@@ -315,8 +296,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference
-                >Create_Historically_Assigned_Resource_Pagar</targetReference>
+                <targetReference>Create_Historically_Assigned_Resource_Pagar</targetReference>
             </connector>
             <label>Pågår</label>
         </rules>
@@ -356,8 +336,7 @@
         <dataType>String</dataType>
         <expression>{!$User.Id}</expression>
     </formulas>
-    <interviewLabel
-    >HOT_ChangeServiceAppointmentStatus {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel>HOT_ChangeServiceAppointmentStatus {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_ChangeServiceAppointmentStatus</label>
     <processMetadataValues>
         <name>BuilderType</name>
@@ -389,8 +368,7 @@
         <inputAssignments>
             <field>ServiceAppointment__c</field>
             <value>
-                <elementReference
-                >CurrentServiceAppointment.Id</elementReference>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -424,8 +402,7 @@
         <inputAssignments>
             <field>ServiceAppointment__c</field>
             <value>
-                <elementReference
-                >CurrentServiceAppointment.Id</elementReference>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -459,8 +436,7 @@
         <inputAssignments>
             <field>ServiceAppointment__c</field>
             <value>
-                <elementReference
-                >CurrentServiceAppointment.Id</elementReference>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -494,8 +470,7 @@
         <inputAssignments>
             <field>ServiceAppointment__c</field>
             <value>
-                <elementReference
-                >CurrentServiceAppointment.Id</elementReference>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -517,8 +492,7 @@
         <label>Get Assigned Resource</label>
         <locationX>567</locationX>
         <locationY>278</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >true</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>isCompleted</targetReference>
         </connector>
@@ -526,8 +500,7 @@
             <field>ServiceAppointmentId</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference
-                >CurrentServiceAppointment.Id</elementReference>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
             </value>
         </filters>
         <object>AssignedResource</object>
@@ -541,8 +514,7 @@
         <label>Get ServiceAppointment</label>
         <locationX>567</locationX>
         <locationY>158</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >true</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Assigned_Resource</targetReference>
         </connector>
@@ -570,8 +542,7 @@
         <label>getInterestedResource</label>
         <locationX>1370</locationX>
         <locationY>998</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >true</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Interested_Resource</targetReference>
         </connector>
@@ -579,8 +550,7 @@
             <field>ServiceAppointment__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference
-                >CurrentServiceAppointment.Id</elementReference>
+                <elementReference>CurrentServiceAppointment.Id</elementReference>
             </value>
         </filters>
         <filters>
@@ -641,8 +611,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference
-            >Create_Historically_Assigned_Resource_Avlyst_Bruker</targetReference>
+            <targetReference>Create_Historically_Assigned_Resource_Avlyst_Bruker</targetReference>
         </connector>
         <fields>
             <name>Cancel_Comment_Bruker</name>
@@ -663,8 +632,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference
-            >Create_Historically_Assigned_Resource_Avlyst_Tolk</targetReference>
+            <targetReference>Create_Historically_Assigned_Resource_Avlyst_Tolk</targetReference>
         </connector>
         <fields>
             <name>Cancel_Comment_Tolk</name>
@@ -685,14 +653,12 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference
-            >Create_Historically_Assigned_Resource_Dekket</targetReference>
+            <targetReference>Create_Historically_Assigned_Resource_Dekket</targetReference>
         </connector>
         <fields>
             <name>Completed_Comment_Text</name>
             <dataType>String</dataType>
-            <fieldText
-            >Oppgi en begrunnelse for å endre start- eller slutt-tid</fieldText>
+            <fieldText>Oppgi en begrunnelse for å endre start- eller slutt-tid</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
         </fields>
@@ -739,8 +705,7 @@
             <name>New_start_time_dekket</name>
             <dataType>DateTime</dataType>
             <defaultValue>
-                <elementReference
-                >CurrentServiceAppointment.SchedStartTime</elementReference>
+                <elementReference>CurrentServiceAppointment.SchedStartTime</elementReference>
             </defaultValue>
             <fieldText>Start-tid</fieldText>
             <fieldType>InputField</fieldType>
@@ -750,8 +715,7 @@
             <name>New_end_time_dekket</name>
             <dataType>DateTime</dataType>
             <defaultValue>
-                <elementReference
-                >CurrentServiceAppointment.SchedEndTime</elementReference>
+                <elementReference>CurrentServiceAppointment.SchedEndTime</elementReference>
             </defaultValue>
             <fieldText>Slutt-tid</fieldText>
             <fieldType>InputField</fieldType>

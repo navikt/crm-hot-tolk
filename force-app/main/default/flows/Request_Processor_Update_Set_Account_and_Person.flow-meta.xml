@@ -6,8 +6,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference
-            >isChangedDecision8_myRule_7_Status_c</targetReference>
+            <targetReference>isChangedDecision8_myRule_7_Status_c</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
@@ -21,17 +20,14 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference
-                >myVariable_old.Account__c</leftValueReference>
+                <leftValueReference>myVariable_old.Account__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <elementReference
-                    >myVariable_current.Account__c</elementReference>
+                    <elementReference>myVariable_current.Account__c</elementReference>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference
-                >isChangedDecision8_myRule_7_Status_c</targetReference>
+                <targetReference>isChangedDecision8_myRule_7_Status_c</targetReference>
             </connector>
             <label>isChangedRule_2_myRule_1_Account_c</label>
         </rules>
@@ -56,12 +52,10 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference
-                >myVariable_old.Status__c</leftValueReference>
+                <leftValueReference>myVariable_old.Status__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <elementReference
-                    >myVariable_current.Status__c</elementReference>
+                    <elementReference>myVariable_current.Status__c</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -119,8 +113,7 @@
                         <stringValue>Boolean</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference
-                >isChangedRule_2_myRule_1_Account_c</leftValueReference>
+                <leftValueReference>isChangedRule_2_myRule_1_Account_c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -157,8 +150,7 @@
                         <stringValue>Boolean</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference
-                >myVariable_current.Account__c</leftValueReference>
+                <leftValueReference>myVariable_current.Account__c</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -241,8 +233,7 @@
                         <stringValue>Boolean</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference
-                >isChangedRule_8_myRule_7_Status_c</leftValueReference>
+                <leftValueReference>isChangedRule_8_myRule_7_Status_c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -273,8 +264,7 @@
                         <stringValue>Picklist</stringValue>
                     </value>
                 </processMetadataValues>
-                <leftValueReference
-                >myVariable_current.Status__c</leftValueReference>
+                <leftValueReference>myVariable_current.Status__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Annullert</stringValue>
@@ -290,8 +280,7 @@
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue
-                >[HOT_Request__c].Account__c.CRM_Person__c </stringValue>
+                <stringValue>[HOT_Request__c].Account__c.CRM_Person__c </stringValue>
             </value>
         </processMetadataValues>
         <name>formula_5_myRule_4_A1_8747120873</name>
@@ -313,8 +302,7 @@ ISCHANGED([HOT_Request__c].Account__c)</stringValue>
 &amp;&amp;
 ISCHANGED({!myVariable_current.Account__c})</expression>
     </formulas>
-    <interviewLabel
-    >Request_Processor_Update_Set_Account_and_Person-2_InterviewLabel</interviewLabel>
+    <interviewLabel>Request_Processor_Update_Set_Account_and_Person-2_InterviewLabel</interviewLabel>
     <label>Request Processor - Update - Set Account and Person</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -548,8 +536,7 @@ ISCHANGED({!myVariable_current.Account__c})</expression>
             </processMetadataValues>
             <field>Person__c</field>
             <value>
-                <elementReference
-                >formula_5_myRule_4_A1_8747120873</elementReference>
+                <elementReference>formula_5_myRule_4_A1_8747120873</elementReference>
             </value>
         </inputAssignments>
         <object>HOT_Request__c</object>
@@ -730,8 +717,7 @@ ISCHANGED({!myVariable_current.Account__c})</expression>
         </inputAssignments>
         <object>HOT_Request__c</object>
     </recordUpdates>
-    <startElementReference
-    >isChangedDecision2_myRule_1_Account_c</startElementReference>
+    <startElementReference>isChangedDecision2_myRule_1_Account_c</startElementReference>
     <status>Active</status>
     <variables>
         <name>myVariable_current</name>

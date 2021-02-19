@@ -147,32 +147,16 @@ export default class Hot_openServiceAppointments extends LightningElement {
         var tempServiceAppointments = [];
         for (var i = 0; i < this.allServiceAppointments.length; i++) {
             if (this.isRequestNumberNull == false) {
-                if (
-                    this.allServiceAppointments[i].HOT_RequestNumber__c ==
-                    this.requestNumber
-                ) {
-                    tempServiceAppointments.push(
-                        this.allServiceAppointments[i]
-                    );
+                if (this.allServiceAppointments[i].HOT_RequestNumber__c == this.requestNumber) {
+                    tempServiceAppointments.push(this.allServiceAppointments[i]);
                 }
             } else if (this.isScreenInterpretation) {
-                if (
-                    this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c
-                ) {
-                    tempServiceAppointments.push(
-                        this.allServiceAppointments[i]
-                    );
+                if (this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c) {
+                    tempServiceAppointments.push(this.allServiceAppointments[i]);
                 }
             } else {
-                if (
-                    this.regions.includes(
-                        this.allServiceAppointments[i].ServiceTerritory
-                            .HOT_DeveloperName__c
-                    )
-                ) {
-                    tempServiceAppointments.push(
-                        this.allServiceAppointments[i]
-                    );
+                if (this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c)) {
+                    tempServiceAppointments.push(this.allServiceAppointments[i]);
                 }
             }
         }
@@ -182,15 +166,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
     connectedCallback() {
         for (var i = 0; i < 10; i++) {
             if (i < this.columnLabels.length) {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    this.columnLabels[i]
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
             } else {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    ''
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
         }
 
@@ -201,8 +179,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     @track sortDirection = 'desc';
     @track sortedBy = 'HOT_ReleaseDate__c';
 
-    mobileSortingDefaultValue =
-        '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ';
+    mobileSortingDefaultValue = '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ';
     get sortingOptions() {
         return getMobileSortingOptions(this.columns);
     }
@@ -211,21 +188,13 @@ export default class Hot_openServiceAppointments extends LightningElement {
         let value = JSON.parse(event.detail.value);
         this.sortDirection = value.sortDirection;
         this.sortedBy = value.fieldName;
-        this.allServiceAppointments = sortList(
-            this.allServiceAppointments,
-            this.sortedBy,
-            this.sortDirection
-        );
+        this.allServiceAppointments = sortList(this.allServiceAppointments, this.sortedBy, this.sortDirection);
         this.filterServiceAppointments();
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
-        this.allServiceAppointments = sortList(
-            this.allServiceAppointments,
-            this.sortedBy,
-            this.sortDirection
-        );
+        this.allServiceAppointments = sortList(this.allServiceAppointments, this.sortedBy, this.sortDirection);
         this.filterServiceAppointments();
     }
 
@@ -291,9 +260,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         if (this.selectedRows.length > 0) {
             this.isAddComments = true;
         } else {
-            alert(
-                'Velg oppdrag du ønsker å melde interesse om, så trykk på knappen.'
-            );
+            alert('Velg oppdrag du ønsker å melde interesse om, så trykk på knappen.');
         }
     }
     confirmSendingInterest() {
@@ -302,16 +269,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
         for (var i = 0; i < this.selectedRows.length; i++) {
             serviceAppointmentIds.push(this.selectedRows[i].Id);
         }
-        this.template
-            .querySelectorAll('lightning-input-field')
-            .forEach((element) => {
-                comments.push(element.value);
-            });
-        createInterestedResources({ serviceAppointmentIds, comments }).then(
-            () => {
-                refreshApex(this.wiredAllServiceAppointmentsResult);
-            }
-        );
+        this.template.querySelectorAll('lightning-input-field').forEach((element) => {
+            comments.push(element.value);
+        });
+        createInterestedResources({ serviceAppointmentIds, comments }).then(() => {
+            refreshApex(this.wiredAllServiceAppointmentsResult);
+        });
         this.isAddComments = false;
         //location.reload();
     }
@@ -326,9 +289,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         const fields = event.detail.fields;
         this.regions = fields.HOT_PreferredRegions__c;
         this.filterServiceAppointments();
-        this.template
-            .querySelector('lightning-record-edit-form')
-            .submit(this.fieldValues);
+        this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
         this.handleHideRegionFilter();
     }
     handleHideRegionFilter() {

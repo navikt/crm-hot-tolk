@@ -2,6 +2,5 @@
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Tolkemetode (sekundær)</label>
     <name>InterpretationMethodSecondary__c</name>
-    <relationshipLabel
-    ><!-- Requests (Interpretation Method Secondary) --></relationshipLabel>
+    <relationshipLabel><!-- Requests (Interpretation Method Secondary) --></relationshipLabel>
 </CustomFieldTranslation>

@@ -8,9 +8,7 @@ import getWorkOrdersFromRequest from '@salesforce/apex/HOT_WorkOrderListControll
 import getMyWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrders';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
 
-export default class Hot_myWorkOrders extends NavigationMixin(
-    LightningElement
-) {
+export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) {
     @track columns = [
         {
             label: 'Start tid',
@@ -78,15 +76,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(
         doneCallback(actions);
     }
 
-    columnLabels = [
-        "'Start tid'",
-        "'Slutt tid'",
-        "'Tema'",
-        "'Bestillingsnummer'",
-        "'Status'",
-        "'Tolker'",
-        "''"
-    ];
+    columnLabels = ["'Start tid'", "'Slutt tid'", "'Tema'", "'Bestillingsnummer'", "'Status'", "'Tolker'", "''"];
 
     wiredWorkOrderResult;
     @track workOrders = [];
@@ -110,15 +100,9 @@ export default class Hot_myWorkOrders extends NavigationMixin(
     connectedCallback() {
         for (let i = 0; i < 10; i++) {
             if (i < this.columnLabels.length) {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    this.columnLabels[i]
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
             } else {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    ''
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
         }
 
@@ -198,28 +182,19 @@ export default class Hot_myWorkOrders extends NavigationMixin(
     @track sortDirection = 'asc';
     @track sortedBy = 'StartDate';
 
-    mobileSortingDefaultValue =
-        '{"fieldName": "StartDate", "sortDirection": "asc"} ';
+    mobileSortingDefaultValue = '{"fieldName": "StartDate", "sortDirection": "asc"} ';
     get sortingOptions() {
         return getMobileSortingOptions(this.columns);
     }
     handleMobileSorting(event) {
         this.sortDirection = event.detail.value.sortDirection;
         this.sortedBy = event.detail.value.fieldName;
-        this.workOrders = sortList(
-            this.workOrders,
-            this.sortedBy,
-            this.sortDirection
-        );
+        this.workOrders = sortList(this.workOrders, this.sortedBy, this.sortDirection);
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
-        this.workOrders = sortList(
-            this.workOrders,
-            this.sortedBy,
-            this.sortDirection
-        );
+        this.workOrders = sortList(this.workOrders, this.sortedBy, this.sortDirection);
     }
 
     handleRowAction(event) {
@@ -256,10 +231,8 @@ export default class Hot_myWorkOrders extends NavigationMixin(
         if (index !== -1) {
             console.log('index != -1');
             if (
-                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !==
-                    'Avlyst' &&
-                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !==
-                    'Dekket'
+                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Avlyst' &&
+                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Dekket'
             ) {
                 console.log('confirm');
                 if (confirm('Er du sikker på at du vil avlyse?')) {

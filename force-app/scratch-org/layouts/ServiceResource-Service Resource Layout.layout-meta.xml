@@ -131,8 +131,7 @@
         <fields>ServiceAppointment__c</fields>
         <fields>Status__c</fields>
         <fields>StatusComment__c</fields>
-        <relatedList
-        >HOT_HistoricallyAssignedResource__c.ServiceResource__c</relatedList>
+        <relatedList>HOT_HistoricallyAssignedResource__c.ServiceResource__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>ServiceAppointment</fields>

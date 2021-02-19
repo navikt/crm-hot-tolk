@@ -1,12 +1,7 @@
 <template>
     <div class="brodsmulesti">
         <lightning-breadcrumbs class="liste-max-width">
-            <lightning-breadcrumb
-                label="Tolketjenesten"
-                href="/s/"
-                onclick={goToHome}
-            >
-            </lightning-breadcrumb>
+            <lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}> </lightning-breadcrumb>
             <lightning-breadcrumb
                 if:true={showAll}
                 label="Min tidsplan"
@@ -21,12 +16,7 @@
                 onclick={goToMyRequests}
             >
             </lightning-breadcrumb>
-            <lightning-breadcrumb
-                if:false={showAll}
-                label={requestNumber}
-                href={thisURL}
-            >
-            </lightning-breadcrumb>
+            <lightning-breadcrumb if:false={showAll} label={requestNumber} href={thisURL}> </lightning-breadcrumb>
         </lightning-breadcrumbs>
     </div>
     <div class="liste liste-max-width">
@@ -56,10 +46,7 @@
         >
             <section>
                 <div class="slds-grid slds-gutters">
-                    <span
-                        class="slds-form-element__label lightning-output-field__label"
-                        >Start tid</span
-                    >
+                    <span class="slds-form-element__label lightning-output-field__label">Start tid</span>
                     <br />
                     <lightning-formatted-date-time
                         year="numeric"
@@ -73,10 +60,7 @@
                     >
                     </lightning-formatted-date-time>
                     <br />
-                    <span
-                        class="slds-form-element__label lightning-output-field__label"
-                        >Slutt tid</span
-                    >
+                    <span class="slds-form-element__label lightning-output-field__label">Slutt tid</span>
                     <br />
                     <lightning-formatted-date-time
                         year="numeric"
@@ -90,40 +74,25 @@
                     >
                     </lightning-formatted-date-time>
                     <br />
-                    <span
-                        class="slds-form-element__label lightning-output-field__label"
-                        >Tema</span
-                    >
+                    <span class="slds-form-element__label lightning-output-field__label">Tema</span>
                     <br />
-                    <lightning-formatted-text
-                        value={workOrderDetails.Subject}
-                        class="lightning-output-field"
-                    >
+                    <lightning-formatted-text value={workOrderDetails.Subject} class="lightning-output-field">
                     </lightning-formatted-text>
-                    <span
-                        class="slds-form-element__label lightning-output-field__label"
-                        >Bestillingsnummer</span
-                    >
+                    <span class="slds-form-element__label lightning-output-field__label">Bestillingsnummer</span>
                     <br />
                     <lightning-formatted-text
                         value={workOrderDetails.HOT_RequestName__c}
                         class="lightning-output-field"
                     >
                     </lightning-formatted-text>
-                    <span
-                        class="slds-form-element__label lightning-output-field__label"
-                        >Status</span
-                    >
+                    <span class="slds-form-element__label lightning-output-field__label">Status</span>
                     <br />
                     <lightning-formatted-text
                         value={workOrderDetails.HOT_ExternalWorkOrderStatus__c}
                         class="lightning-output-field"
                     >
                     </lightning-formatted-text>
-                    <span
-                        class="slds-form-element__label lightning-output-field__label"
-                        >Tolker</span
-                    >
+                    <span class="slds-form-element__label lightning-output-field__label">Tolker</span>
                     <br />
                     <lightning-formatted-text
                         value={workOrderDetails.HOT_Interpreters__c}
@@ -132,10 +101,7 @@
                     </lightning-formatted-text>
                 </div>
             </section>
-            <button
-                class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
-                onclick={abortShowDetails}
-            >
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
                 <span class="text-hide">Lukk</span>
             </button>
         </div>

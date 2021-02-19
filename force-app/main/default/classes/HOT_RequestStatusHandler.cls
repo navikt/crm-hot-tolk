@@ -5,8 +5,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         for (SObject record : records) {
             System.debug('record: ' + record);
             if (
-                record.getSObjectType() ==
-                Schema.HOT_Request__c.getSObjectType() &&
+                record.getSObjectType() == Schema.HOT_Request__c.getSObjectType() &&
                 record.get('IsUpdateStatus__c') == true
             ) {
                 updateStatusRequests.add((HOT_Request__c) record);
@@ -24,17 +23,12 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Avlyst requests
-            if (
-                request.Status__c !=
-                triggerOldMap.get(request.Id).get('Status__c') &&
-                request.Status__c == 'Avlyst'
-            ) {
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
                 avlystRequests.add(request);
             }
             // Filter for Annullert requests
             if (
-                request.Status__c !=
-                triggerOldMap.get(request.Id).get('Status__c') &&
+                request.Status__c != triggerOldMap.get(request.Id).get('Status__c') &&
                 request.Status__c == 'Annullert'
             ) {
                 annullertRequests.add(request);
@@ -80,8 +74,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
             request.IsUpdateStatus__c = false;
 
             if (workOrdersMaps.get(request.Id) != null) {
-                Integer numberOfWorkOrder = workOrdersMaps.get(request.Id)
-                    .size();
+                Integer numberOfWorkOrder = workOrdersMaps.get(request.Id).size();
                 Integer numberOfNew = 0;
                 Integer numberOfScheduled = 0;
                 Integer numberOfDispatched = 0;
@@ -124,12 +117,8 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                 System.debug('numberOfDispatched: ' + numberOfDispatched);
                 System.debug('numberOfInProgress: ' + numberOfInProgress);
                 System.debug('numberOfCompleted: ' + numberOfCompleted);
-                System.debug(
-                    'numberOfPartiallyComplete: ' + numberOfPartiallyComplete
-                );
-                System.debug(
-                    'numberOfCannotComplete: ' + numberOfCannotComplete
-                );
+                System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
+                System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
                 System.debug('numberOfCanceled: ' + numberOfCanceled);
 
                 if (numberOfScheduled > 0) {
@@ -167,10 +156,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         }
     }
 
-    private static void updateChildRecords(
-        List<HOT_Request__c> changedRequests,
-        String newStatus
-    ) {
+    private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
         List<WorkOrder> workOrders = [
             SELECT Status
             FROM WorkOrder

@@ -2,11 +2,7 @@ public without sharing class HOT_InterestedResourcesListController {
     @AuraEnabled(cacheable=true)
     public static List<HOT_InterestedResource__c> getInterestedResources() {
         Id userId = UserInfo.getUserId();
-        List<ServiceResource> serviceResource = [
-            SELECT Id, Name
-            FROM ServiceResource
-            WHERE RelatedRecordId = :userId
-        ];
+        List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
 
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT
@@ -97,29 +93,20 @@ public without sharing class HOT_InterestedResourcesListController {
                 ': ' +
                 newComment;
             HOT_InterestedResource__c interestedResource = [
-                SELECT
-                    Id,
-                    Comments__c,
-                    IsNewComment__c,
-                    IsDispatcherNewComment__c
+                SELECT Id, Comments__c, IsNewComment__c, IsDispatcherNewComment__c
                 FROM HOT_InterestedResource__c
                 WHERE Id = :interestedResourceId
             ];
             if (interestedResource.Comments__c == null) {
                 interestedResource.Comments__c = newComment;
             } else {
-                interestedResource.Comments__c =
-                    interestedResource.Comments__c +
-                    '\n\n' +
-                    newComment;
+                interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
             }
 
             if (
                 Test.isRunningTest()
                     ? true
-                    : UserInfo.getProfileId() ==
-                      [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0]
-                      .Id
+                    : UserInfo.getProfileId() == [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0].Id
             ) {
                 interestedResource.IsDispatcherNewComment__c = true;
             } else {
@@ -135,12 +122,7 @@ public without sharing class HOT_InterestedResourcesListController {
     public String newComment;
 
     @InvocableMethod
-    public static void addComment(
-        List<HOT_InterestedResourcesListController> inputVariables
-    ) {
-        HOT_InterestedResourcesListController.addComment(
-            inputVariables[0].recordId,
-            inputVariables[0].newComment
-        );
+    public static void addComment(List<HOT_InterestedResourcesListController> inputVariables) {
+        HOT_InterestedResourcesListController.addComment(inputVariables[0].recordId, inputVariables[0].newComment);
     }
 }

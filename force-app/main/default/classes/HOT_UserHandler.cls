@@ -1,11 +1,7 @@
 public without sharing class HOT_UserHandler extends MyTriggers {
     //Om en bruker som er Ansatt Tolk opprettes, skal en Tjenesteressurs opprettes, og kobles til denne brukeren.
     public override void onAfterInsert() {
-        List<Profile> profiles = [
-            SELECT Id
-            FROM Profile
-            WHERE Name = 'HOT Tolk Ansatt'
-        ];
+        List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
         if (profiles.size() > 0) {
             List<Id> userIds = new List<Id>();
             for (User user : (List<User>) records) {

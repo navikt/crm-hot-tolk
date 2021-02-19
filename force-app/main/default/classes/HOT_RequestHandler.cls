@@ -24,19 +24,12 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             // Set related Person__c records "KRR Integration Status" field to 'Queued'
             List<Person__c> personsToUpdate = new List<Person__c>();
             for (Id personId : personIdsToUpdate) {
-                personsToUpdate.add(
-                    new Person__c(
-                        Id = personId,
-                        INT_KrrIntegrationStatus__c = 'Queued'
-                    )
-                );
+                personsToUpdate.add(new Person__c(Id = personId, INT_KrrIntegrationStatus__c = 'Queued'));
             }
             update personsToUpdate;
 
             // Call out to KRR through Queuable Apex
-            HOT_KRRCalloutQueuable krr = new HOT_KRRCalloutQueuable(
-                requestsToGetContactInformationFor
-            );
+            HOT_KRRCalloutQueuable krr = new HOT_KRRCalloutQueuable(requestsToGetContactInformationFor);
             System.enqueueJob(krr);
         }
     }
@@ -46,17 +39,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
-            if (
-                request.OwnerId != triggerOldMap.get(request.Id).get('OwnerId')
-            ) {
+            if (request.OwnerId != triggerOldMap.get(request.Id).get('OwnerId')) {
                 ownerChangedRequests.add(request);
             }
             // Filter for Avlyst requests
-            if (
-                request.Status__c !=
-                triggerOldMap.get(request.Id).get('Status__c') &&
-                request.Status__c == 'Avlyst'
-            ) {
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
                 avlystRequests.add(request);
             }
         }
@@ -76,10 +63,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Godkjent requests
-            if (
-                triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' &&
-                request.Status__c == 'Godkjent'
-            ) {
+            if (triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' && request.Status__c == 'Godkjent') {
                 godkjentRequests.add(request);
             }
         }
@@ -131,10 +115,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     @AuraEnabled
-    public static void createAndUpdateWorkOrders(
-        Id requestId,
-        Map<String, Map<String, Long>> times
-    ) {
+    public static void createAndUpdateWorkOrders(Id requestId, Map<String, Map<String, Long>> times) {
         System.debug('createAndUpdateWorkOrders');
         HOT_Request__c request = [
             SELECT
@@ -163,20 +144,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         Map<String, Map<String, Long>> updatedTimesMap = new Map<String, Map<String, Long>>();
         for (String key : times.keySet()) {
             if (times.get(key).get('isNew') == 1) {
-                HOT_Request__c newRequest = request.clone(
-                    false,
-                    true,
-                    false,
-                    false
-                );
+                HOT_Request__c newRequest = request.clone(false, true, false, false);
                 newRequest.Id = requestId;
                 newRequest.OwnerId = UserInfo.getUserId();
-                newRequest.StartTime__c = DateTime.newInstance(
-                    times.get(key).get('startTime')
-                );
-                newRequest.EndTime__c = DateTime.newInstance(
-                    times.get(key).get('endTime')
-                );
+                newRequest.StartTime__c = DateTime.newInstance(times.get(key).get('startTime'));
+                newRequest.EndTime__c = DateTime.newInstance(times.get(key).get('endTime'));
                 requests.add(newRequest);
             } else {
                 updatedTimesMap.put(key, times.get(key));
@@ -191,10 +163,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     @AuraEnabled
-    public static void updateRelatedWorkOrders(
-        Id requestId,
-        Map<String, Map<String, Long>> times
-    ) {
+    public static void updateRelatedWorkOrders(Id requestId, Map<String, Map<String, Long>> times) {
         List<WorkOrder> workOrders = [
             SELECT Id, Status, StartDate, EndDate
             FROM WorkOrder
@@ -207,17 +176,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 workOrder.Status = 'Canceled';
                 updatedWorkOrders.add(workOrder);
             } else if (
-                workOrder.StartDate !=
-                DateTime.newInstance(times.get(workOrderId).get('startTime')) ||
-                workOrder.EndDate !=
-                DateTime.newInstance(times.get(workOrder.Id).get('endTime'))
+                workOrder.StartDate != DateTime.newInstance(times.get(workOrderId).get('startTime')) ||
+                workOrder.EndDate != DateTime.newInstance(times.get(workOrder.Id).get('endTime'))
             ) {
-                workOrder.StartDate = DateTime.newInstance(
-                    times.get(workOrderId).get('startTime')
-                );
-                workOrder.EndDate = DateTime.newInstance(
-                    times.get(workOrderId).get('endTime')
-                );
+                workOrder.StartDate = DateTime.newInstance(times.get(workOrderId).get('startTime'));
+                workOrder.EndDate = DateTime.newInstance(times.get(workOrderId).get('endTime'));
                 updatedWorkOrders.add(workOrder);
             }
         }
@@ -256,20 +219,13 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             FROM HOT_ServiceTerritoryByQueue__mdt
         ];
         Map<String, String> serviceTerritoryByQueue = new Map<String, String>();
-        for (
-            HOT_ServiceTerritoryByQueue__mdt STbyQ : serviceTerritoryByQueueList
-        ) {
-            serviceTerritoryByQueue.put(
-                STbyQ.Queue__c,
-                STbyQ.ServiceTerritory__c
-            );
+        for (HOT_ServiceTerritoryByQueue__mdt STbyQ : serviceTerritoryByQueueList) {
+            serviceTerritoryByQueue.put(STbyQ.Queue__c, STbyQ.ServiceTerritory__c);
         }
         List<Group> queues = [
             SELECT Id, Name, DeveloperName
             FROM Group
-            WHERE
-                Type = 'Queue'
-                AND DeveloperName IN :serviceTerritoryByQueue.keySet()
+            WHERE Type = 'Queue' AND DeveloperName IN :serviceTerritoryByQueue.keySet()
         ];
         List<ServiceTerritory> serviceTerritories = [
             SELECT Id, Name, HOT_DeveloperName__c
@@ -279,22 +235,14 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
         for (Group queue : queues) {
             for (ServiceTerritory serviceTerritory : serviceTerritories) {
-                if (
-                    serviceTerritoryByQueue.get(queue.DeveloperName) ==
-                    serviceTerritory.HOT_DeveloperName__c
-                ) {
-                    serviceTerritoryIdByQueueId.put(
-                        queue.Id,
-                        serviceTerritory.Id
-                    );
+                if (serviceTerritoryByQueue.get(queue.DeveloperName) == serviceTerritory.HOT_DeveloperName__c) {
+                    serviceTerritoryIdByQueueId.put(queue.Id, serviceTerritory.Id);
                 }
             }
         }
         for (HOT_Request__c request : requests) {
             if (serviceTerritoryIdByQueueId.get(request.OwnerId) != null) {
-                request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(
-                    request.OwnerId
-                );
+                request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
             }
         }
     }
@@ -311,19 +259,12 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
     public static void setOrdererField(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
-            if (
-                request.Type__c == 'Me' &&
-                request.Orderer__c == null &&
-                request.Account__c != null
-            ) {
+            if (request.Type__c == 'Me' && request.Orderer__c == null && request.Account__c != null) {
                 request.Orderer__c = request.Account__c;
             }
         }
     }
-    public static void setFieldsToBlank(
-        List<HOT_Request__c> requests,
-        List<String> fields
-    ) {
+    public static void setFieldsToBlank(List<HOT_Request__c> requests, List<String> fields) {
         for (HOT_Request__c request : requests) {
             for (String field : fields) {
                 if (request.get(field) != null) {

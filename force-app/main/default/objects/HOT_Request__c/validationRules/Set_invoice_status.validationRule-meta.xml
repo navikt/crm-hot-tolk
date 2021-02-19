@@ -8,6 +8,5 @@ NOT(IsManuallyInvoiced__c)
 &amp;&amp;
 NOT($Permission.HOT_SetInvoiceStatus)</errorConditionFormula>
     <errorDisplayField>InvoiceStatus__c</errorDisplayField>
-    <errorMessage
-    >Du kan bare endre fakturastatus når manuell fakturering er krysset av.</errorMessage>
+    <errorMessage>Du kan bare endre fakturastatus når manuell fakturering er krysset av.</errorMessage>
 </ValidationRule>
