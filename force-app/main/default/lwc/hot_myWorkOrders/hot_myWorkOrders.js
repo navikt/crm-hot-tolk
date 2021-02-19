@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import STATUS from '@salesforce/schema/WorkOrder.Status';
 import { updateRecord } from 'lightning/uiRecordApi';
@@ -71,7 +71,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(
     ];
     getRowActions(row, doneCallback) {
         let actions = [];
-        if (row['HOT_IsCancelable__c']) {
+        if (row.HOT_IsCancelable__c) {
             actions.push({ label: 'Avlys', name: 'delete', disabled: false });
         } else {
             actions.push({ label: 'Avlys', name: 'delete', disabled: true });
@@ -109,7 +109,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(
 
     @track showAll = true;
     connectedCallback() {
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             if (i < this.columnLabels.length) {
                 document.documentElement.style.setProperty(
                     '--columnlabel_' + i.toString(),
@@ -127,18 +127,18 @@ export default class Hot_myWorkOrders extends NavigationMixin(
         let params = testURL.split('?')[1];
 
         function parse_query_string(query) {
-            var vars = query.split('&');
-            var query_string = {};
-            for (var i = 0; i < vars.length; i++) {
-                var pair = vars[i].split('=');
-                var key = decodeURIComponent(pair[0]);
-                var value = decodeURIComponent(pair[1]);
+            let vars = query.split('&');
+            let query_string = {};
+            for (let i = 0; i < vars.length; i++) {
+                let pair = vars[i].split('=');
+                let key = decodeURIComponent(pair[0]);
+                let value = decodeURIComponent(pair[1]);
                 // If first entry with this name
                 if (typeof query_string[key] === 'undefined') {
                     query_string[key] = decodeURIComponent(value);
                     // If second entry with this name
                 } else if (typeof query_string[key] === 'string') {
-                    var arr = [query_string[key], decodeURIComponent(value)];
+                    let arr = [query_string[key], decodeURIComponent(value)];
                     query_string[key] = arr;
                     // If third or later entry with this name
                 } else {
@@ -149,8 +149,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(
         }
 
         if (params != undefined) {
-            var parsed_params = parse_query_string(params);
-            let requestNumber = parsed_params.id;
+            let parsed_params = parse_query_string(params);
             if (parsed_params.id != null) {
                 this.requestNumber = parsed_params.id;
             }
@@ -232,6 +231,8 @@ export default class Hot_myWorkOrders extends NavigationMixin(
             case 'delete':
                 this.cancelWorkOrder(row);
                 break;
+            default:
+                break;
         }
     }
     cancelWorkOrder(row) {
@@ -239,7 +240,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(
         console.log(JSON.stringify(this.workOrders));
         const index = this.findRowIndexById(Id);
         console.log(index);
-        if (index != -1) {
+        if (index !== -1) {
             console.log('index != -1');
             if (
                 this.workOrders[index].HOT_ExternalWorkOrderStatus__c !=
