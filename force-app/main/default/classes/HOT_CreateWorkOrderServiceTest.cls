@@ -470,4 +470,33 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
+
+    @isTest
+    private static void createWorkOrdersfromCommunity() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        String requestId = (String) request.Id;
+        Map<String, Long> times = new Map<String, Long>();
+        times.put('startTime', Datetime.now().addHours(1).getTime());
+        times.put('endTime', Datetime.now().addHours(2).getTime());
+        String recurringType = 'Never';
+        List<String> recurringDays = new List<String>{ 'monday', 'tuesday' };
+        Long recurringEndDate = Datetime.now().addDays(30).getTime();
+
+        Test.startTest();
+        HOT_CreateWorkOrderService.createWorkOrdersFromCommunity(
+            requestId,
+            times,
+            recurringType,
+            recurringDays,
+            recurringEndDate
+        );
+        Test.stopTest();
+
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(1, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
+    }
 }

@@ -24,6 +24,30 @@ public without sharing class HOT_CreateWorkOrderService {
     @InvocableVariable
     public Date recurringEndDate;
 
+    @AuraEnabled
+    public static void createWorkOrdersFromCommunity(
+        String requestId,
+        Map<String, Long> times,
+        String recurringType,
+        List<String> recurringDays,
+        Long recurringEndDate
+    ) {
+        HOT_CreateWorkOrderService createWorkOrderService = new HOT_CreateWorkOrderService();
+        createWorkOrderService.requestId = requestId;
+        createWorkOrderService.startDate = DateTime.newInstance(times.get('startTime'));
+        createWorkOrderService.endDate = DateTime.newInstance(times.get('endTime'));
+        createWorkOrderService.recurringType = recurringType;
+        createWorkOrderService.monday = recurringDays.contains('monday');
+        createWorkOrderService.tuesday = recurringDays.contains('tuesday');
+        createWorkOrderService.wendesday = recurringDays.contains('wendesday');
+        createWorkOrderService.thursday = recurringDays.contains('thursday');
+        createWorkOrderService.friday = recurringDays.contains('friday');
+        createWorkOrderService.saturday = recurringDays.contains('saturday');
+        createWorkOrderService.sunday = recurringDays.contains('sunday');
+        createWorkOrderService.recurringEndDate = DateTime.newInstance(recurringEndDate).date();
+        createWorkOrders(new List<HOT_CreateWorkOrderService>{ createWorkOrderService });
+    }
+
     @InvocableMethod
     public static List<String> createWorkOrders(List<HOT_CreateWorkOrderService> inputVariables) {
         HOT_CreateWorkOrderService input = inputVariables[0];

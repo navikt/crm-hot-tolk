@@ -7,6 +7,13 @@ import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
+import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
+import { validate, require } from 'c/validationController';
+import {
+    recurringTypeValidations,
+    recurringDaysValidations,
+    recurringEndDateValidations
+} from './hot_createRequestForm_validationRules';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
     @track reRender = 0;
@@ -51,29 +58,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             }
         }
         this.requests = tempRequests;
-    }
-
-    isDuplicate(fields) {
-        var isDuplicate = null;
-        for (var i = 0; i < this.requests.length; i++) {
-            if (
-                ((this.requests[i].StartTime__c < fields.StartTime__c &&
-                    fields.StartTime__c < this.requests[i].EndTime__c) ||
-                    (fields.StartTime__c < this.requests[i].StartTime__c &&
-                        this.requests[i].StartTime__c < fields.EndTime__c) ||
-                    (fields.StartTime__c == this.requests[i].StartTime__c &&
-                        this.requests[i].EndTime__c == fields.EndTime__c)) &&
-                this.requests[i].Id != this.recordId &&
-                this.requests[i].Status__c != 'Avlyst' &&
-                this.requests[i].Status__c != 'Annullert' &&
-                fields.Type__c == 'Me' &&
-                this.requests[i].Account__c == this.personAccount.Id
-            ) {
-                isDuplicate = i;
-                break;
-            }
-        }
-        return isDuplicate;
     }
 
     @track sameLocation = true;
@@ -169,12 +153,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
     @track isPersonNumberValid = true;
     checkPersonNumber(event) {
-        console.log('checkPersonNumber');
         let inputComponent = this.template.querySelector('.skjema').querySelector('.personNumber');
         this.fieldValues.UserPersonNumber__c = inputComponent.value;
         let regExp = RegExp('[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]');
         this.isPersonNumberValid = regExp.test(inputComponent.value);
-        console.log('PersonNumber is valid? ' + this.isPersonNumberValid);
     }
     reportValidityPersonNumberField() {
         let inputComponent = this.template.querySelector('.skjema').querySelector('.personNumber');
@@ -325,6 +307,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             isNew: 1
         };
         this.times.push(newTime);
+        this.setIsOnlyOneTime();
+    }
+    setIsOnlyOneTime() {
         this.isOnlyOneTime = this.times.length == 1;
     }
 
@@ -335,10 +320,115 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 this.times.splice(index, 1);
             }
         }
-        this.isOnlyOneTime = this.times.length == 1;
+        this.setIsOnlyOneTime();
+    }
+
+    @track isAdvancedTimes = false;
+    @track timesBackup;
+    advancedTimes(event) {
+        this.isAdvancedTimes = event.detail.checked;
+        if (this.isAdvancedTimes) {
+            this.timesBackup = this.times;
+            this.times = [this.times[0]];
+        } else {
+            this.times = this.timesBackup;
+        }
+        this.setIsOnlyOneTime();
+    }
+    @track isRepeating = false;
+    @track showWeekDays = false;
+    repeatingOptions = [
+        { label: 'Aldri', value: 'Never' },
+        { label: 'Hver dag', value: 'Daily' },
+        { label: 'Hver uke', value: 'Weekly' },
+        { label: 'Hver 2. Uke', value: 'Biweekly' }
+    ];
+    repeatingOptionChosen = '';
+    handleRepeatChoiceMade(event) {
+        this.repeatingOptionChosen = event.detail.value;
+        if (event.detail.value == 'Weekly' || event.detail.value == 'Biweekly') {
+            this.showWeekDays = true;
+        } else {
+            this.showWeekDays = false;
+        }
+        if (event.detail.value != 'Never') {
+            this.isRepeating = true;
+        } else {
+            this.isRepeating = false;
+        }
+    }
+
+    chosenDays = [];
+    get days() {
+        return [
+            { label: 'Mandag', value: 'monday' },
+            { label: 'Tirsdag', value: 'tuesday' },
+            { label: 'Onsdag', value: 'wednesday' },
+            { label: 'Torsdag', value: 'thursday' },
+            { label: 'Fredag', value: 'friday' },
+            { label: 'Lørdag', value: 'saturday' },
+            { label: 'Søndag', value: 'sunday' }
+        ];
+    }
+    handleDayChosen(event) {
+        this.chosenDays = event.detail.value;
+    }
+    @track repeatingEndDate;
+    setRepeatingEndDateDate(event) {
+        this.repeatingEndDate = event.detail.value;
     }
 
     @track spin = false;
+
+    handleAdvancedTimeValidations() {
+        let typeElement = this.template.querySelector('.recurringType');
+        let recurringTypeValid = validate(typeElement, recurringTypeValidations).length == 0;
+
+        let daysElement = this.template.querySelector('.recurringDays');
+        let recurringDaysValid =
+            validate(daysElement, recurringDaysValidations, this.repeatingOptionChosen).length == 0;
+
+        let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
+        let recurringEndDateValid =
+            validate(recurringEndDateElement, recurringEndDateValidations, this.times[0].date).length == 0;
+
+        return recurringTypeValid && recurringDaysValid && recurringEndDateValid;
+    }
+
+    handleValidation() {
+        let datetimeValid = this.handleDatetimeValidation().length == 0;
+        let advancedValid = true;
+        if (this.isAdvancedTimes) {
+            advancedValid = this.handleAdvancedTimeValidations();
+        }
+        return datetimeValid && this.handlePersonNumberValidation() && advancedValid;
+    }
+
+    handleDatetimeValidation() {
+        let invalidIndex = [];
+        for (let time of this.times) {
+            if (!time.isValid) {
+                invalidIndex.unshift(this.times.indexOf(time));
+            }
+        }
+        if (invalidIndex.length != 0) {
+            let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
+            for (let index of invalidIndex) {
+                let dateInputElement = inputList[index].querySelector('.date');
+                this.throwInputValidationError(
+                    dateInputElement,
+                    dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.'
+                );
+            }
+        }
+        return invalidIndex;
+    }
+    handlePersonNumberValidation() {
+        if (!this.isPersonNumberValid) {
+            this.reportValidityPersonNumberField();
+        }
+        return this.isPersonNumberValid;
+    }
 
     handleSubmit(event) {
         console.log('handleSubmit');
@@ -347,66 +437,37 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         const fields = event.detail.fields;
 
         if (fields) {
-            this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
-            this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
+            this.setFieldValues(fields);
+            let isValid = this.handleValidation();
+            console.log('isValid: ' + isValid);
+            if (isValid) {
+                console.log('Sumbitting');
+                this.template
+                    .querySelector('.skjema')
+                    .querySelector('lightning-record-edit-form')
+                    .submit(this.fieldValues);
+                console.log('submitted');
 
-            this.fieldValues.Orderer__c = this.personAccount.Id;
-            for (const k in fields) {
-                this.fieldValues[k] = fields[k];
-            }
-            if (this.sameLocation) {
-                this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
-                this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
-                this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
-            }
-
-            let invalidIndex = [];
-            console.log('validating times');
-            for (let time of this.times) {
-                console.log(JSON.stringify(time));
-                if (!time.isValid) {
-                    invalidIndex.unshift(this.times.indexOf(time));
-                }
-            }
-
-            console.log(invalidIndex);
-            if (invalidIndex.length == 0 && this.isPersonNumberValid) {
-                const isDuplicate = null; //this.isDuplicate(this.fieldValues); //Denne metoden fungerer ikke akkurat nå. Løses i TOLK-963
-                if (isDuplicate == null) {
-                    console.log('Sumbitting');
-                    this.template
-                        .querySelector('.skjema')
-                        .querySelector('lightning-record-edit-form')
-                        .submit(this.fieldValues);
-                    console.log('submitted');
-                } else {
-                    if (confirm('Du har allerede en bestilling på samme tidspunkt\n\nFortsett?')) {
-                        this.template
-                            .querySelector('.skjema')
-                            .querySelector('lightning-record-edit-form')
-                            .submit(this.fieldValues);
-                    } else {
-                        this.spin = false;
-                    }
-                }
                 window.scrollBy(0, 100);
                 window.scrollBy(0, -100);
             } else {
-                if (invalidIndex.length != 0) {
-                    let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
-                    for (let index of invalidIndex) {
-                        let dateInputElement = inputList[index].querySelector('.date');
-                        this.throwInputValidationError(
-                            dateInputElement,
-                            dateInputElement.value ? 'Du kan ikke bestille tolk i fortiden.' : 'Fyll ut dette feltet.'
-                        );
-                    }
-                }
-                if (this.currentRequestType == 'User' || this.currentRequestType == 'Company') {
-                    this.reportValidityPersonNumberField();
-                }
                 this.spin = false;
             }
+        }
+    }
+
+    setFieldValues(fields) {
+        this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
+        this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
+
+        this.fieldValues.Orderer__c = this.personAccount.Id;
+        for (const k in fields) {
+            this.fieldValues[k] = fields[k];
+        }
+        if (this.sameLocation) {
+            this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
+            this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
+            this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
         }
     }
 
@@ -542,8 +603,22 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             };
         }
         if (times != {}) {
-            console.log('createAndUpdateWorkOrders');
-            createAndUpdateWorkOrders({ requestId, times });
+            if (this.isAdvancedTimes) {
+                //String requestId, Map<String, Long> times, String recurringType, List<String> recurringDays, Long recurringEndDate
+                let time = times['0'];
+                let recurringType = this.repeatingOptionChosen;
+                let recurringDays = this.chosenDays;
+                let recurringEndDate = new Date(this.repeatingEndDate).getTime();
+                createWorkOrders({
+                    requestId,
+                    times: time,
+                    recurringType,
+                    recurringDays,
+                    recurringEndDate
+                });
+            } else {
+                createAndUpdateWorkOrders({ requestId, times });
+            }
         }
 
         window.scrollTo(0, 0);
