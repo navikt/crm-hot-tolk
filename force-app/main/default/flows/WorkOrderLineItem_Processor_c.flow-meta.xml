@@ -33,14 +33,12 @@
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue
-                >([WorkOrderLineItem].EndDate - [WorkOrderLineItem].StartDate )*24</stringValue>
+                <stringValue>([WorkOrderLineItem].EndDate - [WorkOrderLineItem].StartDate )*24</stringValue>
             </value>
         </processMetadataValues>
         <name>formula_2_myRule_1_A1_9048862120</name>
         <dataType>Number</dataType>
-        <expression
-        >({!myVariable_current.EndDate} - {!myVariable_current.StartDate} )*24</expression>
+        <expression>({!myVariable_current.EndDate} - {!myVariable_current.StartDate} )*24</expression>
         <scale>18</scale>
     </formulas>
     <formulas>
@@ -48,8 +46,7 @@
         <dataType>Boolean</dataType>
         <expression>true</expression>
     </formulas>
-    <interviewLabel
-    >WorkOrderLineItem_Processor_c-1_InterviewLabel</interviewLabel>
+    <interviewLabel>WorkOrderLineItem_Processor_c-1_InterviewLabel</interviewLabel>
     <label>WorkOrderLineItem Processor</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -151,8 +148,7 @@
             </processMetadataValues>
             <field>Duration</field>
             <value>
-                <elementReference
-                >formula_2_myRule_1_A1_9048862120</elementReference>
+                <elementReference>formula_2_myRule_1_A1_9048862120</elementReference>
             </value>
         </inputAssignments>
         <object>WorkOrderLineItem</object>

@@ -20,9 +20,7 @@
     </values>
     <values>
         <field>Description__c</field>
-        <value
-            xsi:type="xsd:string"
-        >Share Service Appointment to assigned service resource</value>
+        <value xsi:type="xsd:string">Share Service Appointment to assigned service resource</value>
     </values>
     <values>
         <field>Event__c</field>

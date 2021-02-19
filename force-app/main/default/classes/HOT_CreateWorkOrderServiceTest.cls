@@ -4,10 +4,7 @@ private class HOT_CreateWorkOrderServiceTest {
     private static void createWorkOrdersNever() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -23,15 +20,8 @@ private class HOT_CreateWorkOrderServiceTest {
         HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            1,
-            workOrders.size(),
-            'Det ble ikke opprettet korrekt antall arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(1, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
         System.assertEquals(
             request.Id,
             workOrders[0].HOT_Request__c,
@@ -53,10 +43,7 @@ private class HOT_CreateWorkOrderServiceTest {
     private static void createWorkOrdersDaily() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -73,25 +60,15 @@ private class HOT_CreateWorkOrderServiceTest {
         HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            11,
-            workOrders.size(),
-            'Det ble ikke opprettet korrekt antall arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(11, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
     @isTest
     private static void createWorkOrdersWeekly() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -115,25 +92,15 @@ private class HOT_CreateWorkOrderServiceTest {
         HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            14,
-            workOrders.size(),
-            'Det ble ikke opprettet korrekt antall arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(14, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
     @isTest
     private static void createWorkOrdersBiweekly() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -157,25 +124,15 @@ private class HOT_CreateWorkOrderServiceTest {
         HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            14,
-            workOrders.size(),
-            'Det ble ikke opprettet korrekt antall arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(14, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
     @isTest
     private static void createWorkOrdersMonthly_1() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -192,25 +149,15 @@ private class HOT_CreateWorkOrderServiceTest {
         HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            11,
-            workOrders.size(),
-            'Det ble ikke opprettet korrekt antall arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(11, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
     @isTest
     private static void createWorkOrdersMonthly_2() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -227,25 +174,15 @@ private class HOT_CreateWorkOrderServiceTest {
         HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            11,
-            workOrders.size(),
-            'Det ble ikke opprettet korrekt antall arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(11, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
     @isTest
     private static void Error_EndTimeBeforeStartTime() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -258,34 +195,18 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            1,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
     @isTest
     private static void Error_recurringEndDateEqualStartDate() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -299,34 +220,18 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            1,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
     @isTest
     private static void Error_WeeklyAllDaysFalse() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -347,34 +252,18 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            1,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
     @isTest
     private static void Error_Daily201() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -388,34 +277,18 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            1,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
     @isTest
     private static void Error_Weekly201() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -436,34 +309,18 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            1,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
     @isTest
     private static void Error_Monthly201() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -477,34 +334,18 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            1,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
     @isTest
     private static void Error_TypeNULL() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -516,34 +357,18 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            0,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(0, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
     @isTest
     private static void Error_NeverRequestNULL() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -556,34 +381,18 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            1,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
     @isTest
     private static void Error_DailyRequestNULL() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -597,34 +406,18 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            1,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
     @isTest
     private static void Error_WeeklyRequestNULL() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -645,34 +438,18 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            1,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
     @isTest
     private static void Error_MonthlyRequestNULL() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
@@ -686,24 +463,11 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
-            inputVariables
-        );
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, HOT_Request__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        System.assertEquals(
-            0,
-            workOrders.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
-        System.assertEquals(
-            1,
-            errors.size(),
-            'Det ble feilaktig opprettet arbeidsordre'
-        );
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
+        System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
 }

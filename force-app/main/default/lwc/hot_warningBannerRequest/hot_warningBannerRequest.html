@@ -1,59 +1,30 @@
 <template>
     <template if:true={hasSecurityMeasures}>
-        <div
-            class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
-            role="alert"
-        >
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
             <span class="slds-assistive-text">Advarsel</span>
-            <lightning-icon
-                icon-name="utility:error"
-                size="x-small"
-                class="slds-m-right--x-small"
-                variant="inverse"
-            >
+            <lightning-icon icon-name="utility:error" size="x-small" class="slds-m-right--x-small" variant="inverse">
             </lightning-icon>
-            <h2>
-                Det er følgende sikkerhetstiltak på brukeren: {securityMeasures}
-            </h2>
+            <h2>Det er følgende sikkerhetstiltak på brukeren: {securityMeasures}</h2>
         </div>
     </template>
     <template if:true={hasReservations}>
-        <div
-            class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
-            role="alert"
-        >
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
             <span class="slds-assistive-text">Advarsel</span>
-            <lightning-icon
-                icon-name="utility:error"
-                size="x-small"
-                class="slds-m-right--x-small"
-                variant="inverse"
-            >
+            <lightning-icon icon-name="utility:error" size="x-small" class="slds-m-right--x-small" variant="inverse">
             </lightning-icon>
             <h2>Det er følgende reservasjoner på brukeren: {reservations}</h2>
         </div>
     </template>
     <template if:true={getHasDuplicates}>
-        <div
-            class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning"
-            role="alert"
-        >
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
             <span class="slds-assistive-text">Advarsel</span>
-            <lightning-icon
-                icon-name="utility:warning"
-                size="x-small"
-                class="slds-m-right--x-small"
-                variant="inverse"
-            >
+            <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
             </lightning-icon>
             <h2 class="duplicate-links">
-                <span
-                    >Brukeren har allerede forespørsler i dette tidsrommet:
-                </span>
+                <span>Brukeren har allerede forespørsler i dette tidsrommet: </span>
                 <template iterator:it={duplicateRequests}>
                     <span key={it.value.Id}
-                        ><a href={it.value.Id}>{it.value.Name}</a
-                        ><span if:false={it.last}>, </span>
+                        ><a href={it.value.Id}>{it.value.Name}</a><span if:false={it.last}>, </span>
                     </span>
                 </template>
             </h2>

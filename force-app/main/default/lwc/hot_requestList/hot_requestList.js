@@ -205,9 +205,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track isMyRequests = true;
     handleRequestType(event) {
         this.isMyRequests = event.detail.value == 'my';
-        this.allRequests = this.isMyRequests
-            ? this.allMyRequests
-            : this.allOrderedRequests;
+        this.allRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
         this.filterRequests();
         this.showHideInactives();
         let tempColumns = [...this.columns];
@@ -227,15 +225,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
         for (var i = 0; i < 10; i++) {
             if (i < tempColumnLabels.length) {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    tempColumnLabels[i]
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), tempColumnLabels[i]);
             } else {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    ''
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
         }
         this.columns = [...tempColumns];
@@ -260,8 +252,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track sortDirection = 'desc';
     @track sortedBy = 'StartTime__c';
 
-    mobileSortingDefaultValue =
-        '{"fieldName": "StartTime__c", "sortDirection": "desc"} ';
+    mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "desc"} ';
     get sortingOptions() {
         return getMobileSortingOptions(this.columns);
     }
@@ -269,21 +260,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         let value = JSON.parse(event.detail.value);
         this.sortDirection = value.sortDirection;
         this.sortedBy = value.fieldName;
-        this.allRequests = sortList(
-            this.allRequests,
-            this.sortedBy,
-            this.sortDirection
-        );
+        this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
         this.showHideInactives();
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
-        this.allRequests = sortList(
-            this.allRequests,
-            this.sortedBy,
-            this.sortDirection
-        );
+        this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
         this.showHideInactives();
     }
 
@@ -313,15 +296,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     connectedCallback() {
         for (var i = 0; i < 10; i++) {
             if (i < this.columnLabels.length) {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    this.columnLabels[i]
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
             } else {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    ''
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
         }
         window.scrollTo(0, 0);
@@ -393,11 +370,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         const index = this.findRowIndexById(Id);
         if (index != -1) {
             if (row.Orderer__c == this.userRecord.AccountId) {
-                if (
-                    this.requests[index].ExternalRequestStatus__c.includes(
-                        'Åpen'
-                    )
-                ) {
+                if (this.requests[index].ExternalRequestStatus__c.includes('Åpen')) {
                     //Here we should get the entire record from salesforce, to get entire interpretation address.
                     let clone = this.requests[index];
                     this[NavigationMixin.Navigate]({
@@ -413,9 +386,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                     });
                 }
             } else {
-                alert(
-                    'Denne bestillingen er bestilt av noen andre, og du har ikke rettigheter til å endre den.'
-                );
+                alert('Denne bestillingen er bestilt av noen andre, og du har ikke rettigheter til å endre den.');
             }
         }
     }
@@ -429,12 +400,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.record = row;
         this.myRequest = this.record.Orderer__c == this.userRecord.AccountId;
         this.userForm =
-            (this.record.Type__c == 'User' ||
-                this.record.Type__c == 'Company') &&
-            this.record.UserName__c != '';
-        this.companyForm =
-            this.record.Type__c == 'Company' ||
-            this.record.Type__c == 'PublicEvent';
+            (this.record.Type__c == 'User' || this.record.Type__c == 'Company') && this.record.UserName__c != '';
+        this.companyForm = this.record.Type__c == 'Company' || this.record.Type__c == 'PublicEvent';
         this.publicEvent = this.record.Type__c == 'PublicEvent';
         this.isDetails = true;
     }

@@ -12,11 +12,7 @@
     <div if:true={isFrilans} class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler-single">
-                <a
-                    class="panelMedBilde panelMedBilde-single"
-                    href="/s/mine-oppdrag"
-                    onclick={goToOppdrag}
-                >
+                <a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag" onclick={goToOppdrag}>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
                             <img
@@ -31,29 +27,20 @@
                             />
                         </div>
                     </div>
-                    <div
-                        class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single"
-                    >
+                    <div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
                         <h2 class="typo-undertittel">Frilanstolk</h2>
                         <div>
                             <p class="typo-normal">
                                 <span>
-                                    Se oversikt over dine oppdrag, og åpne
-                                    oppdrag som du kan melde interesse om.</span
+                                    Se oversikt over dine oppdrag, og åpne oppdrag som du kan melde interesse om.</span
                                 >
                             </p>
                         </div>
                     </div>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
-                            <img
-                                if:false={isProd}
-                                src="/sfsites/c/resource/1590666405000/rightArrow"
-                            />
-                            <img
-                                if:true={isProd}
-                                src="/s/sfsites/c/resource/1590666405000/rightArrow"
-                            />
+                            <img if:false={isProd} src="/sfsites/c/resource/1590666405000/rightArrow" />
+                            <img if:true={isProd} src="/s/sfsites/c/resource/1590666405000/rightArrow" />
                         </div>
                     </div>
                 </a>
@@ -64,11 +51,7 @@
     <div class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler">
-                <a
-                    class="panelMedBilde"
-                    href="/s/ny-bestilling"
-                    onclick={goToNewRequest}
-                >
+                <a class="panelMedBilde" href="/s/ny-bestilling" onclick={goToNewRequest}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -87,17 +70,12 @@
                         <h2 class="typo-undertittel">Bestille tolk</h2>
                         <div>
                             <p class="typo-normal">
-                                Her kan du bestille tolketjenester for døve,
-                                døvblinde og hørselshemmede.
+                                Her kan du bestille tolketjenester for døve, døvblinde og hørselshemmede.
                             </p>
                         </div>
                     </div>
                 </a>
-                <a
-                    class="panelMedBilde"
-                    href="/s/mine-bestillinger"
-                    onclick={goToMyRequests}
-                >
+                <a class="panelMedBilde" href="/s/mine-bestillinger" onclick={goToMyRequests}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -116,17 +94,12 @@
                         <h2 class="typo-undertittel">Mine bestillinger</h2>
                         <div>
                             <p class="typo-normal">
-                                Her finner du oversikt over alle bestillinger du
-                                har sendt inn, og status på disse.
+                                Her finner du oversikt over alle bestillinger du har sendt inn, og status på disse.
                             </p>
                         </div>
                     </div>
                 </a>
-                <a
-                    class="panelMedBilde"
-                    href="/s/min-tidsplan"
-                    onclick={goToMyTimeplan}
-                >
+                <a class="panelMedBilde" href="/s/min-tidsplan" onclick={goToMyTimeplan}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -144,17 +117,11 @@
                     <div class="panel panelMedBilde__panelOnPanel">
                         <h2 class="typo-undertittel">Min tidsplan</h2>
                         <div>
-                            <p class="typo-normal">
-                                Her finner du oversikt over din tidsplan.
-                            </p>
+                            <p class="typo-normal">Her finner du oversikt over din tidsplan.</p>
                         </div>
                     </div>
                 </a>
-                <a
-                    class="panelMedBilde"
-                    href="/s/min-side"
-                    onclick={goToMyPage}
-                >
+                <a class="panelMedBilde" href="/s/min-side" onclick={goToMyPage}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -173,17 +140,12 @@
                         <h2 class="typo-undertittel">Min side</h2>
                         <div>
                             <p class="typo-normal">
-                                Her finner du oversikt over informasjon
-                                Tolketjenesten har om deg.
+                                Her finner du oversikt over informasjon Tolketjenesten har om deg.
                             </p>
                         </div>
                     </div>
                 </a>
-                <a
-                    class="panelMedBilde"
-                    href="https://www.kunnskapsbanken.net/tolk/"
-                    target="_blank"
-                >
+                <a class="panelMedBilde" href="https://www.kunnskapsbanken.net/tolk/" target="_blank">
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -201,9 +163,7 @@
                     <div class="panel panelMedBilde__panelOnPanel">
                         <h2 class="typo-undertittel">Kunnskapsbanken</h2>
                         <div>
-                            <p class="typo-normal">
-                                Her finner du fagstoff og artikler om tolking.
-                            </p>
+                            <p class="typo-normal">Her finner du fagstoff og artikler om tolking.</p>
                         </div>
                     </div>
                 </a>

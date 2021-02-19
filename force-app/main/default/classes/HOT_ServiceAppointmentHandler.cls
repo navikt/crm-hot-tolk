@@ -13,61 +13,45 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
         List<ServiceAppointment> allServiceAppointments = new List<ServiceAppointment>();
 
-        for (
-            ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records
-        ) {
+        for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
                 serviceAppointment.get('HOT_ServiceResource__c') != null &&
                 serviceAppointment.get('HOT_ServiceResource__c') !=
-                triggerOldMap.get(serviceAppointment.Id)
-                    .get('HOT_ServiceResource__c')
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
             ) {
                 recievedNewInterpreter.add(serviceAppointment);
             }
             if (
-                triggerOldMap.get(serviceAppointment.Id)
-                    .get('HOT_PreferredResource__c') !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredResource__c') !=
                 ServiceAppointment.HOT_PreferredResource__c &&
                 serviceAppointment.HOT_PreferredResource__c != null
             ) {
                 updatedServiceAppointments.add(serviceAppointment);
             }
             if (
-                triggerOldMap.get(serviceAppointment.Id)
-                    .get('HOT_PreferredResource__c') !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredResource__c') !=
                 ServiceAppointment.HOT_PreferredResource__c &&
                 serviceAppointment.HOT_PreferredResource__c == null
             ) {
-                serviceAppointmentsWithDeletedPreferredResources.add(
-                    serviceAppointment
-                );
+                serviceAppointmentsWithDeletedPreferredResources.add(serviceAppointment);
             }
             if (
-                triggerOldMap.get(serviceAppointment.Id).get('Status') !=
-                'None' &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'None' &&
                 serviceAppointment.Status == 'None'
             ) {
-                serviceAppointmentsWithStatusCannotCompleteOrNone.add(
-                    serviceAppointment
-                );
+                serviceAppointmentsWithStatusCannotCompleteOrNone.add(serviceAppointment);
             }
             if (
-                serviceAppointment.Status !=
-                triggerOldMap.get(serviceAppointment.Id).get('Status') ||
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
                 serviceAppointment.HOT_ServiceResource__c !=
-                triggerOldMap.get(serviceAppointment.Id)
-                    .get('HOT_ServiceResource__c')
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
             ) {
-                serviceAppointmentsWithChangedStatusOrResource.add(
-                    serviceAppointment
-                );
+                serviceAppointmentsWithChangedStatusOrResource.add(serviceAppointment);
             }
             allServiceAppointments.add(serviceAppointment);
         }
         if (!updatedServiceAppointments.isEmpty()) {
-            updatedServiceAppointments = setFieldsByPreferredResource(
-                updatedServiceAppointments
-            );
+            updatedServiceAppointments = setFieldsByPreferredResource(updatedServiceAppointments);
         }
         if (!serviceAppointmentsWithDeletedPreferredResources.isEmpty()) {
             serviceAppointmentsWithDeletedPreferredResources = setFieldsIfPreferredResourceDeleted(
@@ -78,16 +62,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             updateCancelledByInterpreter(recievedNewInterpreter);
         }
         if (serviceAppointmentsWithStatusCannotCompleteOrNone.size() > 0) {
-            preserveSchedulesTimes(
-                serviceAppointmentsWithStatusCannotCompleteOrNone,
-                triggerOldMap
-            );
+            preserveSchedulesTimes(serviceAppointmentsWithStatusCannotCompleteOrNone, triggerOldMap);
         }
         if (serviceAppointmentsWithChangedStatusOrResource.size() > 0) {
-            createHistoricallyAssignedResources(
-                serviceAppointmentsWithChangedStatusOrResource,
-                triggerOldMap
-            );
+            createHistoricallyAssignedResources(serviceAppointmentsWithChangedStatusOrResource, triggerOldMap);
         }
         notifyUsers(allServiceAppointments, triggerOldMap);
     }
@@ -95,18 +73,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<ServiceAppointment> serviceAppointmentsToRemoveAssignedResource = new List<ServiceAppointment>();
 
-        for (
-            ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records
-        ) {
+        for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
-                (serviceAppointment.Status == 'Canceled' ||
-                serviceAppointment.Status == 'Annul') &&
-                serviceAppointment.Status !=
-                triggerOldMap.get(serviceAppointment.Id).get('Status')
+                (serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') &&
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')
             ) {
-                serviceAppointmentsToRemoveAssignedResource.add(
-                    serviceAppointment
-                );
+                serviceAppointmentsToRemoveAssignedResource.add(serviceAppointment);
             }
         }
 
@@ -115,9 +87,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    private static void removeAssignedResource(
-        List<ServiceAppointment> serviceAppointments
-    ) {
+    private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
         List<AssignedResource> arList = [
             SELECT Id
             FROM AssignedResource
@@ -126,17 +96,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         delete arList;
     }
 
-    private static void updateCancelledByInterpreter(
-        List<ServiceAppointment> recievedNewInterpreter
-    ) {
+    private static void updateCancelledByInterpreter(List<ServiceAppointment> recievedNewInterpreter) {
         for (ServiceAppointment serviceAppointment : recievedNewInterpreter) {
             serviceAppointment.HOT_CanceledByInterpreter__c = false;
         }
     }
 
-    private static void setDefaultFields(
-        List<ServiceAppointment> serviceAppointments
-    ) {
+    private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
@@ -167,39 +133,27 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             if (serviceAppointment.ParentRecordId != null) {
                 if (
                     serviceAppointment.HOT_Request__c == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .WorkOrder.HOT_Request__c != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.HOT_Request__c != null
                 ) {
-                    serviceAppointment.HOT_Request__c = workOrderLineItems.get(
-                            serviceAppointment.ParentRecordId
-                        )
+                    serviceAppointment.HOT_Request__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .WorkOrder.HOT_Request__c;
                 }
                 if (
                     serviceAppointment.Subject == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .Subject != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).Subject != null
                 ) {
-                    serviceAppointment.Subject = workOrderLineItems.get(
-                            serviceAppointment.ParentRecordId
-                        )
-                        .Subject;
+                    serviceAppointment.Subject = workOrderLineItems.get(serviceAppointment.ParentRecordId).Subject;
                 }
                 if (
                     serviceAppointment.Description == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .Description != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).Description != null
                 ) {
-                    serviceAppointment.Description = workOrderLineItems.get(
-                            serviceAppointment.ParentRecordId
-                        )
+                    serviceAppointment.Description = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .Description;
                 }
                 if (
-                    serviceAppointment.HOT_InterpretationPostalCity__c ==
-                    null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .HOT_InterpretationPostalCity__c != null
+                    serviceAppointment.HOT_InterpretationPostalCity__c == null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalCity__c != null
                 ) {
                     serviceAppointment.HOT_InterpretationPostalCity__c = workOrderLineItems.get(
                             serviceAppointment.ParentRecordId
@@ -207,10 +161,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         .HOT_InterpretationPostalCity__c;
                 }
                 if (
-                    serviceAppointment.HOT_InterpretationPostalCode__c ==
-                    null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .HOT_InterpretationPostalCode__c != null
+                    serviceAppointment.HOT_InterpretationPostalCode__c == null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalCode__c != null
                 ) {
                     serviceAppointment.HOT_InterpretationPostalCode__c = workOrderLineItems.get(
                             serviceAppointment.ParentRecordId
@@ -219,8 +171,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
                 if (
                     serviceAppointment.HOT_InterpretationStreet__c == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .HOT_InterpretationPostalStreet__c != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalStreet__c != null
                 ) {
                     serviceAppointment.HOT_InterpretationStreet__c = workOrderLineItems.get(
                             serviceAppointment.ParentRecordId
@@ -229,78 +180,50 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
                 if (
                     serviceAppointment.City == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .City != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).City != null
                 ) {
-                    serviceAppointment.City = workOrderLineItems.get(
-                            serviceAppointment.ParentRecordId
-                        )
-                        .City;
+                    serviceAppointment.City = workOrderLineItems.get(serviceAppointment.ParentRecordId).City;
                 }
                 if (
                     serviceAppointment.PostalCode == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .PostalCode != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).PostalCode != null
                 ) {
-                    serviceAppointment.PostalCode = workOrderLineItems.get(
-                            serviceAppointment.ParentRecordId
-                        )
+                    serviceAppointment.PostalCode = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .PostalCode;
                 }
                 if (
                     serviceAppointment.Street == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .Street != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).Street != null
                 ) {
-                    serviceAppointment.Street = workOrderLineItems.get(
-                            serviceAppointment.ParentRecordId
-                        )
-                        .Street;
+                    serviceAppointment.Street = workOrderLineItems.get(serviceAppointment.ParentRecordId).Street;
                 }
                 if (
                     serviceAppointment.EarliestStartTime == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .StartDate != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).StartDate != null
                 ) {
-                    serviceAppointment.EarliestStartTime = workOrderLineItems.get(
-                            serviceAppointment.ParentRecordId
-                        )
+                    serviceAppointment.EarliestStartTime = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .StartDate;
                 }
                 if (
                     serviceAppointment.DueDate == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .EndDate != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).EndDate != null
                 ) {
-                    serviceAppointment.DueDate = workOrderLineItems.get(
-                            serviceAppointment.ParentRecordId
-                        )
-                        .EndDate;
+                    serviceAppointment.DueDate = workOrderLineItems.get(serviceAppointment.ParentRecordId).EndDate;
                 }
                 if (
                     serviceAppointment.SchedStartTime == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .StartDate != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).StartDate != null
                 ) {
-                    serviceAppointment.SchedStartTime = workOrderLineItems.get(
-                            serviceAppointment.ParentRecordId
-                        )
+                    serviceAppointment.SchedStartTime = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .StartDate;
                 }
                 if (
                     serviceAppointment.SchedEndTime == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .EndDate != null
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).EndDate != null
                 ) {
-                    serviceAppointment.SchedEndTime = workOrderLineItems.get(
-                            serviceAppointment.ParentRecordId
-                        )
-                        .EndDate;
+                    serviceAppointment.SchedEndTime = workOrderLineItems.get(serviceAppointment.ParentRecordId).EndDate;
                 }
-                if (
-                    serviceAppointment.HOT_WorkOrderLineItem__c == null &&
-                    serviceAppointment.ParentRecordId != null
-                ) {
+                if (serviceAppointment.HOT_WorkOrderLineItem__c == null && serviceAppointment.ParentRecordId != null) {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
             }
@@ -322,9 +245,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<HOT_HistoricallyAssignedResource__c> newHistoricallyAssignedResources = new List<HOT_HistoricallyAssignedResource__c>();
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(
-                serviceAppointment.Id
-            );
+            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
 
             // First check if we sould create a Historically Assigned Resource for this change
             if (serviceAppointment.HOT_DoNotCreateHAR__c) {
@@ -338,55 +259,39 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
                     historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
                     historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
-                    historicallyAssignedResource.Status__c = getTranslatedStatus(
-                        serviceAppointment.Status
-                    );
-                    newHistoricallyAssignedResources.add(
-                        historicallyAssignedResource
-                    );
+                    historicallyAssignedResource.Status__c = getTranslatedStatus(serviceAppointment.Status);
+                    newHistoricallyAssignedResources.add(historicallyAssignedResource);
                 }
                 // Same resource, but status has changed
                 if (
                     serviceAppointment.HOT_ServiceResource__c != null &&
-                    serviceAppointment.HOT_ServiceResource__c ==
-                    oldServiceAppointment.HOT_ServiceResource__c &&
+                    serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                     serviceAppointment.Status != 'None' &&
                     serviceAppointment.Status != null
                 ) {
                     HOT_HistoricallyAssignedResource__c historicallyAssignedResource = new HOT_HistoricallyAssignedResource__c();
                     historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
                     historicallyAssignedResource.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
-                    historicallyAssignedResource.Status__c = getTranslatedStatus(
-                        serviceAppointment.Status
-                    );
-                    newHistoricallyAssignedResources.add(
-                        historicallyAssignedResource
-                    );
+                    historicallyAssignedResource.Status__c = getTranslatedStatus(serviceAppointment.Status);
+                    newHistoricallyAssignedResources.add(historicallyAssignedResource);
                 }
                 // Changed resource
                 if (
                     serviceAppointment.HOT_ServiceResource__c != null &&
                     oldServiceAppointment.HOT_ServiceResource__c != null &&
-                    serviceAppointment.HOT_ServiceResource__c !=
-                    oldServiceAppointment.HOT_ServiceResource__c
+                    serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c
                 ) {
                     HOT_HistoricallyAssignedResource__c historicallyAssignedResourceOld = new HOT_HistoricallyAssignedResource__c();
                     historicallyAssignedResourceOld.ServiceAppointment__c = serviceAppointment.Id;
                     historicallyAssignedResourceOld.ServiceResource__c = oldServiceAppointment.HOT_ServiceResource__c;
                     historicallyAssignedResourceOld.Status__c = 'Tolk tatt av oppdraget';
-                    newHistoricallyAssignedResources.add(
-                        historicallyAssignedResourceOld
-                    );
+                    newHistoricallyAssignedResources.add(historicallyAssignedResourceOld);
 
                     HOT_HistoricallyAssignedResource__c historicallyAssignedResourceNew = new HOT_HistoricallyAssignedResource__c();
                     historicallyAssignedResourceNew.ServiceAppointment__c = serviceAppointment.Id;
                     historicallyAssignedResourceNew.ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
-                    historicallyAssignedResourceNew.Status__c = getTranslatedStatus(
-                        serviceAppointment.Status
-                    );
-                    newHistoricallyAssignedResources.add(
-                        historicallyAssignedResourceNew
-                    );
+                    historicallyAssignedResourceNew.Status__c = getTranslatedStatus(serviceAppointment.Status);
+                    newHistoricallyAssignedResources.add(historicallyAssignedResourceNew);
                 }
                 // Removed resource
                 if (
@@ -397,15 +302,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     historicallyAssignedResource.ServiceAppointment__c = serviceAppointment.Id;
                     historicallyAssignedResource.ServiceResource__c = oldServiceAppointment.HOT_ServiceResource__c;
                     historicallyAssignedResource.Status__c = 'Tolk tatt av oppdraget';
-                    newHistoricallyAssignedResources.add(
-                        historicallyAssignedResource
-                    );
+                    newHistoricallyAssignedResources.add(historicallyAssignedResource);
                 }
                 // Only status change, no resource connected to service appointment
                 if (
                     serviceAppointment.HOT_ServiceResource__c == null &&
-                    serviceAppointment.HOT_ServiceResource__c ==
-                    oldServiceAppointment.HOT_ServiceResource__c
+                    serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c
                 ) {
                     // Do noting
                 }
@@ -417,16 +319,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithStatusCannotCompleteOrNone,
         Map<Id, sObject> triggerOldMap
     ) {
-        for (
-            ServiceAppointment serviceAppointment : serviceAppointmentsWithStatusCannotCompleteOrNone
-        ) {
-            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(
-                serviceAppointment.Id
-            );
-            if (
-                serviceAppointment.SchedStartTime == null &&
-                serviceAppointment.SchedEndTime == null
-            ) {
+        for (ServiceAppointment serviceAppointment : serviceAppointmentsWithStatusCannotCompleteOrNone) {
+            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
+            if (serviceAppointment.SchedStartTime == null && serviceAppointment.SchedEndTime == null) {
                 serviceAppointment.SchedStartTime = oldServiceAppointment.SchedStartTime;
                 serviceAppointment.SchedEndTime = oldServiceAppointment.SchedEndTime;
             }
@@ -456,39 +351,26 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         return '';
     }
 
-    public static List<ServiceAppointment> setFieldsByPreferredResource(
-        List<ServiceAppointment> serviceAppointments
-    ) {
+    public static List<ServiceAppointment> setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
         List<Id> PreferredResourceId = new List<Id>();
         List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (serviceAppointment.HOT_PreferredServiceResourceId__c != null) {
-                PreferredResourceId.add(
-                    serviceAppointment.HOT_PreferredServiceResourceId__c
-                );
+                PreferredResourceId.add(serviceAppointment.HOT_PreferredServiceResourceId__c);
                 serviceAppointmentsToUpdate.add(serviceAppointment);
             }
         }
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
             [
-                SELECT
-                    Id,
-                    HOT_ServiceTerritory__c,
-                    HOT_IsFreelanceInterpreter__c,
-                    HOT_IsEmployedInterpreter__c
+                SELECT Id, HOT_ServiceTerritory__c, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
                 FROM ServiceResource
                 WHERE Id IN :PreferredResourceId
             ]
         );
-        for (
-            ServiceAppointment serviceAppointment : serviceAppointmentsToUpdate
-        ) {
+        for (ServiceAppointment serviceAppointment : serviceAppointmentsToUpdate) {
             if (
                 serviceAppointment.ServiceTerritoryId !=
-                serviceResources.get(
-                        serviceAppointment.HOT_PreferredServiceResourceId__c
-                    )
-                    .HOT_ServiceTerritory__c
+                serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_ServiceTerritory__c
             ) {
                 serviceAppointment.ServiceTerritoryId = serviceResources.get(
                         serviceAppointment.HOT_PreferredServiceResourceId__c
@@ -498,10 +380,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
             if (
                 serviceAppointment.HOT_IsReleasedToFreelance__c !=
-                serviceResources.get(
-                        serviceAppointment.HOT_PreferredServiceResourceId__c
-                    )
-                    .HOT_IsFreelanceInterpreter__c
+                serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_IsFreelanceInterpreter__c
             ) {
                 serviceAppointment.HOT_IsReleasedToFreelance__c = serviceResources.get(
                         serviceAppointment.HOT_PreferredServiceResourceId__c
@@ -525,19 +404,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             requestIds.add(serviceAppointment.HOT_Request__c);
         }
 
-        List<HOT_Request__c> requests = [
-            SELECT Id, ServiceTerritory__c
-            FROM HOT_Request__c
-            WHERE Id IN :requestIds
-        ];
-        Map<Id, HOT_Request__c> requestMap = new Map<Id, HOT_Request__c>(
-            requests
-        );
+        List<HOT_Request__c> requests = [SELECT Id, ServiceTerritory__c FROM HOT_Request__c WHERE Id IN :requestIds];
+        Map<Id, HOT_Request__c> requestMap = new Map<Id, HOT_Request__c>(requests);
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.ServiceTerritoryId = requestMap.get(
-                    serviceAppointment.HOT_Request__c
-                )
+            serviceAppointment.ServiceTerritoryId = requestMap.get(serviceAppointment.HOT_Request__c)
                 ?.ServiceTerritory__c;
             serviceAppointment.HOT_IsReleasedToFreelance__c = false;
             serviceAppointment.HOT_IsEmployedInterpreter__c = true;
@@ -546,10 +417,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         return serviceAppointmentsToUpdate;
     }
 
-    public static void notifyUsers(
-        List<ServiceAppointment> serviceAppointments,
-        Map<Id, sObject> triggerOldMap
-    ) {
+    public static void notifyUsers(List<ServiceAppointment> serviceAppointments, Map<Id, sObject> triggerOldMap) {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
@@ -557,16 +425,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         ];
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(
-                serviceAppointment.Id
-            );
+            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
 
             // Varsel ved avlyst av bruker
             if (
                 serviceAppointment.Status == 'Canceled' &&
                 oldServiceAppointment.Status != 'Canceled' &&
-                serviceAppointment.HOT_ServiceResource__c ==
-                oldServiceAppointment.HOT_ServiceResource__c &&
+                serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                 oldServiceAppointment.Status != 'Scheduled'
             ) {
                 Messaging.CustomNotification notification = new Messaging.CustomNotification();
@@ -592,20 +457,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 try {
                     notification.send(recipients);
                 } catch (Exception e) {
-                    System.debug(
-                        'Problem sending notification: ' + e.getMessage()
-                    );
+                    System.debug('Problem sending notification: ' + e.getMessage());
                 }
             }
 
             // Varsel ved endring av tidspunkt
             if (
-                (serviceAppointment.SchedStartTime !=
-                oldServiceAppointment.SchedStartTime ||
-                serviceAppointment.SchedEndTime !=
-                oldServiceAppointment.SchedEndTime) &&
-                serviceAppointment.HOT_ServiceResource__c ==
-                oldServiceAppointment.HOT_ServiceResource__c &&
+                (serviceAppointment.SchedStartTime != oldServiceAppointment.SchedStartTime ||
+                serviceAppointment.SchedEndTime != oldServiceAppointment.SchedEndTime) &&
+                serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                 serviceAppointment.Status != 'Scheduled' &&
                 serviceAppointment.SchedStartTime != null
             ) {
@@ -632,18 +492,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 try {
                     notification.send(recipients);
                 } catch (Exception e) {
-                    System.debug(
-                        'Problem sending notification: ' + e.getMessage()
-                    );
+                    System.debug('Problem sending notification: ' + e.getMessage());
                 }
             }
 
             // Varsel ved endring av adresse
             if (
-                serviceAppointment.HOT_AddressFormated__c !=
-                oldServiceAppointment.HOT_AddressFormated__c &&
-                serviceAppointment.HOT_ServiceResource__c ==
-                oldServiceAppointment.HOT_ServiceResource__c &&
+                serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c &&
+                serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                 serviceAppointment.Status != 'Scheduled'
             ) {
                 Messaging.CustomNotification notification = new Messaging.CustomNotification();
@@ -669,16 +525,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 try {
                     notification.send(recipients);
                 } catch (Exception e) {
-                    System.debug(
-                        'Problem sending notification: ' + e.getMessage()
-                    );
+                    System.debug('Problem sending notification: ' + e.getMessage());
                 }
             }
 
             // Varsel ved fjerning av tolk
             if (
-                serviceAppointment.HOT_ServiceResource__c !=
-                oldServiceAppointment.HOT_ServiceResource__c &&
+                serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c &&
                 serviceAppointment.Status != 'Scheduled'
             ) {
                 Messaging.CustomNotification notification = new Messaging.CustomNotification();
@@ -703,9 +556,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 try {
                     notification.send(recipients);
                 } catch (Exception e) {
-                    System.debug(
-                        'Problem sending notification: ' + e.getMessage()
-                    );
+                    System.debug('Problem sending notification: ' + e.getMessage());
                 }
             }
         }

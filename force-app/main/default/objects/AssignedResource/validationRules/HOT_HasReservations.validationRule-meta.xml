@@ -3,6 +3,5 @@
     <fullName>HOT_HasReservations</fullName>
     <active>true</active>
     <errorConditionFormula>HOT_HasReservations__c</errorConditionFormula>
-    <errorMessage
-    >Ressursen har allerede et oppdrag i dette tidsrommet.</errorMessage>
+    <errorMessage>Ressursen har allerede et oppdrag i dette tidsrommet.</errorMessage>
 </ValidationRule>

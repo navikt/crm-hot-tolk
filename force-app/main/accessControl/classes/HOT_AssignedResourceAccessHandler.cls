@@ -8,10 +8,7 @@ public without sharing class HOT_AssignedResourceAccessHandler extends MyTrigger
             resourceByAssignment.put(ar.Id, ar.ServiceResourceId);
         }
 
-        HOT_ServiceAppointmentsSharingService.grantAccess(
-            apppointmentByAssignment,
-            resourceByAssignment
-        );
+        HOT_ServiceAppointmentsSharingService.grantAccess(apppointmentByAssignment, resourceByAssignment);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -21,16 +18,11 @@ public without sharing class HOT_AssignedResourceAccessHandler extends MyTrigger
         Boolean runSharingService = false;
 
         for (AssignedResource ar : (List<AssignedResource>) records) {
-            AssignedResource oldRecord = (AssignedResource) triggerOldMap.get(
-                ar.Id
-            );
+            AssignedResource oldRecord = (AssignedResource) triggerOldMap.get(ar.Id);
             if (ar.ServiceResourceId != oldRecord.ServiceResourceId) {
                 apppointmentByAssignment.put(ar.Id, ar.ServiceAppointmentId);
                 resourceToAddByAssignment.put(ar.Id, ar.ServiceResourceId);
-                resourceToRemoveByAssignment.put(
-                    ar.Id,
-                    oldRecord.ServiceResourceId
-                );
+                resourceToRemoveByAssignment.put(ar.Id, oldRecord.ServiceResourceId);
                 runSharingService = true;
             }
         }
@@ -39,10 +31,7 @@ public without sharing class HOT_AssignedResourceAccessHandler extends MyTrigger
                 apppointmentByAssignment,
                 resourceToRemoveByAssignment
             );
-            HOT_ServiceAppointmentsSharingService.grantAccess(
-                apppointmentByAssignment,
-                resourceToAddByAssignment
-            );
+            HOT_ServiceAppointmentsSharingService.grantAccess(apppointmentByAssignment, resourceToAddByAssignment);
         }
     }
 

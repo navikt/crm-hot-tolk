@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <help
-    ><!-- Oppgi referanse, slik økonomitjenesten hos dere krever. --></help>
+    <help><!-- Oppgi referanse, slik økonomitjenesten hos dere krever. --></help>
     <label>Deres fakturareferanse</label>
     <name>InvoiceReference__c</name>
 </CustomFieldTranslation>
