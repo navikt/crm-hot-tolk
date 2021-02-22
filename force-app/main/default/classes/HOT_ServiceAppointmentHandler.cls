@@ -36,6 +36,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointmentsWithDeletedPreferredResources.add(serviceAppointment);
             }
             if (
+                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'None' &&
+                serviceAppointment.Status == 'None'
+            ) {
+                serviceAppointmentsWithStatusCannotCompleteOrNone.add(serviceAppointment);
+            }
+            if (
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
                 serviceAppointment.HOT_ServiceResource__c !=
                 triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
@@ -54,6 +60,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (recievedNewInterpreter.size() > 0) {
             updateCancelledByInterpreter(recievedNewInterpreter);
+        }
+        if (serviceAppointmentsWithStatusCannotCompleteOrNone.size() > 0) {
+            preserveSchedulesTimes(serviceAppointmentsWithStatusCannotCompleteOrNone, triggerOldMap);
         }
         if (serviceAppointmentsWithChangedStatusOrResource.size() > 0) {
             createHistoricallyAssignedResources(serviceAppointmentsWithChangedStatusOrResource, triggerOldMap);
@@ -354,6 +363,19 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
         insert newHistoricallyAssignedResources;
+    }
+
+    private static void preserveSchedulesTimes(
+        List<ServiceAppointment> serviceAppointmentsWithStatusCannotCompleteOrNone,
+        Map<Id, sObject> triggerOldMap
+    ) {
+        for (ServiceAppointment serviceAppointment : serviceAppointmentsWithStatusCannotCompleteOrNone) {
+            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
+            if (serviceAppointment.SchedStartTime == null && serviceAppointment.SchedEndTime == null) {
+                serviceAppointment.SchedStartTime = oldServiceAppointment.SchedStartTime;
+                serviceAppointment.SchedEndTime = oldServiceAppointment.SchedEndTime;
+            }
+        }
     }
 
     @TestVisible
