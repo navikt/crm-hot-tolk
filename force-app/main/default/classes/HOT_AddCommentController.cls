@@ -1,10 +1,6 @@
 public without sharing class HOT_AddCommentController {
     @AuraEnabled
-    public static void addComment(
-        SObject record,
-        String newComment,
-        String fieldName
-    ) {
+    public static void addComment(SObject record, String newComment, String fieldName) {
         if (newComment != null && newComment != '') {
             newComment =
                 UserInfo.getFirstName() +
@@ -17,12 +13,7 @@ public without sharing class HOT_AddCommentController {
             if (record.get(fieldName) == null) {
                 record.put(fieldName, newComment);
             } else {
-                record.put(
-                    fieldName,
-                    record.get(fieldName) +
-                    '\n\n' +
-                    newComment
-                );
+                record.put(fieldName, record.get(fieldName) + '\n\n' + newComment);
             }
             update record;
         }
@@ -36,9 +27,7 @@ public without sharing class HOT_AddCommentController {
     public String fieldName;
 
     @InvocableMethod
-    public static void addComment(
-        List<HOT_AddCommentController> inputVariables
-    ) {
+    public static void addComment(List<HOT_AddCommentController> inputVariables) {
         HOT_AddCommentController.addComment(
             inputVariables[0].record,
             inputVariables[0].newComment,

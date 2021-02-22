@@ -23,8 +23,7 @@
         <locationX>50</locationX>
         <locationY>829</locationY>
         <assignmentItems>
-            <assignToReference
-            >$Record.HOT_TriggerValidation__c</assignToReference>
+            <assignToReference>$Record.HOT_TriggerValidation__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
@@ -37,8 +36,7 @@
         <locationX>754</locationX>
         <locationY>1309</locationY>
         <assignmentItems>
-            <assignToReference
-            >$Record.HOT_HasReservations__c</assignToReference>
+            <assignToReference>$Record.HOT_HasReservations__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
@@ -87,54 +85,45 @@
             <conditionLogic
             >( (1 AND 2) OR (3 AND 4) OR (5 AND 6) OR (9 AND 10) ) AND 7 AND 8 AND (11 AND 12)</conditionLogic>
             <conditions>
-                <leftValueReference
-                >Reservation.EarliestStartTime</leftValueReference>
+                <leftValueReference>Reservation.EarliestStartTime</leftValueReference>
                 <operator>LessThan</operator>
                 <rightValue>
-                    <elementReference
-                    >getThisServiceAppointment.EarliestStartTime</elementReference>
+                    <elementReference>getThisServiceAppointment.EarliestStartTime</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference
-                >getThisServiceAppointment.EarliestStartTime</leftValueReference>
+                <leftValueReference>getThisServiceAppointment.EarliestStartTime</leftValueReference>
                 <operator>LessThan</operator>
                 <rightValue>
                     <elementReference>Reservation.DueDate</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference
-                >Reservation.EarliestStartTime</leftValueReference>
+                <leftValueReference>Reservation.EarliestStartTime</leftValueReference>
                 <operator>LessThan</operator>
                 <rightValue>
-                    <elementReference
-                    >getThisServiceAppointment.DueDate</elementReference>
+                    <elementReference>getThisServiceAppointment.DueDate</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference
-                >getThisServiceAppointment.DueDate</leftValueReference>
+                <leftValueReference>getThisServiceAppointment.DueDate</leftValueReference>
                 <operator>LessThan</operator>
                 <rightValue>
                     <elementReference>Reservation.DueDate</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference
-                >getThisServiceAppointment.EarliestStartTime</leftValueReference>
+                <leftValueReference>getThisServiceAppointment.EarliestStartTime</leftValueReference>
                 <operator>LessThan</operator>
                 <rightValue>
-                    <elementReference
-                    >Reservation.EarliestStartTime</elementReference>
+                    <elementReference>Reservation.EarliestStartTime</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>Reservation.DueDate</leftValueReference>
                 <operator>LessThan</operator>
                 <rightValue>
-                    <elementReference
-                    >getThisServiceAppointment.DueDate</elementReference>
+                    <elementReference>getThisServiceAppointment.DueDate</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
@@ -152,25 +141,21 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference
-                >Reservation.EarliestStartTime</leftValueReference>
+                <leftValueReference>Reservation.EarliestStartTime</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference
-                    >getThisServiceAppointment.EarliestStartTime</elementReference>
+                    <elementReference>getThisServiceAppointment.EarliestStartTime</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>Reservation.DueDate</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference
-                    >getThisServiceAppointment.DueDate</elementReference>
+                    <elementReference>getThisServiceAppointment.DueDate</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference
-                >getThisServiceAppointment.Status</leftValueReference>
+                <leftValueReference>getThisServiceAppointment.Status</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
                     <stringValue>Completed</stringValue>
@@ -189,16 +174,14 @@
             <label>IsOverlapping</label>
         </rules>
     </decisions>
-    <interviewLabel
-    >CheckAssignedResources {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel>CheckAssignedResources {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Check Assigned Resources</label>
     <loops>
         <name>LoopOverRecords</name>
         <label>LoopOverRecords</label>
         <locationX>358</locationX>
         <locationY>373</locationY>
-        <assignNextValueToReference
-        >assignedResource</assignNextValueToReference>
+        <assignNextValueToReference>assignedResource</assignNextValueToReference>
         <collectionReference>getAssignedResources</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -244,8 +227,7 @@
         <label>getAssignedResources</label>
         <locationX>358</locationX>
         <locationY>253</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>LoopOverRecords</targetReference>
         </connector>
@@ -253,8 +235,7 @@
             <field>ServiceAppointmentId</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference
-                >$Record.ServiceAppointmentId</elementReference>
+                <elementReference>$Record.ServiceAppointmentId</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
@@ -268,8 +249,7 @@
         <label>getReservations</label>
         <locationX>666</locationX>
         <locationY>829</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>getThisServiceAppointment</targetReference>
         </connector>
@@ -291,8 +271,7 @@
         <label>getThisServiceAppointment</label>
         <locationX>666</locationX>
         <locationY>949</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>LoopOverReservations</targetReference>
         </connector>
@@ -300,8 +279,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference
-                >$Record.ServiceAppointmentId</elementReference>
+                <elementReference>$Record.ServiceAppointmentId</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>

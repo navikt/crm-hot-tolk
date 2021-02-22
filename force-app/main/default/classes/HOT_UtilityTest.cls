@@ -2,55 +2,38 @@
 private class HOT_UtilityTest {
     @testSetup
     static void setup() {
-        ServiceResource serviceresource = HOT_TestDataFactory.createServiceResource(
-            UserInfo.getUserId()
-        );
+        ServiceResource serviceresource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceresource;
     }
 
     @isTest
     static void testGetServiceResource() {
         ServiceResource serviceResource = HOT_Utility.getServiceResource();
-        System.assertEquals(
-            UserInfo.getUserId(),
-            serviceResource.RelatedRecordId
-        );
+        System.assertEquals(UserInfo.getUserId(), serviceResource.RelatedRecordId);
     }
 
     @isTest
     static void testCheckAssignedPermissionSet() {
-        PermissionSet ps = [
-            SELECT Id
-            FROM PermissionSet
-            WHERE Name = 'HOT_Tolk_Ansatt'
-        ];
+        PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Ansatt'];
         PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
             AssigneeId = UserInfo.getUserId(),
             PermissionSetId = ps.Id
         );
         insert permissionSetAssignment;
 
-        Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSet(
-            'HOT_Tolk_Ansatt'
-        );
+        Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSet('HOT_Tolk_Ansatt');
         System.assertEquals(true, hasPermissionSet);
     }
     @isTest
     static void testCheckAssignedPermissionSetGroup() {
-        PermissionSetGroup psg = [
-            SELECT Id
-            FROM PermissionSetGroup
-            WHERE DeveloperName = 'Test'
-        ];
+        PermissionSetGroup psg = [SELECT Id FROM PermissionSetGroup WHERE DeveloperName = 'Test'];
         PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
             AssigneeId = UserInfo.getUserId(),
             PermissionSetGroupId = psg.Id
         );
         insert permissionSetAssignment;
 
-        Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSetGroup(
-            'Test'
-        );
+        Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSetGroup('Test');
         System.assertEquals(true, hasPermissionSet);
     }
 
@@ -58,10 +41,7 @@ private class HOT_UtilityTest {
     static void testGetAssignedResource() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'Bestilling',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Bestilling', workType);
         insert request;
         request.Status__c = 'Godkjent';
         update request;
@@ -83,16 +63,10 @@ private class HOT_UtilityTest {
         update serviceAppointment;
 
         Test.startTest();
-        Map<Id, List<String>> requestIdToServiceResources = HOT_Utility.getAssignedResources(
-            requestIds
-        );
+        Map<Id, List<String>> requestIdToServiceResources = HOT_Utility.getAssignedResources(requestIds);
         Test.stopTest();
 
-        System.assertEquals(
-            1,
-            requestIdToServiceResources.get(request.Id).size(),
-            'Could not get assigned resources'
-        );
+        System.assertEquals(1, requestIdToServiceResources.get(request.Id).size(), 'Could not get assigned resources');
     }
 
     @isTest
@@ -112,10 +86,7 @@ private class HOT_UtilityTest {
     static void testGetOrdererDetails() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'Testing getOrderDetails',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Testing getOrderDetails', workType);
         insert request;
 
         Test.startTest();

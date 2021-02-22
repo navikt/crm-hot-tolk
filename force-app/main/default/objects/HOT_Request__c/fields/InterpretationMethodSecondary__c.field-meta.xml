@@ -5,8 +5,7 @@
     <externalId>false</externalId>
     <label>Interpretation Method Secondary</label>
     <referenceTo>WorkType</referenceTo>
-    <relationshipLabel
-    >Requests (Interpretation Method Secondary)</relationshipLabel>
+    <relationshipLabel>Requests (Interpretation Method Secondary)</relationshipLabel>
     <relationshipName>Requests_Secondary</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>

@@ -18,16 +18,8 @@ public class HOT_TestData {
         new List<String>{ 'Han', '', 'Solo' },
         new List<String>{ '', '', 'Yoda' }
     };
-    List<String> companies = new List<String>{
-        'Jedi Order',
-        'The Empire',
-        'The Rebels'
-    };
-    List<String> org_numbers = new List<String>{
-        '987654321',
-        '123456789',
-        '808080808'
-    };
+    List<String> companies = new List<String>{ 'Jedi Order', 'The Empire', 'The Rebels' };
+    List<String> org_numbers = new List<String>{ '987654321', '123456789', '808080808' };
 
     List<String> workTypeNames = new List<String>{
         'TS - Tegnspråk',
@@ -43,11 +35,7 @@ public class HOT_TestData {
     };
 
     //Get-methods
-    public List<Person__c> getPersons(
-        Integer j,
-        Integer n,
-        String regionNumber
-    ) {
+    public List<Person__c> getPersons(Integer j, Integer n, String regionNumber) {
         List<Person__c> persons = new List<Person__c>();
         for (Integer i = j; i < n + j && i < this.idents.size(); i++) {
             Person__c person = new Person__c();
@@ -65,13 +53,7 @@ public class HOT_TestData {
     }
 
     public List<Account> getCompanies(Integer n) {
-        Id employerRecordTypeId = [
-            SELECT Id
-            FROM RecordType
-            WHERE DeveloperName = 'Employer'
-            LIMIT 1
-        ]
-        .Id;
+        Id employerRecordTypeId = [SELECT Id FROM RecordType WHERE DeveloperName = 'Employer' LIMIT 1].Id;
         List<Account> accounts = new List<Account>();
         for (Integer i = 0; i < n && i < this.companies.size(); i++) {
             Account account = new Account();
@@ -95,10 +77,7 @@ public class HOT_TestData {
         return workTypes;
     }
 
-    public List<SkillRequirement> getSkillRequirements(
-        List<WorkType> workTypes,
-        List<Skill> skills
-    ) {
+    public List<SkillRequirement> getSkillRequirements(List<WorkType> workTypes, List<Skill> skills) {
         List<SkillRequirement> skillRequirements = new List<SkillRequirement>();
         for (WorkType workType : workTypes) {
             for (Skill skill : skills) {
@@ -112,25 +91,16 @@ public class HOT_TestData {
     }
 
     public List<OperatingHours> getOperatingHours() {
-        List<OperatingHours> operatingHours = new List<OperatingHours>{
-            new OperatingHours(Name = 'Always')
-        };
+        List<OperatingHours> operatingHours = new List<OperatingHours>{ new OperatingHours(Name = 'Always') };
         return operatingHours;
     }
 
-    public List<ServiceTerritory> getServiceTerritories(
-        OperatingHours operatingHours,
-        Integer n
-    ) {
+    public List<ServiceTerritory> getServiceTerritories(OperatingHours operatingHours, Integer n) {
         List<ServiceTerritory> ServiceTerritories = new List<ServiceTerritory>();
-        for (
-            Integer i = 0; i < n && i < this.ServiceTerritoryNames.size(); i++
-        ) {
+        for (Integer i = 0; i < n && i < this.ServiceTerritoryNames.size(); i++) {
             ServiceTerritory serviceTerritory = new ServiceTerritory();
             serviceTerritory.Name = this.ServiceTerritoryNames[i];
-            serviceTerritory.HOT_DeveloperName__c = this.ServiceTerritoryNames[
-                    i
-                ];
+            serviceTerritory.HOT_DeveloperName__c = this.ServiceTerritoryNames[i];
             serviceTerritory.OperatingHoursId = operatingHours.Id;
             serviceTerritory.IsActive = true;
             serviceTerritories.add(serviceTerritory);
@@ -138,10 +108,7 @@ public class HOT_TestData {
         return serviceTerritories;
     }
 
-    public List<HOT_Request__c> getMeRequests(
-        List<Account> accounts,
-        List<WorkType> workTypes
-    ) {
+    public List<HOT_Request__c> getMeRequests(List<Account> accounts, List<WorkType> workTypes) {
         List<HOT_Request__c> requests = new List<HOT_Request__c>();
         for (Integer i = 0; i < accounts.size(); i++) {
             HOT_Request__c request = new HOT_Request__c(
@@ -149,14 +116,10 @@ public class HOT_TestData {
                 Account__c = accounts[i].Id,
                 InterpretationMethod__c = workTypes[i].Id,
                 InterpretationStreet__c = 'Veien ' + String.valueOf(i),
-                InterpretationPostalCode__c = String.valueOf(i) +
-                    '00' +
-                    String.valueOf(i),
+                InterpretationPostalCode__c = String.valueOf(i) + '00' + String.valueOf(i),
                 InterpretationPostalCity__c = 'Oslo',
                 MeetingStreet__c = 'Veien ' + String.valueOf(i),
-                MeetingPostalCode__c = String.valueOf(i) +
-                    '00' +
-                    String.valueOf(i),
+                MeetingPostalCode__c = String.valueOf(i) + '00' + String.valueOf(i),
                 MeetingPostalCity__c = 'Oslo',
                 NumberOfInterpreters__c = 2,
                 StartTime__c = DateTime.now().addDays(i).addHours(1),
@@ -183,14 +146,10 @@ public class HOT_TestData {
                 Subject__c = 'Forespørsel på vegne av ' + accounts[i].Name,
                 InterpretationMethod__c = workTypes[i].Id,
                 InterpretationStreet__c = 'Gata ' + String.valueOf(i),
-                InterpretationPostalCode__c = String.valueOf(i) +
-                    '11' +
-                    String.valueOf(i),
+                InterpretationPostalCode__c = String.valueOf(i) + '11' + String.valueOf(i),
                 InterpretationPostalCity__c = 'Lillestrøm',
                 MeetingStreet__c = 'Gata ' + String.valueOf(i),
-                MeetingPostalCode__c = String.valueOf(i) +
-                    '11' +
-                    String.valueOf(i),
+                MeetingPostalCode__c = String.valueOf(i) + '11' + String.valueOf(i),
                 MeetingPostalCity__c = 'Lillestrøm',
                 NumberOfInterpreters__c = 2,
                 StartTime__c = DateTime.now().addDays(i).addHours(1),
@@ -221,14 +180,10 @@ public class HOT_TestData {
                 Subject__c = 'Forespørsel på vegne av ' + accounts[i].Name,
                 InterpretationMethod__c = workTypes[i].Id,
                 InterpretationStreet__c = 'Gata ' + String.valueOf(i),
-                InterpretationPostalCode__c = String.valueOf(i) +
-                    '11' +
-                    String.valueOf(i),
+                InterpretationPostalCode__c = String.valueOf(i) + '11' + String.valueOf(i),
                 InterpretationPostalCity__c = 'Lillestrøm',
                 MeetingStreet__c = 'Gata ' + String.valueOf(i),
-                MeetingPostalCode__c = String.valueOf(i) +
-                    '11' +
-                    String.valueOf(i),
+                MeetingPostalCode__c = String.valueOf(i) + '11' + String.valueOf(i),
                 MeetingPostalCity__c = 'Lillestrøm',
                 NumberOfInterpreters__c = 2,
                 StartTime__c = DateTime.now().addDays(i).addHours(1),
@@ -269,8 +224,7 @@ public class HOT_TestData {
             for (Skill skill : skills) {
                 ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
                 serviceResourceSkill.ServiceResourceId = serviceResource.Id;
-                serviceResourceSkill.EffectiveStartDate = Date.today()
-                    .addDays(-1);
+                serviceResourceSkill.EffectiveStartDate = Date.today().addDays(-1);
                 serviceResourceSkill.SkillId = skill.Id;
                 serviceResourceSkills.add(serviceResourceSkill);
             }
@@ -285,8 +239,7 @@ public class HOT_TestData {
         List<ServiceTerritoryMember> serviceTerritoryMembers = new List<ServiceTerritoryMember>();
         for (ServiceResource serviceResource : serviceResources) {
             ServiceTerritoryMember serviceTerritoryMember = new ServiceTerritoryMember();
-            serviceTerritoryMember.EffectiveStartDate = Date.today()
-                .addDays(-1);
+            serviceTerritoryMember.EffectiveStartDate = Date.today().addDays(-1);
             serviceTerritoryMember.ServiceResourceId = serviceResource.Id;
             serviceTerritoryMember.ServiceTerritoryId = serviceTerritory.Id;
             serviceTerritoryMembers.add(serviceTerritoryMember);

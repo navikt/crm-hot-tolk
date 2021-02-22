@@ -6,6 +6,5 @@
 &amp;&amp; 
 !HOT_IsReleasedToFreelance__c</errorConditionFormula>
     <errorDisplayField>HOT_FreelanceSubject__c</errorDisplayField>
-    <errorMessage
-    >Du kan ikke endre Emne for frilanstolker før oppdraget er frigitt</errorMessage>
+    <errorMessage>Du kan ikke endre Emne for frilanstolker før oppdraget er frigitt</errorMessage>
 </ValidationRule>

@@ -28,20 +28,17 @@
             <label>No criteria</label>
         </rules>
     </decisions>
-    <description
-    >Update Duration field when Work Order is created or edited</description>
+    <description>Update Duration field when Work Order is created or edited</description>
     <formulas>
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue
-                >([WorkOrder].EndDate-  [WorkOrder].StartDate )*24</stringValue>
+                <stringValue>([WorkOrder].EndDate-  [WorkOrder].StartDate )*24</stringValue>
             </value>
         </processMetadataValues>
         <name>formula_2_myRule_1_A1_3506885104</name>
         <dataType>Number</dataType>
-        <expression
-        >({!myVariable_current.EndDate}-  {!myVariable_current.StartDate} )*24</expression>
+        <expression>({!myVariable_current.EndDate}-  {!myVariable_current.StartDate} )*24</expression>
         <scale>18</scale>
     </formulas>
     <formulas>
@@ -151,8 +148,7 @@
             </processMetadataValues>
             <field>Duration</field>
             <value>
-                <elementReference
-                >formula_2_myRule_1_A1_3506885104</elementReference>
+                <elementReference>formula_2_myRule_1_A1_3506885104</elementReference>
             </value>
         </inputAssignments>
         <object>WorkOrder</object>

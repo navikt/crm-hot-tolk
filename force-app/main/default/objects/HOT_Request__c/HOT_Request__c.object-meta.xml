@@ -128,8 +128,7 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <comment
-        >Action override created by Lightning App Builder during activation.</comment>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
         <content>HOT_Request_Record_Page</content>
         <formFactor>Large</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
@@ -137,8 +136,7 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <comment
-        >Action override created by Lightning App Builder during activation.</comment>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
         <content>HOT_Request_Record_Page</content>
         <formFactor>Small</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
@@ -149,8 +147,7 @@
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
-    <compactLayoutAssignment
-    >HOT_Request_Compact_Layout</compactLayoutAssignment>
+    <compactLayoutAssignment>HOT_Request_Compact_Layout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Object used to handle request for interpreter.</description>
     <enableActivities>false</enableActivities>
@@ -172,19 +169,13 @@
     </nameField>
     <pluralLabel>Requests</pluralLabel>
     <searchLayouts>
-        <searchResultsAdditionalFields
-        >Account__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields
-        >StartTime__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields
-        >EndTime__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Account__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>StartTime__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>EndTime__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields
-        >AssignmentType__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields
-        >MeetingStreet__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields
-        >Dispatcher__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>AssignmentType__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>MeetingStreet__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Dispatcher__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Private</sharingModel>
     <visibility>Public</visibility>

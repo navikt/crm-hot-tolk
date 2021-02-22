@@ -15,23 +15,11 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             }
         }
 
-        User currentUser = [
-            SELECT Id, AccountId, Account.CRM_Person__c
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-        ];
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         List<Account> accounts = [
-            SELECT
-                Id,
-                Name,
-                INT_PersonIdent__c,
-                CRM_Person__c,
-                INT_OrganizationNumber__c
+            SELECT Id, Name, INT_PersonIdent__c, CRM_Person__c, INT_OrganizationNumber__c
             FROM Account
-            WHERE
-                INT_PersonIdent__c IN :idents
-                OR INT_OrganizationNumber__c IN :idents
-                OR Id IN :idents
+            WHERE INT_PersonIdent__c IN :idents OR INT_OrganizationNumber__c IN :idents OR Id IN :idents
         ];
 
         Map<String, Account> personIdentToAccount = new Map<String, Account>();
@@ -43,10 +31,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                 personIdentToAccount.put(account.INT_PersonIdent__c, account);
             }
             if (account.INT_OrganizationNumber__c != null) {
-                orgNumberToAccount.put(
-                    account.INT_OrganizationNumber__c,
-                    account
-                );
+                orgNumberToAccount.put(account.INT_OrganizationNumber__c, account);
             }
             idToAccount.put(account.Id, account);
         }
@@ -56,17 +41,10 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                 //Sets account and Person fields if UserPersonNumber__c is filled out in form
                 if (
                     request.UserPersonNumber__c != null &&
-                    personIdentToAccount.get(request.UserPersonNumber__c) !=
-                    null
+                    personIdentToAccount.get(request.UserPersonNumber__c) != null
                 ) {
-                    request.Account__c = personIdentToAccount.get(
-                            request.UserPersonNumber__c
-                        )
-                        .Id;
-                    request.Person__c = personIdentToAccount.get(
-                            request.UserPersonNumber__c
-                        )
-                        .CRM_Person__c;
+                    request.Account__c = personIdentToAccount.get(request.UserPersonNumber__c).Id;
+                    request.Person__c = personIdentToAccount.get(request.UserPersonNumber__c).CRM_Person__c;
                 } else if (request.Type__c == 'Me') {
                     //Checks if user is putting in request for interpreter for itself
                     //Sets account and Person Fields if it should be connected to THIS.User
@@ -76,21 +54,13 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                 //Sets Company-lookup if orgNumber is filled in
                 if (
                     request.OrganizationNumber__c != null &&
-                    orgNumberToAccount.get(request.OrganizationNumber__c) !=
-                    null
+                    orgNumberToAccount.get(request.OrganizationNumber__c) != null
                 ) {
-                    request.Company__c = orgNumberToAccount.get(
-                            request.OrganizationNumber__c
-                        )
-                        .Id;
+                    request.Company__c = orgNumberToAccount.get(request.OrganizationNumber__c).Id;
                 }
-            } else if (
-                request.Account__c != null &&
-                idToAccount.get(request.Account__c) != null
-            ) {
+            } else if (request.Account__c != null && idToAccount.get(request.Account__c) != null) {
                 // Sets Person to the same as Account
-                request.Person__c = idToAccount.get(request.Account__c)
-                    .CRM_Person__c;
+                request.Person__c = idToAccount.get(request.Account__c).CRM_Person__c;
             }
         }
 
@@ -100,12 +70,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             'HOT_Request__c'
         );
         Integer i = 0;
-        Group adminGroup = [
-            SELECT Id
-            FROM Group
-            WHERE Type = 'Queue' AND DeveloperName = 'HOT_Tolk_Admin'
-            LIMIT 1
-        ];
+        Group adminGroup = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'HOT_Tolk_Admin' LIMIT 1];
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             ApexSharingRuleWrapper rule = ruleByByRequestId.get(i);
             if (rule == null) {
@@ -125,10 +90,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         Integer recordIndex = 0;
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             //If the request is connected to a user (Account__c)
-            if (
-                request.Account__c != null &&
-                userInfoMap.containsKey(request.Account__c)
-            ) {
+            if (request.Account__c != null && userInfoMap.containsKey(request.Account__c)) {
                 SobjectWrapper userInfo = userInfoMap.get(request.Account__c);
                 String region = null;
                 String municipality = null;
@@ -136,42 +98,29 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                     region = userInfo.Region;
                     municipality = userInfo.Municipality;
                 }
-                wrappers.add(
-                    new SobjectWrapper(recordIndex, municipality, region)
-                );
+                wrappers.add(new SobjectWrapper(recordIndex, municipality, region));
                 recordIndex++;
-            } else if (
-                request.Company__c != null &&
-                companyInfoMap.containsKey(request.Company__c)
-            ) {
+            } else if (request.Company__c != null && companyInfoMap.containsKey(request.Company__c)) {
                 //If the request is connected to a company (Company__c)
-                SobjectWrapper companyInfo = companyInfoMap.get(
-                    request.Company__c
-                );
+                SobjectWrapper companyInfo = companyInfoMap.get(request.Company__c);
                 String region = null;
                 String municipality = null;
                 if (companyInfo != null) {
                     region = companyInfo.Region;
                     municipality = companyInfo.Municipality;
                 }
-                wrappers.add(
-                    new SobjectWrapper(recordIndex, municipality, region)
-                );
+                wrappers.add(new SobjectWrapper(recordIndex, municipality, region));
                 recordIndex++;
             } else {
                 //If there was an error connecting the request to a user or company, the request should be sent to the orderers region.
-                SobjectWrapper ordererInfo = ordererInfoMap.get(
-                    request.Orderer__c
-                );
+                SobjectWrapper ordererInfo = ordererInfoMap.get(request.Orderer__c);
                 String region = null;
                 String municipality = null;
                 if (ordererInfo != null) {
                     region = ordererInfo.Region;
                     municipality = ordererInfo.Municipality;
                 }
-                wrappers.add(
-                    new SobjectWrapper(recordIndex, municipality, region)
-                );
+                wrappers.add(new SobjectWrapper(recordIndex, municipality, region));
                 recordIndex++;
             }
         }
@@ -187,10 +136,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         }
         Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
         for (Person__c per : [
-            SELECT
-                INT_RegionNumber__c,
-                INT_MunicipalityNumber__c,
-                CRM_Account__c
+            SELECT INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_Account__c
             FROM Person__c
             WHERE CRM_Account__c IN :accountIds
         ]) {
@@ -212,10 +158,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         }
         Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
         for (Person__c per : [
-            SELECT
-                INT_RegionNumber__c,
-                INT_MunicipalityNumber__c,
-                CRM_Account__c
+            SELECT INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_Account__c
             FROM Person__c
             WHERE CRM_Account__c IN :accountIds
         ]) {

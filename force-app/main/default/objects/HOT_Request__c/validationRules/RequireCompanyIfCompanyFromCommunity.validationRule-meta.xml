@@ -12,6 +12,5 @@ ISBLANK(Company__c)
 &amp;&amp;
 ISNEW()</errorConditionFormula>
     <errorDisplayField>OrganizationNumber__c</errorDisplayField>
-    <errorMessage
-    >Fant ingen virksomhet med dette organisasjonsnummeret.</errorMessage>
+    <errorMessage>Fant ingen virksomhet med dette organisasjonsnummeret.</errorMessage>
 </ValidationRule>

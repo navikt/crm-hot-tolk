@@ -229,8 +229,7 @@
             <choiceReferences>Hver_uke</choiceReferences>
             <choiceReferences>Hver_andre_uke</choiceReferences>
             <dataType>String</dataType>
-            <defaultSelectedChoiceReference
-            >Aldri</defaultSelectedChoiceReference>
+            <defaultSelectedChoiceReference>Aldri</defaultSelectedChoiceReference>
             <fieldText>Gjenta</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>

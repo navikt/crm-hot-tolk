@@ -131,59 +131,48 @@ export default class Hot_interestedResourcesList extends LightningElement {
     @track sortDirection = 'asc';
     @track sortedBy = 'ServiceAppointmentStartTime__c';
 
-    mobileSortingDefaultValue =
-        '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "asc"} ';
+    mobileSortingDefaultValue = '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "asc"} ';
     get sortingOptions() {
         return [
             {
                 label: 'Start tid stigende',
-                value:
-                    '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "asc"} '
+                value: '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "asc"} '
             },
             {
                 label: 'Start tid synkende',
-                value:
-                    '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "desc"} '
+                value: '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "desc"} '
             },
             {
                 label: 'Slutt tid stigende',
-                value:
-                    '{"fieldName": "ServiceAppointmentEndTime__c", "sortDirection": "asc"} '
+                value: '{"fieldName": "ServiceAppointmentEndTime__c", "sortDirection": "asc"} '
             },
             {
                 label: 'Slutt tid synkende',
-                value:
-                    '{"fieldName": "ServiceAppointmentEndTime__c", "sortDirection": "desc"} '
+                value: '{"fieldName": "ServiceAppointmentEndTime__c", "sortDirection": "desc"} '
             },
             {
                 label: 'Poststed A - Å',
-                value:
-                    '{"fieldName": "ServiceAppointmentCity__c", "sortDirection": "asc"} '
+                value: '{"fieldName": "ServiceAppointmentCity__c", "sortDirection": "asc"} '
             },
             {
                 label: 'Poststed A - Å',
-                value:
-                    '{"fieldName": "ServiceAppointmentCity__c", "sortDirection": "desc"} '
+                value: '{"fieldName": "ServiceAppointmentCity__c", "sortDirection": "desc"} '
             },
             {
                 label: 'Tema A - Å',
-                value:
-                    '{"fieldName": "ServiceAppointmentFreelanceSubject__c", "sortDirection": "asc"} '
+                value: '{"fieldName": "ServiceAppointmentFreelanceSubject__c", "sortDirection": "asc"} '
             },
             {
                 label: 'Tema A - Å',
-                value:
-                    '{"fieldName": "ServiceAppointmentFreelanceSubject__c", "sortDirection": "desc"} '
+                value: '{"fieldName": "ServiceAppointmentFreelanceSubject__c", "sortDirection": "desc"} '
             },
             {
                 label: 'Arbeidstype A - Å',
-                value:
-                    '{"fieldName": "WorkTypeName__c", "sortDirection": "asc"} '
+                value: '{"fieldName": "WorkTypeName__c", "sortDirection": "asc"} '
             },
             {
                 label: 'Arbeidstype Å - A',
-                value:
-                    '{"fieldName": "WorkTypeName__c", "sortDirection": "desc"} '
+                value: '{"fieldName": "WorkTypeName__c", "sortDirection": "desc"} '
             },
             {
                 label: 'Status A - Å',
@@ -277,11 +266,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     resendInterest(row) {
         const interestedId = row.Id;
         if (row.Status__c == 'Retracted Interest') {
-            if (
-                confirm(
-                    'Er du sikker på at du vil melde interesse for oppdraget?'
-                )
-            ) {
+            if (confirm('Er du sikker på at du vil melde interesse for oppdraget?')) {
                 resendInterestApex({ interestedId })
                     .then(() => {
                         refreshApex(this.wiredInterestedResourcesResult);
@@ -320,19 +305,13 @@ export default class Hot_interestedResourcesList extends LightningElement {
                 retractionIds.push(this.selectedRows[i].Id);
             }
             //console.log(retractionIds);
-            if (
-                confirm(
-                    'Er du sikker på at du vil tilbaketrekke interesse for valgte oppdrag?'
-                )
-            ) {
+            if (confirm('Er du sikker på at du vil tilbaketrekke interesse for valgte oppdrag?')) {
                 retractInterests({ retractionIds }).then(() => {
                     refreshApex(this.wiredInterestedResourcesResult);
                 });
             }
         } else {
-            alert(
-                'Velg oppdrag du ønsker å tilbaketrekke interesse for, så trykk på knappen.'
-            );
+            alert('Velg oppdrag du ønsker å tilbaketrekke interesse for, så trykk på knappen.');
         }
     }
 }
