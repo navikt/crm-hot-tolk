@@ -10,6 +10,7 @@ coverage/
 .github
 jsconfig.json
 
+**/*.apex
 **/staticresources/*
 
 # flows in permsets will break the xml
@@ -18,5 +19,3 @@ jsconfig.json
 
 # Exclude project config (edited by CI workflow)
 sfdx-project.json
-
-scripts/apex/populateSourceFieldOnRequest.apex

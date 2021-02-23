@@ -53,30 +53,14 @@
                 >
                     <div class="slds-grid slds-gutters">
                         <div class="slds-col slds-size_1-of-2">
-                            <lightning-output-field
-                                field-name="AppointmentNumber"
-                            >
-                            </lightning-output-field>
-                            <lightning-output-field
-                                field-name="HOT_FreelanceSubject__c"
-                            >
-                            </lightning-output-field>
-                            <lightning-output-field field-name="SchedStartTime">
-                            </lightning-output-field>
-                            <lightning-output-field field-name="SchedEndTime">
-                            </lightning-output-field>
-                            <lightning-output-field
-                                field-name="ActualStartTime"
-                            >
-                            </lightning-output-field>
-                            <lightning-output-field field-name="ActualEndTime">
-                            </lightning-output-field>
-                            <lightning-output-field field-name="Address">
-                            </lightning-output-field>
-                            <span
-                                class="slds-form-element__label lightning-output-field__label"
-                                >Region</span
-                            >
+                            <lightning-output-field field-name="AppointmentNumber"> </lightning-output-field>
+                            <lightning-output-field field-name="HOT_FreelanceSubject__c"> </lightning-output-field>
+                            <lightning-output-field field-name="SchedStartTime"> </lightning-output-field>
+                            <lightning-output-field field-name="SchedEndTime"> </lightning-output-field>
+                            <lightning-output-field field-name="ActualStartTime"> </lightning-output-field>
+                            <lightning-output-field field-name="ActualEndTime"> </lightning-output-field>
+                            <lightning-output-field field-name="Address"> </lightning-output-field>
+                            <span class="slds-form-element__label lightning-output-field__label">Region</span>
                             <br />
                             <lightning-formatted-text
                                 value={record.ServiceTerritory.Name}
@@ -85,17 +69,10 @@
                             </lightning-formatted-text>
                         </div>
                         <div class="slds-col slds-size_1-of-2">
-                            <lightning-output-field field-name="Status">
-                            </lightning-output-field>
-                            <lightning-output-field
-                                field-name="HOT_HapticCommunication__c"
-                            >
-                            </lightning-output-field>
-                            <lightning-output-field field-name="HOT_Escort__c">
-                            </lightning-output-field>
-                            <lightning-output-field
-                                field-name="HOT_DegreeOfHearingAndVisualImpairment__c"
-                            >
+                            <lightning-output-field field-name="Status"> </lightning-output-field>
+                            <lightning-output-field field-name="HOT_HapticCommunication__c"> </lightning-output-field>
+                            <lightning-output-field field-name="HOT_Escort__c"> </lightning-output-field>
+                            <lightning-output-field field-name="HOT_DegreeOfHearingAndVisualImpairment__c">
                             </lightning-output-field>
                             <span
                                 class="slds-form-element__label lightning-output-field__label"
@@ -103,24 +80,15 @@
                                 >Tolkemetode</span
                             >
                             <br />
-                            <lightning-formatted-text
-                                value={record.HOT_WorkTypeName__c}
-                                class="lightning-output-field"
-                            >
+                            <lightning-formatted-text value={record.HOT_WorkTypeName__c} class="lightning-output-field">
                             </lightning-formatted-text>
                         </div>
                     </div>
                     <br />
-                    <lightning-output-field
-                        field-name="HOT_TermsOfAgreement__c"
-                    >
-                    </lightning-output-field>
+                    <lightning-output-field field-name="HOT_TermsOfAgreement__c"> </lightning-output-field>
                 </lightning-record-edit-form>
             </section>
-            <button
-                class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
-                onclick={abortShowDetails}
-            >
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
                 <span class="text-hide">Lukk</span>
             </button>
         </div>

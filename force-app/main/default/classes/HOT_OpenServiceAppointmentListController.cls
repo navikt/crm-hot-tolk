@@ -3,11 +3,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
     public static List<ServiceAppointment> getOpenServiceAppointments() {
         //Getting the skills of the user --> ServiceResource
         Id userId = UserInfo.getUserId();
-        List<ServiceResource> serviceResource = [
-            SELECT Id, Name
-            FROM ServiceResource
-            WHERE RelatedRecordId = :userId
-        ];
+        List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
         System.debug('serviceResource: ' + serviceResource);
 
         List<ServiceResourceSkill> serviceResourceSkills = [
@@ -35,10 +31,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         for (HOT_InterestedResource__c ir : interestedResources) {
             interestedServiceAppointmentIds.add(ir.ServiceAppointment__c);
         }
-        System.debug(
-            'interestedServiceAppointmentIds: ' +
-            interestedServiceAppointmentIds
-        );
+        System.debug('interestedServiceAppointmentIds: ' + interestedServiceAppointmentIds);
 
         //Getting ServiceAppointments, filtered by isRealeased, Status, DeadlineDate
         //and if the ServiceResource has already reported interest in the ServiceAppointment
@@ -101,11 +94,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         }
         System.debug('neededSkillIds: ' + neededSkillIds);
 
-        List<Skill> neededSkills = [
-            SELECT Id
-            FROM Skill
-            WHERE Id IN :neededSkillIds
-        ];
+        List<Skill> neededSkills = [SELECT Id FROM Skill WHERE Id IN :neededSkillIds];
         System.debug('neededSkills: ' + neededSkills);
 
         //Removing the ServiceAppointments with needed skills the ServiceResource does not have
@@ -125,24 +114,15 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 serviceAppointmentsFiltered.add(sa);
             }
         }
-        System.debug(
-            'serviceAppointmentsFiltered: ' + serviceAppointmentsFiltered
-        );
+        System.debug('serviceAppointmentsFiltered: ' + serviceAppointmentsFiltered);
         return serviceAppointmentsFiltered;
     }
 
     @AuraEnabled
     //public static void createInterestedResources(List<String> serviceAppointmentIds) {
-    public static void createInterestedResources(
-        List<String> serviceAppointmentIds,
-        List<String> comments
-    ) {
+    public static void createInterestedResources(List<String> serviceAppointmentIds, List<String> comments) {
         Id userId = UserInfo.getUserId();
-        ServiceResource serviceResource = [
-            SELECT Id
-            FROM ServiceResource
-            WHERE RelatedRecordId = :userId
-        ];
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
         List<HOT_InterestedResource__c> interestedResources = new List<Hot_InterestedResource__c>();
         for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
             HOT_InterestedResource__c IR = new HOT_InterestedResource__c(
@@ -155,10 +135,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         insert interestedResources;
 
         for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
-            HOT_InterestedResourcesListController.addComment(
-                interestedResources[i].Id,
-                comments[i]
-            );
+            HOT_InterestedResourcesListController.addComment(interestedResources[i].Id, comments[i]);
         }
     }
 }

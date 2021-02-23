@@ -24,10 +24,32 @@ public without sharing class HOT_CreateWorkOrderService {
     @InvocableVariable
     public Date recurringEndDate;
 
-    @InvocableMethod
-    public static List<String> createWorkOrders(
-        List<HOT_CreateWorkOrderService> inputVariables
+    @AuraEnabled
+    public static void createWorkOrdersFromCommunity(
+        String requestId,
+        Map<String, Long> times,
+        String recurringType,
+        List<String> recurringDays,
+        Long recurringEndDate
     ) {
+        HOT_CreateWorkOrderService createWorkOrderService = new HOT_CreateWorkOrderService();
+        createWorkOrderService.requestId = requestId;
+        createWorkOrderService.startDate = DateTime.newInstance(times.get('startTime'));
+        createWorkOrderService.endDate = DateTime.newInstance(times.get('endTime'));
+        createWorkOrderService.recurringType = recurringType;
+        createWorkOrderService.monday = recurringDays.contains('monday');
+        createWorkOrderService.tuesday = recurringDays.contains('tuesday');
+        createWorkOrderService.wendesday = recurringDays.contains('wendesday');
+        createWorkOrderService.thursday = recurringDays.contains('thursday');
+        createWorkOrderService.friday = recurringDays.contains('friday');
+        createWorkOrderService.saturday = recurringDays.contains('saturday');
+        createWorkOrderService.sunday = recurringDays.contains('sunday');
+        createWorkOrderService.recurringEndDate = DateTime.newInstance(recurringEndDate).date();
+        createWorkOrders(new List<HOT_CreateWorkOrderService>{ createWorkOrderService });
+    }
+
+    @InvocableMethod
+    public static List<String> createWorkOrders(List<HOT_CreateWorkOrderService> inputVariables) {
         HOT_CreateWorkOrderService input = inputVariables[0];
         Integer maxNumberOfRecurrences = 200;
         List<String> errors = new List<String>();
@@ -39,10 +61,7 @@ public without sharing class HOT_CreateWorkOrderService {
             return errors;
         }
 
-        if (
-            input.recurringType != 'Never' &&
-            input.recurringEndDate <= input.startDate.date()
-        ) {
+        if (input.recurringType != 'Never' && input.recurringEndDate <= input.startDate.date()) {
             errors.add('Sluttdato må være etter startdato.');
             return errors;
         }
@@ -78,13 +97,10 @@ public without sharing class HOT_CreateWorkOrderService {
             return errors;
         } else if (input.recurringType == 'Daily') {
             List<WorkOrder> workOrders = new List<WorkOrder>();
-            Integer numberOfRecurrences = input.startDate.date()
-                .daysBetween(input.recurringEndDate);
+            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
             if (numberOfRecurrences > maxNumberOfRecurrences) {
-                errors.add(
-                    'Kan ikke opprette mere en 200 arbeidsordre av gangen'
-                );
+                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
                 return errors;
             }
 
@@ -111,8 +127,7 @@ public without sharing class HOT_CreateWorkOrderService {
             return errors;
         } else if (input.recurringType == 'Weekly') {
             List<WorkOrder> workOrders = new List<WorkOrder>();
-            Integer numberOfRecurrences = input.startDate.date()
-                .daysBetween(input.recurringEndDate);
+            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
             for (Integer i = 0; i <= numberOfRecurrences; i++) {
                 Datetime startDate = input.startDate.addDays(i);
@@ -142,9 +157,7 @@ public without sharing class HOT_CreateWorkOrderService {
             }
 
             if (workOrders.size() > maxNumberOfRecurrences) {
-                errors.add(
-                    'Kan ikke opprette mere en 200 arbeidsordre av gangen'
-                );
+                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
                 return errors;
             }
 
@@ -157,8 +170,7 @@ public without sharing class HOT_CreateWorkOrderService {
             return errors;
         } else if (input.recurringType == 'Biweekly') {
             List<WorkOrder> workOrders = new List<WorkOrder>();
-            Integer numberOfRecurrences = input.startDate.date()
-                .daysBetween(input.recurringEndDate);
+            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
             for (Integer i = 0; i <= numberOfRecurrences; i++) {
                 Datetime startDate = input.startDate.addDays(i);
@@ -190,9 +202,7 @@ public without sharing class HOT_CreateWorkOrderService {
             }
 
             if (workOrders.size() > maxNumberOfRecurrences) {
-                errors.add(
-                    'Kan ikke opprette mere en 200 arbeidsordre av gangen'
-                );
+                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
                 return errors;
             }
 
@@ -205,13 +215,10 @@ public without sharing class HOT_CreateWorkOrderService {
             return errors;
         } else if (input.recurringType == 'Monthly') {
             List<WorkOrder> workOrders = new List<WorkOrder>();
-            Integer numberOfRecurrences = input.startDate.date()
-                .monthsBetween(input.recurringEndDate);
+            Integer numberOfRecurrences = input.startDate.date().monthsBetween(input.recurringEndDate);
 
             if (numberOfRecurrences > maxNumberOfRecurrences) {
-                errors.add(
-                    'Kan ikke opprette mere en 200 arbeidsordre av gangen'
-                );
+                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
                 return errors;
             }
 

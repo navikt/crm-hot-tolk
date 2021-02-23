@@ -1,33 +1,16 @@
 <template>
     <div class="brodsmulesti">
         <lightning-breadcrumbs class="skjema-max-width">
-            <lightning-breadcrumb
-                label="Tolketjenesten"
-                href="/s/"
-                onclick={goToHome}
-            >
-            </lightning-breadcrumb>
-            <lightning-breadcrumb
-                label="Ny bestilling"
-                href="/s/ny-bestilling"
-                onclick={goToNewRequest}
-            >
+            <lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}> </lightning-breadcrumb>
+            <lightning-breadcrumb label="Ny bestilling" href="/s/ny-bestilling" onclick={goToNewRequest}>
             </lightning-breadcrumb>
         </lightning-breadcrumbs>
     </div>
 
     <div class="main-content submitted-false">
         <div class="skjema-ikon tolketjenesten">
-            <img
-                if:false={isProd}
-                class="skjema-ikon-img"
-                src="/sfsites/c/resource/1585817547000/SkjemaIkon"
-            />
-            <img
-                if:true={isProd}
-                class="skjema-ikon-img"
-                src="/s/sfsites/c/resource/1585817547000/SkjemaIkon"
-            />
+            <img if:false={isProd} class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon" />
+            <img if:true={isProd} class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon" />
         </div>
         <div class="skjema skjema-max-width">
             <lightning-record-edit-form
@@ -38,10 +21,7 @@
                 onsubmit={handleSubmit}
                 record-id={recordId}
             >
-                <section
-                    if:true={showNextButton}
-                    class="valg-av-bestillingstype__container sub-form"
-                >
+                <section if:true={showNextButton} class="valg-av-bestillingstype__container sub-form">
                     <lightning-radio-group
                         name="radioGroup"
                         class="requestTypeChoice"
@@ -55,10 +35,7 @@
                     >
                     </lightning-radio-group>
 
-                    <section
-                        if:true={publicEventForm}
-                        class="offentlig-arrangement-info-skjema sub-form"
-                    >
+                    <section if:true={publicEventForm} class="offentlig-arrangement-info-skjema sub-form">
                         <lightning-combobox
                             class="type-arrangement"
                             name="typeOfEvent"
@@ -70,28 +47,18 @@
                         </lightning-combobox>
                     </section>
 
-                    <lightning-messages aria-live="assertive">
-                    </lightning-messages>
-                    <lightning-button
-                        if:true={showNextButton}
-                        variant="brand"
-                        onclick={onHandleNeste}
-                        label="Neste"
-                    >
+                    <lightning-messages aria-live="assertive"> </lightning-messages>
+                    <lightning-button if:true={showNextButton} variant="brand" onclick={onHandleNeste} label="Neste">
                     </lightning-button>
                 </section>
 
                 <div if:false={showNextButton} class="actual-form">
                     <p if:true={showInformationSharingText} class="typo-normal">
-                        Navn på bestiller/virksomhet (ikke kontaktinformasjon)
-                        og bestillingens øvrige informasjon om behov for tolk,
-                        vil være tilgjengelig for tolkebruker
+                        Navn på bestiller/virksomhet (ikke kontaktinformasjon) og bestillingens øvrige informasjon om
+                        behov for tolk, vil være tilgjengelig for tolkebruker
                     </p>
 
-                    <section
-                        if:true={ordererForm}
-                        class="bestiller-info-skjema sub-form"
-                    >
+                    <section if:true={ordererForm} class="bestiller-info-skjema sub-form">
                         <h2 style="font-size: 1.25rem">
                             Kontaktinformasjon
                             <lightning-helptext
@@ -125,10 +92,7 @@
                         </lightning-input-field>
                     </section>
 
-                    <section
-                        if:true={userForm}
-                        class="bruker-info-skjema sub-form"
-                    >
+                    <section if:true={userForm} class="bruker-info-skjema sub-form">
                         <h2 style="font-size: 1.25rem">
                             Informasjon om tolkebruker
                             <lightning-helptext
@@ -157,13 +121,8 @@
                         </lightning-input>
                     </section>
 
-                    <section
-                        if:true={companyForm}
-                        class="virksomhet-info-skjema sub-form"
-                    >
-                        <h2 style="font-size: 1.25rem">
-                            Informasjon om virksomhet
-                        </h2>
+                    <section if:true={companyForm} class="virksomhet-info-skjema sub-form">
+                        <h2 style="font-size: 1.25rem">Informasjon om virksomhet</h2>
                         <lightning-input-field
                             class="tolk-skjema-input"
                             field-name="OrganizationNumber__c"
@@ -187,13 +146,8 @@
                         </lightning-input-field>
                     </section>
 
-                    <section
-                        if:true={requestForm}
-                        class="bestilling-info-skjema"
-                    >
-                        <h2 style="font-size: 1.25rem">
-                            Informasjon om behov for tolk
-                        </h2>
+                    <section if:true={requestForm} class="bestilling-info-skjema">
+                        <h2 style="font-size: 1.25rem">Informasjon om behov for tolk</h2>
                         <lightning-input-field
                             class="tolk-skjema-input"
                             field-name="Subject__c"
@@ -203,20 +157,12 @@
                         >
                         </lightning-input-field>
                         <br />
+
                         <div style="margin-bottom: 0.5rem">
-                            <div
-                                class="time-inputs-container"
-                                style="margin-bottom: 0.5rem"
-                            >
+                            <div class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live>
                                 <template iterator:it={times}>
-                                    <div
-                                        class="dynamic-time-inputs-with-line_button"
-                                        key={it.value.id}
-                                    >
-                                        <div
-                                            class="dynamic-time-inputs"
-                                            aria-live
-                                        >
+                                    <div class="dynamic-time-inputs-with-line_button" key={it.value.id}>
+                                        <div class="dynamic-time-inputs" aria-live>
                                             <lightning-input
                                                 label="Dato"
                                                 type="date"
@@ -228,9 +174,7 @@
                                                 required
                                             >
                                             </lightning-input>
-                                            <div
-                                                class="dynamic-time-inputs__times"
-                                            >
+                                            <div class="dynamic-time-inputs__times">
                                                 <lightning-input
                                                     label="Fra"
                                                     type="time"
@@ -266,7 +210,59 @@
                                     </div>
                                 </template>
                             </div>
+
+                            <lightning-input
+                                type="checkbox"
+                                class="filter-list-checkbox"
+                                label="Gjentagende"
+                                name="Gjentagende"
+                                onchange={advancedTimes}
+                            >
+                            </lightning-input>
+
+                            <div
+                                if:true={isAdvancedTimes}
+                                class="time-inputs-container"
+                                style="margin-bottom: 0.5rem"
+                                aria-live
+                            >
+                                <lightning-combobox
+                                    name="Gjenta"
+                                    variant="label-hidden"
+                                    options={repeatingOptions}
+                                    value={repeatingOptionChosen}
+                                    onchange={handleRepeatChoiceMade}
+                                    class="tolk-skjema-input third-width recurringType"
+                                    label="Gjenta"
+                                >
+                                </lightning-combobox>
+                                <div if:true={showWeekDays} aria-live>
+                                    <lightning-checkbox-group
+                                        name="Days"
+                                        options={days}
+                                        value={chosenDays}
+                                        class="recurringDays"
+                                        onchange={handleDayChosen}
+                                    >
+                                    </lightning-checkbox-group>
+                                </div>
+                                <div aria-live if:true={isRepeating}>
+                                    <lightning-input
+                                        label="Slutt dato"
+                                        type="date"
+                                        name="recurring End Date"
+                                        class="tolk-skjema-input third-width recurringEndDate"
+                                        date-style="short"
+                                        value={repeatingEndDate}
+                                        onchange={setRepeatingEndDateDate}
+                                        required
+                                    >
+                                    </lightning-input>
+                                </div>
+                            </div>
+
                             <lightning-button
+                                if:false={isAdvancedTimes}
                                 label="Legg til flere tider"
                                 icon-name="utility:add"
                                 class="add-times"
@@ -358,8 +354,7 @@
 							multiple>
 						</lightning-file-upload!-->
 
-                        <lightning-messages aria-live="assertive">
-                        </lightning-messages>
+                        <lightning-messages aria-live="assertive"> </lightning-messages>
 
                         <div class="button-container">
                             <div style="display: flex; justify-content: center">
@@ -402,24 +397,13 @@
             >
             </lightning-icon>
             <br />
-            <h2
-                class="typo-undertittel h2-successMessage"
-                id="successMessage"
-                tabindex="-1"
-            >
-                Bestillingen er sendt
-            </h2>
+            <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1">Bestillingen er sendt</h2>
 
             <!--lightning-file-upload if:false={edit} label="Legg til filer" name="fileUploader" accept={acceptedFormat}
 				record-id={recordId} onuploadfinished={handleUploadFinished} multiple>
 			</lightning-file-upload!-->
             <br />
-            <lightning-button
-                title="Gå til mine bestillinger"
-                variant="brand"
-                label="OK"
-                onclick={goToMyRequests}
-            >
+            <lightning-button title="Gå til mine bestillinger" variant="brand" label="OK" onclick={goToMyRequests}>
             </lightning-button>
         </div>
     </div>

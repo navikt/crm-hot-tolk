@@ -2,20 +2,13 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
     private List<HOT_Request__c> requests;
 
     public HOT_KrrCalloutQueuable(List<HOT_Request__c> requests) {
-        this.requests = [
-            SELECT Id, Person__c, Person__r.Name
-            FROM HOT_Request__c
-            WHERE Id IN :requests
-        ];
+        this.requests = [SELECT Id, Person__c, Person__r.Name FROM HOT_Request__c WHERE Id IN :requests];
     }
 
     public void execute(QueueableContext context) {
         Map<String, Id> personIdByPersonalNumber = new Map<String, Id>();
         for (HOT_Request__c request : requests) {
-            personIdByPersonalNumber.put(
-                String.valueOf(request.Person__r.Name),
-                request.Person__c
-            );
+            personIdByPersonalNumber.put(String.valueOf(request.Person__r.Name), request.Person__c);
         }
 
         try {
@@ -25,10 +18,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                     new List<String>(personIdByPersonalNumber.keySet())
                 )
             ) {
-                krrResponseByPersonalNumber.put(
-                    person.personidentifikator,
-                    person
-                );
+                krrResponseByPersonalNumber.put(person.personidentifikator, person);
             }
             List<Person__c> personsToUpdate = new List<Person__c>();
             for (String personalNumber : personIdByPersonalNumber.keySet()) {
@@ -40,26 +30,16 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                     person.INT_KrrIntegrationStatus__c = 'Completed';
 
                     // Map contact information fields if they were returned by krr
-                    if (
-                        krrResponseByPersonalNumber.get(personalNumber)
-                            .kontaktinformasjon != null
-                    ) {
-                        if (
-                            krrResponseByPersonalNumber.get(personalNumber)
-                                .kontaktinformasjon.epostadresse != null
-                        ) {
-                            person.INT_KrrEmail__c = krrResponseByPersonalNumber.get(
-                                    personalNumber
-                                )
+                    if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon != null) {
+                        if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.epostadresse != null) {
+                            person.INT_KrrEmail__c = krrResponseByPersonalNumber.get(personalNumber)
                                 .kontaktinformasjon.epostadresse;
                         }
                         if (
-                            krrResponseByPersonalNumber.get(personalNumber)
-                                .kontaktinformasjon.mobiltelefonnummer != null
+                            krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.mobiltelefonnummer !=
+                            null
                         ) {
-                            person.INT_KrrMobilePhone__c = krrResponseByPersonalNumber.get(
-                                    personalNumber
-                                )
+                            person.INT_KrrMobilePhone__c = krrResponseByPersonalNumber.get(personalNumber)
                                 .kontaktinformasjon.mobiltelefonnummer;
                         }
                     }

@@ -4,29 +4,24 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
         List<WorkOrderLineItem> canceledWorkOrderLineItems = new List<WorkOrderLineItem>();
         List<WorkOrderLineItem> annulWorkOrderLineItems = new List<WorkOrderLineItem>();
 
-        for (
-            WorkOrderLineItem workOrderLineItem : (List<WorkOrderLineItem>) records
-        ) {
+        for (WorkOrderLineItem workOrderLineItem : (List<WorkOrderLineItem>) records) {
             // Filter for status change
             if (
                 workOrderLineItem.WorkOrderId != null &&
-                workOrderLineItem.Status !=
-                triggerOldMap.get(workOrderLineItem.Id).get('Status')
+                workOrderLineItem.Status != triggerOldMap.get(workOrderLineItem.Id).get('Status')
             ) {
                 changedStatusWorkOrderLineItems.add(workOrderLineItem);
             }
             // Filter for canceled work orders
             if (
-                workOrderLineItem.Status !=
-                triggerOldMap.get(workOrderLineItem.Id).get('Status') &&
+                workOrderLineItem.Status != triggerOldMap.get(workOrderLineItem.Id).get('Status') &&
                 workOrderLineItem.Status == 'Canceled'
             ) {
                 canceledWorkOrderLineItems.add(workOrderLineItem);
             }
             // Filter for annul work orders
             if (
-                workOrderLineItem.Status !=
-                triggerOldMap.get(workOrderLineItem.Id).get('Status') &&
+                workOrderLineItem.Status != triggerOldMap.get(workOrderLineItem.Id).get('Status') &&
                 workOrderLineItem.Status == 'Annul'
             ) {
                 annulWorkOrderLineItems.add(workOrderLineItem);
@@ -48,8 +43,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
 
         for (SObject record : records) {
             if (
-                record.getSObjectType() ==
-                Schema.WorkOrderLineItem.getSObjectType() &&
+                record.getSObjectType() == Schema.WorkOrderLineItem.getSObjectType() &&
                 record.get('HOT_IsUpdateStatus__c') == true
             ) {
                 updateStatusWorkOrderLineItems.add((WorkOrderLineItem) record);
@@ -60,15 +54,10 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
         }
     }
 
-    private static void updateWorkOrderStatus(
-        List<WorkOrderLineItem> changedWorkOrderLineItems
-    ) {
+    private static void updateWorkOrderStatus(List<WorkOrderLineItem> changedWorkOrderLineItems) {
         List<WorkOrder> workOrdersToUpdate = new List<WorkOrder>();
         for (WorkOrderLineItem workOrderLineItem : changedWorkOrderLineItems) {
-            WorkOrder workOrderToAdd = new WorkOrder(
-                Id = workOrderLineItem.WorkOrderId,
-                HOT_IsUpdateStatus__c = true
-            );
+            WorkOrder workOrderToAdd = new WorkOrder(Id = workOrderLineItem.WorkOrderId, HOT_IsUpdateStatus__c = true);
             if (!workOrdersToUpdate.contains(workOrderToAdd)) {
                 workOrdersToUpdate.add(workOrderToAdd);
             }
@@ -76,9 +65,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
         update workOrdersToUpdate;
     }
 
-    private static void updateWorkOrderLineItemStatus(
-        List<WorkOrderLineItem> workOrderLineItems
-    ) {
+    private static void updateWorkOrderLineItemStatus(List<WorkOrderLineItem> workOrderLineItems) {
         List<ServiceAppointment> serviceAppointments = [
             SELECT ParentRecordId, Status
             FROM ServiceAppointment
@@ -87,20 +74,12 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
         Map<Id, List<ServiceAppointment>> serviceAppointmentMaps = new Map<Id, List<ServiceAppointment>>();
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            if (
-                serviceAppointmentMaps.containsKey(
-                    serviceAppointment.ParentRecordId
-                )
-            ) {
-                serviceAppointmentMaps.get(serviceAppointment.ParentRecordId)
-                    .add(serviceAppointment);
+            if (serviceAppointmentMaps.containsKey(serviceAppointment.ParentRecordId)) {
+                serviceAppointmentMaps.get(serviceAppointment.ParentRecordId).add(serviceAppointment);
             } else {
                 List<ServiceAppointment> serviceAppointmentList = new List<ServiceAppointment>();
                 serviceAppointmentList.add(serviceAppointment);
-                serviceAppointmentMaps.put(
-                    serviceAppointment.ParentRecordId,
-                    serviceAppointmentList
-                );
+                serviceAppointmentMaps.put(serviceAppointment.ParentRecordId, serviceAppointmentList);
             }
         }
 
@@ -108,10 +87,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
             workOrderLineItem.HOT_IsUpdateStatus__c = false;
 
             if (serviceAppointmentMaps.get(workOrderLineItem.Id) != null) {
-                Integer numberOfServiceAppointments = serviceAppointmentMaps.get(
-                        workOrderLineItem.Id
-                    )
-                    .size();
+                Integer numberOfServiceAppointments = serviceAppointmentMaps.get(workOrderLineItem.Id).size();
                 Integer numberOfNone = 0;
                 Integer numberOfScheduled = 0;
                 Integer numberOfDispatched = 0;
@@ -121,11 +97,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                 Integer numberOfCannotComplete = 0;
                 Integer numberOfCanceled = 0;
 
-                for (
-                    ServiceAppointment serviceAppointment : serviceAppointmentMaps.get(
-                        workOrderLineItem.Id
-                    )
-                ) {
+                for (ServiceAppointment serviceAppointment : serviceAppointmentMaps.get(workOrderLineItem.Id)) {
                     if (serviceAppointment.Status == 'None') {
                         numberOfNone++;
                     }
@@ -152,21 +124,14 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                     }
                 }
 
-                System.debug(
-                    'numberOfServiceAppointments: ' +
-                    numberOfServiceAppointments
-                );
+                System.debug('numberOfServiceAppointments: ' + numberOfServiceAppointments);
                 System.debug('numberOfNone: ' + numberOfNone);
                 System.debug('numberOfScheduled: ' + numberOfScheduled);
                 System.debug('numberOfDispatched: ' + numberOfDispatched);
                 System.debug('numberOfInProgress: ' + numberOfInProgress);
                 System.debug('numberOfCompleted: ' + numberOfCompleted);
-                System.debug(
-                    'numberOfPartiallyComplete: ' + numberOfPartiallyComplete
-                );
-                System.debug(
-                    'numberOfCannotComplete: ' + numberOfCannotComplete
-                );
+                System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
+                System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
                 System.debug('numberOfCanceled: ' + numberOfCanceled);
 
                 if (numberOfScheduled > 0) {
@@ -208,10 +173,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
         }
     }
 
-    private static void updateChildRecords(
-        List<WorkOrderLineItem> changedWorkOrderLineItems,
-        String newStatus
-    ) {
+    private static void updateChildRecords(List<WorkOrderLineItem> changedWorkOrderLineItems, String newStatus) {
         List<ServiceAppointment> serviceAppointments = [
             SELECT Status
             FROM ServiceAppointment

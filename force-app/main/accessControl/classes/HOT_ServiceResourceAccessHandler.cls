@@ -13,9 +13,7 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
             WHERE TerritoryType = 'P' AND ServiceResourceId IN :serviceResources
         ];
         Map<Id, String> serviceTerritoryNameByServiceResourceIdMap = new Map<Id, String>();
-        for (
-            ServiceTerritoryMember serviceTerritoryMember : serviceTerritoryMembers
-        ) {
+        for (ServiceTerritoryMember serviceTerritoryMember : serviceTerritoryMembers) {
             serviceTerritoryNameByServiceResourceIdMap.put(
                 serviceTerritoryMember.ServiceResourceId,
                 serviceTerritoryMember.ServiceTerritory.HOT_DeveloperName__c
@@ -25,9 +23,7 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
         for (ServiceResource serviceResource : serviceResources) {
             SobjectWrapper wrapper = new SobjectWrapper();
             wrapper.recordIndex = i;
-            wrapper.serviceTerritoryName = serviceTerritoryNameByServiceResourceIdMap.get(
-                serviceResource.Id
-            );
+            wrapper.serviceTerritoryName = serviceTerritoryNameByServiceResourceIdMap.get(serviceResource.Id);
             sobjects.add(wrapper);
             i++;
 
@@ -47,16 +43,11 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
             }
         }
 
-        List<ShareWrapper> shareWrappers = RecordShareService.grantAccess(
-            sobjects,
-            'ServiceResource'
-        );
+        List<ShareWrapper> shareWrappers = RecordShareService.grantAccess(sobjects, 'ServiceResource');
         for (ShareWrapper share : shareWrappers) {
             ServiceResourceShare serviceResourceShare = new ServiceResourceShare();
 
-            serviceResourceShare.ParentId = recordIdByIndex.get(
-                share.recordIndex
-            );
+            serviceResourceShare.ParentId = recordIdByIndex.get(share.recordIndex);
             serviceResourceShare.UserOrGroupId = share.publicGroupId;
             serviceResourceShare.AccessLevel = 'Read';
             serviceResourceShare.RowCause = 'Manual';
@@ -76,19 +67,9 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
         List<Id> parentIdToDelete = new List<Id>();
         List<ServiceResource> serviceResourcesWithNewSharing = new List<ServiceResource>();
 
-        for (
-            ServiceResource serviceResource : (List<ServiceResource>) records
-        ) {
-            ServiceResource oldServiceResource = (ServiceResource) triggerOldMap.get(
-                serviceResource.Id
-            );
-            if (
-                MyTriggers.hasChangedFields(
-                    fieldNamesToCheck,
-                    serviceResource,
-                    oldServiceResource
-                )
-            ) {
+        for (ServiceResource serviceResource : (List<ServiceResource>) records) {
+            ServiceResource oldServiceResource = (ServiceResource) triggerOldMap.get(serviceResource.Id);
+            if (MyTriggers.hasChangedFields(fieldNamesToCheck, serviceResource, oldServiceResource)) {
                 parentIdToDelete.add(serviceResource.Id);
                 serviceResourcesWithNewSharing.add(serviceResource);
             }
@@ -105,9 +86,7 @@ public without sharing class HOT_ServiceResourceAccessHandler extends MyTriggers
         }
     }
 
-    private Map<Integer, Id> getRecordIdByIndex(
-        List<ServiceResource> serviceResources
-    ) {
+    private Map<Integer, Id> getRecordIdByIndex(List<ServiceResource> serviceResources) {
         Map<Integer, Id> recordIdByIndex = new Map<Integer, Id>();
         Integer i = 0;
         for (ServiceResource serviceResource : serviceResources) {

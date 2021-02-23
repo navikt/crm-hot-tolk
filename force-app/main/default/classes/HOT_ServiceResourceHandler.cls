@@ -10,11 +10,7 @@ public without sharing class HOT_ServiceResourceHandler {
             FROM User
             WHERE Account.INT_PersonIdent__c IN :personIdents
         ];
-        createServiceResource(
-            users,
-            addAllSkills,
-            serviceTerritoryDeveloperName
-        );
+        createServiceResource(users, addAllSkills, serviceTerritoryDeveloperName);
     }
 
     //Opprette Tjenesteressurser for frilanstolker UTEN skills og territorier
@@ -26,11 +22,7 @@ public without sharing class HOT_ServiceResourceHandler {
     //Kjøres fra User trigger onInsert
     @Future
     public static void createServiceResourceFuture(List<Id> userIds) {
-        List<User> users = [
-            SELECT Id, Name, ProfileId, Department
-            FROM User
-            WHERE Id IN :userIds
-        ];
+        List<User> users = [SELECT Id, Name, ProfileId, Department FROM User WHERE Id IN :userIds];
         createServiceResource(users, true, 'AUTO');
     }
 
@@ -44,38 +36,25 @@ public without sharing class HOT_ServiceResourceHandler {
 
         DefaultCommunityProfile__c defaultCommunityProfiles = DefaultCommunityProfile__c.getOrgDefaults();
         String profileName = defaultCommunityProfiles.DefaultCommunityPlusProfile__c;
-        Id freelanceProfileId = [
-            SELECT Id
-            FROM Profile
-            WHERE Name = :profileName
-        ]
-        .Id;
+        Id freelanceProfileId = [SELECT Id FROM Profile WHERE Name = :profileName].Id;
 
         Map<Id, String> departmentByUser = new Map<Id, String>();
         List<ServiceResource> serviceResources = new List<ServiceResource>();
         for (User user : users) {
             Boolean isFreelance = user.ProfileId == freelanceProfileId;
             ServiceResource serviceResource = new ServiceResource();
-            serviceResource.RelatedRecordId = Test.isRunningTest()
-                ? UserInfo.getUserId()
-                : user.Id;
+            serviceResource.RelatedRecordId = Test.isRunningTest() ? UserInfo.getUserId() : user.Id;
             serviceResource.Name = user.Name;
             serviceResource.ResourceType = 'T';
             serviceResource.IsActive = true;
             serviceResource.HOT_IsEmployedInterpreter__c = !isFreelance;
             serviceResource.HOT_IsFreelanceInterpreter__c = isFreelance;
             if (!Test.isRunningTest()) {
-                serviceResource.put(
-                    'FSL__GanttLabel__c',
-                    isFreelance ? 'Frilanstolk' : ''
-                );
+                serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : '');
             }
 
             serviceResources.add(serviceResource);
-            departmentByUser.put(
-                serviceResource.RelatedRecordId,
-                Test.isRunningTest() ? '4718' : user.Department
-            );
+            departmentByUser.put(serviceResource.RelatedRecordId, Test.isRunningTest() ? '4718' : user.Department);
         }
         insert serviceResources;
 
@@ -118,15 +97,9 @@ public without sharing class HOT_ServiceResourceHandler {
         if (serviceTerritoryDeveloperName == 'AUTO') {
             //Kobling mellom ServiceTerritory Developer name og Id
             Map<String, Id> serviceTerritoryIdByDeveloperName = new Map<String, Id>();
-            List<ServiceTerritory> serviceTerritories = [
-                SELECT Id, HOT_DeveloperName__c
-                FROM ServiceTerritory
-            ];
+            List<ServiceTerritory> serviceTerritories = [SELECT Id, HOT_DeveloperName__c FROM ServiceTerritory];
             for (ServiceTerritory st : serviceTerritories) {
-                serviceTerritoryIdByDeveloperName.put(
-                    st.HOT_DeveloperName__c,
-                    st.Id
-                );
+                serviceTerritoryIdByDeveloperName.put(st.HOT_DeveloperName__c, st.Id);
             }
 
             //Kobling mellom ServiceTerritory.DeveloperName og Avdeling
@@ -135,20 +108,12 @@ public without sharing class HOT_ServiceResourceHandler {
                 FROM HOT_ServiceTerritoryByQueue__mdt
             ];
             Map<String, Id> serviceTerritoryByDepartment = new Map<String, Id>();
-            for (
-                HOT_ServiceTerritoryByQueue__mdt stq : serviceTerritoryByQueueList
-            ) {
+            for (HOT_ServiceTerritoryByQueue__mdt stq : serviceTerritoryByQueueList) {
                 String department = stq.Queue__c.removeStart('queue_');
-                if (
-                    serviceTerritoryIdByDeveloperName.get(
-                        stq.ServiceTerritory__c
-                    ) != null
-                ) {
+                if (serviceTerritoryIdByDeveloperName.get(stq.ServiceTerritory__c) != null) {
                     serviceTerritoryByDepartment.put(
                         department,
-                        serviceTerritoryIdByDeveloperName.get(
-                            stq.ServiceTerritory__c
-                        )
+                        serviceTerritoryIdByDeveloperName.get(stq.ServiceTerritory__c)
                     );
                 }
             }
@@ -158,19 +123,9 @@ public without sharing class HOT_ServiceResourceHandler {
             System.debug(departmentByUser);
             for (ServiceResource serviceResource : serviceResources) {
                 System.debug(serviceResource.RelatedRecordId);
-                System.debug(
-                    departmentByUser.get(serviceResource.RelatedRecordId)
-                );
-                System.debug(
-                    serviceTerritoryByDepartment.get(
-                        departmentByUser.get(serviceResource.RelatedRecordId)
-                    )
-                );
-                if (
-                    serviceTerritoryByDepartment.get(
-                        departmentByUser.get(serviceResource.RelatedRecordId)
-                    ) != null
-                ) {
+                System.debug(departmentByUser.get(serviceResource.RelatedRecordId));
+                System.debug(serviceTerritoryByDepartment.get(departmentByUser.get(serviceResource.RelatedRecordId)));
+                if (serviceTerritoryByDepartment.get(departmentByUser.get(serviceResource.RelatedRecordId)) != null) {
                     ServiceTerritoryMember serviceTerritoryMember = new ServiceTerritoryMember();
                     serviceTerritoryMember.ServiceResourceId = serviceResource.Id;
                     serviceTerritoryMember.ServiceTerritoryId = serviceTerritoryByDepartment.get(
@@ -214,9 +169,7 @@ public without sharing class HOT_ServiceResourceHandler {
             FROM ServiceResource
             WHERE RelatedRecordId IN :userIds
         ]) {
-            userIdsWithExistingServiceResources.add(
-                serviceResource.RelatedRecordId
-            );
+            userIdsWithExistingServiceResources.add(serviceResource.RelatedRecordId);
         }
 
         for (User user : users) {

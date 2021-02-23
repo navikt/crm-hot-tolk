@@ -6,27 +6,15 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
             // Filter for status change
-            if (
-                workOrder.HOT_Request__c != null &&
-                workOrder.Status !=
-                triggerOldMap.get(workOrder.Id).get('Status')
-            ) {
+            if (workOrder.HOT_Request__c != null && workOrder.Status != triggerOldMap.get(workOrder.Id).get('Status')) {
                 changedStatusWorkOrders.add(WorkOrder);
             }
             // Filter for canceled work orders
-            if (
-                workOrder.Status !=
-                triggerOldMap.get(workOrder.Id).get('Status') &&
-                workOrder.Status == 'Canceled'
-            ) {
+            if (workOrder.Status != triggerOldMap.get(workOrder.Id).get('Status') && workOrder.Status == 'Canceled') {
                 canceledWorkOrders.add(workOrder);
             }
             // Filter for annul work orders
-            if (
-                workOrder.Status !=
-                triggerOldMap.get(workOrder.Id).get('Status') &&
-                workOrder.Status == 'Annul'
-            ) {
+            if (workOrder.Status != triggerOldMap.get(workOrder.Id).get('Status') && workOrder.Status == 'Annul') {
                 annulWorkOrders.add(workOrder);
             }
         }
@@ -39,10 +27,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
         if (changedStatusWorkOrders.size() > 0) {
             updateRequestStatus(changedStatusWorkOrders);
         }
-        HOT_WorkOrderHandler.onAfterUpdateTemp(
-            triggerOldMap,
-            (List<WorkOrder>) records
-        );
+        HOT_WorkOrderHandler.onAfterUpdateTemp(triggerOldMap, (List<WorkOrder>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -66,10 +51,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
     private static void updateRequestStatus(List<WorkOrder> changedWorkOrders) {
         List<HOT_Request__c> requestsToUpdate = new List<HOT_Request__c>();
         for (WorkOrder workOrder : changedWorkOrders) {
-            HOT_Request__c requestToAdd = new HOT_Request__c(
-                Id = workOrder.HOT_Request__c,
-                IsUpdateStatus__c = true
-            );
+            HOT_Request__c requestToAdd = new HOT_Request__c(Id = workOrder.HOT_Request__c, IsUpdateStatus__c = true);
             if (!requestsToUpdate.contains(requestToAdd)) {
                 requestsToUpdate.add(requestToAdd);
             }
@@ -86,20 +68,12 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
         Map<Id, List<WorkOrderLineItem>> workOrderLineItemsMaps = new Map<Id, List<WorkOrderLineItem>>();
 
         for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
-            if (
-                workOrderLineItemsMaps.containsKey(
-                    workOrderLineItem.WorkOrderId
-                )
-            ) {
-                workOrderLineItemsMaps.get(workOrderLineItem.WorkOrderId)
-                    .add(workOrderLineItem);
+            if (workOrderLineItemsMaps.containsKey(workOrderLineItem.WorkOrderId)) {
+                workOrderLineItemsMaps.get(workOrderLineItem.WorkOrderId).add(workOrderLineItem);
             } else {
                 List<WorkOrderLineItem> workOrderLineItemList = new List<WorkOrderLineItem>();
                 workOrderLineItemList.add(workOrderLineItem);
-                workOrderLineItemsMaps.put(
-                    workOrderLineItem.WorkOrderId,
-                    workOrderLineItemList
-                );
+                workOrderLineItemsMaps.put(workOrderLineItem.WorkOrderId, workOrderLineItemList);
             }
         }
 
@@ -107,10 +81,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
             workOrder.HOT_IsUpdateStatus__c = false;
 
             if (workOrderLineItemsMaps.get(workOrder.Id) != null) {
-                Integer numberOfWorkOrderLineItem = workOrderLineItemsMaps.get(
-                        workOrder.Id
-                    )
-                    .size();
+                Integer numberOfWorkOrderLineItem = workOrderLineItemsMaps.get(workOrder.Id).size();
                 Integer numberOfNew = 0;
                 Integer numberOfScheduled = 0;
                 Integer numberOfDispatched = 0;
@@ -120,11 +91,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 Integer numberOfCannotComplete = 0;
                 Integer numberOfCanceled = 0;
 
-                for (
-                    WorkOrderLineItem workOrderLineItem : workOrderLineItemsMaps.get(
-                        workOrder.Id
-                    )
-                ) {
+                for (WorkOrderLineItem workOrderLineItem : workOrderLineItemsMaps.get(workOrder.Id)) {
                     if (workOrderLineItem.Status == 'New') {
                         numberOfNew++;
                     }
@@ -151,20 +118,14 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                     }
                 }
 
-                System.debug(
-                    'numberOfWorkOrderLineItem: ' + numberOfWorkOrderLineItem
-                );
+                System.debug('numberOfWorkOrderLineItem: ' + numberOfWorkOrderLineItem);
                 System.debug('numberOfNew: ' + numberOfNew);
                 System.debug('numberOfScheduled: ' + numberOfScheduled);
                 System.debug('numberOfDispatched: ' + numberOfDispatched);
                 System.debug('numberOfInProgress: ' + numberOfInProgress);
                 System.debug('numberOfCompleted: ' + numberOfCompleted);
-                System.debug(
-                    'numberOfPartiallyComplete: ' + numberOfPartiallyComplete
-                );
-                System.debug(
-                    'numberOfCannotComplete: ' + numberOfCannotComplete
-                );
+                System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
+                System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
                 System.debug('numberOfCanceled: ' + numberOfCanceled);
 
                 if (numberOfScheduled > 0) {
@@ -206,10 +167,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
         }
     }
 
-    private static void updateChildRecords(
-        List<WorkOrder> changedWorkOrders,
-        String newStatus
-    ) {
+    private static void updateChildRecords(List<WorkOrder> changedWorkOrders, String newStatus) {
         List<WorkOrderLineItem> workOrderLineItems = [
             SELECT Status
             FROM WorkOrderLineItem

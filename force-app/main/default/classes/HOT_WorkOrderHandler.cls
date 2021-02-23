@@ -29,10 +29,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     //Issue 10 i MyTriggers-rammeverket fører til en feil ved manuel testing, hvor kun HOT_WorkOrderStatusHandler.onAfterUpdate blir kjørt.
     //Vi gjør derfor om denne "trigger"-metoden til en statisk metode, og kaller på den fra HOT_WorkOrderStatusHandler.onAfterUpdate.
-    public static void onAfterUpdateTemp(
-        Map<Id, sObject> triggerOldMap,
-        List<WorkOrder> records
-    ) {
+    public static void onAfterUpdateTemp(Map<Id, sObject> triggerOldMap, List<WorkOrder> records) {
         List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
 
         //Om status eller tidspunkt på WorkOrder er endret, kan det ha ført til at den førstkommende, ikke-avlyste WorkOrderen har endret seg
@@ -40,8 +37,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             System.debug('record: ' + record);
             if (
                 record.Status != triggerOldMap.get(record.Id).get('Status') ||
-                record.StartDate !=
-                triggerOldMap.get(record.Id).get('StartDate') ||
+                record.StartDate != triggerOldMap.get(record.Id).get('StartDate') ||
                 record.EndDate != triggerOldMap.get(record.Id).get('EndDate')
             ) {
                 updatedWorkOrders.add(record);
@@ -86,19 +82,13 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             //Fetching the workTypes from parent requests. If the request only has 1 workType, only one child workOrderLineItem should be created
             Map<Id, Decimal> workTypes = new Map<Id, Decimal>();
             workTypes.put(
-                requests.get(workOrder.HOT_Request__c)
-                    .InterpretationMethod__r.Id,
+                requests.get(workOrder.HOT_Request__c).InterpretationMethod__r.Id,
                 requests.get(workOrder.HOT_Request__c).NumberOfInterpreters__c
             );
-            if (
-                requests.get(workOrder.HOT_Request__c)
-                    .InterpretationMethodSecondary__c != null
-            ) {
+            if (requests.get(workOrder.HOT_Request__c).InterpretationMethodSecondary__c != null) {
                 workTypes.put(
-                    requests.get(workOrder.HOT_Request__c)
-                        .InterpretationMethodSecondary__r.Id,
-                    requests.get(workOrder.HOT_Request__c)
-                        .NumberOfInterpretersSecondary__c
+                    requests.get(workOrder.HOT_Request__c).InterpretationMethodSecondary__r.Id,
+                    requests.get(workOrder.HOT_Request__c).NumberOfInterpretersSecondary__c
                 );
             }
 
@@ -118,9 +108,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                     workOrderLineItem.Street = workOrder.Street;
                     workOrderLineItem.Subject = workOrder.Subject;
                     workOrderLineItem.WorkTypeId = workTypeId;
-                    workOrderLineItem.HOT_NumberOfInterpreters__c = workTypes.get(
-                        workTypeId
-                    );
+                    workOrderLineItem.HOT_NumberOfInterpreters__c = workTypes.get(workTypeId);
 
                     workOrderLineItems.add(workOrderLineItem);
                 }
@@ -166,102 +154,58 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 //Setting fields of WorkOrder based on Request, if the fields are not filled in, and the fields on Request have values.
                 if (
                     workOrder.ServiceTerritory == null &&
-                    requests.get(workOrder.HOT_Request__c)
-                        .ServiceTerritory__c != null
+                    requests.get(workOrder.HOT_Request__c).ServiceTerritory__c != null
                 ) {
-                    workOrder.ServiceTerritoryId = requests.get(
-                            workOrder.HOT_Request__c
-                        )
-                        .ServiceTerritory__c;
+                    workOrder.ServiceTerritoryId = requests.get(workOrder.HOT_Request__c).ServiceTerritory__c;
                 }
-                if (
-                    workOrder.Subject == null &&
-                    requests.get(workOrder.HOT_Request__c).Subject__c != null
-                ) {
-                    workOrder.Subject = requests.get(workOrder.HOT_Request__c)
-                        .Subject__c;
+                if (workOrder.Subject == null && requests.get(workOrder.HOT_Request__c).Subject__c != null) {
+                    workOrder.Subject = requests.get(workOrder.HOT_Request__c).Subject__c;
                 }
-                if (
-                    workOrder.Description == null &&
-                    requests.get(workOrder.HOT_Request__c).Description__c !=
-                    null
-                ) {
-                    workOrder.Description = requests.get(
-                            workOrder.HOT_Request__c
-                        )
-                        .Description__c;
+                if (workOrder.Description == null && requests.get(workOrder.HOT_Request__c).Description__c != null) {
+                    workOrder.Description = requests.get(workOrder.HOT_Request__c).Description__c;
                 }
-                if (
-                    workOrder.AccountId == null &&
-                    requests.get(workOrder.HOT_Request__c).Account__c != null
-                ) {
-                    workOrder.AccountId = requests.get(workOrder.HOT_Request__c)
-                        .Account__c;
+                if (workOrder.AccountId == null && requests.get(workOrder.HOT_Request__c).Account__c != null) {
+                    workOrder.AccountId = requests.get(workOrder.HOT_Request__c).Account__c;
                 }
                 if (
                     workOrder.ContactId == null &&
                     requests.get(workOrder.HOT_Request__c).Account__c != null &&
-                    requests.get(workOrder.HOT_Request__c)
-                        .Account__r.PersonContactId != null
+                    requests.get(workOrder.HOT_Request__c).Account__r.PersonContactId != null
                 ) {
-                    workOrder.ContactId = requests.get(workOrder.HOT_Request__c)
-                        .Account__r.PersonContactId;
+                    workOrder.ContactId = requests.get(workOrder.HOT_Request__c).Account__r.PersonContactId;
                 }
                 if (
                     workOrder.HOT_InterpretationStreet__c == null &&
-                    requests.get(workOrder.HOT_Request__c)
-                        .InterpretationStreet__c != null
+                    requests.get(workOrder.HOT_Request__c).InterpretationStreet__c != null
                 ) {
-                    workOrder.HOT_InterpretationStreet__c = requests.get(
-                            workOrder.HOT_Request__c
-                        )
+                    workOrder.HOT_InterpretationStreet__c = requests.get(workOrder.HOT_Request__c)
                         .InterpretationStreet__c;
                 }
                 if (
                     workOrder.HOT_InterpretationPostalCode__c == null &&
-                    requests.get(workOrder.HOT_Request__c)
-                        .InterpretationPostalCode__c != null
+                    requests.get(workOrder.HOT_Request__c).InterpretationPostalCode__c != null
                 ) {
-                    workOrder.HOT_InterpretationPostalCode__c = requests.get(
-                            workOrder.HOT_Request__c
-                        )
+                    workOrder.HOT_InterpretationPostalCode__c = requests.get(workOrder.HOT_Request__c)
                         .InterpretationPostalCode__c;
                 }
                 if (
                     workOrder.HOT_InterpretationPostalCity__c == null &&
-                    requests.get(workOrder.HOT_Request__c)
-                        .InterpretationPostalCity__c != null
+                    requests.get(workOrder.HOT_Request__c).InterpretationPostalCity__c != null
                 ) {
-                    workOrder.HOT_InterpretationPostalCity__c = requests.get(
-                            workOrder.HOT_Request__c
-                        )
+                    workOrder.HOT_InterpretationPostalCity__c = requests.get(workOrder.HOT_Request__c)
                         .InterpretationPostalCity__c;
                 }
-                if (
-                    workOrder.Street == null &&
-                    requests.get(workOrder.HOT_Request__c).MeetingStreet__c !=
-                    null
-                ) {
-                    workOrder.Street = requests.get(workOrder.HOT_Request__c)
-                        .MeetingStreet__c;
+                if (workOrder.Street == null && requests.get(workOrder.HOT_Request__c).MeetingStreet__c != null) {
+                    workOrder.Street = requests.get(workOrder.HOT_Request__c).MeetingStreet__c;
                 }
-                if (
-                    workOrder.City == null &&
-                    requests.get(workOrder.HOT_Request__c)
-                        .MeetingPostalCity__c != null
-                ) {
-                    workOrder.City = requests.get(workOrder.HOT_Request__c)
-                        .MeetingPostalCity__c;
+                if (workOrder.City == null && requests.get(workOrder.HOT_Request__c).MeetingPostalCity__c != null) {
+                    workOrder.City = requests.get(workOrder.HOT_Request__c).MeetingPostalCity__c;
                 }
                 if (
                     workOrder.PostalCode == null &&
-                    requests.get(workOrder.HOT_Request__c)
-                        .MeetingPostalCode__c != null
+                    requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c != null
                 ) {
-                    workOrder.PostalCode = requests.get(
-                            workOrder.HOT_Request__c
-                        )
-                        .MeetingPostalCode__c;
+                    workOrder.PostalCode = requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c;
                 }
             }
         }
@@ -292,9 +236,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             WHERE Id IN :requestIds
         ];
         for (HOT_Request__c request : requests) {
-            if (
-                request.NumberOfWorkOrders__c != request.Work_Orders__r.size()
-            ) {
+            if (request.NumberOfWorkOrders__c != request.Work_Orders__r.size()) {
                 request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
             }
             for (WorkOrder workOrder : request.Work_Orders__r) {
@@ -335,37 +277,20 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         );
 
         for (WorkOrder workOrder : workOrders) {
-            workOrder.AccountId = requests.get(workOrder.HOT_Request__c)
-                .Account__c;
-            workOrder.City = requests.get(workOrder.HOT_Request__c)
-                .MeetingPostalCity__c;
-            workOrder.ContactId = requests.get(workOrder.HOT_Request__c)
-                .HOT_PersonContactId__c;
-            workOrder.Description = requests.get(workOrder.HOT_Request__c)
-                .Description__c;
-            workOrder.HOT_InterpretationPostalCity__c = requests.get(
-                    workOrder.HOT_Request__c
-                )
+            workOrder.AccountId = requests.get(workOrder.HOT_Request__c).Account__c;
+            workOrder.City = requests.get(workOrder.HOT_Request__c).MeetingPostalCity__c;
+            workOrder.ContactId = requests.get(workOrder.HOT_Request__c).HOT_PersonContactId__c;
+            workOrder.Description = requests.get(workOrder.HOT_Request__c).Description__c;
+            workOrder.HOT_InterpretationPostalCity__c = requests.get(workOrder.HOT_Request__c)
                 .InterpretationPostalCity__c;
-            workOrder.HOT_InterpretationPostalCode__c = requests.get(
-                    workOrder.HOT_Request__c
-                )
+            workOrder.HOT_InterpretationPostalCode__c = requests.get(workOrder.HOT_Request__c)
                 .InterpretationPostalCode__c;
-            workOrder.HOT_InterpretationStreet__c = requests.get(
-                    workOrder.HOT_Request__c
-                )
-                .InterpretationStreet__c;
+            workOrder.HOT_InterpretationStreet__c = requests.get(workOrder.HOT_Request__c).InterpretationStreet__c;
             workOrder.OwnerId = requests.get(workOrder.HOT_Request__c).OwnerId;
-            workOrder.PostalCode = requests.get(workOrder.HOT_Request__c)
-                .MeetingPostalCode__c;
-            workOrder.Street = requests.get(workOrder.HOT_Request__c)
-                .MeetingStreet__c;
-            workOrder.Subject = requests.get(workOrder.HOT_Request__c)
-                .Subject__c;
-            workOrder.ServiceTerritoryId = requests.get(
-                    workOrder.HOT_Request__c
-                )
-                .ServiceTerritory__c;
+            workOrder.PostalCode = requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c;
+            workOrder.Street = requests.get(workOrder.HOT_Request__c).MeetingStreet__c;
+            workOrder.Subject = requests.get(workOrder.HOT_Request__c).Subject__c;
+            workOrder.ServiceTerritoryId = requests.get(workOrder.HOT_Request__c).ServiceTerritory__c;
         }
         update workOrders;
     }

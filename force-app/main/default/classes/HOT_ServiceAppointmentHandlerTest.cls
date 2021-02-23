@@ -4,22 +4,13 @@ private class HOT_ServiceAppointmentHandlerTest {
     static void setup() {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(
-            operatingHours
-        );
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
         insert serviceTerritory;
 
-        Profile profile = [
-            SELECT Id
-            FROM Profile
-            WHERE Name = 'Standard User' OR Name = 'Standardbruker'
-            LIMIT 1
-        ];
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
         insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(
-            user.Id
-        );
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
         insert serviceResource;
         ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
@@ -40,10 +31,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'HOT_ServiceAppointmentHandler',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
         request.PreferredResource1__c = resource.Id;
         request.NumberOfInterpreters__c = 3;
         insert request;
@@ -59,11 +47,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM ServiceAppointment
             WHERE HOT_PreferredResource__c != NULL
         ];
-        System.assertEquals(
-            'None',
-            serviceAppointment.Status,
-            'Default status was not set on ServiceAppointment.'
-        );
+        System.assertEquals('None', serviceAppointment.Status, 'Default status was not set on ServiceAppointment.');
     }
 
     @isTest
@@ -104,10 +88,7 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
     @isTest
     static void setFieldsByPreferredResourceTest_onUpdate() {
-        HOT_Resource__c resource = [
-            SELECT Id, Name, Service_Resource__c
-            FROM HOT_Resource__c
-        ];
+        HOT_Resource__c resource = [SELECT Id, Name, Service_Resource__c FROM HOT_Resource__c];
 
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_PreferredResource__c
@@ -126,10 +107,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM ServiceResource
         ];
         serviceAppointment = [
-            SELECT
-                HOT_IsReleasedToFreelance__c,
-                ServiceTerritoryId,
-                HOT_Request__c
+            SELECT HOT_IsReleasedToFreelance__c, ServiceTerritoryId, HOT_Request__c
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
@@ -148,11 +126,7 @@ private class HOT_ServiceAppointmentHandlerTest {
     @isTest
     static void setFieldsIfPreferredResourceDeletedTest_onUpdate() {
         ServiceResource serviceResource = [
-            SELECT
-                Id,
-                HOT_IsFreelanceInterpreter__c,
-                HOT_IsEmployedInterpreter__c,
-                HOT_ServiceTerritory__c
+            SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c, HOT_ServiceTerritory__c
             FROM ServiceResource
             LIMIT 1
         ];
@@ -188,22 +162,10 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM ServiceAppointment
             WHERE Id = :saId
         ];
-        system.assertEquals(
-            resource.Id,
-            serviceAppointment.HOT_PreferredResource__c
-        );
-        system.assertEquals(
-            serviceResource.HOT_ServiceTerritory__c,
-            serviceAppointment.ServiceTerritoryId
-        );
-        system.assertEquals(
-            true,
-            serviceAppointment.HOT_IsReleasedToFreelance__c
-        );
-        system.assertEquals(
-            false,
-            serviceAppointment.HOT_IsEmployedInterpreter__c
-        );
+        system.assertEquals(resource.Id, serviceAppointment.HOT_PreferredResource__c);
+        system.assertEquals(serviceResource.HOT_ServiceTerritory__c, serviceAppointment.ServiceTerritoryId);
+        system.assertEquals(true, serviceAppointment.HOT_IsReleasedToFreelance__c);
+        system.assertEquals(false, serviceAppointment.HOT_IsEmployedInterpreter__c);
 
         serviceAppointment.HOT_PreferredResource__c = null;
         update serviceAppointment;
@@ -219,24 +181,14 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE Id = :saId
         ];
         system.assertEquals(null, serviceAppointment.HOT_PreferredResource__c);
-        system.assertEquals(
-            false,
-            serviceAppointment.HOT_IsReleasedToFreelance__c
-        );
-        system.assertEquals(
-            true,
-            serviceAppointment.HOT_IsEmployedInterpreter__c
-        );
+        system.assertEquals(false, serviceAppointment.HOT_IsReleasedToFreelance__c);
+        system.assertEquals(true, serviceAppointment.HOT_IsEmployedInterpreter__c);
     }
 
     @isTest
     static void cancelServiceAppointment() {
         ServiceAppointment sa = [
-            SELECT
-                Id,
-                Status,
-                HOT_ServiceResource__c,
-                HOT_CanceledByInterpreter__c
+            SELECT Id, Status, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c
             FROM ServiceAppointment
             LIMIT 1
         ];
@@ -244,11 +196,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         update sa;
 
         //Checking if SA is cancelled etc
-        system.assertEquals(
-            true,
-            sa.HOT_CanceledByInterpreter__c,
-            'Could not set CancelledByInterpreter to true'
-        );
+        system.assertEquals(true, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to true');
 
         Profile profile = [
             SELECT Id, Name
@@ -258,34 +206,21 @@ private class HOT_ServiceAppointmentHandlerTest {
         User user2 = HOT_TestDataFactory.createUser('User2', profile);
         insert user2;
 
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(
-            user2.Id
-        );
+        ServiceResource sr = HOT_TestDataFactory.createServiceResource(user2.Id);
         insert sr;
 
-        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(
-            sa.Id,
-            sr.Id
-        );
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
         insert ar;
 
         sa = [
-            SELECT
-                Id,
-                Status,
-                HOT_ServiceResource__c,
-                HOT_CanceledByInterpreter__c
+            SELECT Id, Status, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c
             FROM ServiceAppointment
             WHERE Id = :sa.Id
             LIMIT 1
         ];
 
         //Checks if HOT_CancelledByInterpreter is no longer checked
-        System.assertEquals(
-            false,
-            sa.HOT_CanceledByInterpreter__c,
-            'Could not set CancelledByInterpreter to false'
-        );
+        System.assertEquals(false, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to false');
     }
 
     @isTest
@@ -294,27 +229,16 @@ private class HOT_ServiceAppointmentHandlerTest {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
         ServiceResource resource = [SELECT Id FROM ServiceResource LIMIT 1];
 
-        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(
-            sa.Id,
-            resource.Id
-        );
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
         insert ar;
 
         sa.Status = 'Canceled';
         update sa;
         Test.stopTest();
-        List<AssignedResource> arList = [
-            SELECT Id
-            FROM AssignedResource
-            WHERE ServiceAppointmentId = :sa.Id
-        ];
+        List<AssignedResource> arList = [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId = :sa.Id];
         sa = [SELECT Id, Status FROM ServiceAppointment WHERE Id = :sa.id];
         System.assertEquals(0, arList.size(), 'Could not delete AR');
-        System.assertEquals(
-            'Canceled',
-            sa.Status,
-            'Service Appointment did not retain correct status'
-        );
+        System.assertEquals('Canceled', sa.Status, 'Service Appointment did not retain correct status');
     }
 
     @isTest
@@ -322,32 +246,18 @@ private class HOT_ServiceAppointmentHandlerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
         request.Status__c = 'Godkjent';
         update request;
 
-        ServiceAppointment serviceAppointment = [
-            SELECT Id
-            FROM ServiceAppointment
-            WHERE HOT_Request__c = :request.Id
-        ];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
 
-        Profile profile = [
-            SELECT Id
-            FROM Profile
-            WHERE Name = 'Standard User' OR Name = 'Standardbruker'
-            LIMIT 1
-        ];
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('TEST', profile);
         insert user;
 
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(
-            user.Id
-        );
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
         insert resource;
 
         Test.startTest();
@@ -364,16 +274,8 @@ private class HOT_ServiceAppointmentHandlerTest {
             SELECT Id, ServiceResource__c, ServiceAppointment__c, Status__c
             FROM HOT_HistoricallyAssignedResource__c
         ];
-        System.assertEquals(
-            1,
-            harList.size(),
-            'Det ble ikke opprette en Historically Assigned Resource'
-        );
-        System.assertEquals(
-            resource.Id,
-            harList[0].ServiceResource__c,
-            'HAR ble ikke knyttet til korrekt ressurs'
-        );
+        System.assertEquals(1, harList.size(), 'Det ble ikke opprette en Historically Assigned Resource');
+        System.assertEquals(resource.Id, harList[0].ServiceResource__c, 'HAR ble ikke knyttet til korrekt ressurs');
         System.assertEquals(
             serviceAppointment.Id,
             harList[0].ServiceAppointment__c,
@@ -385,11 +287,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @isTest
     private static void testCreateHistoricallyAssignedResources_statusChange() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
         ServiceResource resource = [SELECT Id FROM ServiceResource];
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
@@ -409,34 +307,18 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM HOT_HistoricallyAssignedResource__c
             WHERE Status__c = 'Tildelt'
         ];
-        System.assertEquals(
-            1,
-            harList.size(),
-            'Det ble ikke opprette en Historically Assigned Resource'
-        );
-        System.assertEquals(
-            resource.Id,
-            harList[0].ServiceResource__c,
-            'HAR ble ikke knyttet til korrekt ressurs'
-        );
+        System.assertEquals(1, harList.size(), 'Det ble ikke opprette en Historically Assigned Resource');
+        System.assertEquals(resource.Id, harList[0].ServiceResource__c, 'HAR ble ikke knyttet til korrekt ressurs');
         System.assertEquals(
             serviceAppointment.Id,
             harList[0].ServiceAppointment__c,
             'HAR ble ikke knyttet til korrekt oppdrag'
         );
-        System.assertEquals(
-            'Tildelt',
-            harList[0].Status__c,
-            'Status har ikke blitt satt korrekt på HAR'
-        );
+        System.assertEquals('Tildelt', harList[0].Status__c, 'Status har ikke blitt satt korrekt på HAR');
     }
     @isTest
     private static void testCreateHistoricallyAssignedResources_resourceChange() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
         ServiceResource resource = [SELECT Id FROM ServiceResource];
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
@@ -445,17 +327,10 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
         insert assignedResource;
 
-        Profile profile = [
-            SELECT Id
-            FROM Profile
-            WHERE Name = 'Standard User' OR Name = 'Standardbruker'
-            LIMIT 1
-        ];
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user2', profile);
         insert user;
-        ServiceResource resource2 = HOT_TestDataFactory.createServiceResource(
-            user.Id
-        );
+        ServiceResource resource2 = HOT_TestDataFactory.createServiceResource(user.Id);
         insert resource2;
 
         assignedResource = [
@@ -475,16 +350,8 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM HOT_HistoricallyAssignedResource__c
             WHERE Status__c = 'Tolk tatt av oppdraget'
         ];
-        System.assertEquals(
-            1,
-            harList.size(),
-            'Det ble ikke opprette en Historically Assigned Resource'
-        );
-        System.assertEquals(
-            resource.Id,
-            harList[0].ServiceResource__c,
-            'HAR ble ikke knyttet til korrekt ressurs'
-        );
+        System.assertEquals(1, harList.size(), 'Det ble ikke opprette en Historically Assigned Resource');
+        System.assertEquals(resource.Id, harList[0].ServiceResource__c, 'HAR ble ikke knyttet til korrekt ressurs');
         System.assertEquals(
             serviceAppointment.Id,
             harList[0].ServiceAppointment__c,
@@ -502,16 +369,8 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM HOT_HistoricallyAssignedResource__c
             WHERE ServiceResource__c = :resource2.Id
         ];
-        System.assertEquals(
-            1,
-            harList.size(),
-            'Det ble ikke opprette en Historically Assigned Resource'
-        );
-        System.assertEquals(
-            resource2.Id,
-            harList[0].ServiceResource__c,
-            'HAR ble ikke knyttet til korrekt ressurs'
-        );
+        System.assertEquals(1, harList.size(), 'Det ble ikke opprette en Historically Assigned Resource');
+        System.assertEquals(resource2.Id, harList[0].ServiceResource__c, 'HAR ble ikke knyttet til korrekt ressurs');
         System.assertEquals(
             serviceAppointment.Id,
             harList[0].ServiceAppointment__c,
@@ -521,11 +380,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @isTest
     private static void testCreateHistoricallyAssignedResources_removedResource() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
         ServiceResource resource = [SELECT Id FROM ServiceResource];
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
@@ -544,16 +399,8 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM HOT_HistoricallyAssignedResource__c
             WHERE Status__c = 'Tolk tatt av oppdraget'
         ];
-        System.assertEquals(
-            1,
-            harList.size(),
-            'Det ble ikke opprette en Historically Assigned Resource'
-        );
-        System.assertEquals(
-            resource.Id,
-            harList[0].ServiceResource__c,
-            'HAR ble ikke knyttet til korrekt ressurs'
-        );
+        System.assertEquals(1, harList.size(), 'Det ble ikke opprette en Historically Assigned Resource');
+        System.assertEquals(resource.Id, harList[0].ServiceResource__c, 'HAR ble ikke knyttet til korrekt ressurs');
         System.assertEquals(
             serviceAppointment.Id,
             harList[0].ServiceAppointment__c,
@@ -572,32 +419,18 @@ private class HOT_ServiceAppointmentHandlerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-        HOT_Request__c request = HOT_TestDataFactory.createRequest(
-            'TEST',
-            workType
-        );
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
         request.Status__c = 'Godkjent';
         update request;
 
-        ServiceAppointment serviceAppointment = [
-            SELECT Id
-            FROM ServiceAppointment
-            WHERE HOT_Request__c = :request.Id
-        ];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
 
-        Profile profile = [
-            SELECT Id
-            FROM Profile
-            WHERE Name = 'Standard User' OR Name = 'Standardbruker'
-            LIMIT 1
-        ];
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('TEST', profile);
         insert user;
 
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(
-            user.Id
-        );
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
         insert resource;
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
@@ -635,25 +468,15 @@ private class HOT_ServiceAppointmentHandlerTest {
         correctStatuses.put('Dispatched', 'Tildelt');
         correctStatuses.put('In Progress', 'Pågår');
         correctStatuses.put('None', 'Åpen');
-        correctStatuses.put(
-            'Released to Freelance',
-            'Frigitt til frilanstolker'
-        );
+        correctStatuses.put('Released to Freelance', 'Frigitt til frilanstolker');
         correctStatuses.put('Scheduled', 'Reservert');
         for (String key : correctStatuses.keySet()) {
-            System.assertEquals(
-                correctStatuses.get(key),
-                HOT_ServiceAppointmentHandler.getTranslatedStatus(key)
-            );
+            System.assertEquals(correctStatuses.get(key), HOT_ServiceAppointmentHandler.getTranslatedStatus(key));
         }
     }
     @isTest
     static void preserveScheduledTimes_onUpdate() {
-        ServiceAppointment sa = [
-            SELECT Id, Status, SchedEndTime, SchedStartTime
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
+        ServiceAppointment sa = [SELECT Id, Status, SchedEndTime, SchedStartTime FROM ServiceAppointment LIMIT 1];
         datetime startTime = Datetime.now().addHours(1);
         datetime endTime = Datetime.now().addHours(2);
         sa.SchedStartTime = startTime;
@@ -661,16 +484,8 @@ private class HOT_ServiceAppointmentHandlerTest {
         sa.Status = 'Cannot Complete';
         update sa;
 
-        sa = [
-            SELECT Id, Status, SchedEndTime, SchedStartTime
-            FROM ServiceAppointment
-            WHERE Id = :sa.Id
-        ];
-        system.assertEquals(
-            startTime,
-            sa.SchedStartTime,
-            'Start time not set!'
-        );
+        sa = [SELECT Id, Status, SchedEndTime, SchedStartTime FROM ServiceAppointment WHERE Id = :sa.Id];
+        system.assertEquals(startTime, sa.SchedStartTime, 'Start time not set!');
         system.assertEquals(endTime, sa.SchedEndTime, 'End time not set');
         system.assertEquals('Cannot Complete', sa.Status, 'Status not set');
 
@@ -678,16 +493,8 @@ private class HOT_ServiceAppointmentHandlerTest {
         sa.Status = 'None';
         update sa;
 
-        sa = [
-            SELECT Id, Status, SchedEndTime, SchedStartTime
-            FROM ServiceAppointment
-            WHERE Id = :sa.Id
-        ];
-        system.assertEquals(
-            startTime,
-            sa.SchedStartTime,
-            'Start time not set!'
-        );
+        sa = [SELECT Id, Status, SchedEndTime, SchedStartTime FROM ServiceAppointment WHERE Id = :sa.Id];
+        system.assertEquals(startTime, sa.SchedStartTime, 'Start time not set!');
         system.assertEquals(endTime, sa.SchedEndTime, 'End time not set');
         system.assertEquals('None', sa.Status, 'Status not set');
     }

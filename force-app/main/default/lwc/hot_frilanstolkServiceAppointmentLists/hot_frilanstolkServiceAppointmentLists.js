@@ -1,9 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
-export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMixin(
-    LightningElement
-) {
+export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMixin(LightningElement) {
     @track activeTab; // = 'open';
     connectedCallback() {
         let testURL = window.location.href;
@@ -58,15 +56,9 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         ];
         for (var i = 0; i < 10; i++) {
             if (i < columnLabels.length) {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    columnLabels[i]
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
             } else {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    ''
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
         }
 
@@ -93,15 +85,9 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         ];
         for (var i = 0; i < 10; i++) {
             if (i < columnLabels.length) {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    columnLabels[i]
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
             } else {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    ''
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
         }
 
@@ -116,27 +102,12 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         });
     }
     onMy() {
-        const columnLabels = [
-            "'Start Tid'",
-            "'Slutt Tid'",
-            "'Poststed'",
-            "'Tema'",
-            "'Arbeidstype'",
-            "''",
-            "''",
-            "''"
-        ];
+        const columnLabels = ["'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "''", "''", "''"];
         for (var i = 0; i < 10; i++) {
             if (i < columnLabels.length) {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    columnLabels[i]
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
             } else {
-                document.documentElement.style.setProperty(
-                    '--columnlabel_' + i.toString(),
-                    ''
-                );
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
         }
 
