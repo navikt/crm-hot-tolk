@@ -512,4 +512,22 @@ private class HOT_ServiceAppointmentHandlerTest {
         update serviceAppointment;
         Test.stopTest();
     }
+
+    @isTest
+    static void countNumberOfReleasedServiceAppointments() {
+        ServiceAppointment serviceAppointment = [SELECT Id, ParentRecordId, Status FROM ServiceAppointment LIMIT 1];
+        serviceAppointment.Status = 'Released to Freelance';
+        update serviceAppointment;
+        WorkOrderLineItem workorderLineItem = [
+            SELECT HOT_NumberOfReleasedServiceAppointments__c
+            FROM WorkOrderLineItem
+            WHERE Id = :serviceAppointment.ParentRecordId
+            LIMIT 1
+        ];
+        System.assertEquals(
+            1,
+            workorderLineItem.HOT_NumberOfReleasedServiceAppointments__c,
+            'Could not count number of released service appointmnets on workOrderLineItem.'
+        );
+    }
 }
