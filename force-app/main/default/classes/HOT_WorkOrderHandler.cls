@@ -226,6 +226,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 NumberOfWorkOrders__c,
                 StartTime__c,
                 EndTime__c,
+                SeriesStartDate__c,
+                SeriesEndDate__c,
                 (
                     SELECT Id, StartDate, EndDate, Status
                     FROM HOT_Request__c.Work_Orders__r
@@ -243,7 +245,13 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 if (workOrder.Status != 'Canceled') {
                     request.StartTime__c = workOrder.StartDate;
                     request.EndTime__c = workOrder.EndDate;
+                    request.SeriesStartDate__c = workOrder.StartDate.date();
                     break;
+                }
+            }
+            for (WorkOrder workOrder : request.Work_Orders__r) {
+                if (workOrder.Status != 'Canceled') {
+                    request.SeriesEndDate__c = workOrder.EndDate.date();
                 }
             }
         }
