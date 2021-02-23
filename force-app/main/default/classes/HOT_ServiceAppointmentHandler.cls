@@ -72,16 +72,20 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<ServiceAppointment> serviceAppointmentsToRemoveAssignedResource = new List<ServiceAppointment>();
-        List<ServiceAppointment> updatedServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
-            if (
-                (serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') &&
-                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')
-            ) {
-                serviceAppointmentsToRemoveAssignedResource.add(serviceAppointment);
+            if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
+                if (serviceAppointment.Status == 'Canceled') {
+                    serviceAppointmentsToRemoveAssignedResource.add(serviceAppointment);
+                }
                 if (serviceAppointment.Status == 'Annul') {
-                    updatedServiceAppointments.add(serviceAppointment);
+                    serviceAppointmentsToRemoveAssignedResource.add(serviceAppointment);
+                    annulServiceAppointments.add(serviceAppointment);
+                }
+                if (serviceAppointment.Status == 'Released to Freelance') {
+                    releasedServiceAppointments.add(serviceAppointment);
                 }
             }
         }
@@ -89,8 +93,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
         }
-        if (updatedServiceAppointments.size() > 0) {
-            updateWorkOrderLineItems(updatedServiceAppointments);
+        if (annulServiceAppointments.size() > 0) {
+            updateWorkOrderLineItems(annulServiceAppointments);
+        }
+        if (releasedServiceAppointments.size() > 0) {
+            updateWorkOrderLineItems(releasedServiceAppointments);
         }
     }
 
@@ -132,6 +139,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 workOrderLineItem.HOT_NumberOfServiceAppointments__c = workOrderLineItem.HOT_ServiceAppointments__r.size();
             }
+
+            Integer numberOfReleasedServiceAppointments = 0;
+            for (ServiceAppointment serviceAppointment : workOrderLineItem.HOT_ServiceAppointments__r) {
+                if (serviceAppointment.Status == 'Released To Freelance') {
+                    numberOfReleasedServiceAppointments += 1;
+                }
+            }
+            workOrderLineItem.HOT_NumberOfReleasedServiceAppointments__c = numberOfReleasedServiceAppointments;
         }
         update workOrderLineItems;
     }
