@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_NumberOfReleasedServiceAppointments__c</fullName>
-    <defaultValue>1</defaultValue>
+    <defaultValue>0</defaultValue>
     <externalId>false</externalId>
     <label>Number Of Released Service Appointments</label>
     <precision>18</precision>
