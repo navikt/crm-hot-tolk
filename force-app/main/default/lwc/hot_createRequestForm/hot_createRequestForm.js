@@ -8,6 +8,7 @@ import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
+import checkInputsFromCommunity from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import { validate, require } from 'c/validationController';
 import {
     recurringTypeValidations,
@@ -584,7 +585,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     handleSuccess(event) {
         console.log('handleSuccess');
         this.spin = false;
-        var x = this.template.querySelector('.submitted-true');
+        let x = this.template.querySelector('.submitted-true');
         x.classList.remove('hidden');
         this.template.querySelector('.h2-successMessage').focus();
         x = this.template.querySelector('.submitted-false');
@@ -601,20 +602,31 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 isNew: dateTime.isNew
             };
         }
-        if (times != {}) {
+        if (times !== {}) {
             if (this.isAdvancedTimes) {
                 //String requestId, Map<String, Long> times, String recurringType, List<String> recurringDays, Long recurringEndDate
                 let time = times['0'];
                 let recurringType = this.repeatingOptionChosen;
                 let recurringDays = this.chosenDays;
                 let recurringEndDate = new Date(this.repeatingEndDate).getTime();
-                createWorkOrders({
+                let errors = checkInputsFromCommunity({
                     requestId,
                     times: time,
                     recurringType,
                     recurringDays,
                     recurringEndDate
                 });
+                console.log(errors);
+                console.log(JSON.stringify(errors));
+                if (errors.length === 0) {
+                    createWorkOrders({
+                        requestId,
+                        times: time,
+                        recurringType,
+                        recurringDays,
+                        recurringEndDate
+                    });
+                }
             } else {
                 createAndUpdateWorkOrders({ requestId, times });
             }
