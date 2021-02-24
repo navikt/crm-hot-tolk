@@ -77,7 +77,7 @@
             </value>
         </inputParameters>
         <inputParameters>
-            <name>wendesday</name>
+            <name>wednesday</name>
             <value>
                 <elementReference>Onsdag</elementReference>
             </value>
