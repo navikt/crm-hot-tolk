@@ -12,7 +12,7 @@ public without sharing class HOT_CreateWorkOrderService {
     @InvocableVariable
     public Boolean tuesday;
     @InvocableVariable
-    public Boolean wendesday;
+    public Boolean wednesday;
     @InvocableVariable
     public Boolean thursday;
     @InvocableVariable
@@ -39,7 +39,7 @@ public without sharing class HOT_CreateWorkOrderService {
         createWorkOrderService.recurringType = recurringType;
         createWorkOrderService.monday = recurringDays.contains('monday');
         createWorkOrderService.tuesday = recurringDays.contains('tuesday');
-        createWorkOrderService.wendesday = recurringDays.contains('wendesday');
+        createWorkOrderService.wednesday = recurringDays.contains('wednesday');
         createWorkOrderService.thursday = recurringDays.contains('thursday');
         createWorkOrderService.friday = recurringDays.contains('friday');
         createWorkOrderService.saturday = recurringDays.contains('saturday');
@@ -71,7 +71,7 @@ public without sharing class HOT_CreateWorkOrderService {
             input.recurringType == 'Biweekly') &&
             !input.monday &&
             !input.tuesday &&
-            !input.wendesday &&
+            !input.wednesday &&
             !input.thursday &&
             !input.friday &&
             !input.saturday &&
@@ -141,7 +141,7 @@ public without sharing class HOT_CreateWorkOrderService {
                 if (
                     input.monday && dayOfWeek == 'Monday' ||
                     input.tuesday && dayOfWeek == 'Tuesday' ||
-                    input.wendesday && dayOfWeek == 'Wednesday' ||
+                    input.wednesday && dayOfWeek == 'Wednesday' ||
                     input.thursday && dayOfWeek == 'Thursday' ||
                     input.friday && dayOfWeek == 'Friday' ||
                     input.saturday && dayOfWeek == 'Saturday' ||
@@ -183,7 +183,7 @@ public without sharing class HOT_CreateWorkOrderService {
                 if (
                     input.monday && dayOfWeek == 'Monday' ||
                     input.tuesday && dayOfWeek == 'Tuesday' ||
-                    input.wendesday && dayOfWeek == 'Wednesday' ||
+                    input.wednesday && dayOfWeek == 'Wednesday' ||
                     input.thursday && dayOfWeek == 'Thursday' ||
                     input.friday && dayOfWeek == 'Friday' ||
                     input.saturday && dayOfWeek == 'Saturday' ||

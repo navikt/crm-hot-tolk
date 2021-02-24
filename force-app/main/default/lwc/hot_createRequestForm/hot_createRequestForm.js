@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
@@ -8,7 +8,7 @@ import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
-import { validate, require } from 'c/validationController';
+import { validate } from 'c/validationController';
 import {
     recurringTypeValidations,
     recurringDaysValidations,
@@ -19,9 +19,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     @track reRender = 0;
 
     @track isProd;
-    @track error;
     @wire(isProdFunction)
-    wiredIsProd({ error, data }) {
+    wiredIsProd({ data }) {
         this.isProd = data;
     }
 
@@ -47,12 +46,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
     filterRequests() {
-        var tempRequests = [];
-        for (var i = 0; i < this.allRequests.length; i++) {
+        let tempRequests = [];
+        for (let i = 0; i < this.allRequests.length; i++) {
             if (
-                this.allRequests[i].ExternalRequestStatus__c != 'Avlyst' &&
-                this.allRequests[i].ExternalRequestStatus__c != 'Dekket' &&
-                this.allRequests[i].ExternalRequestStatus__c != 'Udekket'
+                this.allRequests[i].ExternalRequestStatus__c !== 'Avlyst' &&
+                this.allRequests[i].ExternalRequestStatus__c !== 'Dekket' &&
+                this.allRequests[i].ExternalRequestStatus__c !== 'Udekket'
             ) {
                 tempRequests.push(this.allRequests[i]);
             }
@@ -107,7 +106,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
     handleRequestTypeChange(event) {
         this.currentRequestType = event.detail.value;
-        if (this.currentRequestType == 'PublicEvent') {
+        if (this.currentRequestType === 'PublicEvent') {
             this.publicEventForm = true;
         } else {
             this.publicEventForm = false;
@@ -127,7 +126,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.fieldValues.EventType__c = this.eventType;
     }
 
-    @track error;
     @track fieldValues = {
         Name: '',
         Subject__c: '',
@@ -152,7 +150,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     };
 
     @track isPersonNumberValid = true;
-    checkPersonNumber(event) {
+    checkPersonNumber() {
         let inputComponent = this.template.querySelector('.skjema').querySelector('.personNumber');
         this.fieldValues.UserPersonNumber__c = inputComponent.value;
         let regExp = RegExp('[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]');
@@ -180,7 +178,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         console.log('wiredTimes');
         this.wiredTimesValue = result.data;
         if (result.data) {
-            if (result.data.length == 0) {
+            if (result.data.length === 0) {
                 console.log('result is empty');
                 this.times = [
                     {
@@ -206,7 +204,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 }
                 this.validateExistingDateTimes();
             }
-            this.isOnlyOneTime = this.times.length == 1;
+            this.isOnlyOneTime = this.times.length === 1;
             this.error = undefined;
         } else if (result.error) {
             this.error = result.error;
@@ -218,30 +216,30 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         console.log(event.detail.value);
         let index = this.getIndexById(event.target.name);
         this.times[index].date = event.detail.value;
-        var now = new Date();
-        var tempTime = JSON.parse(JSON.stringify(now));
+        let now = new Date();
+        let tempTime = JSON.parse(JSON.stringify(now));
         tempTime = tempTime.split('');
 
-        if (this.times[index].startTime == null || this.times[index].startTime == '') {
+        if (this.times[index].startTime === null || this.times[index].startTime === '') {
             if (Math.abs(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes()) <= 1) {
                 tempTime[14] = '0';
                 tempTime[15] = '0';
             }
 
-            var first = parseFloat(tempTime[11]);
-            var second = parseFloat(tempTime[12]);
+            let first = parseFloat(tempTime[11]);
+            let second = parseFloat(tempTime[12]);
             second = (second + 2) % 10;
-            if (second == 0 || second == 1) {
+            if (second === 0 || second === 1) {
                 first = first + 1;
             }
             tempTime[11] = first.toString();
             tempTime[12] = second.toString();
 
             this.times[index].startTime = tempTime.join('').substring(11, 16);
-            var first = parseFloat(tempTime[11]);
-            var second = parseFloat(tempTime[12]);
+            first = parseFloat(tempTime[11]);
+            second = parseFloat(tempTime[12]);
             second = (second + 1) % 10;
-            if (second == 0) {
+            if (second === 0) {
                 first = first + 1;
             }
             tempTime[11] = first.toString();
@@ -257,11 +255,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         let tempTime = event.detail.value.split('');
         this.times[index].startTime = tempTime.join('').substring(0, 5);
 
-        if (event.detail.value > this.times[index].endTime || this.times[index].endTime == null) {
-            var first = parseFloat(tempTime[0]);
-            var second = parseFloat(tempTime[1]);
+        if (event.detail.value > this.times[index].endTime || this.times[index].endTime === null) {
+            let first = parseFloat(tempTime[0]);
+            let second = parseFloat(tempTime[1]);
             second = (second + 1) % 10;
-            if (second == 0) {
+            if (second === 0) {
                 first = first + 1;
             }
             tempTime[0] = first.toString();
@@ -288,18 +286,18 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     getIndexById(id) {
-        var j = -1;
-        for (var i = 0; i < this.times.length; i++) {
-            if (this.times[i].id == id) {
+        let j = -1;
+        for (let i = 0; i < this.times.length; i++) {
+            if (this.times[i].id === id) {
                 j = i;
             }
         }
         return j;
     }
 
-    addTime(event) {
+    addTime() {
         this.uniqueIdCounter += 1;
-        var newTime = {
+        let newTime = {
             id: this.uniqueIdCounter,
             date: null,
             startTime: null,
@@ -310,13 +308,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.setIsOnlyOneTime();
     }
     setIsOnlyOneTime() {
-        this.isOnlyOneTime = this.times.length == 1;
+        this.isOnlyOneTime = this.times.length === 1;
     }
 
     removeTime(event) {
         if (this.times.length > 1) {
             const index = this.getIndexById(event.target.name);
-            if (index != -1) {
+            if (index !== -1) {
                 this.times.splice(index, 1);
             }
         }
@@ -338,7 +336,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     @track isRepeating = false;
     @track showWeekDays = false;
     repeatingOptions = [
-        { label: 'Aldri', value: 'Never' },
         { label: 'Hver dag', value: 'Daily' },
         { label: 'Hver uke', value: 'Weekly' },
         { label: 'Hver 2. Uke', value: 'Biweekly' }
@@ -346,12 +343,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     repeatingOptionChosen = '';
     handleRepeatChoiceMade(event) {
         this.repeatingOptionChosen = event.detail.value;
-        if (event.detail.value == 'Weekly' || event.detail.value == 'Biweekly') {
+        if (event.detail.value === 'Weekly' || event.detail.value === 'Biweekly') {
             this.showWeekDays = true;
         } else {
             this.showWeekDays = false;
         }
-        if (event.detail.value != 'Never') {
+        if (event.detail.value !== 'Never') {
             this.isRepeating = true;
         } else {
             this.isRepeating = false;
@@ -376,27 +373,29 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     @track repeatingEndDate;
     setRepeatingEndDateDate(event) {
         this.repeatingEndDate = event.detail.value;
+        let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
+        validate(recurringEndDateElement, recurringEndDateValidations, this.times[0].date);
     }
 
     @track spin = false;
 
     handleAdvancedTimeValidations() {
         let typeElement = this.template.querySelector('.recurringType');
-        let recurringTypeValid = validate(typeElement, recurringTypeValidations).length == 0;
+        let recurringTypeValid = validate(typeElement, recurringTypeValidations).length === 0;
 
         let daysElement = this.template.querySelector('.recurringDays');
         let recurringDaysValid =
-            validate(daysElement, recurringDaysValidations, this.repeatingOptionChosen).length == 0;
+            validate(daysElement, recurringDaysValidations, this.repeatingOptionChosen).length === 0;
 
         let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
         let recurringEndDateValid =
-            validate(recurringEndDateElement, recurringEndDateValidations, this.times[0].date).length == 0;
+            validate(recurringEndDateElement, recurringEndDateValidations, this.times[0].date).length === 0;
 
         return recurringTypeValid && recurringDaysValid && recurringEndDateValid;
     }
 
     handleValidation() {
-        let datetimeValid = this.handleDatetimeValidation().length == 0;
+        let datetimeValid = this.handleDatetimeValidation().length === 0;
         let advancedValid = true;
         if (this.isAdvancedTimes) {
             advancedValid = this.handleAdvancedTimeValidations();
@@ -411,7 +410,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 invalidIndex.unshift(this.times.indexOf(time));
             }
         }
-        if (invalidIndex.length != 0) {
+        if (invalidIndex.length !== 0) {
             let inputList = this.template.querySelectorAll('.dynamic-time-inputs-with-line_button');
             for (let index of invalidIndex) {
                 let dateInputElement = inputList[index].querySelector('.date');
@@ -479,20 +478,20 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
         //Pressed "NESTE"
         let valid = true;
-        if (this.currentRequestType != '') {
+        if (this.currentRequestType !== '') {
             this.spin = false;
 
-            if (this.currentRequestType == 'User') {
+            if (this.currentRequestType === 'User') {
                 this.ordererForm = true;
                 this.userForm = true;
-            } else if (this.currentRequestType == 'Company') {
+            } else if (this.currentRequestType === 'Company') {
                 this.ordererForm = true;
                 this.userForm = true;
                 this.companyForm = true;
                 this.fieldValues.IsOtherEconomicProvicer__c = true;
-            } else if (this.currentRequestType == 'PublicEvent') {
+            } else if (this.currentRequestType === 'PublicEvent') {
                 let typeOfEventElement = this.template.querySelector('.skjema').querySelector('.type-arrangement');
-                if (this.eventType == null) {
+                if (this.eventType === null) {
                     typeOfEventElement.setCustomValidity('Du må velge type arrangement');
                     typeOfEventElement.focus();
                     this.spin = false;
@@ -517,7 +516,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             radioButtonGroup.focus();
         }
         radioButtonGroup.reportValidity();
-        if (this.currentRequestType == 'User' || this.currentRequestType == 'Company') {
+        if (this.currentRequestType === 'User' || this.currentRequestType === 'Company') {
             this.isPersonNumberValid = false;
         }
     }
@@ -535,7 +534,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
     throwInputValidationError(element, errorText) {
         element.setCustomValidity(errorText);
-        if (errorText != '') {
+        if (errorText !== '') {
             element.focus();
         }
         element.reportValidity();
@@ -552,7 +551,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             dateElement.setCustomValidity('');
             this.times[index].isValid = true;
         }
-        dateElements.reportValidity();
+        dateElement.reportValidity();
     }
 
     formatDateTime(dateTime) {
@@ -566,12 +565,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         const endMinute = dateTime.endTime.substring(3, 5);
 
         const newDateTime = {};
-        newDateTime['id'] = dateTime.id;
-        newDateTime['date'] = month + '/' + day + '/' + year;
-        newDateTime['startTime'] = startHour + ':' + startMinute;
-        newDateTime['endTime'] = endHour + ':' + endMinute;
-        newDateTime['isValid'] = dateTime.isValid;
-        newDateTime['isNew'] = dateTime.isNew;
+        newDateTime.id = dateTime.id;
+        newDateTime.date = month + '/' + day + '/' + year;
+        newDateTime.startTime = startHour + ':' + startMinute;
+        newDateTime.endTime = endHour + ':' + endMinute;
+        newDateTime.isValid = dateTime.isValid;
+        newDateTime.isNew = dateTime.isNew;
 
         return newDateTime;
     }
@@ -585,7 +584,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     handleSuccess(event) {
         console.log('handleSuccess');
         this.spin = false;
-        var x = this.template.querySelector('.submitted-true');
+        let x = this.template.querySelector('.submitted-true');
         x.classList.remove('hidden');
         this.template.querySelector('.h2-successMessage').focus();
         x = this.template.querySelector('.submitted-false');
@@ -602,7 +601,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 isNew: dateTime.isNew
             };
         }
-        if (times != {}) {
+        if (times !== {}) {
             if (this.isAdvancedTimes) {
                 //String requestId, Map<String, Long> times, String recurringType, List<String> recurringDays, Long recurringEndDate
                 let time = times['0'];
@@ -644,18 +643,18 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         let params = testURL.split('?')[1];
 
         function parse_query_string(query) {
-            var vars = query.split('&');
-            var query_string = {};
-            for (var i = 0; i < vars.length; i++) {
-                var pair = vars[i].split('=');
-                var key = decodeURIComponent(pair[0]);
-                var value = decodeURIComponent(pair[1]);
+            let vars = query.split('&');
+            let query_string = {};
+            for (let i = 0; i < vars.length; i++) {
+                let pair = vars[i].split('=');
+                let key = decodeURIComponent(pair[0]);
+                let value = decodeURIComponent(pair[1]);
                 // If first entry with this name
                 if (typeof query_string[key] === 'undefined') {
                     query_string[key] = decodeURIComponent(value);
                     // If second entry with this name
                 } else if (typeof query_string[key] === 'string') {
-                    var arr = [query_string[key], decodeURIComponent(value)];
+                    let arr = [query_string[key], decodeURIComponent(value)];
                     query_string[key] = arr;
                     // If third or later entry with this name
                 } else {
@@ -665,8 +664,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             return query_string;
         }
 
-        if (params != undefined) {
-            var parsed_params = parse_query_string(params);
+        if (params !== undefined) {
+            let parsed_params = parse_query_string(params);
             if (parsed_params.fromList != null) {
                 this.previousPage = 'mine-bestillinger';
             }
@@ -679,7 +678,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 delete this.fieldValues.StartTime__c;
                 delete this.fieldValues.EndTime__c;
 
-                this.sameLocation = this.fieldValues.MeetingStreet__c == this.fieldValues.InterpretationStreet__c;
+                this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
                 if (!this.sameLocation) {
                     this.value = 'no';
                 }
@@ -687,10 +686,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 this.showNextButton = !(parsed_params.edit != null || parsed_params.copy != null);
                 if (!this.showNextButton) {
                     this.requestForm = true;
-                    if (this.fieldValues.Type__c != 'Me' && this.fieldValues.Type__c != null) {
+                    if (this.fieldValues.Type__c !== 'Me' && this.fieldValues.Type__c != null) {
                         this.ordererForm = true;
-                        this.userForm = this.fieldValues.Type__c != 'PublicEvent';
-                        this.companyForm = this.fieldValues.Type__c != 'User';
+                        this.userForm = this.fieldValues.Type__c !== 'PublicEvent';
+                        this.companyForm = this.fieldValues.Type__c !== 'User';
                     }
                 }
                 if (!!parsed_params.copy) {
@@ -704,9 +703,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     refreshApex(this.wiredTimesValue);
                 }
 
-                if (this.fieldValues.Type__c == 'PublicEvent') {
+                if (this.fieldValues.Type__c === 'PublicEvent') {
                     this.fieldValues.EventType__c =
-                        this.fieldValues.EventType__c == 'Annet' ? 'OtherEvent' : 'SportingEvent';
+                        this.fieldValues.EventType__c === 'Annet' ? 'OtherEvent' : 'SportingEvent';
                 }
             }
         }
@@ -725,7 +724,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
 
-    goToMyRequests(event) {
+    goToMyRequests() {
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
