@@ -338,7 +338,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     @track isRepeating = false;
     @track showWeekDays = false;
     repeatingOptions = [
-        { label: 'Aldri', value: 'Never' },
         { label: 'Hver dag', value: 'Daily' },
         { label: 'Hver uke', value: 'Weekly' },
         { label: 'Hver 2. Uke', value: 'Biweekly' }
