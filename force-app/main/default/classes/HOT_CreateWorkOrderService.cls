@@ -25,7 +25,7 @@ public without sharing class HOT_CreateWorkOrderService {
     public Date recurringEndDate;
 
     @AuraEnabled
-    public static void createWorkOrdersFromCommunity(
+    public static List<String> checkInputsFromCommunity(
         String requestId,
         Map<String, Long> times,
         String recurringType,
@@ -45,25 +45,73 @@ public without sharing class HOT_CreateWorkOrderService {
         createWorkOrderService.saturday = recurringDays.contains('saturday');
         createWorkOrderService.sunday = recurringDays.contains('sunday');
         createWorkOrderService.recurringEndDate = DateTime.newInstance(recurringEndDate).date();
-        createWorkOrders(new List<HOT_CreateWorkOrderService>{ createWorkOrderService });
+        Map<String, List<WorkOrder>> workOrderErrorMap = getWorkOrders(
+            new List<HOT_CreateWorkOrderService>{ createWorkOrderService }
+        );
+        workOrderErrorMap.remove('records');
+        return new List<String>(workOrderErrorMap.keySet());
+    }
+    @AuraEnabled
+    public static List<String> createWorkOrdersFromCommunity(
+        String requestId,
+        Map<String, Long> times,
+        String recurringType,
+        List<String> recurringDays,
+        Long recurringEndDate
+    ) {
+        HOT_CreateWorkOrderService createWorkOrderService = new HOT_CreateWorkOrderService();
+        createWorkOrderService.requestId = requestId;
+        createWorkOrderService.startDate = DateTime.newInstance(times.get('startTime'));
+        createWorkOrderService.endDate = DateTime.newInstance(times.get('endTime'));
+        createWorkOrderService.recurringType = recurringType;
+        createWorkOrderService.monday = recurringDays.contains('monday');
+        createWorkOrderService.tuesday = recurringDays.contains('tuesday');
+        createWorkOrderService.wednesday = recurringDays.contains('wednesday');
+        createWorkOrderService.thursday = recurringDays.contains('thursday');
+        createWorkOrderService.friday = recurringDays.contains('friday');
+        createWorkOrderService.saturday = recurringDays.contains('saturday');
+        createWorkOrderService.sunday = recurringDays.contains('sunday');
+        createWorkOrderService.recurringEndDate = DateTime.newInstance(recurringEndDate).date();
+        List<String> errors = createWorkOrders(new List<HOT_CreateWorkOrderService>{ createWorkOrderService });
+        return errors;
     }
 
     @InvocableMethod
     public static List<String> createWorkOrders(List<HOT_CreateWorkOrderService> inputVariables) {
+        Map<String, List<WorkOrder>> workOrderErrorMap = getWorkOrders(inputVariables);
+        System.debug('---------------------------------');
+        System.debug(workOrderErrorMap);
+        System.debug(workOrderErrorMap.size());
+        if (workOrderErrorMap.keySet().size() == 1) {
+            try {
+                System.debug('Inserting records');
+                System.debug(workOrderErrorMap.get('records'));
+                insert workOrderErrorMap.get('records');
+            } catch (Exception e) {
+                return new List<String>{ 'Opprettelsen av arbeidsordrene feilet.' };
+            }
+        }
+        workOrderErrorMap.remove('records');
+        return new List<String>(workOrderErrorMap.keySet());
+    }
+
+    public static Map<String, List<WorkOrder>> getWorkOrders(List<HOT_CreateWorkOrderService> inputVariables) {
+        Map<String, List<WorkOrder>> returnMap = new Map<String, List<WorkOrder>>();
+        returnMap.put('records', new List<WorkOrder>());
+
         HOT_CreateWorkOrderService input = inputVariables[0];
         Integer maxNumberOfRecurrences = 200;
-        List<String> errors = new List<String>();
 
         TimeZone tz = UserInfo.getTimeZone();
 
         if (input.endDate <= input.startDate) {
-            errors.add('Slutt tid må være etter start tid.');
-            return errors;
+            returnMap.put('Slutt tid må være etter start tid.', null);
+            return returnMap;
         }
 
         if (input.recurringType != 'Never' && input.recurringEndDate <= input.startDate.date()) {
-            errors.add('Sluttdato må være etter startdato.');
-            return errors;
+            returnMap.put('Sluttdato må være etter startdato.', null);
+            return returnMap;
         }
 
         if (
@@ -77,8 +125,8 @@ public without sharing class HOT_CreateWorkOrderService {
             !input.saturday &&
             !input.sunday
         ) {
-            errors.add('Må velge minst en dag.');
-            return errors;
+            returnMap.put('Må velge minst en dag.', null);
+            return returnMap;
         }
 
         if (input.recurringType == 'Never') {
@@ -87,21 +135,15 @@ public without sharing class HOT_CreateWorkOrderService {
                 StartDate = input.startDate,
                 EndDate = input.endDate
             );
+            returnMap.get('records').add(workOrder);
 
-            try {
-                insert workOrder;
-            } catch (Exception e) {
-                errors.add('Opprettelsen av arbeidsordren feilet.');
-            }
-
-            return errors;
+            return returnMap;
         } else if (input.recurringType == 'Daily') {
-            List<WorkOrder> workOrders = new List<WorkOrder>();
             Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
             if (numberOfRecurrences > maxNumberOfRecurrences) {
-                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
-                return errors;
+                returnMap.put('Kan ikke opprette mere en 200 arbeidsordre av gangen', null);
+                return returnMap;
             }
 
             for (Integer i = 0; i <= numberOfRecurrences; i++) {
@@ -115,18 +157,11 @@ public without sharing class HOT_CreateWorkOrderService {
                     StartDate = startDate,
                     EndDate = endDate
                 );
-                workOrders.add(workOrder);
+                returnMap.get('records').add(workOrder);
             }
 
-            try {
-                insert workOrders;
-            } catch (Exception e) {
-                errors.add('Opprettelsen av arbeidsordrene feilet.');
-            }
-
-            return errors;
+            return returnMap;
         } else if (input.recurringType == 'Weekly') {
-            List<WorkOrder> workOrders = new List<WorkOrder>();
             Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
             for (Integer i = 0; i <= numberOfRecurrences; i++) {
@@ -152,24 +187,17 @@ public without sharing class HOT_CreateWorkOrderService {
                         StartDate = startDate,
                         EndDate = endDate
                     );
-                    workOrders.add(workOrder);
+                    returnMap.get('records').add(workOrder);
                 }
             }
 
-            if (workOrders.size() > maxNumberOfRecurrences) {
-                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
-                return errors;
+            if (returnMap.get('records').size() > maxNumberOfRecurrences) {
+                returnMap.put('Kan ikke opprette mere en 200 arbeidsordre av gangen', null);
+                return returnMap;
             }
 
-            try {
-                insert workOrders;
-            } catch (Exception e) {
-                errors.add('Opprettelsen av arbeidsordrene feilet.');
-            }
-
-            return errors;
+            return returnMap;
         } else if (input.recurringType == 'Biweekly') {
-            List<WorkOrder> workOrders = new List<WorkOrder>();
             Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
             for (Integer i = 0; i <= numberOfRecurrences; i++) {
@@ -194,32 +222,25 @@ public without sharing class HOT_CreateWorkOrderService {
                         StartDate = startDate,
                         EndDate = endDate
                     );
-                    workOrders.add(workOrder);
+                    returnMap.get('records').add(workOrder);
                 }
                 if (dayOfWeek == 'Sunday') {
                     i = i + 7;
                 }
             }
 
-            if (workOrders.size() > maxNumberOfRecurrences) {
-                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
-                return errors;
+            if (returnMap.get('records').size() > maxNumberOfRecurrences) {
+                returnMap.put('Kan ikke opprette mere en 200 arbeidsordre av gangen', null);
+                return returnMap;
             }
 
-            try {
-                insert workOrders;
-            } catch (Exception e) {
-                errors.add('Opprettelsen av arbeidsordrene feilet.');
-            }
-
-            return errors;
+            return returnMap;
         } else if (input.recurringType == 'Monthly') {
-            List<WorkOrder> workOrders = new List<WorkOrder>();
             Integer numberOfRecurrences = input.startDate.date().monthsBetween(input.recurringEndDate);
 
             if (numberOfRecurrences > maxNumberOfRecurrences) {
-                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
-                return errors;
+                returnMap.put('Kan ikke opprette mere en 200 arbeidsordre av gangen', null);
+                return returnMap;
             }
 
             for (Integer i = 0; i <= numberOfRecurrences; i++) {
@@ -234,19 +255,12 @@ public without sharing class HOT_CreateWorkOrderService {
                     EndDate = endDate
                 );
                 if (startDate.date() <= input.recurringEndDate) {
-                    workOrders.add(workOrder);
+                    returnMap.get('records').add(workOrder);
                 }
             }
-
-            try {
-                insert workOrders;
-            } catch (Exception e) {
-                errors.add('Opprettelsen av arbeidsordrene feilet.');
-            }
-
-            return errors;
+            return returnMap;
         }
 
-        return errors;
+        return returnMap;
     }
 }
