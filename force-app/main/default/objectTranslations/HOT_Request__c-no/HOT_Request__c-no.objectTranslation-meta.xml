@@ -58,11 +58,19 @@
             <section>Other Economic Provider</section>
         </sections>
         <sections>
+            <label><!-- Serieoppdrag --></label>
+            <section>Serieoppdrag</section>
+        </sections>
+        <sections>
             <label>Bruker</label>
             <section>User Section</section>
         </sections>
     </layouts>
     <nameFieldLabel>Forespørselsnummer</nameFieldLabel>
+    <quickActions>
+        <label><!-- Opprett arbeidsordre --></label>
+        <name>CreateWorkOrder</name>
+    </quickActions>
     <quickActions>
         <label>Beskjed til formidler</label>
         <name>MessageToDispatcher</name>
