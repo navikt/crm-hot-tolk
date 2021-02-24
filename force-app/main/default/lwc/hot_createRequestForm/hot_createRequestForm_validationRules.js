@@ -20,7 +20,7 @@ function startBeforeEnd(endDate, args) {
 
 function requireDaysBasedOnRecurringType(days, ...args) {
     let type = args[0];
-    if ((type == 'Weekly' || type == 'Biweekly') && days.length == 0) {
+    if ((type === 'Weekly' || type === 'Biweekly') && days.length === 0) {
         return 'Du må velge minst én dag tolkebehovet gjentas.';
     }
     return '';
@@ -34,7 +34,7 @@ function startDateBeforeRecurringEndDate(recurringEndDate, args) {
 }
 function requireEndDateBasedOnRecurringType(recurringEndDate, args) {
     let type = args[0];
-    if (type != 'Never' && (recurringEndDate == '' || recurringEndDate == null)) {
+    if (type !== 'Never' && (recurringEndDate === '' || recurringEndDate == null)) {
         return 'Fyll ut dette feltet.';
     }
     return '';
