@@ -6,8 +6,8 @@ export let recurringTypeValidations = [require];
 export let recurringDaysValidations = [requireDaysBasedOnRecurringType];
 export let recurringEndDateValidations = [
     startDateBeforeRecurringEndDate,
-    requireEndDateBasedOnRecurringType,
-    restrictTheNumberOfDays
+    restrictTheNumberOfDays,
+    requireEndDateBasedOnRecurringType
 ];
 
 function dateInPast(date) {
@@ -41,7 +41,7 @@ function requireEndDateBasedOnRecurringType(recurringEndDate, args) {
 }
 function restrictTheNumberOfDays(recurringEndDate, args) {
     let startDate = args[0];
-    return new Date(recurringEndDate) - new Date(startDate).getTime() > (365 / 2) * 24 * 3600000
+    return new Date(recurringEndDate) - new Date(startDate).getTime() > 199 * 24 * 3600000 && startDate != null
         ? 'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder'
         : '';
 }
