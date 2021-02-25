@@ -29,9 +29,7 @@ function requireDaysBasedOnRecurringType(days, ...args) {
 
 function startDateBeforeRecurringEndDate(recurringEndDate, args) {
     let startDate = args[0];
-    return new Date(startDate).getTime() > new Date(recurringEndDate)
-        ? 'Slutt dato for gjentakende tolkebehov må være etter start dato'
-        : '';
+    return new Date(startDate).getTime() > new Date(recurringEndDate) ? 'Slutt dato må være etter start dato' : '';
 }
 function restrictTheNumberOfDays(recurringEndDate, args) {
     let startDate = args[0];
