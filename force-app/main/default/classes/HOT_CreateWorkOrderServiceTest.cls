@@ -79,7 +79,7 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariable.recurringEndDate = Date.today().addDays(13);
         inputVariable.monday = true;
         inputVariable.tuesday = true;
-        inputVariable.wendesday = true;
+        inputVariable.wednesday = true;
         inputVariable.thursday = true;
         inputVariable.friday = true;
         inputVariable.saturday = true;
@@ -111,7 +111,7 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariable.recurringEndDate = Date.today().addDays(27);
         inputVariable.monday = true;
         inputVariable.tuesday = true;
-        inputVariable.wendesday = true;
+        inputVariable.wednesday = true;
         inputVariable.thursday = true;
         inputVariable.friday = true;
         inputVariable.saturday = true;
@@ -242,7 +242,7 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariable.recurringEndDate = Date.today().addDays(7);
         inputVariable.monday = false;
         inputVariable.tuesday = false;
-        inputVariable.wendesday = false;
+        inputVariable.wednesday = false;
         inputVariable.thursday = false;
         inputVariable.friday = false;
         inputVariable.saturday = false;
@@ -299,7 +299,7 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariable.recurringEndDate = Date.today().addDays(201);
         inputVariable.monday = true;
         inputVariable.tuesday = true;
-        inputVariable.wendesday = true;
+        inputVariable.wednesday = true;
         inputVariable.thursday = true;
         inputVariable.friday = true;
         inputVariable.saturday = true;
@@ -428,7 +428,7 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariable.recurringEndDate = Date.today().addDays(7);
         inputVariable.monday = true;
         inputVariable.tuesday = true;
-        inputVariable.wendesday = true;
+        inputVariable.wednesday = true;
         inputVariable.thursday = true;
         inputVariable.friday = true;
         inputVariable.saturday = true;

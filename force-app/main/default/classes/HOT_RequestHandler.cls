@@ -5,7 +5,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         setServiceTerritory((List<HOT_Request__c>) records);
         setFieldsToBlank(
             (List<HOT_Request__c>) records,
-            new List<String>{ 'MessageToDispatcher__c', 'CanceledDate__c' }
+            new List<String>{ 'MessageToDispatcher__c', 'CanceledDate__c', 'SeriesStartDate__c', 'SeriesEndDate__c' }
         );
     }
 

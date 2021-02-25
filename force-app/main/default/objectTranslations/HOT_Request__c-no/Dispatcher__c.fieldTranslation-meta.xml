@@ -5,5 +5,5 @@
         <errorMessage><!-- Du kan kun velge en formidler --></errorMessage>
     </lookupFilter>
     <name>Dispatcher__c</name>
-    <relationshipLabel><!-- Forespørsler --></relationshipLabel>
+    <relationshipLabel><!-- Requests --></relationshipLabel>
 </CustomFieldTranslation>
