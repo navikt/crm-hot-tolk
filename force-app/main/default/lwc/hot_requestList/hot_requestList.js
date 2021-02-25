@@ -10,13 +10,6 @@ import getAssignedResources from '@salesforce/apex/HOT_Utility.getAssignedResour
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
 
-var actions = [
-    { label: 'Avlys', name: 'delete' },
-    { label: 'Kopier', name: 'clone_order' },
-    { label: 'Rediger', name: 'edit_order' },
-    { label: 'Detaljer', name: 'details' },
-    { label: 'Se tider', name: 'see_times' }
-];
 export default class RequestList extends NavigationMixin(LightningElement) {
     rerenderCallback() {
         refreshApex(this.wiredRequestsResult);
@@ -128,7 +121,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
 
         actions.push({ label: 'Detaljer', name: 'details' });
-        actions.push({ label: 'Se tider', name: 'see_times' });
+        actions.push({ label: 'Se tidsplan', name: 'see_times' });
 
         doneCallback(actions);
     }
