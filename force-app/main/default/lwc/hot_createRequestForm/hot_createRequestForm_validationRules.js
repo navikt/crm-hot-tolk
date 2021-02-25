@@ -7,7 +7,8 @@ export let recurringDaysValidations = [requireDaysBasedOnRecurringType];
 export let recurringEndDateValidations = [
     startDateBeforeRecurringEndDate,
     restrictTheNumberOfDays,
-    requireEndDateBasedOnRecurringType
+    chosenDaysWithinPeriod,
+    require
 ];
 
 function dateInPast(date) {
@@ -29,19 +30,36 @@ function requireDaysBasedOnRecurringType(days, ...args) {
 function startDateBeforeRecurringEndDate(recurringEndDate, args) {
     let startDate = args[0];
     return new Date(startDate).getTime() > new Date(recurringEndDate)
-        ? 'Slutt dato for gjentakende tolkebehov må være før start tid'
+        ? 'Slutt dato for gjentakende tolkebehov må være etter start dato'
         : '';
-}
-function requireEndDateBasedOnRecurringType(recurringEndDate, args) {
-    let type = args[0];
-    if (type !== 'Never' && (recurringEndDate === '' || recurringEndDate == null)) {
-        return 'Fyll ut dette feltet.';
-    }
-    return '';
 }
 function restrictTheNumberOfDays(recurringEndDate, args) {
     let startDate = args[0];
     return new Date(recurringEndDate) - new Date(startDate).getTime() > 199 * 24 * 3600000 && startDate != null
         ? 'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder'
         : '';
+}
+function chosenDaysWithinPeriod(recurringEndDate, args) {
+    console.log(args);
+    let startDate = args[0];
+    startDate = new Date(startDate);
+    recurringEndDate = new Date(recurringEndDate);
+    if (recurringEndDate - startDate.getTime() < 7 * 24 * 3600000) {
+        let days = args[1];
+        let daysMap = { sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
+        console.log(days);
+        for (let day of days) {
+            if (startDate.getDay() <= recurringEndDate.getDay()) {
+                if (daysMap[day] >= startDate.getDay() && daysMap[day] <= recurringEndDate.getDay()) {
+                    return '';
+                }
+            } else {
+                if (daysMap[day] >= startDate.getDay() || daysMap[day] <= recurringEndDate.getDay()) {
+                    return '';
+                }
+            }
+        }
+        return 'Velg en slutt dato slik at valgt dag faller innenfor perioden mellom start dato og slutt dato';
+    }
+    return '';
 }
