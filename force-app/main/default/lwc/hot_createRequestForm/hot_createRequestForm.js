@@ -374,7 +374,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     setRepeatingEndDateDate(event) {
         this.repeatingEndDate = event.detail.value;
         let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
-        validate(recurringEndDateElement, recurringEndDateValidations, this.times[0].date);
+        validate(recurringEndDateElement, recurringEndDateValidations, this.times[0].date, this.chosenDays);
     }
 
     @track spin = false;
