@@ -57,9 +57,6 @@ public without sharing class HOT_CreateWorkOrderService {
         TimeZone tz = UserInfo.getTimeZone();
         Datetime nowDate = Datetime.now();
         Integer summerTimeOffset = tz.getOffset(input.startDate) - tz.getOffset(nowDate);
-        System.debug(tz.getOffset(input.startDate));
-        System.debug(tz.getOffset(nowDate));
-        System.debug(summerTimeOffset);
         if (input.endDate <= input.startDate) {
             errors.add('Slutt tid må være etter start tid.');
             return errors;
