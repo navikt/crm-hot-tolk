@@ -57,7 +57,9 @@ public without sharing class HOT_CreateWorkOrderService {
         TimeZone tz = UserInfo.getTimeZone();
         Datetime nowDate = Datetime.now();
         Integer summerTimeOffset = tz.getOffset(input.startDate) - tz.getOffset(nowDate);
-
+        System.debug(tz.getOffset(input.startDate));
+        System.debug(tz.getOffset(nowDate));
+        System.debug(summerTimeOffset);
         if (input.endDate <= input.startDate) {
             errors.add('Slutt tid må være etter start tid.');
             return errors;
@@ -110,8 +112,8 @@ public without sharing class HOT_CreateWorkOrderService {
                 Datetime startDate = input.startDate.addDays(i);
                 Datetime endDate = input.endDate.addDays(i);
                 Integer os = tz.getOffset(startDate);
-                startDate = startDate.addHours(1 - os / 3600000 + summerTimeOffset);
-                endDate = endDate.addHours(1 - os / 3600000 + summerTimeOffset);
+                startDate = startDate.addHours(1 - os / 3600000 + summerTimeOffset / 3600000);
+                endDate = endDate.addHours(1 - os / 3600000 + summerTimeOffset / 3600000);
                 WorkOrder workOrder = new workOrder(
                     HOT_Request__c = input.requestId,
                     StartDate = startDate,
@@ -136,8 +138,8 @@ public without sharing class HOT_CreateWorkOrderService {
                 Datetime endDate = input.endDate.addDays(i);
                 String dayOfWeek = startDate.format('EEEE');
                 Integer os = tz.getOffset(startDate);
-                startDate = startDate.addHours(1 - os / 3600000 + summerTimeOffset);
-                endDate = endDate.addHours(1 - os / 3600000 + summerTimeOffset);
+                startDate = startDate.addHours(1 - os / 3600000 + summerTimeOffset / 3600000);
+                endDate = endDate.addHours(1 - os / 3600000 + summerTimeOffset / 3600000);
 
                 System.debug('dayOfWeek: ' + dayOfWeek);
                 if (
@@ -179,8 +181,8 @@ public without sharing class HOT_CreateWorkOrderService {
                 Datetime endDate = input.endDate.addDays(i);
                 String dayOfWeek = startDate.format('EEEE');
                 Integer os = tz.getOffset(startDate);
-                startDate = startDate.addHours(1 - os / 3600000 + summerTimeOffset);
-                endDate = endDate.addHours(1 - os / 3600000 + summerTimeOffset);
+                startDate = startDate.addHours(1 - os / 3600000 + summerTimeOffset / 3600000);
+                endDate = endDate.addHours(1 - os / 3600000 + summerTimeOffset / 3600000);
                 System.debug('dayOfWeek: ' + dayOfWeek);
                 if (
                     input.monday && dayOfWeek == 'Monday' ||
@@ -228,8 +230,8 @@ public without sharing class HOT_CreateWorkOrderService {
                 Datetime startDate = input.startDate.addMonths(i);
                 Datetime endDate = input.endDate.addMonths(i);
                 Integer os = tz.getOffset(startDate);
-                startDate = startDate.addHours(1 - os / 3600000 + summerTimeOffset);
-                endDate = endDate.addHours(1 - os / 3600000 + summerTimeOffset);
+                startDate = startDate.addHours(1 - os / 3600000 + summerTimeOffset / 3600000);
+                endDate = endDate.addHours(1 - os / 3600000 + summerTimeOffset / 3600000);
                 WorkOrder workOrder = new workOrder(
                     HOT_Request__c = input.requestId,
                     StartDate = startDate,
