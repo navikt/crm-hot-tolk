@@ -4,7 +4,7 @@
         <name>CreateWorkOrderService</name>
         <label>Create Work Order Service</label>
         <locationX>182</locationX>
-        <locationY>278</locationY>
+        <locationY>398</locationY>
         <actionName>HOT_CreateWorkOrderService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -131,7 +131,7 @@
         <name>Error_Decision</name>
         <label>Error?</label>
         <locationX>182</locationX>
-        <locationY>398</locationY>
+        <locationY>518</locationY>
         <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
             <name>Yes_Outcome</name>
@@ -180,11 +180,34 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>getRequest</name>
+        <label>getRequest</label>
+        <locationX>182</locationX>
+        <locationY>158</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Start_Screen</targetReference>
+        </connector>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>HOT_Request__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>StartTime__c</queriedFields>
+        <queriedFields>EndTime__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <screens>
         <name>Error_Screen</name>
         <label>Feilmelding</label>
         <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationY>638</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -201,7 +224,7 @@
         <name>Start_Screen</name>
         <label>Start</label>
         <locationX>182</locationX>
-        <locationY>158</locationY>
+        <locationY>278</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -211,6 +234,9 @@
         <fields>
             <name>Fra</name>
             <dataType>DateTime</dataType>
+            <defaultValue>
+                <elementReference>getRequest.StartTime__c</elementReference>
+            </defaultValue>
             <fieldText>Start</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
@@ -218,6 +244,9 @@
         <fields>
             <name>Til</name>
             <dataType>DateTime</dataType>
+            <defaultValue>
+                <elementReference>getRequest.EndTime__c</elementReference>
+            </defaultValue>
             <fieldText>Slutt</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
@@ -448,7 +477,7 @@
         <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Start_Screen</targetReference>
+            <targetReference>getRequest</targetReference>
         </connector>
     </start>
     <status>Active</status>
