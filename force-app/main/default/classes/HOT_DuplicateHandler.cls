@@ -35,6 +35,14 @@ public without sharing class HOT_DuplicateHandler {
     }
 
     @AuraEnabled
+    public static List<HOT_Request__c> checkDuplicates(
+        Id accountId,
+        Map<String, Map<String, Datetime>> workOrderDatetimes
+    ) {
+        Set<Id> requestIds = getOverlappingRecords(accountId, workOrderDatetimes, true).keySet();
+        return [SELECT Id, Name, Subject__c, SeriesPeriod__c FROM HOT_Request__c WHERE Id IN :requestIds];
+    }
+
     public static Map<Id, String> getOverlappingRecords(
         Id accountId,
         Map<String, Map<String, Datetime>> workOrderDatetimes,
