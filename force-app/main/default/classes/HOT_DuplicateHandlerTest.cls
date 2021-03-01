@@ -20,7 +20,7 @@ private class HOT_DuplicateHandlerTest {
     static void getOverlappingRecordsFromRequestIdTest() {
         Account account = [SELECT Id FROM Account];
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c];
-        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecordsFromRequestId(account.Id, request.Id);
+        List<HOT_Request__c> result = HOT_DuplicateHandler.getOverlappingRecordsFromRequestId(account.Id, request.Id);
         System.assertEquals(true, result.isEmpty(), 'Faultly found duplicatess');
     }
 
