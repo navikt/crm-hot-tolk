@@ -22,6 +22,19 @@ public without sharing class HOT_DuplicateHandler {
     }
 
     @AuraEnabled
+    public static List<WorkOrder> getOverlappingRecordsFromWorkOrderId(Id accountId, Id workOrderId) {
+        WorkOrder workOrder = [SELECT Id, StartDate, EndDate FROM WorkOrder WHERE Id = :workOrderId LIMIT 1];
+        Map<String, Map<String, Datetime>> workOrderDatetimes = new Map<String, Map<String, Datetime>>();
+        Map<String, Datetime> tempDatetimes = new Map<String, Datetime>();
+        tempDatetimes.put('StartDate', workOrder.StartDate);
+        tempDatetimes.put('EndDate', workOrder.EndDate);
+        workOrderDatetimes.put(workOrder.Id, tempDatetimes);
+
+        Set<Id> workOrderIds = getOverlappingRecords(accountId, workOrderDatetimes, false).keySet();
+        return [SELECT Id, WorkOrderNumber FROM WorkOrder WHERE Id IN :workOrderIds];
+    }
+
+    @AuraEnabled
     public static Map<Id, String> getOverlappingRecords(
         Id accountId,
         Map<String, Map<String, Datetime>> workOrderDatetimes,
