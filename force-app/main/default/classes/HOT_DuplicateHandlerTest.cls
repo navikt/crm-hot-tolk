@@ -35,9 +35,13 @@ private class HOT_DuplicateHandlerTest {
     static void checkDuplicatesTest() {
         Account account = [SELECT Id FROM Account];
         HOT_Request__c oldRequest = [SELECT Id, StartTime__c, EndTime__c FROM HOT_Request__c];
-        Map<String, Map<String, Datetime>> workOrderDatetimes = new Map<String, Map<String, Datetime>>();
-        workOrderDatetimes.put('0', createDateTimeMap(oldRequest.StartTime__c, oldRequest.EndTime__c.addHours(3)));
-        List<HOT_Request__c> result = HOT_DuplicateHandler.checkDuplicates(account.Id, workOrderDatetimes);
+        Map<String, Map<String, Long>> times = new Map<String, Map<String, Long>>();
+        Map<String, Long> timeMap = new Map<String, Long>();
+        timeMap.put('startTime', DateTime.now().addHours(1).getTime());
+        timeMap.put('endTime', DateTime.now().addHours(2).getTime());
+        timeMap.put('isNew', 1);
+        times.put('1', timeMap);
+        List<HOT_Request__c> result = HOT_DuplicateHandler.checkDuplicates(account.Id, times);
         System.assertEquals(false, result.isEmpty(), 'could not find duplicates');
     }
 
