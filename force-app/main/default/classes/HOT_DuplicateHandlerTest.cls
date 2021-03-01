@@ -21,14 +21,24 @@ private class HOT_DuplicateHandlerTest {
         Account account = [SELECT Id FROM Account];
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c];
         List<HOT_Request__c> result = HOT_DuplicateHandler.getOverlappingRecordsFromRequestId(account.Id, request.Id);
-        System.assertEquals(true, result.isEmpty(), 'Faultly found duplicatess');
+        System.assertEquals(true, result.isEmpty(), 'Faultly found duplicates');
     }
     @IsTest
     static void getOverlappingRecordsFromWorkOrderIdTest() {
         Account account = [SELECT Id FROM Account];
         WorkOrder workOrder = [SELECT Id FROM WorkOrder];
         List<WorkOrder> result = HOT_DuplicateHandler.getOverlappingRecordsFromWorkOrderId(account.Id, workOrder.Id);
-        System.assertEquals(true, result.isEmpty(), 'Faultly found duplicatess');
+        System.assertEquals(true, result.isEmpty(), 'Faultly found duplicates');
+    }
+
+    @IsTest
+    static void checkDuplicatesTest() {
+        Account account = [SELECT Id FROM Account];
+        HOT_Request__c oldRequest = [SELECT Id, StartTime__c, EndTime__c FROM HOT_Request__c];
+        Map<String, Map<String, Datetime>> workOrderDatetimes = new Map<String, Map<String, Datetime>>();
+        workOrderDatetimes.put('0', createDateTimeMap(oldRequest.StartTime__c, oldRequest.EndTime__c.addHours(3)));
+        List<HOT_Request__c> result = HOT_DuplicateHandler.checkDuplicates(account.Id, workOrderDatetimes);
+        System.assertEquals(false, result.isEmpty(), 'could not find duplicates');
     }
 
     @IsTest
