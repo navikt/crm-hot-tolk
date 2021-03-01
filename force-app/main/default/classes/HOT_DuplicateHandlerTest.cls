@@ -23,6 +23,13 @@ private class HOT_DuplicateHandlerTest {
         List<HOT_Request__c> result = HOT_DuplicateHandler.getOverlappingRecordsFromRequestId(account.Id, request.Id);
         System.assertEquals(true, result.isEmpty(), 'Faultly found duplicatess');
     }
+    @IsTest
+    static void getOverlappingRecordsFromWorkOrderIdTest() {
+        Account account = [SELECT Id FROM Account];
+        WorkOrder workOrder = [SELECT Id FROM WorkOrder];
+        List<WorkOrder> result = HOT_DuplicateHandler.getOverlappingRecordsFromWorkOrderId(account.Id, workOrder.Id);
+        System.assertEquals(true, result.isEmpty(), 'Faultly found duplicatess');
+    }
 
     @IsTest
     static void startTimeEqualTest() {
