@@ -31,7 +31,7 @@ private class HOT_DuplicateHandlerTest {
         Map<String, Map<String, Datetime>> workOrderDatetimes = new Map<String, Map<String, Datetime>>();
         workOrderDatetimes.put('0', createDateTimeMap(oldRequest.StartTime__c, oldRequest.EndTime__c.addHours(3)));
 
-        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes);
+        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes, false);
         System.assertEquals(false, result.isEmpty(), 'could not find duplicates');
     }
     @IsTest
@@ -41,7 +41,7 @@ private class HOT_DuplicateHandlerTest {
         Map<String, Map<String, Datetime>> workOrderDatetimes = new Map<String, Map<String, Datetime>>();
         workOrderDatetimes.put('0', createDateTimeMap(oldRequest.StartTime__c.addHours(-3), oldRequest.EndTime__c));
 
-        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes);
+        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes, false);
         System.assertEquals(false, result.isEmpty(), 'could not find duplicates');
     }
 
@@ -55,7 +55,7 @@ private class HOT_DuplicateHandlerTest {
             createDateTimeMap(oldRequest.StartTime__c.addHours(1), oldRequest.EndTime__c.addHours(1))
         );
 
-        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes);
+        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes, false);
         System.assertEquals(false, result.isEmpty(), 'could not find duplicates');
     }
     @IsTest
@@ -65,7 +65,7 @@ private class HOT_DuplicateHandlerTest {
         Map<String, Map<String, Datetime>> workOrderDatetimes = new Map<String, Map<String, Datetime>>();
         workOrderDatetimes.put('0', createDateTimeMap(oldRequest.StartTime__c, oldRequest.EndTime__c.addHours(-1)));
 
-        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes);
+        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes, false);
         System.assertEquals(false, result.isEmpty(), 'could not find duplicates');
     }
     @IsTest
@@ -78,7 +78,7 @@ private class HOT_DuplicateHandlerTest {
             createDateTimeMap(oldRequest.StartTime__c.addHours(-1), oldRequest.EndTime__c.addHours(1))
         );
 
-        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes);
+        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes, true);
         System.assertEquals(false, result.isEmpty(), 'could not find duplicates');
     }
     @IsTest
@@ -88,7 +88,7 @@ private class HOT_DuplicateHandlerTest {
         Map<String, Map<String, Datetime>> workOrderDatetimes = new Map<String, Map<String, Datetime>>();
         workOrderDatetimes.put('0', createDateTimeMap(oldRequest.EndTime__c, oldRequest.EndTime__c.addHours(2)));
 
-        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes);
+        Map<String, Id> result = HOT_DuplicateHandler.getOverlappingRecords(account.Id, workOrderDatetimes, false);
         System.assertEquals(true, result.isEmpty(), 'Faultly found duplicates');
     }
 
