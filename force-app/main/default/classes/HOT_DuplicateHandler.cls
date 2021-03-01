@@ -35,10 +35,15 @@ public without sharing class HOT_DuplicateHandler {
     }
 
     @AuraEnabled
-    public static List<HOT_Request__c> checkDuplicates(
-        Id accountId,
-        Map<String, Map<String, Datetime>> workOrderDatetimes
-    ) {
+    public static List<HOT_Request__c> checkDuplicates(Id accountId, Map<String, Map<String, Long>> times) {
+        Map<String, Map<String, Datetime>> workOrderDatetimes = new Map<String, Map<String, Datetime>>();
+        for (String timesId : times.keySet()) {
+            Map<String, Datetime> tempDatetime = new Map<String, Datetime>();
+            tempDatetime.put('StartDate', Datetime.newInstance(times.get(timesId).get('startTime')));
+            tempDatetime.put('EndDate', Datetime.newInstance(times.get(timesId).get('endTime')));
+
+            workOrderDatetimes.put(timesId, tempDatetime);
+        }
         Set<Id> requestIds = getOverlappingRecords(accountId, workOrderDatetimes, true).keySet();
         return [SELECT Id, Name, Subject__c, SeriesPeriod__c FROM HOT_Request__c WHERE Id IN :requestIds];
     }
