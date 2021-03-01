@@ -15,7 +15,7 @@
             <h2>Det er følgende reservasjoner på brukeren: {reservations}</h2>
         </div>
     </template>
-    <template if:true={getHasDuplicates}>
+    <template if:true={hasDuplicates}>
         <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
             <span class="slds-assistive-text">Advarsel</span>
             <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
