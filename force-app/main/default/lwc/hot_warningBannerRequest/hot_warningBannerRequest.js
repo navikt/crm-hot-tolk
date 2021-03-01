@@ -18,7 +18,6 @@ export default class Hot_warningBannerRequest extends LightningElement {
         if (result.data) {
             this.getDuplicates();
         }
-        console.log('done');
     }
 
     get securityMeasures() {
@@ -40,7 +39,7 @@ export default class Hot_warningBannerRequest extends LightningElement {
         return getFieldValue(this.record.data, reservations) != null;
     }
 
-    @track duplicateRequests = [];
+    @track duplicateRecords = [];
     @track hasDuplicates = false;
     async getDuplicates() {
         let requestId = this.recordId;
@@ -48,8 +47,8 @@ export default class Hot_warningBannerRequest extends LightningElement {
         let result = await getOverlappingRecordsFromRequestId({ accountId, requestId });
         for (let record of result) {
             record.Link = '/' + record.Id;
-            this.duplicateRequests.push(record);
+            this.duplicateRecords.push(record);
         }
-        this.hasDuplicates = this.duplicateRequests.length > 0;
+        this.hasDuplicates = this.duplicateRecords.length > 0;
     }
 }
