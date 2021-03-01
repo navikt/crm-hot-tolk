@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help
+    ><!-- Hvis man krysser av for automatisk reservering av tolk, prøver system og automatisk finne en tolk som passer til oppdraget. Hvis man har valgt en foretrukket tolk bli denne benyttet. --></help>
+    <label>Planlegg automatisk</label>
+    <name>AutoSchedule__c</name>
+</CustomFieldTranslation>
