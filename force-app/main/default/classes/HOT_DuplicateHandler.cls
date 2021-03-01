@@ -17,12 +17,12 @@ public without sharing class HOT_DuplicateHandler {
             workOrderDatetimes.put(workOrder.Id, tempDatetimes);
         }
 
-        List<Id> requestIds = getOverlappingRecords(accountId, workOrderDatetimes, true).values();
+        Set<Id> requestIds = getOverlappingRecords(accountId, workOrderDatetimes, true).keySet();
         return [SELECT Id, Name FROM HOT_Request__c WHERE Id IN :requestIds];
     }
 
     @AuraEnabled
-    public static Map<String, Id> getOverlappingRecords(
+    public static Map<Id, String> getOverlappingRecords(
         Id accountId,
         Map<String, Map<String, Datetime>> workOrderDatetimes,
         Boolean isRequestLevel
@@ -32,7 +32,7 @@ public without sharing class HOT_DuplicateHandler {
             FROM WorkOrder
             WHERE AccountId = :accountId AND Status IN :statuses
         ];
-        Map<String, Id> result = new Map<String, Id>();
+        Map<Id, String> result = new Map<Id, String>();
         for (WorkOrder workOrder : workOrders) {
             for (String dateTimeId : workOrderDatetimes.keySet()) {
                 if (
@@ -44,10 +44,10 @@ public without sharing class HOT_DuplicateHandler {
                     workOrderDatetimes.get(dateTimeId).get('StartDate') <= workOrder.StartDate &&
                     workOrderDatetimes.get(dateTimeId).get('EndDate') >= workOrder.EndDate)
                 ) {
-                    if (isRequestLevel && !result.values().contains(workOrder.HOT_Request__c)) {
-                        result.put(dateTimeId, workOrder.HOT_Request__c);
+                    if (isRequestLevel && !result.keySet().contains(workOrder.HOT_Request__c)) {
+                        result.put(workOrder.HOT_Request__c, dateTimeId);
                     } else {
-                        result.put(dateTimeId, workOrder.Id);
+                        result.put(workOrder.Id, dateTimeId);
                     }
                 }
             }
