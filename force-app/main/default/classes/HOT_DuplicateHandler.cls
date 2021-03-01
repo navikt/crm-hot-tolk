@@ -14,12 +14,13 @@ public without sharing class HOT_DuplicateHandler {
             workOrderDatetimes.put(workOrder.Id, tempDatetimes);
         }
 
-        return getOverlappingRecords(accountId, workOrderDatetimes);
+        return getOverlappingRecords(accountId, workOrderDatetimes, true);
     }
 
     public static Map<String, Id> getOverlappingRecords(
         Id accountId,
-        Map<String, Map<String, Datetime>> workOrderDatetimes
+        Map<String, Map<String, Datetime>> workOrderDatetimes,
+        Boolean isRequestLevel
     ) {
         List<String> statuses = new List<String>{ 'New', 'Scheduled', 'Dispatched', 'In Progress' };
         List<WorkOrder> workOrders = [
@@ -39,7 +40,11 @@ public without sharing class HOT_DuplicateHandler {
                     workOrderDatetimes.get(dateTimeId).get('StartDate') <= workOrder.StartDate &&
                     workOrderDatetimes.get(dateTimeId).get('EndDate') >= workOrder.EndDate)
                 ) {
-                    result.put(dateTimeId, workOrder.Id);
+                    if (isRequestLevel && !result.values().contains(workOrder.HOT_Request__c)) {
+                        result.put(dateTimeId, workOrder.HOT_Request__c);
+                    } else {
+                        result.put(dateTimeId, workOrder.Id);
+                    }
                 }
             }
         }
