@@ -82,7 +82,7 @@ public without sharing class HOT_WorkOrderListController {
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name
             FROM ServiceAppointment
-            WHERE ParentRecordId IN :workOrderLineItems.keySet()
+            WHERE ParentRecordId IN :workOrderLineItems.keySet() AND Status IN :statuses
         ];
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (serviceAppointment.HOT_ServiceResource__r.Name != null) {
