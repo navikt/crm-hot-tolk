@@ -22,7 +22,7 @@
             </lightning-icon>
             <h2 class="duplicate-links">
                 <span>Brukeren har allerede forespørsler i dette tidsrommet: </span>
-                <template iterator:it={duplicateRequests}>
+                <template iterator:it={duplicateRecords}>
                     <span key={it.value.Id}
                         ><a href={it.value.Link}>{it.value.Name}</a><span if:false={it.last}>, </span>
                     </span>
