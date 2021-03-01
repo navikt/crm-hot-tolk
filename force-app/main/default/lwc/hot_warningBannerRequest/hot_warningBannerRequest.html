@@ -24,7 +24,7 @@
                 <span>Brukeren har allerede forespørsler i dette tidsrommet: </span>
                 <template iterator:it={duplicateRequests}>
                     <span key={it.value.Id}
-                        ><a href={it.value.Id}>{it.value.Name}</a><span if:false={it.last}>, </span>
+                        ><a href={it.value.Link}>{it.value.Name}</a><span if:false={it.last}>, </span>
                     </span>
                 </template>
             </h2>
