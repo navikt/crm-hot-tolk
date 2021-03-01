@@ -1,5 +1,6 @@
 public without sharing class HOT_DuplicateHandler {
-    public static Map<String, Id> getOverlappingRecordsFromRequestId(Id accountId, Id requestId) {
+    @AuraEnabled
+    public static List<HOT_Request__c> getOverlappingRecordsFromRequestId(Id accountId, Id requestId) {
         HOT_Request__c request = [
             SELECT Id, (SELECT Id, StartDate, EndDate FROM HOT_Request__c.Work_Orders__r)
             FROM HOT_Request__c
@@ -14,9 +15,11 @@ public without sharing class HOT_DuplicateHandler {
             workOrderDatetimes.put(workOrder.Id, tempDatetimes);
         }
 
-        return getOverlappingRecords(accountId, workOrderDatetimes, true);
+        List<Id> requestIds = getOverlappingRecords(accountId, workOrderDatetimes, true).values();
+        return [SELECT Id, Name FROM HOT_Request__c WHERE Id IN :requestIds];
     }
 
+    @AuraEnabled
     public static Map<String, Id> getOverlappingRecords(
         Id accountId,
         Map<String, Map<String, Datetime>> workOrderDatetimes,
