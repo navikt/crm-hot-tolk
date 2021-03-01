@@ -14,10 +14,8 @@ export default class Hot_warningBannerRequest extends LightningElement {
         fields: [securityMeasures, reservations, ACCOUNT_ID]
     })
     wiredGetRecord(result) {
-        console.log('wiredGetRecord');
         this.record = result;
         if (result.data) {
-            console.log('true');
             this.getDuplicates();
         }
         console.log('done');
@@ -45,16 +43,13 @@ export default class Hot_warningBannerRequest extends LightningElement {
     @track duplicateRequests = [];
     @track hasDuplicates = false;
     async getDuplicates() {
-        console.log('getFieldValue(this.record.data, ACCOUNT_ID): ' + getFieldValue(this.record.data, ACCOUNT_ID));
-        console.log('this.recordId: ' + this.recordId);
         let requestId = this.recordId;
         let accountId = getFieldValue(this.record.data, ACCOUNT_ID);
         let result = await getOverlappingRecordsFromRequestId({ accountId, requestId });
-        console.log(result);
-        console.log(JSON.stringify(result));
-        this.duplicateRequests = result;
+        for (let record of result) {
+            record.Link = '/' + record.Id;
+            this.duplicateRequests.push(record);
+        }
         this.hasDuplicates = this.duplicateRequests.length > 0;
-        console.log(JSON.stringify(this.duplicateRequests));
-        console.log(this.hasDuplicates);
     }
 }
