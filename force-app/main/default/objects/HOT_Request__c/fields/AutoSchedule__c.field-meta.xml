@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AutoSchedule__c</fullName>
+    <defaultValue>false</defaultValue>
+    <externalId>false</externalId>
+    <inlineHelpText
+    >Hvis man krysser av for automatisk reservering av tolk, prøver system og automatisk finne en tolk som passer til oppdraget. Hvis man har valgt en foretrukket tolk bli denne benyttet.</inlineHelpText>
+    <label>Auto Schedule</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
