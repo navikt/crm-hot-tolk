@@ -532,7 +532,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             // Varsel ved fjerning av tolk
             if (
                 serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c &&
-                serviceAppointment.Status != 'Scheduled'
+                oldServiceAppointment.Status != 'Scheduled'
             ) {
                 Messaging.CustomNotification notification = new Messaging.CustomNotification();
                 notification.setTitle(
