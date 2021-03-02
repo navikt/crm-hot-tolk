@@ -375,7 +375,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     setRepeatingEndDateDate(event) {
         this.repeatingEndDate = event.detail.value;
         let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
-        validate(recurringEndDateElement, recurringEndDateValidations, this.times[0].date, this.chosenDays);
+        validate(
+            recurringEndDateElement,
+            recurringEndDateValidations,
+            this.repeatingOptionChosen,
+            this.times[0].date,
+            this.chosenDays
+        );
     }
 
     @track spin = false;
@@ -390,7 +396,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
         let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
         let recurringEndDateValid =
-            validate(recurringEndDateElement, recurringEndDateValidations, this.times[0].date).length === 0;
+            validate(
+                recurringEndDateElement,
+                recurringEndDateValidations,
+                this.repeatingOptionChosen,
+                this.times[0].date,
+                this.chosenDays
+            ).length === 0;
 
         return recurringTypeValid && recurringDaysValid && recurringEndDateValid;
     }
