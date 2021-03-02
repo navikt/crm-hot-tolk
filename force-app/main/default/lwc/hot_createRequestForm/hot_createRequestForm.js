@@ -441,25 +441,29 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             let isValid = this.handleValidation();
             console.log('isValid: ' + isValid);
             if (isValid) {
-                let accountId = this.personAccount.Id;
-                let times = this.timesListToObject(this.times);
-                let duplicateRequests = await checkDuplicates({
-                    accountId: accountId,
-                    times: times
-                });
-                if (duplicateRequests.length === 0) {
-                    this.submit();
-                } else {
-                    let warningMessage = 'Du har allerede bestillinger i dette tidsrommet:';
-                    for (let request of duplicateRequests) {
-                        warningMessage += '\nEmne: ' + request.Subject__c;
-                        warningMessage += '\nPeriode: ' + request.SeriesPeriod__c;
-                    }
-                    if (confirm(warningMessage)) {
+                if (!this.isAdvancedTimes) {
+                    let accountId = this.personAccount.Id;
+                    let times = this.timesListToObject(this.times);
+                    let duplicateRequests = await checkDuplicates({
+                        accountId: accountId,
+                        times: times
+                    });
+                    if (duplicateRequests.length === 0) {
                         this.submit();
                     } else {
-                        this.spin = false;
+                        let warningMessage = 'Du har allerede bestillinger i dette tidsrommet:';
+                        for (let request of duplicateRequests) {
+                            warningMessage += '\nEmne: ' + request.Subject__c;
+                            warningMessage += '\nPeriode: ' + request.SeriesPeriod__c;
+                        }
+                        if (confirm(warningMessage)) {
+                            this.submit();
+                        } else {
+                            this.spin = false;
+                        }
                     }
+                } else {
+                    this.submit();
                 }
             } else {
                 this.spin = false;
