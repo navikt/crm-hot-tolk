@@ -12,6 +12,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithDeletedPreferredResources = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
         List<ServiceAppointment> allServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -48,6 +49,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsWithChangedStatusOrResource.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'Released to Freelance'
+            ) {
+                releasedServiceAppointments.add(serviceAppointment);
+            }
             allServiceAppointments.add(serviceAppointment);
         }
         if (!updatedServiceAppointments.isEmpty()) {
@@ -67,11 +74,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsWithChangedStatusOrResource.size() > 0) {
             createHistoricallyAssignedResources(serviceAppointmentsWithChangedStatusOrResource, triggerOldMap);
         }
+        if (releasedServiceAppointments.size() > 0) {
+            releaseServiceAppointments(releasedServiceAppointments);
+        }
         notifyUsers(allServiceAppointments, triggerOldMap);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<ServiceAppointment> serviceAppointmentsToRemoveAssignedResource = new List<ServiceAppointment>();
+        List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -80,10 +91,19 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsToRemoveAssignedResource.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'Released to Freelance'
+            ) {
+                releasedServiceAppointments.add(serviceAppointment);
+            }
         }
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
+        }
+        if (releasedServiceAppointments.size() > 0) {
+            updateStatusOnInterestedResources(releasedServiceAppointments);
         }
     }
 
@@ -560,5 +580,38 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
             }
         }
+    }
+
+    public static void releaseServiceAppointments(List<ServiceAppointment> serviceAppointments) {
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            if (serviceAppointment.HOT_FreelanceSubject__c == null) {
+                serviceAppointment.HOT_FreelanceSubject__c = serviceAppointment.Subject;
+            }
+            if (serviceAppointment.HOT_DeadlineDate__c == null) {
+                serviceAppointment.HOT_DeadlineDate__c = serviceAppointment.EarliestStartTime.date();
+            }
+            serviceAppointment.HOT_IsEmployedInterpreter__c = false;
+            serviceAppointment.HOT_IsReleasedToFreelance__c = true;
+            serviceAppointment.HOT_ReleaseDate__c = Date.today();
+            serviceAppointment.HOT_ReleasedBy__c = UserInfo.getUserName();
+        }
+    }
+
+    public static void updateStatusOnInterestedResources(List<ServiceAppointment> serviceAppointments) {
+        List<HOT_InterestedResource__c> interestedResources = [
+            SELECT Status__c, ServiceAppointment__r.Status
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__c IN :serviceAppointments
+        ];
+        for (HOT_InterestedResource__c interestedResource : interestedResources) {
+            if (
+                interestedResource.ServiceAppointment__r.Status == 'Released to Freelance' &&
+                (interestedResource.Status__c == 'Service Appointment Retracted' ||
+                interestedResource.Status__c == 'Not Assigned')
+            ) {
+                interestedResource.Status__c = 'Interested';
+            }
+        }
+        update interestedResources;
     }
 }
