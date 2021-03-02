@@ -377,7 +377,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         validate(
             recurringEndDateElement,
             recurringEndDateValidations,
-            this.recurringType,
+            this.repeatingOptionChosen,
             this.times[0].date,
             this.chosenDays
         );
@@ -398,7 +398,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             validate(
                 recurringEndDateElement,
                 recurringEndDateValidations,
-                this.recurringType,
+                this.repeatingOptionChosen,
                 this.times[0].date,
                 this.chosenDays
             ).length === 0;

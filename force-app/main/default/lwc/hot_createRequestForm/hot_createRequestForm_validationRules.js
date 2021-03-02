@@ -40,27 +40,28 @@ function restrictTheNumberOfDays(recurringEndDate, args) {
 function chosenDaysWithinPeriod(recurringEndDate, args) {
     console.log(args);
     let type = args[0];
-    if (type !== 'Daily') {
-        let startDate = args[1];
-        startDate = new Date(startDate);
-        recurringEndDate = new Date(recurringEndDate);
-        if (recurringEndDate - startDate.getTime() < 7 * 24 * 3600000) {
-            let days = args[1];
-            let daysMap = { sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
-            console.log(days);
-            for (let day of days) {
-                if (startDate.getDay() <= recurringEndDate.getDay()) {
-                    if (daysMap[day] >= startDate.getDay() && daysMap[day] <= recurringEndDate.getDay()) {
-                        return '';
-                    }
-                } else {
-                    if (daysMap[day] >= startDate.getDay() || daysMap[day] <= recurringEndDate.getDay()) {
-                        return '';
-                    }
+    if (type === 'Daily') {
+        return '';
+    }
+
+    let startDate = args[1];
+    startDate = new Date(startDate);
+    recurringEndDate = new Date(recurringEndDate);
+    if (recurringEndDate - startDate.getTime() < 7 * 24 * 3600000) {
+        let days = args[2];
+        let daysMap = { sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
+        for (let day of days) {
+            if (startDate.getDay() <= recurringEndDate.getDay()) {
+                if (daysMap[day] >= startDate.getDay() && daysMap[day] <= recurringEndDate.getDay()) {
+                    return '';
+                }
+            } else {
+                if (daysMap[day] >= startDate.getDay() || daysMap[day] <= recurringEndDate.getDay()) {
+                    return '';
                 }
             }
-            return 'Velg en slutt dato slik at valgt dag faller innenfor perioden mellom start dato og slutt dato';
         }
+        return 'Velg en slutt dato slik at valgt dag faller innenfor perioden mellom start dato og slutt dato';
     }
     return '';
 }
