@@ -564,7 +564,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Freelance interpreter was not set to true'
         );
         System.assertEquals(
-            Date.today(),
+            Date.today().addDays(-1),
             releasedServiceAppointment.HOT_ReleaseDate__c,
             'Release date was not set to today'
         );
