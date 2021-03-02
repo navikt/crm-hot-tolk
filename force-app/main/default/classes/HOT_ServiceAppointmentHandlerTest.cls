@@ -512,4 +512,72 @@ private class HOT_ServiceAppointmentHandlerTest {
         update serviceAppointment;
         Test.stopTest();
     }
+
+    @isTest
+    private static void testReleaseToFreelance() {
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, Status, SchedStartTime, Street
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        interestedResource.Status__c = 'Not Assigned';
+        insert interestedResource;
+        serviceAppointment.Status = 'Released to Freelance';
+        Test.startTest();
+        update serviceAppointment;
+        Test.stopTest();
+
+        ServiceAppointment releasedServiceAppointment = [
+            SELECT
+                Id,
+                Status,
+                Subject,
+                HOT_FreelanceSubject__c,
+                HOT_DeadlineDate__c,
+                HOT_IsEmployedInterpreter__c,
+                HOT_IsReleasedToFreelance__c,
+                HOT_ReleaseDate__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('Released to Freelance', releasedServiceAppointment.Status, 'Failed to update status');
+        System.assertEquals(
+            releasedServiceAppointment.Subject,
+            releasedServiceAppointment.HOT_FreelanceSubject__c,
+            'Freelance Subject was not set'
+        );
+        System.assertEquals(
+            false,
+            releasedServiceAppointment.HOT_IsEmployedInterpreter__c,
+            'Employed interpreter was not set to false'
+        );
+        System.assertEquals(
+            true,
+            releasedServiceAppointment.HOT_IsReleasedToFreelance__c,
+            'Freelance interpreter was not set to true'
+        );
+        System.assertEquals(
+            Date.today(),
+            releasedServiceAppointment.HOT_ReleaseDate__c,
+            'Release date was not set to today'
+        );
+
+        HOT_InterestedResource__c updatedInterestedResource = [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :interestedResource.Id
+        ];
+        System.assertEquals(
+            'Interested',
+            updatedInterestedResource.Status__c,
+            'InterestedResource status was not updated'
+        );
+    }
 }
