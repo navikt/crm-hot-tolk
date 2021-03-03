@@ -28,11 +28,11 @@ function requireDaysBasedOnRecurringType(days, ...args) {
 }
 
 function startDateBeforeRecurringEndDate(recurringEndDate, args) {
-    let startDate = args[0];
+    let startDate = args[1];
     return new Date(startDate).getTime() > new Date(recurringEndDate) ? 'Slutt dato må være etter start dato' : '';
 }
 function restrictTheNumberOfDays(recurringEndDate, args) {
-    let startDate = args[0];
+    let startDate = args[1];
     return new Date(recurringEndDate) - new Date(startDate).getTime() > 199 * 24 * 3600000 && startDate != null
         ? 'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder'
         : '';
