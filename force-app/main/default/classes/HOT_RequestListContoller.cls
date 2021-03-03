@@ -35,6 +35,7 @@ public without sharing class HOT_RequestListContoller {
                     Orderer__r.Name,
                     OrdererPhone__c,
                     OrdererEmail__c,
+                    Owner.Name,
                     UserName__c,
                     Company__r.Name,
                     (SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
