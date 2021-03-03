@@ -8,6 +8,7 @@ import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
+import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
 import { validate } from 'c/validationController';
 import {
     recurringTypeValidations,
@@ -441,7 +442,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         return this.isPersonNumberValid;
     }
 
-    handleSubmit(event) {
+    async handleSubmit(event) {
         console.log('handleSubmit');
         this.spin = true;
         event.preventDefault();
@@ -452,19 +453,42 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             let isValid = this.handleValidation();
             console.log('isValid: ' + isValid);
             if (isValid) {
-                console.log('Sumbitting');
-                this.template
-                    .querySelector('.skjema')
-                    .querySelector('lightning-record-edit-form')
-                    .submit(this.fieldValues);
-                console.log('submitted');
-
-                window.scrollBy(0, 100);
-                window.scrollBy(0, -100);
+                if (!this.isAdvancedTimes) {
+                    let accountId = this.personAccount.Id;
+                    let times = this.timesListToObject(this.times);
+                    let duplicateRequests = await checkDuplicates({
+                        accountId: accountId,
+                        times: times
+                    });
+                    if (duplicateRequests.length === 0) {
+                        this.submit();
+                    } else {
+                        let warningMessage = 'Du har allerede bestillinger i dette tidsrommet:';
+                        for (let request of duplicateRequests) {
+                            warningMessage += '\nEmne: ' + request.Subject__c;
+                            warningMessage += '\nPeriode: ' + request.SeriesPeriod__c;
+                        }
+                        if (confirm(warningMessage)) {
+                            this.submit();
+                        } else {
+                            this.spin = false;
+                        }
+                    }
+                } else {
+                    this.submit();
+                }
             } else {
                 this.spin = false;
             }
         }
+    }
+    submit() {
+        console.log('Sumbitting');
+        this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+        console.log('submitted');
+
+        window.scrollBy(0, 100);
+        window.scrollBy(0, -100);
     }
 
     setFieldValues(fields) {
@@ -592,6 +616,19 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.spin = false;
     }
 
+    timesListToObject(list) {
+        let times = {};
+        for (let dateTime of list) {
+            dateTime = this.formatDateTime(dateTime);
+            times[dateTime.id.toString()] = {
+                startTime: new Date(dateTime.date + ' ' + dateTime.startTime).getTime(),
+                endTime: new Date(dateTime.date + ' ' + dateTime.endTime).getTime(),
+                isNew: dateTime.isNew
+            };
+        }
+        return times;
+    }
+
     @track isEditMode = false;
     handleSuccess(event) {
         console.log('handleSuccess');
@@ -604,15 +641,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.recordId = event.detail.id;
 
         let requestId = event.detail.id;
-        let times = {};
-        for (let dateTime of this.times) {
-            dateTime = this.formatDateTime(dateTime);
-            times[dateTime.id.toString()] = {
-                startTime: new Date(dateTime.date + ' ' + dateTime.startTime).getTime(),
-                endTime: new Date(dateTime.date + ' ' + dateTime.endTime).getTime(),
-                isNew: dateTime.isNew
-            };
-        }
+        let times = this.timesListToObject(this.times);
         if (times !== {}) {
             if (this.isAdvancedTimes) {
                 //String requestId, Map<String, Long> times, String recurringType, List<String> recurringDays, Long recurringEndDate
