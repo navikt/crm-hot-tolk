@@ -7,6 +7,7 @@ import getOverlappingRecordsFromRequestId from '@salesforce/apex/HOT_DuplicateHa
 
 export default class Hot_warningBannerRequest extends LightningElement {
     @api recordId;
+    @api accountId;
     @track record;
 
     @wire(getRecord, {
