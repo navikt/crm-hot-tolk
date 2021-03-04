@@ -24,8 +24,9 @@ export default class Hot_warningBannerWorkOrder extends LightningElement {
         let workOrderId = this.recordId;
         let accountId = getFieldValue(this.record.data, ACCOUNT_ID);
         let result = await getOverlappingRecordsFromWorkOrderId({ accountId, workOrderId });
+        this.duplicateRecords = [];
         for (let record of result) {
-            record.Link = '/' + record.Id;
+            record.Link = '/lightning/r/' + record.Id + '/view';
             this.duplicateRecords.push(record);
         }
         this.hasDuplicates = this.duplicateRecords.length > 0;
