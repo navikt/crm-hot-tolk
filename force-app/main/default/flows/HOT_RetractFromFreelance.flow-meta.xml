@@ -3,8 +3,8 @@
     <assignments>
         <name>SetReleasedToFreelanceToFalse</name>
         <label>SetReleasedToFreelanceToFalse</label>
-        <locationX>1096</locationX>
-        <locationY>121</locationY>
+        <locationX>314</locationX>
+        <locationY>638</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</assignToReference>
             <operator>Assign</operator>
@@ -60,8 +60,8 @@
 Status == &quot;Ingen&quot;</description>
         <name>Check_isReleasedToFreelance</name>
         <label>Check isReleasedToFreelance</label>
-        <locationX>508</locationX>
-        <locationY>123</locationY>
+        <locationX>248</locationX>
+        <locationY>278</locationY>
         <defaultConnector>
             <targetReference>AlreadyScheduled</targetReference>
         </defaultConnector>
@@ -85,8 +85,8 @@ Status == &quot;Ingen&quot;</description>
     <decisions>
         <name>CheckChoice</name>
         <label>CheckChoice</label>
-        <locationX>877</locationX>
-        <locationY>125</locationY>
+        <locationX>446</locationX>
+        <locationY>518</locationY>
         <defaultConnector>
             <targetReference>OutScreen</targetReference>
         </defaultConnector>
@@ -118,7 +118,7 @@ Status == &quot;Ingen&quot;</description>
     <processMetadataValues>
         <name>CanvasMode</name>
         <value>
-            <stringValue>FREE_FORM_CANVAS</stringValue>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -131,8 +131,8 @@ Status == &quot;Ingen&quot;</description>
     <recordLookups>
         <name>GetCurrentServiceAppointment</name>
         <label>GetCurrentServiceAppointment</label>
-        <locationX>390</locationX>
-        <locationY>82</locationY>
+        <locationX>248</locationX>
+        <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_isReleasedToFreelance</targetReference>
@@ -160,8 +160,8 @@ Status == &quot;Ingen&quot;</description>
     <recordUpdates>
         <name>UpdateServiceAppointment</name>
         <label>UpdateServiceAppointment</label>
-        <locationX>1229</locationX>
-        <locationY>122</locationY>
+        <locationX>314</locationX>
+        <locationY>758</locationY>
         <connector>
             <targetReference>SuccessScreen</targetReference>
         </connector>
@@ -170,8 +170,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>AlreadyScheduled</name>
         <label>AlreadyScheduled</label>
-        <locationX>735</locationX>
-        <locationY>122</locationY>
+        <locationX>446</locationX>
+        <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -193,8 +193,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>NotReleased</name>
         <label>NotReleased</label>
-        <locationX>514</locationX>
-        <locationY>362</locationY>
+        <locationX>50</locationX>
+        <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -210,8 +210,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>OutScreen</name>
         <label>OutScreen</label>
-        <locationX>889</locationX>
-        <locationY>377</locationY>
+        <locationX>578</locationX>
+        <locationY>638</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -226,8 +226,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>1557</locationX>
-        <locationY>128</locationY>
+        <locationX>314</locationX>
+        <locationY>878</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -240,8 +240,8 @@ Status == &quot;Ingen&quot;</description>
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>212</locationX>
-        <locationY>62</locationY>
+        <locationX>122</locationX>
+        <locationY>0</locationY>
         <connector>
             <targetReference>GetCurrentServiceAppointment</targetReference>
         </connector>
