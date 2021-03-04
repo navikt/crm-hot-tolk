@@ -651,7 +651,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     interestedResource.Status__c = newStatus;
                 }
             }
-            if (interestedResource.Status__c == 'Interested') {
+            if (newStatus == 'Interested') {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'Released to Freelance' &&
                     (interestedResource.Status__c == 'Service Appointment Retracted' ||
