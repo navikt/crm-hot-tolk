@@ -621,7 +621,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public static void retractServiceAppointments(List<ServiceAppointment> serviceAppointments) {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (serviceAppointment.HOT_FreelanceSubject__c != null) {
-                serviceAppointment.HOT_FreelanceSubject__c = '';
+                serviceAppointment.HOT_FreelanceSubject__c = null;
             }
             if (serviceAppointment.HOT_DeadlineDate__c != null) {
                 serviceAppointment.HOT_DeadlineDate__c = null;
@@ -629,7 +629,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.HOT_IsEmployedInterpreter__c = true;
             serviceAppointment.HOT_IsReleasedToFreelance__c = false;
             serviceAppointment.HOT_ReleaseDate__c = null;
-            serviceAppointment.HOT_ReleasedBy__c = '';
+            serviceAppointment.HOT_ReleasedBy__c = null;
         }
     }
 
