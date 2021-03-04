@@ -564,7 +564,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Freelance interpreter was not set to true'
         );
         System.assertEquals(
-            Date.today().addDays(-1),
+            Date.today(),
             releasedServiceAppointment.HOT_ReleaseDate__c,
             'Release date was not set to today'
         );
@@ -578,6 +578,27 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Interested',
             updatedInterestedResource.Status__c,
             'InterestedResource status was not updated'
+        );
+
+        //Test Retract
+        releasedServiceAppointment.Status = 'None';
+        update releasedServiceAppointment;
+        releasedServiceAppointment = [
+            SELECT Id, Status, HOT_IsEmployedInterpreter__c, HOT_IsReleasedToFreelance__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+            LIMIT 1
+        ];
+        System.assertEquals('None', releasedServiceAppointment.Status, 'Failed to update status');
+        System.assertEquals(
+            true,
+            releasedServiceAppointment.HOT_IsEmployedInterpreter__c,
+            'Employed interpreter was not set to true'
+        );
+        System.assertEquals(
+            false,
+            releasedServiceAppointment.HOT_IsReleasedToFreelance__c,
+            'Freelance interpreter was not set to false'
         );
     }
 }
