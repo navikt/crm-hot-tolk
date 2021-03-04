@@ -84,29 +84,4 @@ private class HOT_RequestListControllerTest {
         List<Map<String, String>> times = HOT_RequestListContoller.getTimes(new List<String>{ (String) request.Id });
         System.assertEquals(1, times.size(), 'Could not get times');
     }
-
-    @isTest
-    private static void getRequestListFromAccountFromRequestIdTest() {
-        Person__c person = HOT_TestDataFactory.createPerson();
-        insert person;
-        Account account = [SELECT Id FROM Account WHERE CRM_Person__c = :person.Id LIMIT 1];
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        Hot_request__c request1 = HOT_TestDataFactory.createRequest('My Request 1', workType);
-        request1.Account__c = account.Id;
-        insert request1;
-        Hot_request__c request2 = HOT_TestDataFactory.createRequest('My Request 2', workType);
-        request2.Account__c = account.Id;
-        insert request2;
-        Hot_request__c request3 = HOT_TestDataFactory.createRequest('NOT My Request', workType);
-        insert request3;
-        List<HOT_Request__c> requests = HOT_RequestListContoller.getRequestListFromAccountFromRequestId(request1.Id);
-        List<Id> requestIds = new List<Id>();
-        for (HOT_Request__c request : requests) {
-            requestIds.add(request.Id);
-        }
-        System.assertEquals(true, requestIds.contains(request1.Id), 'Could not fetch Request 1');
-        System.assertEquals(true, requestIds.contains(request2.Id), 'Could not fetch Request 2');
-        System.assertEquals(false, requestIds.contains(request3.Id), 'Falsly fetched Request 3');
-    }
 }

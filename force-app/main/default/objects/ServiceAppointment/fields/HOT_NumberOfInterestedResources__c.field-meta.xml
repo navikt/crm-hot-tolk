@@ -3,6 +3,11 @@
     <fullName>HOT_NumberOfInterestedResources__c</fullName>
     <externalId>false</externalId>
     <label>Number Of Interested Resources</label>
+    <summaryFilterItems>
+        <field>HOT_InterestedResource__c.Status__c</field>
+        <operation>notEqual</operation>
+        <value>Retracted Interest, Canceled by Interpreter</value>
+    </summaryFilterItems>
     <summaryForeignKey>HOT_InterestedResource__c.ServiceAppointment__c</summaryForeignKey>
     <summaryOperation>count</summaryOperation>
     <trackHistory>false</trackHistory>
