@@ -41,13 +41,18 @@ export default class Hot_warningBannerRequest extends LightningElement {
 
     @track duplicateRecords = [];
     @track hasDuplicates = false;
+    @track hasSelfDuplicates = false;
     async getDuplicates() {
         let requestId = this.recordId;
         let accountId = getFieldValue(this.record.data, ACCOUNT_ID);
         let result = await getOverlappingRecordsFromRequestId({ accountId, requestId });
         for (let record of result) {
-            record.Link = '/' + record.Id;
-            this.duplicateRecords.push(record);
+            if (record.Id === this.recordId) {
+                this.hasSelfDuplicates = true;
+            } else {
+                record.Link = '/' + record.Id;
+                this.duplicateRecords.push(record);
+            }
         }
         this.hasDuplicates = this.duplicateRecords.length > 0;
     }
