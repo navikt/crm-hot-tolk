@@ -3,7 +3,7 @@
     <fullName>WorkOrderNumber__c</fullName>
     <externalId>false</externalId>
     <formula
-    >HYPERLINK(&apos;/lightning/r/&apos; +ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrder.Id + &apos;/view&apos;, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrder.WorkOrderNumber)</formula>
+    >HYPERLINK(&apos;/lightning/r/&apos; +ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrder.Id + &apos;/view&apos;, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrder.WorkOrderNumber, &apos;_self&apos;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Work Order Number</label>
     <required>false</required>
