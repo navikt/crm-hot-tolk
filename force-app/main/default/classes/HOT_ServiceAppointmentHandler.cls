@@ -13,6 +13,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
         List<ServiceAppointment> allServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -55,6 +56,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 releasedServiceAppointments.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'None' &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Released to Freelance'
+            ) {
+                retractedServiceAppointments.add(serviceAppointment);
+            }
             allServiceAppointments.add(serviceAppointment);
         }
         if (!updatedServiceAppointments.isEmpty()) {
@@ -77,12 +85,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (releasedServiceAppointments.size() > 0) {
             releaseServiceAppointments(releasedServiceAppointments);
         }
+        if (retractedServiceAppointments.size() > 0) {
+            retractServiceAppointments(retractedServiceAppointments);
+        }
         notifyUsers(allServiceAppointments, triggerOldMap);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<ServiceAppointment> serviceAppointmentsToRemoveAssignedResource = new List<ServiceAppointment>();
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -97,13 +109,23 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 releasedServiceAppointments.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'None' &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Released to Freelance'
+            ) {
+                retractedServiceAppointments.add(serviceAppointment);
+            }
         }
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
         }
         if (releasedServiceAppointments.size() > 0) {
-            updateStatusOnInterestedResources(releasedServiceAppointments);
+            updateStatusOnInterestedResources(releasedServiceAppointments, 'Interested');
+        }
+        if (retractedServiceAppointments.size() > 0) {
+            updateStatusOnInterestedResources(retractedServiceAppointments, 'Service Appointment Retracted');
         }
     }
 
@@ -596,20 +618,47 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.HOT_ReleasedBy__c = UserInfo.getUserName();
         }
     }
+    public static void retractServiceAppointments(List<ServiceAppointment> serviceAppointments) {
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            if (serviceAppointment.HOT_FreelanceSubject__c == null) {
+                serviceAppointment.HOT_FreelanceSubject__c = '';
+            }
+            if (serviceAppointment.HOT_DeadlineDate__c == null) {
+                serviceAppointment.HOT_DeadlineDate__c = null;
+            }
+            serviceAppointment.HOT_IsEmployedInterpreter__c = true;
+            serviceAppointment.HOT_IsReleasedToFreelance__c = false;
+            serviceAppointment.HOT_ReleaseDate__c = null;
+            serviceAppointment.HOT_ReleasedBy__c = null;
+        }
+    }
 
-    public static void updateStatusOnInterestedResources(List<ServiceAppointment> serviceAppointments) {
+    public static void updateStatusOnInterestedResources(
+        List<ServiceAppointment> serviceAppointments,
+        String newStatus
+    ) {
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT Status__c, ServiceAppointment__r.Status
             FROM HOT_InterestedResource__c
             WHERE ServiceAppointment__c IN :serviceAppointments
         ];
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
-            if (
-                interestedResource.ServiceAppointment__r.Status == 'Released to Freelance' &&
-                (interestedResource.Status__c == 'Service Appointment Retracted' ||
-                interestedResource.Status__c == 'Not Assigned')
-            ) {
-                interestedResource.Status__c = 'Interested';
+            if (newStatus == 'Service Appointment Retracted') {
+                if (
+                    interestedResource.ServiceAppointment__r.Status == 'None' &&
+                    interestedResource.Status__c == 'Interested'
+                ) {
+                    interestedResource.Status__c = newStatus;
+                }
+            }
+            if (interestedResource.Status__c == 'Interested') {
+                if (
+                    interestedResource.ServiceAppointment__r.Status == 'Released to Freelance' &&
+                    (interestedResource.Status__c == 'Service Appointment Retracted' ||
+                    interestedResource.Status__c == 'Not Assigned')
+                ) {
+                    interestedResource.Status__c = newStatus;
+                }
             }
         }
         update interestedResources;
