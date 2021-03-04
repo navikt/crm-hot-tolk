@@ -7,7 +7,6 @@ public without sharing class HOT_DuplicateHandler {
             SELECT Id, (SELECT Id, StartDate, EndDate FROM HOT_Request__c.Work_Orders__r WHERE Status IN :statuses)
             FROM HOT_Request__c
             WHERE Id = :requestId
-            LIMIT 1
         ];
         Map<String, Map<String, Datetime>> workOrderDatetimes = new Map<String, Map<String, Datetime>>();
         for (WorkOrder workOrder : request.Work_Orders__r) {
