@@ -41,6 +41,10 @@
             <label><!-- Custom Links --></label>
             <section>Custom Links</section>
         </sections>
+        <sections>
+            <label>Oppdrag informasjon</label>
+            <section>Service Appointment Information</section>
+        </sections>
     </layouts>
     <nameFieldLabel>Interessert ressurs</nameFieldLabel>
     <quickActions>
