@@ -3,7 +3,7 @@
     <fullName>WorkType__c</fullName>
     <externalId>false</externalId>
     <formula
-    >HYPERLINK(&apos;/lightning/r/&apos; + ServiceAppointment__r.WorkTypeId + &apos;/view&apos;, ServiceAppointment__r.HOT_WorkTypeName__c)</formula>
+    >HYPERLINK(&apos;/lightning/r/&apos; + ServiceAppointment__r.WorkTypeId + &apos;/view&apos;, ServiceAppointment__r.HOT_WorkTypeName__c, &apos;_self&apos;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Work Type</label>
     <required>false</required>
