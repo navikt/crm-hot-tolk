@@ -28,7 +28,7 @@ private class HOT_WorkOrderHandlerTest {
         request = [SELECT SeriesStartDate__c, SeriesEndDate__c FROM HOT_Request__c WHERE Id = :request.Id];
 
         System.assertEquals(workOrder1.StartDate.date(), request.SeriesStartDate__c);
-        System.assertEquals(workOrder3.StartDate.date(), request.SeriesEndDate__c);
+        System.assertEquals(workOrder3.EndDate.date(), request.SeriesEndDate__c);
 
         workOrder2.StartDate = workOrder1.StartDate.addDays(5);
         workOrder2.EndDate = workOrder1.EndDate.addDays(5);
@@ -37,6 +37,6 @@ private class HOT_WorkOrderHandlerTest {
         request = [SELECT SeriesStartDate__c, SeriesEndDate__c FROM HOT_Request__c WHERE Id = :request.Id];
 
         System.assertEquals(workOrder1.StartDate.date(), request.SeriesStartDate__c);
-        System.assertEquals(workOrder2.StartDate.date(), request.SeriesEndDate__c);
+        System.assertEquals(workOrder2.EndDate.date(), request.SeriesEndDate__c);
     }
 }
