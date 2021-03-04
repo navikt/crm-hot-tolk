@@ -15,19 +15,27 @@
             <h2>Det er følgende reservasjoner på brukeren: {reservations}</h2>
         </div>
     </template>
-    <template if:true={getHasDuplicates}>
+    <template if:true={hasDuplicates}>
         <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
             <span class="slds-assistive-text">Advarsel</span>
             <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
             </lightning-icon>
             <h2 class="duplicate-links">
                 <span>Brukeren har allerede forespørsler i dette tidsrommet: </span>
-                <template iterator:it={duplicateRequests}>
+                <template iterator:it={duplicateRecords}>
                     <span key={it.value.Id}
-                        ><a href={it.value.Id}>{it.value.Name}</a><span if:false={it.last}>, </span>
+                        ><a href={it.value.Link}>{it.value.Name}</a><span if:false={it.last}>, </span>
                     </span>
                 </template>
             </h2>
+        </div>
+    </template>
+    <template if:true={hasSelfDuplicates}>
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+            <span class="slds-assistive-text">Advarsel</span>
+            <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
+            </lightning-icon>
+            <span>Denne forespørselen har overlappende arbeidsordrer.</span>
         </div>
     </template>
 </template>
