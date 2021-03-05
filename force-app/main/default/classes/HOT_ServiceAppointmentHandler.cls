@@ -154,7 +154,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 SELECT
                     Id,
                     WorkOrder.HOT_Request__c,
-                    WorkOrder.HOT_Request__r.AutoSchedule__c,
                     WorkOrder.OwnerId,
                     Subject,
                     Description,
@@ -268,15 +267,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
                 if (serviceAppointment.HOT_WorkOrderLineItem__c == null && serviceAppointment.ParentRecordId != null) {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
-                }
-                Set<String> serviceAppointmentFields = Schema.SObjectType.ServiceAppointment.fields.getMap().keySet();
-                if (
-                    serviceAppointmentFields.contains('FSL__Auto_Schedule__c') &&
-                    serviceAppointment.get('FSL__Auto_Schedule__c') == false &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .WorkOrder.HOT_Request__r.AutoSchedule__c == true
-                ) {
-                    serviceAppointment.put('FSL__Auto_Schedule__c', true);
                 }
             }
         }
