@@ -22,8 +22,7 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                     HOT_Request__r.PreferredResource2__c,
                     HOT_Request__r.PreferredResource3__c,
                     HOT_Request__r.InterpretationMethod__c,
-                    HOT_Request__r.IsScreenInterpreter__c,
-                    HOT_Request__r.AutoSchedule__c
+                    HOT_Request__r.IsScreenInterpreter__c
                 FROM WorkOrder
                 WHERE Id IN :workOrderIds
             ]
@@ -56,14 +55,6 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                 serviceAppointment.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
                 serviceAppointment.HOT_IsScreenInterpreterNew__c = workOrders.get(workOrderLineItem.WorkOrderId)
                     .HOT_Request__r.IsScreenInterpreter__c;
-
-                Set<String> serviceAppointmentFields = Schema.SObjectType.ServiceAppointment.fields.getMap().keySet();
-                if (serviceAppointmentFields.contains('FSL__Auto_Schedule__c')) {
-                    serviceAppointment.put(
-                        'FSL__Auto_Schedule__c',
-                        workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.AutoSchedule__c
-                    );
-                }
                 if (
                     workOrderLineItem.WorkTypeId ==
                     workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.InterpretationMethod__c
