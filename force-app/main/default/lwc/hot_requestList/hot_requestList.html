@@ -48,7 +48,7 @@
         </div>
         <p style="align-self: flex-start" class="typo-normal">
             * For serieoppdrag vises start- og sluttid for den første forekomsten. For å se alle tidene under en
-            bestilling, inkludert status og tildelt tolk, kan du velge Se tider i menyen til høyre på raden.
+            bestilling, inkludert status og tildelt tolk, kan du velge Se tidsplan i menyen til høyre på raden.
         </p>
         <br />
         <lightning-datatable
@@ -94,7 +94,7 @@
                         <div class="slds-col slds-size_1-of-2">
                             <span class="slds-form-element__label lightning-output-field__label">Bestillers navn</span>
                             <br />
-                            <lightning-formatted-text value={record.Orderer__r.Name} class="lightning-output-field">
+                            <lightning-formatted-text value={ordererName} class="lightning-output-field">
                             </lightning-formatted-text>
                         </div>
                         <div if:true={myRequest} class="slds-col slds-size_1-of-2">

@@ -28,24 +28,28 @@ function requireDaysBasedOnRecurringType(days, ...args) {
 }
 
 function startDateBeforeRecurringEndDate(recurringEndDate, args) {
-    let startDate = args[0];
+    let startDate = args[1];
     return new Date(startDate).getTime() > new Date(recurringEndDate) ? 'Slutt dato må være etter start dato' : '';
 }
 function restrictTheNumberOfDays(recurringEndDate, args) {
-    let startDate = args[0];
+    let startDate = args[1];
     return new Date(recurringEndDate) - new Date(startDate).getTime() > 199 * 24 * 3600000 && startDate != null
         ? 'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder'
         : '';
 }
 function chosenDaysWithinPeriod(recurringEndDate, args) {
     console.log(args);
-    let startDate = args[0];
+    let type = args[0];
+    if (type === 'Daily') {
+        return '';
+    }
+
+    let startDate = args[1];
     startDate = new Date(startDate);
     recurringEndDate = new Date(recurringEndDate);
     if (recurringEndDate - startDate.getTime() < 7 * 24 * 3600000) {
-        let days = args[1];
+        let days = args[2];
         let daysMap = { sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
-        console.log(days);
         for (let day of days) {
             if (startDate.getDay() <= recurringEndDate.getDay()) {
                 if (daysMap[day] >= startDate.getDay() && daysMap[day] <= recurringEndDate.getDay()) {

@@ -35,6 +35,7 @@ public without sharing class HOT_RequestListContoller {
                     Orderer__r.Name,
                     OrdererPhone__c,
                     OrdererEmail__c,
+                    Owner.Name,
                     UserName__c,
                     Company__r.Name,
                     (SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
@@ -107,16 +108,5 @@ public without sharing class HOT_RequestListContoller {
             times.add(timeMap);
         }
         return times;
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static List<HOT_Request__c> getRequestListFromAccountFromRequestId(Id accountId) {
-        HOT_Request__c currentRequest = [SELECT Id, Name, Account__c FROM HOT_Request__c WHERE Id = :accountId];
-        List<HOT_Request__c> requests = [
-            SELECT Name, Id, StartTime__c, EndTime__c, Status__c, Account__c, ExternalRequestStatus__c
-            FROM HOT_Request__c
-            WHERE Account__c != NULL AND Account__c = :currentRequest.Account__c
-        ];
-        return requests;
     }
 }
