@@ -1,6 +1,7 @@
 public with sharing class HOT_AutoScheduleService {
     @InvocableVariable
     public String parentRecordId;
+    @InvocableVariable
     public String parentRecordType;
 
     @InvocableMethod

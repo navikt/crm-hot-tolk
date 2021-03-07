@@ -8,7 +8,8 @@ private class HOT_AutoScheduleServiceTest {
         insert request;
 
         HOT_AutoScheduleService inputVariable = new HOT_AutoScheduleService();
-        inputVariable.requestId = request.Id;
+        inputVariable.parentRecordId = request.Id;
+        inputVariable.parentRecordType = 'request';
         List<HOT_AutoScheduleService> inputVariables = new List<HOT_AutoScheduleService>();
         inputVariables.add(inputVariable);
 

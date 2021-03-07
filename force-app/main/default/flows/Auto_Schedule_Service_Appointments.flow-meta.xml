@@ -16,6 +16,12 @@
                 <elementReference>recordId</elementReference>
             </value>
         </inputParameters>
+        <inputParameters>
+            <name>parentRecordType</name>
+            <value>
+                <elementReference>parentRecordType</elementReference>
+            </value>
+        </inputParameters>
         <outputParameters>
             <assignToReference>error</assignToReference>
             <name>output</name>
@@ -46,6 +52,16 @@
             <label>Yes</label>
         </rules>
     </decisions>
+    <formulas>
+        <name>isWorkOrder</name>
+        <dataType>Boolean</dataType>
+        <expression>BEGINS({!recordId}, &quot;0WO&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>parentRecordType</name>
+        <dataType>String</dataType>
+        <expression>IF({!isWorkOrder}, &quot;workOrder&quot;, &quot;request&quot;)</expression>
+    </formulas>
     <interviewLabel>Auto Schedule Service Appointments {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Auto Schedule Service Appointments</label>
     <processMetadataValues>
