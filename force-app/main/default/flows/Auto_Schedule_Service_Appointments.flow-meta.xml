@@ -3,13 +3,16 @@
     <actionCalls>
         <name>Auto_Schedule_Service</name>
         <label>Auto Schedule Service</label>
-        <locationX>182</locationX>
-        <locationY>158</locationY>
+        <locationX>775</locationX>
+        <locationY>206</locationY>
         <actionName>HOT_AutoScheduleService</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Has_error</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>Error_Screen</targetReference>
+        </faultConnector>
         <inputParameters>
             <name>parentRecordId</name>
             <value>
@@ -30,8 +33,8 @@
     <decisions>
         <name>Has_error</name>
         <label>Has error?</label>
-        <locationX>182</locationX>
-        <locationY>278</locationY>
+        <locationX>775</locationX>
+        <locationY>326</locationY>
         <defaultConnector>
             <targetReference>Success_Screen</targetReference>
         </defaultConnector>
@@ -73,7 +76,7 @@
     <processMetadataValues>
         <name>CanvasMode</name>
         <value>
-            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -86,15 +89,15 @@
     <screens>
         <name>Error_Screen</name>
         <label>Feilmelding</label>
-        <locationX>50</locationX>
-        <locationY>398</locationY>
+        <locationX>643</locationX>
+        <locationY>446</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Text</name>
             <fieldText
-            >&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!error}&lt;/i&gt;&lt;/p&gt;</fieldText>
+            >&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!error}&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -103,8 +106,8 @@
     <screens>
         <name>Success_Screen</name>
         <label>Vellykket</label>
-        <locationX>314</locationX>
-        <locationY>398</locationY>
+        <locationX>907</locationX>
+        <locationY>446</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -118,8 +121,8 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
-        <locationY>0</locationY>
+        <locationX>649</locationX>
+        <locationY>48</locationY>
         <connector>
             <targetReference>Auto_Schedule_Service</targetReference>
         </connector>
