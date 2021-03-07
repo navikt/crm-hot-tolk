@@ -1,0 +1,19 @@
+@isTest
+private class HOT_AutoScheduleServiceTest {
+    @isTest
+    private static void setAutoScheduleOnServiceAppointmentsTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        HOT_AutoScheduleService inputVariable = new HOT_AutoScheduleService();
+        inputVariable.requestId = request.Id;
+        List<HOT_AutoScheduleService> inputVariables = new List<HOT_AutoScheduleService>();
+        inputVariables.add(inputVariable);
+
+        Test.startTest();
+        HOT_AutoScheduleService.setAutoScheduleOnServiceAppointments(inputVariables);
+        Test.stopTest();
+    }
+}
