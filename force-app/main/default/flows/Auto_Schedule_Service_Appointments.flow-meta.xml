@@ -134,7 +134,7 @@
         <fields>
             <name>Success_Text</name>
             <fieldText
-            >&lt;p&gt;Oppdragene på forespørselen ble forsøkt automatisk planlagt. Se resultatet i relatert liste på forespørsel.&lt;/p&gt;</fieldText>
+            >&lt;p&gt;Oppdragene på forespørselen ble forsøkt automatisk planlagt. Se resultatet i relatert liste på forespørsel. Det kan ta noen minutter før oppdragene oppdateres.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
