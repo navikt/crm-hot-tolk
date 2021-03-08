@@ -23,7 +23,7 @@ public with sharing class HOT_AutoScheduleService {
             List<ServiceAppointment> serviceAppointments = Database.query(queryString);
 
             if (serviceAppointments.isEmpty()) {
-                errors.add('Det er ingen oppdrag på forespørselen, eller alle oppdragene er allerede tildelt en tolk.');
+                errors.add('Det finnes ingen oppdrag å planlegge, eller alle oppdragene er allerede tildelt en tolk.');
                 return errors;
             }
 
