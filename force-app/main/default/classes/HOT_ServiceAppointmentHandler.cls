@@ -6,7 +6,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
-        List<ServiceAppointment> serviceAppointmentsWithStatusCannotCompleteOrNone = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsStatusFromCannotCompleteToNone = new List<ServiceAppointment>();
         List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
         List<ServiceAppointment> updatedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithDeletedPreferredResources = new List<ServiceAppointment>();
@@ -38,10 +38,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointmentsWithDeletedPreferredResources.add(serviceAppointment);
             }
             if (
-                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'None' &&
-                serviceAppointment.Status == 'None'
+                serviceAppointment.Status == 'None' &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Cannot Complete'
             ) {
-                serviceAppointmentsWithStatusCannotCompleteOrNone.add(serviceAppointment);
+                serviceAppointmentsStatusFromCannotCompleteToNone.add(serviceAppointment);
             }
             if (
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
@@ -76,8 +76,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (recievedNewInterpreter.size() > 0) {
             updateCancelledByInterpreter(recievedNewInterpreter);
         }
-        if (serviceAppointmentsWithStatusCannotCompleteOrNone.size() > 0) {
-            preserveSchedulesTimes(serviceAppointmentsWithStatusCannotCompleteOrNone, triggerOldMap);
+        if (serviceAppointmentsStatusFromCannotCompleteToNone.size() > 0) {
+            preserveSchedulesTimes(serviceAppointmentsStatusFromCannotCompleteToNone, triggerOldMap);
         }
         if (serviceAppointmentsWithChangedStatusOrResource.size() > 0) {
             createHistoricallyAssignedResources(serviceAppointmentsWithChangedStatusOrResource, triggerOldMap);
@@ -358,10 +358,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         insert newHistoricallyAssignedResources;
     }
     private static void preserveSchedulesTimes(
-        List<ServiceAppointment> serviceAppointmentsWithStatusCannotCompleteOrNone,
+        List<ServiceAppointment> serviceAppointmentsStatusFromCannotCompleteToNone,
         Map<Id, sObject> triggerOldMap
     ) {
-        for (ServiceAppointment serviceAppointment : serviceAppointmentsWithStatusCannotCompleteOrNone) {
+        for (ServiceAppointment serviceAppointment : serviceAppointmentsStatusFromCannotCompleteToNone) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
             if (serviceAppointment.SchedStartTime == null && serviceAppointment.SchedEndTime == null) {
                 serviceAppointment.SchedStartTime = oldServiceAppointment.SchedStartTime;
