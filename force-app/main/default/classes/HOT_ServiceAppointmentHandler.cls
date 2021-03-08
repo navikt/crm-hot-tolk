@@ -98,7 +98,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
-                (serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') &&
+                (serviceAppointment.Status == 'Canceled' ||
+                serviceAppointment.Status == 'Annul' ||
+                serviceAppointment.Status == 'None') &&
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')
             ) {
                 serviceAppointmentsToRemoveAssignedResource.add(serviceAppointment);
