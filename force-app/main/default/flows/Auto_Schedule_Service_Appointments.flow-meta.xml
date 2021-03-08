@@ -4,7 +4,7 @@
         <name>Auto_Schedule_Service</name>
         <label>Auto Schedule Service</label>
         <locationX>775</locationX>
-        <locationY>206</locationY>
+        <locationY>374</locationY>
         <actionName>HOT_AutoScheduleService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -34,7 +34,7 @@
         <name>Has_error</name>
         <label>Has error?</label>
         <locationX>775</locationX>
-        <locationY>326</locationY>
+        <locationY>494</locationY>
         <defaultConnector>
             <targetReference>Success_Screen</targetReference>
         </defaultConnector>
@@ -90,7 +90,7 @@
         <name>Error_Screen</name>
         <label>Feilmelding</label>
         <locationX>643</locationX>
-        <locationY>446</locationY>
+        <locationY>614</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -104,10 +104,30 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>Start_Screen</name>
+        <label>Start Screen</label>
+        <locationX>775</locationX>
+        <locationY>221</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Auto_Schedule_Service</targetReference>
+        </connector>
+        <fields>
+            <name>Start_Text</name>
+            <fieldText
+            >&lt;p&gt;Når du trykker neste vil systemet prøve å tildele en tolk til alle oppdragene automatisk. Den tar hensyn til tilgjengelighet, kompetanse og foretrukket tolk på samme måte som når man bruker ressursplanleggeren.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Success_Screen</name>
         <label>Vellykket</label>
         <locationX>907</locationX>
-        <locationY>446</locationY>
+        <locationY>614</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -122,9 +142,9 @@
     </screens>
     <start>
         <locationX>649</locationX>
-        <locationY>48</locationY>
+        <locationY>50</locationY>
         <connector>
-            <targetReference>Auto_Schedule_Service</targetReference>
+            <targetReference>Start_Screen</targetReference>
         </connector>
     </start>
     <status>Active</status>
