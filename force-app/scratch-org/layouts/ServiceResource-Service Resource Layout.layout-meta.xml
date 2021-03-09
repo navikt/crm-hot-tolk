@@ -38,6 +38,14 @@
                 <behavior>Edit</behavior>
                 <field>HOT_Skilled__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_Agreement_Freelance__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_Interpreter_Space__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -124,11 +132,15 @@
     </layoutSections>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>ServiceAppointment.std21</fields>
+        <fields>ServiceAppointment.std22</fields>
         <relatedList>HOT_InterestedResource__c.ServiceResource__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
         <fields>ServiceAppointment__c</fields>
+        <fields>SchedStartTime__c</fields>
+        <fields>SchedEndTime__c</fields>
         <fields>Status__c</fields>
         <fields>StatusComment__c</fields>
         <relatedList>HOT_HistoricallyAssignedResource__c.ServiceResource__c</relatedList>
@@ -227,7 +239,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1j000001Vj26</masterLabel>
+        <masterLabel>00h1x000001YPRo</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
