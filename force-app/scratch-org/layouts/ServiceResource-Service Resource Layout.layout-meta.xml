@@ -42,6 +42,10 @@
                 <behavior>Edit</behavior>
                 <field>Agreement_Freelance__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Interpreter_Space__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
