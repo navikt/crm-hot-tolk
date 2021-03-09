@@ -46,10 +46,11 @@ public without sharing class HOT_NotificationHandler {
 
             // Varsel ved fjerning av tolk
             if (
-                serviceAppointment.HOT_ServiceResource__c != oldServiceAppointment.HOT_ServiceResource__c &&
-                (oldServiceAppointment.Status != 'Scheduled' ||
-                oldServiceAppointment.Status == 'Scheduled' &&
-                serviceAppointment.Status == null)
+                (oldServiceAppointment.Status == 'Completed' ||
+                oldServiceAppointment.Status == 'Dispatched' ||
+                oldServiceAppointment.Status == 'In Progress') &&
+                (serviceAppointment.Status == null ||
+                serviceAppointment.Status == 'None')
             ) {
                 resourceChanged(notificationType, serviceAppointment, recipients);
             }
