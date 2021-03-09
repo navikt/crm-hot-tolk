@@ -237,6 +237,31 @@
         <name>HOT_SetInvoiceStatus</name>
     </customPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_HistoricallyAssignedResource__c.SchedEndTime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_HistoricallyAssignedResource__c.SchedStartTime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_HistoricallyAssignedResource__c.ServiceResource__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_HistoricallyAssignedResource__c.StatusComment__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_HistoricallyAssignedResource__c.Status__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.InvoiceStatus__c</field>
         <readable>true</readable>
