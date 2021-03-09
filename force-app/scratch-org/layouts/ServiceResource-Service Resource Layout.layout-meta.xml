@@ -38,6 +38,10 @@
                 <behavior>Edit</behavior>
                 <field>HOT_Skilled__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Agreement_Freelance__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
