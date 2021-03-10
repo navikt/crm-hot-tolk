@@ -390,14 +390,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track myRequest = false;
     @track companyForm = false;
     @track publicEvent = false;
-    @track ordererName = '';
     showDetails(row) {
         this.record = row;
-        if (this.record.hasOwnProperty('Orderer__c')) {
-            this.ordererName = this.record.Orderer__r.Name;
-        } else {
-            this.ordererName = this.record.Owner.Name;
-        }
         this.myRequest = this.record.Orderer__c == this.userRecord.AccountId;
         this.userForm =
             (this.record.Type__c == 'User' || this.record.Type__c == 'Company') && this.record.UserName__c != '';
@@ -409,6 +403,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.ordererFields = this.formatRecord(this.record, requestFieldLabels.getSubFields('orderer'));
         this.companyFields = this.formatRecord(this.record, requestFieldLabels.getSubFields('company'));
         this.requestFields = this.formatRecord(this.record, requestFieldLabels.getSubFields('request'));
+
+        console.log(JSON.stringify(this.ordererFields));
     }
 
     @track userFields = null;

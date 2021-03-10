@@ -2,7 +2,7 @@ export let requestFieldLabels = {
     Name: 'Bestillingsnummer',
     ActualUserName__c: 'Brukers navn',
     ExternalRequestStatus__c: 'Status',
-    OrdererName: 'Bestillers navn',
+    OrdererName__c: 'Bestillers navn',
     OrdererPhone__c: 'Bestillers mobil',
     OrdererEmail__c: 'Bestillers e-post',
     OrganizationNumber__c: 'Organisasjonsnummer',
@@ -25,7 +25,7 @@ export let requestFieldLabels = {
         }
         if (section === 'orderer') {
             return {
-                OrdererName: this.OrdererName,
+                OrdererName__c: this.OrdererName__c,
                 OrdererPhone__c: this.OrdererPhone__c,
                 OrdererEmail__c: this.OrdererEmail__c
             };
