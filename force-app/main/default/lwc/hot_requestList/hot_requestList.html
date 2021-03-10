@@ -78,155 +78,23 @@
             <div class="skjema skjema-max-width">
                 <section if:true={userForm} class="bruker-info-skjema sub-form">
                     <h2 style="font-size: 1.25rem">Informasjon om bruker</h2>
-                    <div class="slds-grid slds-gutters">
-                        <div class="slds-col slds-size_1-of-2">
-                            <span class="slds-form-element__label lightning-output-field__label">Brukers navn</span>
-                            <br />
-                            <lightning-formatted-text value={record.ActualUserName__c} class="lightning-output-field">
-                            </lightning-formatted-text>
-                        </div>
-                    </div>
+                    <c-hot_record-details record={userFields}></c-hot_record-details>
                 </section>
 
                 <section class="bestiller-info-skjema sub-form">
                     <h2 style="font-size: 1.25rem">Informasjon om bestiller</h2>
-                    <div class="slds-grid slds-gutters">
-                        <div class="slds-col slds-size_1-of-2">
-                            <span class="slds-form-element__label lightning-output-field__label">Bestillers navn</span>
-                            <br />
-                            <lightning-formatted-text value={ordererName} class="lightning-output-field">
-                            </lightning-formatted-text>
-                        </div>
-                        <div if:true={myRequest} class="slds-col slds-size_1-of-2">
-                            <span class="slds-form-element__label lightning-output-field__label">Bestillers mobil</span>
-                            <br />
-                            <lightning-formatted-text value={record.OrdererPhone__c} class="lightning-output-field">
-                            </lightning-formatted-text>
-                            <br />
-                            <span class="slds-form-element__label lightning-output-field__label"
-                                >Bestillers e-post</span
-                            >
-                            <br />
-                            <lightning-formatted-text value={record.OrdererEmail__c} class="lightning-output-field">
-                            </lightning-formatted-text>
-                        </div>
-                    </div>
+                    <c-hot_record-details record={ordererFields}></c-hot_record-details>
                 </section>
 
                 <section if:true={companyForm} class="virksomhet-info-skjema sub-form">
                     <h2 style="font-size: 1.25rem">Informasjon om virksomhet</h2>
-                    <div class="slds-grid slds-gutters">
-                        <div class="slds-col slds-size_1-of-2">
-                            <span class="slds-form-element__label lightning-output-field__label"
-                                >Organisasjonsnummer</span
-                            >
-                            <br />
-                            <lightning-formatted-text
-                                value={record.OrganizationNumber__c}
-                                class="lightning-output-field"
-                            >
-                            </lightning-formatted-text>
-                            <span class="slds-form-element__label lightning-output-field__label"
-                                >Deres fakturareferanse</span
-                            >
-                            <br />
-                            <lightning-formatted-text value={record.InvoiceReference__c} class="lightning-output-field">
-                            </lightning-formatted-text>
-                        </div>
-                        <div class="slds-col slds-size_1-of-2">
-                            <span class="slds-form-element__label lightning-output-field__label"
-                                >Tilleggsinformajon</span
-                            >
-                            <br />
-                            <lightning-formatted-text
-                                value={record.AdditionalInvoiceText__c}
-                                class="lightning-output-field"
-                            >
-                            </lightning-formatted-text>
-                        </div>
-                    </div>
+                    <c-hot_record-details record={companyFields}></c-hot_record-details>
                 </section>
 
                 <section class="bestilling-info-skjema sub-form">
                     <h2 style="font-size: 1.25rem">Informasjon om tolkebehov</h2>
-                    <div class="slds-grid slds-gutters">
-                        <div class="slds-col slds-size_1-of-2">
-                            <div if:true={publicEvent}>
-                                <span class="slds-form-element__label lightning-output-field__label"
-                                    >Type arrangement</span
-                                >
-                                <br />
-                                <lightning-formatted-text value={record.EventType__c} class="lightning-output-field">
-                                </lightning-formatted-text>
-                                <br />
-                            </div>
-                            <span class="slds-form-element__label lightning-output-field__label">Tema</span>
-                            <br />
-                            <lightning-formatted-text value={record.Subject__c} class="lightning-output-field">
-                            </lightning-formatted-text>
-                            <span class="slds-form-element__label lightning-output-field__label"
-                                >Tilleggsinformasjon</span
-                            >
-                            <br />
-                            <lightning-formatted-text value={record.Description__c} class="lightning-output-field">
-                            </lightning-formatted-text>
-                            <br />
-                            <span class="slds-form-element__label lightning-output-field__label">Status</span>
-                            <br />
-                            <lightning-formatted-text
-                                value={record.ExternalRequestStatus__c}
-                                class="lightning-output-field"
-                            >
-                            </lightning-formatted-text>
-                        </div>
-                        <div class="slds-col slds-size_1-of-2">
-                            <span class="slds-form-element__label lightning-output-field__label">Oppmøteadresse</span>
-                            <br />
-                            <lightning-formatted-text value={record.MeetingStreet__c} class="lightning-output-field">
-                            </lightning-formatted-text>
-                            <br />
-                            <span class="slds-form-element__label lightning-output-field__label">Postnummer</span>
-                            <br />
-                            <lightning-formatted-text
-                                value={record.MeetingPostalCode__c}
-                                class="lightning-output-field"
-                            >
-                            </lightning-formatted-text>
-                            <br />
-                            <span class="slds-form-element__label lightning-output-field__label">Poststed</span>
-                            <br />
-                            <lightning-formatted-text
-                                value={record.MeetingPostalCity__c}
-                                class="lightning-output-field"
-                            >
-                            </lightning-formatted-text>
-                            <br />
-                            <br />
-                            <span class="slds-form-element__label lightning-output-field__label">Tolkeadresse</span>
-                            <br />
-                            <lightning-formatted-text
-                                value={record.InterpretationStreet__c}
-                                class="lightning-output-field"
-                            >
-                            </lightning-formatted-text>
-                            <br />
-                            <span class="slds-form-element__label lightning-output-field__label">Postnummer</span>
-                            <br />
-                            <lightning-formatted-text
-                                value={record.InterpretationPostalCode__c}
-                                class="lightning-output-field"
-                            >
-                            </lightning-formatted-text>
-                            <br />
-                            <span class="slds-form-element__label lightning-output-field__label">Poststed</span>
-                            <br />
-                            <lightning-formatted-text
-                                value={record.InterpretationPostalCity__c}
-                                class="lightning-output-field"
-                            >
-                            </lightning-formatted-text>
-                        </div>
-                    </div>
+
+                    <c-hot_record-details record={requestFields}></c-hot_record-details>
                 </section>
             </div>
 
