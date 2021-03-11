@@ -1,3 +1,13 @@
+export function formatRecord(record, fieldLabels) {
+    let fields = [];
+    for (let field in record) {
+        if (fieldLabels[field]) {
+            fields.push({ name: field, label: fieldLabels[field], value: record[field] });
+        }
+    }
+    return fields;
+}
+
 export let requestFieldLabels = {
     Name: 'Bestillingsnummer',
     ActualUserName__c: 'Brukers navn',
@@ -54,4 +64,62 @@ export let requestFieldLabels = {
         }
         return null;
     }
+};
+
+export let serviceAppointmentFieldLabels = {
+    AppointmentNumber: 'Oppdragsnummer',
+    HOT_ReleaseDate__c: 'Frigitt dato',
+    HOT_ReleasedBy__c: 'Frigitt av',
+    HOT_NumberOfInterestedResources__c: 'Antall påmeldte',
+    HOT_WorkTypeName__c: 'Tolkemetode',
+    HOT_AssignmentType__c: 'Oppdragstype',
+    ServiceTerritoryName: 'Region',
+    EarliestStartTime: 'Start tid',
+    DueDate: 'Slutt tid',
+    HOT_AddressFormated__c: 'Adresse',
+    HOT_FreelanceSubject__c: 'Tema',
+    getSubFields: function (section) {
+        if (section === 'details') {
+            return {
+                AppointmentNumber: this.AppointmentNumber,
+                HOT_ReleaseDate__c: this.HOT_ReleaseDate__c,
+                HOT_ReleasedBy__c: this.HOT_ReleasedBy__c,
+                HOT_NumberOfInterestedResources__c: this.HOT_NumberOfInterestedResources__c,
+                HOT_WorkTypeName__c: this.HOT_WorkTypeName__c,
+                HOT_AssignmentType__c: this.HOT_AssignmentType__c,
+                ServiceTerritoryName: this.ServiceTerritoryName,
+                EarliestStartTime: this.EarliestStartTime,
+                DueDate: this.DueDate,
+                HOT_AddressFormated__c: this.HOT_AddressFormated__c,
+                HOT_FreelanceSubject__c: this.HOT_FreelanceSubject__c
+            };
+        }
+        if (section === 'comment') {
+            return {
+                EarliestStartTime: this.EarliestStartTime,
+                DueDate: this.DueDate,
+                HOT_AddressFormated__c: this.HOT_AddressFormated__c,
+                HOT_WorkTypeName__c: this.HOT_WorkTypeName__c,
+                HOT_NumberOfInterestedResources__c: this.HOT_NumberOfInterestedResources__c,
+                HOT_ReleasedBy__c: this.HOT_ReleasedBy__c,
+                HOT_DeadlineDate__c: this.HOT_DeadlineDate__c,
+                HOT_FreelanceSubject__c: this.HOT_FreelanceSubject__c
+            };
+        }
+        return null;
+    }
+};
+
+export let interestedResourceFieldLabels = {
+    AppointmentNumber__c: 'Oppdrag',
+    ServiceAppointmentStartTime__c: 'Start tid',
+    ServiceAppointmentEndTime__c: 'Slutt tid',
+    ServiceAppointmentAddress__c: 'Adresse',
+    WorkTypeName__c: 'Tolkemetode',
+    ServiceAppointment__rHOT_AssignmentType__c: 'Oppdragstype',
+    Status__c: 'Status',
+    NumberOfInterestedResources__c: 'Påmeldte',
+    HOT_DeadlineDate__c: 'Fristdato',
+    ServiceAppointment__rServiceTerritoryName: 'Region',
+    ServiceAppointment__rHOT_FreelanceSubject__c: 'Tema'
 };

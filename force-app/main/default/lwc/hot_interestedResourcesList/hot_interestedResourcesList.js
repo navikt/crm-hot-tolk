@@ -3,14 +3,13 @@ import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesList
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
 import retractInterests from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterests';
-import resendInterestApex from '@salesforce/apex/HOT_InterestedResourcesListController.resendInterest';
 import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
 import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
+import { formatRecord, interestedResourceFieldLabels } from 'c/hot_fieldLabels';
 
 var actions = [
     //{ label: 'Kommenter', name: 'comment' },
     { label: 'Detaljer', name: 'details' }
-    //{ label: 'Send Interesse', name: 'resendInterest' },
 ];
 
 export default class Hot_interestedResourcesList extends LightningElement {
@@ -219,9 +218,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
             case 'comment':
                 this.openComments(row);
                 break;
-            case 'resendInterest':
-                this.resendInterest(row);
-                break;
             case 'details':
                 this.openDetails(row);
                 break;
@@ -238,15 +234,17 @@ export default class Hot_interestedResourcesList extends LightningElement {
         addComment({ interestedResourceId, newComment }).then(() => {
             refreshApex(this.wiredInterestedResourcesResult);
         });
-        this.isDetails = false;
+        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
     }
 
     @track deadlineDate;
-    @track isDetails = false;
     @track detailInterestedResource;
     openDetails(row) {
-        this.isDetails = true;
-        this.detailInterestedResource = row;
+        this.interestedResourceDetails = formatRecord(row, interestedResourceFieldLabels);
+
+        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        detailPage.classList.remove('hidden');
+        detailPage.focus();
 
         this.recordId = row.Id;
         if (row['Comments__c'] != undefined) {
@@ -260,25 +258,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         });
     }
     abortShowDetails() {
-        this.isDetails = false;
-    }
-
-    resendInterest(row) {
-        const interestedId = row.Id;
-        if (row.Status__c == 'Retracted Interest') {
-            if (confirm('Er du sikker på at du vil melde interesse for oppdraget?')) {
-                resendInterestApex({ interestedId })
-                    .then(() => {
-                        refreshApex(this.wiredInterestedResourcesResult);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        alert('Kunne ikke sende interesse.');
-                    });
-            }
-        } else {
-            alert('Du kan ikke sende interesse for dette oppdraget');
-        }
+        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
     }
 
     @track selectedRows = [];
