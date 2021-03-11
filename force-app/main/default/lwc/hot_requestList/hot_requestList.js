@@ -384,7 +384,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             }
         }
     }
-    @track isDetails = false;
     @track record = null;
     @track userForm = false;
     @track myRequest = false;
@@ -397,14 +396,15 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             (this.record.Type__c == 'User' || this.record.Type__c == 'Company') && this.record.UserName__c != '';
         this.companyForm = this.record.Type__c == 'Company' || this.record.Type__c == 'PublicEvent';
         this.publicEvent = this.record.Type__c == 'PublicEvent';
-        this.isDetails = true;
 
         this.userFields = this.formatRecord(this.record, requestFieldLabels.getSubFields('user'));
         this.ordererFields = this.formatRecord(this.record, requestFieldLabels.getSubFields('orderer'));
         this.companyFields = this.formatRecord(this.record, requestFieldLabels.getSubFields('company'));
         this.requestFields = this.formatRecord(this.record, requestFieldLabels.getSubFields('request'));
 
-        console.log(JSON.stringify(this.ordererFields));
+        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        detailPage.classList.remove('hidden');
+        detailPage.focus();
     }
 
     @track userFields = null;
@@ -424,7 +424,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     abortShowDetails() {
-        this.isDetails = false;
+        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        detailPage.classList.add('hidden');
     }
 
     showTimes(row) {
