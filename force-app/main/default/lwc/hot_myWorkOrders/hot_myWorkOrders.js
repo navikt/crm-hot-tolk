@@ -7,7 +7,8 @@ import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import getWorkOrdersFromRequest from '@salesforce/apex/HOT_WorkOrderListController.getWorkOrdersFromRequest';
 import getMyWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrders';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
-import { formatRecord, workOrderFieldLabels } from 'c/hot_fieldLabels';
+import { workOrderFieldLabels } from 'c/hot_fieldLabels';
+import { formatRecord } from 'c/hot_recordDetails';
 
 export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) {
     @track columns = [

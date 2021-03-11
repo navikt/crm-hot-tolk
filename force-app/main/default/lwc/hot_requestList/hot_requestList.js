@@ -9,7 +9,8 @@ import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterControll
 import getAssignedResources from '@salesforce/apex/HOT_Utility.getAssignedResources';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
-import { formatRecord, requestFieldLabels } from 'c/hot_fieldLabels';
+import { requestFieldLabels } from 'c/hot_fieldLabels';
+import { formatRecord } from 'c/hot_recordDetails';
 
 export default class RequestList extends NavigationMixin(LightningElement) {
     rerenderCallback() {

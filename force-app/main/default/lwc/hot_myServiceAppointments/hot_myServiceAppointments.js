@@ -1,7 +1,8 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
-import { formatRecord, myServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
+import { myServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
+import { formatRecord } from 'c/hot_recordDetails';
 
 var actions = [{ label: 'Detaljer', name: 'details' }];
 

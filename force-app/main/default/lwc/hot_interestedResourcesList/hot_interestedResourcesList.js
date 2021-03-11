@@ -5,7 +5,8 @@ import { refreshApex } from '@salesforce/apex';
 import retractInterests from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterests';
 import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
 import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
-import { formatRecord, interestedResourceFieldLabels } from 'c/hot_fieldLabels';
+import { interestedResourceFieldLabels } from 'c/hot_fieldLabels';
+import { formatRecord } from 'c/hot_recordDetails';
 
 var actions = [
     //{ label: 'Kommenter', name: 'comment' },

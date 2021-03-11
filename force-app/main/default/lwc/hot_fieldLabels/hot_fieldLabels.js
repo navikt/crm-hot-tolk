@@ -1,32 +1,22 @@
-export function formatRecord(record, fieldLabels) {
-    let fields = [];
-    for (let field in record) {
-        if (fieldLabels[field]) {
-            fields.push({ name: field, label: fieldLabels[field], value: record[field] });
-        }
-    }
-    return fields;
-}
-
 export let requestFieldLabels = {
-    Name: 'Bestillingsnummer',
-    ActualUserName__c: 'Brukers navn',
-    ExternalRequestStatus__c: 'Status',
-    OrdererName__c: 'Bestillers navn',
-    OrdererPhone__c: 'Bestillers mobil',
-    OrdererEmail__c: 'Bestillers e-post',
-    OrganizationNumber__c: 'Organisasjonsnummer',
-    InvoiceReference__c: 'Deres fakturareferanse',
-    AdditionalInvoiceText__c: 'Tilleggsinformajon',
-    EventType__c: 'Type arrangement',
-    Subject__c: 'Tema',
-    Description__c: 'Tilleggsinformasjon',
-    MeetingStreet__c: 'Oppmøteadresse',
-    MeetingPostalCode__c: 'Postnummer',
-    MeetingPostalCity__c: 'Poststed',
-    InterpretationStreet__c: 'Tolkeadresse',
-    InterpretationPostalCode__c: 'Postnummer',
-    InterpretationPostalCity__c: 'Poststed',
+    Name: { label: 'Bestillingsnummer', type: 'string' },
+    ActualUserName__c: { label: 'Brukers navn', type: 'string' },
+    ExternalRequestStatus__c: { label: 'Status', type: 'string' },
+    OrdererName__c: { label: 'Bestillers navn', type: 'string' },
+    OrdererPhone__c: { label: 'Bestillers mobil', type: 'string' },
+    OrdererEmail__c: { label: 'Bestillers e-post', type: 'string' },
+    OrganizationNumber__c: { label: 'Organisasjonsnummer', type: 'string' },
+    InvoiceReference__c: { label: 'Deres fakturareferanse', type: 'string' },
+    AdditionalInvoiceText__c: { label: 'Tilleggsinformajon', type: 'string' },
+    EventType__c: { label: 'Type arrangement', type: 'string' },
+    Subject__c: { label: 'Tema', type: 'string' },
+    Description__c: { label: 'Tilleggsinformasjon', type: 'string' },
+    MeetingStreet__c: { label: 'Oppmøteadresse', type: 'string' },
+    MeetingPostalCode__c: { label: 'Postnummer', type: 'string' },
+    MeetingPostalCity__c: { label: 'Poststed', type: 'string' },
+    InterpretationStreet__c: { label: 'Tolkeadresse', type: 'string' },
+    InterpretationPostalCode__c: { label: 'Postnummer', type: 'string' },
+    InterpretationPostalCity__c: { label: 'Poststed', type: 'string' },
     getSubFields: function (section) {
         if (section === 'user') {
             return {
@@ -67,17 +57,17 @@ export let requestFieldLabels = {
 };
 
 export let openServiceAppointmentFieldLabels = {
-    AppointmentNumber: 'Oppdragsnummer',
-    HOT_ReleaseDate__c: 'Frigitt dato',
-    HOT_ReleasedBy__c: 'Frigitt av',
-    HOT_NumberOfInterestedResources__c: 'Antall påmeldte',
-    HOT_WorkTypeName__c: 'Tolkemetode',
-    HOT_AssignmentType__c: 'Oppdragstype',
-    ServiceTerritoryName: 'Region',
-    EarliestStartTime: 'Start tid',
-    DueDate: 'Slutt tid',
-    HOT_AddressFormated__c: 'Adresse',
-    HOT_FreelanceSubject__c: 'Tema',
+    AppointmentNumber: { label: 'Oppdragsnummer', type: 'string' },
+    HOT_ReleaseDate__c: { label: 'Frigitt dato', type: 'date' },
+    HOT_ReleasedBy__c: { label: 'Frigitt av', type: 'string' },
+    HOT_NumberOfInterestedResources__c: { label: 'Antall påmeldte', type: 'string' },
+    HOT_WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
+    HOT_AssignmentType__c: { label: 'Oppdragstype', type: 'string' },
+    __ServiceTerritoryName: { label: 'Region', type: 'string' },
+    EarliestStartTime: { label: 'Start tid', type: 'datetime' },
+    DueDate: { label: 'Slutt tid', type: 'datetime' },
+    HOT_AddressFormated__c: { label: 'Adresse', type: 'string' },
+    HOT_FreelanceSubject__c: { label: 'Tema', type: 'string' },
     getSubFields: function (section) {
         if (section === 'details') {
             return {
@@ -111,40 +101,40 @@ export let openServiceAppointmentFieldLabels = {
 };
 
 export let interestedResourceFieldLabels = {
-    AppointmentNumber__c: 'Oppdrag',
-    ServiceAppointmentStartTime__c: 'Start tid',
-    ServiceAppointmentEndTime__c: 'Slutt tid',
-    ServiceAppointmentAddress__c: 'Adresse',
-    WorkTypeName__c: 'Tolkemetode',
-    ServiceAppointment__rHOT_AssignmentType__c: 'Oppdragstype',
-    Status__c: 'Status',
-    NumberOfInterestedResources__c: 'Påmeldte',
-    HOT_DeadlineDate__c: 'Fristdato',
-    ServiceAppointment__rServiceTerritoryName: 'Region',
-    ServiceAppointment__rHOT_FreelanceSubject__c: 'Tema'
+    AppointmentNumber__c: { label: 'Oppdrag', type: 'string' },
+    ServiceAppointmentStartTime__c: { label: 'Start tid', type: 'string' },
+    ServiceAppointmentEndTime__c: { label: 'Slutt tid', type: 'string' },
+    ServiceAppointmentAddress__c: { label: 'Adresse', type: 'string' },
+    WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
+    __ServiceAppointment__rHOT_AssignmentType__c: { label: 'Oppdragstype', type: 'string' },
+    Status__c: { label: 'Status', type: 'string' },
+    NumberOfInterestedResources__c: { label: 'Påmeldte', type: 'string' },
+    HOT_DeadlineDate__c: { label: 'Fristdato', type: 'string' },
+    __ServiceAppointment__rServiceTerritoryName: { label: 'Region', type: 'string' },
+    __ServiceAppointment__rHOT_FreelanceSubject__c: { label: 'Tema', type: 'string' }
 };
 
 export let myServiceAppointmentFieldLabels = {
-    AppointmentNumber: 'Oppdragsnummer',
-    HOT_FreelanceSubject__c: 'Tema',
-    SchedStartTime: 'Planlagt start',
-    SchedEndTime: 'Planlagt slutt',
-    ActualStartTime: 'Faktisk start',
-    ActualEndTime: 'Faktsik slutt',
-    Address: 'Adresse',
-    ServiceTerritoryName: 'Region',
-    Status: 'Status',
-    HOT_HapticCommunication__c: 'Haptisk kommunikasjon',
-    HOT_Escort__c: 'Ledsaging',
-    HOT_DegreeOfHearingAndVisualImpairment__c: 'Vedtak',
-    HOT_WorkTypeName__c: 'Tolkemetode',
-    HOT_TermsOfAgreement__c: 'Avtalte betingelser'
+    AppointmentNumber: { label: 'Oppdragsnummer', type: 'string' },
+    HOT_FreelanceSubject__c: { label: 'Tema', type: 'string' },
+    SchedStartTime: { label: 'Planlagt start', type: 'datetime' },
+    SchedEndTime: { label: 'Planlagt slutt', type: 'datetime' },
+    ActualStartTime: { label: 'Faktisk start', type: 'datetime' },
+    ActualEndTime: { label: 'Faktsik slutt', type: 'datetime' },
+    Address: { label: 'Adresse', type: 'string' },
+    ServiceTerritoryName: { label: 'Region', type: 'string' },
+    Status: { label: 'Status', type: 'string' },
+    HOT_HapticCommunication__c: { label: 'Haptisk kommunikasjon', type: 'string' },
+    HOT_Escort__c: { label: 'Ledsaging', type: 'string' },
+    HOT_DegreeOfHearingAndVisualImpairment__c: { label: 'Vedtak', type: 'string' },
+    HOT_WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
+    HOT_TermsOfAgreement__c: { label: 'Avtalte betingelser', type: 'string' }
 };
 
 export let workOrderFieldLabels = {
-    StartDate: 'Start tid',
-    EndDate: 'Slutt tid',
-    HOT_RequestName__c: 'Bestillingsnummer',
-    HOT_ExternalWorkOrderStatus__c: 'Status',
-    HOT_Interpreters__c: 'Tolker'
+    StartDate: { label: 'Start tid', type: 'datetime' },
+    EndDate: { label: 'Slutt tid', type: 'datetime' },
+    HOT_RequestName__c: { label: 'Bestillingsnummer', type: 'string' },
+    HOT_ExternalWorkOrderStatus__c: { label: 'Status', type: 'string' },
+    HOT_Interpreters__c: { label: 'Tolker', type: 'string' }
 };

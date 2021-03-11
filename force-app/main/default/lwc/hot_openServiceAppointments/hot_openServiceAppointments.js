@@ -4,7 +4,8 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
-import { formatRecord, openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
+import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
+import { formatRecord } from 'c/hot_recordDetails';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [
