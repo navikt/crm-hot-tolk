@@ -1,6 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
+import { formatRecord, myServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 
 var actions = [{ label: 'Detaljer', name: 'details' }];
 
@@ -205,17 +206,15 @@ export default class Hot_myServiceAppointments extends LightningElement {
         }
     }
 
-    @track recordId;
-    @track record;
-    @track isDetails = false;
+    @track serviceAppointmentDetails;
     showDetails(row) {
-        console.log('showDetails');
-        this.recordId = row.Id;
-        this.isDetails = true;
-        this.record = row;
+        this.serviceAppointmentDetails = formatRecord(row, myServiceAppointmentFieldLabels);
+        let detailPage = this.template.querySelector('.detailPage');
+        detailPage.classList.remove('hidden');
+        detailPage.focus();
     }
     abortShowDetails() {
-        this.isDetails = false;
+        this.template.querySelector('.detailPage').classList.add('hidden');
     }
 
     isChecked = false;

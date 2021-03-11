@@ -66,7 +66,7 @@ export let requestFieldLabels = {
     }
 };
 
-export let serviceAppointmentFieldLabels = {
+export let openServiceAppointmentFieldLabels = {
     AppointmentNumber: 'Oppdragsnummer',
     HOT_ReleaseDate__c: 'Frigitt dato',
     HOT_ReleasedBy__c: 'Frigitt av',
@@ -122,4 +122,29 @@ export let interestedResourceFieldLabels = {
     HOT_DeadlineDate__c: 'Fristdato',
     ServiceAppointment__rServiceTerritoryName: 'Region',
     ServiceAppointment__rHOT_FreelanceSubject__c: 'Tema'
+};
+
+export let myServiceAppointmentFieldLabels = {
+    AppointmentNumber: 'Oppdragsnummer',
+    HOT_FreelanceSubject__c: 'Tema',
+    SchedStartTime: 'Planlagt start',
+    SchedEndTime: 'Planlagt slutt',
+    ActualStartTime: 'Faktisk start',
+    ActualEndTime: 'Faktsik slutt',
+    Address: 'Adresse',
+    ServiceTerritoryName: 'Region',
+    Status: 'Status',
+    HOT_HapticCommunication__c: 'Haptisk kommunikasjon',
+    HOT_Escort__c: 'Ledsaging',
+    HOT_DegreeOfHearingAndVisualImpairment__c: 'Vedtak',
+    HOT_WorkTypeName__c: 'Tolkemetode',
+    HOT_TermsOfAgreement__c: 'Avtalte betingelser'
+};
+
+export let workOrderFieldLabels = {
+    StartDate: 'Start tid',
+    EndDate: 'Slutt tid',
+    HOT_RequestName__c: 'Bestillingsnummer',
+    HOT_ExternalWorkOrderStatus__c: 'Status',
+    HOT_Interpreters__c: 'Tolker'
 };

@@ -4,7 +4,7 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
-import { formatRecord, serviceAppointmentFieldLabels } from 'c/hot_fieldLabels';
+import { formatRecord, openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [
@@ -219,16 +219,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     @track serviceAppointmentDetails = null;
     showDetails(row) {
-        this.serviceAppointmentDetails = row;
+        this.serviceAppointmentDetails = formatRecord(row, openServiceAppointmentFieldLabels.getSubFields('details'));
 
-        this.serviceAppointmentDetails = formatRecord(row, serviceAppointmentFieldLabels.getSubFields('details'));
-
-        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        let detailPage = this.template.querySelector('.detailPage');
         detailPage.classList.remove('hidden');
         detailPage.focus();
     }
     abortShowDetails() {
-        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+        this.template.querySelector('.detailPage').classList.add('hidden');
     }
 
     @track requestNumber = null;
@@ -264,7 +262,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         if (this.selectedRows.length > 0) {
             for (let row of this.selectedRows) {
                 this.serviceAppointmentCommentDetails.push(
-                    formatRecord(row, serviceAppointmentFieldLabels.getSubFields('comment'))
+                    formatRecord(row, openServiceAppointmentFieldLabels.getSubFields('comment'))
                 );
             }
             let commentPage = this.template.querySelector('.commentPage');

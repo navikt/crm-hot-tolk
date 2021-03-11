@@ -146,7 +146,7 @@
     </div>
 
     <div
-        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay detailPage hidden"
         style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
         tabindex="-1"
         aria-label="Detaljer"
@@ -156,6 +156,7 @@
             role="dialog"
         >
             <section>
+                <h2 class="typo-undertittel">Detaljer</h2>
                 <c-hot_record-details record={serviceAppointmentDetails}></c-hot_record-details>
             </section>
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
