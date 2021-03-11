@@ -66,13 +66,13 @@
     </div>
 
     <div
-        if:true={isDetails}
-        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden detailPage"
         style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+        tabindex="-1"
+        aria-label="Detaljer"
     >
         <div
             class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-            tabindex="-1"
             role="dialog"
         >
             <div class="skjema skjema-max-width">
