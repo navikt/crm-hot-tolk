@@ -63,7 +63,7 @@ export let openServiceAppointmentFieldLabels = {
     HOT_NumberOfInterestedResources__c: { label: 'Antall påmeldte', type: 'string' },
     HOT_WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
     HOT_AssignmentType__c: { label: 'Oppdragstype', type: 'string' },
-    __ServiceTerritoryName: { label: 'Region', type: 'string' },
+    HOT_ServiceTerritoryName__c: { label: 'Region', type: 'string' },
     EarliestStartTime: { label: 'Start tid', type: 'datetime' },
     DueDate: { label: 'Slutt tid', type: 'datetime' },
     HOT_AddressFormated__c: { label: 'Adresse', type: 'string' },
@@ -77,7 +77,7 @@ export let openServiceAppointmentFieldLabels = {
                 HOT_NumberOfInterestedResources__c: this.HOT_NumberOfInterestedResources__c,
                 HOT_WorkTypeName__c: this.HOT_WorkTypeName__c,
                 HOT_AssignmentType__c: this.HOT_AssignmentType__c,
-                ServiceTerritoryName: this.ServiceTerritoryName,
+                HOT_ServiceTerritoryName__c: this.HOT_ServiceTerritoryName__c,
                 EarliestStartTime: this.EarliestStartTime,
                 DueDate: this.DueDate,
                 HOT_AddressFormated__c: this.HOT_AddressFormated__c,
@@ -102,16 +102,16 @@ export let openServiceAppointmentFieldLabels = {
 
 export let interestedResourceFieldLabels = {
     AppointmentNumber__c: { label: 'Oppdrag', type: 'string' },
-    ServiceAppointmentStartTime__c: { label: 'Start tid', type: 'string' },
-    ServiceAppointmentEndTime__c: { label: 'Slutt tid', type: 'string' },
+    ServiceAppointmentStartTime__c: { label: 'Start tid', type: 'datetime' },
+    ServiceAppointmentEndTime__c: { label: 'Slutt tid', type: 'datetime' },
     ServiceAppointmentAddress__c: { label: 'Adresse', type: 'string' },
     WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
-    __ServiceAppointment__rHOT_AssignmentType__c: { label: 'Oppdragstype', type: 'string' },
+    AssignmentType__c: { label: 'Oppdragstype', type: 'string' },
     Status__c: { label: 'Status', type: 'string' },
     NumberOfInterestedResources__c: { label: 'Påmeldte', type: 'string' },
-    HOT_DeadlineDate__c: { label: 'Fristdato', type: 'string' },
-    __ServiceAppointment__rServiceTerritoryName: { label: 'Region', type: 'string' },
-    __ServiceAppointment__rHOT_FreelanceSubject__c: { label: 'Tema', type: 'string' }
+    AppointmentDeadlineDate__c: { label: 'Fristdato', type: 'date' },
+    AppointmentServiceTerritory__c: { label: 'Region', type: 'string' },
+    ServiceAppointmentFreelanceSubject__c: { label: 'Tema', type: 'string' }
 };
 
 export let myServiceAppointmentFieldLabels = {
@@ -121,8 +121,8 @@ export let myServiceAppointmentFieldLabels = {
     SchedEndTime: { label: 'Planlagt slutt', type: 'datetime' },
     ActualStartTime: { label: 'Faktisk start', type: 'datetime' },
     ActualEndTime: { label: 'Faktsik slutt', type: 'datetime' },
-    Address: { label: 'Adresse', type: 'string' },
-    ServiceTerritoryName: { label: 'Region', type: 'string' },
+    HOT_AddressFormated__c: { label: 'Adresse', type: 'string' },
+    HOT_ServiceTerritoryName__c: { label: 'Region', type: 'string' },
     Status: { label: 'Status', type: 'string' },
     HOT_HapticCommunication__c: { label: 'Haptisk kommunikasjon', type: 'string' },
     HOT_Escort__c: { label: 'Ledsaging', type: 'string' },
