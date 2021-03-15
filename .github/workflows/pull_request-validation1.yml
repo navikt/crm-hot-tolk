@@ -30,6 +30,10 @@ jobs:
       - name: Create scratch org
         run: sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1
 
+      # Enable Field Service (bug)
+      - name: Enable Field Service (bug)
+        run: sfdx force:source:deploy -x ./manifests/FieldServiceSettings.xml
+
       # Set SCRATCH_ORG_SFDX_AUTH_URL.txt
       # ! saves sfdx auth url as artifact to circumvent GitHub Actions censoring of the value (which occurs when used with job output)
       # ! artifact is later deleted

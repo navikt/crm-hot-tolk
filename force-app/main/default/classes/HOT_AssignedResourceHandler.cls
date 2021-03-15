@@ -39,6 +39,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
         }
         if (assignedResourcesFiltered.size() > 0) {
+            notifyResource((List<AssignedResource>) triggerOldMap.values());
+
             List<ServiceAppointment> serviceAppointments = setServiceResourceFieldsOnServiceAppointment(
                 (List<AssignedResource>) records
             );
@@ -268,5 +270,40 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
         }
         update serviceAppointmentsToUpdate;
+    }
+
+    public static void notifyResource(List<AssignedResource> assignedResources) {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
+        ];
+
+        List<Id> serviceResourceIds = new List<Id>();
+        List<Id> serviceAppointmentIds = new List<Id>();
+        for (AssignedResource assignedResource : assignedResources) {
+            serviceResourceIds.add(assignedResource.ServiceResourceId);
+            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+        }
+        Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
+            [SELECT Id, RelatedRecordId FROM ServiceResource WHERE Id IN :serviceResourceIds]
+        );
+        Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
+            [
+                SELECT Id, AppointmentNumber, EarliestStartTime, Status
+                FROM ServiceAppointment
+                WHERE Id IN :serviceAppointmentIds
+            ]
+        );
+
+        for (AssignedResource assignedResource : assignedResources) {
+            if (serviceAppointments.get(assignedResource.ServiceAppointmentId).Status != 'Scheduled') {
+                HOT_NotificationHandler.resourceChanged(
+                    notificationType,
+                    serviceAppointments.get(assignedResource.ServiceAppointmentId),
+                    new Set<String>{ serviceResources.get(assignedResource.ServiceResourceId).RelatedRecordId }
+                );
+            }
+        }
     }
 }
