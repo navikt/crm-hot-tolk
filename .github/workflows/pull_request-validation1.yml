@@ -32,7 +32,7 @@ jobs:
 
       # Enable Field Service (bug)
       - name: Enable Field Service (bug)
-        run: sfdx force:source:deploy -x .\manifests\FieldServiceSettings.xml
+        run: sfdx force:source:deploy -x ./manifests/FieldServiceSettings.xml
 
       # Set SCRATCH_ORG_SFDX_AUTH_URL.txt
       # ! saves sfdx auth url as artifact to circumvent GitHub Actions censoring of the value (which occurs when used with job output)
