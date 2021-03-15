@@ -498,20 +498,6 @@ private class HOT_ServiceAppointmentHandlerTest {
         system.assertEquals(endTime, sa.SchedEndTime, 'End time not set');
         system.assertEquals('None', sa.Status, 'Status not set');
     }
-    @isTest
-    private static void testNotifyUsers() {
-        Test.startTest();
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, Status, SchedStartTime, Street
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
-        serviceAppointment.Status = 'Canceled';
-        serviceAppointment.SchedStartTime = Datetime.now();
-        serviceAppointment.Street = 'Street2789462894';
-        update serviceAppointment;
-        Test.stopTest();
-    }
 
     @isTest
     private static void testReleaseToFreelance() {
