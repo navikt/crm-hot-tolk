@@ -4,6 +4,8 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
+import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
+import { formatRecord } from 'c/hot_recordDetails';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [
@@ -216,15 +218,16 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    @track isDetails = false;
     @track serviceAppointmentDetails = null;
     showDetails(row) {
-        const { Id } = row;
-        this.serviceAppointmentDetails = row;
-        this.isDetails = true;
+        this.serviceAppointmentDetails = formatRecord(row, openServiceAppointmentFieldLabels.getSubFields('details'));
+
+        let detailPage = this.template.querySelector('.detailPage');
+        detailPage.classList.remove('hidden');
+        detailPage.focus();
     }
     abortShowDetails() {
-        this.isDetails = false;
+        this.template.querySelector('.detailPage').classList.add('hidden');
     }
 
     @track requestNumber = null;
@@ -252,13 +255,20 @@ export default class Hot_openServiceAppointments extends LightningElement {
         console.log(JSON.stringify(this.selectedRows));
     }
 
-    @track isAddComments = false;
+    @track serviceAppointmentCommentDetails = [];
     abortSendingInterest() {
-        this.isAddComments = false;
+        this.template.querySelector('.commentPage').classList.add('hidden');
     }
     sendInterest() {
         if (this.selectedRows.length > 0) {
-            this.isAddComments = true;
+            for (let row of this.selectedRows) {
+                this.serviceAppointmentCommentDetails.push(
+                    formatRecord(row, openServiceAppointmentFieldLabels.getSubFields('comment'))
+                );
+            }
+            let commentPage = this.template.querySelector('.commentPage');
+            commentPage.classList.remove('hidden');
+            commentPage.focus();
         } else {
             alert('Velg oppdrag du ønsker å melde interesse om, så trykk på knappen.');
         }
@@ -266,7 +276,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     confirmSendingInterest() {
         let serviceAppointmentIds = [];
         let comments = [];
-        for (var i = 0; i < this.selectedRows.length; i++) {
+        for (let i = 0; i < this.selectedRows.length; i++) {
             serviceAppointmentIds.push(this.selectedRows[i].Id);
         }
         this.template.querySelectorAll('lightning-input-field').forEach((element) => {
@@ -275,8 +285,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         createInterestedResources({ serviceAppointmentIds, comments }).then(() => {
             refreshApex(this.wiredAllServiceAppointmentsResult);
         });
-        this.isAddComments = false;
-        //location.reload();
+        this.template.querySelector('.commentPage').classList.add('hidden');
     }
 
     @track showRegionFilter = false;
