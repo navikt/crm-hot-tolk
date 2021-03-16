@@ -261,6 +261,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
     sendInterest() {
         if (this.selectedRows.length > 0) {
+            this.serviceAppointmentCommentDetails = [];
             for (let row of this.selectedRows) {
                 this.serviceAppointmentCommentDetails.push(
                     formatRecord(row, openServiceAppointmentFieldLabels.getSubFields('comment'))
