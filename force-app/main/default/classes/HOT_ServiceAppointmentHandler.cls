@@ -470,7 +470,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.HOT_IsEmployedInterpreter__c = false;
             serviceAppointment.HOT_IsReleasedToFreelance__c = true;
             serviceAppointment.HOT_ReleaseDate__c = Date.today();
-            serviceAppointment.HOT_ReleasedBy__c = UserInfo.getUserName();
+            serviceAppointment.HOT_ReleasedBy__c = UserInfo.getName();
         }
     }
     public static void retractServiceAppointments(List<ServiceAppointment> serviceAppointments) {
