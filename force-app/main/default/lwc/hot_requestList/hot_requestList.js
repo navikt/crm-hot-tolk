@@ -9,6 +9,8 @@ import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterControll
 import getAssignedResources from '@salesforce/apex/HOT_Utility.getAssignedResources';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
+import { requestFieldLabels } from 'c/hot_fieldLabels';
+import { formatRecord } from 'c/hot_recordDetails';
 
 export default class RequestList extends NavigationMixin(LightningElement) {
     rerenderCallback() {
@@ -383,30 +385,38 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             }
         }
     }
-    @track isDetails = false;
     @track record = null;
     @track userForm = false;
     @track myRequest = false;
     @track companyForm = false;
     @track publicEvent = false;
-    @track ordererName = '';
     showDetails(row) {
         this.record = row;
-        if (this.record.hasOwnProperty('Orderer__c')) {
-            this.ordererName = this.record.Orderer__r.Name;
-        } else {
-            this.ordererName = this.record.Owner.Name;
-        }
         this.myRequest = this.record.Orderer__c == this.userRecord.AccountId;
         this.userForm =
             (this.record.Type__c == 'User' || this.record.Type__c == 'Company') && this.record.UserName__c != '';
         this.companyForm = this.record.Type__c == 'Company' || this.record.Type__c == 'PublicEvent';
         this.publicEvent = this.record.Type__c == 'PublicEvent';
-        this.isDetails = true;
+
+        this.userFields = formatRecord(this.record, requestFieldLabels.getSubFields('user'));
+        this.ordererFields = formatRecord(this.record, requestFieldLabels.getSubFields('orderer'));
+        this.companyFields = formatRecord(this.record, requestFieldLabels.getSubFields('company'));
+        this.requestFields = formatRecord(this.record, requestFieldLabels.getSubFields('request'));
+
+        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        detailPage.classList.remove('hidden');
+        detailPage.focus();
     }
 
+    @track userFields = null;
+    @track ordererFields = null;
+    @track companyFields = null;
+    @track requestFields = null;
+
+    @track formatedRecord = [];
+
     abortShowDetails() {
-        this.isDetails = false;
+        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
     }
 
     showTimes(row) {

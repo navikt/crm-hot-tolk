@@ -289,15 +289,21 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             [SELECT Id, RelatedRecordId FROM ServiceResource WHERE Id IN :serviceResourceIds]
         );
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
-            [SELECT Id, AppointmentNumber, EarliestStartTime FROM ServiceAppointment WHERE Id IN :serviceAppointmentIds]
+            [
+                SELECT Id, AppointmentNumber, EarliestStartTime, Status
+                FROM ServiceAppointment
+                WHERE Id IN :serviceAppointmentIds
+            ]
         );
 
         for (AssignedResource assignedResource : assignedResources) {
-            HOT_NotificationHandler.resourceChanged(
-                notificationType,
-                serviceAppointments.get(assignedResource.ServiceAppointmentId),
-                new Set<String>{ serviceResources.get(assignedResource.ServiceResourceId).RelatedRecordId }
-            );
+            if (serviceAppointments.get(assignedResource.ServiceAppointmentId).Status != 'Scheduled') {
+                HOT_NotificationHandler.resourceChanged(
+                    notificationType,
+                    serviceAppointments.get(assignedResource.ServiceAppointmentId),
+                    new Set<String>{ serviceResources.get(assignedResource.ServiceResourceId).RelatedRecordId }
+                );
+            }
         }
     }
 }

@@ -13,9 +13,9 @@ public without sharing class HOT_RequestListContoller {
                     EndTime__c,
                     MeetingStreet__c,
                     MeetingPostalCode__c,
+                    MeetingPostalCity__c,
                     NumberOfWorkOrders__c,
                     AdditionalInvoicetext__c,
-                    MeetingPostalCity__c,
                     InterpretationStreet__c,
                     InterpretationPostalCode__c,
                     InterpretationPostalCity__c,
@@ -33,8 +33,10 @@ public without sharing class HOT_RequestListContoller {
                     Type__c,
                     toLabel(EventType__c),
                     Orderer__r.Name,
+                    Orderer__c,
                     OrdererPhone__c,
                     OrdererEmail__c,
+                    OrdererName__c,
                     Owner.Name,
                     UserName__c,
                     Company__r.Name,
@@ -59,6 +61,11 @@ public without sharing class HOT_RequestListContoller {
                 request.TempAccountId__c = user.AccountId;
                 if (request.NumberOfWorkOrders__c == 0 || request.NumberOfWorkOrders__c == null) {
                     request.NumberOfWorkOrders__c = 1;
+                }
+                if (request.Orderer__c == null) {
+                    request.OrdererName__c = request.Owner.Name;
+                } else {
+                    request.OrdererName__c = request.Orderer__r.Name;
                 }
                 if (request.Account__c != user.AccountId) {
                     Integer numberOfWorkOrders = request.Work_Orders__r.size();

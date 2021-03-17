@@ -23,7 +23,10 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_DeadlineDate__c,
                 ServiceAppointmentCity__c,
                 ServiceAppointment__r.ServiceTerritory.Name,
-                ServiceAppointment__r.HOT_AssignmentType__c
+                ServiceAppointment__r.HOT_AssignmentType__c,
+                AssignmentType__c,
+                AppointmentDeadlineDate__c,
+                AppointmentServiceTerritory__c
             FROM HOT_InterestedResource__c
             WHERE ServiceResource__c IN :serviceResource
         ];
