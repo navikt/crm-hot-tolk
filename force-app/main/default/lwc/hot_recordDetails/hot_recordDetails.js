@@ -14,6 +14,10 @@ export function formatRecord(record, fieldLabels) {
                 fields.push({ name: field, label: fieldLabels[field].label, value: formatDate(record[field]) });
             } else if (fieldLabels[field].type === 'datetime') {
                 fields.push({ name: field, label: fieldLabels[field].label, value: formatDatetime(record[field]) });
+            } else {
+                if (record[field]) {
+                    fields.push({ name: field, label: fieldLabels[field].label, value: fieldLabels[field].type });
+                }
             }
         }
     }

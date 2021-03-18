@@ -17,6 +17,10 @@ export let requestFieldLabels = {
     InterpretationStreet__c: { label: 'Tolkeadresse', type: 'string' },
     InterpretationPostalCode__c: { label: 'Postnummer', type: 'string' },
     InterpretationPostalCity__c: { label: 'Poststed', type: 'string' },
+    IsScreenInterpreter__c: {
+        label: 'Skjermtolk',
+        type: 'Deler av bestillingen gjennomføres som Skjermtolking, Se tidsplan'
+    },
     getSubFields: function (section) {
         if (section === 'user') {
             return {
@@ -49,7 +53,8 @@ export let requestFieldLabels = {
                 MeetingPostalCity__c: this.MeetingPostalCity__c,
                 InterpretationStreet__c: this.InterpretationStreet__c,
                 InterpretationPostalCode__c: this.InterpretationPostalCode__c,
-                InterpretationPostalCity__c: this.InterpretationPostalCity__c
+                InterpretationPostalCity__c: this.InterpretationPostalCity__c,
+                IsScreenInterpreter__c: this.IsScreenInterpreter__c
             };
         }
         return null;
@@ -134,6 +139,7 @@ export let myServiceAppointmentFieldLabels = {
 export let workOrderFieldLabels = {
     StartDate: { label: 'Start tid', type: 'datetime' },
     EndDate: { label: 'Slutt tid', type: 'datetime' },
+    Subject: { label: 'Tema', type: 'string' },
     HOT_RequestName__c: { label: 'Bestillingsnummer', type: 'string' },
     HOT_ExternalWorkOrderStatus__c: { label: 'Status', type: 'string' },
     HOT_Interpreters__c: { label: 'Tolker', type: 'string' }
