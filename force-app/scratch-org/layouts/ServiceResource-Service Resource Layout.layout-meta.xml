@@ -40,11 +40,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>HOT_Agreement_Freelance__c</field>
+                <field>HOT_AgreementFreelance__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>HOT_Interpreter_Space__c</field>
+                <field>HOT_InterpreterSpace__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
