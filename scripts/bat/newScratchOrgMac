@@ -6,14 +6,14 @@ sfdx force:org:create -f config/project-scratch-def.json --setalias $1 --duratio
 echo Skru på Field Service (bug)
 sfdx force:source:deploy -x .\manifests\FieldServiceSettings.xml
 
-# Installer crm-platform-base ver. 0.67
-sfdx force:package:install --package 04t2o000000yRPOAA2 -r -k navcrm --wait 10 --publishwait 10
+# Installer crm-platform-base ver. 0.73
+sfdx force:package:install --package 04t2o000000yRbZAAU -r -k navcrm --wait 10 --publishwait 10
 
 # Installer crm-platform-integration ver. 0.34
 sfdx force:package:install --package 04t2o000000yRIgAAM -r -k navcrm --wait 10 --publishwait 10
 
-# Installer crm-platform-access-control ver. 0.56
-sfdx force:package:install --package 04t2o000000yRPJAA2 -r -k navcrm --wait 10 --publishwait 10
+# Installer crm-platform-access-control ver. 0.60
+sfdx force:package:install --package 04t2o000000yRbUAAU -r -k navcrm --wait 10 --publishwait 10
 
 # Installer crm-community-base ver. 0.15
 sfdx force:package:install --package 04t2o000000yRGfAAM -r -k navcrm --wait 10 --publishwait 10
