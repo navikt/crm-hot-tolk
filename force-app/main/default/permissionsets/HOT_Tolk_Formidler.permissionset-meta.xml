@@ -950,7 +950,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>ServiceResource.HOT_Agreement_Freelance__c</field>
+        <field>ServiceResource.HOT_AgreementFreelance__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -965,7 +965,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>ServiceResource.HOT_Interpreter_Space__c</field>
+        <field>ServiceResource.HOT_InterpreterSpace__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
