@@ -52,10 +52,12 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_TermsOfAgreement__c,
                 City,
                 ServiceTerritory.Name,
+                HOT_ServiceTerritoryName__c,
                 HOT_DegreeOfHearingAndVisualImpairment__c,
                 HOT_HapticCommunication__c,
                 HOT_Escort__c,
-                HOT_AssignmentType__c
+                HOT_AssignmentType__c,
+                HOT_FreelanceSubject__c
             FROM ServiceAppointment
             WHERE Id IN :serviceAppointmentIds
             ORDER BY SchedStartTime ASC

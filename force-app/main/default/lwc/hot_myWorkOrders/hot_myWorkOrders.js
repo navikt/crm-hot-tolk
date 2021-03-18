@@ -7,6 +7,8 @@ import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import getWorkOrdersFromRequest from '@salesforce/apex/HOT_WorkOrderListController.getWorkOrdersFromRequest';
 import getMyWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrders';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
+import { workOrderFieldLabels } from 'c/hot_fieldLabels';
+import { formatRecord } from 'c/hot_recordDetails';
 
 export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) {
     @track columns = [
@@ -216,11 +218,14 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
     @track isDetails = false;
     @track workOrderDetails = null;
     showDetails(row) {
-        this.workOrderDetails = row;
-        this.isDetails = true;
+        this.workOrderDetails = formatRecord(row, workOrderFieldLabels);
+        let detailPage = this.template.querySelector('.detailPage');
+        detailPage.classList.remove('hidden');
+        detailPage.focus();
     }
+
     abortShowDetails() {
-        this.isDetails = false;
+        this.template.querySelector('.detailPage').classList.add('hidden');
     }
 
     cancelWorkOrder(row) {
