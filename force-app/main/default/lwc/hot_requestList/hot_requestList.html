@@ -70,13 +70,14 @@
         class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
         style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
         tabindex="-1"
-        aria-label="Detaljer"
     >
         <div
             class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
             role="dialog"
+            aria-labelledby="details-header-id"
         >
             <div class="skjema skjema-max-width">
+                <h2 id="details-header-id" class="typo-undertittel">Detaljer</h2>
                 <section if:true={userForm} class="bruker-info-skjema sub-form">
                     <h2 style="font-size: 1.25rem">Informasjon om bruker</h2>
                     <c-hot_record-details record={userFields}></c-hot_record-details>
