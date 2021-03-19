@@ -30,7 +30,6 @@
                         options={requestTypes}
                         type="radio"
                         onchange={handleRequestTypeChange}
-                        required
                         value={currentRequestType}
                     >
                     </lightning-radio-group>
@@ -239,6 +238,7 @@
                                 </lightning-combobox>
                                 <div if:true={showWeekDays} aria-live>
                                     <lightning-checkbox-group
+                                        label="Ukedager"
                                         name="Days"
                                         options={days}
                                         value={chosenDays}
