@@ -78,7 +78,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             sortable: true
         },
         {
-            label: 'Serieoppdrag *',
+            label: 'Serieoppdrag',
             fieldName: 'IsSerieoppdrag__c',
             type: 'boolean',
             sortable: true
@@ -100,7 +100,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         "'Bestilling'",
         "'Oppmøtested'",
         "'Tema'",
-        "'Serieoppdrag *'",
+        "'Serieoppdrag'",
         "'Status'"
     ];
 
