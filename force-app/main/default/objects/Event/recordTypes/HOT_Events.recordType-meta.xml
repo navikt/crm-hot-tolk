@@ -3,46 +3,4 @@
     <fullName>HOT_Events</fullName>
     <active>true</active>
     <label>HOT Events</label>
-    <picklistValues>
-        <picklist>Subject</picklist>
-        <values>
-            <fullName>Absence</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Ferie</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Medisinsk</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Møte</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Opplæring</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>Type</picklist>
-        <values>
-            <fullName>Call</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Email</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Meeting</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Other</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
 </RecordType>
