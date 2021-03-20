@@ -95,6 +95,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsToRemoveAssignedResource = new List<ServiceAppointment>();
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithChangedAddress = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -116,6 +117,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 retractedServiceAppointments.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.HOT_AddressFormated__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_AddressFormated__c')
+            ) {
+                serviceAppointmentsWithChangedAddress.add(serviceAppointment);
+            }
         }
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
@@ -126,6 +133,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (retractedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(retractedServiceAppointments, 'Service Appointment Retracted');
+        }
+        if (serviceAppointmentsWithChangedAddress.size() > 0) {
+            updateRelatedEvents(serviceAppointmentsWithChangedAddress);
         }
     }
 
@@ -517,5 +527,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
         update interestedResources;
+    }
+
+    public static void updateRelatedEvents(List<ServiceAppointment> serviceAppointments) {
+        List<Event> events = [SELECT Id, Location FROM Event WHERE WhatId IN :serviceAppointments];
+        for (Event event : events) {
+            event.Location = 'TO_UPDATE';
+        }
+        update events;
     }
 }
