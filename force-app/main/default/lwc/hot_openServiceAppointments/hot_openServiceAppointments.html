@@ -35,16 +35,17 @@
                 </lightning-input>
             </div>
             <div
-                if:true={showRegionFilter}
-                class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay"
+                class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay regionPage hidden"
                 style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+                tabindex="-1"
             >
                 <div
                     class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-                    tabindex="-1"
                     role="dialog"
+                    aria-labelledby="regions-header-id"
                 >
                     <section>
+                        <h2 id="regions-header-id" class="typo-undertittel">Regioner</h2>
                         <lightning-record-edit-form
                             class="no-padding"
                             object-api-name="ServiceResource"
@@ -111,10 +112,11 @@
         <div
             class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
             role="dialog"
+            aria-labelledby="comment-header-id"
         >
             <section>
                 <div>
-                    <h2 class="typo-undertittel">Legg til kommentarer til oppdragene</h2>
+                    <h2 id="comment-header-id" class="typo-undertittel">Legg til kommentarer til oppdragene</h2>
 
                     <template iterator:it={serviceAppointmentCommentDetails}>
                         <lightning-record-edit-form
@@ -149,14 +151,14 @@
         class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay detailPage hidden"
         style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
         tabindex="-1"
-        aria-label="Detaljer"
     >
         <div
             class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
             role="dialog"
+            aria-labelledby="details-header-id"
         >
             <section>
-                <h2 class="typo-undertittel">Detaljer</h2>
+                <h2 id="details-header-id" class="typo-undertittel">Detaljer</h2>
                 <c-hot_record-details record={serviceAppointmentDetails}></c-hot_record-details>
             </section>
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>

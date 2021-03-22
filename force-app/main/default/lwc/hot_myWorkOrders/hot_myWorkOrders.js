@@ -24,7 +24,8 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false
-            }
+            },
+            initialWidth: 135
         },
         {
             label: 'Slutt tid',
@@ -38,25 +39,29 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false
-            }
+            },
+            initialWidth: 135
         },
         {
             label: 'Tema',
             fieldName: 'Subject',
             type: 'text',
-            sortable: true
+            sortable: true,
+            initialWidth: 200
         },
         {
-            label: 'Bestillingsnummer',
+            label: 'Bestillingsnr',
             fieldName: 'HOT_RequestName__c',
             type: 'text',
-            sortable: true
+            sortable: true,
+            initialWidth: 130
         },
         {
             label: 'Status',
             fieldName: 'HOT_ExternalWorkOrderStatus__c',
             type: 'text',
-            sortable: true
+            sortable: true,
+            initialWidth: 150
         },
         {
             label: 'Tolker',
