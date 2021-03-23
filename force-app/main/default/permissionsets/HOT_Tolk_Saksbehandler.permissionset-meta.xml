@@ -527,6 +527,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsOtherEconomicProvicer__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.SchedEndTime</field>
         <readable>true</readable>
     </fieldPermissions>
