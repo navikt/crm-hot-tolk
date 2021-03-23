@@ -311,7 +311,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.IsOtherEconomicProvicer__c</field>
+        <field>ServiceAppointment.HOT_IsOtherEconomicProvicer__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

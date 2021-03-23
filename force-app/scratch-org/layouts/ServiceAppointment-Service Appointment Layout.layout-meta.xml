@@ -44,7 +44,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>IsOtherEconomicProvicer__c</field>
+                <field>HOT_IsOtherEconomicProvicer__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
