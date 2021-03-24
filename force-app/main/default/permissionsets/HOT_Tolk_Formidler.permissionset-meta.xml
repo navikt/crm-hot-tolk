@@ -175,7 +175,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_InterestedResource__c.HOT_Dispatcher__c</field>
+        <field>HOT_InterestedResource__c.Dispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

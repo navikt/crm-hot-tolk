@@ -20,7 +20,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>HOT_Dispatcher__c</field>
+                <field>Dispatcher__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
