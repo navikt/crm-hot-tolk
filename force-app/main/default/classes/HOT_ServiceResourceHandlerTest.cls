@@ -22,13 +22,16 @@ private class HOT_ServiceResourceHandlerTest {
             Profile communityProfile = [
                 SELECT Name
                 FROM Profile
-                WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User'
+                WHERE
+                    Name = 'Personbruker Login'
+                    OR Name = 'Trial Customer Portal User'
+                    OR Name = 'Customer Community User'
                 LIMIT 1
             ];
             DefaultCommunityProfile__c defaultCommunityProfile = new DefaultCommunityProfile__c(
                 DefaultProfile__c = communityProfile.Name,
                 DefaultPermissionSet__c = 'CRM_ManageAsyncRequests',
-                DefaultCommunityPlusProfile__c = 'Trial Customer Portal User',
+                DefaultCommunityPlusProfile__c = 'Customer Community User',
                 DefaultCommunityPlusPermissionSetGroup__c = 'Test'
             );
             insert defaultCommunityProfile;

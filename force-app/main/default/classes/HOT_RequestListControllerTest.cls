@@ -54,7 +54,7 @@ private class HOT_RequestListControllerTest {
         Profile communityProfile = [
             SELECT Name
             FROM Profile
-            WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User'
+            WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User' OR Name = 'Customer Community User'
             LIMIT 1
         ];
         User user = HOT_TestDataFactory.createUser(communityProfile, account);
