@@ -11,7 +11,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.77.0.2"
+                    "versionNumber": "0.77.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
@@ -35,7 +35,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.77.0.2"
+                    "versionNumber": "0.77.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
