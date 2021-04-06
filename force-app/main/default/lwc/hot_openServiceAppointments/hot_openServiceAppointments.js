@@ -289,11 +289,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.template.querySelector('.commentPage').classList.add('hidden');
     }
 
-    @track showRegionFilter = false;
     @track regions = [];
-    handleShowRegionFilter(event) {
-        this.showRegionFilter = !this.showRegionFilter;
-    }
     handleSubmit(event) {
         event.preventDefault();
         const fields = event.detail.fields;
@@ -302,10 +298,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
         this.handleHideRegionFilter();
     }
-    handleHideRegionFilter() {
-        this.showRegionFilter = !this.showRegionFilter;
+    handleShowRegionFilter() {
+        let regionPage = this.template.querySelector('.regionPage');
+        regionPage.classList.remove('hidden');
+        regionPage.focus();
     }
-    savePrefferedRegions() {
-        this.handleHideRegionFilter();
+    handleHideRegionFilter() {
+        this.template.querySelector('.regionPage').classList.add('hidden');
     }
 }

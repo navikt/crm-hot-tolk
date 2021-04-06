@@ -5,7 +5,7 @@ private class HOT_UserHandlerTest {
         Profile communityProfile = [
             SELECT Name
             FROM Profile
-            WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User'
+            WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User' OR Name = 'Customer Community User'
             LIMIT 1
         ];
         DefaultCommunityProfile__c defaultCommunityProfile = new DefaultCommunityProfile__c(

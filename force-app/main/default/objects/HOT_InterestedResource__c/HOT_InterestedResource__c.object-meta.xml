@@ -169,5 +169,6 @@
     <pluralLabel>Interested Resources</pluralLabel>
     <searchLayouts />
     <sharingModel>ControlledByParent</sharingModel>
+    <startsWith>Vowel</startsWith>
     <visibility>Public</visibility>
 </CustomObject>

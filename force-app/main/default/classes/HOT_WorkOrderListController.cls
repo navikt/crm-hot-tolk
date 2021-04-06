@@ -80,23 +80,32 @@ public without sharing class HOT_WorkOrderListController {
             ]
         );
         List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name
+            SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c
             FROM ServiceAppointment
             WHERE ParentRecordId IN :workOrderLineItems.keySet() AND Status IN :statuses
         ];
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (serviceAppointment.HOT_ServiceResource__r.Name != null) {
+                String screenInterpreter = '';
+                if (serviceAppointment.HOT_IsScreenInterpreterNew__c) {
+                    screenInterpreter = ' (skjermtolk)';
+                }
+
                 if (
                     workOrders.get(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrderId)
                         .HOT_Interpreters__c == null
                 ) {
                     workOrders.get(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrderId)
                             .HOT_Interpreters__c =
-                        serviceAppointment.HOT_ServiceResource__r.Name + ', ';
+                        serviceAppointment.HOT_ServiceResource__r.Name +
+                        screenInterpreter +
+                        ', ';
                 } else {
                     workOrders.get(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrderId)
                             .HOT_Interpreters__c +=
-                        serviceAppointment.HOT_ServiceResource__r.Name + ', ';
+                        serviceAppointment.HOT_ServiceResource__r.Name +
+                        screenInterpreter +
+                        ', ';
                 }
             }
         }

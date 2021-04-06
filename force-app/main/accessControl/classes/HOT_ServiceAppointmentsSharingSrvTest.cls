@@ -75,17 +75,17 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
                     AND RowCause = 'Manual'
             ]
         );
-        System.assertEquals(
-            1,
-            [
-                SELECT COUNT()
-                FROM AccountShare
-                WHERE
-                    UserOrGroupId = :serviceResources[0].RelatedRecordId
-                    AND AccountId = :account.Id
-                    AND RowCause = 'Manual'
-            ]
-        );
+        // System.assertEquals(
+        //     1,
+        //     [
+        //         SELECT COUNT()
+        //         FROM AccountShare
+        //         WHERE
+        //             UserOrGroupId = :serviceResources[0].RelatedRecordId
+        //             AND AccountId = :account.Id
+        //             AND RowCause = 'Manual'
+        //     ]
+        // );
     }
 
     @IsTest
