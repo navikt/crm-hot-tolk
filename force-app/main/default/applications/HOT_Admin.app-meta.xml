@@ -151,6 +151,7 @@
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <tabs>standard-Task</tabs>
+    <tabs>Application_Log__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>HoT_Admin_UtilityBar</utilityBar>
 </CustomApplication>

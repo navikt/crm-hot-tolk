@@ -53,6 +53,8 @@ public without sharing class HOT_CreateWorkOrderService {
         HOT_CreateWorkOrderService input = inputVariables[0];
         Integer maxNumberOfRecurrences = 200;
         List<String> errors = new List<String>();
+        LoggerUtility logger = new LoggerUtility();
+        HOT_Request__c request = new HOT_Request__c(Id = input.requestId);
 
         TimeZone tz = UserInfo.getTimeZone();
         Datetime nowDate = Datetime.now();
@@ -93,6 +95,8 @@ public without sharing class HOT_CreateWorkOrderService {
                 insert workOrder;
             } catch (Exception e) {
                 errors.add('Opprettelsen av arbeidsordren feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
             }
 
             return errors;
@@ -123,6 +127,8 @@ public without sharing class HOT_CreateWorkOrderService {
                 insert workOrders;
             } catch (Exception e) {
                 errors.add('Opprettelsen av arbeidsordrene feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
             }
 
             return errors;
@@ -166,6 +172,8 @@ public without sharing class HOT_CreateWorkOrderService {
                 insert workOrders;
             } catch (Exception e) {
                 errors.add('Opprettelsen av arbeidsordrene feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
             }
 
             return errors;
@@ -211,6 +219,8 @@ public without sharing class HOT_CreateWorkOrderService {
                 insert workOrders;
             } catch (Exception e) {
                 errors.add('Opprettelsen av arbeidsordrene feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
             }
 
             return errors;
@@ -243,6 +253,8 @@ public without sharing class HOT_CreateWorkOrderService {
                 insert workOrders;
             } catch (Exception e) {
                 errors.add('Opprettelsen av arbeidsordrene feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
             }
 
             return errors;

@@ -20,6 +20,7 @@ public without sharing class HOT_RequestListContoller {
                     InterpretationPostalCode__c,
                     InterpretationPostalCity__c,
                     IsSerieoppdrag__c,
+                    IsScreenInterpreter__c,
                     InvoiceReference__c,
                     Description__c,
                     Status__c,

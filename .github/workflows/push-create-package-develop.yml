@@ -49,7 +49,7 @@ jobs:
       - name: "Create package version"
         id: package-version-create
         run: |
-          sfdx force:package:version:create -f config/project-scratch-def.json -p crm-hot-dev -k ${{ secrets.PACKAGE_KEY }} -w 90 --json --skipvalidation | tee output
+          sfdx force:package:version:create -f config/project-scratch-def.json -p crm-hot-dev -k ${{ secrets.PACKAGE_KEY }} -w 90 --json | tee output
           echo "::set-output name=result::$(cat output | jq -c .)"
 
           status=$(cat output |jq '.status')

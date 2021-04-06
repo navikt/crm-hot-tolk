@@ -4,9 +4,11 @@
     <externalId>false</externalId>
     <formula>Street
 + 
-IF(PostalCode != &quot;&quot;, &quot;, &quot; + PostalCode, &quot;&quot;)
+IF(PostalCode != &quot;&quot; &amp;&amp; City != &quot;&quot;, &quot;, &quot; + PostalCode + &quot; &quot; + City, &quot;&quot;)
 +
-IF(City!= &quot;&quot;, &quot;, &quot; + City, &quot;&quot;)</formula>
+IF(PostalCode != &quot;&quot; &amp;&amp; City = &quot;&quot;, &quot;, &quot; + PostalCode, &quot;&quot;)
++
+IF(PostalCode = &quot;&quot; &amp;&amp; City != &quot;&quot;, &quot;, &quot; + City, &quot;&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Address</label>
     <required>false</required>

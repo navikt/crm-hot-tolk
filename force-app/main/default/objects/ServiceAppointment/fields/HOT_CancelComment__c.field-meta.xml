@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_CancelComment__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
     <label>Cancel Comment</label>
     <required>false</required>
     <trackHistory>true</trackHistory>
-    <type>TextArea</type>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Tekniske problemer</fullName>
+                <default>false</default>
+                <label>Tekniske problemer</label>
+            </value>
+            <value>
+                <fullName>Bruker ikke møtt</fullName>
+                <default>false</default>
+                <label>Bruker ikke møtt</label>
+            </value>
+            <value>
+                <fullName>Annet</fullName>
+                <default>false</default>
+                <label>Annet</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
 </CustomField>
