@@ -111,10 +111,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     @track serviceResource;
+    @track serviceResourceId;
     @wire(getServiceResource)
     wiredServiceresource(result) {
         if (result.data) {
             this.serviceResource = result.data;
+            this.serviceResourceId = this.serviceResource.Id;
             console.log(JSON.stringify(this.serviceResource));
             let tempRegions = result.data.HOT_PreferredRegions__c.split(';');
             for (let tempRegion of tempRegions) {
