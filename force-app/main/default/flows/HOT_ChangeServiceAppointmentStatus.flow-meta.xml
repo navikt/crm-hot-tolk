@@ -631,8 +631,8 @@
         <fields>
             <name>Cancel_Comment_Bruker_Picklist</name>
             <choiceReferences>Tekniske_Problemer</choiceReferences>
-            <choiceReferences>Annet</choiceReferences>
             <choiceReferences>Bruker_Ikke_Mott</choiceReferences>
+            <choiceReferences>Annet</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
             <fieldType>DropdownBox</fieldType>
