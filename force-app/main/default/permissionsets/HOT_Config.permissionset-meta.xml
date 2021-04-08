@@ -238,7 +238,17 @@
     </customPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Application_Log__c.Application_Domain__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Application_Log__c.CRM_Ready_for_Deletion__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Application_Log__c.Category__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -384,6 +394,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_Processed__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_ReleasedBy__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
