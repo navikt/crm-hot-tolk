@@ -651,9 +651,9 @@
         </connector>
         <fields>
             <name>Cancel_Comment_Tolk_Picklist</name>
-            <choiceReferences>BrukerIkkeMott</choiceReferences>
+            <choiceReferences>Bruker_Ikke_Mott</choiceReferences>
             <choiceReferences>Annet</choiceReferences>
-            <choiceReferences>TekniskeProblemer</choiceReferences>
+            <choiceReferences>Tekniske_Problemer</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
             <fieldType>DropdownBox</fieldType>
