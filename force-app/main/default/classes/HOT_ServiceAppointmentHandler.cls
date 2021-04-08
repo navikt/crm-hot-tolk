@@ -63,6 +63,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 retractedServiceAppointments.add(serviceAppointment);
             }
+            serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
         if (!updatedServiceAppointments.isEmpty()) {
@@ -88,7 +89,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (retractedServiceAppointments.size() > 0) {
             retractServiceAppointments(retractedServiceAppointments);
         }
-        HOT_NotificationHandler.serviceAppointmentChanged(allServiceAppointments, triggerOldMap);
+        HOT_NotificationHandler.serviceAppointmentChanged_interpreter(allServiceAppointments, triggerOldMap);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -278,6 +279,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 if (serviceAppointment.HOT_WorkOrderLineItem__c == null && serviceAppointment.ParentRecordId != null) {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
+                serviceAppointment = updateDuration(serviceAppointment);
             }
         }
     }
@@ -535,5 +537,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             event.Location = 'TO_UPDATE';
         }
         update events;
+    }
+
+    private static ServiceAppointment updateDuration(ServiceAppointment serviceAppointment) {
+        if (serviceAppointment.EarliestStartTime != null && serviceAppointment.DueDate != null) {
+            serviceAppointment.Duration = (serviceAppointment.DueDate.getTime() -
+            serviceAppointment.EarliestStartTime.getTime())/3600000;
+        }
+        return serviceAppointment;
     }
 }
