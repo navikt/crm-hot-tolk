@@ -1,5 +1,5 @@
 public without sharing class HOT_NotificationHandler {
-    public static void serviceAppointmentChanged(
+    public static void serviceAppointmentChanged_interpreter(
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
