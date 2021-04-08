@@ -9,7 +9,7 @@
             <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Cancel_Comment_Bruker</elementReference>
+                <elementReference>Cancel_Comment_Bruker_Picklist</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -395,7 +395,7 @@
         <inputAssignments>
             <field>StatusComment__c</field>
             <value>
-                <elementReference>Cancel_Comment_Bruker</elementReference>
+                <elementReference>Cancel_Comment_Bruker_Picklist</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -429,7 +429,7 @@
         <inputAssignments>
             <field>StatusComment__c</field>
             <value>
-                <elementReference>Cancel_Comment_Tolk_Picklist</elementReference>
+                <elementReference>Cancel_Comment_Tolk</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -629,10 +629,13 @@
             <targetReference>Create_Historically_Assigned_Resource_Avlyst_Bruker</targetReference>
         </connector>
         <fields>
-            <name>Cancel_Comment_Bruker</name>
+            <name>Cancel_Comment_Bruker_Picklist</name>
+            <choiceReferences>Tekniske_Problemer</choiceReferences>
+            <choiceReferences>Annet</choiceReferences>
+            <choiceReferences>Bruker_Ikke_Mott</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
-            <fieldType>InputField</fieldType>
+            <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
@@ -650,13 +653,10 @@
             <targetReference>Create_Historically_Assigned_Resource_Avlyst_Tolk</targetReference>
         </connector>
         <fields>
-            <name>Cancel_Comment_Tolk_Picklist</name>
-            <choiceReferences>Bruker_Ikke_Mott</choiceReferences>
-            <choiceReferences>Annet</choiceReferences>
-            <choiceReferences>Tekniske_Problemer</choiceReferences>
+            <name>Cancel_Comment_Tolk</name>
             <dataType>String</dataType>
             <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
-            <fieldType>DropdownBox</fieldType>
+            <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
