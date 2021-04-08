@@ -11,14 +11,15 @@ public without sharing class HOT_RequestNotification {
             queueIds.add(request.OwnerId);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
+        Map<Id, Set<String>> recipientsByGroupId = HOT_NotificationHandler.getUsersInGroup(groupByQueue.values());
 
         for (HOT_Request__c request : requests) {
             HOT_Request__c oldRequest = (HOT_Request__c) triggerOldMap.get(request.Id);
 
-            Set<String> recipients = new Set<String>{ groupByQueue.get(request.OwnerId) };
+            Set<String> recipients = recipientsByGroupId.get(groupByQueue.get(request.OwnerId));
 
             // Varsel ved avlyst av bruker
-            if (request.Status__c == 'Avlyst' && request.Status__c != 'Avlyst') {
+            if (request.Status__c == 'Avlyst' && oldRequest.Status__c != 'Avlyst') {
                 canceledByUser(notificationType, request, recipients);
             }
         }
@@ -30,11 +31,12 @@ public without sharing class HOT_RequestNotification {
     ) {
         String title = request.Name + ' - ' + request.StartTime__c?.format('d.M.yyyy') + ' - ' + ' Avlyst';
         String body =
-            'Forespørselen ' +
+            request.LastModifiedBy +
+            ' avlyste ' +
+            'forespørselen ' +
             request.Name +
             ' som skulle vært gjennomført ' +
-            request.StartTime__c?.format('d.M.yyyy') +
-            ' er avlyst.';
+            request.StartTime__c?.format('d.M.yyyy');
 
         Id notificationTypeId = notificationType.Id;
         Id targetId = request.Id;
