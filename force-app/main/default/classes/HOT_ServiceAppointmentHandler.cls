@@ -89,7 +89,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (retractedServiceAppointments.size() > 0) {
             retractServiceAppointments(retractedServiceAppointments);
         }
-        HOT_NotificationHandler.serviceAppointmentChanged_interpreter(allServiceAppointments, triggerOldMap);
+        HOT_ServiceAppointmentNotification.notifyInterpreter_serviceAppointmentChanged(
+            allServiceAppointments,
+            triggerOldMap
+        );
+        HOT_ServiceAppointmentNotification.notifyDispatchers_serviceAppointmentChanged(
+            allServiceAppointments,
+            triggerOldMap
+        );
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -541,8 +548,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
     private static ServiceAppointment updateDuration(ServiceAppointment serviceAppointment) {
         if (serviceAppointment.EarliestStartTime != null && serviceAppointment.DueDate != null) {
-            serviceAppointment.Duration = (serviceAppointment.DueDate.getTime() -
-            serviceAppointment.EarliestStartTime.getTime())/3600000;
+            serviceAppointment.Duration =
+                (serviceAppointment.DueDate.getTime() - serviceAppointment.EarliestStartTime.getTime()) / 3600000;
         }
         return serviceAppointment;
     }

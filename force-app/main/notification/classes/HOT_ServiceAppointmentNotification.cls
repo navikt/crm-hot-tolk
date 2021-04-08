@@ -1,5 +1,5 @@
-public without sharing class HOT_NotificationHandler {
-    public static void serviceAppointmentChanged_interpreter(
+public without sharing class HOT_ServiceAppointmentNotification {
+    public static void notifyInterpreter_serviceAppointmentChanged(
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
@@ -54,6 +54,76 @@ public without sharing class HOT_NotificationHandler {
             ) {
                 resourceChanged(notificationType, serviceAppointment, recipients);
             }
+        }
+    }
+
+    public static void notifyDispatchers_serviceAppointmentChanged(
+        List<ServiceAppointment> serviceAppointments,
+        Map<Id, sObject> triggerOldMap
+    ) {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
+        ];
+
+        List<Id> queueIds = new List<Id>();
+        List<Id> requestIds = new List<Id>();
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            queueIds.add(serviceAppointment.OwnerId);
+            requestIds.add(serviceAppointment.HOT_Request__c);
+        }
+        Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
+        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
+            [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
+        );
+
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
+
+            Set<String> recipients = new Set<String>{ groupByQueue.get(serviceAppointment.OwnerId) };
+
+            // Varsel ved avlyst av tolk
+            if (
+                oldServiceAppointment.HOT_canceledByInterpreter__c == false &&
+                serviceAppointment.HOT_canceledByInterpreter__c == true
+            ) {
+                resourceCanceled(notificationType, serviceAppointment, recipients);
+            }
+
+            // Varsel ved avlyst på vegne av bruker
+            if (
+                serviceAppointment.Status == 'Canceled' &&
+                oldServiceAppointment.Status != 'Canceled' &&
+                serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
+                oldServiceAppointment.Status != 'Scheduled' &&
+                requests.get(serviceAppointment.HOT_Request__c).Status__c != 'Avlyst'
+            ) {
+                canceledByUser(notificationType, serviceAppointment, recipients);
+            }
+        }
+    }
+
+    public static void resourceCanceled(
+        CustomNotificationType notificationType,
+        ServiceAppointment serviceAppointment,
+        Set<String> recipients
+    ) {
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle('Avlyst av tolk:');
+        notification.setBody(
+            serviceAppointment.AppointmentNumber +
+            serviceAppointment.Subject +
+            ' avlyst den' +
+            serviceAppointment.LastModifiedDate?.format('d.M.yyyy')
+        );
+        notification.setNotificationTypeId(notificationType.Id);
+        notification.setTargetId(serviceAppointment.Id);
+
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            System.debug('Problem sending notification: ' + e.getMessage());
         }
     }
 

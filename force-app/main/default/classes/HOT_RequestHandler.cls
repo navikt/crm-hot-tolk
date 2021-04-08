@@ -59,6 +59,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (avlystRequests.size() > 0) {
             setCancelDate(avlystRequests);
         }
+        HOT_RequestNotification.notifyDispatchers_requestChanged((List<HOT_Request__c>) records, triggerOldMap);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
