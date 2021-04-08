@@ -2,6 +2,11 @@
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>Fellesoppdrag Trøndelag</name>
+    <queueMembers>
+        <publicGroups>
+            <publicGroup>HOT_group_4716_formidler</publicGroup>
+        </publicGroups>
+    </queueMembers>
     <queueSobject>
         <sobjectType>HOT_Request__c</sobjectType>
     </queueSobject>
