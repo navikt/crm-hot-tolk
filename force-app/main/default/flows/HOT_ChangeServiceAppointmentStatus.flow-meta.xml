@@ -156,7 +156,7 @@
         <dataType>String</dataType>
     </choices>
     <choices>
-        <name>Bruke_Ikke_Mott</name>
+        <name>Bruker_Ikke_Mott</name>
         <choiceText>Bruker ikke møtt</choiceText>
         <dataType>String</dataType>
     </choices>
