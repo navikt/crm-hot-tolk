@@ -156,7 +156,7 @@
         <dataType>String</dataType>
     </choices>
     <choices>
-        <name>BrukerIkkeMott</name>
+        <name>Bruke_Ikke_Mott</name>
         <choiceText>Bruker ikke møtt</choiceText>
         <dataType>String</dataType>
     </choices>
@@ -193,18 +193,8 @@
         </value>
     </choices>
     <choices>
-        <name>Technicalproblem</name>
-        <choiceText>Teknisk problem</choiceText>
-        <dataType>String</dataType>
-    </choices>
-    <choices>
-        <name>TekniskeProblemer</name>
+        <name>Tekniske_Problemer</name>
         <choiceText>Tekniske problemer</choiceText>
-        <dataType>String</dataType>
-    </choices>
-    <choices>
-        <name>TekniskProblem</name>
-        <choiceText>Teknisk problem</choiceText>
         <dataType>String</dataType>
     </choices>
     <decisions>
