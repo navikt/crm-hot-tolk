@@ -6,6 +6,8 @@ public without sharing class HOT_RequestNotification {
             WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
         ];
 
+        requests = checkWorkOrders(requests);
+
         List<Id> queueIds = new List<Id>();
         for (HOT_Request__c request : requests) {
             queueIds.add(request.OwnerId);
@@ -19,7 +21,11 @@ public without sharing class HOT_RequestNotification {
             Set<String> recipients = recipientsByGroupId.get(groupByQueue.get(request.OwnerId));
 
             // Varsel ved avlyst av bruker
-            if (request.Status__c == 'Avlyst' && oldRequest.Status__c != 'Avlyst') {
+            if (
+                request.Status__c == 'Avlyst' &&
+                oldRequest.Status__c != 'Avlyst' &&
+                !recipients.contains(request.LastModifiedById)
+            ) {
                 canceledByUser(notificationType, request, recipients);
             }
         }
@@ -31,12 +37,11 @@ public without sharing class HOT_RequestNotification {
     ) {
         String title = request.Name + ' - ' + request.StartTime__c?.format('d.M.yyyy') + ' - ' + ' Avlyst';
         String body =
-            request.LastModifiedBy +
-            ' avlyste ' +
-            'forespørselen ' +
+            'Forespørselen ' +
             request.Name +
             ' som skulle vært gjennomført ' +
-            request.StartTime__c?.format('d.M.yyyy');
+            request.StartTime__c?.format('d.M.yyyy') +
+            ' ble avlyst.';
 
         Id notificationTypeId = notificationType.Id;
         Id targetId = request.Id;
@@ -47,5 +52,31 @@ public without sharing class HOT_RequestNotification {
             targetId
         );
         HOT_NotificationHandler.sendNotification(notification, recipients);
+    }
+
+    public static List<HOT_Request__c> checkWorkOrders(List<HOT_Request__c> unfilteredRequests) {
+        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(unfilteredRequests);
+        List<WorkOrder> workOrders = [
+            SELECT Id, Status, HOT_Request__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :requests.keySet()
+        ];
+        Map<Id, List<WorkOrder>> workOrdersByRequestId = new Map<Id, List<WorkOrder>>();
+        for (WorkOrder workOrder : workOrders) {
+            if (workorder.Status != 'Avlyst') {
+                if (workOrdersByRequestId.get(workOrder.HOT_Request__c) == null) {
+                    List<WorkOrder> workOrderList = new List<WorkOrder>{ workOrder };
+                    workOrdersByRequestId.put(workOrder.HOT_Request__c, workOrderList);
+                } else {
+                    workOrdersByRequestId.get(workOrder.HOT_Request__c).add(workOrder);
+                }
+            }
+        }
+        for (Id requestId : requests.keySet()) {
+            if (requests.get(requestId).NumberOfWorkOrders__c == workOrdersByRequestId.get(requestId).size()) {
+                requests.remove(requestId);
+            }
+        }
+        return requests.values();
     }
 }
