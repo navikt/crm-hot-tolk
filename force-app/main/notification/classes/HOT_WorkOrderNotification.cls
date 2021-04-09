@@ -13,6 +13,7 @@ public without sharing class HOT_WorkOrderNotification {
             requestIds.add(workOrder.HOT_Request__c);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
+        Map<Id, Set<String>> recipientsByGroupId = HOT_NotificationHandler.getUsersInGroup(groupByQueue.values());
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
             [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
         );
@@ -20,13 +21,14 @@ public without sharing class HOT_WorkOrderNotification {
         for (WorkOrder workOrder : workOrders) {
             WorkOrder oldWorkOrder = (WorkOrder) triggerOldMap.get(workOrder.Id);
 
-            Set<String> recipients = new Set<String>{ groupByQueue.get(workOrder.OwnerId) };
+            Set<String> recipients = recipientsByGroupId.get(groupByQueue.get(workOrder.OwnerId));
 
             // Varsel ved avlyst av bruker
             if (
                 workOrder.Status == 'Canceled' &&
                 workOrder.Status != 'Canceled' &&
-                requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst'
+                requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
+                !recipients.contains(workOrder.LastModifiedById)
             ) {
                 canceledByUser(notificationType, workOrder, recipients);
             }
