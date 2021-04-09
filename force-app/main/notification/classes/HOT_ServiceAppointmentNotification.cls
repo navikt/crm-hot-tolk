@@ -74,6 +74,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             requestIds.add(serviceAppointment.HOT_Request__c);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
+        Map<Id, Set<String>> recipientsByGroupId = HOT_NotificationHandler.getUsersInGroup(groupByQueue.values());
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
             [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
         );
@@ -81,7 +82,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
 
-            Set<String> recipients = new Set<String>{ groupByQueue.get(serviceAppointment.OwnerId) };
+            Set<String> recipients = recipientsByGroupId.get(groupByQueue.get(serviceAppointment.OwnerId));
 
             // Varsel ved avlyst av tolk
             if (
@@ -97,7 +98,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 oldServiceAppointment.Status != 'Canceled' &&
                 serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                 oldServiceAppointment.Status != 'Scheduled' &&
-                requests.get(serviceAppointment.HOT_Request__c).Status__c != 'Avlyst'
+                requests.get(serviceAppointment.HOT_Request__c).Status__c != 'Avlyst' &&
+                !recipients.contains(serviceAppointment.LastModifiedById)
             ) {
                 canceledByUser(notificationType, serviceAppointment, recipients);
             }
