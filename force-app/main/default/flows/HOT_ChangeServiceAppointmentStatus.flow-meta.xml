@@ -9,7 +9,7 @@
             <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Cancel_Comment_Bruker</elementReference>
+                <elementReference>Cancel_Comment_Bruker_Picklist</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -151,6 +151,16 @@
         </connector>
     </assignments>
     <choices>
+        <name>Annet</name>
+        <choiceText>Annet</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <name>Bruker_Ikke_Mott</name>
+        <choiceText>Bruker ikke møtt</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
         <name>Status_Avlyst</name>
         <choiceText>Avlyst av bruker</choiceText>
         <dataType>String</dataType>
@@ -181,6 +191,11 @@
         <value>
             <stringValue>None</stringValue>
         </value>
+    </choices>
+    <choices>
+        <name>Tekniske_Problemer</name>
+        <choiceText>Tekniske problemer</choiceText>
+        <dataType>String</dataType>
     </choices>
     <decisions>
         <name>Changed_Start_or_End_Time</name>
@@ -380,7 +395,7 @@
         <inputAssignments>
             <field>StatusComment__c</field>
             <value>
-                <elementReference>Cancel_Comment_Bruker</elementReference>
+                <elementReference>Cancel_Comment_Bruker_Picklist</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -614,10 +629,13 @@
             <targetReference>Create_Historically_Assigned_Resource_Avlyst_Bruker</targetReference>
         </connector>
         <fields>
-            <name>Cancel_Comment_Bruker</name>
+            <name>Cancel_Comment_Bruker_Picklist</name>
+            <choiceReferences>Tekniske_Problemer</choiceReferences>
+            <choiceReferences>Bruker_Ikke_Mott</choiceReferences>
+            <choiceReferences>Annet</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
-            <fieldType>InputField</fieldType>
+            <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
