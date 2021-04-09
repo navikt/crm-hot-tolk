@@ -126,7 +126,10 @@
                             density="comfy"
                         >
                             <c-hot_record-details record={it.value}></c-hot_record-details>
-                            <lightning-input-field class="ikke-sensitive-opplysninger" field-name="Comments__c">
+                            <lightning-input-field
+                                class="ikke-sensitive-opplysninger comment-field"
+                                field-name="Comments__c"
+                            >
                             </lightning-input-field>
                         </lightning-record-edit-form>
                     </template>
