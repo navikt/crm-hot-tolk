@@ -98,7 +98,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 oldServiceAppointment.Status != 'Canceled' &&
                 serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                 oldServiceAppointment.Status != 'Scheduled' &&
+                requests.get(serviceAppointment.HOT_Request__c) != null &&
                 requests.get(serviceAppointment.HOT_Request__c).Status__c != 'Avlyst' &&
+                recipients != null &&
                 !recipients.contains(serviceAppointment.LastModifiedById)
             ) {
                 canceledByUser(notificationType, serviceAppointment, recipients);
