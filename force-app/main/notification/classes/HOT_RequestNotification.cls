@@ -73,8 +73,10 @@ public without sharing class HOT_RequestNotification {
             }
         }
         for (Id requestId : requests.keySet()) {
-            if (requests.get(requestId).NumberOfWorkOrders__c == workOrdersByRequestId.get(requestId).size()) {
-                requests.remove(requestId);
+            if (requests.get(requestId) != null && workOrdersByRequestId.get(requestId) != null) {
+                if (requests.get(requestId).NumberOfWorkOrders__c == workOrdersByRequestId.get(requestId).size()) {
+                    requests.remove(requestId);
+                }
             }
         }
         return requests.values();
