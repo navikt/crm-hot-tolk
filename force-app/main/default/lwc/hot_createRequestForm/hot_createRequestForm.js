@@ -622,7 +622,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             dateTime = this.formatDateTime(dateTime);
             times[dateTime.id.toString()] = {
                 startTime: new Date(dateTime.date + ' ' + dateTime.startTime).getTime(),
-                endTime: new Date(dateTime.date + ' ' + dateTime.endTime).getTime(),
+                endTime:
+                    dateTime.startTime < dateTime.endTime
+                        ? new Date(dateTime.date + ' ' + dateTime.endTime).getTime()
+                        : new Date(dateTime.date + ' ' + dateTime.endTime).getTime() + 24 * 60 * 60 * 1000,
                 isNew: dateTime.isNew
             };
         }
