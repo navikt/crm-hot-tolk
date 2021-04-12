@@ -26,7 +26,7 @@ public without sharing class HOT_WorkOrderNotification {
             // Varsel ved avlyst av bruker
             if (
                 workOrder.Status == 'Canceled' &&
-                workOrder.Status != 'Canceled' &&
+                oldWorkOrder.Status != 'Canceled' &&
                 requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
                 !recipients.contains(workOrder.LastModifiedById)
             ) {

@@ -43,6 +43,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
+
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
             if (request.OwnerId != triggerOldMap.get(request.Id).get('OwnerId')) {
@@ -58,8 +59,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
         if (avlystRequests.size() > 0) {
             setCancelDate(avlystRequests);
+            HOT_RequestNotification.notifyDispatchers_requestChanged((List<HOT_Request__c>) records, triggerOldMap);
         }
-        HOT_RequestNotification.notifyDispatchers_requestChanged((List<HOT_Request__c>) records, triggerOldMap);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
