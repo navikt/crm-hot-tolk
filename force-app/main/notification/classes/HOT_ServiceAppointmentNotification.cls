@@ -54,6 +54,18 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ) {
                 resourceChanged(notificationType, serviceAppointment, recipients);
             }
+
+            // Varsel ved endring av skjermtolk/oppmøtetolk
+            if (
+                serviceAppointment.HOT_IsScreenInterpreterNew__c !=
+                oldServiceAppointment.HOT_IsScreenInterpreterNew__c &&
+                serviceAppointment.Status != 'Scheduled'
+            ) {
+                String isScreenInterpreterString = serviceAppointment.HOT_IsScreenInterpreterNew__c
+                    ? 'skjermtolk'
+                    : 'oppmøtetolk';
+                screenInterpreterChanged(notificationType, serviceAppointment, recipients, isScreenInterpreterString);
+            }
         }
     }
 
@@ -86,8 +98,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
             // Varsel ved avlyst av tolk
             if (
-                oldServiceAppointment.HOT_canceledByInterpreter__c == false &&
-                serviceAppointment.HOT_canceledByInterpreter__c == true
+                oldServiceAppointment.HOT_CanceledByInterpreter__c == false &&
+                serviceAppointment.HOT_CanceledByInterpreter__c == true
             ) {
                 resourceCanceled(notificationType, serviceAppointment, recipients);
             }
@@ -124,11 +136,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
 
-        try {
-            notification.send(recipients);
-        } catch (Exception e) {
-            System.debug('Problem sending notification: ' + e.getMessage());
-        }
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
     public static void canceledByUser(
@@ -154,11 +162,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
 
-        try {
-            notification.send(recipients);
-        } catch (Exception e) {
-            System.debug('Problem sending notification: ' + e.getMessage());
-        }
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
     public static void timeChanged(
@@ -184,11 +188,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
 
-        try {
-            notification.send(recipients);
-        } catch (Exception e) {
-            System.debug('Problem sending notification: ' + e.getMessage());
-        }
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
     public static void addressChanged(
@@ -214,11 +214,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
 
-        try {
-            notification.send(recipients);
-        } catch (Exception e) {
-            System.debug('Problem sending notification: ' + e.getMessage());
-        }
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
     public static void resourceChanged(
@@ -243,10 +239,34 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
 
-        try {
-            notification.send(recipients);
-        } catch (Exception e) {
-            System.debug('Problem sending notification: ' + e.getMessage());
-        }
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+    }
+
+    public static void screenInterpreterChanged(
+        CustomNotificationType notificationType,
+        ServiceAppointment serviceAppointment,
+        Set<String> recipients,
+        String isScreenInterpreterString
+    ) {
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(
+            serviceAppointment.AppointmentNumber +
+            ' - ' +
+            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+            ' - ' +
+            ' endret til ' +
+            isScreenInterpreterString
+        );
+        notification.setBody(
+            serviceAppointment.AppointmentNumber +
+            ' den ' +
+            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+            ' ble endret til ' +
+            isScreenInterpreterString
+        );
+        notification.setNotificationTypeId(notificationType.Id);
+        notification.setTargetId(serviceAppointment.Id);
+
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 }
