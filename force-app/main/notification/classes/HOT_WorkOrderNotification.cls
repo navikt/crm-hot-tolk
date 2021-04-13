@@ -57,6 +57,6 @@ public without sharing class HOT_WorkOrderNotification {
             notificationTypeId,
             targetId
         );
-        HOT_NotificationHandler.sendNotification(notification, recipients);
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) workorder);
     }
 }

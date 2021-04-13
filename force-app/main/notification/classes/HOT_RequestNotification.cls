@@ -51,7 +51,7 @@ public without sharing class HOT_RequestNotification {
             notificationTypeId,
             targetId
         );
-        HOT_NotificationHandler.sendNotification(notification, recipients);
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) request);
     }
 
     public static List<HOT_Request__c> checkWorkOrders(List<HOT_Request__c> unfilteredRequests) {

@@ -1,9 +1,18 @@
 public without sharing class HOT_NotificationHandler {
-    public static void sendNotification(Messaging.CustomNotification notification, Set<String> recipients) {
-        try {
-            notification.send(recipients);
-        } catch (Exception e) {
-            System.debug('Problem sending notification: ' + e.getMessage());
+    public static void sendNotification(
+        Messaging.CustomNotification notification,
+        Set<String> recipients,
+        SObject record
+    ) {
+        LoggerUtility logger = new LoggerUtility();
+
+        if (recipients.size() > 0) {
+            try {
+                notification.send(recipients);
+            } catch (Exception e) {
+                logger.exception(e, record, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
         }
     }
     public static Messaging.CustomNotification prepareNotification(
