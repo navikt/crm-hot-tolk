@@ -6,6 +6,8 @@ public without sharing class HOT_WorkOrderNotification {
             WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
         ];
 
+        workOrders = checkServiceAppointments(workOrders);
+
         List<Id> queueIds = new List<Id>();
         List<Id> requestIds = new List<Id>();
         for (WorkOrder workOrder : workOrders) {
@@ -58,5 +60,44 @@ public without sharing class HOT_WorkOrderNotification {
             targetId
         );
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) workorder);
+    }
+
+    public static List<WorkOrder> checkServiceAppointments(List<WorkOrder> unfilteredWorkOrders) {
+        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(unfilteredWorkOrders);
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, Status, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrders.keySet() AND Status != 'Annul'
+        ];
+        Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = new Map<Id, List<ServiceAppointment>>();
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            if (serviceAppointmentsByWorkOrderId.get(serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId) == null) {
+                List<ServiceAppointment> serviceAppointmentList = new List<ServiceAppointment>{ serviceAppointment };
+                serviceAppointmentsByWorkOrderId.put(
+                    serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
+                    serviceAppointmentList
+                );
+            } else {
+                serviceAppointmentsByWorkOrderId.get(serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId)
+                    .add(serviceAppointment);
+            }
+        }
+        List<WorkOrder> workOrdersToNotify = new List<WorkOrder>();
+        for (Id workOrderId : workOrders.keySet()) {
+            //workOrders.remove(workOrderId);
+            if (workOrders.get(workOrderId) != null && serviceAppointmentsByWorkOrderId.get(workOrderId) != null) {
+                Boolean hasOpenServiceAppointment = false;
+                for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(workOrderId)) {
+                    if (serviceAppointment.Status != 'Canceled') {
+                        hasOpenServiceAppointment = true;
+                        break;
+                    }
+                }
+                if (hasOpenServiceAppointment) {
+                    workOrdersToNotify.add(workOrders.get(WorkOrderId));
+                }
+            }
+        }
+        return workOrders.values();
     }
 }

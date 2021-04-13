@@ -80,15 +80,15 @@ public without sharing class HOT_ServiceAppointmentNotification {
         ];
 
         List<Id> queueIds = new List<Id>();
-        List<Id> requestIds = new List<Id>();
+        List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             queueIds.add(serviceAppointment.OwnerId);
-            requestIds.add(serviceAppointment.HOT_Request__c);
+            workOrderLineItemIds.add(serviceAppointment.HOT_WorkOrderLineItem__c);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
         Map<Id, Set<String>> recipientsByGroupId = HOT_NotificationHandler.getUsersInGroup(groupByQueue.values());
-        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
-            [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
+        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
+            [SELECT Id, Status FROM WorkOrderLineItem WHERE Id IN :workOrderLineItemIds AND Status != 'Annul']
         );
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
@@ -110,8 +110,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 oldServiceAppointment.Status != 'Canceled' &&
                 serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                 oldServiceAppointment.Status != 'Scheduled' &&
-                requests.get(serviceAppointment.HOT_Request__c) != null &&
-                requests.get(serviceAppointment.HOT_Request__c).Status__c != 'Avlyst' &&
+                workOrderLineItems.get(serviceAppointment.HOT_WorkOrderLineItem__c) != null &&
+                workOrderLineItems.get(serviceAppointment.HOT_WorkOrderLineItem__c).Status != 'Canceled' &&
                 recipients != null &&
                 !recipients.contains(serviceAppointment.LastModifiedById)
             ) {
