@@ -30,6 +30,7 @@ public without sharing class HOT_WorkOrderNotification {
                 workOrder.Status == 'Canceled' &&
                 oldWorkOrder.Status != 'Canceled' &&
                 requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
+                recipients != null &&
                 !recipients.contains(workOrder.LastModifiedById)
             ) {
                 canceledByUser(notificationType, workOrder, recipients);

@@ -6,7 +6,7 @@ public without sharing class HOT_NotificationHandler {
     ) {
         LoggerUtility logger = new LoggerUtility();
 
-        if (recipients.size() > 0) {
+        if (recipients != null && recipients.size() > 0) {
             try {
                 notification.send(recipients);
             } catch (Exception e) {

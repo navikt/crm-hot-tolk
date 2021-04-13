@@ -24,6 +24,7 @@ public without sharing class HOT_RequestNotification {
             if (
                 request.Status__c == 'Avlyst' &&
                 oldRequest.Status__c != 'Avlyst' &&
+                recipients != null &&
                 !recipients.contains(request.LastModifiedById)
             ) {
                 canceledByUser(notificationType, request, recipients);
