@@ -182,6 +182,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsWithChangedAddress.size() > 0) {
             updateRelatedEvents(serviceAppointmentsWithChangedAddress);
         }
+        if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
+            deleteRelatedEvents(serviceAppointmentsToRemoveAssignedResource);
+        }
     }
 
     private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
@@ -589,5 +592,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 (serviceAppointment.DueDate.getTime() - serviceAppointment.EarliestStartTime.getTime()) / 3600000;
         }
         return serviceAppointment;
+    }
+    public static void deleteRelatedEvents(List<ServiceAppointment> serviceAppointments) {
+        List<Event> events = [SELECT Id FROM Event WHERE WhatId IN :serviceAppointments];
+        delete events;
     }
 }
