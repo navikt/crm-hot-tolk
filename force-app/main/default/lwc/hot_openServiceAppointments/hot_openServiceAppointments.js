@@ -282,7 +282,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         for (let i = 0; i < this.selectedRows.length; i++) {
             serviceAppointmentIds.push(this.selectedRows[i].Id);
         }
-        this.template.querySelectorAll('lightning-input-field').forEach((element) => {
+        this.template.querySelectorAll('.comment-field').forEach((element) => {
             comments.push(element.value);
         });
         createInterestedResources({ serviceAppointmentIds, comments }).then(() => {
