@@ -14,8 +14,41 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> allServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
+        List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+            if (
+                //Canceled on behalf of user
+                //Canceled by interpreter
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_canceledByInterpreter__c') == false &&
+                serviceAppointment.HOT_canceledByInterpreter__c == true ||
+                serviceAppointment.Status == 'Canceled' &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'Canceled'
+            ) {
+                SAnotifyDispatcher.add(serviceAppointment);
+            }
+            if (
+                //canceled by user
+                //time change
+                //address change
+                //removed resource
+                serviceAppointment.Status == 'Canceled' &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'Canceled' ||
+                (serviceAppointment.SchedStartTime != triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') ||
+                serviceAppointment.SchedEndTime != triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime')) ||
+                serviceAppointment.HOT_AddressFormated__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_AddressFormated__c') ||
+                (triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Completed' ||
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Dispatched' ||
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'In Progress') &&
+                (serviceAppointment.Status == null ||
+                serviceAppointment.Status == 'None') ||
+                (serviceAppointment.HOT_IsScreenInterpreterNew__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsScreenInterpreterNew__c'))
+            ) {
+                SAnotifyResource.add(serviceAppointment);
+            }
             if (
                 serviceAppointment.get('HOT_ServiceResource__c') != null &&
                 serviceAppointment.get('HOT_ServiceResource__c') !=
@@ -63,6 +96,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 retractedServiceAppointments.add(serviceAppointment);
             }
+            serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
         if (!updatedServiceAppointments.isEmpty()) {
@@ -88,7 +122,18 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (retractedServiceAppointments.size() > 0) {
             retractServiceAppointments(retractedServiceAppointments);
         }
-        HOT_NotificationHandler.serviceAppointmentChanged(allServiceAppointments, triggerOldMap);
+        if (SAnotifyDispatcher.size() > 0) {
+            HOT_ServiceAppointmentNotification.notifyDispatchers_serviceAppointmentChanged(
+                SAnotifyDispatcher,
+                triggerOldMap
+            );
+        }
+        if (SAnotifyResource.size() > 0) {
+            HOT_ServiceAppointmentNotification.notifyInterpreter_serviceAppointmentChanged(
+                SAnotifyResource,
+                triggerOldMap
+            );
+        }
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -281,6 +326,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 if (serviceAppointment.HOT_WorkOrderLineItem__c == null && serviceAppointment.ParentRecordId != null) {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
+                serviceAppointment = updateDuration(serviceAppointment);
             }
         }
     }
@@ -540,6 +586,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         update events;
     }
 
+    private static ServiceAppointment updateDuration(ServiceAppointment serviceAppointment) {
+        if (serviceAppointment.EarliestStartTime != null && serviceAppointment.DueDate != null) {
+            serviceAppointment.Duration =
+                (serviceAppointment.DueDate.getTime() - serviceAppointment.EarliestStartTime.getTime()) / 3600000;
+        }
+        return serviceAppointment;
+    }
     public static void deleteRelatedEvents(List<ServiceAppointment> serviceAppointments) {
         List<Event> events = [SELECT Id FROM Event WHERE WhatId IN :serviceAppointments];
         delete events;
