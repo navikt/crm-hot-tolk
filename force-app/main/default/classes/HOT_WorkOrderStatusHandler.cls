@@ -32,6 +32,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrder> updateStatusWorkOrders = new List<WorkOrder>();
+        List<WorkOrder> canceledWorkOrders = new List<WorkOrder>();
 
         for (SObject record : records) {
             System.debug('record: ' + record);
@@ -41,10 +42,16 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
             ) {
                 updateStatusWorkOrders.add((WorkOrder) record);
             }
+            if (record.get('Status') == 'Canceled' && triggerOldMap.get(record.Id).get('Status') != 'Canceled') {
+                canceledWorkOrders.add((WorkOrder) record);
+            }
         }
 
         if (updateStatusWorkOrders.size() > 0) {
             updateWorkOrderStatus(updateStatusWorkOrders);
+        }
+        if (canceledWorkOrders.size() > 0) {
+            HOT_WorkOrderNotification.notifyDispatchers_workOrderChanged(canceledWorkOrders, triggerOldMap);
         }
     }
 

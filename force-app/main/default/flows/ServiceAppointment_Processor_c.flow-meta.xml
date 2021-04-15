@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <processMetadataValues>
@@ -49,8 +49,7 @@
         <inputParameters>
             <name>body</name>
             <value>
-                <stringValue
-                >{!myVariable_current.AppointmentNumber} {!myVariable_current.Subject} avlyst at {!myVariable_current.LastModifiedDate}</stringValue>
+                <stringValue>{!myVariable_current.AppointmentNumber} {!myVariable_current.Subject} avlyst at {!myVariable_current.LastModifiedDate}</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -87,7 +86,7 @@
             <processMetadataValues>
                 <name>objectType</name>
                 <value>
-                    <stringValue />
+                    <stringValue/>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -151,8 +150,7 @@
         <inputParameters>
             <name>body</name>
             <value>
-                <stringValue
-                >{!myVariable_current.AppointmentNumber} {!myVariable_current.Subject} avlyst at {!myVariable_current.LastModifiedDate}</stringValue>
+                <stringValue>{!myVariable_current.AppointmentNumber} {!myVariable_current.Subject} avlyst at {!myVariable_current.LastModifiedDate}</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -189,7 +187,7 @@
             <processMetadataValues>
                 <name>objectType</name>
                 <value>
-                    <stringValue />
+                    <stringValue/>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -622,7 +620,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue />
+                    <stringValue/>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -748,7 +746,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue />
+                    <stringValue/>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -784,8 +782,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue
-                    >Account;Asset;AssetRelationship;Campaign;Case;CommSubscriptionConsent;ContactRequest;Contract;ContractLineItem;Entitlement;Expense;ListEmail;Location;MaintenanceAsset;MaintenancePlan;Opportunity;Order;PartyConsent;Product2;ProductConsumed;ProductItem;ProductRequest;ProductRequestLineItem;ProductTransfer;ResourceAbsence;ReturnOrder;ReturnOrderLineItem;ServiceAppointment;ServiceContract;ServiceCrew;ServiceCrewMember;ServiceResource;Shift;Shipment;Solution;TimeSheet;TimeSheetEntry;WorkOrder;WorkOrderLineItem</stringValue>
+                    <stringValue>Account;Asset;AssetRelationship;Campaign;Case;CommSubscriptionConsent;ContactRequest;Contract;ContractLineItem;Entitlement;Expense;ListEmail;Location;MaintenanceAsset;MaintenancePlan;Opportunity;Order;PartyConsent;Product2;ProductConsumed;ProductItem;ProductRequest;ProductRequestLineItem;ProductTransfer;ResourceAbsence;ReturnOrder;ReturnOrderLineItem;ServiceAppointment;ServiceContract;ServiceCrew;ServiceCrewMember;ServiceResource;Shift;Shipment;Solution;TimeSheet;TimeSheetEntry;WorkOrder;WorkOrderLineItem</stringValue>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -864,7 +861,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue />
+                    <stringValue/>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -990,7 +987,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue />
+                    <stringValue/>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -1026,8 +1023,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue
-                    >Account;Asset;AssetRelationship;AssetWarranty;AssignedResource;Campaign;Case;CommSubscriptionConsent;ContactRequest;Contract;ContractLineItem;DelegatedAccount;Entitlement;Expense;ExpenseReport;ExpenseReportEntry;ListEmail;Location;MaintenanceAsset;MaintenancePlan;Opportunity;Order;PartyConsent;Product2;ProductConsumed;ProductItem;ProductRequest;ProductRequestLineItem;ProductTransfer;ResourceAbsence;ReturnOrder;ReturnOrderLineItem;ServiceAppointment;ServiceContract;ServiceCrew;ServiceCrewMember;ServiceResource;Shift;Shipment;Solution;TimeSheet;TimeSheetEntry;WarrantyTerm;WorkOrder;WorkOrderLineItem</stringValue>
+                    <stringValue>Account;Asset;AssetRelationship;AssetWarranty;AssignedResource;Campaign;Case;CommSubscriptionConsent;ContactRequest;Contract;ContractLineItem;DelegatedAccount;Entitlement;Expense;ExpenseReport;ExpenseReportEntry;ListEmail;Location;MaintenanceAsset;MaintenancePlan;Opportunity;Order;PartyConsent;Product2;ProductConsumed;ProductItem;ProductRequest;ProductRequestLineItem;ProductTransfer;ResourceAbsence;ReturnOrder;ReturnOrderLineItem;ServiceAppointment;ServiceContract;ServiceCrew;ServiceCrewMember;ServiceResource;Shift;Shipment;Solution;TimeSheet;TimeSheetEntry;WarrantyTerm;WorkOrder;WorkOrderLineItem</stringValue>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -1146,7 +1142,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue />
+                    <stringValue/>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -1163,7 +1159,7 @@
         <object>ServiceAppointment</object>
     </recordUpdates>
     <startElementReference>isChangedDecision5_myRule_4_Status</startElementReference>
-    <status>Active</status>
+    <status>Obsolete</status>
     <variables>
         <name>myCollection_myRule_4_A1recipientIds</name>
         <dataType>String</dataType>
