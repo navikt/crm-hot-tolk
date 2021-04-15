@@ -19,7 +19,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.Status == 'Canceled' &&
                 oldServiceAppointment.Status != 'Canceled' &&
                 serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
-                oldServiceAppointment.Status != 'Scheduled'
+                oldServiceAppointment.Status != 'Scheduled' &&
+                recipients != null &&
+                !recipients.contains(serviceAppointment.LastModifiedById) &&
+                serviceAppointment.HOT_CancelComment__c == null
             ) {
                 canceledByUser(notificationType, serviceAppointment, recipients);
             }
@@ -50,7 +53,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 oldServiceAppointment.Status == 'Dispatched' ||
                 oldServiceAppointment.Status == 'In Progress') &&
                 (serviceAppointment.Status == null ||
-                serviceAppointment.Status == 'None')
+                serviceAppointment.Status == 'None') &&
+                serviceAppointment.HOT_CanceledByInterpreter__c == false
             ) {
                 resourceChanged(notificationType, serviceAppointment, recipients);
             }
@@ -129,6 +133,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setTitle('Avlyst av tolk:');
         notification.setBody(
             serviceAppointment.AppointmentNumber +
+            ' ' +
             serviceAppointment.Subject +
             ' avlyst den' +
             serviceAppointment.LastModifiedDate?.format('d.M.yyyy')
@@ -176,7 +181,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' - ' +
             serviceAppointment.SchedStartTime?.format('d.M.yyyy') +
             ' - ' +
-            ' Endret tidspunkt'
+            ' endret tidspunkt'
         );
         notification.setBody(
             'Oppdraget ' +
@@ -202,7 +207,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' - ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
             ' - ' +
-            ' Endret adresse'
+            ' endret adresse'
         );
         notification.setBody(
             'Oppdraget ' +
