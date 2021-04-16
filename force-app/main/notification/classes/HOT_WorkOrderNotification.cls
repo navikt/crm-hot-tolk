@@ -101,6 +101,6 @@ public without sharing class HOT_WorkOrderNotification {
                 workOrdersToNotify.add(workOrders.get(WorkOrderId));
             }
         }
-        return workOrdersToNotify.values();
+        return workOrdersToNotify;
     }
 }
