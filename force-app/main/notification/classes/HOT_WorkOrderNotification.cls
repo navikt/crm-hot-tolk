@@ -85,8 +85,7 @@ public without sharing class HOT_WorkOrderNotification {
         }
         List<WorkOrder> workOrdersToNotify = new List<WorkOrder>();
         for (Id workOrderId : workOrders.keySet()) {
-            //workOrders.remove(workOrderId);
-            if (workOrders.get(workOrderId) != null && serviceAppointmentsByWorkOrderId.get(workOrderId) != null) {
+            if (serviceAppointmentsByWorkOrderId.get(workOrderId) != null) {
                 Boolean hasOpenServiceAppointment = false;
                 for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(workOrderId)) {
                     if (serviceAppointment.Status != 'Canceled') {
@@ -98,7 +97,10 @@ public without sharing class HOT_WorkOrderNotification {
                     workOrdersToNotify.add(workOrders.get(WorkOrderId));
                 }
             }
+            else {
+                workOrdersToNotify.add(workOrders.get(WorkOrderId));
+            }
         }
-        return workOrders.values();
+        return workOrdersToNotify;
     }
 }
