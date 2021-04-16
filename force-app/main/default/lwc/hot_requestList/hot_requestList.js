@@ -190,7 +190,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             if (
                 this.allRequests[i].ExternalRequestStatus__c != 'Avlyst' &&
                 this.allRequests[i].ExternalRequestStatus__c != 'Dekket' &&
-                this.allRequests[i].ExternalRequestStatus__c != 'Udekket'
+                this.allRequests[i].ExternalRequestStatus__c != 'Udekket' &&
+                this.allRequests[i].ExternalRequestStatus__c != 'Ferdig'
             ) {
                 tempRequests.push(this.allRequests[i]);
             }
