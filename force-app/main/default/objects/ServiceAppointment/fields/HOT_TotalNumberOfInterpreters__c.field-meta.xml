@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>AppointmentServiceTerritory__c</fullName>
+    <fullName>HOT_TotalNumberOfInterpreters__c</fullName>
     <externalId>false</externalId>
-    <formula>ServiceAppointment__r.ServiceTerritory.Name</formula>
+    <formula>HOT_WorkOrderLineItem__r.WorkOrder.HOT_TotalNumberOfInterpreters__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Appointment Service Territory</label>
+    <label>Total number of interpreters</label>
+    <precision>18</precision>
     <required>false</required>
+    <scale>0</scale>
     <trackHistory>false</trackHistory>
-    <trackTrending>false</trackTrending>
-    <type>Text</type>
+    <type>Number</type>
     <unique>false</unique>
 </CustomField>
