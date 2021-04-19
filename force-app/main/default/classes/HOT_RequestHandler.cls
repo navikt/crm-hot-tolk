@@ -13,6 +13,15 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 'NumberOfWorkOrders__c'
             }
         );
+        List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
+        for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+            if (request.Type__c == 'ImageInterpreter') {
+                imageInterpreterRequests.add(request);
+            }
+        }
+        if (imageInterpreterRequests.size() > 0) {
+            setImageInterpreterFields(imageInterpreterRequests);
+        }
     }
 
     public override void onAfterInsert() {
@@ -278,6 +287,15 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 if (request.get(field) != null) {
                     request.put(field, null);
                 }
+            }
+        }
+    }
+    public static void setImageInterpreterFields(List<HOT_Request__c> requests) {
+        WorkType imageInterpretationMethod = [SELECT Id FROM WorkType WHERE Name LIKE '%Bildetolk%'];
+        for (HOT_Request__c request : requests) {
+            request.AssignmentType__c = 'Image Interpreter';
+            if (imageInterpretationMethod != null) {
+                request.InterpretationMethod__c = imageInterpretationMethod.Id;
             }
         }
     }
