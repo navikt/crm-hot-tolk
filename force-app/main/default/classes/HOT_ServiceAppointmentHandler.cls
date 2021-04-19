@@ -327,6 +327,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
                 serviceAppointment = updateDuration(serviceAppointment);
+
+                //Image Interpreter
+                if (
+                    serviceAppointment.HOT_IsImageInterpreter__c && serviceAppointment.get('FSL__GanttColor__c') != null
+                ) {
+                    Map<String, String> ganttColorByStatus = getGanttColorByStatus(
+                        serviceAppointment.HOT_IsImageInterpreter__c
+                    );
+                    serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
+                }
             }
         }
     }
@@ -450,6 +460,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             return 'Reservert';
 
         return '';
+    }
+
+    private static Map<String, String> getGanttColorByStatus(Boolean isImageInterpreter) {
+        Map<String, String> ganttColorByStatus = new Map<String, String>();
+        if (isImageInterpreter) {
+            ganttColorByStatus.put('Scheduled', '#189AB4');
+            ganttColorByStatus.put('Dispatched', '#F8EA8C');
+            ganttColorByStatus.put('Completed', '#59981A');
+        }
+        return ganttColorByStatus;
     }
 
     public static List<ServiceAppointment> setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
