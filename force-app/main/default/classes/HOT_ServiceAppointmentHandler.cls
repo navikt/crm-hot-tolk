@@ -16,6 +16,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
+        List<ServiceAppointment> completedServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -95,6 +96,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Released to Freelance'
             ) {
                 retractedServiceAppointments.add(serviceAppointment);
+            }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'Completed' &&
+                serviceAppointment.ActualStartTime == null &&
+                serviceAppointment.ActualEndTime == null
+            ) {
+                serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime;
+                serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime;
             }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
