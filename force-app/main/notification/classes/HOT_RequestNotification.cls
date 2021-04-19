@@ -36,7 +36,7 @@ public without sharing class HOT_RequestNotification {
         HOT_Request__c request,
         Set<String> recipients
     ) {
-        String title = request.Name + ' - ' + request.StartTime__c?.format('d.M.yyyy') + ' - ' + ' Avlyst';
+        String title = request.Name + ' - ' + request.StartTime__c?.format('d.M.yyyy') + ' - ' + 'Avlyst';
         String body =
             'Forespørselen ' +
             request.Name +
