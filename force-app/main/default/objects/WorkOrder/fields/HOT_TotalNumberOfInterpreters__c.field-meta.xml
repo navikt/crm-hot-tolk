@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_TotalNumberOfInterpreters__c</fullName>
+    <externalId>false</externalId>
+    <label>Total number of interpreters</label>
+    <summarizedField>WorkOrderLineItem.HOT_NumberOfInterpreters__c</summarizedField>
+    <summaryFilterItems>
+        <field>WorkOrderLineItem.Status</field>
+        <operation>notEqual</operation>
+        <value>Annul</value>
+    </summaryFilterItems>
+    <summaryForeignKey>WorkOrderLineItem.WorkOrderId</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

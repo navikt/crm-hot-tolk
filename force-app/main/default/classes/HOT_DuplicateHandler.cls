@@ -55,7 +55,7 @@ public without sharing class HOT_DuplicateHandler {
         List<WorkOrder> workOrders = [
             SELECT Id, StartDate, EndDate, HOT_Request__c, HOT_Request__r.Name
             FROM WorkOrder
-            WHERE AccountId = :accountId AND AccountId != null AND Status IN :statuses
+            WHERE AccountId = :accountId AND AccountId != NULL AND Status IN :statuses
         ];
         Map<Id, String> result = new Map<Id, String>();
         for (WorkOrder workOrder : workOrders) {
