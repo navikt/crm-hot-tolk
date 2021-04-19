@@ -587,4 +587,26 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Freelance interpreter was not set to false'
         );
     }
+
+    @isTest
+    public static void serviceAppointmentCompleted() {
+        ServiceAppointment serviceAppointment = [SELECT Id, Status FROM ServiceAppointment LIMIT 1];
+        serviceAppointment.Status = 'Completed';
+        update serviceAppointment;
+        serviceAppointment = [
+            SELECT Id, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime
+            FROM serviceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        System.assertEquals(
+            serviceAppointment.SchedStartTime,
+            serviceAppointment.ActualStartTime,
+            'Could not set Actual Start Time'
+        );
+        System.assertEquals(
+            serviceAppointment.SchedEndTime,
+            serviceAppointment.ActualEndTime,
+            'Could not set Actual End Time'
+        );
+    }
 }
