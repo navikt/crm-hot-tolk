@@ -41,7 +41,7 @@ public without sharing class HOT_EventHandler extends MyTriggers {
         for (Event event : (List<Event>) records) {
             // Filtrer ut de som blir synket fra Outlook (eller opprettes manuelt) og er av type HOT Event
             // For å komme "riktig" i forhold til FSL-triggerne måtte denne legges til After Insert
-            if (event.RecordTypeId == hotEventRecordTypeId && event.WhatId == null) {
+            if (event.RecordTypeId == hotEventRecordTypeId && event.WhatId == null && event.IsRecurrence2 == false) {
                 resourceAbsenceEvents.add(event);
             }
         }
