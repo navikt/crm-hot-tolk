@@ -98,7 +98,7 @@ jobs:
       - name: Build commit message
         id: build-commit-message
         run: |
-          echo "::set-output name=message::(CI) Updated to new version number $(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
+          echo "::set-output name=message::(CI) Updated to new version number $(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')"
           cat sfdx-project.json
 
       # The main branch is protected
@@ -147,9 +147,9 @@ jobs:
       - name: Set release fields
         id: release-fields
         run: |
-          echo "::set-output name=tagName::v$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
-          echo "::set-output name=releaseName::$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
-          echo "::set-output name=bodyVersion::$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')"
+          echo "::set-output name=tagName::v$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')"
+          echo "::set-output name=releaseName::$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')"
+          echo "::set-output name=bodyVersion::$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')"
           echo "::set-output name=codeCoverage::$( sfdx force:package:version:report -p ${{ github.event.inputs.packageId }} --json | jq '.result.CodeCoverage.apexCodeCoveragePercentage' -r )"
 
       # Generate changelog from commits
