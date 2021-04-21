@@ -105,6 +105,10 @@
         <label>Scheduled Times</label>
         <layoutColumns>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HOT_DayOfWeek__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>SchedStartTime</field>
             </layoutItems>
@@ -271,11 +275,6 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
         <platformActionListItems>
-            <actionName>Edit</actionName>
-            <actionType>StandardButton</actionType>
-            <sortOrder>0</sortOrder>
-        </platformActionListItems>
-        <platformActionListItems>
             <actionName>Clone</actionName>
             <actionType>StandardButton</actionType>
             <sortOrder>1</sortOrder>
@@ -294,6 +293,11 @@
             <actionName>ServiceAppointment.HOT_RetractServiceAppointment</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>4</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Edit</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>0</sortOrder>
         </platformActionListItems>
     </platformActionList>
     <quickActionList />
@@ -325,7 +329,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1x000002AHsH</masterLabel>
+        <masterLabel>00h1j000002QUyt</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
