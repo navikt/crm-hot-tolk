@@ -4,6 +4,9 @@ private class HOT_RequestRoutingHandlerTest {
     static void makeData() {
         TestDataFactory.getPublicGroup('HMS Troms og Finmark', 'group_4719');
         TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'HOT_Request__c');
+        User user = [SELECT Id, Department FROM User WHERE Id = :UserInfo.getUserId()];
+        user.Department = '4719';
+        update user;
     }
 
     @IsTest
@@ -67,6 +70,21 @@ private class HOT_RequestRoutingHandlerTest {
         insert request;
 
         Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'HOT_Tolk_Admin' LIMIT 1].Id;
+        System.assertEquals(queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id].OwnerId);
+    }
+
+    @IsTest
+    private static void testRequstCreatorRouting_adminQueue() {
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType('Bildetolk');
+        insert workType;
+        Test.stopTest();
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('bildetolk TEST', workType);
+        request.Type__c = 'ImageInterpreter';
+        insert request;
+
+        Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
         System.assertEquals(queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id].OwnerId);
     }
 
