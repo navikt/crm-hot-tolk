@@ -16,7 +16,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
-        List<ServiceAppointment> completedServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> completedImageInterpreterServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -101,10 +101,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
                 serviceAppointment.Status == 'Completed' &&
                 serviceAppointment.ActualStartTime == null &&
-                serviceAppointment.ActualEndTime == null
+                serviceAppointment.ActualEndTime == null &&
+                serviceAppointment.HOT_IsImageInterpreter__c == true
             ) {
-                serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime;
-                serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime;
+                completedImageInterpreterServiceAppointments.add(serviceAppointment);
             }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
@@ -143,6 +143,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 SAnotifyResource,
                 triggerOldMap
             );
+        }
+        if (completedImageInterpreterServiceAppointments.size() > 0) {
+            setActualTime(completedImageInterpreterServiceAppointments);
         }
     }
 
@@ -626,5 +629,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public static void deleteRelatedEvents(List<ServiceAppointment> serviceAppointments) {
         List<Event> events = [SELECT Id FROM Event WHERE WhatId IN :serviceAppointments];
         delete events;
+    }
+
+    public static void setActualTime(List<ServiceAppointment> serviceAppointments) {
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime;
+            serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime;
+        }
     }
 }
