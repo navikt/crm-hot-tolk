@@ -291,7 +291,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
     public static void setImageInterpreterFields(List<HOT_Request__c> requests) {
-        WorkType imageInterpretationMethod = [SELECT Id FROM WorkType WHERE Name LIKE '%Bildetolk%'];
+        WorkType imageInterpretationMethod = [
+            SELECT Id, HOT_DeveloperName__c
+            FROM WorkType
+            WHERE HOT_DeveloperName__c = 'BTV'
+        ];
         for (HOT_Request__c request : requests) {
             request.AssignmentType__c = 'Image Interpreter';
             if (imageInterpretationMethod != null) {

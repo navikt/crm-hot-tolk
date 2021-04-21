@@ -597,7 +597,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         serviceAppointment.Status = 'Completed';
         update serviceAppointment;
         serviceAppointment = [
-            SELECT Id, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime
+            SELECT Id, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, HOT_IsImageInterpreter__c
             FROM serviceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
@@ -611,5 +611,6 @@ private class HOT_ServiceAppointmentHandlerTest {
             serviceAppointment.ActualEndTime,
             'Could not set Actual End Time'
         );
+        System.assertEquals(serviceAppointment.HOT_IsImageInterpreter__c, true, 'Could not set imgint');
     }
 }

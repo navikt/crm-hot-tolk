@@ -77,6 +77,7 @@ private class HOT_RequestRoutingHandlerTest {
     private static void testRequstCreatorRouting_adminQueue() {
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType('Bildetolk');
+        workType.HOT_DeveloperName__c = 'BTV';
         insert workType;
         Test.stopTest();
 
