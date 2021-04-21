@@ -589,8 +589,11 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @isTest
-    public static void serviceAppointmentCompleted() {
-        ServiceAppointment serviceAppointment = [SELECT Id, Status FROM ServiceAppointment LIMIT 1];
+    public static void serviceAppointmentCompletedWithoutActualTimes() {
+        ServiceAppointment serviceAppointment = [SELECT Id, Status, HOT_Request__c FROM ServiceAppointment LIMIT 1];
+        HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c WHERE Id = :serviceAppointment.HOT_Request__c];
+        request.Type__c = 'ImageInterpreter';
+        update request;
         serviceAppointment.Status = 'Completed';
         update serviceAppointment;
         serviceAppointment = [
