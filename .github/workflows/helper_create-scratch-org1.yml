@@ -158,6 +158,16 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
 
+      # Setup NPM
+      - name: Setup NPM
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      
+      # Run NPM
+      - name: Run NPM
+        run: npm install
+
       # Prepare to Authenticate
       - name: Prepare to Authenticate
         uses: actions/download-artifact@v2
@@ -175,6 +185,9 @@ jobs:
           mkdir sfdx-cli
           tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
           ./sfdx-cli/install
+
+          rm -rf sfdx-linux-amd64.tar.xz
+          rm -rf ./sfdx-cli
           
           echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
           sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
@@ -214,8 +227,9 @@ jobs:
                 echo ""
 
                 echo "Pushing Metadata to branch '${{ needs.setup.outputs.branch }}' ..."
+                npx prettier --write force-app &> /dev/null
                 git add force-app &> /dev/null
-                git commit -m "Added files using 'Create Scratch Org' helper on GitHub Actions" --no-verify &> /dev/null
+                git commit -o force-app -m "Added files using 'Create Scratch Org' helper on GitHub Actions" --no-verify | tee output &> /dev/null
                 git push origin ${{ needs.setup.outputs.branch }} &> /dev/null
                 
                 echo "Done. Create a Pull Request here: https://github.com/${{ github.repository }}/compare/${{ needs.setup.outputs.branch }}?expand=1"
