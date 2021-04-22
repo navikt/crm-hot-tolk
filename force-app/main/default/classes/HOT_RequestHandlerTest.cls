@@ -138,6 +138,7 @@ private class HOT_RequestHandlerTest {
     @isTest
     public static void setDefaultFieldsImageInterpreter() {
         WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
+        workType.HOT_DeveloperName__c = 'BTV';
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.InterpretationMethod__c = null;
