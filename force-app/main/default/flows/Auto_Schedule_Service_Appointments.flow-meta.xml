@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Auto_Schedule_Service</name>
@@ -96,28 +96,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Text</name>
-            <fieldText
-            >&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!error}&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>Start_Screen</name>
-        <label>Start Screen</label>
-        <locationX>775</locationX>
-        <locationY>221</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <connector>
-            <targetReference>Auto_Schedule_Service</targetReference>
-        </connector>
-        <fields>
-            <name>Start_Text</name>
-            <fieldText
-            >&lt;p&gt;Når du trykker neste vil systemet prøve å tildele en tolk til alle oppdragene automatisk. Den tar hensyn til tilgjengelighet, kompetanse og foretrukket tolk på samme måte som når man bruker ressursplanleggeren.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!error}&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -133,8 +112,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Success_Text</name>
-            <fieldText
-            >&lt;p&gt;Oppdragene på forespørselen ble forsøkt automatisk planlagt. Se resultatet i relatert liste på forespørsel. Det kan ta noen minutter før oppdragene oppdateres.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Oppdragene på forespørselen ble forsøkt automatisk planlagt. Se resultatet i relatert liste på forespørsel. Det kan ta noen minutter før oppdragene oppdateres.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -144,7 +122,7 @@
         <locationX>649</locationX>
         <locationY>50</locationY>
         <connector>
-            <targetReference>Start_Screen</targetReference>
+            <targetReference>Auto_Schedule_Service</targetReference>
         </connector>
     </start>
     <status>Active</status>
