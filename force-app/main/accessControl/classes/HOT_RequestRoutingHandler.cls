@@ -3,18 +3,66 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         // Setter feltene Account__c og Person__c (og Company__c om det eksisterer) når den blir opprettet av en Community-bruker
         //Feltet Orderer__c settes automatisk i skjemaet.
         List<String> idents = new List<String>();
+        List<HOT_Request__c> accountConnectedRequests = new List<HOT_Request__c>();
+        List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
-            if (!String.isBlank(request.UserPersonNumber__c)) {
-                idents.add(request.UserPersonNumber__c);
-            }
-            if (!String.isBlank(request.OrganizationNumber__c)) {
-                idents.add(request.OrganizationNumber__c);
-            }
-            if (!String.isBlank(request.Account__c)) {
-                idents.add(request.Account__c);
+            if (request.Type__c == 'ImageInterpreter') {
+                imageInterpreterRequests.add(request);
+            } else {
+                accountConnectedRequests.add(request);
+                if (!String.isBlank(request.UserPersonNumber__c)) {
+                    idents.add(request.UserPersonNumber__c);
+                }
+                if (!String.isBlank(request.OrganizationNumber__c)) {
+                    idents.add(request.OrganizationNumber__c);
+                }
+                if (!String.isBlank(request.Account__c)) {
+                    idents.add(request.Account__c);
+                }
             }
         }
+        if (accountConnectedRequests.size() > 0) {
+            routeAccountConnectedRequests(accountConnectedRequests, idents);
+        }
+        if (imageInterpreterRequests.size() > 0) {
+            routeToCreatedByQueue(imageInterpreterRequests);
+        }
+    }
 
+    public static void routeToCreatedByQueue(List<HOT_Request__c> imageInterpreterRequests) {
+        List<Id> creatorIds = new List<Id>();
+        for (HOT_Request__c req : imageInterpreterRequests) {
+            creatorIds.add(req.OwnerId);
+        }
+        Map<Id, User> users = new Map<Id, User>([SELECT Id, Department FROM User WHERE Id IN :creatorIds]);
+        Map<Id, String> departmentNameByUser = HOT_GroupMembersService.getDepartmentNameByUser(users);
+        Map<String, String> queueNamesByDepartment = HOT_GroupMembersService.getGroupNames(null, null, 'queue');
+        List<Group> queues = [
+            SELECT Id, DeveloperName
+            FROM Group
+            WHERE DeveloperName IN :queueNamesByDepartment.values()
+        ];
+        Map<String, Id> queueIdByDeveloperName = new Map<String, Id>();
+        for (Group queue : queues) {
+            queueIdByDeveloperName.put(queue.DeveloperName, queue.Id);
+        }
+        Group adminGroup = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'HOT_Tolk_Admin' LIMIT 1];
+        for (HOT_Request__c req : imageInterpreterRequests) {
+            if (
+                departmentNameByUser.get(req.OwnerId) != null &&
+                queueNamesByDepartment.get(departmentNameByUser.get(req.OwnerId)) != null &&
+                queueIdByDeveloperName.get(queueNamesByDepartment.get(departmentNameByUser.get(req.OwnerId))) != null
+            ) {
+                req.OwnerId = queueIdByDeveloperName.get(
+                    queueNamesByDepartment.get(departmentNameByUser.get(req.OwnerId))
+                );
+            } else {
+                req.OwnerId = adminGroup.Id;
+            }
+        }
+    }
+
+    public void routeAccountConnectedRequests(List<HOT_Request__c> accountConnectedRequests, List<String> idents) {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         List<Account> accounts = [
             SELECT Id, Name, INT_PersonIdent__c, CRM_Person__c, INT_OrganizationNumber__c
@@ -36,7 +84,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             idToAccount.put(account.Id, account);
         }
 
-        for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+        for (HOT_Request__c request : accountConnectedRequests) {
             if (request.Account__c == null && currentUser.AccountId != null) {
                 //Sets account and Person fields if UserPersonNumber__c is filled out in form
                 if (
@@ -69,9 +117,10 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             getSobjectWrappers(),
             'HOT_Request__c'
         );
+        //bildetolk requestMap
         Integer i = 0;
         Group adminGroup = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'HOT_Tolk_Admin' LIMIT 1];
-        for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+        for (HOT_Request__c request : accountConnectedRequests) {
             ApexSharingRuleWrapper rule = ruleByByRequestId.get(i);
             if (rule == null) {
                 request.OwnerId = adminGroup.Id;

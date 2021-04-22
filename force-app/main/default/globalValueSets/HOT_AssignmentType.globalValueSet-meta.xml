@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <customValue>
         <fullName>Private</fullName>
@@ -40,7 +40,7 @@
     <customValue>
         <fullName>Image Interpreter</fullName>
         <default>false</default>
-        <isActive>false</isActive>
+        <isActive>true</isActive>
         <label>Bildetolk</label>
     </customValue>
     <masterLabel>Assignment Type</masterLabel>

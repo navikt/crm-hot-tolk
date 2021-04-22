@@ -132,10 +132,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle('Avlyst av tolk:');
         notification.setBody(
+            'Tolken meldte seg av ' +
             serviceAppointment.AppointmentNumber +
             ' ' +
             serviceAppointment.Subject +
-            ' avlyst den' +
+            ' den ' +
             serviceAppointment.LastModifiedDate?.format('d.M.yyyy')
         );
         notification.setNotificationTypeId(notificationType.Id);
@@ -181,7 +182,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' - ' +
             serviceAppointment.SchedStartTime?.format('d.M.yyyy') +
             ' - ' +
-            ' endret tidspunkt'
+            'endret tidspunkt'
         );
         notification.setBody(
             'Oppdraget ' +
@@ -207,7 +208,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' - ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
             ' - ' +
-            ' endret adresse'
+            'endret adresse'
         );
         notification.setBody(
             'Oppdraget ' +
@@ -233,7 +234,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' - ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
             ' - ' +
-            ' Tatt av oppdraget'
+            'Tatt av oppdraget'
         );
         notification.setBody(
             'Du er tatt av oppdraget ' +
@@ -259,7 +260,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' - ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
             ' - ' +
-            ' endret til ' +
+            'endret til ' +
             isScreenInterpreterString
         );
         notification.setBody(

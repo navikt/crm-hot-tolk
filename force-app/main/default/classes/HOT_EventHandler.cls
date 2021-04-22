@@ -20,35 +20,15 @@ public without sharing class HOT_EventHandler extends MyTriggers {
                 serviceAppointmentEvents.add(event);
                 serviceAppointmentIds.add(event.WhatId);
             }
-
-            // Filtrer ut de som blir synket fra Outlook (eller opprettes manuelt) og er av type HOT Event
-            if (event.RecordTypeId == hotEventRecordTypeId && event.WhatId == null) {
-                resourceAbsenceEvents.add(event);
-            }
         }
 
         if (serviceAppointmentEvents.size() > 0) {
             setDefaultValuesSA(serviceAppointmentEvents, serviceAppointmentIds);
         }
-        if (resourceAbsenceEvents.size() > 0) {
-            setDefaultValuesRA(resourceAbsenceEvents);
-        }
     }
 
     public override void onAfterInsert() {
-        List<Event> resourceAbsenceEvents = new List<Event>();
-
-        for (Event event : (List<Event>) records) {
-            // Filtrer ut de som blir synket fra Outlook (eller opprettes manuelt) og er av type HOT Event
-            // For å komme "riktig" i forhold til FSL-triggerne måtte denne legges til After Insert
-            if (event.RecordTypeId == hotEventRecordTypeId && event.WhatId == null) {
-                resourceAbsenceEvents.add(event);
-            }
-        }
-
-        if (resourceAbsenceEvents.size() > 0) {
-            updateRAEvents(resourceAbsenceEvents);
-        }
+        // Nothing for now
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -65,21 +45,10 @@ public without sharing class HOT_EventHandler extends MyTriggers {
                 serviceAppointmentEvents.add(event);
                 serviceAppointmentIds.add(event.WhatId);
             }
-
-            // Filtrer ut de som er koblet til ett ressursfravær og er av type HOT Event
-            if (
-                event.RecordTypeId == hotEventRecordTypeId &&
-                event.WhatId?.getSobjectType() == Schema.ResourceAbsence.SObjectType
-            ) {
-                resourceAbsenceEvents.add(event);
-            }
         }
 
         if (serviceAppointmentEvents.size() > 0) {
             setDefaultValuesSA(serviceAppointmentEvents, serviceAppointmentIds);
-        }
-        if (resourceAbsenceEvents.size() > 0) {
-            setDefaultValuesRA(resourceAbsenceEvents);
         }
     }
 
@@ -102,33 +71,5 @@ public without sharing class HOT_EventHandler extends MyTriggers {
                 serviceAppointmentMap.get(event.WhatId)?.Id +
                 '/view';
         }
-    }
-
-    private static void setDefaultValuesRA(List<Event> events) {
-        Set<String> eventFields = Schema.SObjectType.Event.fields.getMap().keySet();
-
-        for (Event event : events) {
-            if (eventFields.contains('fsl__event_type__c') && event.get('FSL__Event_Type__c') == null) {
-                event.Description = null;
-            } else if (
-                eventFields.contains('fsl__event_type__c') && event.get('FSL__Event_Type__c') == 'Resource Absence'
-            ) {
-                event.Description = null;
-            }
-        }
-    }
-
-    private static void updateRAEvents(List<Event> events) {
-        Set<String> eventFields = Schema.SObjectType.Event.fields.getMap().keySet();
-        List<Event> eventsToUpdate = new List<Event>();
-
-        for (Event event : events) {
-            if (eventFields.contains('fsl__event_type__c') && event.get('FSL__Event_Type__c') == null) {
-                Event eventClone = new Event(Id = event.Id);
-                eventClone.put('FSL__Event_Type__c', 'Resource Absence');
-                eventsToUpdate.add(eventClone);
-            }
-        }
-        update eventsToUpdate;
     }
 }

@@ -1,0 +1,277 @@
+name: "[HELPER] Create Scratch Org"
+on:
+  workflow_dispatch:
+    inputs:
+      branchName:
+        description: "New branch (or pick existing above)"
+jobs:
+  
+  print:
+    name: Print Parameters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print input values
+        run: |
+          echo "Branch Name: ${{ github.event.inputs.branchName }}"
+          echo "Initated Branch: ${{ github.ref }}"
+          echo "Initiator: ${{ github.actor }}"
+
+  setup:
+    name: Create Scratch Org
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.branch.outputs.branch }}
+    steps:
+      
+      # Set Branch
+      - name: Set Branch
+        id: branch
+        run: |
+          # if 
+          if [ ${{ github.event.inputs.branchName }} != "" ]; then
+            echo "::set-output name=branch::$(echo ${{ github.event.inputs.branchName }})"
+            echo "'${{ github.event.inputs.branchName }}' was set as branch"
+          elif [ ${GITHUB_REF/refs\/heads\//} == "master" ] || [ ${GITHUB_REF/refs\/heads\//} == "main" ]; then
+            echo ""
+            echo "::error::You didn't type a branch name and left the default main/master branch in the dropdown menu. You cannot push changes directly to master, please use a separate branch."
+            exit 125
+          else
+            echo "::set-output name=branch::${GITHUB_REF/refs\/heads\//}"
+            echo "'${GITHUB_REF/refs\/heads\//}' was set as branch"
+          fi
+
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      
+      # Create/Set branch
+      - name: Create/Set branch
+        run: git pull && git checkout -B ${{ steps.branch.outputs.branch }}
+
+      # Install SFDX
+      - name: Install SFDX
+        uses: sfdx-actions/setup-sfdx@v1
+      
+      # Authenticate dev hub
+      - name: Authenticate Dev Hub
+        run: |
+          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./PROD_SFDX_URL.txt
+      
+      # Create scratch org
+      - name: Create scratch org
+        run: sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1
+      
+      # Set SCRATCH_ORG_SFDX_AUTH_URL.txt
+      # ! saves sfdx auth url as artifact to circumvent GitHub Actions censoring of the value (which occurs when used with job output)
+      # ! artifact is later deleted
+      - name: Set SCRATCH_ORG_SFDX_AUTH_URL.txt
+        id: set-auth-url
+        run: sfdx force:org:display -u scratch-org --verbose --json | jq -r '.result.sfdxAuthUrl' > SCRATCH_ORG_SFDX_AUTH_URL.txt
+      
+      # Upload SCRATCH_ORG_SFDX_AUTH_URL.txt
+      - name: Upload SFDX AuthUrl
+        uses: actions/upload-artifact@v2
+        with:
+          name: sfdx-auth-url
+          path: SCRATCH_ORG_SFDX_AUTH_URL.txt
+      
+      # Install sfpowerkit plugin used to install multiple packages only by version number
+      - name: Install sfpowerkit plugin
+        run: echo y | sfdx plugins:install sfpowerkit@2.0.1
+
+      # Get package keys
+      - name: Get package keys
+        id: install-keys
+        run: |
+          keys=""
+          for p in $(jq '.result | .[].Name' -r <<< "$(sfdx force:package:list --json)"); do
+              keys+=$p":${{ secrets.PACKAGE_KEY }} "
+          done
+
+          echo "::set-output name=keys::$(echo $keys)"
+      
+      # Install packages this repo is dependant on
+      - name: Install dependant packages
+        run: sfdx sfpowerkit:package:dependencies:install -u scratch-org -r -a -w 60 -k '${{ steps.install-keys.outputs.keys }}'
+      
+      # Deploy source to scratch org
+      - name: Push source to scratch org
+        run: sfdx force:source:push
+
+      - name: Assign Permission Sets
+        run: |
+          sleep 30
+          for permset in $(jq -r '.permsets_to_assign | values | .[]' ./config/ssdx-config.json); do
+            sfdx force:user:permset:assign -n $permset -u scratch-org &> /dev/null
+            echo "Assigned permission set '$permset'"
+          done
+  
+  login:
+    name: Click Here to Login
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+    
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+  
+      # Prepare to Authenticate
+      - name: Prepare to Authenticate
+        uses: actions/download-artifact@v2
+        with:
+          name: sfdx-auth-url
+      
+      # Authenticate
+      - name: Authenticate
+        run: |
+          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+          mkdir sfdx-cli
+          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+          ./sfdx-cli/install
+          
+          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./PROD_SFDX_URL.txt
+
+          sfdx auth:sfdxurl:store -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt -a scratch-org -s
+
+      # Click here to login
+      - name: Click Here to Login
+        run: |
+          echo ""
+          echo "::warning::Instant Login URL:       $(sfdx force:org:open -u scratch-org -r --json | jq -r '.result.url')"
+          echo ""
+          echo "URL:                     $(sfdx force:user:display -u scratch-org --json | jq -r '.result.loginUrl')"
+          echo "Username:                $(sfdx force:user:display -u scratch-org --json | jq -r '.result.username')"
+          echo "Password:                $(sfdx force:user:password:generate -u scratch-org --json | jq -r '.result.password')"
+
+  pull-metadata:
+    name: Pull Metadata
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # Setup NPM
+      - name: Setup NPM
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      
+      # Run NPM
+      - name: Run NPM
+        run: npm install
+
+      # Prepare to Authenticate
+      - name: Prepare to Authenticate
+        uses: actions/download-artifact@v2
+        with:
+          name: sfdx-auth-url
+      
+      # Authenticate
+      - name: Authenticate
+        run: |
+          
+          git pull
+          git checkout -B ${{ needs.setup.outputs.branch }}
+          
+          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+          mkdir sfdx-cli
+          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+          ./sfdx-cli/install
+
+          rm -rf sfdx-linux-amd64.tar.xz
+          rm -rf ./sfdx-cli
+          
+          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./PROD_SFDX_URL.txt
+
+          sfdx auth:sfdxurl:store -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt -a scratch-org -s
+
+          git config --global user.name "github-actions"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt
+
+
+      # Pull Metadata (Every Minute)
+      - name: Pull Metadata (Every Minute)
+        run: |
+            end=$((SECONDS+20000)) # pull for 5.5 hours
+            
+            while [ $SECONDS -lt $end ]; do
+              
+              echo ""
+              timeLeft=$(expr $end - $SECONDS)
+              if [ $timeLeft -ge 3600 ]; then
+                hours=$(bc <<< "scale=1; $timeLeft / 3600")
+                echo "::warning::$hours hour(s) left until scratch org is deleted (the branch will remain)."
+              elif [ $timeLeft -ge 60 ]; then
+                minutes=$(bc <<< "scale=0; $timeLeft / 60")
+                echo "::warning::$minutes minute(s) left until scratch org is deleted (the branch will remain). HURRY UP!"
+              elif [ $timeLeft -gt 0 ]; then
+                echo "::warning::$timeLeft second(s) left until scratch org is deleted (the branch will remain). YOU REALLY NEED TO HURRY UP!"
+              fi
+
+              pull=$(sfdx force:source:pull -f --json)
+              status=$(jq '.result.pulledSource' <<< $pull)
+
+              if [ "$status" != "[]" ]; then
+                echo $pull | jq -r '.result.pulledSource'
+                echo ""
+
+                echo "Pushing Metadata to branch '${{ needs.setup.outputs.branch }}' ..."
+                npx prettier --write force-app &> /dev/null
+                git add force-app &> /dev/null
+                git commit -o force-app -m "Added files using 'Create Scratch Org' helper on GitHub Actions" --no-verify | tee output &> /dev/null
+                git push origin ${{ needs.setup.outputs.branch }} &> /dev/null
+                
+                echo "Done. Create a Pull Request here: https://github.com/${{ github.repository }}/compare/${{ needs.setup.outputs.branch }}?expand=1"
+              else
+                echo "No new metadata found. Create a Pull Request for previous changes here: https://github.com/${{ github.repository }}/compare/${{ needs.setup.outputs.branch }}?expand=1"
+              fi
+              
+              sleep 60
+            done
+
+  delete-scratch-org:
+    name: Delete Scratch Org
+    needs: pull-metadata
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      
+      # Install SFDX
+      - name: Install SFDX
+        uses: sfdx-actions/setup-sfdx@v1
+
+      # Authenticate dev hub
+      - name: Authenticate Dev Hub
+        run: |
+          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./PROD_SFDX_URL.txt
+      
+      # Download SCRATCH_ORG_SFDX_AUTH_URL.txt
+      - name: Download SCRATCH_ORG_SFDX_AUTH_URL.txt
+        uses: actions/download-artifact@v2
+        with:
+          name: sfdx-auth-url
+      
+      # Authenticate scratch org
+      - name: Authenticate scratch org
+        run: sfdx auth:sfdxurl:store -f ./SCRATCH_ORG_SFDX_AUTH_URL.txt -a scratch-org -s
+      
+      # Delete Scratch org
+      - name: Delete Scratch Org
+        run: sfdx force:org:delete -u scratch-org -p

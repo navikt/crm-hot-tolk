@@ -2,7 +2,7 @@ public without sharing class HOT_GroupMembersService {
     public static void updateGroupMembers(String permissionSetGroupName, String prefix, String suffix) {
         Map<Id, User> users = getUsers(permissionSetGroupName);
 
-        Map<String, String> groupNames = getGroupNames(prefix, suffix);
+        Map<String, String> groupNames = getGroupNames(prefix, suffix, 'group');
         Map<Id, Group> groupByUser = getGroupMembers(users, groupNames);
 
         Map<Id, groupMember> existingGroupMemberByUser = getExistingGroupMembers(groupNames.values());
@@ -33,7 +33,7 @@ public without sharing class HOT_GroupMembersService {
     }
 
     //Dette må vi ha ett eller annet sted, eventuelt hente det ut ved å sjekke gruppemedlemmer av grupper.
-    private static Map<String, String> getDepartmentMap() {
+    public static Map<String, String> getDepartmentMap() {
         List<HOT_NewRegionNumber__mdt> regionMaps = [
             SELECT OldRegionNumber__c, NewRegionNumber__c
             FROM HOT_NewRegionNumber__mdt
@@ -45,7 +45,7 @@ public without sharing class HOT_GroupMembersService {
         return departmentMap;
     }
 
-    private static Map<Id, String> getDepartmentNameByUser(Map<Id, User> users) {
+    public static Map<Id, String> getDepartmentNameByUser(Map<Id, User> users) {
         Map<String, String> departmentMap = getDepartmentMap();
         Map<Id, String> departmentNameByUser = new Map<Id, String>();
         for (User user : users.values()) {
@@ -69,7 +69,7 @@ public without sharing class HOT_GroupMembersService {
         return usersWithPermset;
     }
 
-    private static Map<String, String> getGroupNames(String prefix, String suffix) {
+    public static Map<String, String> getGroupNames(String prefix, String suffix, String groupTypeString) {
         Set<String> departments = new Set<String>(getDepartmentMap().values());
         Map<String, String> groupNames = new Map<String, String>();
         for (String dep : departments) {
@@ -77,7 +77,7 @@ public without sharing class HOT_GroupMembersService {
             if (prefix != null && prefix != '') {
                 groupName += prefix + '_';
             }
-            groupName += 'group_' + dep;
+            groupName += groupTypeString + '_' + dep;
             if (suffix != null && suffix != '') {
                 groupName += '_' + suffix;
             }
