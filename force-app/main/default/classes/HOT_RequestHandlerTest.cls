@@ -134,4 +134,18 @@ private class HOT_RequestHandlerTest {
         request = [SELECT Id, NumberOfWorkOrders__c FROM HOT_Request__c WHERE Id = :request.Id];
         System.assertEquals(2, request.NumberOfWorkOrders__c, 'Could not set NumberOfWorkOrders on request');
     }
+
+    @isTest
+    public static void setDefaultFieldsImageInterpreter() {
+        WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
+        workType.HOT_DeveloperName__c = 'BTV';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.InterpretationMethod__c = null;
+        request.Type__c = 'ImageInterpreter';
+        insert request;
+        request = [SELECT InterpretationMethod__c, AssignmentType__c FROM HOT_Request__c WHERE Id = :request.Id];
+        System.assertEquals('Image Interpreter', request.AssignmentType__c, 'Could not set AssignementType');
+        System.assertEquals(workType.Id, request.InterpretationMethod__c, 'Could not set InterpretationMethod');
+    }
 }

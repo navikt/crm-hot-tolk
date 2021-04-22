@@ -16,6 +16,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
+        List<ServiceAppointment> completedImageInterpreterServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -96,6 +97,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 retractedServiceAppointments.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'Completed' &&
+                serviceAppointment.ActualStartTime == null &&
+                serviceAppointment.ActualEndTime == null &&
+                serviceAppointment.HOT_IsImageInterpreter__c == true
+            ) {
+                completedImageInterpreterServiceAppointments.add(serviceAppointment);
+            }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -133,6 +143,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 SAnotifyResource,
                 triggerOldMap
             );
+        }
+        if (completedImageInterpreterServiceAppointments.size() > 0) {
+            setActualTime(completedImageInterpreterServiceAppointments);
         }
     }
 
@@ -327,6 +340,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
                 serviceAppointment = updateDuration(serviceAppointment);
+
+                //Image Interpreter
+                if (
+                    serviceAppointment.HOT_IsImageInterpreter__c && serviceAppointment.get('FSL__GanttColor__c') != null
+                ) {
+                    Map<String, String> ganttColorByStatus = getGanttColorByStatus(
+                        serviceAppointment.HOT_IsImageInterpreter__c
+                    );
+                    serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
+                }
             }
         }
     }
@@ -450,6 +473,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             return 'Reservert';
 
         return '';
+    }
+
+    private static Map<String, String> getGanttColorByStatus(Boolean isImageInterpreter) {
+        Map<String, String> ganttColorByStatus = new Map<String, String>();
+        if (isImageInterpreter) {
+            ganttColorByStatus.put('Scheduled', '#189AB4');
+            ganttColorByStatus.put('Dispatched', '#F8EA8C');
+            ganttColorByStatus.put('Completed', '#59981A');
+        }
+        return ganttColorByStatus;
     }
 
     public static List<ServiceAppointment> setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
@@ -596,5 +629,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public static void deleteRelatedEvents(List<ServiceAppointment> serviceAppointments) {
         List<Event> events = [SELECT Id FROM Event WHERE WhatId IN :serviceAppointments];
         delete events;
+    }
+
+    public static void setActualTime(List<ServiceAppointment> serviceAppointments) {
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime;
+            serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime;
+        }
     }
 }

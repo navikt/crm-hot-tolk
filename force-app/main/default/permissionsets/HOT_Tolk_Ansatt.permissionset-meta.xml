@@ -301,6 +301,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsImageInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsManuallyInvoiced__c</field>
         <readable>true</readable>
@@ -762,6 +767,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsImageInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_IsMyRequestDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1023,6 +1033,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.HOT_InterpretationStreet__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_IsImageInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

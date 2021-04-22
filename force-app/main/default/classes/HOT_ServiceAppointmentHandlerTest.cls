@@ -587,4 +587,30 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Freelance interpreter was not set to false'
         );
     }
+
+    @isTest
+    public static void serviceAppointmentCompletedWithoutActualTimes() {
+        ServiceAppointment serviceAppointment = [SELECT Id, Status, HOT_Request__c FROM ServiceAppointment LIMIT 1];
+        HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c WHERE Id = :serviceAppointment.HOT_Request__c];
+        request.Type__c = 'ImageInterpreter';
+        update request;
+        serviceAppointment.Status = 'Completed';
+        update serviceAppointment;
+        serviceAppointment = [
+            SELECT Id, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, HOT_IsImageInterpreter__c
+            FROM serviceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        System.assertEquals(
+            serviceAppointment.SchedStartTime,
+            serviceAppointment.ActualStartTime,
+            'Could not set Actual Start Time'
+        );
+        System.assertEquals(
+            serviceAppointment.SchedEndTime,
+            serviceAppointment.ActualEndTime,
+            'Could not set Actual End Time'
+        );
+        System.assertEquals(serviceAppointment.HOT_IsImageInterpreter__c, true, 'Could not set imgint');
+    }
 }

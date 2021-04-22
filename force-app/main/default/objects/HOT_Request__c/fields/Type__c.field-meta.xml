@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Type__c</fullName>
     <externalId>false</externalId>
@@ -30,6 +30,11 @@
                 <fullName>PublicEvent</fullName>
                 <default>false</default>
                 <label>Arrangement (annen betaler)</label>
+            </value>
+            <value>
+                <fullName>ImageInterpreter</fullName>
+                <default>false</default>
+                <label>Bildetolk</label>
             </value>
         </valueSetDefinition>
     </valueSet>
