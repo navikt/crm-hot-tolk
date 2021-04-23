@@ -106,6 +106,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 completedImageInterpreterServiceAppointments.add(serviceAppointment);
             }
+            if (serviceAppointment.AccountId != triggerOldMap.get(serviceAppointment.Id).get('AccountId')) {
+                setCustomAccountLookup(serviceAppointment);
+            }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -340,6 +343,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
                 serviceAppointment = updateDuration(serviceAppointment);
+                serviceAppointment = setCustomAccountLookup(serviceAppointment);
 
                 //Image Interpreter
                 if (
@@ -636,5 +640,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime;
             serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime;
         }
+    }
+    public static ServiceAppointment setCustomAccountLookup(ServiceAppointment serviceAppointment) {
+        serviceAppointment.HOT_Account__c = serviceAppointment.AccountId;
+        return serviceAppointment;
     }
 }
