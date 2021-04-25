@@ -1,5 +1,5 @@
 public without sharing class HOT_ResourceAbsenceCreateService implements Database.Batchable<sObject> {
-    public static Datetime timeScope = Datetime.now().addDays(-1);
+    public static Datetime timeScope = Datetime.now().addHours(-1);
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
