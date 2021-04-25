@@ -44,8 +44,16 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
                 }
                 resourceAbsence.ResourceId = relatedRecordIdToResourceIdMap.get(event.OwnerId);
                 resourceAbsence.HOT_EventId__c = event.Id;
-                resourceAbsence.Start = event.StartDateTime;
-                resourceAbsence.End = event.EndDateTime;
+
+                // All-day events in Salesforce has the same start time and end time
+                if (event.StartDateTime == event.EndDateTime) {
+                    Integer offset = UserInfo.getTimezone().getOffset(event.StartDateTime);
+                    resourceAbsence.Start = event.StartDateTime.addSeconds(-offset / 1000);
+                    resourceAbsence.End = event.EndDateTime.addDays(1).addSeconds(-offset / 1000);
+                } else {
+                    resourceAbsence.Start = event.StartDateTime;
+                    resourceAbsence.End = event.EndDateTime;
+                }
                 resourceAbsence.Type = 'Møte';
                 resourceAbsenceList.add(resourceAbsence);
             }
