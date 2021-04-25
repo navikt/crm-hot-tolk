@@ -428,6 +428,7 @@
         <fields>Status</fields>
         <fields>HOT_ServiceResource__c</fields>
         <fields>WorkType</fields>
+        <fields>HOT_DayOfWeek__c</fields>
         <fields>EarliestStartTime</fields>
         <fields>LatestEndTime</fields>
         <relatedList>ServiceAppointment.HOT_Request__c</relatedList>
