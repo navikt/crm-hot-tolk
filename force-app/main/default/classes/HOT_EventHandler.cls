@@ -27,13 +27,8 @@ public without sharing class HOT_EventHandler extends MyTriggers {
         }
     }
 
-    public override void onAfterInsert() {
-        // Nothing for now
-    }
-
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<Event> serviceAppointmentEvents = new List<Event>();
-        List<Event> resourceAbsenceEvents = new List<Event>();
         Set<Id> serviceAppointmentIds = new Set<Id>();
 
         for (Event event : (List<Event>) records) {
