@@ -18,20 +18,31 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
             FROM ServiceResource
             WHERE RelatedRecordId IN :ownerIds
         ];
-        Map<Id, Id> relatedRecordIdResourceId = new Map<Id, Id>();
+        Map<Id, Id> relatedRecordIdToResourceIdMap = new Map<Id, Id>();
         for (ServiceResource serviceResource : serviceResourceList) {
-            relatedRecordIdResourceId.put(serviceResource.RelatedRecordId, serviceResource.Id);
+            relatedRecordIdToResourceIdMap.put(serviceResource.RelatedRecordId, serviceResource.Id);
         }
 
-        RecordType resourceAbsenceRecordType = [SELECT Id FROM RecordType WHERE DeveloperName = 'Non_Availability'];
+        Id resourceAbsenceRecordTypeId;
+        RecordTypeInfo resourceAbsenceRecordTypeInfo = Schema.getGlobalDescribe()
+            .get('ResourceAbsence')
+            .getDescribe()
+            .getRecordTypeInfosByDeveloperName()
+            .get('Non_Availability');
+
+        if (resourceAbsenceRecordTypeInfo != null) {
+            resourceAbsenceRecordTypeId = resourceAbsenceRecordTypeInfo.getRecordTypeId();
+        }
 
         List<ResourceAbsence> resourceAbsenceList = new List<ResourceAbsence>();
 
         for (Event event : scope) {
-            if (relatedRecordIdResourceId.containsKey(event.OwnerId)) {
+            if (relatedRecordIdToResourceIdMap.containsKey(event.OwnerId)) {
                 ResourceAbsence resourceAbsence = new ResourceAbsence();
-                resourceAbsence.RecordTypeId = resourceAbsenceRecordType.Id;
-                resourceAbsence.ResourceId = relatedRecordIdResourceId.get(event.OwnerId);
+                if (resourceAbsenceRecordTypeId != null) {
+                    resourceAbsence.put('RecordTypeId', resourceAbsenceRecordTypeId);
+                }
+                resourceAbsence.ResourceId = relatedRecordIdToResourceIdMap.get(event.OwnerId);
                 resourceAbsence.HOT_EventId__c = event.Id;
                 resourceAbsence.Start = event.StartDateTime;
                 resourceAbsence.End = event.EndDateTime;

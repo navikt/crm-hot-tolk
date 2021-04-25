@@ -49,13 +49,10 @@ private class HOT_ResourceAbsenceServiceTest {
 
         insert events;
 
-        RecordType resourceAbsenceRecordType = [SELECT Id FROM RecordType WHERE DeveloperName = 'Non_Availability'];
-
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource];
 
         List<ResourceAbsence> resourceAbsences = new List<ResourceAbsence>();
         ResourceAbsence resourceAbsence1 = new ResourceAbsence();
-        resourceAbsence1.RecordTypeId = resourceAbsenceRecordType.Id;
         resourceAbsence1.ResourceId = serviceResource.Id;
         resourceAbsence1.HOT_EventId__c = event1.Id;
         resourceAbsence1.Start = event1.StartDateTime;
@@ -64,7 +61,6 @@ private class HOT_ResourceAbsenceServiceTest {
         resourceAbsences.add(resourceAbsence1);
 
         ResourceAbsence resourceAbsence2 = new ResourceAbsence();
-        resourceAbsence2.RecordTypeId = resourceAbsenceRecordType.Id;
         resourceAbsence2.ResourceId = serviceResource.Id;
         resourceAbsence2.HOT_EventId__c = event2.Id;
         resourceAbsence2.Start = event2.StartDateTime;
