@@ -106,9 +106,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 completedImageInterpreterServiceAppointments.add(serviceAppointment);
             }
-            if (serviceAppointment.AccountId != triggerOldMap.get(serviceAppointment.Id).get('AccountId')) {
-                setCustomAccountLookup(serviceAppointment);
-            }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -227,6 +224,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             [
                 SELECT
                     Id,
+                    WorkOrder.AccountId,
                     WorkOrder.HOT_Request__c,
                     WorkOrder.OwnerId,
                     Subject,
@@ -342,8 +340,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 if (serviceAppointment.HOT_WorkOrderLineItem__c == null && serviceAppointment.ParentRecordId != null) {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
+                if (
+                    serviceAppointment.ParentRecordId != null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId != null
+                ) {
+                    serviceAppointment.HOT_Account__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
+                        .WorkOrder.AccountId;
+                }
                 serviceAppointment = updateDuration(serviceAppointment);
-                serviceAppointment = setCustomAccountLookup(serviceAppointment);
 
                 //Image Interpreter
                 if (
@@ -640,9 +644,5 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime;
             serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime;
         }
-    }
-    public static ServiceAppointment setCustomAccountLookup(ServiceAppointment serviceAppointment) {
-        serviceAppointment.HOT_Account__c = serviceAppointment.AccountId;
-        return serviceAppointment;
     }
 }
