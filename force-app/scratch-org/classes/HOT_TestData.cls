@@ -23,6 +23,7 @@ public class HOT_TestData {
 
     List<String> workTypeNames = new List<String>{
         'TS - Tegnspråk',
+        'BTV - Bildetolkvakt',
         'TT - Taktilt tegnspråk',
         'TBS - Tegnspråk i begrenset synsfelt'
     };
@@ -70,6 +71,7 @@ public class HOT_TestData {
         for (Integer i = 0; i < n && i < this.workTypeNames.size(); i++) {
             WorkType workType = new WorkType();
             workType.Name = this.workTypeNames[i];
+            workType.HOT_DeveloperName__c = this.workTypeNames[i].substring(3);
             workType.DurationType = 'Hours';
             workType.EstimatedDuration = 1;
             workTypes.add(workType);
