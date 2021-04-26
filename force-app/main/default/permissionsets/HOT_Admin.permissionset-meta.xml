@@ -1496,6 +1496,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>WorkOrderLineItem.InterpretationMethod__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>WorkOrderLineItem.IsClosed</field>
         <readable>true</readable>
     </fieldPermissions>

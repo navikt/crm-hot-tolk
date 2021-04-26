@@ -5,6 +5,7 @@
     <fields>WorkOrderId</fields>
     <fields>Status</fields>
     <fields>WorkTypeId</fields>
+    <fields>InterpretationMethod__c</fields>
     <fields>StartDate</fields>
     <fields>CreatedDate</fields>
     <label>Work Order Line Item Compact Layout</label>
