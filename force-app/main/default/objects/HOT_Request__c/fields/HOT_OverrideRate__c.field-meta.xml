@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_OverrideRate__c</fullName>
+    <externalId>false</externalId>
+    <label>Override Rate</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>IsOtherEconomicProvicer__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Ordinær sats</fullName>
+                <default>false</default>
+                <label>Ordinær sats</label>
+            </value>
+            <value>
+                <fullName>Domstol-sats</fullName>
+                <default>false</default>
+                <label>Domstol-sats</label>
+            </value>
+            <value>
+                <fullName>UNE-sats</fullName>
+                <default>false</default>
+                <label>UNE-sats</label>
+            </value>
+            <value>
+                <fullName>UDI-sats</fullName>
+                <default>false</default>
+                <label>UDI-sats</label>
+            </value>
+            <value>
+                <fullName>Annen sats</fullName>
+                <default>false</default>
+                <label>Annen sats</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>checked</controllingFieldValue>
+            <valueName>Ordinær sats</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>checked</controllingFieldValue>
+            <valueName>Domstol-sats</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>checked</controllingFieldValue>
+            <valueName>UNE-sats</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>checked</controllingFieldValue>
+            <valueName>UDI-sats</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>checked</controllingFieldValue>
+            <valueName>Annen sats</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>
