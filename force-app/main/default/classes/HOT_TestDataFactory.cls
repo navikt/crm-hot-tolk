@@ -207,4 +207,15 @@ public class HOT_TestDataFactory {
 
         return interestedResource;
     }
+
+    public static Event createEvent(RecordType eventRecordType, Integer offset) {
+        Event event = new Event();
+        event.RecordTypeId = eventRecordType.Id;
+        event.Subject = 'Subject';
+        event.ShowAs = 'Busy';
+        event.StartDateTime = Datetime.now().addHours(offset);
+        event.EndDateTime = Datetime.now().addHours(1 + offset);
+
+        return event;
+    }
 }
