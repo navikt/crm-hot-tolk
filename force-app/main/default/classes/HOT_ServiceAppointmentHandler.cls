@@ -17,6 +17,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
         List<ServiceAppointment> completedImageInterpreterServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -106,6 +107,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 completedImageInterpreterServiceAppointments.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'Annul'
+            ) {
+                annulServiceAppointments.add(serviceAppointment);
+            }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -146,6 +153,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (completedImageInterpreterServiceAppointments.size() > 0) {
             setActualTime(completedImageInterpreterServiceAppointments);
+        }
+        if (annulServiceAppointments.size() > 0) {
+            removeCustomAccountLookup(annulServiceAppointments);
         }
     }
 
@@ -643,6 +653,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime;
             serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime;
+        }
+    }
+    public static void removeCustomAccountLookup(List<ServiceAppointment> serviceAppointments) {
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.HOT_Account__c = null;
         }
     }
 }
