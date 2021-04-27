@@ -63,6 +63,11 @@
     <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
+                <fieldItem>Record.Subject__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
                 <fieldItem>Record.Name</fieldItem>
             </fieldInstance>
         </itemInstances>
@@ -74,11 +79,6 @@
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.Source__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.Subject__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -258,7 +258,12 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.SeriesPeriod__c</fieldItem>
+                <fieldItem>Record.SeriesStartDate__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.SeriesEndDate__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-2b77daf5-d59d-4e44-9a6b-4dd40a08a1ae</name>
@@ -268,6 +273,11 @@
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.NumberOfWorkOrders__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.SeriesDurationDays__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -303,17 +313,22 @@
     <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.InterpretationMethod__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
                 <fieldItem>Record.NumberOfInterpreters__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.AssignmentType__c</fieldItem>
+                <fieldItem>Record.PreferredResource1__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.PreferredResource2__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.PreferredResource3__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-7a69e729-d7de-4731-b714-4d6878395460</name>
@@ -327,12 +342,17 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.IsScreenInterpreter__c</fieldItem>
+                <fieldItem>Record.Dispatcher__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.IsAcute__c</fieldItem>
+                <fieldItem>Record.InterpretationMethod__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.AssignmentType__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-048cf0b7-fe92-46b6-bac3-1954ba98749b</name>
@@ -363,21 +383,6 @@
     <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.PreferredResource1__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.PreferredResource2__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.PreferredResource3__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
                 <fieldItem>Record.InterpretationMethodSecondary__c</fieldItem>
             </fieldInstance>
         </itemInstances>
@@ -386,15 +391,15 @@
                 <fieldItem>Record.NumberOfInterpretersSecondary__c</fieldItem>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.IsScreenInterpreter__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-d5a1be6c-1a4d-4afe-b04e-a60af374d2e0</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.Dispatcher__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.ExternalRequestStatus__c</fieldItem>
@@ -403,6 +408,11 @@
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.CanceledDate__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.IsAcute__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-5a56343c-3c55-41be-bbf2-68e3925e8cba</name>
@@ -700,7 +710,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Avansert</value>
+                    <value>Formidler seksjon avansert</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <visibilityRule>
