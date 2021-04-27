@@ -50,6 +50,10 @@
                 <behavior>Readonly</behavior>
                 <field>HOT_TotalNumberOfInterpreters__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_AutoDispatch__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
