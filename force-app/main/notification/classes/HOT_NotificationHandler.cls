@@ -35,15 +35,19 @@ public without sharing class HOT_NotificationHandler {
         Map<Id, String> groupNamesByQueueId = new Map<Id, String>();
         for (Group queue : queues) {
             String groupName = '';
-            //Fellesoppdrag skal kun varsles til køen
+            //Fellesoppdrag
             if (queue.DeveloperName.contains('fellesoppdrag')) {
-                groupName = queue.DeveloperName;
+                groupName = 'HOT_group_' + queue.DeveloperName.split('_')[2] + '_formidler';
             } else {
                 groupName = 'HOT_group_' + queue.DeveloperName.split('_')[1] + '_formidler';
             }
             groupNamesByQueueId.put(queue.Id, groupName);
         }
-        List<Group> groups = [SELECT Id, DeveloperName FROM Group WHERE DeveloperName IN :groupNamesByQueueId.values()];
+        List<Group> groups = [
+            SELECT Id, DeveloperName
+            FROM Group
+            WHERE Type = 'Regular' AND DeveloperName IN :groupNamesByQueueId.values()
+        ];
         Map<String, Id> groupByDeveloperName = new Map<String, Id>();
         for (Group grp : groups) {
             groupByDeveloperName.put(grp.DeveloperName, grp.Id);
