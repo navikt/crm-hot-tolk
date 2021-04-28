@@ -38,6 +38,10 @@
                 <behavior>Edit</behavior>
                 <field>HOT_IsInvoiced__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>CanceledDate__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
