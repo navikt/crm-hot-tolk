@@ -31,6 +31,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     //Vi gjør derfor om denne "trigger"-metoden til en statisk metode, og kaller på den fra HOT_WorkOrderStatusHandler.onAfterUpdate.
     public static void onAfterUpdateTemp(Map<Id, sObject> triggerOldMap, List<WorkOrder> records) {
         List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
+        List<WorkOrder> canceledWorkOrders = new List<WorkOrder>();
 
         //Om status eller tidspunkt på WorkOrder er endret, kan det ha ført til at den førstkommende, ikke-avlyste WorkOrderen har endret seg
         for (WorkOrder record : records) {
@@ -42,10 +43,17 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             ) {
                 updatedWorkOrders.add(record);
             }
+            // Filter for canceled work orders
+            if (record.Status != triggerOldMap.get(record.Id).get('Status') && record.Status == 'Canceled') {
+                canceledWorkOrders.add(record);
+            }
         }
 
         if (updatedWorkOrders.size() > 0) {
             updateRequests(updatedWorkOrders);
+        }
+        if (canceledWorkOrders.size() > 0) {
+            HOT_WorkOrderNotification.notifyDispatchers_workOrderChanged(canceledWorkOrders, triggerOldMap);
         }
     }
     public override void onAfterDelete() {

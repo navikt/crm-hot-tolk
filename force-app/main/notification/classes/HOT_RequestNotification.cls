@@ -9,24 +9,33 @@ public without sharing class HOT_RequestNotification {
         requests = checkWorkOrders(requests);
 
         List<Id> queueIds = new List<Id>();
+        List<Id> editorIds = new List<Id>();
         for (HOT_Request__c request : requests) {
             queueIds.add(request.OwnerId);
+            editorIds.add(request.LastModifiedById);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
 
+        List<GroupMember> groupMembers = [
+            SELECT Id, GroupId, UserORGroupId
+            FROM GroupMember
+            WHERE UserORGroupId IN :editorIds AND GroupId IN :groupByQueue.values()
+        ];
+        Map<Id, Id> groupByUser = new Map<Id, Id>();
+        for (GroupMember grpMem : groupMembers) {
+            groupByUser.put(grpMem.UserOrGroupId, grpMem.GroupId);
+        }
+
         for (HOT_Request__c request : requests) {
-            HOT_Request__c oldRequest = (HOT_Request__c) triggerOldMap.get(request.Id);
+            if (groupByUser.get(request.LastModifiedById) != groupByQueue.get(request.OwnerId)) {
+                HOT_Request__c oldRequest = (HOT_Request__c) triggerOldMap.get(request.Id);
 
-            Set<String> recipients = new Set<String>{ (String) groupByQueue.get(request.OwnerId) };
+                Set<String> recipients = new Set<String>{ (String) groupByQueue.get(request.OwnerId) };
 
-            // Varsel ved avlyst av bruker
-            if (
-                request.Status__c == 'Avlyst' &&
-                oldRequest.Status__c != 'Avlyst' &&
-                recipients != null &&
-                !recipients.contains(request.LastModifiedById)
-            ) {
-                canceledByUser(notificationType, request, recipients);
+                // Varsel ved avlyst av bruker
+                if (request.Status__c == 'Avlyst' && oldRequest.Status__c != 'Avlyst') {
+                    canceledByUser(notificationType, request, recipients);
+                }
             }
         }
     }
