@@ -13,12 +13,11 @@ public without sharing class HOT_RequestNotification {
             queueIds.add(request.OwnerId);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
-        Map<Id, Set<String>> recipientsByGroupId = HOT_NotificationHandler.getUsersInGroup(groupByQueue.values());
 
         for (HOT_Request__c request : requests) {
             HOT_Request__c oldRequest = (HOT_Request__c) triggerOldMap.get(request.Id);
 
-            Set<String> recipients = recipientsByGroupId.get(groupByQueue.get(request.OwnerId));
+            Set<String> recipients = new Set<String>{ (String) groupByQueue.get(request.OwnerId) };
 
             // Varsel ved avlyst av bruker
             if (
