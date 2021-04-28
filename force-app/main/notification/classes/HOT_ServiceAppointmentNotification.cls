@@ -11,64 +11,70 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
+            if (oldServiceAppointment.HOT_AssignedResourceId__c != null) {
+                Set<String> recipients = new Set<String>{ oldServiceAppointment.HOT_AssignedResourceId__c };
 
-            Set<String> recipients = new Set<String>{ oldServiceAppointment.HOT_AssignedResourceId__c };
+                // Varsel ved avlyst av bruker
+                if (
+                    serviceAppointment.Status == 'Canceled' &&
+                    oldServiceAppointment.Status != 'Canceled' &&
+                    serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
+                    oldServiceAppointment.Status != 'Scheduled' &&
+                    recipients != null &&
+                    !recipients.contains(serviceAppointment.LastModifiedById) &&
+                    serviceAppointment.HOT_CancelComment__c == null
+                ) {
+                    canceledByUser(notificationType, serviceAppointment, recipients);
+                }
 
-            // Varsel ved avlyst av bruker
-            if (
-                serviceAppointment.Status == 'Canceled' &&
-                oldServiceAppointment.Status != 'Canceled' &&
-                serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
-                oldServiceAppointment.Status != 'Scheduled' &&
-                recipients != null &&
-                !recipients.contains(serviceAppointment.LastModifiedById) &&
-                serviceAppointment.HOT_CancelComment__c == null
-            ) {
-                canceledByUser(notificationType, serviceAppointment, recipients);
-            }
+                // Varsel ved endring av tidspunkt
+                if (
+                    (serviceAppointment.SchedStartTime != oldServiceAppointment.SchedStartTime ||
+                    serviceAppointment.SchedEndTime != oldServiceAppointment.SchedEndTime) &&
+                    serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
+                    serviceAppointment.Status != 'Scheduled' &&
+                    serviceAppointment.SchedStartTime != null
+                ) {
+                    timeChanged(notificationType, serviceAppointment, recipients);
+                }
 
-            // Varsel ved endring av tidspunkt
-            if (
-                (serviceAppointment.SchedStartTime != oldServiceAppointment.SchedStartTime ||
-                serviceAppointment.SchedEndTime != oldServiceAppointment.SchedEndTime) &&
-                serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
-                serviceAppointment.Status != 'Scheduled' &&
-                serviceAppointment.SchedStartTime != null
-            ) {
-                timeChanged(notificationType, serviceAppointment, recipients);
-            }
+                // Varsel ved endring av adresse
+                if (
+                    serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c &&
+                    serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
+                    serviceAppointment.Status != 'Scheduled'
+                ) {
+                    addressChanged(notificationType, serviceAppointment, recipients);
+                }
 
-            // Varsel ved endring av adresse
-            if (
-                serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c &&
-                serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
-                serviceAppointment.Status != 'Scheduled'
-            ) {
-                addressChanged(notificationType, serviceAppointment, recipients);
-            }
+                // Varsel ved fjerning av tolk
+                if (
+                    (oldServiceAppointment.Status == 'Completed' ||
+                    oldServiceAppointment.Status == 'Dispatched' ||
+                    oldServiceAppointment.Status == 'In Progress') &&
+                    (serviceAppointment.Status == null ||
+                    serviceAppointment.Status == 'None') &&
+                    serviceAppointment.HOT_CanceledByInterpreter__c == false
+                ) {
+                    resourceChanged(notificationType, serviceAppointment, recipients);
+                }
 
-            // Varsel ved fjerning av tolk
-            if (
-                (oldServiceAppointment.Status == 'Completed' ||
-                oldServiceAppointment.Status == 'Dispatched' ||
-                oldServiceAppointment.Status == 'In Progress') &&
-                (serviceAppointment.Status == null ||
-                serviceAppointment.Status == 'None') &&
-                serviceAppointment.HOT_CanceledByInterpreter__c == false
-            ) {
-                resourceChanged(notificationType, serviceAppointment, recipients);
-            }
-
-            // Varsel ved endring av skjermtolk/oppmøtetolk
-            if (
-                serviceAppointment.HOT_IsScreenInterpreterNew__c !=
-                oldServiceAppointment.HOT_IsScreenInterpreterNew__c &&
-                serviceAppointment.Status != 'Scheduled'
-            ) {
-                String isScreenInterpreterString = serviceAppointment.HOT_IsScreenInterpreterNew__c
-                    ? 'skjermtolk'
-                    : 'oppmøtetolk';
-                screenInterpreterChanged(notificationType, serviceAppointment, recipients, isScreenInterpreterString);
+                // Varsel ved endring av skjermtolk/oppmøtetolk
+                if (
+                    serviceAppointment.HOT_IsScreenInterpreterNew__c !=
+                    oldServiceAppointment.HOT_IsScreenInterpreterNew__c &&
+                    serviceAppointment.Status != 'Scheduled'
+                ) {
+                    String isScreenInterpreterString = serviceAppointment.HOT_IsScreenInterpreterNew__c
+                        ? 'skjermtolk'
+                        : 'oppmøtetolk';
+                    screenInterpreterChanged(
+                        notificationType,
+                        serviceAppointment,
+                        recipients,
+                        isScreenInterpreterString
+                    );
+                }
             }
         }
     }
@@ -115,8 +121,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 oldServiceAppointment.Status != 'Scheduled' &&
                 workOrderLineItems.get(serviceAppointment.HOT_WorkOrderLineItem__c) != null &&
                 workOrderLineItems.get(serviceAppointment.HOT_WorkOrderLineItem__c).Status != 'Canceled' &&
-                recipients != null &&
-                !recipients.contains(serviceAppointment.LastModifiedById)
+                serviceAppointment.HOT_CancelComment__c != null
             ) {
                 canceledByUser(notificationType, serviceAppointment, recipients);
             }
