@@ -623,7 +623,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     private static ServiceAppointment updateDuration(ServiceAppointment serviceAppointment) {
         if (serviceAppointment.EarliestStartTime != null && serviceAppointment.DueDate != null) {
             serviceAppointment.Duration =
-                (serviceAppointment.DueDate.getTime() - serviceAppointment.EarliestStartTime.getTime()) / 3600000;
+                ((Double) serviceAppointment.DueDate.getTime() -
+                (Double) serviceAppointment.EarliestStartTime.getTime()) / 3600000;
         }
         return serviceAppointment;
     }
