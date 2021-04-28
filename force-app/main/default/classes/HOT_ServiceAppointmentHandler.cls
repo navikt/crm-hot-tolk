@@ -14,42 +14,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> allServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
-        List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
-        List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
         List<ServiceAppointment> completedImageInterpreterServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
-            if (
-                //Canceled on behalf of user
-                //Canceled by interpreter
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_canceledByInterpreter__c') == false &&
-                serviceAppointment.HOT_canceledByInterpreter__c == true ||
-                serviceAppointment.Status == 'Canceled' &&
-                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'Canceled'
-            ) {
-                SAnotifyDispatcher.add(serviceAppointment);
-            }
-            if (
-                //canceled by user
-                //time change
-                //address change
-                //removed resource
-                serviceAppointment.Status == 'Canceled' &&
-                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'Canceled' ||
-                (serviceAppointment.SchedStartTime != triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') ||
-                serviceAppointment.SchedEndTime != triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime')) ||
-                serviceAppointment.HOT_AddressFormated__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_AddressFormated__c') ||
-                (triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Completed' ||
-                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Dispatched' ||
-                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'In Progress') &&
-                (serviceAppointment.Status == null ||
-                serviceAppointment.Status == 'None') ||
-                (serviceAppointment.HOT_IsScreenInterpreterNew__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsScreenInterpreterNew__c'))
-            ) {
-                SAnotifyResource.add(serviceAppointment);
-            }
             if (
                 serviceAppointment.get('HOT_ServiceResource__c') != null &&
                 serviceAppointment.get('HOT_ServiceResource__c') !=
@@ -132,18 +99,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (retractedServiceAppointments.size() > 0) {
             retractServiceAppointments(retractedServiceAppointments);
         }
-        if (SAnotifyDispatcher.size() > 0) {
-            HOT_ServiceAppointmentNotification.notifyDispatchers_serviceAppointmentChanged(
-                SAnotifyDispatcher,
-                triggerOldMap
-            );
-        }
-        if (SAnotifyResource.size() > 0) {
-            HOT_ServiceAppointmentNotification.notifyInterpreter_serviceAppointmentChanged(
-                SAnotifyResource,
-                triggerOldMap
-            );
-        }
         if (completedImageInterpreterServiceAppointments.size() > 0) {
             setActualTime(completedImageInterpreterServiceAppointments);
         }
@@ -154,8 +109,41 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithChangedAddress = new List<ServiceAppointment>();
+        List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
+        List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+            if (
+                //Canceled on behalf of user
+                //Canceled by interpreter
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_canceledByInterpreter__c') == false &&
+                serviceAppointment.HOT_canceledByInterpreter__c == true ||
+                serviceAppointment.Status == 'Canceled' &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'Canceled'
+            ) {
+                SAnotifyDispatcher.add(serviceAppointment);
+            }
+            if (
+                //canceled by user
+                //time change
+                //address change
+                //removed resource
+                serviceAppointment.Status == 'Canceled' &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'Canceled' ||
+                (serviceAppointment.SchedStartTime != triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') ||
+                serviceAppointment.SchedEndTime != triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime')) ||
+                serviceAppointment.HOT_AddressFormated__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_AddressFormated__c') ||
+                (triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Completed' ||
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Dispatched' ||
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'In Progress') &&
+                (serviceAppointment.Status == null ||
+                serviceAppointment.Status == 'None') ||
+                (serviceAppointment.HOT_IsScreenInterpreterNew__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsScreenInterpreterNew__c'))
+            ) {
+                SAnotifyResource.add(serviceAppointment);
+            }
             if (
                 (serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') &&
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')
@@ -197,6 +185,18 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             deleteRelatedEvents(serviceAppointmentsToRemoveAssignedResource);
+        }
+        if (SAnotifyDispatcher.size() > 0) {
+            HOT_ServiceAppointmentNotification.notifyDispatchers_serviceAppointmentChanged(
+                SAnotifyDispatcher,
+                triggerOldMap
+            );
+        }
+        if (SAnotifyResource.size() > 0) {
+            HOT_ServiceAppointmentNotification.notifyInterpreter_serviceAppointmentChanged(
+                SAnotifyResource,
+                triggerOldMap
+            );
         }
     }
 
@@ -342,13 +342,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment = updateDuration(serviceAppointment);
 
                 //Image Interpreter
-                if (
-                    serviceAppointment.HOT_IsImageInterpreter__c && serviceAppointment.get('FSL__GanttColor__c') != null
-                ) {
-                    Map<String, String> ganttColorByStatus = getGanttColorByStatus(
-                        serviceAppointment.HOT_IsImageInterpreter__c
-                    );
-                    serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
+                if (serviceAppointment.HOT_IsImageInterpreter__c) {
+                    if (serviceAppointment.get('FSL__GanttColor__c') != null) {
+                        Map<String, String> ganttColorByStatus = getGanttColorByStatus(
+                            serviceAppointment.HOT_IsImageInterpreter__c
+                        );
+                        serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
+                    }
+                    serviceAppointment.HOT_AutoDispatch__c = true;
                 }
             }
         }
@@ -622,7 +623,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     private static ServiceAppointment updateDuration(ServiceAppointment serviceAppointment) {
         if (serviceAppointment.EarliestStartTime != null && serviceAppointment.DueDate != null) {
             serviceAppointment.Duration =
-                (serviceAppointment.DueDate.getTime() - serviceAppointment.EarliestStartTime.getTime()) / 3600000;
+                ((Double) serviceAppointment.DueDate.getTime() -
+                (Double) serviceAppointment.EarliestStartTime.getTime()) / 3600000;
         }
         return serviceAppointment;
     }

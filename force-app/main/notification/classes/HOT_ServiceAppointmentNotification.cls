@@ -90,7 +90,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
             workOrderLineItemIds.add(serviceAppointment.HOT_WorkOrderLineItem__c);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
-        Map<Id, Set<String>> recipientsByGroupId = HOT_NotificationHandler.getUsersInGroup(groupByQueue.values());
         Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
             [SELECT Id, Status FROM WorkOrderLineItem WHERE Id IN :workOrderLineItemIds AND Status != 'Annul']
         );
@@ -98,7 +97,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
 
-            Set<String> recipients = recipientsByGroupId.get(groupByQueue.get(serviceAppointment.OwnerId));
+            Set<String> recipients = new Set<String>{ (String) groupByQueue.get(serviceAppointment.OwnerId) };
 
             // Varsel ved avlyst av tolk
             if (
