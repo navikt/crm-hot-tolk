@@ -318,6 +318,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.IsNotifyDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.IsUpdateStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -384,6 +389,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_DeadlineDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsNotifyDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -499,6 +509,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_IsInvoiced__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_IsNotifyDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
