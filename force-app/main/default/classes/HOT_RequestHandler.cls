@@ -68,7 +68,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
         if (avlystRequests.size() > 0) {
             setCancelDate(avlystRequests);
-            HOT_RequestNotification.notifyDispatchers_requestChanged((List<HOT_Request__c>) records, triggerOldMap);
+            //HOT_RequestNotification.notifyDispatchers_requestChanged((List<HOT_Request__c>) records, triggerOldMap);
         }
     }
 
@@ -83,22 +83,17 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' && request.Status__c == 'Godkjent') {
                 godkjentRequests.add(request);
             }
+            // Filter for Avlyst requests
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
+                avlystRequests.add(request);
+            }
         }
         if (godkjentRequests.size() > 0) {
             createWOLI_SA(godkjentRequests);
         }
-
-        // if (finishedRequests.size() > 0) {
-        // 	for (HOT_Request__c request : finishedRequests) {
-        // 		List<ContentDocumentLink> files = [Select Id, ContentDocumentId From ContentDocumentLink where LinkedEntityId=:request.Id];
-        // 		List<Id> documentIds = new List<Id>();
-        // 		for(ContentDocumentLink f :files){
-        // 			documentIds.add(f.ContentDocumentId);
-        // 		}
-        // 		List<ContentDocument> relatedFiles = [Select id, Title From ContentDocument where Id in: documentIds];
-        // 		delete relatedFiles;
-        // 	}
-        // }
+        if (avlystRequests.size() > 0) {
+            HOT_RequestNotification.notifyDispatchers_requestChanged((List<HOT_Request__c>) records, triggerOldMap);
+        }
     }
 
     private static void createWOLI_SA(List<HOT_Request__c> godkjentRequests) {
