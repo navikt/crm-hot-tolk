@@ -62,35 +62,4 @@ public without sharing class HOT_RequestNotification {
         );
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) request);
     }
-
-    public static List<HOT_Request__c> checkWorkOrders(List<HOT_Request__c> unfilteredRequests) {
-        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(unfilteredRequests);
-        List<WorkOrder> workOrders = [
-            SELECT Id, Status, HOT_Request__c
-            FROM WorkOrder
-            WHERE HOT_Request__c IN :requests.keySet() AND Status != 'Annul'
-        ];
-        Map<Id, List<WorkOrder>> workOrdersByRequestId = new Map<Id, List<WorkOrder>>();
-        for (WorkOrder workOrder : workOrders) {
-            if (workorder.Status == 'Canceled') {
-                if (workOrdersByRequestId.get(workOrder.HOT_Request__c) == null) {
-                    List<WorkOrder> workOrderList = new List<WorkOrder>{ workOrder };
-                    workOrdersByRequestId.put(workOrder.HOT_Request__c, workOrderList);
-                } else {
-                    workOrdersByRequestId.get(workOrder.HOT_Request__c).add(workOrder);
-                }
-            }
-        }
-        for (Id requestId : requests.keySet()) {
-            if (requests.get(requestId) != null && workOrdersByRequestId.get(requestId) != null) {
-                if (
-                    requests.get(requestId).NumberOfWorkOrders__c == workOrdersByRequestId.get(requestId).size() ||
-                    workOrdersByRequestId.get(requestId).size() == 0
-                ) {
-                    requests.remove(requestId);
-                }
-            }
-        }
-        return requests.values();
-    }
 }
