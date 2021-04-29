@@ -116,10 +116,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             if (
                 //Canceled on behalf of user
                 //Canceled by interpreter
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_canceledByInterpreter__c') == false &&
-                serviceAppointment.HOT_canceledByInterpreter__c == true ||
-                serviceAppointment.Status == 'Canceled' &&
-                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'Canceled'
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsNotifyDispatcher__c') != serviceAppointment.HOT_IsNotifyDispatcher__c &&
+                serviceAppointment.HOT_IsNotifyDispatcher__c == true
             ) {
                 SAnotifyDispatcher.add(serviceAppointment);
             }

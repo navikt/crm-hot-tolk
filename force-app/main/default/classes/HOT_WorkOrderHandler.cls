@@ -44,7 +44,12 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 updatedWorkOrders.add(record);
             }
             // Filter for canceled work orders
-            if (record.Status != triggerOldMap.get(record.Id).get('Status') && record.Status == 'Canceled') {
+            if (
+                record.Status != triggerOldMap.get(record.Id).get('Status') &&
+                record.Status == 'Canceled' &&
+                record.HOT_IsNotifyDispatcher__c != triggerOldMap.get(record.Id).get('HOT_IsNotifyDispatcher__c') &&
+                record.HOT_IsNotifyDispatcher__c == true
+            ) {
                 canceledWorkOrders.add(record);
             }
         }

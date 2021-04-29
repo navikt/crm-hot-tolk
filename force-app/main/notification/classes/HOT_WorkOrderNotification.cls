@@ -3,7 +3,7 @@ public without sharing class HOT_WorkOrderNotification {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
+            WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
 
         workOrders = checkServiceAppointments(workOrders);
