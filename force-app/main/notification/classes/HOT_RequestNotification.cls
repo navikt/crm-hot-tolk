@@ -7,17 +7,15 @@ public without sharing class HOT_RequestNotification {
         ];
 
         List<Id> queueIds = new List<Id>();
-        List<Id> editorIds = new List<Id>();
         for (HOT_Request__c request : requests) {
             queueIds.add(request.OwnerId);
-            editorIds.add(request.LastModifiedById);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
 
         List<GroupMember> groupMembers = [
             SELECT Id, GroupId, UserORGroupId
             FROM GroupMember
-            WHERE UserORGroupId IN :editorIds AND GroupId IN :groupByQueue.values()
+            WHERE GroupId IN :groupByQueue.values()
         ];
         Map<Id, Id> groupByUser = new Map<Id, Id>();
         for (GroupMember grpMem : groupMembers) {
