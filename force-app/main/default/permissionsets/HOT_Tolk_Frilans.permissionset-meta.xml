@@ -590,6 +590,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsNotifyDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_IsOtherEconomicProvicer__c</field>
         <readable>true</readable>
@@ -773,6 +778,11 @@
         <editable>false</editable>
         <field>WorkOrder.HOT_InterpretationStreet__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_IsNotifyDispatcher__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
