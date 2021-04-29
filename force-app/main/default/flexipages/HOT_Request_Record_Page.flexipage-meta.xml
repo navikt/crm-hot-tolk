@@ -783,7 +783,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>System informasjon</value>
+                    <value>Systeminformasjon</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
             </componentInstance>
