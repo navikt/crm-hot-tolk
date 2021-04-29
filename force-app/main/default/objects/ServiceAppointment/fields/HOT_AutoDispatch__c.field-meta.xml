@@ -3,7 +3,7 @@
     <fullName>HOT_AutoDispatch__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <label>HOT_AutoDispatch</label>
+    <label>Auto Dispatch</label>
     <trackHistory>false</trackHistory>
     <type>Checkbox</type>
 </CustomField>
