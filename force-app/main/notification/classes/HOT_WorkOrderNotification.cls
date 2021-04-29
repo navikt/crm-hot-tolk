@@ -3,18 +3,16 @@ public without sharing class HOT_WorkOrderNotification {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
+            WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
 
         workOrders = checkServiceAppointments(workOrders);
 
         List<Id> queueIds = new List<Id>();
-        List<Id> editorIds = new List<Id>();
         List<Id> requestIds = new List<Id>();
         for (WorkOrder workOrder : workOrders) {
             queueIds.add(workOrder.OwnerId);
             requestIds.add(workOrder.HOT_Request__c);
-            editorIds.add(workOrder.LastModifiedById);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
@@ -24,7 +22,7 @@ public without sharing class HOT_WorkOrderNotification {
         List<GroupMember> groupMembers = [
             SELECT Id, GroupId, UserORGroupId
             FROM GroupMember
-            WHERE UserORGroupId IN :editorIds AND GroupId IN :groupByQueue.values()
+            WHERE GroupId IN :groupByQueue.values()
         ];
         Map<Id, Id> groupByUser = new Map<Id, Id>();
         for (GroupMember grpMem : groupMembers) {

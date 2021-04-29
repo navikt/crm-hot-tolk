@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>HOT_AutoDispatch__c</fullName>
+    <fullName>HOT_IsNotifyDispatcher__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <label>Auto Dispatch</label>
+    <label>NotifyDispatcher?</label>
+    <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <type>Checkbox</type>
 </CustomField>
