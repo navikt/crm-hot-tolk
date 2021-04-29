@@ -6,8 +6,6 @@ public without sharing class HOT_RequestNotification {
             WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
 
-        requests = checkWorkOrders(requests);
-
         List<Id> queueIds = new List<Id>();
         List<Id> editorIds = new List<Id>();
         for (HOT_Request__c request : requests) {
