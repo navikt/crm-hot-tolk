@@ -1,6 +1,7 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import STATUS from '@salesforce/schema/WorkOrder.Status';
+import NOTIFY_DISPATCHER from '@salesforce/schema/WorkOrder.HOT_IsNotifyDispatcher__c';
 import { updateRecord } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
@@ -249,6 +250,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
                     const fields = {};
                     fields[WORKORDER_ID.fieldApiName] = Id;
                     fields[STATUS.fieldApiName] = 'Canceled';
+                    fields[NOTIFY_DISPATCHER.fieldApiName] = true;
                     const recordInput = { fields };
                     updateRecord(recordInput)
                         .then(() => {
