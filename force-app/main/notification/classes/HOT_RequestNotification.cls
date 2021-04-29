@@ -29,7 +29,7 @@ public without sharing class HOT_RequestNotification {
                 Set<String> recipients = new Set<String>{ (String) groupByQueue.get(request.OwnerId) };
 
                 // Varsel ved avlyst av bruker
-                if (request.Status__c == 'Avlyst' && oldRequest.Status__c != 'Avlyst') {
+                if (request.Status__c == 'Avlyst' && oldRequest.Status__c != 'Avlyst' && oldRequest.Status__c != 'Åpen') {
                     canceledByUser(notificationType, request, recipients);
                 }
             }
