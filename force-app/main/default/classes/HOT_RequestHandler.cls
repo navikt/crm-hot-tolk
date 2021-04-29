@@ -68,7 +68,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
         if (avlystRequests.size() > 0) {
             setCancelDate(avlystRequests);
-            //HOT_RequestNotification.notifyDispatchers_requestChanged((List<HOT_Request__c>) records, triggerOldMap);
         }
     }
 
@@ -92,7 +91,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             createWOLI_SA(godkjentRequests);
         }
         if (avlystRequests.size() > 0) {
-            HOT_RequestNotification.notifyDispatchers_requestChanged((List<HOT_Request__c>) records, triggerOldMap);
+            HOT_RequestNotification.notifyDispatchers_requestChanged(avlystRequests, triggerOldMap);
         }
     }
 
