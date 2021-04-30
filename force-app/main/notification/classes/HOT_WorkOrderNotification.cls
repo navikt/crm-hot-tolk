@@ -39,7 +39,8 @@ public without sharing class HOT_WorkOrderNotification {
                 if (
                     workOrder.Status == 'Canceled' &&
                     oldWorkOrder.Status != 'Canceled' &&
-                    requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst'
+                    requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
+                    requests.get(workOrder.HOT_Request__c).Status__c != 'Åpen'
                 ) {
                     canceledByUser(notificationType, workOrder, recipients);
                 }
