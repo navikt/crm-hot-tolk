@@ -86,7 +86,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
+            WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
 
         List<Id> queueIds = new List<Id>();

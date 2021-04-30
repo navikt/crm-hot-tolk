@@ -15,9 +15,19 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> completedImageInterpreterServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+            if (
+                //Canceled on behalf of user
+                //Canceled by interpreter
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsNotifyDispatcher__c') !=
+                serviceAppointment.HOT_IsNotifyDispatcher__c &&
+                serviceAppointment.HOT_IsNotifyDispatcher__c == true
+            ) {
+                SAnotifyDispatcher.add(serviceAppointment);
+            }
             if (
                 serviceAppointment.get('HOT_ServiceResource__c') != null &&
                 serviceAppointment.get('HOT_ServiceResource__c') !=
@@ -109,6 +119,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (completedImageInterpreterServiceAppointments.size() > 0) {
             setActualTime(completedImageInterpreterServiceAppointments);
         }
+        if (SAnotifyDispatcher.size() > 0) {
+            HOT_ServiceAppointmentNotification.notifyDispatchers_serviceAppointmentChanged(
+                SAnotifyDispatcher,
+                triggerOldMap
+            );
+            resetNotifyDispatcher(SAnotifyDispatcher);
+        }
         if (annulServiceAppointments.size() > 0) {
             removeCustomAccountLookup(annulServiceAppointments);
         }
@@ -119,20 +136,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithChangedAddress = new List<ServiceAppointment>();
-        List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
-            if (
-                //Canceled on behalf of user
-                //Canceled by interpreter
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_canceledByInterpreter__c') == false &&
-                serviceAppointment.HOT_canceledByInterpreter__c == true ||
-                serviceAppointment.Status == 'Canceled' &&
-                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'Canceled'
-            ) {
-                SAnotifyDispatcher.add(serviceAppointment);
-            }
             if (
                 //canceled by user
                 //time change
@@ -195,12 +201,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             deleteRelatedEvents(serviceAppointmentsToRemoveAssignedResource);
-        }
-        if (SAnotifyDispatcher.size() > 0) {
-            HOT_ServiceAppointmentNotification.notifyDispatchers_serviceAppointmentChanged(
-                SAnotifyDispatcher,
-                triggerOldMap
-            );
         }
         if (SAnotifyResource.size() > 0) {
             HOT_ServiceAppointmentNotification.notifyInterpreter_serviceAppointmentChanged(
@@ -655,6 +655,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime;
             serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime;
+        }
+    }
+
+    public static void resetNotifyDispatcher(List<ServiceAppointment> serviceAppointments) {
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.HOT_IsNotifyDispatcher__c = false;
         }
     }
     public static void removeCustomAccountLookup(List<ServiceAppointment> serviceAppointments) {
