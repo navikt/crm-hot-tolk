@@ -114,15 +114,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             }
 
             // Varsel ved avlyst på vegne av bruker
-            if (
-                serviceAppointment.Status == 'Canceled' &&
-                oldServiceAppointment.Status != 'Canceled' &&
-                serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
-                oldServiceAppointment.Status != 'Scheduled' &&
-                workOrderLineItems.get(serviceAppointment.HOT_WorkOrderLineItem__c) != null &&
-                workOrderLineItems.get(serviceAppointment.HOT_WorkOrderLineItem__c).Status != 'Canceled' &&
-                serviceAppointment.HOT_CancelComment__c != null
-            ) {
+            if (serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled') {
                 canceledByUser(notificationType, serviceAppointment, recipients);
             }
         }
