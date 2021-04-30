@@ -4,7 +4,9 @@
     <active>true</active>
     <errorConditionFormula>ISPICKVAL(Status, &apos;Released To Freelance&apos;) 
 &amp;&amp;
- HOT_IsReleasedToFreelance__c == false</errorConditionFormula>
+HOT_IsReleasedToFreelance__c == false
+&amp;&amp;
+NOT($Permission.Validation_Override)</errorConditionFormula>
     <errorDisplayField>Status</errorDisplayField>
     <errorMessage>Bruk knappen oppe til høyre når du skal frigi et oppdrag til frilanstolker.</errorMessage>
 </ValidationRule>
