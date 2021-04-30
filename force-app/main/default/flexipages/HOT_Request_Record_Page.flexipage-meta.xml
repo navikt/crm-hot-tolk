@@ -498,6 +498,11 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldItem>Record.HOT_OverrideRate__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
                 <fieldItem>Record.Company__c</fieldItem>
             </fieldInstance>
         </itemInstances>
