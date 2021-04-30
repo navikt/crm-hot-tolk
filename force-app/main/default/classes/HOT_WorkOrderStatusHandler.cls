@@ -50,9 +50,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
         if (updateStatusWorkOrders.size() > 0) {
             updateWorkOrderStatus(updateStatusWorkOrders);
         }
-        if (canceledWorkOrders.size() > 0) {
-            HOT_WorkOrderNotification.notifyDispatchers_workOrderChanged(canceledWorkOrders, triggerOldMap);
-        }
     }
 
     private static void updateRequestStatus(List<WorkOrder> changedWorkOrders) {
