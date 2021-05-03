@@ -3,7 +3,7 @@ public without sharing class HOT_WorkOrderNotification {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
+            WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
 
         workOrders = checkServiceAppointments(workOrders);
@@ -15,25 +15,34 @@ public without sharing class HOT_WorkOrderNotification {
             requestIds.add(workOrder.HOT_Request__c);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
-        Map<Id, Set<String>> recipientsByGroupId = HOT_NotificationHandler.getUsersInGroup(groupByQueue.values());
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
             [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
         );
 
+        List<GroupMember> groupMembers = [
+            SELECT Id, GroupId, UserORGroupId
+            FROM GroupMember
+            WHERE GroupId IN :groupByQueue.values()
+        ];
+        Map<Id, Id> groupByUser = new Map<Id, Id>();
+        for (GroupMember grpMem : groupMembers) {
+            groupByUser.put(grpMem.UserOrGroupId, grpMem.GroupId);
+        }
+
         for (WorkOrder workOrder : workOrders) {
-            WorkOrder oldWorkOrder = (WorkOrder) triggerOldMap.get(workOrder.Id);
+            if (groupByUser.get(workOrder.LastModifiedById) != groupByQueue.get(workOrder.OwnerId)) {
+                WorkOrder oldWorkOrder = (WorkOrder) triggerOldMap.get(workOrder.Id);
 
-            Set<String> recipients = recipientsByGroupId.get(groupByQueue.get(workOrder.OwnerId));
+                Set<String> recipients = new Set<String>{ (String) groupByQueue.get(workOrder.OwnerId) };
 
-            // Varsel ved avlyst av bruker
-            if (
-                workOrder.Status == 'Canceled' &&
-                oldWorkOrder.Status != 'Canceled' &&
-                requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
-                recipients != null &&
-                !recipients.contains(workOrder.LastModifiedById)
-            ) {
-                canceledByUser(notificationType, workOrder, recipients);
+                // Varsel ved avlyst av bruker
+                if (
+                    workOrder.Status == 'Canceled' &&
+                    oldWorkOrder.Status != 'Canceled' &&
+                    requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst'
+                ) {
+                    canceledByUser(notificationType, workOrder, recipients);
+                }
             }
         }
     }
@@ -96,8 +105,7 @@ public without sharing class HOT_WorkOrderNotification {
                 if (hasOpenServiceAppointment) {
                     workOrdersToNotify.add(workOrders.get(WorkOrderId));
                 }
-            }
-            else {
+            } else {
                 workOrdersToNotify.add(workOrders.get(WorkOrderId));
             }
         }

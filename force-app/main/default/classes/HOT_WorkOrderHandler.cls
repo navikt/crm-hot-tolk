@@ -302,4 +302,10 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         }
         update workOrders;
     }
+
+    public static void resetNotifyDispatcher(List<WorkOrder> workOrders) {
+        for (WorkOrder workOrder : workOrders) {
+            workOrder.HOT_IsNotifyDispatcher__c = false;
+        }
+    }
 }
