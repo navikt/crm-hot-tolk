@@ -8,6 +8,8 @@ trigger HOT_RequestTrigger on HOT_Request__c(
     after undelete
 ) {
     System.debug('RequestTrigger: ' + Trigger.operationType);
-    MyTriggers.run();
+    if (!FeatureManagement.checkPermission('RunWithoutTrigger')) {
+        MyTriggers.run();
+    }
 
 }
