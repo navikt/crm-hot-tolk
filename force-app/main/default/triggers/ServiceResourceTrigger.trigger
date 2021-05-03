@@ -8,8 +8,6 @@ trigger ServiceResourceTrigger on ServiceResource(
     after undelete
 ) {
     System.debug('ServiceResourceTrigger: ' + Trigger.operationType);
-    if (!FeatureManagement.checkPermission('RunWithoutTrigger')) {
-        MyTriggers.run();
-    }
+    MyTriggers.run();
 
 }

@@ -7,7 +7,5 @@ trigger AssignedResourceTrigger on AssignedResource(
     after delete,
     after undelete
 ) {
-    if (!FeatureManagement.checkPermission('RunWithoutTrigger')) {
-        MyTriggers.run();
-    }
+    MyTriggers.run();
 }

@@ -8,8 +8,6 @@ trigger WorkOrderLineItemTrigger on WorkOrderLineItem(
     after undelete
 ) {
     System.debug('WorkOrderLineItemTrigger: ' + Trigger.operationType);
-    if (!FeatureManagement.checkPermission('RunWithoutTrigger')) {
         MyTriggers.run();
-    }
 
 }

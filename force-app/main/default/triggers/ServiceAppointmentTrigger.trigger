@@ -8,7 +8,6 @@ trigger ServiceAppointmentTrigger on ServiceAppointment(
     after undelete
 ) {
     System.debug('ServiceAppointmentTrigger: ' + Trigger.operationType);
-    if (!FeatureManagement.checkPermission('RunWithoutTrigger')) {
-        MyTriggers.run();
-    }
+    MyTriggers.run();
+
 }
