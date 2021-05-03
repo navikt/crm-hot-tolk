@@ -16,6 +16,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> completedImageInterpreterServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
+        List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -83,6 +84,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 completedImageInterpreterServiceAppointments.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'Annul'
+            ) {
+                annulServiceAppointments.add(serviceAppointment);
+            }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -118,6 +125,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 triggerOldMap
             );
             resetNotifyDispatcher(SAnotifyDispatcher);
+        }
+        if (annulServiceAppointments.size() > 0) {
+            removeCustomAccountLookup(annulServiceAppointments);
         }
     }
 
@@ -224,6 +234,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             [
                 SELECT
                     Id,
+                    WorkOrder.AccountId,
                     WorkOrder.HOT_Request__c,
                     WorkOrder.OwnerId,
                     Subject,
@@ -338,6 +349,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
                 if (serviceAppointment.HOT_WorkOrderLineItem__c == null && serviceAppointment.ParentRecordId != null) {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
+                }
+                if (
+                    serviceAppointment.ParentRecordId != null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId != null
+                ) {
+                    serviceAppointment.HOT_Account__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
+                        .WorkOrder.AccountId;
                 }
                 serviceAppointment = updateDuration(serviceAppointment);
 
@@ -643,6 +661,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public static void resetNotifyDispatcher(List<ServiceAppointment> serviceAppointments) {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.HOT_IsNotifyDispatcher__c = false;
+        }
+    }
+    public static void removeCustomAccountLookup(List<ServiceAppointment> serviceAppointments) {
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.HOT_Account__c = null;
         }
     }
 }

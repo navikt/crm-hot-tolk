@@ -17,21 +17,15 @@ public without sharing class HOT_RequestNotification {
             FROM GroupMember
             WHERE GroupId IN :groupByQueue.values()
         ];
-        Map<Id, Id> groupByUser = new Map<Id, Id>();
-        for (GroupMember grpMem : groupMembers) {
-            groupByUser.put(grpMem.UserOrGroupId, grpMem.GroupId);
-        }
 
         for (HOT_Request__c request : requests) {
-            if (groupByUser.get(request.LastModifiedById) != groupByQueue.get(request.OwnerId)) {
-                HOT_Request__c oldRequest = (HOT_Request__c) triggerOldMap.get(request.Id);
+            HOT_Request__c oldRequest = (HOT_Request__c) triggerOldMap.get(request.Id);
 
-                Set<String> recipients = new Set<String>{ (String) groupByQueue.get(request.OwnerId) };
+            Set<String> recipients = new Set<String>{ (String) groupByQueue.get(request.OwnerId) };
 
-                // Varsel ved avlyst av bruker
-                if (request.Status__c == 'Avlyst' && oldRequest.Status__c != 'Avlyst') {
-                    canceledByUser(notificationType, request, recipients);
-                }
+            // Varsel ved avlyst av bruker
+            if (request.Status__c == 'Avlyst' && oldRequest.Status__c != 'Avlyst' && oldRequest.Status__c != 'Åpen') {
+                canceledByUser(notificationType, request, recipients);
             }
         }
     }

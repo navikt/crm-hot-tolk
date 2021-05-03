@@ -19,30 +19,19 @@ public without sharing class HOT_WorkOrderNotification {
             [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
         );
 
-        List<GroupMember> groupMembers = [
-            SELECT Id, GroupId, UserORGroupId
-            FROM GroupMember
-            WHERE GroupId IN :groupByQueue.values()
-        ];
-        Map<Id, Id> groupByUser = new Map<Id, Id>();
-        for (GroupMember grpMem : groupMembers) {
-            groupByUser.put(grpMem.UserOrGroupId, grpMem.GroupId);
-        }
-
         for (WorkOrder workOrder : workOrders) {
-            if (groupByUser.get(workOrder.LastModifiedById) != groupByQueue.get(workOrder.OwnerId)) {
-                WorkOrder oldWorkOrder = (WorkOrder) triggerOldMap.get(workOrder.Id);
+            WorkOrder oldWorkOrder = (WorkOrder) triggerOldMap.get(workOrder.Id);
 
-                Set<String> recipients = new Set<String>{ (String) groupByQueue.get(workOrder.OwnerId) };
+            Set<String> recipients = new Set<String>{ (String) groupByQueue.get(workOrder.OwnerId) };
 
-                // Varsel ved avlyst av bruker
-                if (
-                    workOrder.Status == 'Canceled' &&
-                    oldWorkOrder.Status != 'Canceled' &&
-                    requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst'
-                ) {
-                    canceledByUser(notificationType, workOrder, recipients);
-                }
+            // Varsel ved avlyst av bruker
+            if (
+                workOrder.Status == 'Canceled' &&
+                oldWorkOrder.Status != 'Canceled' &&
+                requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
+                requests.get(workOrder.HOT_Request__c).Status__c != 'Åpen'
+            ) {
+                canceledByUser(notificationType, workOrder, recipients);
             }
         }
     }
