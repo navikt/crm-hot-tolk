@@ -8,6 +8,6 @@ trigger WorkOrderTrigger on WorkOrder(
     after undelete
 ) {
     System.debug('WorkOrderTrigger: ' + Trigger.operationType);
-        MyTriggers.run();
+    MyTriggers.run();
 
 }
