@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_Birthyear__c</fullName>
+    <externalId>false</externalId>
+    <formula
+    >IF(VALUE(MID(INT_PersonIdent__c,7,3)) &lt;= 749 &amp;&amp; VALUE(MID(INT_PersonIdent__c,7,3)) &gt;= 500, &apos;18&apos; + MID( INT_PersonIdent__c ,5,2),
+IF(VALUE(MID(INT_PersonIdent__c,7,3)) &lt;= 499 &amp;&amp; VALUE(MID(INT_PersonIdent__c,7,3)) &gt;= 0, &apos;19&apos; + MID(INT_PersonIdent__c,5,2),
+IF(VALUE(MID(INT_PersonIdent__c,7,3)) &lt;= 999 &amp;&amp; VALUE(MID(INT_PersonIdent__c,7,3)) &gt;= 900, &apos;19&apos; + MID(INT_PersonIdent__c,5,2),
+IF(VALUE(MID(INT_PersonIdent__c,7,3)) &lt;= 999 &amp;&amp; VALUE(MID(INT_PersonIdent__c,7,3)) &gt;= 500, &apos;20&apos; + MID(INT_PersonIdent__c,5,2),
+&apos;&apos;
+))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Birthyear</label>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
