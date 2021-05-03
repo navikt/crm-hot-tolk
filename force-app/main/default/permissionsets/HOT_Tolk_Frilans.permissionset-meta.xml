@@ -261,6 +261,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.IsNotifyDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.IsOtherEconomicProvicer__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -780,9 +785,9 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>WorkOrder.HOT_IsNotifyDispatcher__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -1260,6 +1265,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>RunFlow</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>SendCustomNotifications</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
