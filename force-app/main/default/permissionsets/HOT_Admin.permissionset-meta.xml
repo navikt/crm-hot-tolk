@@ -876,6 +876,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_GenderAge__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_HapticCommunication__c</field>
         <readable>true</readable>
     </fieldPermissions>
