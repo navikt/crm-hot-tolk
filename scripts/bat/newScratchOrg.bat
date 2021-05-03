@@ -4,8 +4,8 @@ call sfdx force:org:create -f config\project-scratch-def.json --setalias %1 --du
 :: Skru på Field Service (bug)
 ::call sfdx force:source:deploy -x .\manifests\FieldServiceSettings.xml
 
-:: Installer crm-platform-base ver. 0.81
-call sfdx force:package:install --package 04t2o000000yRqoAAE -r -k navcrm --wait 10 --publishwait 10
+:: Installer crm-platform-base ver. 0.86
+call sfdx force:package:install --package 04t2o000000yRw8AAE -r -k navcrm --wait 10 --publishwait 10
 
 :: Installer crm-platform-integration ver. 0.34
 call sfdx force:package:install --package 04t2o000000yRIgAAM -r -k navcrm --wait 10 --publishwait 10
