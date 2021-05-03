@@ -2,5 +2,6 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_Events</fullName>
     <active>true</active>
+    <compactLayoutAssignment>HOT_Event_Compact_Layout</compactLayoutAssignment>
     <label>HOT Events</label>
 </RecordType>
