@@ -246,6 +246,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <custom>false</custom>
+    <customPermissions>
+        <enabled>false</enabled>
+        <name>RunWithoutTrigger</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>false</enabled>
+        <name>Validation_Override</name>
+    </customPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>AssignedResource.HOT_HasReservations__c</field>
