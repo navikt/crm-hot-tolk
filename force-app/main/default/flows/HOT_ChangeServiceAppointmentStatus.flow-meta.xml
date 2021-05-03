@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignments>
         <name>Assign_new_values_Avlyst_Bruker</name>
@@ -26,6 +26,13 @@
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_IsNotifyDispatcher__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Save_Service_Appointment</targetReference>
         </connector>
@@ -46,14 +53,14 @@
             <assignToReference>CurrentServiceAppointment.HOT_AssignedResourceId__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue />
+                <stringValue/>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_ServiceResource__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue />
+                <stringValue/>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -65,6 +72,13 @@
         </assignmentItems>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_DoNotCreateHAR__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_IsNotifyDispatcher__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
@@ -511,6 +525,7 @@
         <connector>
             <targetReference>isCompleted</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>ServiceAppointmentId</field>
             <operator>EqualTo</operator>
@@ -533,6 +548,7 @@
         <connector>
             <targetReference>Get_Assigned_Resource</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
@@ -561,6 +577,7 @@
         <connector>
             <targetReference>Interested_Resource</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>ServiceAppointment__c</field>
             <operator>EqualTo</operator>
@@ -610,8 +627,7 @@
         <allowPause>true</allowPause>
         <fields>
             <name>Already_Completed_Text</name>
-            <fieldText
-            >&lt;p&gt;Det er ikke mulig å oppdatere statusen etter at oppdraget er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om oppdraget.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Det er ikke mulig å oppdatere statusen etter at oppdraget er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>

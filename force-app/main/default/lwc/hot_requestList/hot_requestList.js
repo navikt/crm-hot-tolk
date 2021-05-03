@@ -3,6 +3,7 @@ import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequest
 import { updateRecord } from 'lightning/uiRecordApi';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
+import NOTIFY_DISPATCHER from '@salesforce/schema/HOT_Request__c.IsNotifyDispatcher__c';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
 import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
@@ -326,6 +327,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                     const fields = {};
                     fields[REQUEST_ID.fieldApiName] = Id;
                     fields[STATUS.fieldApiName] = 'Avlyst';
+                    fields[NOTIFY_DISPATCHER.fieldApiName] = true;
                     const recordInput = { fields };
                     updateRecord(recordInput)
                         .then(() => {

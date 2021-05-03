@@ -52,6 +52,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
+        List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
@@ -62,21 +63,28 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
                 avlystRequests.add(request);
             }
+            // Notify Dispatcher: Avlyst requests
+            if (
+                request.IsNotifyDispatcher__c != triggerOldMap.get(request.Id).get('IsNotifyDispatcher__c') &&
+                request.IsNotifyDispatcher__c == true
+            ) {
+                notifyDispatcherRequests.add(request);
+            }
         }
         if (ownerChangedRequests.size() > 0) {
             setServiceTerritory(ownerChangedRequests);
         }
         if (avlystRequests.size() > 0) {
             setCancelDate(avlystRequests);
-            HOT_RequestNotification.notifyDispatchers_requestChanged((List<HOT_Request__c>) records, triggerOldMap);
+        }
+        if (notifyDispatcherRequests.size() > 0) {
+            HOT_RequestNotification.notifyDispatchers_requestChanged(notifyDispatcherRequests, triggerOldMap);
+            resetNotifyDispatcher(notifyDispatcherRequests);
         }
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_Request__c> godkjentRequests = new List<HOT_Request__c>();
-        List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
-        List<HOT_Request__c> annullertRequests = new List<HOT_Request__c>();
-        // List<HOT_Request__c> finishedRequests = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Godkjent requests
@@ -87,18 +95,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (godkjentRequests.size() > 0) {
             createWOLI_SA(godkjentRequests);
         }
-
-        // if (finishedRequests.size() > 0) {
-        // 	for (HOT_Request__c request : finishedRequests) {
-        // 		List<ContentDocumentLink> files = [Select Id, ContentDocumentId From ContentDocumentLink where LinkedEntityId=:request.Id];
-        // 		List<Id> documentIds = new List<Id>();
-        // 		for(ContentDocumentLink f :files){
-        // 			documentIds.add(f.ContentDocumentId);
-        // 		}
-        // 		List<ContentDocument> relatedFiles = [Select id, Title From ContentDocument where Id in: documentIds];
-        // 		delete relatedFiles;
-        // 	}
-        // }
     }
 
     private static void createWOLI_SA(List<HOT_Request__c> godkjentRequests) {
@@ -288,6 +284,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                     request.put(field, null);
                 }
             }
+        }
+    }
+    public static void resetNotifyDispatcher(List<HOT_Request__c> requests) {
+        for (HOT_Request__c request : requests) {
+            request.IsNotifyDispatcher__c = false;
         }
     }
     public static void setImageInterpreterFields(List<HOT_Request__c> requests) {

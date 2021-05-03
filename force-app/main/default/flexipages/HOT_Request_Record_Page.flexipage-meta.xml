@@ -498,6 +498,11 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldItem>Record.HOT_OverrideRate__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
                 <fieldItem>Record.Company__c</fieldItem>
             </fieldInstance>
         </itemInstances>
@@ -730,7 +735,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Orderer Section</value>
+                    <value>Bestiller</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <visibilityRule>
@@ -750,7 +755,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Other Economic Provider</value>
+                    <value>Annen betaler</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <visibilityRule>
@@ -770,7 +775,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Message to Dispatcher</value>
+                    <value>Beskjed til formidler</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
             </componentInstance>
@@ -783,7 +788,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>System Information</value>
+                    <value>Systeminformasjon</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
             </componentInstance>

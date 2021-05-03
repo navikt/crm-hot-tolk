@@ -16,7 +16,7 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
         List<ServiceResource> serviceResourceList = [
             SELECT Id, RelatedRecordId
             FROM ServiceResource
-            WHERE RelatedRecordId IN :ownerIds
+            WHERE RelatedRecordId IN :ownerIds AND IsActive = TRUE
         ];
         Map<Id, Id> relatedRecordIdToResourceIdMap = new Map<Id, Id>();
         for (ServiceResource serviceResource : serviceResourceList) {

@@ -317,9 +317,16 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         update workOrders;
     }
 
+
     public static void setCancelDate(List<WorkOrder> workorders) {
         for (WorkOrder workorder : workorders) {
             workorder.CanceledDate__c = Date.today();
+        }
+    }
+
+    public static void resetNotifyDispatcher(List<WorkOrder> workOrders) {
+        for (WorkOrder workOrder : workOrders) {
+            workOrder.HOT_IsNotifyDispatcher__c = false;
         }
     }
 }
