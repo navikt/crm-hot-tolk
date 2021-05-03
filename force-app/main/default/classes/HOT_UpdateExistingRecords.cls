@@ -1,7 +1,7 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT Id, AccountId, HOT_Account__c FROM ServiceAppointment WHERE HOT_Account__c = null AND AccountId != null'
+            'SELECT Id, AccountId, HOT_Account__c FROM ServiceAppointment WHERE HOT_Account__c = null AND AccountId != null AND Status != \'Annul\''
         );
     }
     public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
