@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseValues>
         <article>Definite</article>
@@ -38,7 +38,9 @@
             <section>Comments</section>
         </sections>
         <sections>
-            <label><!-- Custom Links --></label>
+            <label>
+                <!-- Custom Links -->
+            </label>
             <section>Custom Links</section>
         </sections>
         <sections>
@@ -52,7 +54,7 @@
         <name>AddComment</name>
     </quickActions>
     <quickActions>
-        <label>Tildel oppdraget til ressursen</label>
+        <label>Reserver oppdraget til ressursen</label>
         <name>AssignResource</name>
     </quickActions>
 </CustomObjectTranslation>
