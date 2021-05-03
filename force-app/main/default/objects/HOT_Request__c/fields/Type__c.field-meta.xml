@@ -34,7 +34,7 @@
             <value>
                 <fullName>ImageInterpreter</fullName>
                 <default>false</default>
-                <label>Bildetolk</label>
+                <label>Bildetolkvakt</label>
             </value>
         </valueSetDefinition>
     </valueSet>
