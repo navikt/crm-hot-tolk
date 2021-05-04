@@ -3,6 +3,20 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         setDefaultFields((List<WorkOrder>) records);
     }
 
+    public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
+        List<WorkOrder> avlystWorkOrder = new List<WorkOrder>();
+
+        for (WorkOrder workorder : (List<WorkOrder>) records) {
+            if (workorder.Status != triggerOldMap.get(workorder.Id).get('Status') && workorder.Status == 'Canceled') {
+                avlystWorkOrder.add(workorder);
+            }
+        }
+
+        if (avlystWorkOrder.size() > 0) {
+            setCancelDate(avlystWorkOrder);
+        }
+    }
+
     public override void onAfterInsert() {
         List<Id> requestIds = new List<Id>();
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
@@ -301,6 +315,13 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             workOrder.ServiceTerritoryId = requests.get(workOrder.HOT_Request__c).ServiceTerritory__c;
         }
         update workOrders;
+    }
+
+
+    public static void setCancelDate(List<WorkOrder> workorders) {
+        for (WorkOrder workorder : workorders) {
+            workorder.CanceledDate__c = Date.today();
+        }
     }
 
     public static void resetNotifyDispatcher(List<WorkOrder> workOrders) {
