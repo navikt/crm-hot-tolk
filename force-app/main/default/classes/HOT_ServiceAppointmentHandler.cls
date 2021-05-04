@@ -38,14 +38,17 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredResource__c') !=
                 ServiceAppointment.HOT_PreferredResource__c &&
-                serviceAppointment.HOT_PreferredResource__c != null
+                serviceAppointment.HOT_PreferredResource__c != null &&
+                serviceAppointment.HOT_ServiceResource__c == null
+
             ) {
                 updatedServiceAppointments.add(serviceAppointment);
             }
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredResource__c') !=
                 ServiceAppointment.HOT_PreferredResource__c &&
-                serviceAppointment.HOT_PreferredResource__c == null
+                serviceAppointment.HOT_PreferredResource__c == null &&
+                serviceAppointment.HOT_ServiceResource__c == null
             ) {
                 serviceAppointmentsWithDeletedPreferredResources.add(serviceAppointment);
             }
