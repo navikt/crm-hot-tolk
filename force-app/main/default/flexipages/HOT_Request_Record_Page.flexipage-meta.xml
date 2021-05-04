@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -73,12 +73,12 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Type__c</fieldItem>
+                <fieldItem>Record.StartTime__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Source__c</fieldItem>
+                <fieldItem>Record.EndTime__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -102,12 +102,12 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.StartTime__c</fieldItem>
+                <fieldItem>Record.Type__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.EndTime__c</fieldItem>
+                <fieldItem>Record.Source__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
