@@ -3,7 +3,7 @@
     <fullName>HOT_GenderAge__c</fullName>
     <externalId>false</externalId>
     <formula
-    >IF(MOD(VALUE(MID(Account.INT_PersonIdent__c,9,1)),2) = 0, &apos;Kvinne&apos;, &apos;Mann&apos;) + &apos; &apos; + TEXT(IF(YEAR(TODAY()) -  VALUE(Account.HOT_Birthyear__c) &gt;= 100, YEAR(TODAY()) -  VALUE(Account.HOT_Birthyear__c) - 100, YEAR(TODAY()) -  VALUE(Account.HOT_Birthyear__c))) + &apos; år&apos;</formula>
+    >IF(MOD(VALUE(MID(Account.INT_PersonIdent__c,9,1)),2) = 0, &apos;Kvinne&apos;, &apos;Mann&apos;) + &apos; &apos; + TEXT(YEAR(TODAY()) -  VALUE(MID( Account.CRM_Person__r.INT_DateOfBirth__c ,1,4))) + &apos; år&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Gender and Age</label>
     <required>false</required>
