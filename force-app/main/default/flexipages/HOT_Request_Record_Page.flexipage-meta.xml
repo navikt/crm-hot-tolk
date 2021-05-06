@@ -83,7 +83,7 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Description__c</fieldItem>
+                <fieldItem>Record.Duration__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-74702c97-e332-4095-9a0c-20daa8c79d5c</name>
@@ -112,7 +112,7 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Duration__c</fieldItem>
+                <fieldItem>Record.Description__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-dc14be2e-fe28-406f-aea5-309852fab325</name>
@@ -347,6 +347,11 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldItem>Record.IsScreenInterpreter__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
                 <fieldItem>Record.InterpretationMethod__c</fieldItem>
             </fieldInstance>
         </itemInstances>
@@ -389,11 +394,6 @@
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.NumberOfInterpretersSecondary__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.IsScreenInterpreter__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-d5a1be6c-1a4d-4afe-b04e-a60af374d2e0</name>
