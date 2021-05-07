@@ -1,10 +1,23 @@
 public without sharing class HOT_ResourceAbsenceCreateService implements Database.Batchable<sObject> {
-    public static Datetime timeScope = Datetime.now().addHours(-1);
+    public final Datetime timeScope;
+    public final String query;
+
+    public HOT_ResourceAbsenceCreateService() {
+        this.timeScope = Datetime.now().addHours(-1);
+        this.query = 'SELECT Id, OwnerId, StartDateTime, EndDateTime, ShowAs, Subject FROM Event WHERE RecordType.DeveloperName = \'HOT_Events\' AND WhatId = null AND LastModifiedDate > :timeScope AND ShowAs != \'Free\'';
+    }
+
+    public HOT_ResourceAbsenceCreateService(Datetime timeScope) {
+        this.timeScope = timeScope;
+        this.query = 'SELECT Id, OwnerId, StartDateTime, EndDateTime, ShowAs, Subject FROM Event WHERE RecordType.DeveloperName = \'HOT_Events\' AND WhatId = null AND LastModifiedDate > :timeScope AND ShowAs != \'Free\'';
+    }
+
+    public HOT_ResourceAbsenceCreateService(String query) {
+        this.query = query;
+    }
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        return Database.getQueryLocator(
-            'SELECT Id, OwnerId, StartDateTime, EndDateTime FROM Event WHERE RecordType.DeveloperName = \'HOT_Events\' AND WhatId = null AND LastModifiedDate > :timeScope AND ShowAs != \'Free\''
-        );
+        return Database.getQueryLocator(query);
     }
 
     public void execute(Database.BatchableContext bc, List<Event> scope) {
@@ -34,6 +47,8 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
             resourceAbsenceRecordTypeId = resourceAbsenceRecordTypeInfo.getRecordTypeId();
         }
 
+        Set<String> resourceAbsenceFields = Schema.SObjectType.ResourceAbsence.fields.getMap().keySet();
+
         List<ResourceAbsence> resourceAbsenceList = new List<ResourceAbsence>();
 
         for (Event event : scope) {
@@ -55,6 +70,15 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
                     resourceAbsence.End = event.EndDateTime;
                 }
                 resourceAbsence.Type = 'Møte';
+                if (resourceAbsenceFields.contains('fsl__ganttlabel__c')) {
+                    resourceAbsence.put('FSL__GanttLabel__c', event.Subject);
+                }
+                if (resourceAbsenceFields.contains('fsl__gantt_color__c') && event.ShowAs == 'OutOfOffice') {
+                    resourceAbsence.put('FSL__Gantt_Color__c', '#AF7AC5');
+                }
+                if (resourceAbsenceFields.contains('fsl__gantt_color__c') && event.ShowAs != 'OutOfOffice') {
+                    resourceAbsence.put('FSL__Gantt_Color__c', '');
+                }
                 resourceAbsenceList.add(resourceAbsence);
             }
         }
