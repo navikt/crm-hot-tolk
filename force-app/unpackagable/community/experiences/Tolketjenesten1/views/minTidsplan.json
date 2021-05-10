@@ -1,108 +1,92 @@
 {
-    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-    "componentName": "siteforce:dynamicLayout",
-    "id": "ba70d545-d4b2-4c8e-a9b5-4f2a8b66706c",
-    "label": "Min Tidsplan",
-    "regions": [
-        {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "background": "background: rgba(0,0,0,0)",
-                        "backgroundOverlay": "rgba(0,0,0,0.5)",
-                        "contentAreaWidth": 100,
-                        "sectionConfig": {
-                            "UUID": "3eb0c55a-3520-49a1-b4b4-110c54ae41c6",
-                            "columns": [
-                                {
-                                    "UUID": "8536a65b-31ad-4aa0-bdbe-56a03c1ee2c1",
-                                    "columnName": "Column 1",
-                                    "columnKey": "1",
-                                    "columnWidth": "12",
-                                    "seedComponents": []
-                                }
-                            ]
-                        },
-                        "sectionHeight": 300
-                    },
-                    "componentName": "forceCommunity:section",
-                    "id": "3eb0c55a-3520-49a1-b4b4-110c54ae41c6",
-                    "regions": [
-                        {
-                            "components": [
-                                {
-                                    "componentAttributes": {
-                                        "NAVarea": "Privatperson"
-                                    },
-                                    "componentName": "c:globalCommunityHeader",
-                                    "id": "0867bf63-3dbc-4ab5-809b-955327f662e5",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
-                                    "componentAttributes": {},
-                                    "componentName": "c:hot_tolketjenestenHovedBanner",
-                                    "id": "987628bc-c194-4fd3-8f32-3080fae9b82e",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
-                                    "componentAttributes": {},
-                                    "componentName": "c:hot_myWorkOrders",
-                                    "id": "55594e58-18e5-4aec-a0c7-07ea15440d78",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
-                                    "componentAttributes": {
-                                        "NAVarea": "Privatperson"
-                                    },
-                                    "componentName": "c:globalCommunityFooter",
-                                    "id": "ce205945-8c59-40af-b5fd-97a84e98431f",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                }
-                            ],
-                            "id": "8536a65b-31ad-4aa0-bdbe-56a03c1ee2c1",
-                            "regionLabel": "Column 1",
-                            "regionName": "1",
-                            "renditionMap": {},
-                            "type": "region"
-                        }
-                    ],
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "type": "component"
-                }
-            ],
-            "id": "9fd98b4e-b6de-4249-8839-f08a00a52a4a",
-            "regionName": "content",
-            "type": "region"
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "ba70d545-d4b2-4c8e-a9b5-4f2a8b66706c",
+  "label" : "Min Tidsplan",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "3eb0c55a-3520-49a1-b4b4-110c54ae41c6",
+          "columns" : [ {
+            "UUID" : "8536a65b-31ad-4aa0-bdbe-56a03c1ee2c1",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
         },
-        {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "description": "",
-                        "metaTags": "",
-                        "title": "Min tidsplan"
-                    },
-                    "componentName": "forceCommunity:seoAssistant",
-                    "id": "2a195f7b-6639-448c-8b8a-888545d99f01",
-                    "renditionMap": {},
-                    "type": "component"
-                }
-            ],
-            "id": "68fd8ca4-01a3-4505-abcc-42e1a812b242",
-            "regionName": "sfdcHiddenRegion",
-            "type": "region"
-        }
-    ],
-    "themeLayoutType": "Inner",
-    "type": "view",
-    "viewType": "custom-min-tidsplan"
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "3eb0c55a-3520-49a1-b4b4-110c54ae41c6",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "NAVarea" : "Privatperson"
+          },
+          "componentName" : "c:globalCommunityHeader",
+          "id" : "0867bf63-3dbc-4ab5-809b-955327f662e5",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:hot_tolketjenestenHovedBanner",
+          "id" : "987628bc-c194-4fd3-8f32-3080fae9b82e",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:hot_myWorkOrders",
+          "id" : "55594e58-18e5-4aec-a0c7-07ea15440d78",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : {
+            "NAVarea" : "Privatperson"
+          },
+          "componentName" : "c:globalCommunityFooter",
+          "id" : "ce205945-8c59-40af-b5fd-97a84e98431f",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "8536a65b-31ad-4aa0-bdbe-56a03c1ee2c1",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "9fd98b4e-b6de-4249-8839-f08a00a52a4a",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "description" : "",
+        "metaTags" : "",
+        "title" : "Min tidsplan"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "2a195f7b-6639-448c-8b8a-888545d99f01",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "68fd8ca4-01a3-4505-abcc-42e1a812b242",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-min-tidsplan"
 }
