@@ -3,7 +3,7 @@
     <fullName>HOT_Address__c</fullName>
     <externalId>false</externalId>
     <formula
-    >IF( ISPICKVAL(Account.CRM_Person__r.INT_Confidential__c, &apos;UGRADERT&apos;),  Account.CRM_Person__r.INT_ResidentialAddress__c + &apos; &apos; +  Account.CRM_Person__r.INT_ResidentialZipCode__c, &apos;Ikke tilgjengelig&apos; )</formula>
+    >IF( ISPICKVAL(Account.CRM_Person__r.INT_Confidential__c, &apos;UGRADERT&apos;), IF(ISBLANK(HOT_AddressOverride__c),  Account.CRM_Person__r.INT_ResidentialAddress__c + &apos; &apos; +  Account.CRM_Person__r.INT_ResidentialZipCode__c, HOT_AddressOverride__c), &apos;Ikke tilgjengelig&apos; )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Address</label>
     <required>false</required>
