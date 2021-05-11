@@ -1,34 +1,29 @@
 {
-    "appPageId": "3ec9486e-fee6-4674-8f6b-ab5d31175d26",
-    "componentName": "siteforce:sldsOneColLayout",
-    "id": "010a6da1-688e-49c7-9ab0-f304da4cfd5b",
-    "label": "Register",
-    "regions": [
-        {
-            "id": "9d728994-3af6-41f9-bbfe-8e1fc6ab92a4",
-            "regionName": "content",
-            "type": "region"
-        },
-        {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "description": "",
-                        "metaTags": "",
-                        "title": "Finnes ikke (404)"
-                    },
-                    "componentName": "forceCommunity:seoAssistant",
-                    "id": "d8e23ea6-fa25-41d7-aa95-19f83baf28cf",
-                    "renditionMap": {},
-                    "type": "component"
-                }
-            ],
-            "id": "676166c1-6664-401f-acf1-d927839da8d5",
-            "regionName": "sfdcHiddenRegion",
-            "type": "region"
-        }
-    ],
-    "themeLayoutType": "Login",
-    "type": "view",
-    "viewType": "self-register"
+  "appPageId" : "3ec9486e-fee6-4674-8f6b-ab5d31175d26",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "id" : "010a6da1-688e-49c7-9ab0-f304da4cfd5b",
+  "label" : "Register",
+  "regions" : [ {
+    "id" : "9d728994-3af6-41f9-bbfe-8e1fc6ab92a4",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "description" : "",
+        "metaTags" : "",
+        "title" : "Finnes ikke (404)"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "d8e23ea6-fa25-41d7-aa95-19f83baf28cf",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "676166c1-6664-401f-acf1-d927839da8d5",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Login",
+  "type" : "view",
+  "viewType" : "self-register"
 }

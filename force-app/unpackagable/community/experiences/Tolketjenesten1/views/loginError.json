@@ -1,44 +1,37 @@
 {
-    "appPageId": "3ec9486e-fee6-4674-8f6b-ab5d31175d26",
-    "componentName": "siteforce:sldsOneColLayout",
-    "id": "758c0bf6-640f-4265-97ca-0cfa8ceb0d66",
-    "label": "Login Error",
-    "regions": [
-        {
-            "id": "d620dc4b-b441-4640-bed1-7ee12fa0fada",
-            "regionName": "header",
-            "type": "region"
-        },
-        {
-            "id": "8f40ce98-bd3e-4b85-bc60-01df917df4f3",
-            "regionName": "content",
-            "type": "region"
-        },
-        {
-            "id": "06ec0db7-389a-49e3-a2f9-552b38f16f77",
-            "regionName": "footer",
-            "type": "region"
-        },
-        {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "description": "",
-                        "metaTags": "",
-                        "title": "Finnes ikke (404)"
-                    },
-                    "componentName": "forceCommunity:seoAssistant",
-                    "id": "93a3105f-1f28-45d0-9127-b5dfd86ab6d9",
-                    "renditionMap": {},
-                    "type": "component"
-                }
-            ],
-            "id": "a0f0d0e4-09ee-4ab0-80bb-604abe2e07df",
-            "regionName": "sfdcHiddenRegion",
-            "type": "region"
-        }
-    ],
-    "themeLayoutType": "Login",
-    "type": "view",
-    "viewType": "login-error"
+  "appPageId" : "3ec9486e-fee6-4674-8f6b-ab5d31175d26",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "id" : "758c0bf6-640f-4265-97ca-0cfa8ceb0d66",
+  "label" : "Login Error",
+  "regions" : [ {
+    "id" : "d620dc4b-b441-4640-bed1-7ee12fa0fada",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "id" : "8f40ce98-bd3e-4b85-bc60-01df917df4f3",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "06ec0db7-389a-49e3-a2f9-552b38f16f77",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "description" : "",
+        "metaTags" : "",
+        "title" : "Finnes ikke (404)"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "93a3105f-1f28-45d0-9127-b5dfd86ab6d9",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "a0f0d0e4-09ee-4ab0-80bb-604abe2e07df",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Login",
+  "type" : "view",
+  "viewType" : "login-error"
 }
