@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_AddressOverride__c</fullName>
     <externalId>false</externalId>
+    <inlineHelpText>Bruk dette feltet til å skrive inn en egen adresse for tolken</inlineHelpText>
     <label>Address override</label>
     <length>255</length>
     <required>false</required>
