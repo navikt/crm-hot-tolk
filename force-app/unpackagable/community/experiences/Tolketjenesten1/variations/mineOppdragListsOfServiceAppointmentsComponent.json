@@ -1,15 +1,13 @@
 {
-    "componentVariants": [
-        {
-            "id": "e015d64d-c4ab-4063-b66b-5ddd7c38e2c4",
-            "propertyOverrides": {
-                "isVisible": true
-            },
-            "targetId": "f066fe97-2aea-41be-aa17-0bbf29583a25",
-            "type": "componentVariant"
-        }
-    ],
-    "developerName": "Mine_Oppdrag_Lists_of_Service_Appointments_Component",
-    "id": "bd9ef248-92aa-4285-927e-2e2a9a8ad039",
-    "type": "experienceVariation"
+  "componentVariants" : [ {
+    "id" : "e015d64d-c4ab-4063-b66b-5ddd7c38e2c4",
+    "propertyOverrides" : {
+      "isVisible" : true
+    },
+    "targetId" : "f066fe97-2aea-41be-aa17-0bbf29583a25",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Mine_Oppdrag_Lists_of_Service_Appointments_Component",
+  "id" : "bd9ef248-92aa-4285-927e-2e2a9a8ad039",
+  "type" : "experienceVariation"
 }
