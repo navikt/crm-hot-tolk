@@ -3,6 +3,7 @@ public without sharing class HOT_SendReminderSMSBatch implements Database.Batcha
         HOT_SendReminderSMSBatch instance = new HOT_SendReminderSMSBatch();
         database.executebatch(instance);
     }
+
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Date dayAfterTomorrow = Date.today().addDays(2);
         return Database.getQueryLocator('SELECT Id FROM WorkOrder WHERE Status = \'Dispatched\'');
