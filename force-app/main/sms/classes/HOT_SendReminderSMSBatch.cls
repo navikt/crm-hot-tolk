@@ -1,13 +1,11 @@
-public class HOT_SendReminderSMSBatch implements Database.Batchable<sObject>, Schedulable {
+public without sharing class HOT_SendReminderSMSBatch implements Database.Batchable<sObject>, Schedulable {
     public void execute(SchedulableContext sc) {
         HOT_SendReminderSMSBatch instance = new HOT_SendReminderSMSBatch();
         database.executebatch(instance);
     }
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Date dayAfterTomorrow = Date.today().addDays(2);
-        return Database.getQueryLocator(
-            'SELECT Id FROM WorkOrder WHERE StartDate < :dayAfterTomorrow AND StartDate > :Date.today() AND Status = +\'Dispatched\''
-        );
+        return Database.getQueryLocator('SELECT Id FROM WorkOrder WHERE Status = \'Dispatched\'');
     }
 
     public void execute(Database.BatchableContext bc, List<WorkOrder> records) {
