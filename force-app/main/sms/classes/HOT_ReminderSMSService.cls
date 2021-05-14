@@ -10,7 +10,7 @@ public without sharing class HOT_ReminderSMSService {
                     AND StartDate > :Date.today()
                     AND Status = 'Dispatched'
                     AND Id IN :workOrderIds
-                    AND Account.CRM_Person__r.HOT_IsWantSMSReminder__c = true
+                    AND Account.CRM_Person__r.HOT_IsWantSMSReminder__c = TRUE
             ]
         );
         List<WorkOrderLineItem> workOrderLineItems = [
@@ -23,7 +23,7 @@ public without sharing class HOT_ReminderSMSService {
                     WHERE Status = 'Dispatched'
                 )
             FROM WorkOrderLineItem
-            WHERE WorkOrderId IN :workORders.keySet()
+            WHERE WorkOrderId IN :workOrders.keySet()
         ];
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = new Map<Id, List<ServiceAppointment>>();
         for (WorkOrderLineItem woli : workOrderLineItems) {
