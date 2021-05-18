@@ -44,28 +44,9 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
                 )
             );
         }
-
-        try {
-            Database.insert(serviceAppointmentShares, false);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-        try {
-            Database.insert(workOrderShares, false);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-        try {
-            Database.insert(accountShares, false);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
+        Database.insert(serviceAppointmentShares, false);
+        Database.insert(workOrderShares, false);
+        Database.insert(accountShares, false);
     }
 
     @future
