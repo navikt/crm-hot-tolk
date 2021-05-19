@@ -10,7 +10,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
         query += 'Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate ';
         query += 'FROM WorkOrder ';
         query += 'WHERE StartDate < :dayAfterTomorrow ';
-        query += 'AND StartDate > :Date.today() ';
+        query += 'AND StartDate > :Datetime.now() ';
         query += 'AND Status = \'Dispatched\' ';
         query += 'AND Account.CRM_Person__r.HOT_IsWantSMSReminder__c = TRUE ';
         //query += 'AND Id IN :workOrderIds ';
@@ -23,6 +23,15 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
     }
 
     public void finish(Database.BatchableContext bc) {
-        // execute any post-processing operations
+        Datetime datetime_1600 = Datetime.newInstance(Date.today(), Time.newInstance(16, 0, 0, 0));
+        if (!Test.isRunningTest() && Datetime.now() < datetime_1600) {
+            try {
+                System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', 60);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
+        }
     }
 }
