@@ -5,22 +5,15 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrder> avlystWorkOrder = new List<WorkOrder>();
-        List<Id> dispatchedWorkOrderIds = new List<Id>();
 
         for (WorkOrder workorder : (List<WorkOrder>) records) {
             if (workorder.Status != triggerOldMap.get(workorder.Id).get('Status') && workorder.Status == 'Canceled') {
                 avlystWorkOrder.add(workorder);
             }
-            if (workorder.Status != triggerOldMap.get(workorder.Id).get('Status') && workorder.Status == 'Dispatched') {
-                dispatchedWorkOrderIds.add(workorder.Id);
-            }
         }
 
         if (avlystWorkOrder.size() > 0) {
             setCancelDate(avlystWorkOrder);
-        }
-        if (dispatchedWorkOrderIds.size() > 0) {
-            HOT_ReminderSMSService.sendReminderSMS(dispatchedWorkOrderIds);
         }
     }
 
