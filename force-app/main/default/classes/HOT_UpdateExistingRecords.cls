@@ -1,12 +1,14 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT Id, AccountId, HOT_Account__c FROM ServiceAppointment WHERE HOT_Account__c = null AND AccountId != null AND Status != \'Annul\''
+            'SELECT Id IsReminderSMS__c, Account__r.CRM_Person__c FROM HOT_Request__c WHERE IsReminderSMS__c = FALSE'
         );
     }
-    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
-        for (ServiceAppointment serviceAppointment : records) {
-            serviceAppointment.HOT_Account__c = serviceAppointment.AccountId;
+    public void execute(Database.BatchableContext bc, List<HOT_Request__c> records) {
+        List<Id> personIds = new List<Id>();
+        for (HOT_Request__c request : records) {
+            request.IsReminderSMS__c = true;
+            personIds.add(request.Account__r.CRM_Person__c);
         }
 
         try {
@@ -16,7 +18,21 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
         }
+
+        List<Person__c> persons = [SELECT Id, HOT_IsWantSMSReminder__c FROM Person__c WHERE Id IN :personIds];
+        for (Person__c person : persons) {
+            person.HOT_IsWantSMSReminder__c = true;
+        }
+
+        try {
+            update persons;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
+
     public void finish(Database.BatchableContext bc) {
         // execute any post-processing operations
     }
