@@ -14,7 +14,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
         query += 'AND StartDate > :now ';
         query += 'AND Status = \'Dispatched\' ';
         query += 'AND Account.CRM_Person__r.INT_KrrMobilePhone__c != null ';
-        query += 'AND Account.CRM_Person__r.HOT_IsWantSMSReminder__c = TRUE ';
+        query += 'AND Account.CRM_Person__r.HOT_IsReservationAgainstReminderSMS__c = FALSE ';
         query += 'AND HOT_Request__r.IsReminderSMS__c = TRUE ';
         query += 'AND HOT_IsReminderSMSSendt__c = FALSE';
 

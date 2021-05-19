@@ -3,7 +3,6 @@ private class HOT_ReminderSMSServiceTest {
     @testSetup
     static void setup() {
         Person__c person = HOT_TestDataFactory.createPerson();
-        person.HOT_IsWantSMSReminder__c = true;
         person.INT_KrrMobilePhone__c = '00000000';
         insert person;
         Account account = [SELECT Id FROM Account];
