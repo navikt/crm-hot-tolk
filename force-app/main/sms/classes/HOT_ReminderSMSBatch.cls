@@ -15,7 +15,6 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
         query += 'AND Account.CRM_Person__r.HOT_IsWantSMSReminder__c = TRUE ';
         query += 'AND HOT_Request__r.HOT_IsReminderSMS__c = TRUE ';
         query += 'AND HOT_IsReminderSMSSendt__c = FALSE';
-        //query += 'AND Id IN :workOrderIds ';
 
         return Database.getQueryLocator(query);
     }
