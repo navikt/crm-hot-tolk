@@ -1,18 +1,7 @@
 public without sharing class HOT_ReminderSMSService {
-    public static void sendReminderSMS(List<Id> workOrderIds) {
+    public static void ReminderSMS(List<WorkOrder> workOrderList) {
         Date dayAfterTomorrow = Date.today().addDays(2);
-        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(
-            [
-                SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
-                FROM WorkOrder
-                WHERE
-                    StartDate < :dayAfterTomorrow
-                    AND StartDate > :Date.today()
-                    AND Status = 'Dispatched'
-                    AND Id IN :workOrderIds
-                    AND Account.CRM_Person__r.HOT_IsWantSMSReminder__c = TRUE
-            ]
-        );
+        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(workOrderList);
         List<WorkOrderLineItem> workOrderLineItems = [
             SELECT
                 Id,

@@ -28,7 +28,7 @@ private class HOT_ReminderSMSServiceTest {
     @isTest
     static void testMethod1() {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>([SELECT Id FROM WorkOrder]);
-        HOT_ReminderSMSService.sendReminderSMS(new List<Id>(workOrders.keySet()));
+        HOT_ReminderSMSService.ReminderSMS([SELECT Id FROM WorkOrder]);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
