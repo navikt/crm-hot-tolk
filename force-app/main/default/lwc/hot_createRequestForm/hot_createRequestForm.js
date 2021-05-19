@@ -456,10 +456,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 if (!this.isAdvancedTimes) {
                     let accountId = this.personAccount.Id;
                     let times = this.timesListToObject(this.times);
-                    let duplicateRequests = await checkDuplicates({
-                        accountId: accountId,
-                        times: times
-                    });
+                    let duplicateRequests = [];
+                    if (this.fieldValues.Type__c === 'Me') {
+                        duplicateRequests = await checkDuplicates({
+                            accountId: accountId,
+                            times: times
+                        });
+                    }
                     if (duplicateRequests.length === 0) {
                         this.submit();
                     } else {
