@@ -6,15 +6,16 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Date dayAfterTomorrow = Date.today().addDays(2);
+        Datetime now = Datetime.now();
         String query = 'SELECT ';
         query += 'Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate ';
         query += 'FROM WorkOrder ';
         query += 'WHERE StartDate < :dayAfterTomorrow ';
-        query += 'AND StartDate > :Datetime.now() ';
+        query += 'AND StartDate > :now ';
         query += 'AND Status = \'Dispatched\' ';
         query += 'AND Account.CRM_Person__r.INT_KrrMobilePhone__c != null ';
         query += 'AND Account.CRM_Person__r.HOT_IsWantSMSReminder__c = TRUE ';
-        query += 'AND HOT_Request__r.HOT_IsReminderSMS__c = TRUE ';
+        query += 'AND HOT_Request__r.IsReminderSMS__c = TRUE ';
         query += 'AND HOT_IsReminderSMSSendt__c = FALSE';
 
         return Database.getQueryLocator(query);
