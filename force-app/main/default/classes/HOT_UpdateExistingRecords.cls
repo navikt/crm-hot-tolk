@@ -1,7 +1,8 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
+        Datetime now = Datetime.now();
         return Database.getQueryLocator(
-            'SELECT Id IsReminderSMS__c, Account__r.CRM_Person__c FROM HOT_Request__c WHERE IsReminderSMS__c = FALSE'
+            'SELECT Id IsReminderSMS__c, Account__r.CRM_Person__c FROM HOT_Request__c WHERE IsReminderSMS__c = FALSE AND StartTime__c > :now'
         );
     }
     public void execute(Database.BatchableContext bc, List<HOT_Request__c> records) {
@@ -13,19 +14,6 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
 
         try {
             update records;
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-
-        List<Person__c> persons = [SELECT Id, HOT_IsWantSMSReminder__c FROM Person__c WHERE Id IN :personIds];
-        for (Person__c person : persons) {
-            person.HOT_IsWantSMSReminder__c = true;
-        }
-
-        try {
-            update persons;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
