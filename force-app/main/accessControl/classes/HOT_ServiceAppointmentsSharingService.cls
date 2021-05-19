@@ -65,7 +65,13 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         soqlQuery = soqlQuery.removeEnd('OR');
         soqlQuery += ')';
         List<ServiceAppointmentShare> serviceAppointmentShares = Database.query((soqlQuery));
-        delete serviceAppointmentShares;
+        try {
+            delete serviceAppointmentShares;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void removeManualAccess(Set<Id> serviceAppointIds) {
@@ -74,7 +80,13 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
             FROM ServiceAppointmentShare
             WHERE RowCause = 'Manual' AND ParentId IN :serviceAppointIds
         ];
-        delete serviceAppointmentShares;
+        try {
+            delete serviceAppointmentShares;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     private static Map<Id, Id> getUserIdyResourceId(List<Id> resourceIds) {
