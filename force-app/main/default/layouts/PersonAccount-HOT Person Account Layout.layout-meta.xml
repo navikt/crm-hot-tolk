@@ -87,6 +87,11 @@
     </layoutSections>
     <platformActionList>
         <actionListContext>Record</actionListContext>
+        <platformActionListItems>
+            <actionName>Account.HOT_SendSMS</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>0</sortOrder>
+        </platformActionListItems>
     </platformActionList>
     <quickActionList/>
     <relatedLists>
@@ -125,13 +130,22 @@
         <fields>Company__c</fields>
         <relatedList>HOT_Request__c.Orderer__c</relatedList>
     </relatedLists>
+    <relatedLists>
+        <fields>CREATED_DATE</fields>
+        <fields>Type__c</fields>
+        <fields>Status__c</fields>
+        <fields>Message__c</fields>
+        <relatedList>SMS__c.Account__c</relatedList>
+        <sortField>CREATED_DATE</sortField>
+        <sortOrder>Desc</sortOrder>
+    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>true</showHighlightsPanel>
     <showInteractionLogPanel>true</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1x0000021Ux1</masterLabel>
+        <masterLabel>00h1j000002gTPR</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
