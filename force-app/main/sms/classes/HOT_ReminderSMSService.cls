@@ -51,12 +51,27 @@ public without sharing class HOT_ReminderSMSService {
 
     private static String constructReminderMessage(WorkOrder workOrder, List<ServiceAppointment> serviceAppointments) {
         String message = 'PÅMINNELSE:\nVi minner om tolkebestilling:\n';
-        message += 'Dato: ' + WorkOrder.StartDate + ' - ' + WorkOrder.EndDate + '\n';
+        message += 'Dato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate) + '\n';
         message += 'Tolker: ';
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             message += serviceAppointment.HOT_ServiceResource__r.Name + ', ';
         }
         message = message.removeEnd(', ');
         return message;
+    }
+
+    private static String formatTimePeriod(Datetime startDate, Datetime endDate) {
+        String timePeriod =
+            startDate.date().format() +
+            ', ' +
+            startDate.hour() +
+            ':' +
+            startDate.minute() +
+            ' - ' +
+            endDate.hour() +
+            ':' +
+            startDate.minute();
+
+        return timePeriod;
     }
 }
