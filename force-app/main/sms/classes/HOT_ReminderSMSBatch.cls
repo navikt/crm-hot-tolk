@@ -1,7 +1,7 @@
 public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<sObject>, Schedulable {
     public void execute(SchedulableContext sc) {
         HOT_ReminderSMSBatch instance = new HOT_ReminderSMSBatch();
-        database.executebatch(instance);
+        database.executebatch(instance, 100);
     }
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
@@ -37,7 +37,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
         }
         if (!Test.isRunningTest() && Datetime.now() < datetime_1600) {
             try {
-                System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', (Integer) minutes);
+                System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', (Integer) minutes, 100);
             } catch (Exception e) {
                 LoggerUtility logger = new LoggerUtility();
                 logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
