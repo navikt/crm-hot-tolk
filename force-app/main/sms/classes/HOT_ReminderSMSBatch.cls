@@ -29,10 +29,15 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
     }
 
     public void finish(Database.BatchableContext bc) {
+        Datetime now = Datetime.now();
         Datetime datetime_1600 = Datetime.newInstance(Date.today(), Time.newInstance(16, 0, 0, 0));
+        Long minutes = 60;
+        if (datetime_1600.getTime() - Datetime.now().getTime() < 3600000) {
+            minutes = (datetime_1600.getTime() - Datetime.now().getTime()) / 60000;
+        }
         if (!Test.isRunningTest() && Datetime.now() < datetime_1600) {
             try {
-                System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', 60);
+                System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', minutes);
             } catch (Exception e) {
                 LoggerUtility logger = new LoggerUtility();
                 logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
