@@ -37,7 +37,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
         }
         if (!Test.isRunningTest() && Datetime.now() < datetime_1600) {
             try {
-                System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', minutes);
+                System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', (Integer) minutes);
             } catch (Exception e) {
                 LoggerUtility logger = new LoggerUtility();
                 logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
