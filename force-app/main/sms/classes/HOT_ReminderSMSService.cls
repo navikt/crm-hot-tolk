@@ -46,7 +46,13 @@ public without sharing class HOT_ReminderSMSService {
 
             workOrder.HOT_IsReminderSMSSendt__c = true;
         }
-        update workOrders.values();
+        try {
+            update workOrders.values();
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, null, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     private static String constructReminderMessage(WorkOrder workOrder, List<ServiceAppointment> serviceAppointments) {
