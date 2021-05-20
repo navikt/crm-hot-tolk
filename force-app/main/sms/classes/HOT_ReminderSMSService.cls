@@ -63,7 +63,7 @@ public without sharing class HOT_ReminderSMSService {
     private static String formatTimePeriod(Datetime startDate, Datetime endDate) {
         String timePeriod =
             startDate.date().format() +
-            ', ' +
+            ', kl. ' +
             startDate.hour() +
             ':' +
             startDate.minute() +
