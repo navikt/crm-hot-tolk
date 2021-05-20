@@ -5,12 +5,15 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
     }
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        Date dayAfterTomorrow = Date.today().addDays(2);
         Datetime now = Datetime.now();
+        Date horizonDate = Date.today().addDays(2);
+        if (now.format() == 'Friday') {
+            horizonDate = Date.today().addDays(4);
+        }
         String query = 'SELECT ';
         query += 'Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate ';
         query += 'FROM WorkOrder ';
-        query += 'WHERE StartDate < :dayAfterTomorrow ';
+        query += 'WHERE StartDate < :horizonDate ';
         query += 'AND StartDate > :now ';
         query += 'AND Status = \'Dispatched\' ';
         query += 'AND Account.CRM_Person__r.INT_KrrMobilePhone__c != null ';
