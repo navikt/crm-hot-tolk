@@ -1,5 +1,5 @@
 public without sharing class HOT_ReminderSMSService {
-    public static void ReminderSMS(List<WorkOrder> workOrderList) {
+    public static void reminderSMS(List<WorkOrder> workOrderList) {
         Date dayAfterTomorrow = Date.today().addDays(2);
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(workOrderList);
         List<WorkOrderLineItem> workOrderLineItems = [

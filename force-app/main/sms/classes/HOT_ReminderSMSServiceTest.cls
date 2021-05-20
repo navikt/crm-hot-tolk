@@ -30,7 +30,7 @@ private class HOT_ReminderSMSServiceTest {
             SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
             FROM WorkOrder
         ];
-        HOT_ReminderSMSService.ReminderSMS(workOrders);
+        HOT_ReminderSMSService.reminderSMS(workOrders);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
