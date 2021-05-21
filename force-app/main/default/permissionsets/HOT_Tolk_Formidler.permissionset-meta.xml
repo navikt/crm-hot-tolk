@@ -395,6 +395,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.IsReminderSMS__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.IsScreenInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -606,6 +611,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_InterpreterAtWork__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Person__c.HOT_IsReservationAgainstReminderSMS__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

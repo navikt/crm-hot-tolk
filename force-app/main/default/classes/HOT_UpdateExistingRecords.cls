@@ -1,12 +1,15 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
+        Datetime now = Datetime.now();
         return Database.getQueryLocator(
-            'SELECT Id, AccountId, HOT_Account__c FROM ServiceAppointment WHERE HOT_Account__c = null AND AccountId != null AND Status != \'Annul\''
+            'SELECT Id IsReminderSMS__c, Account__r.CRM_Person__c FROM HOT_Request__c WHERE IsReminderSMS__c = FALSE AND StartTime__c > :now'
         );
     }
-    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
-        for (ServiceAppointment serviceAppointment : records) {
-            serviceAppointment.HOT_Account__c = serviceAppointment.AccountId;
+    public void execute(Database.BatchableContext bc, List<HOT_Request__c> records) {
+        List<Id> personIds = new List<Id>();
+        for (HOT_Request__c request : records) {
+            request.IsReminderSMS__c = true;
+            personIds.add(request.Account__r.CRM_Person__c);
         }
 
         try {
@@ -17,6 +20,7 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
             logger.publishSynch();
         }
     }
+
     public void finish(Database.BatchableContext bc) {
         // execute any post-processing operations
     }

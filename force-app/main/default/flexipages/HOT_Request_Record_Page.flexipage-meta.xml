@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -329,6 +329,11 @@
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.PreferredResource3__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.IsReminderSMS__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-7a69e729-d7de-4731-b714-4d6878395460</name>
