@@ -116,6 +116,7 @@
         <queriedFields>INT_KrrMobilePhone__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Error_message_0</name>
         <label>Error message</label>
