@@ -7,7 +7,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
         Date horizonDate = Date.today().addDays(2);
-        if (now.format() == 'Friday') {
+        if (now.format('EEEE') == 'Friday') {
             horizonDate = Date.today().addDays(4);
         }
         String query = 'SELECT ';
