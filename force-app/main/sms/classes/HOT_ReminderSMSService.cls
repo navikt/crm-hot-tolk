@@ -26,6 +26,7 @@ public without sharing class HOT_ReminderSMSService {
             }
         }
 
+        List<SMS__c> smsList = new List<SMS__c>();
         for (WorkOrder workOrder : workOrders.values()) {
             String message = constructReminderMessage(workOrder, serviceAppointmentsByWorkOrderId.get(workOrder.Id));
             SMS__c sms = new SMS__c();
@@ -35,17 +36,19 @@ public without sharing class HOT_ReminderSMSService {
             sms.WorkOrder__c = workOrder.Id;
             sms.Recipient__c = workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = message;
-
-            try {
-                insert sms;
-            } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, workOrder, CRM_ApplicationDomain.Domain.HOT);
-                logger.publishSynch();
-            }
+            smsList.add(sms);
 
             workOrder.HOT_IsReminderSMSSendt__c = true;
         }
+
+        try {
+            insert smsList;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, null, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+
         try {
             update workOrders.values();
         } catch (Exception e) {
