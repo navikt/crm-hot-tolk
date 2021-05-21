@@ -71,13 +71,13 @@ public without sharing class HOT_ReminderSMSService {
         String timePeriod =
             startDate.date().format() +
             ', kl. ' +
-            startDate.hour() +
+            (startDate.hour() < 10 ? '0' + String.valueOf(startDate.hour()) : String.valueOf(startDate.hour())) +
             '.' +
-            startDate.minute() +
+            (startDate.minute() < 10 ? '0' + String.valueOf(startDate.minute()) : String.valueOf(startDate.minute())) +
             ' - ' +
-            endDate.hour() +
+            (endDate.hour() < 10 ? '0' + String.valueOf(endDate.hour()) : String.valueOf(endDate.hour())) +
             '.' +
-            startDate.minute();
+            (endDate.minute() < 10 ? '0' + String.valueOf(endDate.minute()) : String.valueOf(endDate.minute()));
 
         return timePeriod;
     }
