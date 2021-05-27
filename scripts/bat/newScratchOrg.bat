@@ -1,29 +1,25 @@
-:: Opprett en scratch org
+echo "Oppretter scratch org"
 call sfdx force:org:create -f config\project-scratch-def.json --setalias %1 --durationdays %2 --setdefaultusername --json --loglevel fatal  --wait 10
 
-:: Skru på Field Service (bug)
-::call sfdx force:source:deploy -x .\manifests\FieldServiceSettings.xml
-
-:: Installer crm-platform-base ver. 0.86
+echo "Installerer crm-platform-base ver. 0.86"
 call sfdx force:package:install --package 04t2o000000yRw8AAE -r -k navcrm --wait 10 --publishwait 10
 
-:: Installer crm-platform-integration ver. 0.44
+echo "Installerer crm-platform-integration ver. 0.44"
 call sfdx force:package:install --package 04t2o000000yS5FAAU -r -k navcrm --wait 10 --publishwait 10
 
-:: Installer crm-platform-access-control ver. 0.67
+echo "Installerer crm-platform-access-control ver. 0.67"
 call sfdx force:package:install --package 04t2o000000yS8EAAU -r -k navcrm --wait 10 --publishwait 10
 
-:: Installer crm-community-base ver. 0.15
+echo "Installerer crm-community-base ver. 0.15"
 call sfdx force:package:install --package 04t2o000000yRGfAAM -r -k navcrm --wait 10 --publishwait 10
 
-:: Dytt kildekoden til scratch org'en
+echo "Dytter kildekoden til scratch org'en"
 call sfdx force:source:push
 
-:: Tildel tilatelsessett til brukeren
+echo "Tildeler tilatelsessett til brukeren"
 call sfdx force:user:permset:assign --permsetname HOT_admin
 
-:: Opprett testdata
+echo "Oppretter testdata"
 call sfdx force:apex:execute -f scripts/apex/createTestData.apex
 
-:: Hent kildekoden til scratch org'en (for å nullstille)
-call sfdx force:source:pull
+echo "Ferdig"
