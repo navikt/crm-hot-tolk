@@ -1,5 +1,5 @@
 @isTest
-private class InterestedResourceHandlerTest {
+private class HOT_InterestedResourceHandlerTest {
     @testSetup
     static void setup() {
         Account testAcc = new Account(Name='Test');
@@ -38,7 +38,6 @@ private class InterestedResourceHandlerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
         request.PreferredResource1__c = resource.Id;
         request.NumberOfInterpreters__c = 3;
-        request.Status__c = 'Godkjent';
         insert request;
 
         ServiceAppointment serviceAppointment = new ServiceAppointment(
@@ -68,7 +67,7 @@ private class InterestedResourceHandlerTest {
         HOT_InterestedResource__c interestedResource = [
             SELECT Status__c
             FROM HOT_InterestedResource__c
-            WHERE serviceAppointment = :serviceAppointment.Id
+            WHERE ServiceAppointment__c = :serviceAppointment.Id
         ];
         interestedResource.Status__c = 'Assigned';
 

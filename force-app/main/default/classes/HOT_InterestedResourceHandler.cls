@@ -1,11 +1,11 @@
 public with sharing class HOT_InterestedResourceHandler extends MyTriggers {
-    public override void onAfterInsert() {
+    /*public override void onAfterInsert() {
 
     }
 
     public override void onAfterUpdate() {
         
-    }
+    }*/
     
     /* public override void onAfterInsert() {
         List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
