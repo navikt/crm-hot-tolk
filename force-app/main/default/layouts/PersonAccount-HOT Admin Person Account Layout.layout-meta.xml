@@ -11,6 +11,10 @@
                 <behavior>Required</behavior>
                 <field>Name</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>CRM_NavEmployeeName__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -103,6 +107,7 @@
             <sortOrder>6</sortOrder>
         </platformActionListItems>
     </platformActionList>
+    <quickActionList/>
     <relatedLists>
         <fields>NAME</fields>
         <fields>Status__c</fields>
@@ -154,7 +159,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1j000002gTPQ</masterLabel>
+        <masterLabel>00h1X000002ezUn</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
