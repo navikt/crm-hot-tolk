@@ -3,7 +3,7 @@
     <fullName>HOT_Account__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
     <externalId>false</externalId>
-    <label>HOT_Account</label>
+    <label>Account</label>
     <referenceTo>Account</referenceTo>
     <relationshipLabel>Service Appointments</relationshipLabel>
     <relationshipName>HOT_ServiceAppointments</relationshipName>
