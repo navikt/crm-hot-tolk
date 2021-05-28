@@ -1,8 +1,10 @@
 public with sharing class HOT_InterestedResourceHandler extends MyTriggers {
     public override void onAfterInsert() {
+
     }
 
     public override void onAfterUpdate() {
+        
     }
     
     /* public override void onAfterInsert() {

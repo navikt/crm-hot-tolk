@@ -42,7 +42,7 @@ private class InterestedResourceHandlerTest {
         insert request;
 
         ServiceAppointment serviceAppointment = new ServiceAppointment(
-            User = user,
+            OwnerId = user.Id,
             ParentRecordId = testAcc.Id,
             HOT_Request__c = request.Id,
             ServiceTerritoryId = serviceTerritory.Id,
