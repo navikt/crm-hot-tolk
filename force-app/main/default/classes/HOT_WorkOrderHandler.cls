@@ -319,7 +319,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     public static void setCancelDate(List<WorkOrder> workorders) {
         for (WorkOrder workorder : workorders) {
-            workorder.CanceledDate__c = Date.today();
+            if (workorder.CanceledDate__c == null) {
+                workorder.CanceledDate__c = Date.today();
+            }
         }
     }
 
