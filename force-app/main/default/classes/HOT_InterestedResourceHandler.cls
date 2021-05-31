@@ -11,7 +11,7 @@ public with sharing class HOT_InterestedResourceHandler extends MyTriggers {
         // All IRs from trigger
         List<HOT_InterestedResource__c> interestedResources = new List<HOT_InterestedResource__c>();
         for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
-            if (isUpdate && triggerOldMap.get(interestedResource.Id).get('Status') == interestedResource.Status__c)
+            if (isUpdate && triggerOldMap.get(interestedResource.Id).get('Status__c') == interestedResource.Status__c)
                 continue; // No changes to Status__c - continue
             
             if (!isUpdate && interestedResource.Status__c != 'Interested') 
@@ -36,7 +36,7 @@ public with sharing class HOT_InterestedResourceHandler extends MyTriggers {
 
         // Find all IRs in org based on related SAs in trigger IRs
         List<HOT_InterestedResource__c> allInterestedResources = [
-            SELECT Id, ServiceAppointment__c, ServiceResource__c
+            SELECT Id, ServiceAppointment__c, ServiceResource__r.Name
             FROM HOT_InterestedResource__c
             WHERE ServiceAppointment__c IN :serviceAppointmentsIDs AND Status__c = 'Interested'
         ];
@@ -44,23 +44,20 @@ public with sharing class HOT_InterestedResourceHandler extends MyTriggers {
         // Update service appointments with names from matching IR's Service Resource
         List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.HOT_InterestedResourceNames__c = ''; // Clear field before remaking
+            System.debug('serviceAppointment:' + serviceAppointment);
             for (HOT_InterestedResource__c interestedResource : allInterestedResources) {
-                if (interestedResource.ServiceAppointment__c == ServiceAppointment.Id)
-                    serviceAppointment.HOT_InterestedResourceNames__c += interestedResource.ServiceResource__r.Name + ', ';
-                
-            }
-            // Find last comma and replace with " ..."
-            // If length exceeds 255 when appending " ...", find the next last comma
-            String names = serviceAppointment.HOT_InterestedResourceNames__c;
-            if (names.length() >= 255) {
-                names = names.subString(0, names.lastIndexOf(','));
-                if (names.length() <= 251) {
-                    names += ' ...'; 
-                } else {
-                    names = names.subString(0, names.lastIndexOf(','));
-                    names += ' ...';
+                System.debug('interestedResource: ' + interestedResource);
+                if (interestedResource.ServiceAppointment__c == ServiceAppointment.Id) {
+                    if (serviceAppointment.HOT_InterestedResourceNames__c == '') {
+                        serviceAppointment.HOT_InterestedResourceNames__c = interestedResource.ServiceResource__r.Name;
+                    } else {
+                        serviceAppointment.HOT_InterestedResourceNames__c += ', '+interestedResource.ServiceResource__r.Name;
+                    }                        
                 }
-                serviceAppointment.HOT_InterestedResourceNames__c = names;
+            }   
+            if (serviceAppointment.HOT_InterestedResourceNames__c.length() >= 255) {
+                serviceAppointment.HOT_InterestedResourceNames__c = serviceAppointment.HOT_InterestedResourceNames__c.substring(0, 252)+'...';                
             }
             serviceAppointmentsToUpdate.add(serviceAppointment);
         }
