@@ -60,44 +60,4 @@ public with sharing class HOT_InterestedResourceHandler extends MyTriggers {
         }
         update serviceAppointmentsToUpdate;
     }
-
-
-    /*public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
-        // Creates map to be used in query of InterestedResources
-        Map<Id, Id> interestedResourceIdByServiceAppointmentId = new Map<Id, Id>();
-        for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
-            if (interestedResource.Id == triggerOldMap.get(interestedResource.Id).get('Id') && interestedResource.Status__c == 'Interested') {
-                    interestedResourceIdByServiceAppointmentId.put(
-                        interestedResource.ServiceAppointment__c,
-                        interestedResource.ServiceResource__c);
-            }
-        }
-
-        // Fetches possible matches with Interested Resources
-        List<HOT_InterestedResource__c> allInterestedResources = [
-            SELECT Id, ServiceAppointment__c, ServiceResource__c
-            FROM HOT_InterestedResource__c
-            WHERE
-                ServiceAppointment__c IN :interestedResourceIdByServiceAppointmentId.keySet()
-                AND ServiceResource__c IN :interestedResourceIdByServiceAppointmentId.values()
-        ];
-
-        List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, HOT_InterestedResourceNames__c
-            FROM ServiceAppointment
-            WHERE Id IN :interestedResourceIdByServiceAppointmentId.keySet()
-        ];
-        
-        List<ServiceResource> serviceResources = [
-            SELECT Id, Name
-            FROM ServiceResource
-            WHERE Id IN :interestedResourceIdByServiceAppointmentId.values()
-        ];
-       
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            for (ServiceResource serviceResource : serviceResources) {
-                if (serviceResource.Id == serviceAppointment.HOT_ServiceResource__c)
-            }
-        }        
-    }*/
 }
