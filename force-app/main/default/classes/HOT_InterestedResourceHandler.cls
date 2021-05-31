@@ -49,8 +49,18 @@ public with sharing class HOT_InterestedResourceHandler extends MyTriggers {
                     serviceAppointment.HOT_InterestedResourceNames__c += interestedResource.ServiceResource__r.Name + ', ';
                 
             }
-            if (serviceAppointment.HOT_InterestedResourceNames__c.length() >= 255) {
-                    // TODO: Find previous comma and replace with " ..."
+            // Find last comma and replace with " ..."
+            // If length exceeds 255 when appending " ...", find the next last comma
+            String names = serviceAppointment.HOT_InterestedResourceNames__c;
+            if (names.length() >= 255) {
+                names = names.subString(0, names.lastIndexOf(','));
+                if (names.length() <= 251) {
+                    names += ' ...'; 
+                } else {
+                    names = names.subString(0, names.lastIndexOf(','));
+                    names += ' ...';
+                }
+                serviceAppointment.HOT_InterestedResourceNames__c = names;
             }
             serviceAppointmentsToUpdate.add(serviceAppointment);
         }
