@@ -19,6 +19,8 @@ public with sharing class HOT_InterestedResourceHandler extends MyTriggers {
 
             interestedResources.add(interestedResource);
         }
+        if (interestedResources == null)
+            return;
 
         // Find Service Appointment IDs to update based on trigger IR's SA ID
         List<Id> serviceAppointmentsIDs = new List<Id>();
