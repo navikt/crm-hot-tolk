@@ -45,15 +45,10 @@ public with sharing class HOT_InterestedResourceHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.HOT_InterestedResourceNames__c = ''; // Clear field before remaking
-            System.debug('serviceAppointment:' + serviceAppointment);
             for (HOT_InterestedResource__c interestedResource : allInterestedResources) {
-                System.debug('interestedResource: ' + interestedResource);
                 if (interestedResource.ServiceAppointment__c == ServiceAppointment.Id) {
-                    if (serviceAppointment.HOT_InterestedResourceNames__c == '') {
-                        serviceAppointment.HOT_InterestedResourceNames__c = interestedResource.ServiceResource__r.Name;
-                    } else {
-                        serviceAppointment.HOT_InterestedResourceNames__c += ', '+interestedResource.ServiceResource__r.Name;
-                    }                        
+                    serviceAppointment.HOT_InterestedResourceNames__c += serviceAppointment.HOT_InterestedResourceNames__c == '' ? 
+                    interestedResource.ServiceResource__r.Name : ', '+interestedResource.ServiceResource__r.Name;                 
                 }
             }   
             if (serviceAppointment.HOT_InterestedResourceNames__c.length() >= 255) {

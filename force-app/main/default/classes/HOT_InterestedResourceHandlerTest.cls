@@ -118,24 +118,25 @@ private class HOT_InterestedResourceHandlerTest {
 
     @isTest
     static void add255CharsOfInterestedResources() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id
-            FROM ServiceAppointment
-        ];
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
-        ServiceResource serviceResource = [
-            SELECT Id
-            FROM ServiceResource
-        ];
-
+        List<User> userList = new List<User>();
+        List<ServiceResource> serviceResourceList = new List<ServiceResource>();
         List<HOT_InterestedResource__c> interestedResourcesList = new List<HOT_InterestedResource__c>();
-        for (Integer i = 0; i < 13; i++) {
+        for (Integer i = 0; i < 12; i++) { // 12 iterations should exceed 255 chars when ServiceResource.name == 'Service Resource Name'
+            User user = HOT_TestDataFactory.createUser('user'+i, profile);
+            userList.add(user);
+            ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+            serviceResourceList.add(serviceResource);
             interestedResourcesList.add(new HOT_InterestedResource__c(
                 ServiceResource__c = serviceResource.Id,
                 Status__c = 'Interested',
                 ServiceAppointment__c = serviceAppointment.Id
             ));
         }
+        insert userList;
+        insert serviceResourceList;
 
         Test.startTest();
             insert interestedResourcesList;
@@ -148,6 +149,6 @@ private class HOT_InterestedResourceHandlerTest {
         ];
 
         String names = serviceAppointment.HOT_InterestedResourceNames__c;
-        System.assertEquals(names.substring(names.length()-27), ', '+serviceResource.Name+' ...');
+        System.assertEquals(names.substring(names.length()-3, names.length()), '...');
     }
 }
