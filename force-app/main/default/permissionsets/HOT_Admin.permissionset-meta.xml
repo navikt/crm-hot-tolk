@@ -51,6 +51,11 @@
     <description>Brukes av de som utvikler løsningene for HOT</description>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Account.CRM_NavEmployeeName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Account.CRM_Person__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -447,6 +452,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.MessageToDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.NavEmployeeNameAccount__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.NavEmployeeNameOrderer__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1017,6 +1032,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_IsSerieoppdrag__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_NavEmployeeName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
