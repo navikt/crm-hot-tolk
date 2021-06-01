@@ -3,7 +3,19 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
     public final String query;
 
     public HOT_ResourceAbsenceCreateService() {
-        this.timeScope = Datetime.now().addHours(-1);
+        List<AsyncApexJob> jobs = [
+            SELECT Id, CreatedDate
+            FROM AsyncApexJob
+            WHERE JobType = 'BatchApex' AND ApexClass.Name = 'HOT_ResourceAbsenceCreateService' AND Status = 'Completed'
+            ORDER BY CreatedDate DESC NULLS LAST
+            LIMIT 1
+        ];
+        if (jobs.size() == 1) {
+            this.timeScope = jobs[0].CreatedDate.addMinutes(-1);
+        } else {
+            this.timeScope = Datetime.now().addHours(-1);
+        }
+        System.debug('timeScope: ' + timeScope);
         this.query = 'SELECT Id, OwnerId, StartDateTime, EndDateTime, ShowAs, Subject FROM Event WHERE RecordType.DeveloperName = \'HOT_Events\' AND WhatId = null AND LastModifiedDate > :timeScope AND ShowAs != \'Free\'';
     }
 

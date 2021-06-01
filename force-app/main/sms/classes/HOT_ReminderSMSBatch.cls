@@ -29,20 +29,35 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
     }
 
     public void finish(Database.BatchableContext bc) {
-        Datetime now = Datetime.now();
-        Datetime datetime_1600 = Datetime.newInstance(Date.today(), Time.newInstance(16, 0, 0, 0));
-        Long minutes = 60;
-        if (datetime_1600.getTime() - Datetime.now().getTime() < 3600000) {
-            minutes = (datetime_1600.getTime() - Datetime.now().getTime()) / 60000;
-        }
-        if (!Test.isRunningTest() && Datetime.now() < datetime_1600) {
+        String CRON_EXP = getCronExpression();
+
+        if (!Test.isRunningTest()) {
             try {
-                System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', (Integer) minutes, 10);
+                System.schedule('HOT_ReminderSMSBatch', CRON_EXP, new HOT_ReminderSMSBatch());
             } catch (Exception e) {
                 LoggerUtility logger = new LoggerUtility();
                 logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
                 logger.publishSynch();
             }
         }
+    }
+
+    private String getCronExpression() {
+        Datetime now = Datetime.now();
+        Datetime datetime_1600 = Datetime.newInstance(Date.today(), Time.newInstance(16, 0, 0, 0));
+        Boolean isLast = (datetime_1600.getTime() - Datetime.now().getTime()) < 1800000;
+        Integer hour = (now.hour() + 1);
+        Integer daysUntilNextSchedule = (now.format('EEEE') == 'Friday' ? 3 : 1);
+        Integer day = (isLast ? now.day() + daysUntilNextSchedule : now.day());
+        Integer month = now.addDays(daysUntilNextSchedule).month();
+        Integer year = now.addDays(daysUntilNextSchedule).year();
+        return '0 0 ' +
+            String.valueOf(hour) +
+            ' ' +
+            String.valueOf(day) +
+            ' ' +
+            String.valueOf(month) +
+            ' ' +
+            String.valueOf(year);
     }
 }
