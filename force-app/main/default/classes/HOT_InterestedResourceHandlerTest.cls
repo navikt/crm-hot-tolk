@@ -2,8 +2,6 @@
 private class HOT_InterestedResourceHandlerTest {
     @testSetup
     static void setup() {
-        Account testAcc = new Account(Name='Test');
-
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
@@ -23,31 +21,16 @@ private class HOT_InterestedResourceHandlerTest {
         );
         insert serviceTerritoryMember;
 
-        HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
-        resource.Service_Resource__c = serviceResource.Id;
-        insert resource;
-
-        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
-        resourceMember.Resource__c = resource.Id;
-        resourceMember.Service_Resource__c = serviceResource.Id;
-        insert resourceMember;
-
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert WorkType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_InterestedResourceHandler', workType);
-        request.PreferredResource1__c = resource.Id;
         request.NumberOfInterpreters__c = 3;
         insert request;
         request.Status__c = 'Godkjent';
         update request;
 
-        ServiceAppointment serviceAppointment = [
-            SELECT Id
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
         HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(
             ServiceResource__c = serviceResource.Id,
@@ -59,11 +42,7 @@ private class HOT_InterestedResourceHandlerTest {
 
     @isTest
     static void changeStatusOfInterestedResource() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
         HOT_InterestedResource__c interestedResource = [
             SELECT Status__c
@@ -74,7 +53,7 @@ private class HOT_InterestedResourceHandlerTest {
 
         interestedResource.Status__c = 'Assigned';
         Test.startTest();
-            update interestedResource;
+        update interestedResource;
         Test.stopTest();
 
         serviceAppointment = [
@@ -88,17 +67,9 @@ private class HOT_InterestedResourceHandlerTest {
 
     @isTest
     static void addInterestedResourceToSA() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
-        ServiceResource serviceResource = [
-            SELECT Id, Name
-            FROM ServiceResource
-            LIMIT 1
-        ];
+        ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource LIMIT 1];
 
         HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(
             ServiceResource__c = serviceResource.Id,
@@ -107,7 +78,7 @@ private class HOT_InterestedResourceHandlerTest {
         );
 
         Test.startTest();
-            insert interestedResource;
+        insert interestedResource;
         Test.stopTest();
 
         serviceAppointment = [
@@ -116,40 +87,47 @@ private class HOT_InterestedResourceHandlerTest {
             WHERE Id = :serviceAppointment.Id
         ];
 
-        System.assertEquals(serviceResource.Name+', '+serviceResource.Name, serviceAppointment.HOT_InterestedResourceNames__c);
+        System.assertEquals(
+            serviceResource.Name +
+            ', ' +
+            serviceResource.Name,
+            serviceAppointment.HOT_InterestedResourceNames__c
+        );
     }
-    
 
     @isTest
     static void add255CharsOfInterestedResources() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];        
-        
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+
         List<User> userList = new List<User>();
-        for (Integer i = 0; i < 12; i++) { // 12 iterations should exceed 255 chars when ServiceResource.name == 'Service Resource Name'
-            User user = HOT_TestDataFactory.createUser('user'+i, profile);
+        for (Integer i = 0; i < 12; i++) {
+            // 12 iterations should exceed 255 chars when ServiceResource.name == 'Service Resource Name'
+            User user = HOT_TestDataFactory.createUser('user' + i, profile);
             userList.add(user);
         }
         insert userList;
 
         List<ServiceResource> serviceResourceList = new List<ServiceResource>();
-        for (Integer i = 0; i < 12; i++) { 
+        for (Integer i = 0; i < 12; i++) {
             ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(userList.get(i).Id);
             serviceResourceList.add(serviceResource);
         }
         insert serviceResourceList;
 
         List<HOT_InterestedResource__c> interestedResourcesList = new List<HOT_InterestedResource__c>();
-        for (Integer i = 0; i < 12; i++) { 
-            interestedResourcesList.add(new HOT_InterestedResource__c(
-                ServiceResource__c = serviceResourceList.get(i).Id,
-                Status__c = 'Interested',
-                ServiceAppointment__c = serviceAppointment.Id
-            ));
+        for (Integer i = 0; i < 12; i++) {
+            interestedResourcesList.add(
+                new HOT_InterestedResource__c(
+                    ServiceResource__c = serviceResourceList.get(i).Id,
+                    Status__c = 'Interested',
+                    ServiceAppointment__c = serviceAppointment.Id
+                )
+            );
         }
 
         Test.startTest();
-            insert interestedResourcesList;
+        insert interestedResourcesList;
         Test.stopTest();
 
         serviceAppointment = [
@@ -159,6 +137,6 @@ private class HOT_InterestedResourceHandlerTest {
         ];
 
         String names = serviceAppointment.HOT_InterestedResourceNames__c;
-        System.assertEquals(names.substring(names.length()-3, names.length()), '...');
+        System.assertEquals(names.substring(names.length() - 3, names.length()), '...');
     }
 }
