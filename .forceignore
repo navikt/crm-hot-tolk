@@ -98,7 +98,7 @@
 **/classes/MyTriggers*
 
 # Translations - bug
-**/translations/*
+#**/translations/*
 
 # Standard fields and other items that are reportet as changes, but are not
 force-app/main/default/objects/ServiceAppointment/fields/EarliestStartTime.field-meta.xml
