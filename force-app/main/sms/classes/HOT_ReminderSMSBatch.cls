@@ -48,11 +48,11 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
         Boolean isLastIsNext = datetime_1600.getTime() - Datetime.now().getTime() < 3600000;
         Boolean isLast = datetime_1600.getTime() - Datetime.now().getTime() < 600000;
         Boolean isFriday = now.format('EEEE') == 'Friday';
-        if (isLastIsNext) {
+        if (isLast) {
+            Datetime nextDay = Datetime.newInstance(now.addDays(1).date(), Time.newInstance(9, 0, 0, 0));
+            minutes = (nextDay.getTime() - now.getTime()) / 60000;
+        } else if (isLastIsNext) {
             minutes = (datetime_1600.getTime() - now.getTime()) / 60000;
-        } else if (isLast) {
-            Datetime nexDay = Datetime.newInstance(now.addDays(1).date(), Time.newInstance(9, 0, 0, 0));
-            minutes = (nexDay.getTime() - now.getTime()) / 60000;
         } else if (isFriday) {
             Datetime monday = Datetime.newInstance(now.addDays(3).date(), Time.newInstance(9, 0, 0, 0));
             minutes = (monday.getTime() - now.getTime()) / 60000;
