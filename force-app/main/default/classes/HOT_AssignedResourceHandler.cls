@@ -89,30 +89,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (AssignedResource ar : (List<AssignedResource>) records) {
             serviceAppointmentIds.add(ar.ServiceAppointmentId);
         }
-        List<ServiceAppointment> serviceAppointments = [
-            SELECT
-                Id,
-                HOT_AssignedResourceId__c,
-                HOT_ServiceResource__c,
-                EarliestStartTime,
-                DueDate,
-                SchedStartTime,
-                SchedEndTime,
-                HOT_IsReleasedToFreelance__c,
-                HOT_IsEmployedInterpreter__c
-            FROM ServiceAppointment
-            WHERE Id IN :serviceAppointmentIds
-        ];
-
-        for (ServiceAppointment sa : serviceAppointments) {
-            sa.HOT_ServiceResource__c = null;
-            sa.HOT_AssignedResourceId__c = null;
-            sa.SchedStartTime = sa.EarliestStartTime;
-            sa.SchedEndTime = sa.DueDate;
-            sa.HOT_IsReleasedToFreelance__c = false;
-            sa.HOT_IsEmployedInterpreter__c = true;
+        if (serviceAppointmentIds.size() > 0) {
+            resetFieldsOnServiceAppointment(serviceAppointmentIds);
         }
-        update serviceAppointments;
+        createWageClaims((List<AssignedResource>) records);
     }
 
     List<HOT_InterestedResource__c> createInterestedResources(List<AssignedResource> records) {
@@ -305,5 +285,71 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 );
             }
         }
+    }
+
+    public static void resetFieldsOnServiceAppointment(List<Id> ServiceAppointmentIds) {
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT
+                Id,
+                HOT_AssignedResourceId__c,
+                HOT_ServiceResource__c,
+                EarliestStartTime,
+                DueDate,
+                SchedStartTime,
+                SchedEndTime,
+                HOT_IsReleasedToFreelance__c,
+                HOT_IsEmployedInterpreter__c
+            FROM ServiceAppointment
+            WHERE Id IN :serviceAppointmentIds
+        ];
+
+        for (ServiceAppointment sa : serviceAppointments) {
+            sa.HOT_ServiceResource__c = null;
+            sa.HOT_AssignedResourceId__c = null;
+            sa.SchedStartTime = sa.EarliestStartTime;
+            sa.SchedEndTime = sa.DueDate;
+            sa.HOT_IsReleasedToFreelance__c = false;
+            sa.HOT_IsEmployedInterpreter__c = true;
+        }
+        update serviceAppointments;
+    }
+
+    public static void createWageClaims(List<AssignedResource> assignedResources) {
+        List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
+        List<Id> serviceAppointmentIds = new List<Id>();
+        List<Id> serviceResourceIds = new List<Id>();
+        for (AssignedResource assignedResource : assignedResources) {
+            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+            serviceResourceIds.add(assignedResource.ServiceResourceId);
+        }
+
+        Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
+            [
+                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId
+                FROM ServiceAppointment
+                WHERE Id IN :serviceAppointmentIds
+            ]
+        );
+        Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
+            [SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource WHERE Id IN :serviceResourceIds]
+        );
+        for (AssignedResource assignedResource : assignedResources) {
+            if (
+                Date.today().addDays(14) >=
+                serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime.date() &&
+                serviceResources.get(assignedResource.ServiceResourceId).HOT_IsFreelanceInterpreter__c == true
+            ) {
+                HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
+                wageClaim.Type__c = 'Available on Wage';
+                wageClaim.Status__c = 'Open';
+                wageClaim.ServiceResource__c = assignedResource.ServiceResourceId;
+                wageClaim.ServiceAppointment__c = assignedResource.ServiceAppointmentId;
+                wageClaim.StartTime__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime;
+                wageClaim.EndTime__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedEndTime;
+                wageClaim.WorkType__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).WorkTypeId;
+                wageClaims.add(wageClaim);
+            }
+        }
+        insert wageClaims;
     }
 }
