@@ -568,6 +568,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>WorkOrder.HOT_IsReminderSMSSendt__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>WorkOrder.HOT_IsUpdateStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
