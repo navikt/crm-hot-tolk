@@ -318,9 +318,16 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void setCancelDate(List<WorkOrder> workorders) {
-        for (WorkOrder workorder : workorders) {
-            if (workorder.CanceledDate__c == null) {
-                workorder.CanceledDate__c = Date.today();
+        List<Id> requestIds = new List<Id>();
+        for (WorkOrder workOrder : workOrders) {
+            requestIds.add(workOrder.HOT_Request__c);
+        }
+        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
+            [SELECT Id, CanceledDate__c FROM HOT_Request__c WHERE Id IN :requestIds]
+        );
+        for (WorkOrder workOrder : workorders) {
+            if (workOrder.CanceledDate__c == null) {
+                workOrder.CanceledDate__c = requests.get(workOrder.HOT_Request__c).CanceledDate__c;
             }
         }
     }
