@@ -23,7 +23,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.15.0.LATEST"
+                    "versionNumber": "0.19.0.LATEST"
                 }
             ]
         },
@@ -47,7 +47,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.15.0.LATEST"
+                    "versionNumber": "0.19.0.LATEST"
                 }
             ]
         }

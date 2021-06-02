@@ -10,8 +10,8 @@ call sfdx force:package:install --package 04t2o000000yS5FAAU -r -k navcrm --wait
 echo "Installerer crm-platform-access-control ver. 0.67"
 call sfdx force:package:install --package 04t2o000000yS8EAAU -r -k navcrm --wait 10 --publishwait 10
 
-echo "Installerer crm-community-base ver. 0.15"
-call sfdx force:package:install --package 04t2o000000yRGfAAM -r -k navcrm --wait 10 --publishwait 10
+echo "Installerer crm-community-base ver. 0.19"
+call sfdx force:package:install --package 04t2o000000ySAjAAM -r -k navcrm --wait 10 --publishwait 10
 
 echo "Dytter kildekoden til scratch org'en"
 call sfdx force:source:push
