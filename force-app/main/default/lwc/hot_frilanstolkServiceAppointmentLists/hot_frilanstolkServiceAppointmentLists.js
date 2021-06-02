@@ -123,7 +123,16 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     }
 
     onWageClaim() {
-        const columnLabels = ["'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "''", "''", "''"];
+        const columnLabels = [
+            "'Start Tid'",
+            "'Slutt Tid'",
+            "'Oppdragstype'",
+            "'Region'",
+            "'Arbeidstype'",
+            "'Status'",
+            "''",
+            "''"
+        ];
         for (var i = 0; i < 10; i++) {
             if (i < columnLabels.length) {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
