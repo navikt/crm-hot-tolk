@@ -42,6 +42,12 @@ export default class Hot_wageClaimList extends LightningElement {
             sortable: true
         },
         {
+            label: 'Region',
+            fieldName: 'ServiceTerritoryName__c',
+            type: 'text',
+            sortable: true
+        },
+        {
             label: 'Tolkemetode',
             fieldName: 'WorkTypeName__c',
             type: 'text',
