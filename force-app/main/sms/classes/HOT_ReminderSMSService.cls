@@ -59,14 +59,14 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     private static String constructReminderMessage(WorkOrder workOrder, List<ServiceAppointment> serviceAppointments) {
-        String message = 'PÅMINNELSE:\nVi minner om tolkebestilling:\n';
+        String message = 'PÅMINNELSE\nVi minner om tolkebestilling:\n';
         message += 'Dato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate) + '\n';
         message += 'Tolk er: ';
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             message += serviceAppointment.HOT_ServiceResource__r.Name + ', ';
         }
         message = message.removeEnd(', ');
-        message += '\n\nGi beskjed dersom du har symptomer på Korona.\nFor mer informasjon tolkebestilling.nav.no\nDu kan ikke svare på denne meldingen.';
+        message += '\n\nGi beskjed dersom du har symptomer på Korona. For mer informasjon tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         return message;
     }
 

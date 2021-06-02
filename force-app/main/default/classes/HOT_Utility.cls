@@ -59,9 +59,19 @@ public without sharing class HOT_Utility {
     }
 
     @AuraEnabled(cacheable=true)
-    public static Account getPersonAccount() {
-        User user = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        return [SELECT Id, Name FROM Account WHERE Id = :User.AccountId];
+    public static Map<String, String> getPersonAccount() {
+        Map<String, String> personAccount = new Map<String, String>();
+        User user = [
+            SELECT AccountId, Account.Name, Account.CRM_NavEmployeeName__c, Account.CRM_Person__r.INT_IsNavEmployee__c
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+        ];
+        personAccount.put(
+            'Name',
+            user.Account.CRM_Person__r.INT_IsNavEmployee__c ? user.Account.CRM_NavEmployeeName__c : user.Account.Name
+        );
+        personAccount.put('Id', user.AccountId);
+        return personAccount;
     }
 
     @AuraEnabled(cacheable=true)
