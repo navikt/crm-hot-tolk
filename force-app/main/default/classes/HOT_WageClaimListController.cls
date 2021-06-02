@@ -2,7 +2,7 @@ public without sharing class HOT_WageClaimListController {
     @AuraEnabled(cacheable=true)
     public static List<HOT_WageClaim__c> getAvailableResources(Id recordId) {
         ServiceAppointment serviceAppointment = [
-            SELECT Id, SchedStartTime, SchedEndTime
+            SELECT Id, SchedStartTime, SchedEndTime, ServiceTerritoryId
             FROM ServiceAppointment
             WHERE Id = :recordId
         ];
@@ -12,6 +12,7 @@ public without sharing class HOT_WageClaimListController {
             WHERE
                 Type__c = 'Available on Wage'
                 AND Status__c = 'Open'
+                AND ServiceTerritory__c = :serviceAppointment.ServiceTerritoryId
                 AND ((StartTime__c > :serviceAppointment.SchedStartTime
                 AND StartTime__c < :serviceAppointment.SchedEndTime)
                 OR (EndTime__c > :serviceAppointment.SchedStartTime
@@ -25,7 +26,7 @@ public without sharing class HOT_WageClaimListController {
     @AuraEnabled(cacheable=true)
     public static List<HOT_WageClaim__c> getMyWageClaims() {
         List<HOT_WageClaim__c> wageClaims = [
-            SELECT Id, StartTime__c, EndTime__c, AssignmentType__c, WorkTypeName__c, Status__c
+            SELECT Id, StartTime__c, EndTime__c, AssignmentType__c, WorkTypeName__c, Status__c, ServiceTerritoryName__c
             FROM HOT_WageClaim__c
             WHERE
                 Type__c = 'Available on Wage'
