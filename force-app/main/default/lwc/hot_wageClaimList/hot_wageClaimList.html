@@ -1,0 +1,27 @@
+<template>
+    <div class="main-content">
+        <div class="right-content">
+            <lightning-combobox
+                class="mobile-only"
+                name="mobileSorting"
+                label="Sorter etter"
+                value={mobileSortingDefaultValue}
+                options={sortingOptions}
+                onchange={handleMobileSorting}
+            >
+            </lightning-combobox>
+        </div>
+        <lightning-datatable
+            key-field="Id"
+            data={wageClaims}
+            columns={columns}
+            hide-checkbox-column="true"
+            default-sort-direction={defaultSortDirection}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={onHandleSort}
+            onrowaction={handleRowAction}
+        >
+        </lightning-datatable>
+    </div>
+</template>
