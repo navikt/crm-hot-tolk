@@ -34,6 +34,9 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
             resourceAbsence.ResourceId = wageClaim.ServiceResource__c;
             resourceAbsence.Type = 'Available on Wage';
             resourceAbsence.HOT_WageClaim__c = wageClaim.Id;
+            if (resourceAbsence.get('fsl__gantt_color__c') != null) {
+                resourceAbsence.put('FSL__Gantt_Color__c', '#00ff00');
+            }
             resourceAbsences.add(resourceAbsence);
         }
         insert resourceAbsences;
