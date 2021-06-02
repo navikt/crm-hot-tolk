@@ -741,6 +741,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>WorkOrder.CanceledDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>WorkOrder.CaseId</field>
         <readable>true</readable>
     </fieldPermissions>
