@@ -3,7 +3,9 @@
     <label>Type</label>
     <name>Type__c</name>
     <picklistValues>
-        <masterLabel>Available for Wage</masterLabel>
-        <translation><!-- Available for Wage --></translation>
+        <masterLabel>Available on Wage</masterLabel>
+        <translation>
+            <!-- Available on Wage -->
+        </translation>
     </picklistValues>
 </CustomFieldTranslation>

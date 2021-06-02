@@ -12,9 +12,9 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Available for Wage</fullName>
+                <fullName>Available on Wage</fullName>
                 <default>true</default>
-                <label>Available for Wage</label>
+                <label>Available on Wage</label>
             </value>
         </valueSetDefinition>
     </valueSet>
