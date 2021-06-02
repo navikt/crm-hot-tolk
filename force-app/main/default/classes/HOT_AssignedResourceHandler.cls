@@ -325,7 +325,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
 
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId
+                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
@@ -347,6 +347,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 wageClaim.StartTime__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime;
                 wageClaim.EndTime__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedEndTime;
                 wageClaim.WorkType__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).WorkTypeId;
+                wageClaim.ServiceTerritory__c = serviceAppointments.get(assignedResource.ServiceAppointmentId)
+                    .ServiceTerritoryId;
                 wageClaims.add(wageClaim);
             }
         }
