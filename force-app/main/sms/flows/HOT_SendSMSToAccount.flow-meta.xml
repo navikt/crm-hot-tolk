@@ -148,7 +148,7 @@
             <name>Message</name>
             <fieldText>Melding</fieldText>
             <fieldType>LargeTextArea</fieldType>
-            <helpText>&lt;p&gt;Ingen sensitive opplysninger. Meldingen vil bli sendt til nummeret brukeren har registrert i kontakt og resservasjonsregisteret.&lt;/p&gt;</helpText>
+            <helpText>&lt;p&gt;Ikke skriv sensitive opplysninger! Meldingen vil bli sendt til nummeret brukeren har registrert i kontakt og reservasjonsregisteret.&lt;/p&gt;</helpText>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
