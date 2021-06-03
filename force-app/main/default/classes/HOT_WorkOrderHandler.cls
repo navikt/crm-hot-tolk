@@ -326,7 +326,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             [SELECT Id, CanceledDate__c FROM HOT_Request__c WHERE Id IN :requestIds]
         );
         for (WorkOrder workOrder : workorders) {
-            if (workOrder.CanceledDate__c == null) {
+            if (workOrder.CanceledDate__c != null) {
                 workOrder.CanceledDate__c = requests.get(workOrder.HOT_Request__c).CanceledDate__c;
             }
         }
