@@ -26,6 +26,7 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
     }
 
     public static void createResourceAbsences(List<HOT_WageClaim__c> wageClaims) {
+        Set<String> resourceAbsenceFields = Schema.SObjectType.ResourceAbsence.fields.getMap().keySet();
         List<ResourceAbsence> resourceAbsences = new List<ResourceAbsence>();
         for (HOT_WageClaim__c wageClaim : wageClaims) {
             ResourceAbsence resourceAbsence = new ResourceAbsence();
@@ -34,7 +35,7 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
             resourceAbsence.ResourceId = wageClaim.ServiceResource__c;
             resourceAbsence.Type = 'Available on Wage';
             resourceAbsence.HOT_WageClaim__c = wageClaim.Id;
-            if (resourceAbsence.get('fsl__gantt_color__c') != null) {
+            if (resourceAbsenceFields.contains('fsl__gantt_color__c')) {
                 resourceAbsence.put('FSL__Gantt_Color__c', '#00ff00');
             }
             resourceAbsences.add(resourceAbsence);
