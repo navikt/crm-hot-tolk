@@ -328,7 +328,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         for (WorkOrder workOrder : workorders) {
             if (requests.get(workOrder.HOT_Request__c).CanceledDate__c != null) {
                 workOrder.CanceledDate__c = requests.get(workOrder.HOT_Request__c).CanceledDate__c;
-            } else {
+            } else if (workOrder.CanceledDate__c != null) {
                 workOrder.CanceledDate__c = Date.today();
             }
         }
