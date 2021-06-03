@@ -152,7 +152,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         if (result.data) {
             this.allRequests = this.distributeRequests(result.data);
             this.filterRequests();
-            this.showHideInactives();
+            //this.showHideInactives();
             this.error = undefined;
             //console.log(JSON.stringify(this.allRequests));
             var requestIds = [];
@@ -185,26 +185,46 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         return this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
     }
 
+    filterActiveRequests(tempRequests, i) {
+        if (
+            this.allRequests[i].ExternalRequestStatus__c == 'Åpen' ||
+            this.allRequests[i].ExternalRequestStatus__c == 'Under behandling' ||
+            this.allRequests[i].ExternalRequestStatus__c == 'Du har fått tolk' ||
+            this.allRequests[i].ExternalRequestStatus__c == 'Serieoppdrag' ||
+            this.allRequests[i].ExternalRequestStatus__c == 'Pågår'
+        ) {
+            tempRequests.push(this.allRequests[i]);
+        }
+    }
+
     filterRequests() {
         var tempRequests = [];
+        let pickListValue = this.requestFilterValue;
         for (var i = 0; i < this.allRequests.length; i++) {
-            if (
-                this.allRequests[i].ExternalRequestStatus__c != 'Avlyst' &&
-                this.allRequests[i].ExternalRequestStatus__c != 'Dekket' &&
-                this.allRequests[i].ExternalRequestStatus__c != 'Udekket' &&
-                this.allRequests[i].ExternalRequestStatus__c != 'Ferdig'
+            if (pickListValue == 'Aktive') {
+                this.filterActiveRequests(tempRequests, i);
+            } else if (this.allRequests[i].ExternalRequestStatus__c == 'Avlyst' && pickListValue == 'Avlyst') {
+                tempRequests.push(this.allRequests[i]);
+            } else if (this.allRequests[i].ExternalRequestStatus__c == 'Ferdig' && pickListValue == 'Ferdig') {
+                tempRequests.push(this.allRequests[i]);
+            } else if (
+                this.allRequests[i].ExternalRequestStatus__c == 'Ikke ledig tolk' &&
+                pickListValue == 'Ikke ledig tolk'
             ) {
+                tempRequests.push(this.allRequests[i]);
+            } else if (this.allRequests[i].ExternalRequestStatus__c == 'Avslått' && pickListValue == 'Avslått') {
                 tempRequests.push(this.allRequests[i]);
             }
         }
         this.requests = tempRequests;
     }
+
     @track isMyRequests = true;
     handleRequestType(event) {
         this.isMyRequests = event.detail.value == 'my';
         this.allRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
         this.filterRequests();
-        this.showHideInactives();
+        //this.showHideInactives();
         let tempColumns = [...this.columns];
         let tempColumnLabels = [...this.columnLabels];
         if (this.isMyRequests) {
@@ -231,7 +251,15 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.columnLabels = [...tempColumnLabels];
     }
 
-    @track checked = false;
+    @track requestFilterValue = 'Aktive';
+    handleRequestFilter(event) {
+        // Get checklist value here and send to filter
+        this.requestFilterValue = event.target.value;
+        console.log(event.target.value);
+        this.filterRequests();
+    }
+
+    /*@track checked = false;
     handleChecked(event) {
         this.checked = event.detail.checked;
         this.showHideInactives();
@@ -243,7 +271,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         } else {
             this.filterRequests();
         }
-    }
+    }*/
 
     @track defaultSortDirection = 'desc';
     @track sortDirection = 'desc';
@@ -258,13 +286,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.sortDirection = value.sortDirection;
         this.sortedBy = value.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
-        this.showHideInactives();
+        //this.showHideInactives();
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
-        this.showHideInactives();
+        //this.showHideInactives();
     }
 
     handleRowAction(event) {

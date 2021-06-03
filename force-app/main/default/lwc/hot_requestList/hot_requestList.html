@@ -27,6 +27,21 @@
             </lightning-input>
             <br />
 
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">Filtrering</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" onchange={handleRequestFilter}>
+                            <option value="Aktive">Aktive</option>
+                            <option value="Avlyst">Avlyst</option>
+                            <option value="Ferdig">Ferdig</option>
+                            <option value="Ikke ledig tolk">Ikke ledig tolk</option>
+                            <option value="Avslått">Avslått</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <lightning-combobox
                 class="mobile-only"
                 name="mobileSorting"
