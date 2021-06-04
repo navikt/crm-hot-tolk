@@ -206,15 +206,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     @track picklistValue = 'Aktive';
     handlePicklist(event) {
-        console.log('event: ' + event);
-        console.log(JSON.stringify(event));
-        this.picklistValue = event.detail.value;
+        this.picklistValue = event.detail;
         this.filterRequests();
     }
     filterRequests() {
         var tempRequests = [];
         let pickListValue = this.picklistValue;
-        console.log(pickListValue);
         for (var i = 0; i < this.allRequests.length; i++) {
             if (pickListValue == 'Aktive') {
                 this.filterActiveRequests(tempRequests, i);
