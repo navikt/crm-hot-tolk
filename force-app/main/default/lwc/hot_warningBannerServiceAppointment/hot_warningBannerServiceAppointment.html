@@ -21,7 +21,8 @@
             </lightning-icon>
             <h2>
                 Frilanstolker er ledig på lønn i tidsrommet for dette oppdraget.
-                <a if:false={isSeeMore} onclick={showAvailableInterpreters}>se mer</a>
+                <a if:false={isSeeMore} onclick={toggleSeeMore}> Se mer.</a>
+                <a if:true={isSeeMore} onclick={toggleSeeMore}> Se mindre.</a>
                 <div if:true={isSeeMore} style="display: flex; flex-direction: column">
                     <template iterator:it={wageClaims}
                         ><a key={it.value.Id} href={it.value.Link}
