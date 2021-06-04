@@ -17,6 +17,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     rerenderCallback() {
         refreshApex(this.wiredRequestsResult);
     }
+    @track choices = [
+        { name: 'Aktive', label: 'Aktive' },
+        { name: 'Avlyst', label: 'Avlyst' },
+        { name: 'Ikke ledig tolk', label: 'Ikke ledig tolk' },
+        { name: 'Avslått', label: 'Avslått' },
+        { name: 'Alle', label: 'Alle' }
+    ];
     @track isProd;
     @track error;
     @wire(isProdFunction)
@@ -197,9 +204,17 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
     }
 
+    @track picklistValue = 'Aktive';
+    handlePicklist(event) {
+        console.log('event: ' + event);
+        console.log(JSON.stringify(event));
+        this.picklistValue = event.detail.value;
+        this.filterRequests();
+    }
     filterRequests() {
         var tempRequests = [];
-        let pickListValue = this.requestFilterValue;
+        let pickListValue = this.picklistValue;
+        console.log(pickListValue);
         for (var i = 0; i < this.allRequests.length; i++) {
             if (pickListValue == 'Aktive') {
                 this.filterActiveRequests(tempRequests, i);
@@ -214,6 +229,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 tempRequests.push(this.allRequests[i]);
             } else if (this.allRequests[i].ExternalRequestStatus__c == 'Avslått' && pickListValue == 'Avslått') {
                 tempRequests.push(this.allRequests[i]);
+            } else if (pickListValue == 'Alle') {
+                tempRequests = this.allRequests;
             }
         }
         this.requests = tempRequests;
@@ -249,14 +266,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
         this.columns = [...tempColumns];
         this.columnLabels = [...tempColumnLabels];
-    }
-
-    @track requestFilterValue = 'Aktive';
-    handleRequestFilter(event) {
-        // Get checklist value here and send to filter
-        this.requestFilterValue = event.target.value;
-        console.log(event.target.value);
-        this.filterRequests();
     }
 
     /*@track checked = false;
