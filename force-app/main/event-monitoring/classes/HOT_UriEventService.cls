@@ -2,7 +2,7 @@
 convert UriEvent to Log__c record with lookup to Person Ident
 Make it possible for NAV's "snokelogg" to get log elemnts
 */
-public with sharing class UriEventService {
+public with sharing class HOT_UriEventService {
     public static void addPersonRelatedRecordsToLog(List<UriEvent> uriEvents) {
         List<Log__c> logs = new List<Log__c>();
 

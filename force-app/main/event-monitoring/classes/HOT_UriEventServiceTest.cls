@@ -1,5 +1,5 @@
 @IsTest
-private class UriEventServiceTest {
+private class HOT_UriEventServiceTest {
     @TestSetup
     static void makeData() {
         TestDataFactory.getPublicGroup('HMS Agder', 'group_47001');
@@ -20,7 +20,7 @@ private class UriEventServiceTest {
         );
 
         Test.startTest();
-        UriEventService.addPersonRelatedRecordsToLog(uriEvents);
+        HOT_UriEventService.addPersonRelatedRecordsToLog(uriEvents);
         Test.stopTest();
 
         List<Log__c> logs = [
