@@ -44,8 +44,8 @@ export default class Hot_warningBannerServiceAppointment extends LightningElemen
     }
 
     @track isSeeMore = false;
-    showAvailableInterpreters() {
-        this.isSeeMore = true;
+    toggleSeeMore() {
+        this.isSeeMore = !this.isSeeMore;
     }
 
     formatTime(number) {
