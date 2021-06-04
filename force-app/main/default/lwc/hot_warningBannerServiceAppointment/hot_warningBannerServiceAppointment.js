@@ -30,6 +30,7 @@ export default class Hot_warningBannerServiceAppointment extends LightningElemen
                     Id: record.Id,
                     ServiceResource__c: record.ServiceResource__c,
                     ServiceResourceName: record.ServiceResource__r.Name,
+                    ServiceTerritory: record.ServiceResource__r.HOT_ServiceTerritory__r.Name,
                     StartTime: this.formatTime(startTime.getHours()) + ':' + this.formatTime(startTime.getMinutes()),
                     EndTime: this.formatTime(endTime.getHours()) + ':' + this.formatTime(endTime.getMinutes()),
                     Link: '/lightning/r/' + record.ServiceResource__c + '/view'
