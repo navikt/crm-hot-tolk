@@ -3,14 +3,14 @@
 # Oppretter scratch org
 sfdx force:org:create -f ~/Developer/crm-hot/config/project-scratch-def.json --setalias $1 --durationdays $2 --setdefaultusername --json --loglevel fatal  --wait 10
 
-# Installer crm-platform-base ver. 0.93
-sfdx force:package:install --package 04t2o000000yS5ZAAU -r -k navcrm --wait 10 --publishwait 10
+# Installer crm-platform-base ver. 0.96
+sfdx force:package:install --package 04t2o000000ySERAA2 -r -k navcrm --wait 10 --publishwait 10
 
 # Installer crm-platform-integration ver. 0.44
 sfdx force:package:install --package 04t2o000000yS5FAAU -r -k navcrm --wait 10 --publishwait 10
 
-# Installer crm-platform-access-control ver. 0.67
-sfdx force:package:install --package 04t2o000000yS8EAAU -r -k navcrm --wait 10 --publishwait 10
+# Installer crm-platform-access-control ver. 0.68
+sfdx force:package:install --package 04t2o000000ySEMAA2 -r -k navcrm --wait 10 --publishwait 10
 
 # Installer crm-community-base ver. 0.19
 sfdx force:package:install --package 04t2o000000ySAjAAM -r -k navcrm --wait 10 --publishwait 10
