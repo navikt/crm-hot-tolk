@@ -25,7 +25,8 @@
                 <div if:true={isSeeMore} style="display: flex; flex-direction: column">
                     <template iterator:it={wageClaims}
                         ><a key={it.value.Id} href={it.value.Link}
-                            >{it.value.ServiceResourceName}: {it.value.StartTime} - {it.value.EndTime}</a
+                            >{it.value.ServiceResourceName}, {it.value.ServiceTerritory}: {it.value.StartTime} -
+                            {it.value.EndTime}</a
                         >
                     </template>
                 </div>
