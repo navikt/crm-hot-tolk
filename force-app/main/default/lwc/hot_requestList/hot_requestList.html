@@ -37,7 +37,7 @@
             >
             </lightning-combobox>
 
-            <lightning-radio-group
+            <!--_<lightning-radio-group
                 label="Type bestilling"
                 class="horizontal"
                 name="radioGroup"
@@ -45,8 +45,17 @@
                 value="my"
                 type="radio"
                 onchange={handleRequestType}
-            ></lightning-radio-group>
-            <c-picklist master-label="Filtrering" choices={choices} onpicklistvaluechange={handlePicklist}></c-picklist>
+            ></lightning-radio-group>-->
+            <br /><br />
+            <c-picklist
+                master-label="Filtrering"
+                choices={choices}
+                onpicklistvaluechange={handlePicklist}
+                disabled={selectDisable}
+                multiple={selectMultiple}
+                required={selectRequired}
+                size={selectSize}
+            ></c-picklist>
         </div>
         <p style="align-self: flex-start" class="typo-normal">
             Merk: For serieoppdrag vises start- og sluttid for den første forekomsten. For å se alle tidene under en
