@@ -262,7 +262,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     public static void setCancelDate(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
-            request.CanceledDate__c = Date.today();
+            if (request.CanceledDate__c == null) {
+                request.CanceledDate__c = Date.today();
+            }
         }
     }
     public static void setStatusDefault(List<HOT_Request__c> requests) {
