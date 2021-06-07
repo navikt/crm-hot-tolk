@@ -214,7 +214,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track picklistValue = 'Active';
     handlePicklist(event) {
         this.picklistValue = event.detail;
-        this.filterRequests();
+        if (this.picklistValue == 'Others') {
+            this.handleRequestType(false);
+        } else if (this.picklistValue == 'All') {
+            this.handleRequestType(true);
+        } else {
+            this.filterRequests();
+        }
     }
     filterRequests() {
         var tempRequests = [];
@@ -234,10 +240,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             } else if (this.allRequests[i].ExternalRequestStatus__c == 'Avslått' && pickListValue == 'Denied') {
                 tempRequests.push(this.allRequests[i]);
             } else if (pickListValue == 'All') {
-                //this.handleRequestType();
                 tempRequests = this.allMyRequests;
             } else if (pickListValue == 'Others') {
-                //this.handleRequestType();
                 tempRequests = this.allOrderedRequests;
             }
         }
@@ -245,9 +249,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     @track isMyRequests = true;
-    handleRequestType() {
+    handleRequestType(myRequests) {
+        this.filterRequests();
         let tempColumns = [...this.columns];
         let tempColumnLabels = [...this.columnLabels];
+        this.isMyRequests = myRequests;
         if (this.isMyRequests) {
             tempColumns.shift();
             tempColumnLabels.shift();
