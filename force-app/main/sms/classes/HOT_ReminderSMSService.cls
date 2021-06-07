@@ -67,6 +67,7 @@ public without sharing class HOT_ReminderSMSService {
         }
         message = message.removeEnd(', ');
         message += '\n\nGi beskjed dersom du har symptomer på Korona. For mer informasjon tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\nMvh NAV Tolketjeneste';
         return message;
     }
 
