@@ -20,7 +20,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track choices = [
         { name: 'Active', label: 'Aktive', selected: true },
         { name: 'Completed', label: 'Ferdig' },
-        { name: 'Cancelled', label: 'Avlyst' },
+        { name: 'Canceled', label: 'Avlyst' },
         { name: 'No interpreter available', label: 'Ikke ledig tolk' },
         { name: 'Denied', label: 'Avslått' },
         { name: 'All', label: 'Alle mine bestillinger' },
@@ -215,11 +215,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     handlePicklist(event) {
         this.picklistValue = event.detail;
         if (this.picklistValue == 'Others') {
+            this.currentChoiceOthers = true;
             this.handleRequestType(false);
         } else if (this.picklistValue == 'All') {
+            this.currentChoiceOthers = false;
             this.handleRequestType(true);
         } else {
-            this.filterRequests();
+            this.currentChoiceOthers = false;
+            this.handleRequestType(true);
         }
     }
     filterRequests() {
@@ -228,7 +231,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         for (var i = 0; i < this.allRequests.length; i++) {
             if (pickListValue == 'Active') {
                 this.filterActiveRequests(tempRequests, i);
-            } else if (this.allRequests[i].ExternalRequestStatus__c == 'Avlyst' && pickListValue == 'Cancelled') {
+            } else if (this.allRequests[i].ExternalRequestStatus__c == 'Avlyst' && pickListValue == 'Canceled') {
                 tempRequests.push(this.allRequests[i]);
             } else if (this.allRequests[i].ExternalRequestStatus__c == 'Ferdig' && pickListValue == 'Completed') {
                 tempRequests.push(this.allRequests[i]);
@@ -249,16 +252,20 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     @track isMyRequests = true;
-    handleRequestType(myRequests) {
+    @track previousChoiceOthers = false;
+    @track currentChoiceOthers = false;
+    handleRequestType(isMyReq) {
         this.filterRequests();
         let tempColumns = [...this.columns];
         let tempColumnLabels = [...this.columnLabels];
-        this.isMyRequests = myRequests;
-        if (this.isMyRequests) {
+        this.isMyRequests = isMyReq;
+
+        if (this.isMyRequests && this.previousChoiceOthers) {
             tempColumns.shift();
             tempColumnLabels.shift();
             tempColumnLabels.push("''");
-        } else {
+            this.previousChoiceOthers = false;
+        } else if (this.currentChoiceOthers && !this.previousChoiceOthers) {
             tempColumns.unshift({
                 label: 'Bruker',
                 fieldName: 'UserName__c',
@@ -266,6 +273,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 sortable: true
             });
             tempColumnLabels.unshift("'Bruker'");
+            this.previousChoiceOthers = true;
         }
         for (var i = 0; i < 10; i++) {
             if (i < tempColumnLabels.length) {
