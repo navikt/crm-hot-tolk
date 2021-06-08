@@ -109,7 +109,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             typeAttributes: { rowActions: this.getRowActions }
         }
     ];
-    columnLabels = [
+    mobileColumns = [
         "'Start tid'",
         "'Slutt tid'",
         "'Bestilling'",
@@ -229,18 +229,16 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         var tempRequests = [];
         let pickListValue = this.picklistValue;
         for (var i = 0; i < this.allRequests.length; i++) {
+            let status = this.allRequests[i].ExternalRequestStatus__c;
             if (pickListValue == 'Active') {
                 this.filterActiveRequests(tempRequests, i);
-            } else if (this.allRequests[i].ExternalRequestStatus__c == 'Avlyst' && pickListValue == 'Canceled') {
+            } else if (status == 'Avlyst' && pickListValue == 'Canceled') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (this.allRequests[i].ExternalRequestStatus__c == 'Ferdig' && pickListValue == 'Completed') {
+            } else if (status == 'Ferdig' && pickListValue == 'Completed') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (
-                this.allRequests[i].ExternalRequestStatus__c == 'Ikke ledig tolk' &&
-                pickListValue == 'No interpreter available'
-            ) {
+            } else if (status == 'Ikke ledig tolk' && pickListValue == 'No interpreter available') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (this.allRequests[i].ExternalRequestStatus__c == 'Avslått' && pickListValue == 'Denied') {
+            } else if (status == 'Avslått' && pickListValue == 'Denied') {
                 tempRequests.push(this.allRequests[i]);
             } else if (pickListValue == 'All') {
                 tempRequests = this.allMyRequests;
@@ -257,13 +255,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     handleRequestType(isMyReq) {
         this.filterRequests();
         let tempColumns = [...this.columns];
-        let tempColumnLabels = [...this.columnLabels];
+        let tempMobileColumns = [...this.mobileColumns];
         this.isMyRequests = isMyReq;
 
         if (this.isMyRequests && this.previousChoiceOthers) {
             tempColumns.shift();
-            tempColumnLabels.shift();
-            tempColumnLabels.push("''");
+            tempMobileColumns.shift();
+            tempMobileColumns.push("''");
             this.previousChoiceOthers = false;
         } else if (this.currentChoiceOthers && !this.previousChoiceOthers) {
             tempColumns.unshift({
@@ -272,18 +270,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 type: 'text',
                 sortable: true
             });
-            tempColumnLabels.unshift("'Bruker'");
+            tempMobileColumns.unshift("'Bruker'");
             this.previousChoiceOthers = true;
         }
         for (var i = 0; i < 10; i++) {
-            if (i < tempColumnLabels.length) {
-                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), tempColumnLabels[i]);
+            if (i < tempMobileColumns.length) {
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), tempMobileColumns[i]);
             } else {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
         }
         this.columns = [...tempColumns];
-        this.columnLabels = [...tempColumnLabels];
+        this.mobileColumns = [...tempMobileColumns];
     }
 
     @track defaultSortDirection = 'desc';
@@ -331,8 +329,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
     connectedCallback() {
         for (var i = 0; i < 10; i++) {
-            if (i < this.columnLabels.length) {
-                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+            if (i < this.mobileColumns.length) {
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.mobileColumns[i]);
             } else {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
