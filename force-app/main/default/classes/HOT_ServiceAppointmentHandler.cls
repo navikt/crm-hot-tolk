@@ -159,9 +159,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 (serviceAppointment.Status == null ||
                 serviceAppointment.Status == 'None') ||
                 (serviceAppointment.HOT_IsScreenInterpreterNew__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsScreenInterpreterNew__c') ||
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsScreenInterpreterNew__c')) ||
                 triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Scheduled' &&
-                serviceAppointment.Status == 'Dispatched')
+                serviceAppointment.Status == 'Dispatched'
             ) {
                 SAnotifyResource.add(serviceAppointment);
             }
