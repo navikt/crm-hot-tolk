@@ -11,6 +11,22 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
+            if (
+                serviceAppointment.HOT_AssignedResourceId__c != null &&
+                serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c
+            ) {
+                Set<String> recipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
+
+                // Varsel ved tildelt tolk
+                if (
+                    oldServiceAppointment.Status != serviceAppointment.Status &&
+                    serviceAppointment.Status == 'Dispatched' &&
+                    serviceAppointment.HOT_CanceledByInterpreter__c == false
+                ) {
+                    resourceAdded(notificationType, serviceAppointment, recipients);
+                }
+            }
+
             if (oldServiceAppointment.HOT_AssignedResourceId__c != null) {
                 Set<String> recipients = new Set<String>{ oldServiceAppointment.HOT_AssignedResourceId__c };
 
@@ -212,6 +228,31 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' den ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
             ' har fått ny adresse.'
+        );
+        notification.setNotificationTypeId(notificationType.Id);
+        notification.setTargetId(serviceAppointment.Id);
+
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+    }
+
+    public static void resourceAdded(
+        CustomNotificationType notificationType,
+        ServiceAppointment serviceAppointment,
+        Set<String> recipients
+    ) {
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(
+            serviceAppointment.AppointmentNumber +
+            ' - ' +
+            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+            ' - ' +
+            'Du er tildelt oppdraget'
+        );
+        notification.setBody(
+            'Du er tildelt oppdraget ' +
+            serviceAppointment.AppointmentNumber +
+            ' den ' +
+            serviceAppointment.EarliestStartTime?.format('d.M.yyyy')
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
