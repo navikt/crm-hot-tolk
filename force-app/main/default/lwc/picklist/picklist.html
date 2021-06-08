@@ -1,29 +1,23 @@
 <template>
-    <div class="slds-form-element">
-        <label class="slds-form-element__label">{masterLabel}</label>
-        <div class="slds-form-element__control">
-            <div class="slds-select_container">
-                <select
-                    class="slds-select select-element"
-                    name="picklist"
-                    onchange={handleChoiceMade}
-                    disabled={disabled}
-                    multiple={multiple}
-                    required={required}
-                    size={size}
-                >
-                    <template for:each={choices} for:item="choice">
-                        <option
-                            key={choice.name}
-                            value={choice.name}
-                            disabled={choice.disabled}
-                            selected={choice.selected}
-                        >
-                            {choice.label}
-                        </option>
-                    </template>
-                </select>
-            </div>
+    <div class="skjemaelement">
+        <label class="skjemaelement__label" for="picklist">{masterLabel}</label>
+        <div class="selectContainer input--fullbredde">
+            <select
+                id="picklist"
+                class="skjemaelement__input"
+                name="picklist"
+                onchange={handleChoiceMade}
+                disabled={disabled}
+                multiple={multiple}
+                required={required}
+                size={size}
+            >
+                <template for:each={choices} for:item="choice">
+                    <option key={choice.name} value={choice.name} disabled={choice.disabled} selected={choice.selected}>
+                        {choice.label}
+                    </option>
+                </template>
+            </select>
         </div>
     </div>
 </template>

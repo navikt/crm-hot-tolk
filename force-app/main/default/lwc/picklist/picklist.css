@@ -1,0 +1,171 @@
+div {
+    display: block;
+}
+section.sub-form {
+    margin-bottom: 4rem;
+}
+.hidden {
+    display: none;
+}
+.skjemaelement,
+.skjemaelement__label {
+    font-family: Source Sans Pro, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.375rem;
+}
+.skjemaelement {
+    font-weight: 400;
+    position: relative;
+}
+
+.skjemaelement__label {
+    font-weight: 600;
+    display: block;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+}
+
+*,
+:after,
+:before {
+    box-sizing: border-box;
+}
+
+label {
+    cursor: default;
+}
+.input--fullbredde {
+    width: 100%;
+}
+.selectContainer {
+    display: inline-block;
+}
+.selectContainer,
+.textarea__container {
+    position: relative;
+}
+
+.selectContainer select {
+    padding-right: 1.5em;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+}
+.skjemaelement__input {
+    font-family: Source Sans Pro, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    -webkit-appearance: none;
+    appearance: none;
+    padding: 0.5rem;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #6a6a6a;
+    box-sizing: border-box;
+    line-height: 1.375rem;
+}
+button,
+select {
+    text-transform: none;
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+}
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+select:not(:-internal-list-box) {
+    overflow: visible !important;
+}
+
+select {
+    -webkit-writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    color: -internal-light-dark(black, white);
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    appearance: auto;
+    box-sizing: border-box;
+    align-items: center;
+    white-space: pre;
+    -webkit-rtl-ordering: logical;
+    background-color: -internal-light-dark(rgb(255, 255, 255), rgb(59, 59, 59));
+    cursor: default;
+    margin: 0em;
+    font: 400 13.3333px Arial;
+    border-radius: 0px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+    border-image: initial;
+}
+
+.selectContainer:after,
+.selectContainer:before {
+    pointer-events: none;
+    content: '';
+    background: #262626;
+    height: 2px;
+    width: 10px;
+    border-radius: 10px;
+    right: 0.75rem;
+    top: 50%;
+    z-index: 4;
+    position: absolute;
+}
+.selectContainer:before {
+    transform: translateX(3px) rotate(-45deg);
+}
+*,
+:after,
+:before {
+    box-sizing: border-box;
+}
+
+.selectContainer:after {
+    transform: translateX(-3px) rotate(45deg);
+}
+.selectContainer:after,
+.selectContainer:before {
+    pointer-events: none;
+    content: '';
+    background: #262626;
+    height: 2px;
+    width: 10px;
+    border-radius: 10px;
+    right: 0.75rem;
+    top: 50%;
+    z-index: 4;
+    position: absolute;
+}
+*,
+:after,
+:before {
+    box-sizing: border-box;
+}
+
+.skjemaelement__input:hover {
+    border-color: #0067c5;
+}
+.skjemaelement__input:focus {
+    outline: 0;
+    box-shadow: 0 0 0 3px #00347d;
+}
