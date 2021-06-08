@@ -40,7 +40,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 ServiceAppointment.HOT_PreferredResource__c &&
                 serviceAppointment.HOT_PreferredResource__c != null &&
                 serviceAppointment.HOT_ServiceResource__c == null
-
             ) {
                 updatedServiceAppointments.add(serviceAppointment);
             }
@@ -147,6 +146,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 //time change
                 //address change
                 //removed resource
+                //changed resource
                 serviceAppointment.Status == 'Canceled' &&
                 triggerOldMap.get(serviceAppointment.Id).get('Status') != 'Canceled' ||
                 (serviceAppointment.SchedStartTime != triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') ||
@@ -159,7 +159,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 (serviceAppointment.Status == null ||
                 serviceAppointment.Status == 'None') ||
                 (serviceAppointment.HOT_IsScreenInterpreterNew__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsScreenInterpreterNew__c'))
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsScreenInterpreterNew__c') ||
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Scheduled' &&
+                serviceAppointment.Status == 'Dispatched')
             ) {
                 SAnotifyResource.add(serviceAppointment);
             }
