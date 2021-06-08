@@ -24,7 +24,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         { name: 'No interpreter available', label: 'Ikke ledig tolk' },
         { name: 'Denied', label: 'Avslått' },
         { name: 'All', label: 'Alle mine bestillinger' },
-        { name: 'Others', label: 'Bestillinger på vegne av andre' }
+        { name: 'Others', label: 'Alle bestillinger på vegne av andre' }
     ];
     @track selectDisable = false;
     @track selectMultiple = false;
@@ -161,14 +161,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @wire(getRequestList)
     async wiredRequest(result) {
         console.log('wiredRequests');
-        //console.log(JSON.stringify(result));
         this.wiredRequestsResult = result;
         if (result.data) {
             this.allRequests = this.distributeRequests(result.data);
             this.filterRequests();
-            //this.showHideInactives();
             this.error = undefined;
-            //console.log(JSON.stringify(this.allRequests));
             var requestIds = [];
             for (var request of result.data) {
                 requestIds.push(request.Id);
@@ -176,7 +173,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             this.requestAssignedResources = await getAssignedResources({
                 requestIds
             });
-            //console.log(this.requestAssignedResources);
         } else if (result.error) {
             this.error = result.error;
             this.allRequests = undefined;
