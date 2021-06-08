@@ -41,7 +41,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @wire(getPersonAccount)
     wiredGetRecord({ error, data }) {
         if (data) {
-            this.userRecord.AccountId = data.Id;
+            this.userRecord.AccountId = data.AccountId;
         }
     }
 

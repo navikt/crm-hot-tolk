@@ -3,6 +3,7 @@
     <fullName>IsReminderSMS__c</fullName>
     <defaultValue>true</defaultValue>
     <externalId>false</externalId>
+    <inlineHelpText>Når denne er huket av, vil bruker få påminnelse om tolkeoppdraget dagen før det finner sted. Om bruker har reservasjon mot sms-påminnelse, se person detaljer, vil de ikke motta denne påminnelsen.</inlineHelpText>
     <label>Reminder SMS?</label>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
