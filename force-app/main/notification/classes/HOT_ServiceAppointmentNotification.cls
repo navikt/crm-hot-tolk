@@ -12,19 +12,14 @@ public without sharing class HOT_ServiceAppointmentNotification {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
             if (
-                serviceAppointment.HOT_AssignedResourceId__c != null &&
-                serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c
+                serviceAppointment.HOT_AssignedResourceId__c != null ||
+                oldServiceAppointment.Status != serviceAppointment.Status &&
+                serviceAppointment.Status == 'Dispatched'
             ) {
                 Set<String> recipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
 
                 // Varsel ved tildelt tolk
-                if (
-                    oldServiceAppointment.Status != serviceAppointment.Status &&
-                    serviceAppointment.Status == 'Dispatched' &&
-                    serviceAppointment.HOT_CanceledByInterpreter__c == false
-                ) {
-                    resourceAdded(notificationType, serviceAppointment, recipients);
-                }
+                resourceAdded(notificationType, serviceAppointment, recipients);
             }
 
             if (oldServiceAppointment.HOT_AssignedResourceId__c != null) {
