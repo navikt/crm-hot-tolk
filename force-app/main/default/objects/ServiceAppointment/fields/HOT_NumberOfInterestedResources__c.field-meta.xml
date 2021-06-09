@@ -6,7 +6,7 @@
     <summaryFilterItems>
         <field>HOT_InterestedResource__c.Status__c</field>
         <operation>equals</operation>
-        <value>Interested, Assigned</value>
+        <value>Interested</value>
     </summaryFilterItems>
     <summaryForeignKey>HOT_InterestedResource__c.ServiceAppointment__c</summaryForeignKey>
     <summaryOperation>count</summaryOperation>

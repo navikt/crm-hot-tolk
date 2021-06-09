@@ -51,7 +51,7 @@ private class HOT_InterestedResourceHandlerTest {
             LIMIT 1
         ];
 
-        interestedResource.Status__c = 'Canceled';
+        interestedResource.Status__c = 'Assigned';
         Test.startTest();
         update interestedResource;
         Test.stopTest();
