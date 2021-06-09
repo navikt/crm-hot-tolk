@@ -143,13 +143,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         doneCallback(actions);
     }
 
-    get requestTypes() {
-        return [
-            { label: 'Mine bestillinger', value: 'my' },
-            { label: 'Bestillinger på vegne av andre', value: 'user' }
-        ];
-    }
-
     @track rerender;
     @track requests;
     @track allRequests;
@@ -160,7 +153,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     @wire(getRequestList)
     async wiredRequest(result) {
-        console.log('wiredRequests');
         this.wiredRequestsResult = result;
         if (result.data) {
             this.allRequests = this.distributeRequests(result.data);
