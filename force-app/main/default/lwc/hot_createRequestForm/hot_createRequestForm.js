@@ -74,7 +74,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     @wire(getPersonAccount)
     wiredGetPersonAccount(result) {
         if (result.data) {
-            this.personAccount = result.data;
+            this.personAccount.Id = result.data.AccountId;
+            this.personAccount.Name = result.data.Account.CRM_Person__r.CRM_FullName__c;
         }
     }
     @wire(getOrdererDetails)
