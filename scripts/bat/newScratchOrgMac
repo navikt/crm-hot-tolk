@@ -12,8 +12,8 @@ sfdx force:package:install --package 04t2o000000yS5FAAU -r -k navcrm --wait 10 -
 # Installer crm-platform-access-control ver. 0.68
 sfdx force:package:install --package 04t2o000000ySEMAA2 -r -k navcrm --wait 10 --publishwait 10
 
-# Installer crm-community-base ver. 0.19
-sfdx force:package:install --package 04t2o000000ySAjAAM -r -k navcrm --wait 10 --publishwait 10
+# Installer crm-community-base ver. 0.20
+sfdx force:package:install --package 04t2o000000ySHpAAM -r -k navcrm --wait 10 --publishwait 10
 
 # Dytt kildekoden til scratch org'en
 sfdx force:source:push
