@@ -125,7 +125,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     @track eventType = null;
     handleChoiceOfEvent(event) {
         this.eventType = event.detail.value;
-        this.fieldValues.EventType__c = this.eventType;
     }
 
     @track fieldValues = {
@@ -513,6 +512,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     @track showInformationSharingText = true;
     onHandleNeste() {
         this.fieldValues.Type__c = this.currentRequestType;
+        this.fieldValues.EventType__c = this.eventType;
 
         let radioButtonGroup = this.template.querySelector('.skjema').querySelector('.requestTypeChoice');
 
