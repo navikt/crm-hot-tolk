@@ -18,7 +18,9 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
             if (isUpdate && triggerOldMap.get(interestedResource.Id).get('Status__c') == interestedResource.Status__c) {
                 continue; // No changes to Status__c - continue
             }
-            if (!isUpdate && interestedResource.Status__c != 'Interested') {
+            if (
+                !isUpdate && interestedResource.Status__c != 'Interested' || interestedResource.Status__c != 'Assigned'
+            ) {
                 continue;
             }
             interestedResources.add(interestedResource);
@@ -46,7 +48,10 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
         List<HOT_InterestedResource__c> allInterestedResources = [
             SELECT Id, ServiceAppointment__c, ServiceResource__r.Name
             FROM HOT_InterestedResource__c
-            WHERE ServiceAppointment__c IN :serviceAppointmentsIDs AND Status__c = 'Interested'
+            WHERE
+                ServiceAppointment__c IN :serviceAppointmentsIDs
+                AND (Status__c = 'Interested'
+                OR Status__c = 'Assigned')
         ];
 
         // Update service appointments with names from matching IR's Service Resource
