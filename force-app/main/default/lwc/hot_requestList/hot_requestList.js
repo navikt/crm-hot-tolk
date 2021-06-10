@@ -18,7 +18,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         refreshApex(this.wiredRequestsResult);
     }
     @track choices = [
-        { name: 'Active', label: 'Aktive', selected: true },
+        { name: 'Active', label: 'Aktiv', selected: true },
         { name: 'Completed', label: 'Ferdig' },
         { name: 'Canceled', label: 'Avlyst' },
         { name: 'No interpreter available', label: 'Ikke ledig tolk' },
@@ -28,7 +28,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     ];
     @track selectDisable = false;
     @track selectMultiple = false;
-    @track selectRequired = true;
+    @track selectRequired = false;
     @track selectSize = 1;
 
     @track isProd;

@@ -29,16 +29,18 @@
             </lightning-combobox>
 
             <br /><br />
-            <c-picklist
-                master-label="Filtrering"
-                choices={choices}
-                onpicklistvaluechange={handlePicklist}
-                disabled={selectDisable}
-                multiple={selectMultiple}
-                required={selectRequired}
-                size={selectSize}
-                css-class="johnny"
-            ></c-picklist>
+            <div class="picklist">
+                <c-picklist
+                    master-label="Filtrer på status"
+                    choices={choices}
+                    onpicklistvaluechange={handlePicklist}
+                    disabled={selectDisable}
+                    multiple={selectMultiple}
+                    required={selectRequired}
+                    size={selectSize}
+                    css-class="johnny"
+                ></c-picklist>
+            </div>
         </div>
         <p style="align-self: flex-start" class="typo-normal">
             Merk: For serieoppdrag vises start- og sluttid for den første forekomsten. For å se alle tidene under en

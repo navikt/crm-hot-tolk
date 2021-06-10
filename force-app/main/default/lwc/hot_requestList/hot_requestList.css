@@ -4,3 +4,7 @@ section.sub-form {
 .hidden {
     display: none;
 }
+
+.picklist {
+    width: 40%;
+}
