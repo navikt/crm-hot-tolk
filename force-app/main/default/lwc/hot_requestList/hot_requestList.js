@@ -157,7 +157,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         if (result.data) {
             this.allRequests = this.distributeRequests(result.data);
             this.filterRequests();
-            this.showHideInactives();
+            this.showAllOrNot();
             this.error = undefined;
             var requestIds = [];
             for (var request of result.data) {
@@ -215,6 +215,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
     }
     filterRequests() {
+        this.showAll = false;
         var tempRequests = [];
         let pickListValue = this.picklistValue;
         for (var i = 0; i < this.allRequests.length; i++) {
@@ -230,6 +231,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             } else if (status == 'Avslått' && pickListValue == 'Denied') {
                 tempRequests.push(this.allRequests[i]);
             } else if (pickListValue == 'All') {
+                this.showAll = true;
                 tempRequests = this.allMyRequests;
             } else if (pickListValue == 'Others') {
                 tempRequests = this.allOrderedRequests;
@@ -243,7 +245,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track currentChoiceOthers = false;
     handleRequestType(isMyReq) {
         this.filterRequests();
-        this.showHideInactives();
+        this.showAllOrNot();
         let tempColumns = [...this.columns];
         let tempMobileColumns = [...this.mobileColumns];
         this.isMyRequests = isMyReq;
@@ -274,8 +276,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.mobileColumns = [...tempMobileColumns];
     }
 
-    showHideInactives() {
-        if (this.checked) {
+    @track showAll = false;
+    showAllOrNot() {
+        if (this.showAll) {
             this.requests = this.allRequests;
         } else {
             this.filterRequests();
@@ -295,13 +298,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.sortDirection = value.sortDirection;
         this.sortedBy = value.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
-        this.showHideInactives();
+        this.showAllOrNot();
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
-        this.showHideInactives();
+        this.showAllOrNot();
     }
 
     handleRowAction(event) {
