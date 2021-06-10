@@ -17,6 +17,20 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     rerenderCallback() {
         refreshApex(this.wiredRequestsResult);
     }
+    @track choices = [
+        { name: 'Active', label: 'Aktive', selected: true },
+        { name: 'Completed', label: 'Ferdig' },
+        { name: 'Canceled', label: 'Avlyst' },
+        { name: 'No interpreter available', label: 'Ikke ledig tolk' },
+        { name: 'Denied', label: 'Avslått' },
+        { name: 'All', label: 'Alle mine bestillinger' },
+        { name: 'Others', label: 'Alle bestillinger på vegne av andre' }
+    ];
+    @track selectDisable = false;
+    @track selectMultiple = false;
+    @track selectRequired = true;
+    @track selectSize = 1;
+
     @track isProd;
     @track error;
     @wire(isProdFunction)
@@ -95,7 +109,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             typeAttributes: { rowActions: this.getRowActions }
         }
     ];
-    columnLabels = [
+    mobileColumns = [
         "'Start tid'",
         "'Slutt tid'",
         "'Bestilling'",
@@ -129,13 +143,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         doneCallback(actions);
     }
 
-    get requestTypes() {
-        return [
-            { label: 'Mine bestillinger', value: 'my' },
-            { label: 'Bestillinger på vegne av andre', value: 'user' }
-        ];
-    }
-
     @track rerender;
     @track requests;
     @track allRequests;
@@ -146,15 +153,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     @wire(getRequestList)
     async wiredRequest(result) {
-        console.log('wiredRequests');
-        //console.log(JSON.stringify(result));
         this.wiredRequestsResult = result;
         if (result.data) {
             this.allRequests = this.distributeRequests(result.data);
             this.filterRequests();
-            this.showHideInactives();
             this.error = undefined;
-            //console.log(JSON.stringify(this.allRequests));
             var requestIds = [];
             for (var request of result.data) {
                 requestIds.push(request.Id);
@@ -162,7 +165,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             this.requestAssignedResources = await getAssignedResources({
                 requestIds
             });
-            //console.log(this.requestAssignedResources);
         } else if (result.error) {
             this.error = result.error;
             this.allRequests = undefined;
@@ -185,64 +187,89 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         return this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
     }
 
+    filterActiveRequests(tempRequests, i) {
+        if (
+            this.allRequests[i].ExternalRequestStatus__c == 'Åpen' ||
+            this.allRequests[i].ExternalRequestStatus__c == 'Under behandling' ||
+            this.allRequests[i].ExternalRequestStatus__c == 'Du har fått tolk' ||
+            this.allRequests[i].ExternalRequestStatus__c == 'Serieoppdrag' ||
+            this.allRequests[i].ExternalRequestStatus__c == 'Pågår'
+        ) {
+            tempRequests.push(this.allRequests[i]);
+        }
+    }
+
+    @track picklistValue = 'Active';
+    handlePicklist(event) {
+        this.picklistValue = event.detail;
+        if (this.picklistValue == 'Others') {
+            this.currentChoiceOthers = true;
+            this.handleRequestType(false);
+        } else if (this.picklistValue == 'All') {
+            this.currentChoiceOthers = false;
+            this.handleRequestType(true);
+        } else {
+            this.currentChoiceOthers = false;
+            this.handleRequestType(true);
+        }
+    }
     filterRequests() {
         var tempRequests = [];
+        let pickListValue = this.picklistValue;
         for (var i = 0; i < this.allRequests.length; i++) {
-            if (
-                this.allRequests[i].ExternalRequestStatus__c != 'Avlyst' &&
-                this.allRequests[i].ExternalRequestStatus__c != 'Dekket' &&
-                this.allRequests[i].ExternalRequestStatus__c != 'Udekket' &&
-                this.allRequests[i].ExternalRequestStatus__c != 'Ferdig'
-            ) {
+            let status = this.allRequests[i].ExternalRequestStatus__c;
+            if (pickListValue == 'Active') {
+                this.filterActiveRequests(tempRequests, i);
+            } else if (status == 'Avlyst' && pickListValue == 'Canceled') {
                 tempRequests.push(this.allRequests[i]);
+            } else if (status == 'Ferdig' && pickListValue == 'Completed') {
+                tempRequests.push(this.allRequests[i]);
+            } else if (status == 'Ikke ledig tolk' && pickListValue == 'No interpreter available') {
+                tempRequests.push(this.allRequests[i]);
+            } else if (status == 'Avslått' && pickListValue == 'Denied') {
+                tempRequests.push(this.allRequests[i]);
+            } else if (pickListValue == 'All') {
+                tempRequests = this.allMyRequests;
+            } else if (pickListValue == 'Others') {
+                tempRequests = this.allOrderedRequests;
             }
         }
         this.requests = tempRequests;
     }
+
     @track isMyRequests = true;
-    handleRequestType(event) {
-        this.isMyRequests = event.detail.value == 'my';
-        this.allRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
+    @track previousChoiceOthers = false;
+    @track currentChoiceOthers = false;
+    handleRequestType(isMyReq) {
         this.filterRequests();
-        this.showHideInactives();
         let tempColumns = [...this.columns];
-        let tempColumnLabels = [...this.columnLabels];
-        if (this.isMyRequests) {
+        let tempMobileColumns = [...this.mobileColumns];
+        this.isMyRequests = isMyReq;
+
+        if (this.isMyRequests && this.previousChoiceOthers) {
             tempColumns.shift();
-            tempColumnLabels.shift();
-            tempColumnLabels.push("''");
-        } else {
+            tempMobileColumns.shift();
+            tempMobileColumns.push("''");
+            this.previousChoiceOthers = false;
+        } else if (this.currentChoiceOthers && !this.previousChoiceOthers) {
             tempColumns.unshift({
                 label: 'Bruker',
                 fieldName: 'UserName__c',
                 type: 'text',
                 sortable: true
             });
-            tempColumnLabels.unshift("'Bruker'");
+            tempMobileColumns.unshift("'Bruker'");
+            this.previousChoiceOthers = true;
         }
         for (var i = 0; i < 10; i++) {
-            if (i < tempColumnLabels.length) {
-                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), tempColumnLabels[i]);
+            if (i < tempMobileColumns.length) {
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), tempMobileColumns[i]);
             } else {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
         }
         this.columns = [...tempColumns];
-        this.columnLabels = [...tempColumnLabels];
-    }
-
-    @track checked = false;
-    handleChecked(event) {
-        this.checked = event.detail.checked;
-        this.showHideInactives();
-    }
-
-    showHideInactives() {
-        if (this.checked) {
-            this.requests = this.allRequests;
-        } else {
-            this.filterRequests();
-        }
+        this.mobileColumns = [...tempMobileColumns];
     }
 
     @track defaultSortDirection = 'desc';
@@ -258,13 +285,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.sortDirection = value.sortDirection;
         this.sortedBy = value.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
-        this.showHideInactives();
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
-        this.showHideInactives();
     }
 
     handleRowAction(event) {
@@ -292,8 +317,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
     connectedCallback() {
         for (var i = 0; i < 10; i++) {
-            if (i < this.columnLabels.length) {
-                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
+            if (i < this.mobileColumns.length) {
+                document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.mobileColumns[i]);
             } else {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
