@@ -24,6 +24,10 @@
                 {
                     "package": "crm-community-base",
                     "versionNumber": "0.20.0.LATEST"
+                },
+                {
+                    "package": "crm-platform-reporting",
+                    "versionNumber": "0.25.0.LATEST"
                 }
             ]
         },
@@ -48,6 +52,10 @@
                 {
                     "package": "crm-community-base",
                     "versionNumber": "0.20.0.LATEST"
+                },
+                {
+                    "package": "crm-platform-reporting",
+                    "versionNumber": "0.25.0.LATEST"
                 }
             ]
         }
