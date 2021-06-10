@@ -4,3 +4,13 @@ section.sub-form {
 .hidden {
     display: none;
 }
+
+.picklist {
+    width: 30%;
+}
+
+@media only screen and (max-width: 500px) {
+    .picklist {
+        width: 100%;
+    }
+}
