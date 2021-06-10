@@ -157,6 +157,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         if (result.data) {
             this.allRequests = this.distributeRequests(result.data);
             this.filterRequests();
+            this.showHideInactives();
             this.error = undefined;
             var requestIds = [];
             for (var request of result.data) {
@@ -242,6 +243,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track currentChoiceOthers = false;
     handleRequestType(isMyReq) {
         this.filterRequests();
+        this.showHideInactives();
         let tempColumns = [...this.columns];
         let tempMobileColumns = [...this.mobileColumns];
         this.isMyRequests = isMyReq;
@@ -272,6 +274,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.mobileColumns = [...tempMobileColumns];
     }
 
+    showHideInactives() {
+        if (this.checked) {
+            this.requests = this.allRequests;
+        } else {
+            this.filterRequests();
+        }
+    }
+
     @track defaultSortDirection = 'desc';
     @track sortDirection = 'desc';
     @track sortedBy = 'StartTime__c';
@@ -285,11 +295,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.sortDirection = value.sortDirection;
         this.sortedBy = value.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
+        this.showHideInactives();
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
+        this.showHideInactives();
     }
 
     handleRowAction(event) {
