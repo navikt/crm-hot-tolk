@@ -20,10 +20,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
-            if (triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != serviceAppointment.SchedStartTime) {
-                serviceAppointmentsWithHoursToSet.add(serviceAppointment);
-            }
-            if (triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != serviceAppointment.SchedEndTime) {
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != serviceAppointment.SchedStartTime ||
+                triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != serviceAppointment.SchedEndTime
+            ) {
                 serviceAppointmentsWithHoursToSet.add(serviceAppointment);
             }
             if (
@@ -396,9 +396,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
 
     public void setStartAndEndHour(List<ServiceAppointment> records) {
-        for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+        for (ServiceAppointment serviceAppointment : records) {
             serviceAppointment.HOT_StartHour__c = serviceAppointment.SchedStartTime != null
-                ? serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo')
+                ? serviceAppointment.SchedStartTime.format('HH', 'Europe/Oslo')
                 : null;
             serviceAppointment.HOT_EndHour__c = serviceAppointment.SchedEndTime != null
                 ? serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo')
