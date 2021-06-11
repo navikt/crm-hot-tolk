@@ -432,6 +432,11 @@
                 <fieldItem>Record.IsAcute__c</fieldItem>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.IsAgreement__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-5a56343c-3c55-41be-bbf2-68e3925e8cba</name>
         <type>Facet</type>
     </flexiPageRegions>
