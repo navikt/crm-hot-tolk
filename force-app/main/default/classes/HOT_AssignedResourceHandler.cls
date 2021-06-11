@@ -325,18 +325,26 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
 
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId
+                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId, HOT_Request__r.IsAgreement__c
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
         );
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
-            [SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource WHERE Id IN :serviceResourceIds]
+            [
+                SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_AgreementFreelance__c
+                FROM ServiceResource
+                WHERE Id IN :serviceResourceIds
+            ]
         );
         for (AssignedResource assignedResource : assignedResources) {
+            Date criticalDate = serviceAppointments.get(assignedResource.ServiceAppointmentId)
+                    .HOT_Request__r.IsAgreement__c == true &&
+                serviceResources.get(assignedResource.ServiceResourceId).HOT_AgreementFreelance__c == true
+                ? Date.today().addDays(30)
+                : Date.today().addDays(14);
             if (
-                Date.today().addDays(14) >=
-                serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime.date() &&
+                criticalDate >= serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime.date() &&
                 serviceResources.get(assignedResource.ServiceResourceId).HOT_IsFreelanceInterpreter__c == true
             ) {
                 HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
