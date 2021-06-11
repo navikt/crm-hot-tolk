@@ -635,9 +635,9 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Start time ble ikke satt riktig'
         );
         System.assertEquals(
-            serviceAppointment.SchedStartTime.format('HH', 'Europe/Oslo'),
+            serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo'),
             serviceAppointment.HOT_EndHour__c,
-            'Start time ble ikke satt riktig'
+            'End time ble ikke satt riktig'
         );
     }
 }
