@@ -3,7 +3,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         setDefaultFields((List<ServiceAppointment>) records);
         setOwner((List<ServiceAppointment>) records);
         setFieldsByPreferredResource((List<ServiceAppointment>) records);
-        setStartAndEndHour(records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -18,19 +17,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> completedImageInterpreterServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
-            if (
-                triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != serviceAppointment.SchedStartTime &&
-                serviceAppointment.SchedStartTime != null
-            ) {
-                serviceAppointment.HOT_StartHour__c = serviceAppointment.SchedStartTime.format('HH', 'Europe/Oslo');
+            if (triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != serviceAppointment.SchedStartTime) {
+                serviceAppointmentsWithHoursToSet.add(serviceAppointment);
             }
-            if (
-                triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != serviceAppointment.SchedEndTime &&
-                serviceAppointment.SchedEndTime != null
-            ) {
-                serviceAppointment.HOT_EndHour__c = serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo');
+            if (triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != serviceAppointment.SchedEndTime) {
+                serviceAppointmentsWithHoursToSet.add(serviceAppointment);
             }
             if (
                 //Canceled on behalf of user
@@ -143,6 +137,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (annulServiceAppointments.size() > 0) {
             removeCustomAccountLookup(annulServiceAppointments);
+        }
+
+        if (serviceAppointmentsWithHoursToSet.size() > 0) {
+            setStartAndEndHour(serviceAppointmentsWithHoursToSet);
         }
     }
 
@@ -386,6 +384,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
             }
         }
+        setStartAndEndHour(serviceAppointments);
     }
 
     private static void setOwner(List<ServiceAppointment> serviceAppointments) {
@@ -398,12 +397,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
     public void setStartAndEndHour(List<ServiceAppointment> records) {
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
-            if (serviceAppointment.SchedStartTime != null) {
-                serviceAppointment.HOT_StartHour__c = serviceAppointment.SchedStartTime.format('HH', 'Europe/Oslo');
-            }
-            if (serviceAppointment.SchedEndTime != null) {
-                serviceAppointment.HOT_EndHour__c = serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo');
-            }
+            serviceAppointment.HOT_StartHour__c = serviceAppointment.SchedStartTime != null
+                ? serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo')
+                : null;
+            serviceAppointment.HOT_EndHour__c = serviceAppointment.SchedEndTime != null
+                ? serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo')
+                : null;
         }
     }
 

@@ -746,7 +746,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_EndHour__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -871,7 +871,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_StartHour__c</field>
         <readable>true</readable>
     </fieldPermissions>
