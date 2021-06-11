@@ -1,13 +1,13 @@
 public without sharing class HOT_WageClaimHandler extends MyTriggers {
     public override void onAfterInsert() {
-        List<HOT_WageClaim__c> availableOnWageWageClaims = new List<HOT_WageClaim__c>();
+        List<Id> parentWageClaimIds = new List<Id>();
         for (HOT_WageClaim__c wageClaim : (List<HOT_WageClaim__c>) records) {
-            if (wageClaim.Type__c == 'Available on Wage') {
-                availableOnWageWageClaims.add(wageClaim);
+            if (wageClaim.ParentWageClaim__c != null) {
+                parentWageClaimIds.add(wageClaim.ParentWageClaim__c);
             }
         }
-        if (availableOnWageWageClaims.size() > 0) {
-            createResourceAbsences(availableOnWageWageClaims);
+        if (parentWageClaimIds.size() > 0) {
+            setParentFieldTrue(parentWageClaimIds);
         }
     }
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -21,29 +21,27 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
             }
         }
         if (retractedWageClaims.size() > 0) {
-            deleteResourceAbsences(retractedWageClaims);
+            retractChildWageClaims(retractedWageClaims);
         }
     }
 
-    public static void createResourceAbsences(List<HOT_WageClaim__c> wageClaims) {
-        Set<String> resourceAbsenceFields = Schema.SObjectType.ResourceAbsence.fields.getMap().keySet();
-        List<ResourceAbsence> resourceAbsences = new List<ResourceAbsence>();
+    public static void retractChildWageClaims(List<HOT_WageClaim__c> wageClaims) {
+        List<HOT_WageClaim__c> childWageClaims = [
+            SELECT Id, Status__c
+            FROM HOT_WageClaim__c
+            WHERE ParentWageClaim__c IN :wageClaims
+        ];
+        for (HOT_WageClaim__c wageClaim : childWageClaims) {
+            wageClaim.Status__c = 'Retracted Availability';
+        }
+        update childWageClaims;
+    }
+
+    public static void setParentFieldTrue(List<Id> wageClaimIds) {
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id, IsParent__c FROM HOT_WageClaim__c WHERE Id IN :wageClaimIds];
         for (HOT_WageClaim__c wageClaim : wageClaims) {
-            ResourceAbsence resourceAbsence = new ResourceAbsence();
-            resourceAbsence.Start = wageClaim.StartTime__c;
-            resourceAbsence.End = wageClaim.EndTime__c;
-            resourceAbsence.ResourceId = wageClaim.ServiceResource__c;
-            resourceAbsence.Type = 'Available on Wage';
-            resourceAbsence.HOT_WageClaim__c = wageClaim.Id;
-            if (resourceAbsenceFields.contains('fsl__gantt_color__c')) {
-                resourceAbsence.put('FSL__Gantt_Color__c', '#00ff00');
-            }
-            resourceAbsences.add(resourceAbsence);
+            wageClaim.IsParent__c = true;
         }
-        insert resourceAbsences;
-    }
-
-    public static void deleteResourceAbsences(List<HOT_WageClaim__c> wageClaims) {
-        delete [SELECT Id FROM ResourceAbsence WHERE HOT_WageClaim__c IN :wageClaims];
+        update wageClaims;
     }
 }
