@@ -193,7 +193,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             this.allRequests[i].ExternalRequestStatus__c == 'Åpen' ||
             this.allRequests[i].ExternalRequestStatus__c == 'Under behandling' ||
             this.allRequests[i].ExternalRequestStatus__c == 'Du har fått tolk' ||
-            this.allRequests[i].ExternalRequestStatus__c == 'Serieoppdrag' ||
+            this.allRequests[i].ExternalRequestStatus__c == 'Se tidsplan' ||
             this.allRequests[i].ExternalRequestStatus__c == 'Pågår'
         ) {
             tempRequests.push(this.allRequests[i]);
