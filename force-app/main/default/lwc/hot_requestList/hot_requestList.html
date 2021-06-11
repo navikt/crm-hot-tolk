@@ -17,15 +17,6 @@
                 onclick={goToNewRequest}
             >
             </lightning-button>
-            <lightning-input
-                type="checkbox"
-                class="filter-list-checkbox"
-                label="Vis også fullførte, avlyste og udekte bestillinger"
-                name="ShowAll"
-                onchange={handleChecked}
-            >
-            </lightning-input>
-            <br />
 
             <lightning-combobox
                 class="mobile-only"
@@ -37,20 +28,24 @@
             >
             </lightning-combobox>
 
-            <lightning-radio-group
-                label="Type bestilling"
-                class="horizontal"
-                name="radioGroup"
-                options={requestTypes}
-                value="my"
-                type="radio"
-                onchange={handleRequestType}
-            ></lightning-radio-group>
+            <br /><br />
+            <div class="picklist">
+                <c-picklist
+                    master-label="Filtrer på status"
+                    choices={choices}
+                    onpicklistvaluechange={handlePicklist}
+                    disabled={selectDisable}
+                    multiple={selectMultiple}
+                    required={selectRequired}
+                    size={selectSize}
+                ></c-picklist>
+            </div>
         </div>
         <p style="align-self: flex-start" class="typo-normal">
             Merk: For serieoppdrag vises start- og sluttid for den første forekomsten. For å se alle tidene under en
             bestilling, inkludert status og tildelt tolk, kan du velge Se tidsplan i menyen til høyre på raden.
         </p>
+
         <br />
         <lightning-datatable
             key-field="Id"
