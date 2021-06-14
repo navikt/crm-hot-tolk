@@ -231,8 +231,8 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.HOT_Payment_Liability__c</field>
-        <readable>true</readable>
+        <field>HOT_Request__c.HOT_PaymentLiability__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>

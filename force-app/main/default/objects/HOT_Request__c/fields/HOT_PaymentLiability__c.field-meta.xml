@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>HOT_Payment_Liability__c</fullName>
+    <fullName>HOT_PaymentLiability__c</fullName>
     <externalId>false</externalId>
     <formula>IF(IsOtherEconomicProvicer__c, &quot;Annen betaler&quot;, &quot;NAV betaler&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
