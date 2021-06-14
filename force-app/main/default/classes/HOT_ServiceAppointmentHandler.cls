@@ -18,6 +18,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithStatusOpen = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -99,6 +100,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 annulServiceAppointments.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'None'
+            ) {
+                serviceAppointmentsWithStatusOpen.add(serviceAppointment);
+            }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -142,6 +149,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsWithHoursToSet.size() > 0) {
             setStartAndEndHour(serviceAppointmentsWithHoursToSet);
         }
+        if (serviceAppointmentsWithStatusOpen.size() > 0) {
+            setOriginalServiceTerritory(serviceAppointmentsWithStatusOpen);
+        }
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -150,7 +160,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithChangedAddress = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
-        List<ServiceAppointment> serviceAppointmentsWithStatusOpen = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -199,13 +208,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsWithChangedAddress.add(serviceAppointment);
             }
-
-            if (
-                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
-                serviceAppointment.Status == 'None'
-            ) {
-                serviceAppointmentsWithStatusOpen.add(serviceAppointment);
-            }
         }
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
@@ -229,15 +231,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 triggerOldMap
             );
         }
-        if (serviceAppointmentsWithStatusOpen.size() > 0) {
-            setOriginalServiceTerritory(serviceAppointmentsWithStatusOpen);
-        }
     }
 
     public static void setOriginalServiceTerritory(List<ServiceAppointment> serviceAppointments) {
-        System.debug('halla');
         List<WorkOrderLineItem> workOrderLineItems = [SELECT Id, ServiceTerritoryId FROM WorkOrderLineItem];
-        List<ServiceAppointment> serviceAppointmentsToUpdate;
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (
                 serviceAppointment.HOT_AssignedResourceId__c != null &&
@@ -251,11 +248,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
                 if (serviceAppointment.ParentRecordId == workOrderLineItem.Id) {
                     serviceAppointment.ServiceTerritoryId = workOrderLineItem.ServiceTerritoryId;
-                    serviceAppointmentsToUpdate.add(serviceAppointment);
                 }
             }
         }
-        update serviceAppointmentsToUpdate;
     }
 
     private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
