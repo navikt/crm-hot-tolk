@@ -17,8 +17,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> completedImageInterpreterServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != serviceAppointment.SchedStartTime ||
+                triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != serviceAppointment.SchedEndTime
+            ) {
+                serviceAppointmentsWithHoursToSet.add(serviceAppointment);
+            }
             if (
                 //Canceled on behalf of user
                 //Canceled by interpreter
@@ -40,7 +47,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 ServiceAppointment.HOT_PreferredResource__c &&
                 serviceAppointment.HOT_PreferredResource__c != null &&
                 serviceAppointment.HOT_ServiceResource__c == null
-
             ) {
                 updatedServiceAppointments.add(serviceAppointment);
             }
@@ -131,6 +137,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (annulServiceAppointments.size() > 0) {
             removeCustomAccountLookup(annulServiceAppointments);
+        }
+
+        if (serviceAppointmentsWithHoursToSet.size() > 0) {
+            setStartAndEndHour(serviceAppointmentsWithHoursToSet);
         }
     }
 
@@ -374,6 +384,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
             }
         }
+        setStartAndEndHour(serviceAppointments);
     }
 
     private static void setOwner(List<ServiceAppointment> serviceAppointments) {
@@ -381,6 +392,17 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             if (serviceAppointment.HOT_Request__c != null) {
                 serviceAppointment.OwnerId = serviceAppointment.HOT_RequestOwnerId__c;
             }
+        }
+    }
+
+    public static void setStartAndEndHour(List<ServiceAppointment> records) {
+        for (ServiceAppointment serviceAppointment : records) {
+            serviceAppointment.HOT_StartHour__c = serviceAppointment.SchedStartTime != null
+                ? serviceAppointment.SchedStartTime.format('HH', 'Europe/Oslo')
+                : null;
+            serviceAppointment.HOT_EndHour__c = serviceAppointment.SchedEndTime != null
+                ? serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo')
+                : null;
         }
     }
 
