@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_WageClaim_CompactLayout</fullName>
+    <fields>ServiceResource__c</fields>
+    <fields>ServiceTerritory__c</fields>
+    <fields>WorkType__c</fields>
+    <fields>AssignmentType__c</fields>
+    <fields>ServiceAppointment__c</fields>
+    <fields>StartTime__c</fields>
+    <fields>EndTime__c</fields>
+    <label>HOT_WageClaim_CompactLayout</label>
+</CompactLayout>
