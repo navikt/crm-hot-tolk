@@ -1,5 +1,5 @@
 public without sharing class HOT_WageClaimHandler extends MyTriggers {
-    public override void onAfterInsert() {
+    public override void onBeforeInsert() {
         List<Id> parentWageClaimIds = new List<Id>();
         List<HOT_WageClaim__c> wageClaimsWithParent = new List<HOT_WageClaim__c>();
         for (HOT_WageClaim__c wageClaim : (List<HOT_WageClaim__c>) records) {
