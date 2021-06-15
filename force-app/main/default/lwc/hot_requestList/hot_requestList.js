@@ -214,6 +214,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     @track picklistValue = 'Active';
     filterRequests() {
+        console.log('filterRequests fired');
         //this.showAll = false;
         var tempRequests = [];
         let pickListValue = this.picklistValue;
@@ -239,7 +240,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 tempRequests.push(this.allRequests[i]);
             } else if (pickListValue == 'All') {
                 //this.showAll = true;
-                tempRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
+                //tempRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
+                tempRequests = this.allRequests; // Should be set already in handleRequestType to alLMy or allOrdered
             } else if (pickListValue == 'Future') {
                 // Filter on start date and status not cancelled here
                 return;
@@ -250,6 +252,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     @track isMyRequests = true;
     handleRequestType(event) {
+        console.log('handleRequestType fired');
         this.isMyRequests = event.detail.value = 'my';
         this.allRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
         this.filterRequests();
