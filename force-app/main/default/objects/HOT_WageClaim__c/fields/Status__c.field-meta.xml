@@ -21,6 +21,11 @@
                 <default>false</default>
                 <label>Retracted Availability</label>
             </value>
+            <value>
+                <fullName>Annul</fullName>
+                <default>false</default>
+                <label>Annul</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
