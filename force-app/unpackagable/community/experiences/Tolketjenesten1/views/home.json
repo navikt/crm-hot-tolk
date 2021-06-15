@@ -53,8 +53,8 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
         "title" : "Tolketjenesten"
       },
       "componentName" : "forceCommunity:seoAssistant",
