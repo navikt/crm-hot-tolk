@@ -8,10 +8,10 @@
     </picklistValues>
     <picklistValues>
         <masterLabel>Open</masterLabel>
-        <translation><!-- Open --></translation>
+        <translation>Åpen</translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Retracted Availability</masterLabel>
-        <translation><!-- Retracted Availability --></translation>
+        <translation>Tilbaketrukket tilgjengelighet</translation>
     </picklistValues>
 </CustomFieldTranslation>
