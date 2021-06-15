@@ -19,10 +19,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
     @track choices = [
         { name: 'Active', label: 'Aktiv', selected: true },
-        { name: 'Completed', label: 'Ferdig' },
+        { name: 'Completed', label: 'Gjennomført' },
         { name: 'Canceled', label: 'Avlyst' },
         { name: 'No interpreter available', label: 'Ikke ledig tolk' },
         { name: 'Denied', label: 'Avslått' },
+        { name: 'All', label: 'Alle' },
         { name: 'All', label: 'Alle mine bestillinger' },
         { name: 'Others', label: 'Alle bestillinger på vegne av andre' }
     ];
@@ -143,6 +144,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         doneCallback(actions);
     }
 
+    get requestTypes() {
+        return [
+            { label: 'Mine bestillinger', value: 'my' },
+            { label: 'Bestillinger på vegne av andre', value: 'user' }
+        ];
+    }
+
     @track rerender;
     @track requests;
     @track allRequests;
@@ -201,19 +209,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     @track picklistValue = 'Active';
-    handlePicklist(event) {
-        this.picklistValue = event.detail;
-        if (this.picklistValue == 'Others') {
-            this.currentChoiceOthers = true;
-            this.handleRequestType(false);
-        } else if (this.picklistValue == 'All') {
-            this.currentChoiceOthers = false;
-            this.handleRequestType(true);
-        } else {
-            this.currentChoiceOthers = false;
-            this.handleRequestType(true);
-        }
-    }
     filterRequests() {
         this.showAll = false;
         var tempRequests = [];
@@ -224,7 +219,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 this.filterActiveRequests(tempRequests, i);
             } else if (status == 'Avlyst' && pickListValue == 'Canceled') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Ferdig' && pickListValue == 'Completed') {
+            } else if (status == 'Gjennomført' && pickListValue == 'Completed') {
                 tempRequests.push(this.allRequests[i]);
             } else if (status == 'Ikke ledig tolk' && pickListValue == 'No interpreter available') {
                 tempRequests.push(this.allRequests[i]);
@@ -241,21 +236,19 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     @track isMyRequests = true;
-    @track previousChoiceOthers = false;
-    @track currentChoiceOthers = false;
-    handleRequestType(isMyReq) {
+    handleRequestType(event) {
+        this.isMyRequests = event.detail.value = 'my';
+        this.allRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
         this.filterRequests();
         this.showAllOrNot();
         let tempColumns = [...this.columns];
         let tempMobileColumns = [...this.mobileColumns];
-        this.isMyRequests = isMyReq;
 
-        if (this.isMyRequests && this.previousChoiceOthers) {
+        if (this.isMyRequests) {
             tempColumns.shift();
             tempMobileColumns.shift();
             tempMobileColumns.push("''");
-            this.previousChoiceOthers = false;
-        } else if (this.currentChoiceOthers && !this.previousChoiceOthers) {
+        } else {
             tempColumns.unshift({
                 label: 'Bruker',
                 fieldName: 'UserName__c',
@@ -263,7 +256,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 sortable: true
             });
             tempMobileColumns.unshift("'Bruker'");
-            this.previousChoiceOthers = true;
         }
         for (var i = 0; i < 10; i++) {
             if (i < tempMobileColumns.length) {

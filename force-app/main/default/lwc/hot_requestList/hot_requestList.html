@@ -28,12 +28,22 @@
             >
             </lightning-combobox>
 
+            <lightning-radio-group
+                label="Type bestilling"
+                class="horizontal"
+                name="radioGroup"
+                options={requestTypes}
+                value="my"
+                type="radio"
+                onchange={handleRequestType}
+            ></lightning-radio-group>
+
             <br /><br />
             <div class="picklist">
                 <c-picklist
                     master-label="Filtrer på status"
                     choices={choices}
-                    onpicklistvaluechange={handlePicklist}
+                    onpicklistvaluechange={filterRequests}
                     disabled={selectDisable}
                     multiple={selectMultiple}
                     required={selectRequired}
