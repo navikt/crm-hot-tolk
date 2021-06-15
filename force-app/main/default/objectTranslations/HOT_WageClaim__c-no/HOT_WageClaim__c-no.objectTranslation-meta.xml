@@ -39,4 +39,8 @@
         </sections>
     </layouts>
     <nameFieldLabel><!-- Wage Claim Name --></nameFieldLabel>
+    <quickActions>
+        <label><!-- Rediger WageClaim --></label>
+        <name>Rediger_WageClaim</name>
+    </quickActions>
 </CustomObjectTranslation>
