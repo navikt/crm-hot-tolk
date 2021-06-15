@@ -1,0 +1,13 @@
+<template>
+    <lightning-datatable
+        key-field="Id"
+        data={serviceAppointments}
+        columns={columns}
+        hide-checkbox-column="true"
+        default-sort-direction={defaultSortDirection}
+        sorted-direction={sortDirection}
+        sorted-by={sortedBy}
+        onsort={onHandleSort}
+    >
+    </lightning-datatable>
+</template>
