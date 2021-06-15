@@ -636,7 +636,22 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_WageClaim__c.IsParent__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_WageClaim__c.ParentWageClaim__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_WageClaim__c.ServiceAppointment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_WageClaim__c.ServiceResourceName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
