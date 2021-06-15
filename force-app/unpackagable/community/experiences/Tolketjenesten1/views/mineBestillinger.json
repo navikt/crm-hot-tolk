@@ -71,8 +71,8 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
         "title" : "Mine bestillinger"
       },
       "componentName" : "forceCommunity:seoAssistant",
