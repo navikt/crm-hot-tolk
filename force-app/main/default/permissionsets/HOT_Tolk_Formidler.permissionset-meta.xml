@@ -339,6 +339,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.PaymentLiability__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.InterpretationMethodSecondary__c</field>
         <readable>true</readable>
@@ -961,6 +966,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_InterpretationStreet__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_InterpretationType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
