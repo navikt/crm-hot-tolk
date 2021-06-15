@@ -395,11 +395,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_WageClaim__c.ServiceResource__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_WageClaim__c.StartTime__c</field>
         <readable>true</readable>
     </fieldPermissions>
