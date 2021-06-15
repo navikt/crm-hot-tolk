@@ -13,25 +13,4 @@
             </h2>
         </div>
     </template>
-
-    <template if:true={isAvailableInterpreters}>
-        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
-            <span class="slds-assistive-text">Advarsel</span>
-            <lightning-icon icon-name="utility:info_alt" size="small" class="slds-m-right--x-small" variant="inverse">
-            </lightning-icon>
-            <h2>
-                Frilanstolker er ledig på lønn i tidsrommet for dette oppdraget.
-                <a if:false={isSeeMore} onclick={toggleSeeMore}> Se mer.</a>
-                <a if:true={isSeeMore} onclick={toggleSeeMore}> Se mindre.</a>
-                <div if:true={isSeeMore} style="display: flex; flex-direction: column">
-                    <template iterator:it={wageClaims}
-                        ><a key={it.value.Id} href={it.value.Link}
-                            >{it.value.ServiceResourceName}, {it.value.ServiceTerritory}: {it.value.StartTime} -
-                            {it.value.EndTime}</a
-                        >
-                    </template>
-                </div>
-            </h2>
-        </div>
-    </template>
 </template>
