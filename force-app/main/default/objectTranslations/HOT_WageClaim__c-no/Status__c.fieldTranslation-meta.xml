@@ -3,6 +3,10 @@
     <label>Status</label>
     <name>Status__c</name>
     <picklistValues>
+        <masterLabel>Annul</masterLabel>
+        <translation>Annullert</translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>Open</masterLabel>
         <translation><!-- Open --></translation>
     </picklistValues>
