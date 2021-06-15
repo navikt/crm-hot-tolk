@@ -19,14 +19,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
     @track choices = [
         { name: 'Active', label: 'Aktiv', selected: true },
+        { name: 'Future', label: 'Fremtidige' },
+        { name: 'All', label: 'Alle' },
+        { name: 'Open', label: 'Åpen' },
         { name: 'Completed', label: 'Gjennomført' },
+        { name: 'Working', label: 'Under behandling' },
+        { name: 'Tolk received', label: 'Du har fått tolk' },
+        { name: 'See timetable', label: 'Se tidsplan' },
         { name: 'Canceled', label: 'Avlyst' },
         { name: 'No interpreter available', label: 'Ikke ledig tolk' },
-        { name: 'Denied', label: 'Avslått' },
-        { name: 'All', label: 'Alle' },
-        { name: 'All', label: 'Alle mine bestillinger' },
-        { name: 'Others', label: 'Alle bestillinger på vegne av andre' }
+        { name: 'Denied', label: 'Avslått' }
     ];
+
     @track selectDisable = false;
     @track selectMultiple = false;
     @track selectRequired = false;
@@ -165,7 +169,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         if (result.data) {
             this.allRequests = this.distributeRequests(result.data);
             this.filterRequests();
-            this.showAllOrNot();
+            //this.showAllOrNot();
             this.error = undefined;
             var requestIds = [];
             for (var request of result.data) {
@@ -210,7 +214,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     @track picklistValue = 'Active';
     filterRequests() {
-        this.showAll = false;
+        //this.showAll = false;
         var tempRequests = [];
         let pickListValue = this.picklistValue;
         for (var i = 0; i < this.allRequests.length; i++) {
@@ -225,11 +229,20 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 tempRequests.push(this.allRequests[i]);
             } else if (status == 'Avslått' && pickListValue == 'Denied') {
                 tempRequests.push(this.allRequests[i]);
+            } else if (status == 'Åpen' && pickListValue == 'Open') {
+                tempRequests.push(this.allRequests[i]);
+            } else if (status == 'Under behandling' && pickListValue == 'Working') {
+                tempRequests.push(this.allRequests[i]);
+            } else if (status == 'Du har fått tolk' && pickListValue == 'Tolk received') {
+                tempRequests.push(this.allRequests[i]);
+            } else if (status == 'Se tidsplan' && pickListValue == 'See timetable') {
+                tempRequests.push(this.allRequests[i]);
             } else if (pickListValue == 'All') {
-                this.showAll = true;
-                tempRequests = this.allMyRequests;
-            } else if (pickListValue == 'Others') {
-                tempRequests = this.allOrderedRequests;
+                //this.showAll = true;
+                tempRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
+            } else if (pickListValue == 'Future') {
+                // Filter on start date and status not cancelled here
+                return;
             }
         }
         this.requests = tempRequests;
@@ -240,7 +253,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.isMyRequests = event.detail.value = 'my';
         this.allRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
         this.filterRequests();
-        this.showAllOrNot();
+        //this.showAllOrNot();
         let tempColumns = [...this.columns];
         let tempMobileColumns = [...this.mobileColumns];
 
@@ -268,14 +281,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.mobileColumns = [...tempMobileColumns];
     }
 
-    @track showAll = false;
-    showAllOrNot() {
+    //@track showAll = false;
+    /*showAllOrNot() {
         if (this.showAll) {
-            this.requests = this.allRequests;
+            this.requests = this.allMyRequests;
         } else {
             this.filterRequests();
         }
-    }
+    }*/
 
     @track defaultSortDirection = 'desc';
     @track sortDirection = 'desc';
@@ -290,13 +303,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.sortDirection = value.sortDirection;
         this.sortedBy = value.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
-        this.showAllOrNot();
+        this.filterRequests();
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
-        this.showAllOrNot();
+        this.filterRequests();
     }
 
     handleRowAction(event) {
