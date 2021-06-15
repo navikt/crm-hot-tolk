@@ -235,10 +235,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
     public static void setOriginalServiceTerritory(List<ServiceAppointment> serviceAppointments) {
         List<WorkOrderLineItem> workOrderLineItems = [SELECT Id, ServiceTerritoryId FROM WorkOrderLineItem];
+
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (
-                serviceAppointment.HOT_AssignedResourceId__c != null &&
-                serviceAppointment.HOT_PreferredServiceResourceId__c != null
+                serviceAppointment.HOT_NumberOfAssignedResources__c != 0 ||
+                serviceAppointment.HOT_PreferredResource__c != null
             ) {
                 return;
             }

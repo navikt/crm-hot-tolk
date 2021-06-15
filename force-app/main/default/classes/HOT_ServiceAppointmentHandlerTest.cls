@@ -640,4 +640,51 @@ private class HOT_ServiceAppointmentHandlerTest {
             'End time ble ikke satt riktig'
         );
     }
+
+    @isTest
+    public static void updateServiceTerritoryOnStatusChange() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, ParentRecordId
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        WorkOrderLineItem workOrderLineItem = [
+            SELECT Id, ServiceTerritoryId
+            FROM WorkOrderLineItem
+            WHERE Id = :serviceAppointment.ParentRecordId
+        ];
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
+        workOrderLineItem.ServiceTerritoryId = serviceTerritory.Id;
+        update workOrderLineItem;
+
+        serviceAppointment.Status = 'In Progress';
+        serviceAppointment.HOT_PreferredResource__c = null;
+        update serviceAppointment;
+
+        List<AssignedResource> assignedResources = [
+            SELECT Id
+            FROM AssignedResource
+            WHERE ServiceAppointmentId = :serviceAppointment.Id
+        ];
+        delete assignedResources;
+        serviceAppointment.Status = 'None';
+        update serviceAppointment;
+
+        serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, ParentRecordId, HOT_NumberOfAssignedResources__c, HOT_PreferredResource__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        workOrderLineItem = [SELECT Id, ServiceTerritoryId FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+
+        System.assertEquals(
+            serviceAppointment.ServiceTerritoryId,
+            workOrderLineItem.ServiceTerritoryId,
+            'ServiceTerritory ble ikke satt riktig'
+        );
+    }
 }
