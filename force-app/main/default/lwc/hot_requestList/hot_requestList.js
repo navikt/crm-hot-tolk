@@ -243,8 +243,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             } else if (pickListValue === 'All') {
                 tempRequests = this.allRequests; // Already set correctly in handleRequestType
             } else if (pickListValue === 'Future') {
-                // Filter on start date and status not cancelled here
-                return;
+                const timeNow = new Date().toISOString();
+                if (status !== 'Avlyst' && this.allRequests[i].StartTime__c > timeNow) {
+                    tempRequests.push(this.allRequests[i]);
+                }
             }
         }
         this.requests = tempRequests;
