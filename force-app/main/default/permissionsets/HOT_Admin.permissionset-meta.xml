@@ -351,11 +351,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.PaymentLiability__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_Request__c.HOT_PersonContactId__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -515,6 +510,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.PaymentLiability__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.Person__c</field>
         <readable>true</readable>
@@ -627,6 +627,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Resource__c.Service_Resource__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.Address__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -792,6 +797,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.INT_RegionNumber__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Person__c.INT_ResidentialAddress__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Person__c.INT_ResidentialZipCode__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
