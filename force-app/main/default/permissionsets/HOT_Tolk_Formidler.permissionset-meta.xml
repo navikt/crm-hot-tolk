@@ -340,7 +340,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.HOT_PaymentLiability__c</field>
+        <field>HOT_Request__c.PaymentLiability__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
