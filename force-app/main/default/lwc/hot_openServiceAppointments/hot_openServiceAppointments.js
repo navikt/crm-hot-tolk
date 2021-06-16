@@ -118,7 +118,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.serviceResource = result.data;
             this.serviceResourceId = this.serviceResource.Id;
             console.log(JSON.stringify(this.serviceResource));
-            let tempRegions = result.data.HOT_PreferredRegions__c.split(';');
+            let tempRegions =
+                result.data.HOT_PreferredRegions__c != null ? result.data.HOT_PreferredRegions__c.split(';') : [];
             for (let tempRegion of tempRegions) {
                 this.regions.push(tempRegion);
             }
