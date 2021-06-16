@@ -29,28 +29,30 @@
             "NAVarea" : "Privatperson"
           },
           "componentName" : "c:globalCommunityHeader",
-          "id" : "5fd96a63-db89-40c9-8784-3b525bcb012b",
+          "id" : "c663b8c8-a9ff-4ea4-a7e7-f32ae7af55e5",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         }, {
           "componentAttributes" : { },
           "componentName" : "c:hot_tolketjenestenHovedBanner",
-          "id" : "652ba850-637b-4387-b666-8ceb830fef37",
+          "id" : "fd0e6b59-0be2-4a71-9b4e-45845057eea4",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         }, {
           "componentAttributes" : { },
           "componentName" : "c:hot_frilanstolkServiceAppointmentLists",
-          "id" : "f066fe97-2aea-41be-aa17-0bbf29583a25",
+          "id" : "0865233e-cfa7-4e1d-9b17-04cafd4ce2bb",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         }, {
-          "componentAttributes" : { },
+          "componentAttributes" : {
+            "NAVarea" : "Privatperson"
+          },
           "componentName" : "c:globalCommunityFooter",
-          "id" : "a42f2172-073c-41a0-97be-ee00e98eba67",
+          "id" : "bedf84df-5906-43ac-833f-c76f32e9857a",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
@@ -71,8 +73,8 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
         "title" : "Mine oppdrag"
       },
       "componentName" : "forceCommunity:seoAssistant",

@@ -71,8 +71,8 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
         "title" : "Ny bestilling"
       },
       "componentName" : "forceCommunity:seoAssistant",

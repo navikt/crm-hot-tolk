@@ -50,8 +50,8 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
         "title" : "Mine oppdrag"
       },
       "componentName" : "forceCommunity:seoAssistant",
