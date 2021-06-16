@@ -39,12 +39,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track isProd;
     @track error;
     @wire(isProdFunction)
-    wiredIsProd({ error, data }) {
+    wiredIsProd({ data }) {
         this.isProd = data;
     }
     @track userRecord = { AccountId: null };
     @wire(getPersonAccount)
-    wiredGetRecord({ error, data }) {
+    wiredGetRecord({ data }) {
         if (data) {
             this.userRecord.AccountId = data.AccountId;
         }
@@ -127,16 +127,16 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     getRowActions(row, doneCallback) {
         let actions = [];
         let tempEndDate = new Date(row['EndTime__c']);
-        if (row['Orderer__c'] == row['TempAccountId__c']) {
+        if (row['Orderer__c'] === row['TempAccountId__c']) {
             if (
-                row['Status__c'] != 'Avlyst' &&
-                row['Status__c'] != 'Dekket' &&
-                row['Status__c'] != 'Delvis dekket' &&
+                row['Status__c'] !== 'Avlyst' &&
+                row['Status__c'] !== 'Dekket' &&
+                row['Status__c'] !== 'Delvis dekket' &&
                 tempEndDate.getTime() > Date.now()
             ) {
                 actions.push({ label: 'Avlys', name: 'delete' });
             }
-            if (row['Status__c'] == 'Åpen') {
+            if (row['Status__c'] === 'Åpen') {
                 actions.push({ label: 'Rediger', name: 'edit_order' });
             }
             actions.push({ label: 'Kopier', name: 'clone_order' });
@@ -160,7 +160,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track allRequests;
     @track allOrderedRequests;
     @track allMyRequests;
-    @track error;
     wiredRequestsResult;
 
     @wire(getRequestList)
@@ -169,10 +168,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         if (result.data) {
             this.allRequests = this.distributeRequests(result.data);
             this.filterRequests();
-            //this.showAllOrNot();
             this.error = undefined;
-            var requestIds = [];
-            for (var request of result.data) {
+            let requestIds = [];
+            for (let request of result.data) {
                 requestIds.push(request.Id);
             }
             this.requestAssignedResources = await getAssignedResources({
@@ -188,11 +186,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.allMyRequests = [];
         this.allOrderedRequests = [];
         for (let request of data) {
-            if (request.Account__c == this.userRecord.AccountId) {
+            if (request.Account__c === this.userRecord.AccountId) {
                 this.allMyRequests.push(request);
             } else if (
-                request.Orderer__c == this.userRecord.AccountId &&
-                request.Account__c != this.userRecord.AccountId
+                request.Orderer__c === this.userRecord.AccountId &&
+                request.Account__c !== this.userRecord.AccountId
             ) {
                 this.allOrderedRequests.push(request);
             }
@@ -202,47 +200,49 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     filterActiveRequests(tempRequests, i) {
         if (
-            this.allRequests[i].ExternalRequestStatus__c == 'Åpen' ||
-            this.allRequests[i].ExternalRequestStatus__c == 'Under behandling' ||
-            this.allRequests[i].ExternalRequestStatus__c == 'Du har fått tolk' ||
-            this.allRequests[i].ExternalRequestStatus__c == 'Se tidsplan' ||
-            this.allRequests[i].ExternalRequestStatus__c == 'Pågår'
+            this.allRequests[i].ExternalRequestStatus__c === 'Åpen' ||
+            this.allRequests[i].ExternalRequestStatus__c === 'Under behandling' ||
+            this.allRequests[i].ExternalRequestStatus__c === 'Du har fått tolk' ||
+            this.allRequests[i].ExternalRequestStatus__c === 'Se tidsplan' ||
+            this.allRequests[i].ExternalRequestStatus__c === 'Pågår'
         ) {
             tempRequests.push(this.allRequests[i]);
         }
     }
 
     @track picklistValue = 'Active';
+    handlePicklist(event) {
+        this.picklistValue = event.detail;
+        this.filterRequests();
+    }
+
     filterRequests() {
-        console.log('filterRequests fired');
-        //this.showAll = false;
-        var tempRequests = [];
+        let tempRequests = [];
         let pickListValue = this.picklistValue;
-        for (var i = 0; i < this.allRequests.length; i++) {
+
+        for (let i = 0; i < this.allRequests.length; i++) {
             let status = this.allRequests[i].ExternalRequestStatus__c;
-            if (pickListValue == 'Active') {
+            if (pickListValue === 'Active') {
                 this.filterActiveRequests(tempRequests, i);
-            } else if (status == 'Avlyst' && pickListValue == 'Canceled') {
+            } else if (status === 'Avlyst' && pickListValue === 'Canceled') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Gjennomført' && pickListValue == 'Completed') {
+            } else if (status === 'Gjennomført' && pickListValue === 'Completed') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Ikke ledig tolk' && pickListValue == 'No interpreter available') {
+            } else if (status === 'Ikke ledig tolk' && pickListValue === 'No interpreter available') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Avslått' && pickListValue == 'Denied') {
+            } else if (status === 'Avslått' && pickListValue === 'Denied') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Åpen' && pickListValue == 'Open') {
+            } else if (status === 'Åpen' && pickListValue === 'Open') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Under behandling' && pickListValue == 'Working') {
+            } else if (status === 'Under behandling' && pickListValue === 'Working') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Du har fått tolk' && pickListValue == 'Tolk received') {
+            } else if (status === 'Du har fått tolk' && pickListValue === 'Tolk received') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Se tidsplan' && pickListValue == 'See timetable') {
+            } else if (status === 'Se tidsplan' && pickListValue === 'See timetable') {
                 tempRequests.push(this.allRequests[i]);
-            } else if (pickListValue == 'All') {
-                //this.showAll = true;
-                //tempRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
-                tempRequests = this.allRequests; // Should be set already in handleRequestType to alLMy or allOrdered
-            } else if (pickListValue == 'Future') {
+            } else if (pickListValue === 'All') {
+                tempRequests = this.allRequests; // Already set correctly in handleRequestType
+            } else if (pickListValue === 'Future') {
                 // Filter on start date and status not cancelled here
                 return;
             }
@@ -252,11 +252,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     @track isMyRequests = true;
     handleRequestType(event) {
-        console.log('handleRequestType fired');
-        this.isMyRequests = event.detail.value = 'my';
+        this.isMyRequests = event.detail.value === 'my';
         this.allRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
         this.filterRequests();
-        //this.showAllOrNot();
         let tempColumns = [...this.columns];
         let tempMobileColumns = [...this.mobileColumns];
 
@@ -273,7 +271,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             });
             tempMobileColumns.unshift("'Bruker'");
         }
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             if (i < tempMobileColumns.length) {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), tempMobileColumns[i]);
             } else {
@@ -283,15 +281,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.columns = [...tempColumns];
         this.mobileColumns = [...tempMobileColumns];
     }
-
-    //@track showAll = false;
-    /*showAllOrNot() {
-        if (this.showAll) {
-            this.requests = this.allMyRequests;
-        } else {
-            this.filterRequests();
-        }
-    }*/
 
     @track defaultSortDirection = 'desc';
     @track sortDirection = 'desc';
@@ -339,7 +328,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
     }
     connectedCallback() {
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             if (i < this.mobileColumns.length) {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.mobileColumns[i]);
             } else {
@@ -364,7 +353,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     cancelOrder(row) {
         const { Id } = row;
         const index = this.findRowIndexById(Id);
-        if (index != -1) {
+        if (index !== -1) {
             let tempEndDate = new Date(this.requests[index].EndTime__c);
             if (
                 this.requests[index].ExternalRequestStatus__c != 'Avlyst' &&
@@ -381,7 +370,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                         .then(() => {
                             refreshApex(this.wiredRequestsResult);
                         })
-                        .catch((error) => {
+                        .catch(() => {
                             alert('Kunne ikke avlyse bestilling.');
                         });
                 }
@@ -394,7 +383,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     cloneOrder(row) {
         const { Id } = row;
         const index = this.findRowIndexById(Id);
-        if (index != -1) {
+        if (index !== -1) {
             //Here we should get the entire record from salesforce, to get entire interpretation address.
             let clone = this.requests[index];
             this[NavigationMixin.Navigate]({
@@ -414,8 +403,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     editOrder(row) {
         const { Id } = row;
         const index = this.findRowIndexById(Id);
-        if (index != -1) {
-            if (row.Orderer__c == this.userRecord.AccountId) {
+        if (index !== -1) {
+            if (row.Orderer__c === this.userRecord.AccountId) {
                 if (this.requests[index].ExternalRequestStatus__c.includes('Åpen')) {
                     //Here we should get the entire record from salesforce, to get entire interpretation address.
                     let clone = this.requests[index];
@@ -443,11 +432,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track publicEvent = false;
     showDetails(row) {
         this.record = row;
-        this.myRequest = this.record.Orderer__c == this.userRecord.AccountId;
+        this.myRequest = this.record.Orderer__c === this.userRecord.AccountId;
         this.userForm =
-            (this.record.Type__c == 'User' || this.record.Type__c == 'Company') && this.record.UserName__c != '';
-        this.companyForm = this.record.Type__c == 'Company' || this.record.Type__c == 'PublicEvent';
-        this.publicEvent = this.record.Type__c == 'PublicEvent';
+            (this.record.Type__c === 'User' || this.record.Type__c === 'Company') && this.record.UserName__c !== '';
+        this.companyForm = this.record.Type__c === 'Company' || this.record.Type__c === 'PublicEvent';
+        this.publicEvent = this.record.Type__c === 'PublicEvent';
 
         this.userFields = formatRecord(this.record, requestFieldLabels.getSubFields('user'));
         this.ordererFields = formatRecord(this.record, requestFieldLabels.getSubFields('orderer'));
