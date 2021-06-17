@@ -158,6 +158,15 @@
         <relatedList>ServiceAppointments</relatedList>
     </relatedLists>
     <relatedLists>
+        <fields>NAME</fields>
+        <fields>StartTime__c</fields>
+        <fields>EndTime__c</fields>
+        <fields>WorkType__c</fields>
+        <fields>AssignmentType__c</fields>
+        <fields>ServiceTerritory__c</fields>
+        <relatedList>HOT_WageClaim__c.ServiceResource__c</relatedList>
+    </relatedLists>
+    <relatedLists>
         <fields>SkillMasterLabel</fields>
         <fields>SkillLevel</fields>
         <fields>EffectiveStartDate</fields>
@@ -247,7 +256,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1j000002kPnB</masterLabel>
+        <masterLabel>00h0E000001kNju</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
