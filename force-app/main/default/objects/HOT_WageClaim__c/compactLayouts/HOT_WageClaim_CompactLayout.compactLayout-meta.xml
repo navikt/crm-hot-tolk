@@ -5,7 +5,7 @@
     <fields>ServiceTerritory__c</fields>
     <fields>WorkType__c</fields>
     <fields>AssignmentType__c</fields>
-    <fields>ServiceAppointment__c</fields>
+    <fields>InterpretationType_c__c</fields>
     <fields>StartTime__c</fields>
     <fields>EndTime__c</fields>
     <label>HOT_WageClaim_CompactLayout</label>
