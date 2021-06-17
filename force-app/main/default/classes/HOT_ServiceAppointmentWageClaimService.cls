@@ -1,4 +1,4 @@
-public without sharing class HOT_ServiceAppointmentWageClaim {
+public without sharing class HOT_ServiceAppointmentWageClaimService {
     @AuraEnabled(cacheable=true)
     public static List<ServiceAppointment> getServiceAppointments(String wageClaimId) {
         HOT_WageClaim__c wageClaim = [
@@ -21,5 +21,13 @@ public without sharing class HOT_ServiceAppointmentWageClaim {
         ];
 
         return serviceAppointments;
+    }
+
+    @InvocableVariable
+    public Datetime serviceAppointmentStartTime;
+    @InvocableVariable
+    public Datetime serviceAppointmentEndTime;
+    @InvocableMethod
+    public static List<String> updateWageClaims(List<HOT_ServiceAppointmentWageClaimService> inputVariables) {
     }
 }
