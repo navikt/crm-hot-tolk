@@ -49,6 +49,18 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
             sortable: true
         },
         {
+            label: 'Region',
+            fieldName: 'HOT_ServiceTerritoryName__c',
+            type: 'text',
+            sortable: true
+        },
+        {
+            label: 'Oppmøte/Skjerm',
+            fieldName: 'HOT_InterpretationType__c',
+            type: 'text',
+            sortable: true
+        },
+        {
             label: 'Status',
             fieldName: 'Status',
             type: 'text',
