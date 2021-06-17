@@ -18,7 +18,15 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
             LIMIT 1
         ];
         List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, AppointmentNumber, SchedStartTime, SchedEndTime, HOT_WorkTypeName__c, Status
+            SELECT
+                Id,
+                AppointmentNumber,
+                SchedStartTime,
+                SchedEndTime,
+                HOT_WorkTypeName__c,
+                HOT_ServiceTerritoryName__c,
+                HOT_InterpretationType__c,
+                Status
             FROM ServiceAppointment
             WHERE
                 WorkTypeId = :wageClaim.WorkType__c
