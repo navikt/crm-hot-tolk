@@ -71,16 +71,6 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), '');
             }
         }
-
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName: 'mine-oppdrag'
-            },
-            state: {
-                activeTab: 'wageClaim'
-            }
-        });
     }
 
     goToHome(event) {
