@@ -1,11 +1,11 @@
 public without sharing class HOT_WageClaimHandler extends MyTriggers {
     public override void onBeforeInsert() {
         List<Id> parentWageClaimIds = new List<Id>();
-        List<HOT_WageClaim__c> wageClaimsWithParent = new List<HOT_WageClaim__c>();
+        List<Id> wageClaimsWithParent = new List<Id>();
         for (HOT_WageClaim__c wageClaim : (List<HOT_WageClaim__c>) records) {
             if (wageClaim.ParentWageClaim__c != null) {
                 parentWageClaimIds.add(wageClaim.ParentWageClaim__c);
-                wageClaimsWithParent.add(wageClaim);
+                wageClaimsWithParent.add(wageClaim.Id);
             }
         }
         if (parentWageClaimIds.size() > 0) {
@@ -47,11 +47,10 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
         for (HOT_WageClaim__c wageClaim : wageClaims) {
             wageClaim.IsParent__c = true;
         }
-        update wageClaims;
     }
 
-    public static void setFieldsBasedOnParent(List<HOT_WageClaim__c> wageClaims) {
-        wageClaims = [
+    public static void setFieldsBasedOnParent(List<Id> wageClaimIds) {
+        List<HOT_WageClaim__c> wageClaims = [
             SELECT
                 Id,
                 AssignmentType__c,
@@ -65,11 +64,10 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
                 ParentWageClaim__r.ServiceTerritory__c,
                 ParentWageClaim__r.WorkType__c
             FROM HOT_WageClaim__c
-            WHERE Id IN :wageClaims
+            WHERE Id IN :wageClaimIds
         ];
         for (HOT_WageClaim__c wageClaim : wageClaims) {
             wageClaim.ServiceAppointment__c = wageClaim.ParentWageClaim__r.ServiceAppointment__c;
-            wageClaim.ServiceResource__c = wageClaim.ParentWageClaim__r.ServiceResource__c;
             wageClaim.ServiceTerritory__c = wageClaim.ParentWageClaim__r.ServiceTerritory__c;
             wageClaim.WorkType__c = wageClaim.ParentWageClaim__r.WorkType__c;
         }
