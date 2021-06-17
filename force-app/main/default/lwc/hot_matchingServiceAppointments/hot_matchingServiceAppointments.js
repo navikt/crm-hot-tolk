@@ -1,10 +1,14 @@
+import getServiceAppointments from '@salesforce/apex/HOT_ServiceAppointmentWageClaim.getServiceAppointments';
 import { LightningElement, wire, track, api } from 'lwc';
+import { sortList, getMobileSortingOptions } from 'c/sortController';
 
 export default class Hot_matchingServiceAppointments extends LightningElement {
+    @api recordId;
+
     @track columns = [
         {
             label: 'Start tid',
-            fieldName: 'SchedStartDate',
+            fieldName: 'SchedStartTime',
             type: 'date',
             sortable: true,
             typeAttributes: {
@@ -18,7 +22,7 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
         },
         {
             label: 'Slutt tid',
-            fieldName: 'SchedEndDate',
+            fieldName: 'SchedEndTime',
             type: 'date',
             sortable: true,
             typeAttributes: {
@@ -32,7 +36,7 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
         },
         {
             label: 'Tolkemetode',
-            fieldName: 'WorkTypeId',
+            fieldName: 'HOT_WorkTypeName__c',
             type: 'text',
             sortable: true
         },
@@ -45,13 +49,35 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
     ];
 
     @track serviceAppointments;
-    /*
-    @wire(getServiceResource)
-    wiredServiceresource(result) {
+    @wire(getServiceAppointments, { wageClaimId: '$recordId' })
+    wiredServiceAppointments(result) {
+        console.log(JSON.stringify(result));
+        console.log('derp');
         if (result.data) {
-            this.serviceResource = result.data;
-            //console.log(JSON.stringify(this.serviceResource));
+            this.serviceAppointments = result.data;
+            //console.log(this.serviceAppointments.length);
         }
     }
-    */
+
+    //Sorting methods
+    @track defaultSortDirection = 'asc';
+    @track sortDirection = 'desc';
+    @track sortedBy = 'HOT_ReleaseDate__c';
+
+    mobileSortingDefaultValue = '{"fieldName": "HOT_ReleaseDate__c", "sortDirection": "desc"} ';
+    get sortingOptions() {
+        return getMobileSortingOptions(this.columns);
+    }
+
+    handleMobileSorting(event) {
+        let value = JSON.parse(event.detail.value);
+        this.sortDirection = value.sortDirection;
+        this.sortedBy = value.fieldName;
+        this.serviceAppointments = sortList(this.serviceAppointments, this.sortedBy, this.sortDirection);
+    }
+    onHandleSort(event) {
+        this.sortDirection = event.detail.sortDirection;
+        this.sortedBy = event.detail.fieldName;
+        this.serviceAppointments = sortList(this.serviceAppointments, this.sortedBy, this.sortDirection);
+    }
 }
