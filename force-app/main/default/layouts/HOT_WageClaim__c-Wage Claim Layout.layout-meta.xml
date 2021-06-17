@@ -42,10 +42,6 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>ServiceAppointment__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>WorkType__c</field>
             </layoutItems>
             <layoutItems>
@@ -55,6 +51,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>ServiceTerritory__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>InterpretationType_c__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
