@@ -644,46 +644,82 @@ private class HOT_ServiceAppointmentHandlerTest {
     @isTest
     public static void updateServiceTerritoryOnStatusChange() {
         ServiceAppointment serviceAppointment = [
-            SELECT Id, ServiceTerritoryId, ParentRecordId
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
             FROM ServiceAppointment
             LIMIT 1
         ];
-        WorkOrderLineItem workOrderLineItem = [
-            SELECT Id, ServiceTerritoryId
-            FROM WorkOrderLineItem
-            WHERE Id = :serviceAppointment.ParentRecordId
-        ];
+        // Need to make new to see if the ServiceTerritory field on SA changes to the new one
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
         insert serviceTerritory;
 
-        workOrderLineItem.ServiceTerritoryId = serviceTerritory.Id;
-        update workOrderLineItem;
+        WorkOrderLineItem woli = [
+            SELECT Id, ServiceTerritoryId
+            FROM WorkOrderLineItem
+            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.Id
+        ];
+        woli.ServiceTerritoryId = serviceTerritory.Id;
+        update woli;
 
         serviceAppointment.Status = 'In Progress';
         serviceAppointment.HOT_PreferredResource__c = null;
         update serviceAppointment;
 
-        List<AssignedResource> assignedResources = [
-            SELECT Id
-            FROM AssignedResource
-            WHERE ServiceAppointmentId = :serviceAppointment.Id
-        ];
-        delete assignedResources;
+        Test.startTest();
         serviceAppointment.Status = 'None';
         update serviceAppointment;
+        Test.stopTest();
 
         serviceAppointment = [
-            SELECT Id, ServiceTerritoryId, ParentRecordId, HOT_NumberOfAssignedResources__c, HOT_PreferredResource__c
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
-        workOrderLineItem = [SELECT Id, ServiceTerritoryId FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
-
         System.assertEquals(
+            woli.ServiceTerritoryId,
             serviceAppointment.ServiceTerritoryId,
-            workOrderLineItem.ServiceTerritoryId,
+            'ServiceTerritory ble ikke satt riktig'
+        );
+    }
+
+    @isTest
+    public static void updateServiceTerritoryOnStatusChangePreferredResourceNotNull() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        // Need to make new to see if the ServiceTerritory field on SA changes to the new one
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
+        WorkOrderLineItem woli = [
+            SELECT Id, ServiceTerritoryId
+            FROM WorkOrderLineItem
+            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.Id
+        ];
+        woli.ServiceTerritoryId = serviceTerritory.Id;
+        update woli;
+
+        serviceAppointment.Status = 'In Progress';
+        update serviceAppointment;
+
+        Test.startTest();
+        serviceAppointment.Status = 'None';
+        update serviceAppointment;
+        Test.stopTest();
+
+        serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        System.assertNotEquals(
+            woli.ServiceTerritoryId,
+            serviceAppointment.ServiceTerritoryId,
             'ServiceTerritory ble ikke satt riktig'
         );
     }

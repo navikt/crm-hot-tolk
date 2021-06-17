@@ -102,7 +102,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
             if (
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
-                serviceAppointment.Status == 'None'
+                serviceAppointment.Status == 'None' &&
+                serviceAppointment.HOT_PreferredResource__c == null
             ) {
                 serviceAppointmentsWithStatusOpen.add(serviceAppointment);
             }
@@ -233,23 +234,18 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    public static void setOriginalServiceTerritory(List<ServiceAppointment> serviceAppointments) {
-        List<WorkOrderLineItem> workOrderLineItems = [SELECT Id, ServiceTerritoryId FROM WorkOrderLineItem];
+    private static void setOriginalServiceTerritory(List<ServiceAppointment> serviceAppointments) {
+        Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(
+            [
+                SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+                FROM ServiceAppointment
+                WHERE ServiceAppointment.Id IN :serviceAppointments
+            ]
+        );
 
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            if (
-                serviceAppointment.HOT_NumberOfAssignedResources__c != 0 ||
-                serviceAppointment.HOT_PreferredResource__c != null
-            ) {
-                return;
-            }
-            for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
-                if (workOrderLineItem.ServiceTerritoryId == null) {
-                    continue;
-                }
-                if (serviceAppointment.ParentRecordId == workOrderLineItem.Id) {
-                    serviceAppointment.ServiceTerritoryId = workOrderLineItem.ServiceTerritoryId;
-                }
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId != null) {
+                sa.ServiceTerritoryId = serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId;
             }
         }
     }
