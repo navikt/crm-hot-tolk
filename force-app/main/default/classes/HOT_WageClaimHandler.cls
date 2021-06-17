@@ -1,5 +1,5 @@
 public without sharing class HOT_WageClaimHandler extends MyTriggers {
-    public override void onBeforeInsert() {
+    public override void onAfterInsert() {
         List<Id> parentWageClaimIds = new List<Id>();
         List<Id> wageClaimsWithParent = new List<Id>();
         for (HOT_WageClaim__c wageClaim : (List<HOT_WageClaim__c>) records) {
@@ -47,6 +47,7 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
         for (HOT_WageClaim__c wageClaim : wageClaims) {
             wageClaim.IsParent__c = true;
         }
+        update wageClaims;
     }
 
     public static void setFieldsBasedOnParent(List<Id> wageClaimIds) {
