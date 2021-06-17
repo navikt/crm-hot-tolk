@@ -2,16 +2,11 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
         return Database.getQueryLocator(
-            'SELECT Id IsReminderSMS__c, Account__r.CRM_Person__c FROM HOT_Request__c WHERE IsReminderSMS__c = FALSE AND StartTime__c > :now'
+            'SELECT Id, SchedStartTime, SchedEndTime, HOT_StartHour__c, HOT_EndHour__c FROM ServiceAppointment WHERE SchedStartTime != null AND SchedEndTime != null AND HOT_StartHour__c = null AND HOT_EndHour__c = null'
         );
     }
-    public void execute(Database.BatchableContext bc, List<HOT_Request__c> records) {
-        List<Id> personIds = new List<Id>();
-        for (HOT_Request__c request : records) {
-            request.IsReminderSMS__c = true;
-            personIds.add(request.Account__r.CRM_Person__c);
-        }
-
+    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
+        records = HOT_ServiceAppointmentHandler.setStartAndEndHour(records);
         try {
             update records;
         } catch (Exception e) {
