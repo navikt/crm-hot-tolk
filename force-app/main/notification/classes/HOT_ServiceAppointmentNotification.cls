@@ -1,5 +1,5 @@
 public without sharing class HOT_ServiceAppointmentNotification {
-    public static void notifyInterpreter_serviceAppointmentChanged(
+    public static void resourceServiceAppointmentChanged(
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
@@ -11,14 +11,15 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
+            // Varsel ved tildelt tolk
             if (
-                serviceAppointment.HOT_AssignedResourceId__c != null ||
-                oldServiceAppointment.Status != serviceAppointment.Status &&
+                serviceAppointment.HOT_AssignedResourceId__c != null &&
+                (oldServiceAppointment.Status != serviceAppointment.Status ||
+                serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c) &&
                 serviceAppointment.Status == 'Dispatched'
             ) {
                 Set<String> recipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
 
-                // Varsel ved tildelt tolk
                 resourceAdded(notificationType, serviceAppointment, recipients);
             }
 
@@ -90,7 +91,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
     }
 
-    public static void notifyDispatchers_serviceAppointmentChanged(
+    public static void dispatcherServiceAppointmentChanged(
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {

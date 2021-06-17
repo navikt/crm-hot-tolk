@@ -122,10 +122,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             setActualTime(completedImageInterpreterServiceAppointments);
         }
         if (SAnotifyDispatcher.size() > 0) {
-            HOT_ServiceAppointmentNotification.notifyDispatchers_serviceAppointmentChanged(
-                SAnotifyDispatcher,
-                triggerOldMap
-            );
+            HOT_ServiceAppointmentNotification.dispatcherServiceAppointmentChanged(SAnotifyDispatcher, triggerOldMap);
             resetNotifyDispatcher(SAnotifyDispatcher);
         }
         if (annulServiceAppointments.size() > 0) {
@@ -141,30 +138,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
-            if (
-                //canceled by user
-                //time change
-                //address change
-                //removed resource
-                //changed resource
-                serviceAppointment.Status == 'Canceled' &&
-                triggerOldMap.get(serviceAppointment.Id).get('Status') != 'Canceled' ||
-                (serviceAppointment.SchedStartTime != triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') ||
-                serviceAppointment.SchedEndTime != triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime')) ||
-                serviceAppointment.HOT_AddressFormated__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_AddressFormated__c') ||
-                (triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Completed' ||
-                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Dispatched' ||
-                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'In Progress') &&
-                (serviceAppointment.Status == null ||
-                serviceAppointment.Status == 'None') ||
-                (serviceAppointment.HOT_IsScreenInterpreterNew__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsScreenInterpreterNew__c')) ||
-                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Scheduled' &&
-                serviceAppointment.Status == 'Dispatched'
-            ) {
-                SAnotifyResource.add(serviceAppointment);
-            }
             if (
                 (serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') &&
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')
@@ -207,12 +180,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             deleteRelatedEvents(serviceAppointmentsToRemoveAssignedResource);
         }
-        if (SAnotifyResource.size() > 0) {
-            HOT_ServiceAppointmentNotification.notifyInterpreter_serviceAppointmentChanged(
-                SAnotifyResource,
-                triggerOldMap
-            );
-        }
+
+        HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
+            (List<ServiceAppointment>) records,
+            triggerOldMap
+        );
     }
 
     private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
