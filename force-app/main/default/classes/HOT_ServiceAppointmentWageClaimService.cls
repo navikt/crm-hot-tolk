@@ -1,4 +1,14 @@
 public without sharing class HOT_ServiceAppointmentWageClaimService {
+    @AuraEnabled
+    public static void assign(Id wageClaimId, Id serviceAppointmentId) {
+        HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c WHERE Id = :wageClaimId];
+        AssignedResource assignedResource = new AssignedResource(
+            ServiceAppointmentId = serviceAppointmentId,
+            ServiceResourceId = wageClaim.ServiceResource__c
+        );
+        insert assignedResource;
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<ServiceAppointment> getServiceAppointments(String wageClaimId) {
         HOT_WageClaim__c wageClaim = [
@@ -8,10 +18,12 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
             LIMIT 1
         ];
         List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, SchedStartTime, SchedEndTime, HOT_WorkTypeName__c, Status
+            SELECT Id, AppointmentNumber, SchedStartTime, SchedEndTime, HOT_WorkTypeName__c, Status
             FROM ServiceAppointment
             WHERE
                 WorkTypeId = :wageClaim.WorkType__c
+                AND (Status = 'None'
+                OR Status = 'Released to Freelance')
                 AND ((SchedStartTime >= :wageClaim.StartTime__c
                 AND SchedStartTime < :wageClaim.EndTime__c)
                 OR (SchedEndTime >= :wageClaim.StartTime__c
