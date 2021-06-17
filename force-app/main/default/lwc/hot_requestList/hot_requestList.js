@@ -18,15 +18,15 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         refreshApex(this.wiredRequestsResult);
     }
     @track choices = [
-        { name: 'All', label: 'Alle' },
-        { name: 'Future', label: 'Fremtidige' },
-        { name: 'Open', label: 'Åpen' },
-        { name: 'Working', label: 'Under behandling' },
-        { name: 'Tolk received', label: 'Du har fått tolk' },
-        { name: 'No interpreter available', label: 'Ikke ledig tolk' },
-        { name: 'See timetable', label: 'Serieoppdrag' }, // "Se tidsplan"
-        { name: 'Canceled', label: 'Avlyst' },
-        { name: 'Completed', label: 'Gjennomført' }
+        { name: 'Fremtidige', label: 'Fremtidige' },
+        { name: 'Alle', label: 'Alle' },
+        { name: 'Åpen', label: 'Åpen' },
+        { name: 'Under behandling', label: 'Under behandling' },
+        { name: 'Du har fått tolk', label: 'Du har fått tolk' },
+        { name: 'Ikke ledig tolk', label: 'Ikke ledig tolk' },
+        { name: 'Serieoppdrag', label: 'Serieoppdrag' }, // "Se tidsplan"
+        { name: 'Avlyst', label: 'Avlyst' },
+        { name: 'Gjennomført', label: 'Gjennomført' }
     ];
 
     @track selectDisable = false;
@@ -196,7 +196,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         return this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
     }
 
-    @track picklistValue = 'All';
+    @track picklistValue = 'Fremtidige';
     handlePicklist(event) {
         this.picklistValue = event.detail;
         this.filterRequests();
@@ -208,25 +208,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
         for (let i = 0; i < this.allRequests.length; i++) {
             let status = this.allRequests[i].ExternalRequestStatus__c;
-            if (status === 'Avlyst' && pickListValue === 'Canceled') {
+            if (status === pickListValue) {
                 tempRequests.push(this.allRequests[i]);
-            } else if (status === 'Gjennomført' && pickListValue === 'Completed') {
-                tempRequests.push(this.allRequests[i]);
-            } else if (status === 'Ikke ledig tolk' && pickListValue === 'No interpreter available') {
-                tempRequests.push(this.allRequests[i]);
-            } else if (status === 'Åpen' && pickListValue === 'Open') {
-                tempRequests.push(this.allRequests[i]);
-            } else if (status === 'Under behandling' && pickListValue === 'Working') {
-                tempRequests.push(this.allRequests[i]);
-            } else if (status === 'Du har fått tolk' && pickListValue === 'Tolk received') {
-                tempRequests.push(this.allRequests[i]);
-            } else if (status === 'Se tidsplan' && pickListValue === 'See timetable') {
-                tempRequests.push(this.allRequests[i]);
-            } else if (pickListValue === 'All') {
+            } else if (pickListValue === 'Alle') {
                 tempRequests = this.allRequests; // Already set correctly in handleRequestType
-            } else if (pickListValue === 'Future') {
-                const timeNow = new Date().toISOString();
-                if (status !== 'Avlyst' && this.allRequests[i].StartTime__c > timeNow) {
+            } else if (pickListValue === 'Fremtidige') {
+                if (status !== 'Avlyst' && this.allRequests[i].EndTime__c > new Date().toISOString()) {
                     tempRequests.push(this.allRequests[i]);
                 }
             }
