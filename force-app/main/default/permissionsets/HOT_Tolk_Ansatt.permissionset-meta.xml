@@ -522,12 +522,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.Address__c</field>
+        <field>Person__c.CRM_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.CRM_Account__c</field>
+        <field>Person__c.HOT_Address__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

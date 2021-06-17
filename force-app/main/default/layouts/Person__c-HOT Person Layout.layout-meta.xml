@@ -12,7 +12,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>Address__c</field>
+                <field>HOT_Address__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
