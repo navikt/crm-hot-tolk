@@ -18,17 +18,15 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         refreshApex(this.wiredRequestsResult);
     }
     @track choices = [
-        { name: 'Active', label: 'Aktiv', selected: true },
-        { name: 'Future', label: 'Fremtidige' },
         { name: 'All', label: 'Alle' },
+        { name: 'Future', label: 'Fremtidige' },
         { name: 'Open', label: 'Åpen' },
-        { name: 'Completed', label: 'Gjennomført' },
         { name: 'Working', label: 'Under behandling' },
         { name: 'Tolk received', label: 'Du har fått tolk' },
+        { name: 'No interpreter available', label: 'Ikke ledig tolk' },
         { name: 'See timetable', label: 'Serieoppdrag' }, // "Se tidsplan"
         { name: 'Canceled', label: 'Avlyst' },
-        { name: 'No interpreter available', label: 'Ikke ledig tolk' },
-        { name: 'Denied', label: 'Avslått' }
+        { name: 'Completed', label: 'Gjennomført' }
     ];
 
     @track selectDisable = false;
@@ -198,19 +196,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         return this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
     }
 
-    filterActiveRequests(tempRequests, i) {
-        if (
-            this.allRequests[i].ExternalRequestStatus__c === 'Åpen' ||
-            this.allRequests[i].ExternalRequestStatus__c === 'Under behandling' ||
-            this.allRequests[i].ExternalRequestStatus__c === 'Du har fått tolk' ||
-            this.allRequests[i].ExternalRequestStatus__c === 'Se tidsplan' ||
-            this.allRequests[i].ExternalRequestStatus__c === 'Pågår'
-        ) {
-            tempRequests.push(this.allRequests[i]);
-        }
-    }
-
-    @track picklistValue = 'Active';
+    @track picklistValue = 'All';
     handlePicklist(event) {
         this.picklistValue = event.detail;
         this.filterRequests();
@@ -222,15 +208,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
         for (let i = 0; i < this.allRequests.length; i++) {
             let status = this.allRequests[i].ExternalRequestStatus__c;
-            if (pickListValue === 'Active') {
-                this.filterActiveRequests(tempRequests, i);
-            } else if (status === 'Avlyst' && pickListValue === 'Canceled') {
+            if (status === 'Avlyst' && pickListValue === 'Canceled') {
                 tempRequests.push(this.allRequests[i]);
             } else if (status === 'Gjennomført' && pickListValue === 'Completed') {
                 tempRequests.push(this.allRequests[i]);
             } else if (status === 'Ikke ledig tolk' && pickListValue === 'No interpreter available') {
-                tempRequests.push(this.allRequests[i]);
-            } else if (status === 'Avslått' && pickListValue === 'Denied') {
                 tempRequests.push(this.allRequests[i]);
             } else if (status === 'Åpen' && pickListValue === 'Open') {
                 tempRequests.push(this.allRequests[i]);
