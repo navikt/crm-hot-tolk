@@ -1,11 +1,19 @@
 import getServiceAppointments from '@salesforce/apex/HOT_ServiceAppointmentWageClaimService.getServiceAppointments';
+import assign from '@salesforce/apex/HOT_ServiceAppointmentWageClaimService.assign';
 import { LightningElement, wire, track, api } from 'lwc';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
 
+var actions = [{ label: 'Tildel', name: 'assign' }];
 export default class Hot_matchingServiceAppointments extends LightningElement {
     @api recordId;
 
     @track columns = [
+        {
+            label: 'Oppdrag',
+            fieldName: 'AppointmentNumber',
+            type: 'text',
+            sortable: true
+        },
         {
             label: 'Start tid',
             fieldName: 'SchedStartTime',
@@ -45,6 +53,10 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
             fieldName: 'Status',
             type: 'text',
             sortable: true
+        },
+        {
+            type: 'action',
+            typeAttributes: { rowActions: actions }
         }
     ];
 
@@ -57,6 +69,20 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
             this.serviceAppointments = result.data;
             //console.log(this.serviceAppointments.length);
         }
+    }
+
+    handleRowAction(event) {
+        const actionName = event.detail.action.name;
+        const row = event.detail.row;
+        switch (actionName) {
+            case 'assign':
+                this.assignResourceToServiceAppointment(row.Id);
+                break;
+            default:
+        }
+    }
+    assignResourceToServiceAppointment(serviceAppointmentId) {
+        assign({ wageClaimId: this.recordId, serviceAppointmentId: serviceAppointmentId });
     }
 
     //Sorting methods
