@@ -140,7 +140,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
 
         if (serviceAppointmentsWithHoursToSet.size() > 0) {
-            List<ServiceAppointment> setStartAndEndHourResult = setStartAndEndHour(serviceAppointmentsWithHoursToSet);
+            setStartAndEndHour(serviceAppointmentsWithHoursToSet);
         }
     }
 
@@ -384,7 +384,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
             }
         }
-        List<ServiceAppointment> setStartAndEndHourResult = setStartAndEndHour(serviceAppointments);
+        setStartAndEndHour(serviceAppointments);
     }
 
     private static void setOwner(List<ServiceAppointment> serviceAppointments) {
