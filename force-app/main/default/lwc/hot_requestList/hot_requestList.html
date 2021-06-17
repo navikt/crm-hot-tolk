@@ -28,6 +28,16 @@
             >
             </lightning-combobox>
 
+            <lightning-radio-group
+                label="Type bestilling"
+                class="horizontal"
+                name="radioGroup"
+                options={requestTypes}
+                value="my"
+                type="radio"
+                onchange={handleRequestType}
+            ></lightning-radio-group>
+
             <br /><br />
             <div class="picklist">
                 <c-picklist
