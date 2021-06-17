@@ -395,7 +395,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    public static void setStartAndEndHour(List<ServiceAppointment> records) {
+    public static List<ServiceAppointment> setStartAndEndHour(List<ServiceAppointment> records) {
         for (ServiceAppointment serviceAppointment : records) {
             serviceAppointment.HOT_StartHour__c = serviceAppointment.SchedStartTime != null
                 ? serviceAppointment.SchedStartTime.format('HH', 'Europe/Oslo')
@@ -404,6 +404,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 ? serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo')
                 : null;
         }
+        return records;
     }
 
     private static void createHistoricallyAssignedResources(
