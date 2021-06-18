@@ -18,28 +18,31 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         refreshApex(this.wiredRequestsResult);
     }
     @track choices = [
-        { name: 'Active', label: 'Aktive', selected: true },
-        { name: 'Completed', label: 'Ferdig' },
-        { name: 'Canceled', label: 'Avlyst' },
-        { name: 'No interpreter available', label: 'Ikke ledig tolk' },
-        { name: 'Denied', label: 'Avslått' },
-        { name: 'All', label: 'Alle mine bestillinger' },
-        { name: 'Others', label: 'Alle bestillinger på vegne av andre' }
+        { name: 'Fremtidige', label: 'Fremtidige' },
+        { name: 'Alle', label: 'Alle' },
+        { name: 'Åpen', label: 'Åpen' },
+        { name: 'Under behandling', label: 'Under behandling' },
+        { name: 'Du har fått tolk', label: 'Du har fått tolk' },
+        { name: 'Ikke ledig tolk', label: 'Ikke ledig tolk' },
+        { name: 'Serieoppdrag', label: 'Serieoppdrag' }, // "Se tidsplan"
+        { name: 'Avlyst', label: 'Avlyst' },
+        { name: 'Gjennomført', label: 'Gjennomført' }
     ];
+
     @track selectDisable = false;
     @track selectMultiple = false;
-    @track selectRequired = true;
+    @track selectRequired = false;
     @track selectSize = 1;
 
     @track isProd;
     @track error;
     @wire(isProdFunction)
-    wiredIsProd({ error, data }) {
+    wiredIsProd({ data }) {
         this.isProd = data;
     }
     @track userRecord = { AccountId: null };
     @wire(getPersonAccount)
-    wiredGetRecord({ error, data }) {
+    wiredGetRecord({ data }) {
         if (data) {
             this.userRecord.AccountId = data.AccountId;
         }
@@ -122,16 +125,16 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     getRowActions(row, doneCallback) {
         let actions = [];
         let tempEndDate = new Date(row['EndTime__c']);
-        if (row['Orderer__c'] == row['TempAccountId__c']) {
+        if (row['Orderer__c'] === row['TempAccountId__c']) {
             if (
-                row['Status__c'] != 'Avlyst' &&
-                row['Status__c'] != 'Dekket' &&
-                row['Status__c'] != 'Delvis dekket' &&
+                row['Status__c'] !== 'Avlyst' &&
+                row['Status__c'] !== 'Dekket' &&
+                row['Status__c'] !== 'Delvis dekket' &&
                 tempEndDate.getTime() > Date.now()
             ) {
                 actions.push({ label: 'Avlys', name: 'delete' });
             }
-            if (row['Status__c'] == 'Åpen') {
+            if (row['Status__c'] === 'Åpen') {
                 actions.push({ label: 'Rediger', name: 'edit_order' });
             }
             actions.push({ label: 'Kopier', name: 'clone_order' });
@@ -143,12 +146,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         doneCallback(actions);
     }
 
+    get requestTypes() {
+        return [
+            { label: 'Mine bestillinger', value: 'my' },
+            { label: 'Bestillinger på vegne av andre', value: 'user' }
+        ];
+    }
+
     @track rerender;
     @track requests;
     @track allRequests;
     @track allOrderedRequests;
     @track allMyRequests;
-    @track error;
     wiredRequestsResult;
 
     @wire(getRequestList)
@@ -158,8 +167,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             this.allRequests = this.distributeRequests(result.data);
             this.filterRequests();
             this.error = undefined;
-            var requestIds = [];
-            for (var request of result.data) {
+            let requestIds = [];
+            for (let request of result.data) {
                 requestIds.push(request.Id);
             }
             this.requestAssignedResources = await getAssignedResources({
@@ -175,11 +184,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.allMyRequests = [];
         this.allOrderedRequests = [];
         for (let request of data) {
-            if (request.Account__c == this.userRecord.AccountId) {
+            if (request.Account__c === this.userRecord.AccountId) {
                 this.allMyRequests.push(request);
             } else if (
-                request.Orderer__c == this.userRecord.AccountId &&
-                request.Account__c != this.userRecord.AccountId
+                request.Orderer__c === this.userRecord.AccountId &&
+                request.Account__c !== this.userRecord.AccountId
             ) {
                 this.allOrderedRequests.push(request);
             }
@@ -187,71 +196,44 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         return this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
     }
 
-    filterActiveRequests(tempRequests, i) {
-        if (
-            this.allRequests[i].ExternalRequestStatus__c == 'Åpen' ||
-            this.allRequests[i].ExternalRequestStatus__c == 'Under behandling' ||
-            this.allRequests[i].ExternalRequestStatus__c == 'Du har fått tolk' ||
-            this.allRequests[i].ExternalRequestStatus__c == 'Serieoppdrag' ||
-            this.allRequests[i].ExternalRequestStatus__c == 'Pågår'
-        ) {
-            tempRequests.push(this.allRequests[i]);
-        }
-    }
-
-    @track picklistValue = 'Active';
+    @track picklistValue = 'Fremtidige';
     handlePicklist(event) {
         this.picklistValue = event.detail;
-        if (this.picklistValue == 'Others') {
-            this.currentChoiceOthers = true;
-            this.handleRequestType(false);
-        } else if (this.picklistValue == 'All') {
-            this.currentChoiceOthers = false;
-            this.handleRequestType(true);
-        } else {
-            this.currentChoiceOthers = false;
-            this.handleRequestType(true);
-        }
+        this.filterRequests();
     }
+
     filterRequests() {
-        var tempRequests = [];
+        let tempRequests = [];
         let pickListValue = this.picklistValue;
-        for (var i = 0; i < this.allRequests.length; i++) {
+
+        for (let i = 0; i < this.allRequests.length; i++) {
             let status = this.allRequests[i].ExternalRequestStatus__c;
-            if (pickListValue == 'Active') {
-                this.filterActiveRequests(tempRequests, i);
-            } else if (status == 'Avlyst' && pickListValue == 'Canceled') {
+            if (status === pickListValue) {
                 tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Ferdig' && pickListValue == 'Completed') {
-                tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Ikke ledig tolk' && pickListValue == 'No interpreter available') {
-                tempRequests.push(this.allRequests[i]);
-            } else if (status == 'Avslått' && pickListValue == 'Denied') {
-                tempRequests.push(this.allRequests[i]);
-            } else if (pickListValue == 'All') {
-                tempRequests = this.allMyRequests;
-            } else if (pickListValue == 'Others') {
-                tempRequests = this.allOrderedRequests;
+            } else if (pickListValue === 'Alle') {
+                tempRequests = this.allRequests; // Already set correctly in handleRequestType
+            } else if (pickListValue === 'Fremtidige') {
+                if (status !== 'Avlyst' && this.allRequests[i].EndTime__c > new Date().toISOString()) {
+                    tempRequests.push(this.allRequests[i]);
+                }
             }
         }
         this.requests = tempRequests;
     }
 
     @track isMyRequests = true;
-    @track previousChoiceOthers = false;
-    @track currentChoiceOthers = false;
-    handleRequestType(isMyReq) {
+    handleRequestType(event) {
+        this.isMyRequests = event.detail.value === 'my';
+        this.allRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
         this.filterRequests();
         let tempColumns = [...this.columns];
         let tempMobileColumns = [...this.mobileColumns];
-        this.isMyRequests = isMyReq;
 
-        if (this.isMyRequests && this.previousChoiceOthers) {
+        if (this.isMyRequests) {
             tempColumns.shift();
             tempMobileColumns.shift();
             tempMobileColumns.push("''");
-            this.previousChoiceOthers = false;
-        } else if (this.currentChoiceOthers && !this.previousChoiceOthers) {
+        } else {
             tempColumns.unshift({
                 label: 'Bruker',
                 fieldName: 'UserName__c',
@@ -259,9 +241,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 sortable: true
             });
             tempMobileColumns.unshift("'Bruker'");
-            this.previousChoiceOthers = true;
         }
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             if (i < tempMobileColumns.length) {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), tempMobileColumns[i]);
             } else {
@@ -272,11 +253,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.mobileColumns = [...tempMobileColumns];
     }
 
-    @track defaultSortDirection = 'desc';
-    @track sortDirection = 'desc';
+    @track defaultSortDirection = 'asc';
+    @track sortDirection = 'asc';
     @track sortedBy = 'StartTime__c';
 
-    mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "desc"} ';
+    mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "asc"} ';
     get sortingOptions() {
         return getMobileSortingOptions(this.columns);
     }
@@ -285,11 +266,13 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.sortDirection = value.sortDirection;
         this.sortedBy = value.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
+        this.filterRequests();
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
+        this.filterRequests();
     }
 
     handleRowAction(event) {
@@ -316,7 +299,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
     }
     connectedCallback() {
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             if (i < this.mobileColumns.length) {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.mobileColumns[i]);
             } else {
@@ -341,7 +324,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     cancelOrder(row) {
         const { Id } = row;
         const index = this.findRowIndexById(Id);
-        if (index != -1) {
+        if (index !== -1) {
             let tempEndDate = new Date(this.requests[index].EndTime__c);
             if (
                 this.requests[index].ExternalRequestStatus__c != 'Avlyst' &&
@@ -358,7 +341,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                         .then(() => {
                             refreshApex(this.wiredRequestsResult);
                         })
-                        .catch((error) => {
+                        .catch(() => {
                             alert('Kunne ikke avlyse bestilling.');
                         });
                 }
@@ -371,7 +354,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     cloneOrder(row) {
         const { Id } = row;
         const index = this.findRowIndexById(Id);
-        if (index != -1) {
+        if (index !== -1) {
             //Here we should get the entire record from salesforce, to get entire interpretation address.
             let clone = this.requests[index];
             this[NavigationMixin.Navigate]({
@@ -391,8 +374,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     editOrder(row) {
         const { Id } = row;
         const index = this.findRowIndexById(Id);
-        if (index != -1) {
-            if (row.Orderer__c == this.userRecord.AccountId) {
+        if (index !== -1) {
+            if (row.Orderer__c === this.userRecord.AccountId) {
                 if (this.requests[index].ExternalRequestStatus__c.includes('Åpen')) {
                     //Here we should get the entire record from salesforce, to get entire interpretation address.
                     let clone = this.requests[index];
@@ -420,11 +403,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track publicEvent = false;
     showDetails(row) {
         this.record = row;
-        this.myRequest = this.record.Orderer__c == this.userRecord.AccountId;
+        this.myRequest = this.record.Orderer__c === this.userRecord.AccountId;
         this.userForm =
-            (this.record.Type__c == 'User' || this.record.Type__c == 'Company') && this.record.UserName__c != '';
-        this.companyForm = this.record.Type__c == 'Company' || this.record.Type__c == 'PublicEvent';
-        this.publicEvent = this.record.Type__c == 'PublicEvent';
+            (this.record.Type__c === 'User' || this.record.Type__c === 'Company') && this.record.UserName__c !== '';
+        this.companyForm = this.record.Type__c === 'Company' || this.record.Type__c === 'PublicEvent';
+        this.publicEvent = this.record.Type__c === 'PublicEvent';
 
         this.userFields = formatRecord(this.record, requestFieldLabels.getSubFields('user'));
         this.ordererFields = formatRecord(this.record, requestFieldLabels.getSubFields('orderer'));

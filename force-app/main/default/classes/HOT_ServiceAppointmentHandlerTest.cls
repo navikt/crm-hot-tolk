@@ -613,4 +613,114 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
         System.assertEquals(serviceAppointment.HOT_IsImageInterpreter__c, true, 'Could not set imgint');
     }
+
+    @isTest
+    public static void startHourAndEndHourSameTimeAsScheduledDateTimes() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, SchedStartTime, SchedEndTime, HOT_StartHour__c, HOT_EndHour__c
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        serviceAppointment.SchedStartTime = DateTime.now();
+        serviceAppointment.SchedEndTime = DateTime.now();
+        update serviceAppointment;
+        serviceAppointment = [
+            SELECT Id, SchedStartTime, SchedEndTime, HOT_StartHour__c, HOT_EndHour__c
+            FROM serviceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        System.assertEquals(
+            serviceAppointment.SchedStartTime.format('HH', 'Europe/Oslo'),
+            serviceAppointment.HOT_StartHour__c,
+            'Start time ble ikke satt riktig'
+        );
+        System.assertEquals(
+            serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo'),
+            serviceAppointment.HOT_EndHour__c,
+            'End time ble ikke satt riktig'
+        );
+    }
+
+    @isTest
+    public static void updateServiceTerritoryOnStatusChange() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        // Need to make new to see if the ServiceTerritory field on SA changes to the new one
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
+        WorkOrderLineItem woli = [
+            SELECT Id, ServiceTerritoryId
+            FROM WorkOrderLineItem
+            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.Id
+        ];
+        woli.ServiceTerritoryId = serviceTerritory.Id;
+        update woli;
+
+        serviceAppointment.Status = 'In Progress';
+        serviceAppointment.HOT_PreferredResource__c = null;
+        update serviceAppointment;
+
+        Test.startTest();
+        serviceAppointment.Status = 'None';
+        update serviceAppointment;
+        Test.stopTest();
+
+        serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        System.assertEquals(
+            woli.ServiceTerritoryId,
+            serviceAppointment.ServiceTerritoryId,
+            'ServiceTerritory ble ikke satt riktig'
+        );
+    }
+
+    @isTest
+    public static void updateServiceTerritoryOnStatusChangePreferredResourceNotNull() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        // Need to make new to see if the ServiceTerritory field on SA changes to the new one
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
+        WorkOrderLineItem woli = [
+            SELECT Id, ServiceTerritoryId
+            FROM WorkOrderLineItem
+            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.Id
+        ];
+        woli.ServiceTerritoryId = serviceTerritory.Id;
+        update woli;
+
+        serviceAppointment.Status = 'In Progress';
+        update serviceAppointment;
+
+        Test.startTest();
+        serviceAppointment.Status = 'None';
+        update serviceAppointment;
+        Test.stopTest();
+
+        serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        System.assertNotEquals(
+            woli.ServiceTerritoryId,
+            serviceAppointment.ServiceTerritoryId,
+            'ServiceTerritory ble ikke satt riktig'
+        );
+    }
 }

@@ -17,8 +17,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> completedImageInterpreterServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithStatusOpen = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != serviceAppointment.SchedStartTime ||
+                triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != serviceAppointment.SchedEndTime
+            ) {
+                serviceAppointmentsWithHoursToSet.add(serviceAppointment);
+            }
             if (
                 //Canceled on behalf of user
                 //Canceled by interpreter
@@ -92,6 +100,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 annulServiceAppointments.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'None' &&
+                serviceAppointment.HOT_PreferredResource__c == null
+            ) {
+                serviceAppointmentsWithStatusOpen.add(serviceAppointment);
+            }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -127,6 +142,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (annulServiceAppointments.size() > 0) {
             removeCustomAccountLookup(annulServiceAppointments);
+        }
+
+        if (serviceAppointmentsWithHoursToSet.size() > 0) {
+            setStartAndEndHour(serviceAppointmentsWithHoursToSet);
+        }
+        if (serviceAppointmentsWithStatusOpen.size() > 0) {
+            setOriginalServiceTerritory(serviceAppointmentsWithStatusOpen);
         }
     }
 
@@ -185,6 +207,22 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             (List<ServiceAppointment>) records,
             triggerOldMap
         );
+    }
+
+    private static void setOriginalServiceTerritory(List<ServiceAppointment> serviceAppointments) {
+        Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(
+            [
+                SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+                FROM ServiceAppointment
+                WHERE ServiceAppointment.Id IN :serviceAppointments
+            ]
+        );
+
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId != null) {
+                sa.ServiceTerritoryId = serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId;
+            }
+        }
     }
 
     private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
@@ -348,6 +386,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
             }
         }
+        setStartAndEndHour(serviceAppointments);
     }
 
     private static void setOwner(List<ServiceAppointment> serviceAppointments) {
@@ -356,6 +395,18 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.OwnerId = serviceAppointment.HOT_RequestOwnerId__c;
             }
         }
+    }
+
+    public static List<ServiceAppointment> setStartAndEndHour(List<ServiceAppointment> records) {
+        for (ServiceAppointment serviceAppointment : records) {
+            serviceAppointment.HOT_StartHour__c = serviceAppointment.SchedStartTime != null
+                ? serviceAppointment.SchedStartTime.format('HH', 'Europe/Oslo')
+                : null;
+            serviceAppointment.HOT_EndHour__c = serviceAppointment.SchedEndTime != null
+                ? serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo')
+                : null;
+        }
+        return records;
     }
 
     private static void createHistoricallyAssignedResources(
