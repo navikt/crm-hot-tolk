@@ -1,8 +1,7 @@
 public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onBeforeInsert() {
-        setDefaultFields((List<ServiceAppointment>) records);
         setOwner((List<ServiceAppointment>) records);
-        setFieldsByPreferredResource((List<ServiceAppointment>) records);
+        setDefaultFields((List<ServiceAppointment>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -151,7 +150,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             setStartAndEndHour(serviceAppointmentsWithHoursToSet);
         }
         if (serviceAppointmentsWithStatusOpen.size() > 0) {
-            setOriginalServiceTerritory(serviceAppointmentsWithStatusOpen);
+            setDefaultFields(serviceAppointmentsWithStatusOpen);
         }
     }
 
@@ -234,20 +233,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    private static void setOriginalServiceTerritory(List<ServiceAppointment> serviceAppointments) {
-        Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(
-            [
-                SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
-                FROM ServiceAppointment
-                WHERE ServiceAppointment.Id IN :serviceAppointments
-            ]
-        );
-
-        for (ServiceAppointment sa : serviceAppointments) {
-            if (serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId != null) {
-                sa.ServiceTerritoryId = serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId;
-            }
-        }
+    private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
+        setFieldsBasedOnParent(serviceAppointments);
+        setFieldsByPreferredResource(serviceAppointments);
     }
 
     private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
@@ -265,7 +253,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
+    private static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
@@ -286,7 +274,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     PostalCode,
                     HOT_InterpretationPostalCity__c,
                     HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalStreet__c
+                    HOT_InterpretationPostalStreet__c,
+                    ServiceTerritoryId
                 FROM WorkOrderLineItem
                 WHERE Id IN :workOrderLineItemIds
             ]
@@ -390,12 +379,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 if (serviceAppointment.HOT_WorkOrderLineItem__c == null && serviceAppointment.ParentRecordId != null) {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
-                if (
-                    serviceAppointment.ParentRecordId != null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId != null
-                ) {
+                if (workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId != null) {
                     serviceAppointment.HOT_Account__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .WorkOrder.AccountId;
+                }
+                if (workOrderLineItems.get(serviceAppointment.ParentRecordId).ServiceTerritoryId != null) {
+                    serviceAppointment.ServiceTerritoryId = workOrderLineItems.get(serviceAppointment.ParentRecordId)
+                        .ServiceTerritoryId;
                 }
                 serviceAppointment = updateDuration(serviceAppointment);
 
