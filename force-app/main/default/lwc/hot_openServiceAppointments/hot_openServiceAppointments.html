@@ -24,15 +24,18 @@
                     onclick={handleShowRegionFilter}
                 >
                 </lightning-button>
-                <lightning-input
-                    if:true={isRequestNumberNull}
-                    type="checkbox"
-                    label="Vis alle Skjermtolk-oppdrag"
-                    style="margin-left: 1rem"
-                    name="Skjermtolk"
-                    onchange={handleScreenInterpreter}
-                >
-                </lightning-input>
+            </div>
+            <br /><br />
+            <div class="picklist">
+                <c-picklist
+                    master-label="Filtrer på status"
+                    choices={choices}
+                    onpicklistvaluechange={handlePicklist}
+                    disabled={selectDisable}
+                    multiple={selectMultiple}
+                    required={selectRequired}
+                    size={selectSize}
+                ></c-picklist>
             </div>
             <div
                 class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay regionPage hidden"
@@ -40,7 +43,11 @@
                 tabindex="-1"
             >
                 <div
-                    class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+                    class="
+                        ReactModal__Content ReactModal__Content--after-open
+                        navno-dekorator
+                        comments-dialog-container
+                    "
                     role="dialog"
                     aria-labelledby="regions-header-id"
                 >
