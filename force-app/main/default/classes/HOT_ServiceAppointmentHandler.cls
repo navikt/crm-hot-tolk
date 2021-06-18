@@ -1,8 +1,6 @@
 public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onBeforeInsert() {
-        setDefaultFields((List<ServiceAppointment>) records);
-        setOwner((List<ServiceAppointment>) records);
-        setFieldsByPreferredResource((List<ServiceAppointment>) records);
+        setFieldsBasedOnParent((List<ServiceAppointment>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -151,7 +149,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             setStartAndEndHour(serviceAppointmentsWithHoursToSet);
         }
         if (serviceAppointmentsWithStatusOpen.size() > 0) {
-            setOriginalServiceTerritory(serviceAppointmentsWithStatusOpen);
+            setFieldsBasedOnParent(serviceAppointmentsWithStatusOpen);
         }
     }
 
@@ -234,20 +232,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    private static void setOriginalServiceTerritory(List<ServiceAppointment> serviceAppointments) {
-        Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(
-            [
-                SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
-                FROM ServiceAppointment
-                WHERE ServiceAppointment.Id IN :serviceAppointments
-            ]
-        );
-
-        for (ServiceAppointment sa : serviceAppointments) {
-            if (serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId != null) {
-                sa.ServiceTerritoryId = serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId;
-            }
-        }
+    private static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
+        setDefaultFields(serviceAppointments);
+        setOwner(serviceAppointments);
+        setFieldsByPreferredResource(serviceAppointments);
     }
 
     private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
@@ -390,12 +378,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 if (serviceAppointment.HOT_WorkOrderLineItem__c == null && serviceAppointment.ParentRecordId != null) {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
-                if (
-                    serviceAppointment.ParentRecordId != null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId != null
-                ) {
+                if (workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId != null) {
                     serviceAppointment.HOT_Account__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .WorkOrder.AccountId;
+                }
+                if (workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.ServiceTerritoryId != null) {
+                    serviceAppointment.ServiceTerritoryId = workOrderLineItems.get(serviceAppointment.ParentRecordId)
+                        .WorkOrder.ServiceTerritoryId;
+                }
+                if (serviceAppointment.HOT_Request__c != null) {
+                    serviceAppointment.OwnerId = serviceAppointment.HOT_RequestOwnerId__c;
                 }
                 serviceAppointment = updateDuration(serviceAppointment);
 
