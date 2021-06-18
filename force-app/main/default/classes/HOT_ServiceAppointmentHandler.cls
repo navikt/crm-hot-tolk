@@ -18,6 +18,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithStatusOpen = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -99,6 +100,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 annulServiceAppointments.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'None' &&
+                serviceAppointment.HOT_PreferredResource__c == null
+            ) {
+                serviceAppointmentsWithStatusOpen.add(serviceAppointment);
+            }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -141,6 +149,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         if (serviceAppointmentsWithHoursToSet.size() > 0) {
             setStartAndEndHour(serviceAppointmentsWithHoursToSet);
+        }
+        if (serviceAppointmentsWithStatusOpen.size() > 0) {
+            setOriginalServiceTerritory(serviceAppointmentsWithStatusOpen);
         }
     }
 
@@ -220,6 +231,22 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 SAnotifyResource,
                 triggerOldMap
             );
+        }
+    }
+
+    private static void setOriginalServiceTerritory(List<ServiceAppointment> serviceAppointments) {
+        Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(
+            [
+                SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+                FROM ServiceAppointment
+                WHERE ServiceAppointment.Id IN :serviceAppointments
+            ]
+        );
+
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId != null) {
+                sa.ServiceTerritoryId = serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId;
+            }
         }
     }
 
@@ -395,7 +422,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    public static void setStartAndEndHour(List<ServiceAppointment> records) {
+    public static List<ServiceAppointment> setStartAndEndHour(List<ServiceAppointment> records) {
         for (ServiceAppointment serviceAppointment : records) {
             serviceAppointment.HOT_StartHour__c = serviceAppointment.SchedStartTime != null
                 ? serviceAppointment.SchedStartTime.format('HH', 'Europe/Oslo')
@@ -404,6 +431,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 ? serviceAppointment.SchedEndTime.format('HH', 'Europe/Oslo')
                 : null;
         }
+        return records;
     }
 
     private static void createHistoricallyAssignedResources(
