@@ -1,6 +1,6 @@
 public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onBeforeInsert() {
-        setOwner((List<ServiceAppointment>) serviceAppointments);
+        setOwner((List<ServiceAppointment>) records);
         setDefaultFields((List<ServiceAppointment>) records);
     }
 
