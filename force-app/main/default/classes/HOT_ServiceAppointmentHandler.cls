@@ -1,6 +1,7 @@
 public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onBeforeInsert() {
-        setFieldsBasedOnParent((List<ServiceAppointment>) records);
+        setOwner((List<ServiceAppointment>) serviceAppointments);
+        setDefaultFields((List<ServiceAppointment>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -149,7 +150,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             setStartAndEndHour(serviceAppointmentsWithHoursToSet);
         }
         if (serviceAppointmentsWithStatusOpen.size() > 0) {
-            setFieldsBasedOnParent(serviceAppointmentsWithStatusOpen);
+            setDefaultFields(serviceAppointmentsWithStatusOpen);
         }
     }
 
@@ -232,9 +233,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    private static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
-        setDefaultFields(serviceAppointments);
-        setOwner(serviceAppointments);
+    private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
+        setFieldsBasedOnParent(serviceAppointments);
         setFieldsByPreferredResource(serviceAppointments);
     }
 
@@ -253,7 +253,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
+    private static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
@@ -274,7 +274,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     PostalCode,
                     HOT_InterpretationPostalCity__c,
                     HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalStreet__c
+                    HOT_InterpretationPostalStreet__c,
+                    ServiceTerritoryId
                 FROM WorkOrderLineItem
                 WHERE Id IN :workOrderLineItemIds
             ]
@@ -382,12 +383,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     serviceAppointment.HOT_Account__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .WorkOrder.AccountId;
                 }
-                if (workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.ServiceTerritoryId != null) {
+                if (workOrderLineItems.get(serviceAppointment.ParentRecordId).ServiceTerritoryId != null) {
                     serviceAppointment.ServiceTerritoryId = workOrderLineItems.get(serviceAppointment.ParentRecordId)
-                        .WorkOrder.ServiceTerritoryId;
-                }
-                if (serviceAppointment.HOT_Request__c != null) {
-                    serviceAppointment.OwnerId = serviceAppointment.HOT_RequestOwnerId__c;
+                        .ServiceTerritoryId;
                 }
                 serviceAppointment = updateDuration(serviceAppointment);
 
