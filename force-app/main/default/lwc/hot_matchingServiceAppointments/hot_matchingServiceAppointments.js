@@ -11,7 +11,8 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
         {
             label: 'Oppdrag',
             fieldName: 'AppointmentNumber',
-            type: 'text',
+            type: 'url',
+            typeAttributes: { label: { fieldName: 'AppointmentNumber' }, target: '_blank' },
             sortable: true
         },
         {
