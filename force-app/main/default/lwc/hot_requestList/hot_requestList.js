@@ -253,11 +253,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.mobileColumns = [...tempMobileColumns];
     }
 
-    @track defaultSortDirection = 'desc';
-    @track sortDirection = 'desc';
+    @track defaultSortDirection = 'asc';
+    @track sortDirection = 'asc';
     @track sortedBy = 'StartTime__c';
 
-    mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "desc"} ';
+    mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "asc"} ';
     get sortingOptions() {
         return getMobileSortingOptions(this.columns);
     }
