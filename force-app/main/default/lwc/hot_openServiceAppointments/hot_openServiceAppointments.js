@@ -160,19 +160,28 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    // TODO: Find out what requestNumberNull does and check region
+    // TODO: Find out what requestNumberNull does
     filterServiceAppointments() {
         console.log(this.picklistValue);
+
         let tempServiceAppointments = [];
+        let region = false;
         for (let i = 0; i < this.allServiceAppointments.length; i++) {
-            if (this.picklistValue === 'Alle') {
+            region = this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c);
+            if (this.picklistValue === 'Alle' && region) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
-            } else if (this.picklistValue === 'Vanlige oppdrag' && this.isRequestNumberNull === false) {
+            } else if (
+                // TODO: Check if !isFellesOppdrag
+                this.picklistValue === 'Vanlige oppdrag' &&
+                !this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c &&
+                region
+            ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             } else if (
                 // TODO: Best way to get the value of isFellesOppdrag checkbox field?
                 this.picklistValue === 'Fellesoppdrag' &&
-                this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c
+                this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c &&
+                region
             ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             } else if (
@@ -182,7 +191,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             }
 
-            // TODO: What is happening in the else-clause here?
             /*if (this.isRequestNumberNull === false) {
                 if (this.allServiceAppointments[i].HOT_RequestNumber__c === this.requestNumber) {
                     tempServiceAppointments.push(this.allServiceAppointments[i]);
