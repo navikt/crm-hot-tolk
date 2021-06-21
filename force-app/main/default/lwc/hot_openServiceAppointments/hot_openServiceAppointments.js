@@ -136,15 +136,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    @track isScreenInterpretation = false; // TODO: Figure out if we need this
+    @track isScreenInterpretation = false;
     @track picklistValue = 'Alle';
     handlePicklist(event) {
         this.picklistValue = event.detail;
-        if (this.picklistValue === 'Skjermtolk-oppdrag') {
-            this.isScreenInterpretation = true;
-        } else if (this.picklistValue === 'Vanlige oppdrag') {
-            this.isScreenInterpretation = false;
-        }
+        this.isScreenInterpretation = this.picklistValue === 'Skjermtolk-oppdrag';
         this.filterServiceAppointments();
     }
 
@@ -164,17 +160,20 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    // TODO: Find out what requestNumberNull does and what this means: this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c)
+    // TODO: Find out what requestNumberNull does and check region
     filterServiceAppointments() {
         console.log(this.picklistValue);
         let tempServiceAppointments = [];
         for (let i = 0; i < this.allServiceAppointments.length; i++) {
             if (this.picklistValue === 'Alle') {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
-            } else if (this.picklistValue === 'Vanlige oppdrag') {
+            } else if (this.picklistValue === 'Vanlige oppdrag' && this.isRequestNumberNull === false) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
-            } else if (this.picklistValue === 'Fellesoppdrag') {
-                // Check checkbox on Request
+            } else if (
+                // TODO: Best way to get the value of isFellesOppdrag checkbox field?
+                this.picklistValue === 'Fellesoppdrag' &&
+                this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c
+            ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             } else if (
                 this.picklistValue === 'Skjermtolk-oppdrag' &&
@@ -182,6 +181,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
             ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             }
+
+            // TODO: What is happening in the else-clause here?
             /*if (this.isRequestNumberNull === false) {
                 if (this.allServiceAppointments[i].HOT_RequestNumber__c === this.requestNumber) {
                     tempServiceAppointments.push(this.allServiceAppointments[i]);
