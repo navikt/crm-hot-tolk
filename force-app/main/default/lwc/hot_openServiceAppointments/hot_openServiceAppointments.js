@@ -167,6 +167,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
         let tempServiceAppointments = [];
         let region = false;
         for (let i = 0; i < this.allServiceAppointments.length; i++) {
+            console.log(
+                'this.allServiceAppointments[i].HOT_RequestNumber__c: ' +
+                    this.allServiceAppointments[i].HOT_RequestNumber__c
+            );
+            console.log('this.requestNumber: ' + this.requestNumber);
+            console.log('this.isRequestNumberNull: ' + this.isRequestNumberNull);
             region = this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c);
             if (this.picklistValue === 'Alle' && region) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
@@ -184,10 +190,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 region
             ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
-            } else if (
-                this.picklistValue === 'Skjermtolk-oppdrag' &&
-                this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c
-            ) {
+            } else if (this.isScreenInterpretation && this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             }
 
