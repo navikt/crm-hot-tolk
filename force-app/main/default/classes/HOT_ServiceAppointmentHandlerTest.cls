@@ -582,7 +582,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Employed interpreter was not set to true'
         );
         System.assertEquals(
-            false,
+            true,
             releasedServiceAppointment.HOT_IsReleasedToFreelance__c,
             'Freelance interpreter was not set to false'
         );
