@@ -101,8 +101,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
             if (
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
-                serviceAppointment.Status == 'None' &&
-                serviceAppointment.HOT_PreferredResource__c == null
+                serviceAppointment.Status == 'None'
             ) {
                 serviceAppointmentsWithStatusOpen.add(serviceAppointment);
             }
@@ -110,7 +109,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             allServiceAppointments.add(serviceAppointment);
         }
         if (!updatedServiceAppointments.isEmpty()) {
-            updatedServiceAppointments = setFieldsByPreferredResource(updatedServiceAppointments);
+            setFieldsByPreferredResource(updatedServiceAppointments);
         }
         if (!serviceAppointmentsWithDeletedPreferredResources.isEmpty()) {
             serviceAppointmentsWithDeletedPreferredResources = setFieldsIfPreferredResourceDeleted(
@@ -547,48 +546,48 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         return ganttColorByStatus;
     }
 
-    public static List<ServiceAppointment> setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
-        List<Id> PreferredResourceId = new List<Id>();
-        List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
+    public static void setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
+        List<Id> preferredResourceId = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (serviceAppointment.HOT_PreferredServiceResourceId__c != null) {
-                PreferredResourceId.add(serviceAppointment.HOT_PreferredServiceResourceId__c);
-                serviceAppointmentsToUpdate.add(serviceAppointment);
+                preferredResourceId.add(serviceAppointment.HOT_PreferredServiceResourceId__c);
             }
         }
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
             [
                 SELECT Id, HOT_ServiceTerritory__c, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
                 FROM ServiceResource
-                WHERE Id IN :PreferredResourceId
+                WHERE Id IN :preferredResourceId
             ]
         );
-        for (ServiceAppointment serviceAppointment : serviceAppointmentsToUpdate) {
-            if (
-                serviceAppointment.ServiceTerritoryId !=
-                serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_ServiceTerritory__c
-            ) {
-                serviceAppointment.ServiceTerritoryId = serviceResources.get(
-                        serviceAppointment.HOT_PreferredServiceResourceId__c
-                    )
-                    .HOT_ServiceTerritory__c;
-            }
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            if (serviceAppointment.HOT_PreferredServiceResourceId__c != null) {
+                if (
+                    serviceAppointment.ServiceTerritoryId !=
+                    serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_ServiceTerritory__c
+                ) {
+                    serviceAppointment.ServiceTerritoryId = serviceResources.get(
+                            serviceAppointment.HOT_PreferredServiceResourceId__c
+                        )
+                        .HOT_ServiceTerritory__c;
+                }
 
-            if (
-                serviceAppointment.HOT_IsReleasedToFreelance__c !=
-                serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_IsFreelanceInterpreter__c
-            ) {
-                serviceAppointment.HOT_IsReleasedToFreelance__c = serviceResources.get(
-                        serviceAppointment.HOT_PreferredServiceResourceId__c
-                    )
-                    .HOT_IsFreelanceInterpreter__c;
-                serviceAppointment.HOT_IsEmployedInterpreter__c = serviceResources.get(
-                        serviceAppointment.HOT_PreferredServiceResourceId__c
-                    )
-                    .HOT_IsEmployedInterpreter__c;
+                if (
+                    serviceAppointment.HOT_IsReleasedToFreelance__c !=
+                    serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c)
+                        .HOT_IsFreelanceInterpreter__c
+                ) {
+                    serviceAppointment.HOT_IsReleasedToFreelance__c = serviceResources.get(
+                            serviceAppointment.HOT_PreferredServiceResourceId__c
+                        )
+                        .HOT_IsFreelanceInterpreter__c;
+                    serviceAppointment.HOT_IsEmployedInterpreter__c = serviceResources.get(
+                            serviceAppointment.HOT_PreferredServiceResourceId__c
+                        )
+                        .HOT_IsEmployedInterpreter__c;
+                }
             }
         }
-        return serviceAppointmentsToUpdate;
     }
 
     public static List<ServiceAppointment> setFieldsIfPreferredResourceDeleted(
