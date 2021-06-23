@@ -1,6 +1,6 @@
 public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onBeforeInsert() {
-        setOwner((List<ServiceAppointment>) records);
+        setOwnerAndStatus((List<ServiceAppointment>) records);
         setDefaultFields((List<ServiceAppointment>) records);
     }
 
@@ -275,7 +275,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         );
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.Status = 'None';
             if (serviceAppointment.ParentRecordId != null) {
                 if (
                     serviceAppointment.HOT_Request__c == null &&
@@ -397,7 +396,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     serviceAppointment.HOT_IsImageInterpreter__c
                 );
                 if (ganttColorByStatus.isEmpty()) {
-                    serviceAppointment.put('FSL__GanttColor__c', '#ffffff');
+                    serviceAppointment.put('FSL__GanttColor__c', null);
                 } else {
                     serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
                 }
@@ -406,8 +405,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    private static void setOwner(List<ServiceAppointment> serviceAppointments) {
+    private static void setOwnerAndStatus(List<ServiceAppointment> serviceAppointments) {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.Status = 'None';
             if (serviceAppointment.HOT_Request__c != null) {
                 serviceAppointment.OwnerId = serviceAppointment.HOT_RequestOwnerId__c;
             }
