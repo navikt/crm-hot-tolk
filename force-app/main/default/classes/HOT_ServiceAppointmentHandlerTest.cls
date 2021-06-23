@@ -503,7 +503,7 @@ private class HOT_ServiceAppointmentHandlerTest {
     private static void testReleaseToFreelance() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [
-            SELECT Id, Status, SchedStartTime, Street
+            SELECT Id, Status, SchedStartTime, Street, HOT_PreferredResource__c
             FROM ServiceAppointment
             LIMIT 1
         ];
@@ -514,6 +514,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         interestedResource.Status__c = 'Not Assigned';
         insert interestedResource;
         serviceAppointment.Status = 'Released to Freelance';
+        serviceAppointment.HOT_PreferredResource__c = null;
         Test.startTest();
         update serviceAppointment;
         Test.stopTest();
@@ -577,12 +578,12 @@ private class HOT_ServiceAppointmentHandlerTest {
         ];
         System.assertEquals('None', releasedServiceAppointment.Status, 'Failed to update status');
         System.assertEquals(
-            false,
+            true,
             releasedServiceAppointment.HOT_IsEmployedInterpreter__c,
             'Employed interpreter was not set to true'
         );
         System.assertEquals(
-            true,
+            false,
             releasedServiceAppointment.HOT_IsReleasedToFreelance__c,
             'Freelance interpreter was not set to false'
         );
