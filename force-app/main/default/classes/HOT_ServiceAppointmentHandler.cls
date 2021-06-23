@@ -396,7 +396,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 Map<String, String> ganttColorByStatus = getGanttColorByStatus(
                     serviceAppointment.HOT_IsImageInterpreter__c
                 );
-                serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
+                if (ganttColorByStatus.isEmpty()) {
+                    serviceAppointment.put('FSL__GanttColor__c', '#ffffff');
+                } else {
+                    serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
+                }
             }
             serviceAppointment.HOT_AutoDispatch__c = true;
         }
