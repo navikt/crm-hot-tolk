@@ -92,6 +92,22 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointments = [
             SELECT
                 Id,
+                ParentRecordId,
+                HOT_Request__c,
+                Subject,
+                Description,
+                HOT_InterpretationPostalCity__c,
+                HOT_InterpretationPostalCode__c,
+                HOT_InterpretationStreet__c,
+                City,
+                PostalCode,
+                Street,
+                HOT_WorkOrderLineItem__c,
+                HOT_Account__c,
+                HOT_IsImageInterpreter__c,
+                HOT_AutoDispatch__c,
+                Status,
+                HOT_PreferredServiceResourceId__c,
                 HOT_AssignedResourceId__c,
                 HOT_ServiceResource__c,
                 EarliestStartTime,
@@ -112,7 +128,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             sa.HOT_IsReleasedToFreelance__c = false;
             sa.HOT_IsEmployedInterpreter__c = true;
         }
-        update serviceAppointments;
+        List<ServiceAppointment> serviceAppointmentsToUpdate = HOT_ServiceAppointmentHandler.setDefaultFields(
+            serviceAppointments
+        );
+        update serviceAppointmentsToUpdate;
     }
 
     List<HOT_InterestedResource__c> createInterestedResources(List<AssignedResource> records) {
