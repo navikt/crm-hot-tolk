@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <layoutSections>
         <customLabel>false</customLabel>
@@ -256,9 +256,9 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns />
-        <layoutColumns />
-        <layoutColumns />
+        <layoutColumns/>
+        <layoutColumns/>
+        <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
     <layoutSections>
@@ -316,7 +316,7 @@
             <sortOrder>4</sortOrder>
         </platformActionListItems>
     </platformActionList>
-    <quickActionList />
+    <quickActionList/>
     <relatedLists>
         <fields>ServiceResource</fields>
         <fields>Name</fields>
@@ -327,6 +327,7 @@
         <fields>NAME</fields>
         <fields>ServiceResource.NAME</fields>
         <fields>Status__c</fields>
+        <fields>ResourceAddress__c</fields>
         <fields>ServiceResource.HOT_ServiceTerritory__c</fields>
         <fields>IsDispatcherNewComment__c</fields>
         <relatedList>HOT_InterestedResource__c.ServiceAppointment__c</relatedList>
@@ -345,7 +346,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1x000002TKTW</masterLabel>
+        <masterLabel>00h1X000002ov8k</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
