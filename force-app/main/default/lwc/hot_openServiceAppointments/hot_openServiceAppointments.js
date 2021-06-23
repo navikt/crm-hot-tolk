@@ -160,20 +160,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    // TODO: Find out what requestNumberNull does
     filterServiceAppointments() {
         console.log(this.picklistValue);
 
         let tempServiceAppointments = [];
         let region = false;
         for (let i = 0; i < this.allServiceAppointments.length; i++) {
-            console.log(
-                'this.allServiceAppointments[i].HOT_RequestNumber__c: ' +
-                    this.allServiceAppointments[i].HOT_RequestNumber__c
-            );
-            console.log('this.requestNumber: ' + this.requestNumber);
-            console.log('this.isRequestNumberNull: ' + this.isRequestNumberNull);
             region = this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c);
+            // Series
             if (
                 this.isRequestNumberNull === false &&
                 this.allServiceAppointments[i].HOT_RequestNumber__c === this.requestNumber
