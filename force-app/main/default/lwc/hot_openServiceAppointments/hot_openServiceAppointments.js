@@ -174,17 +174,21 @@ export default class Hot_openServiceAppointments extends LightningElement {
             console.log('this.requestNumber: ' + this.requestNumber);
             console.log('this.isRequestNumberNull: ' + this.isRequestNumberNull);
             region = this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c);
-            if (this.picklistValue === 'Alle' && region) {
+            if (
+                this.isRequestNumberNull === false &&
+                this.allServiceAppointments[i].HOT_RequestNumber__c === this.requestNumber
+            ) {
+                tempServiceAppointments.push(this.allServiceAppointments[i]);
+            } else if (this.picklistValue === 'Alle' && region) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             } else if (
-                // TODO: Check if !isFellesOppdrag
                 this.picklistValue === 'Vanlige oppdrag' &&
                 !this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c &&
+                !this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c &&
                 region
             ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             } else if (
-                // TODO: Best way to get the value of isFellesOppdrag checkbox field?
                 this.picklistValue === 'Fellesoppdrag' &&
                 this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c &&
                 region
