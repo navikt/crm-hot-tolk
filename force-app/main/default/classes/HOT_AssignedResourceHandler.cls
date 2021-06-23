@@ -102,6 +102,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 City,
                 PostalCode,
                 Street,
+                ServiceTerritoryId,
                 HOT_WorkOrderLineItem__c,
                 HOT_Account__c,
                 HOT_IsImageInterpreter__c,
