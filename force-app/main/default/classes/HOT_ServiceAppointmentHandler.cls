@@ -237,10 +237,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    public static List<ServiceAppointment> setDefaultFields(List<ServiceAppointment> serviceAppointments) {
-        serviceAppointments = setFieldsBasedOnParent(serviceAppointments);
-        serviceAppointments = setFieldsByPreferredResource(serviceAppointments);
-        return serviceAppointments;
+    public static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
+        setFieldsBasedOnParent(serviceAppointments);
+        setFieldsByPreferredResource(serviceAppointments);
     }
 
     private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
@@ -258,7 +257,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    public static List<ServiceAppointment> setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
+    public static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
@@ -404,7 +403,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
         setStartAndEndHour(serviceAppointments);
-        return serviceAppointments;
     }
 
     private static void setGanttColor(ServiceAppointment serviceAppointment) {
@@ -569,7 +567,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         return ganttColorByStatus;
     }
 
-    public static List<ServiceAppointment> setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
+    public static void setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
         List<Id> preferredResourceId = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (serviceAppointment.HOT_PreferredServiceResourceId__c != null) {
@@ -611,7 +609,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 }
             }
         }
-        return serviceAppointments;
     }
 
     public static List<ServiceAppointment> setFieldsIfPreferredResourceDeleted(
