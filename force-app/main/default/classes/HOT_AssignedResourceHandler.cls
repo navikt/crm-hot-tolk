@@ -90,38 +90,13 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             serviceAppointmentIds.add(ar.ServiceAppointmentId);
         }
         List<ServiceAppointment> serviceAppointments = [
-            SELECT
-                Id,
-                ParentRecordId,
-                HOT_Request__c,
-                Subject,
-                Description,
-                HOT_InterpretationPostalCity__c,
-                HOT_InterpretationPostalCode__c,
-                HOT_InterpretationStreet__c,
-                City,
-                PostalCode,
-                Street,
-                ServiceTerritoryId,
-                HOT_WorkOrderLineItem__c,
-                HOT_Account__c,
-                HOT_IsImageInterpreter__c,
-                HOT_AutoDispatch__c,
-                Status,
-                HOT_PreferredServiceResourceId__c,
-                HOT_AssignedResourceId__c,
-                HOT_ServiceResource__c,
-                EarliestStartTime,
-                DueDate,
-                SchedStartTime,
-                SchedEndTime,
-                HOT_IsReleasedToFreelance__c,
-                HOT_IsEmployedInterpreter__c
+            SELECT Id
             FROM ServiceAppointment
             WHERE Id IN :serviceAppointmentIds
         ];
 
         for (ServiceAppointment sa : serviceAppointments) {
+            sa.HOT_ResetToDefault__c = true;
             sa.HOT_ServiceResource__c = null;
             sa.HOT_AssignedResourceId__c = null;
             sa.SchedStartTime = sa.EarliestStartTime;
@@ -129,10 +104,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             sa.HOT_IsReleasedToFreelance__c = false;
             sa.HOT_IsEmployedInterpreter__c = true;
         }
-        List<ServiceAppointment> serviceAppointmentsToUpdate = HOT_ServiceAppointmentHandler.setDefaultFields(
-            serviceAppointments
-        );
-        update serviceAppointmentsToUpdate;
+        update serviceAppointments;
     }
 
     List<HOT_InterestedResource__c> createInterestedResources(List<AssignedResource> records) {

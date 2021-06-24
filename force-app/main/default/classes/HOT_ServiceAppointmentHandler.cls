@@ -17,6 +17,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -101,6 +102,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
                 setGanttColor(serviceAppointment);
             }
+            if (
+                serviceAppointment.HOT_ResetToDefault__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ResetToDefault__c') &&
+                serviceAppointment.HOT_ResetToDefault__c == true
+            ) {
+                serviceAppointmentsToSetToDefault.add(serviceAppointment);
+            }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -143,6 +151,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         if (serviceAppointmentsWithHoursToSet.size() > 0) {
             setStartAndEndHour(serviceAppointmentsWithHoursToSet);
+        }
+
+        if (serviceAppointmentsToSetToDefault.size() > 0) {
+            setDefaultFields(serviceAppointmentsToSetToDefault);
         }
     }
 
@@ -275,6 +287,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         );
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.HOT_ResetToDefault__c = false;
             if (serviceAppointment.ParentRecordId != null) {
                 if (
                     serviceAppointment.HOT_Request__c == null &&
