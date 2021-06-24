@@ -645,12 +645,7 @@ private class HOT_ServiceAppointmentHandlerTest {
     @isTest
     public static void updateServiceTerritoryOnAssignedResourceDelete() {
         ServiceAppointment serviceAppointment = [
-            SELECT
-                Id,
-                ServiceTerritoryId,
-                HOT_ServiceTerritoryName__c,
-                HOT_WorkOrderLineItem__r.ServiceTerritoryId,
-                ParentRecordId
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId, ParentRecordId
             FROM ServiceAppointment
             LIMIT 1
         ];
@@ -678,18 +673,18 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE ServiceAppointmentId = :serviceAppointment.Id
         ];
 
-        serviceAppointment = [
-            SELECT Id, ServiceTerritoryId, HOT_ServiceTerritoryName__c, HOT_WorkOrderLineItem__r.ServiceTerritoryId
-            FROM ServiceAppointment
-            WHERE Id = :serviceAppointment.Id
-        ];
+        System.assertNotEquals(
+            woli.ServiceTerritoryId,
+            serviceAppointment.ServiceTerritoryId,
+            'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDelete'
+        );
 
         Test.startTest();
         delete arList;
         Test.stopTest();
 
         serviceAppointment = [
-            SELECT Id, ServiceTerritoryId, HOT_ServiceTerritoryName__c, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
