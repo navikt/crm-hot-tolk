@@ -96,6 +96,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         ];
 
         for (ServiceAppointment sa : serviceAppointments) {
+            sa.HOT_ServiceResource__c = null;
             sa.HOT_ResetToDefault__c = true;
         }
         update serviceAppointments;
