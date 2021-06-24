@@ -288,6 +288,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.HOT_ResetToDefault__c = false;
+            serviceAppointment.HOT_ServiceResource__c = null;
+            serviceAppointment.HOT_AssignedResourceId__c = null;
+            serviceAppointment.SchedStartTime = null;
+            serviceAppointment.SchedEndTime = null;
+            serviceAppointment.HOT_IsReleasedToFreelance__c = false;
+            serviceAppointment.HOT_IsEmployedInterpreter__c = true;
+
             if (serviceAppointment.ParentRecordId != null) {
                 if (
                     serviceAppointment.HOT_Request__c == null &&
