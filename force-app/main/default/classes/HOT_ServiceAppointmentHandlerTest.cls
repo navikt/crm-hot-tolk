@@ -678,13 +678,12 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE ServiceAppointmentId = :serviceAppointment.Id
         ];
 
-        System.debug(woli);
         serviceAppointment = [
             SELECT Id, ServiceTerritoryId, HOT_ServiceTerritoryName__c, HOT_WorkOrderLineItem__r.ServiceTerritoryId
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
-        System.debug(serviceAppointment);
+
         Test.startTest();
         delete arList;
         Test.stopTest();
@@ -694,7 +693,6 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
-        System.debug(serviceAppointment);
 
         System.assertEquals(
             woli.ServiceTerritoryId,
