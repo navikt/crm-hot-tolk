@@ -45,7 +45,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.SchedEndTime != oldServiceAppointment.SchedEndTime) &&
                     serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                     serviceAppointment.Status != 'Scheduled' &&
-                    serviceAppointment.SchedStartTime != null
+                    serviceAppointment.SchedStartTime != null &&
+                    oldServiceAppointment.SchedStartTime != null
                 ) {
                     timeChanged(notificationType, serviceAppointment, recipients);
                 }
@@ -138,14 +139,14 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Set<String> recipients
     ) {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle('Avlyst av tolk:');
+        notification.setTitle('Avlyst av tolk: ' + serviceAppointment.AppointmentNumber);
         notification.setBody(
             'Tolken meldte seg av ' +
             serviceAppointment.AppointmentNumber +
             ' ' +
             serviceAppointment.Subject +
             ' den ' +
-            serviceAppointment.LastModifiedDate?.format('d.M.yyyy')
+            serviceAppointment.LastModifiedDate?.format('d.M.yyyy HH:mm')
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
@@ -170,7 +171,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             'Oppdraget ' +
             serviceAppointment.AppointmentNumber +
             ' som skulle vært gjennomført ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
             ' er avlyst.'
         );
         notification.setNotificationTypeId(notificationType.Id);
@@ -193,11 +194,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
             'endret tidspunkt'
         );
         notification.setBody(
-            'Oppdraget ' +
-            serviceAppointment.AppointmentNumber +
-            ' den ' +
-            serviceAppointment.SchedStartTime?.format('d.M.yyyy') +
-            ' har fått nytt tidspunkt.'
+            'Nytt tidspunkt er ' +
+            serviceAppointment.SchedStartTime?.format('d.M.yyyy HH:mm') +
+            ' - ' +
+            serviceAppointment.SchedEndTime?.format('HH:mm')
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
@@ -214,17 +214,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setTitle(
             serviceAppointment.AppointmentNumber +
             ' - ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+            serviceAppointment.SchedStartTime?.format('d.M.yyyy HH:mm') +
             ' - ' +
             'endret adresse'
         );
-        notification.setBody(
-            'Oppdraget ' +
-            serviceAppointment.AppointmentNumber +
-            ' den ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-            ' har fått ny adresse.'
-        );
+        notification.setBody('Ny adresse er ' + serviceAppointment.HOT_AddressFormated__c);
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
 
@@ -237,18 +231,13 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Set<String> recipients
     ) {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle(
-            serviceAppointment.AppointmentNumber +
-            ' - ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-            ' - ' +
-            'Du er tildelt oppdraget'
-        );
+        notification.setTitle('Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber);
         notification.setBody(
-            'Du er tildelt oppdraget ' +
-            serviceAppointment.AppointmentNumber +
-            ' den ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy')
+            'Tidspunkt for oppdraget er ' +
+            serviceAppointment.SchedStartTime?.format('d.M.yyyy HH:mm') +
+            ' - ' +
+            serviceAppointment.SchedEndTime?.format('HH:mm') +
+            '.'
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
@@ -272,8 +261,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setBody(
             'Du er tatt av oppdraget ' +
             serviceAppointment.AppointmentNumber +
-            ' den ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy')
+            ' som skulle starte ' +
+            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
@@ -291,15 +280,18 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setTitle(
             serviceAppointment.AppointmentNumber +
             ' - ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+            serviceAppointment.SchedStartTime?.format('d.M.yyyy HH:mm') +
             ' - ' +
             'endret til ' +
             isScreenInterpreterString
         );
         notification.setBody(
+            'Oppdraget ' +
             serviceAppointment.AppointmentNumber +
-            ' den ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+            ', ' +
+            serviceAppointment.SchedStartTime?.format('d.M.yyyy HH:mm') +
+            ' - ' +
+            serviceAppointment.SchedEndTime?.format('HH:mm') +
             ' ble endret til ' +
             isScreenInterpreterString
         );
