@@ -110,7 +110,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointmentsToSetToDefault.add(serviceAppointment);
             }
             updateDuration(serviceAppointment);
-            setGanttColor(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
         if (!updatedServiceAppointments.isEmpty()) {
