@@ -161,18 +161,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     filterServiceAppointments() {
-        console.log(this.picklistValue);
-
         let tempServiceAppointments = [];
         let region = false;
         for (let i = 0; i < this.allServiceAppointments.length; i++) {
             region = this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c);
             // Series
-            if (
-                this.isRequestNumberNull === false &&
-                this.allServiceAppointments[i].HOT_RequestNumber__c === this.requestNumber
-            ) {
-                tempServiceAppointments.push(this.allServiceAppointments[i]);
+            if (this.isRequestNumberNull === false) {
+                if (this.allServiceAppointments[i].HOT_RequestNumber__c === this.requestNumber) {
+                    tempServiceAppointments.push(this.allServiceAppointments[i]);
+                }
             } else if (this.picklistValue === 'Alle' && region) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             } else if (
@@ -191,20 +188,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
             } else if (this.isScreenInterpretation && this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             }
-
-            /*if (this.isRequestNumberNull === false) {
-                if (this.allServiceAppointments[i].HOT_RequestNumber__c === this.requestNumber) {
-                    tempServiceAppointments.push(this.allServiceAppointments[i]);
-                }
-            } else if (this.isScreenInterpretation) {
-                if (this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c) {
-                    tempServiceAppointments.push(this.allServiceAppointments[i]);
-                }
-            } else {
-                if (this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c)) {
-                    tempServiceAppointments.push(this.allServiceAppointments[i]);
-                }
-            }*/
         }
         this.allServiceAppointmentsFiltered = tempServiceAppointments;
     }
