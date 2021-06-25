@@ -237,7 +237,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    public static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
+    private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
         setFieldsBasedOnParent(serviceAppointments);
         setFieldsByPreferredResource(serviceAppointments);
     }
@@ -257,7 +257,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    public static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
+    private static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
@@ -287,8 +287,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.HOT_ResetToDefault__c = false;
-            serviceAppointment.SchedStartTime = null;
-            serviceAppointment.SchedEndTime = null;
+            serviceAppointment.SchedStartTime = serviceAppointment.EarliestStartTime;
+            serviceAppointment.SchedEndTime = serviceAppointment.DueDate;
             serviceAppointment.HOT_IsReleasedToFreelance__c = false;
             serviceAppointment.HOT_IsEmployedInterpreter__c = true;
 
