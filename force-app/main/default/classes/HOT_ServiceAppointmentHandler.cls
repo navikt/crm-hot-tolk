@@ -109,7 +109,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsToSetToDefault.add(serviceAppointment);
             }
-            serviceAppointment = updateDuration(serviceAppointment);
+            updateDuration(serviceAppointment);
+            setGanttColor(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
         if (!updatedServiceAppointments.isEmpty()) {
@@ -396,9 +397,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     serviceAppointment.ServiceTerritoryId = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .ServiceTerritoryId;
                 }
-                serviceAppointment = updateDuration(serviceAppointment);
-                //Image Interpreter
-                setGanttColor(serviceAppointment);
+                updateDuration(serviceAppointment);
             }
         }
         setStartAndEndHour(serviceAppointments);
@@ -408,14 +407,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Set<String> serviceAppointmentFields = Schema.SObjectType.ServiceAppointment.fields.getMap().keySet();
 
         if (serviceAppointment.HOT_IsImageInterpreter__c) {
-            if (serviceAppointmentFields.contains('FSL__GanttColor__c')) {
+            if (serviceAppointmentFields.contains('fsl__ganttcolor__c')) {
                 Map<String, String> ganttColorByStatus = getGanttColorByStatus(
                     serviceAppointment.HOT_IsImageInterpreter__c
                 );
                 if (ganttColorByStatus.isEmpty()) {
-                    serviceAppointment.put('FSL__GanttColor__c', null);
+                    serviceAppointment.put('fsl__ganttcolor__c', null);
                 } else {
-                    serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
+                    serviceAppointment.put('fsl__ganttcolor__c', ganttColorByStatus.get(serviceAppointment.Status));
                 }
             }
             serviceAppointment.HOT_AutoDispatch__c = true;
