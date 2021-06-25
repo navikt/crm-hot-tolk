@@ -1,8 +1,7 @@
 public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onBeforeInsert() {
+        setOwnerAndStatus((List<ServiceAppointment>) records);
         setDefaultFields((List<ServiceAppointment>) records);
-        setOwner((List<ServiceAppointment>) records);
-        setFieldsByPreferredResource((List<ServiceAppointment>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -18,7 +17,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
-        List<ServiceAppointment> serviceAppointmentsWithStatusOpen = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -100,18 +99,21 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 annulServiceAppointments.add(serviceAppointment);
             }
+            if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
+                setGanttColor(serviceAppointment);
+            }
             if (
-                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
-                serviceAppointment.Status == 'None' &&
-                serviceAppointment.HOT_PreferredResource__c == null
+                serviceAppointment.HOT_ResetToDefault__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ResetToDefault__c') &&
+                serviceAppointment.HOT_ResetToDefault__c == true
             ) {
-                serviceAppointmentsWithStatusOpen.add(serviceAppointment);
+                serviceAppointmentsToSetToDefault.add(serviceAppointment);
             }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
         if (!updatedServiceAppointments.isEmpty()) {
-            updatedServiceAppointments = setFieldsByPreferredResource(updatedServiceAppointments);
+            setFieldsByPreferredResource(updatedServiceAppointments);
         }
         if (!serviceAppointmentsWithDeletedPreferredResources.isEmpty()) {
             serviceAppointmentsWithDeletedPreferredResources = setFieldsIfPreferredResourceDeleted(
@@ -150,8 +152,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsWithHoursToSet.size() > 0) {
             setStartAndEndHour(serviceAppointmentsWithHoursToSet);
         }
-        if (serviceAppointmentsWithStatusOpen.size() > 0) {
-            setOriginalServiceTerritory(serviceAppointmentsWithStatusOpen);
+
+        if (serviceAppointmentsToSetToDefault.size() > 0) {
+            setDefaultFields(serviceAppointmentsToSetToDefault);
         }
     }
 
@@ -234,20 +237,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    private static void setOriginalServiceTerritory(List<ServiceAppointment> serviceAppointments) {
-        Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(
-            [
-                SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
-                FROM ServiceAppointment
-                WHERE ServiceAppointment.Id IN :serviceAppointments
-            ]
-        );
-
-        for (ServiceAppointment sa : serviceAppointments) {
-            if (serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId != null) {
-                sa.ServiceTerritoryId = serviceAppointmentMap.get(sa.Id).HOT_WorkOrderLineItem__r.ServiceTerritoryId;
-            }
-        }
+    private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
+        setFieldsBasedOnParent(serviceAppointments);
+        setFieldsByPreferredResource(serviceAppointments);
     }
 
     private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
@@ -265,7 +257,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
+    private static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
@@ -286,14 +278,20 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     PostalCode,
                     HOT_InterpretationPostalCity__c,
                     HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalStreet__c
+                    HOT_InterpretationPostalStreet__c,
+                    ServiceTerritoryId
                 FROM WorkOrderLineItem
                 WHERE Id IN :workOrderLineItemIds
             ]
         );
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.Status = 'None';
+            serviceAppointment.HOT_ResetToDefault__c = false;
+            serviceAppointment.SchedStartTime = serviceAppointment.EarliestStartTime;
+            serviceAppointment.SchedEndTime = serviceAppointment.DueDate;
+            serviceAppointment.HOT_IsReleasedToFreelance__c = false;
+            serviceAppointment.HOT_IsEmployedInterpreter__c = true;
+
             if (serviceAppointment.ParentRecordId != null) {
                 if (
                     serviceAppointment.HOT_Request__c == null &&
@@ -390,32 +388,43 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 if (serviceAppointment.HOT_WorkOrderLineItem__c == null && serviceAppointment.ParentRecordId != null) {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
-                if (
-                    serviceAppointment.ParentRecordId != null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId != null
-                ) {
+                if (workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId != null) {
                     serviceAppointment.HOT_Account__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .WorkOrder.AccountId;
                 }
-                serviceAppointment = updateDuration(serviceAppointment);
-
-                //Image Interpreter
-                if (serviceAppointment.HOT_IsImageInterpreter__c) {
-                    if (serviceAppointment.get('FSL__GanttColor__c') != null) {
-                        Map<String, String> ganttColorByStatus = getGanttColorByStatus(
-                            serviceAppointment.HOT_IsImageInterpreter__c
-                        );
-                        serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
-                    }
-                    serviceAppointment.HOT_AutoDispatch__c = true;
+                if (workOrderLineItems.get(serviceAppointment.ParentRecordId).ServiceTerritoryId != null) {
+                    serviceAppointment.ServiceTerritoryId = workOrderLineItems.get(serviceAppointment.ParentRecordId)
+                        .ServiceTerritoryId;
                 }
+                serviceAppointment = updateDuration(serviceAppointment);
+                //Image Interpreter
+                setGanttColor(serviceAppointment);
             }
         }
         setStartAndEndHour(serviceAppointments);
     }
 
-    private static void setOwner(List<ServiceAppointment> serviceAppointments) {
+    private static void setGanttColor(ServiceAppointment serviceAppointment) {
+        Set<String> serviceAppointmentFields = Schema.SObjectType.ServiceAppointment.fields.getMap().keySet();
+
+        if (serviceAppointment.HOT_IsImageInterpreter__c) {
+            if (serviceAppointmentFields.contains('FSL__GanttColor__c')) {
+                Map<String, String> ganttColorByStatus = getGanttColorByStatus(
+                    serviceAppointment.HOT_IsImageInterpreter__c
+                );
+                if (ganttColorByStatus.isEmpty()) {
+                    serviceAppointment.put('FSL__GanttColor__c', null);
+                } else {
+                    serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
+                }
+            }
+            serviceAppointment.HOT_AutoDispatch__c = true;
+        }
+    }
+
+    private static void setOwnerAndStatus(List<ServiceAppointment> serviceAppointments) {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.Status = 'None';
             if (serviceAppointment.HOT_Request__c != null) {
                 serviceAppointment.OwnerId = serviceAppointment.HOT_RequestOwnerId__c;
             }
@@ -557,65 +566,65 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         return ganttColorByStatus;
     }
 
-    public static List<ServiceAppointment> setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
-        List<Id> PreferredResourceId = new List<Id>();
-        List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
+    public static void setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
+        List<Id> preferredResourceId = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (serviceAppointment.HOT_PreferredServiceResourceId__c != null) {
-                PreferredResourceId.add(serviceAppointment.HOT_PreferredServiceResourceId__c);
-                serviceAppointmentsToUpdate.add(serviceAppointment);
+                preferredResourceId.add(serviceAppointment.HOT_PreferredServiceResourceId__c);
             }
         }
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
             [
                 SELECT Id, HOT_ServiceTerritory__c, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
                 FROM ServiceResource
-                WHERE Id IN :PreferredResourceId
+                WHERE Id IN :preferredResourceId
             ]
         );
-        for (ServiceAppointment serviceAppointment : serviceAppointmentsToUpdate) {
-            if (
-                serviceAppointment.ServiceTerritoryId !=
-                serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_ServiceTerritory__c
-            ) {
-                serviceAppointment.ServiceTerritoryId = serviceResources.get(
-                        serviceAppointment.HOT_PreferredServiceResourceId__c
-                    )
-                    .HOT_ServiceTerritory__c;
-            }
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            if (serviceAppointment.HOT_PreferredServiceResourceId__c != null) {
+                if (
+                    serviceAppointment.ServiceTerritoryId !=
+                    serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_ServiceTerritory__c
+                ) {
+                    serviceAppointment.ServiceTerritoryId = serviceResources.get(
+                            serviceAppointment.HOT_PreferredServiceResourceId__c
+                        )
+                        .HOT_ServiceTerritory__c;
+                }
 
-            if (
-                serviceAppointment.HOT_IsReleasedToFreelance__c !=
-                serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_IsFreelanceInterpreter__c
-            ) {
-                serviceAppointment.HOT_IsReleasedToFreelance__c = serviceResources.get(
-                        serviceAppointment.HOT_PreferredServiceResourceId__c
-                    )
-                    .HOT_IsFreelanceInterpreter__c;
-                serviceAppointment.HOT_IsEmployedInterpreter__c = serviceResources.get(
-                        serviceAppointment.HOT_PreferredServiceResourceId__c
-                    )
-                    .HOT_IsEmployedInterpreter__c;
+                if (
+                    serviceAppointment.HOT_IsReleasedToFreelance__c !=
+                    serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c)
+                        .HOT_IsFreelanceInterpreter__c
+                ) {
+                    serviceAppointment.HOT_IsReleasedToFreelance__c = serviceResources.get(
+                            serviceAppointment.HOT_PreferredServiceResourceId__c
+                        )
+                        .HOT_IsFreelanceInterpreter__c;
+                    serviceAppointment.HOT_IsEmployedInterpreter__c = serviceResources.get(
+                            serviceAppointment.HOT_PreferredServiceResourceId__c
+                        )
+                        .HOT_IsEmployedInterpreter__c;
+                }
             }
         }
-        return serviceAppointmentsToUpdate;
     }
 
     public static List<ServiceAppointment> setFieldsIfPreferredResourceDeleted(
         List<ServiceAppointment> serviceAppointments
     ) {
         List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
-        List<Id> requestIds = new List<Id>();
+        List<Id> woliIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            requestIds.add(serviceAppointment.HOT_Request__c);
+            woliIds.add(serviceAppointment.HOT_WorkOrderLineItem__c);
         }
 
-        List<HOT_Request__c> requests = [SELECT Id, ServiceTerritory__c FROM HOT_Request__c WHERE Id IN :requestIds];
-        Map<Id, HOT_Request__c> requestMap = new Map<Id, HOT_Request__c>(requests);
+        List<WorkOrderLineItem> wolis = [SELECT Id, ServiceTerritoryId FROM WorkOrderLineItem WHERE Id IN :woliIds];
+        Map<Id, WorkOrderLineItem> woliMap = new Map<Id, WorkOrderLineItem>(wolis);
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.ServiceTerritoryId = requestMap.get(serviceAppointment.HOT_Request__c)
-                ?.ServiceTerritory__c;
+            serviceAppointment.ServiceTerritoryId = woliMap.get(serviceAppointment.HOT_WorkOrderLineItem__c)
+                ?.ServiceTerritoryId;
             serviceAppointment.HOT_IsReleasedToFreelance__c = false;
             serviceAppointment.HOT_IsEmployedInterpreter__c = true;
             serviceAppointmentsToUpdate.add(serviceAppointment);

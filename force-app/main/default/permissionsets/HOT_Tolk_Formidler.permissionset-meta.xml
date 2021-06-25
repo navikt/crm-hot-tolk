@@ -205,6 +205,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_InterestedResource__c.ResourceAddress__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_InterestedResource__c.ServiceAppointmentAddress__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1024,7 +1029,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_ServiceResource__c</field>
         <readable>true</readable>
     </fieldPermissions>

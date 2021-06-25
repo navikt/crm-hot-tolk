@@ -503,7 +503,7 @@ private class HOT_ServiceAppointmentHandlerTest {
     private static void testReleaseToFreelance() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [
-            SELECT Id, Status, SchedStartTime, Street
+            SELECT Id, Status, SchedStartTime, Street, HOT_PreferredResource__c
             FROM ServiceAppointment
             LIMIT 1
         ];
@@ -514,6 +514,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         interestedResource.Status__c = 'Not Assigned';
         insert interestedResource;
         serviceAppointment.Status = 'Released to Freelance';
+        serviceAppointment.HOT_PreferredResource__c = null;
         Test.startTest();
         update serviceAppointment;
         Test.stopTest();
@@ -642,9 +643,9 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @isTest
-    public static void updateServiceTerritoryOnStatusChange() {
+    public static void updateServiceTerritoryOnAssignedResourceDelete() {
         ServiceAppointment serviceAppointment = [
-            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId, ParentRecordId
             FROM ServiceAppointment
             LIMIT 1
         ];
@@ -657,18 +658,29 @@ private class HOT_ServiceAppointmentHandlerTest {
         WorkOrderLineItem woli = [
             SELECT Id, ServiceTerritoryId
             FROM WorkOrderLineItem
-            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.Id
+            WHERE Id = :serviceAppointment.ParentRecordId
+            LIMIT 1
         ];
         woli.ServiceTerritoryId = serviceTerritory.Id;
         update woli;
 
-        serviceAppointment.Status = 'In Progress';
         serviceAppointment.HOT_PreferredResource__c = null;
         update serviceAppointment;
 
+        List<AssignedResource> arList = [
+            SELECT Id
+            FROM AssignedResource
+            WHERE ServiceAppointmentId = :serviceAppointment.Id
+        ];
+
+        System.assertNotEquals(
+            woli.ServiceTerritoryId,
+            serviceAppointment.ServiceTerritoryId,
+            'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDelete'
+        );
+
         Test.startTest();
-        serviceAppointment.Status = 'None';
-        update serviceAppointment;
+        delete arList;
         Test.stopTest();
 
         serviceAppointment = [
@@ -676,15 +688,16 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
+
         System.assertEquals(
             woli.ServiceTerritoryId,
             serviceAppointment.ServiceTerritoryId,
-            'ServiceTerritory ble ikke satt riktig'
+            'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDelete'
         );
     }
 
     @isTest
-    public static void updateServiceTerritoryOnStatusChangePreferredResourceNotNull() {
+    public static void updateServiceTerritoryOnAssignedResourceDeletePreferredResourceNotNull() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
             FROM ServiceAppointment
@@ -704,23 +717,36 @@ private class HOT_ServiceAppointmentHandlerTest {
         woli.ServiceTerritoryId = serviceTerritory.Id;
         update woli;
 
-        serviceAppointment.Status = 'In Progress';
-        update serviceAppointment;
+        List<AssignedResource> arList = [
+            SELECT Id
+            FROM AssignedResource
+            WHERE ServiceAppointmentId = :serviceAppointment.Id
+        ];
 
         Test.startTest();
-        serviceAppointment.Status = 'None';
-        update serviceAppointment;
+        delete arList;
         Test.stopTest();
 
         serviceAppointment = [
-            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
+            SELECT
+                Id,
+                ServiceTerritoryId,
+                HOT_WorkOrderLineItem__r.ServiceTerritoryId,
+                HOT_PreferredServiceResourceId__c
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
-        System.assertNotEquals(
-            woli.ServiceTerritoryId,
+
+        ServiceResource serviceResource = [
+            SELECT Id, HOT_ServiceTerritory__c, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
+            FROM ServiceResource
+            WHERE Id = :serviceAppointment.HOT_PreferredServiceResourceId__c
+        ];
+
+        System.assertEquals(
+            serviceResource.HOT_ServiceTerritory__c,
             serviceAppointment.ServiceTerritoryId,
-            'ServiceTerritory ble ikke satt riktig'
+            'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDeletePreferredResourceNotNull'
         );
     }
 }
