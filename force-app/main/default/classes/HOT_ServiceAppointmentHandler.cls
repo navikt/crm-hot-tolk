@@ -1,6 +1,6 @@
 public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onBeforeInsert() {
-        setOwner((List<ServiceAppointment>) records);
+        setOwnerAndStatus((List<ServiceAppointment>) records);
         setDefaultFields((List<ServiceAppointment>) records);
     }
 
@@ -17,7 +17,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> SAnotifyDispatcher = new List<ServiceAppointment>();
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
-        List<ServiceAppointment> serviceAppointmentsWithStatusOpen = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -99,11 +99,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 annulServiceAppointments.add(serviceAppointment);
             }
+            if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
+                setGanttColor(serviceAppointment);
+            }
             if (
-                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
-                serviceAppointment.Status == 'None'
+                serviceAppointment.HOT_ResetToDefault__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ResetToDefault__c') &&
+                serviceAppointment.HOT_ResetToDefault__c == true
             ) {
-                serviceAppointmentsWithStatusOpen.add(serviceAppointment);
+                serviceAppointmentsToSetToDefault.add(serviceAppointment);
             }
             serviceAppointment = updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
@@ -148,8 +152,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsWithHoursToSet.size() > 0) {
             setStartAndEndHour(serviceAppointmentsWithHoursToSet);
         }
-        if (serviceAppointmentsWithStatusOpen.size() > 0) {
-            setDefaultFields(serviceAppointmentsWithStatusOpen);
+
+        if (serviceAppointmentsToSetToDefault.size() > 0) {
+            setDefaultFields(serviceAppointmentsToSetToDefault);
         }
     }
 
@@ -281,7 +286,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         );
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.Status = 'None';
+            serviceAppointment.HOT_ResetToDefault__c = false;
+            serviceAppointment.SchedStartTime = serviceAppointment.EarliestStartTime;
+            serviceAppointment.SchedEndTime = serviceAppointment.DueDate;
+            serviceAppointment.HOT_IsReleasedToFreelance__c = false;
+            serviceAppointment.HOT_IsEmployedInterpreter__c = true;
+
             if (serviceAppointment.ParentRecordId != null) {
                 if (
                     serviceAppointment.HOT_Request__c == null &&
@@ -387,24 +397,34 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         .ServiceTerritoryId;
                 }
                 serviceAppointment = updateDuration(serviceAppointment);
-
                 //Image Interpreter
-                if (serviceAppointment.HOT_IsImageInterpreter__c) {
-                    if (serviceAppointment.get('FSL__GanttColor__c') != null) {
-                        Map<String, String> ganttColorByStatus = getGanttColorByStatus(
-                            serviceAppointment.HOT_IsImageInterpreter__c
-                        );
-                        serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
-                    }
-                    serviceAppointment.HOT_AutoDispatch__c = true;
-                }
+                setGanttColor(serviceAppointment);
             }
         }
         setStartAndEndHour(serviceAppointments);
     }
 
-    private static void setOwner(List<ServiceAppointment> serviceAppointments) {
+    private static void setGanttColor(ServiceAppointment serviceAppointment) {
+        Set<String> serviceAppointmentFields = Schema.SObjectType.ServiceAppointment.fields.getMap().keySet();
+
+        if (serviceAppointment.HOT_IsImageInterpreter__c) {
+            if (serviceAppointmentFields.contains('FSL__GanttColor__c')) {
+                Map<String, String> ganttColorByStatus = getGanttColorByStatus(
+                    serviceAppointment.HOT_IsImageInterpreter__c
+                );
+                if (ganttColorByStatus.isEmpty()) {
+                    serviceAppointment.put('FSL__GanttColor__c', null);
+                } else {
+                    serviceAppointment.put('FSL__GanttColor__c', ganttColorByStatus.get(serviceAppointment.Status));
+                }
+            }
+            serviceAppointment.HOT_AutoDispatch__c = true;
+        }
+    }
+
+    private static void setOwnerAndStatus(List<ServiceAppointment> serviceAppointments) {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.Status = 'None';
             if (serviceAppointment.HOT_Request__c != null) {
                 serviceAppointment.OwnerId = serviceAppointment.HOT_RequestOwnerId__c;
             }
@@ -594,17 +614,17 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointments
     ) {
         List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
-        List<Id> requestIds = new List<Id>();
+        List<Id> woliIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            requestIds.add(serviceAppointment.HOT_Request__c);
+            woliIds.add(serviceAppointment.HOT_WorkOrderLineItem__c);
         }
 
-        List<HOT_Request__c> requests = [SELECT Id, ServiceTerritory__c FROM HOT_Request__c WHERE Id IN :requestIds];
-        Map<Id, HOT_Request__c> requestMap = new Map<Id, HOT_Request__c>(requests);
+        List<WorkOrderLineItem> wolis = [SELECT Id, ServiceTerritoryId FROM WorkOrderLineItem WHERE Id IN :woliIds];
+        Map<Id, WorkOrderLineItem> woliMap = new Map<Id, WorkOrderLineItem>(wolis);
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.ServiceTerritoryId = requestMap.get(serviceAppointment.HOT_Request__c)
-                ?.ServiceTerritory__c;
+            serviceAppointment.ServiceTerritoryId = woliMap.get(serviceAppointment.HOT_WorkOrderLineItem__c)
+                ?.ServiceTerritoryId;
             serviceAppointment.HOT_IsReleasedToFreelance__c = false;
             serviceAppointment.HOT_IsEmployedInterpreter__c = true;
             serviceAppointmentsToUpdate.add(serviceAppointment);
