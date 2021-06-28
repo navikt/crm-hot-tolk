@@ -11,36 +11,46 @@
             </lightning-button>
             <div style="display: flex; flex-direction: row">
                 <lightning-button
-                    if:false={isRequestNumberNull}
+                    if:true={isSeriesSelected}
                     label="Vis alle"
                     name="filterRegionButton"
                     onclick={handleBackToFullList}
                 >
                 </lightning-button>
                 <lightning-button
-                    if:true={isRequestNumberNull}
+                    if:false={isSeriesSelected}
                     label="Regioner"
                     name="filterRegionButton"
                     onclick={handleShowRegionFilter}
                 >
                 </lightning-button>
-                <lightning-input
-                    if:true={isRequestNumberNull}
-                    type="checkbox"
-                    label="Vis alle Skjermtolk-oppdrag"
-                    style="margin-left: 1rem"
-                    name="Skjermtolk"
-                    onchange={handleScreenInterpreter}
-                >
-                </lightning-input>
             </div>
+            <template if:false={isSeriesSelected}>
+                <br /><br />
+                <div class="picklist">
+                    <c-picklist
+                        master-label="Type oppdrag"
+                        choices={choices}
+                        onpicklistvaluechange={handlePicklist}
+                        disabled={selectDisable}
+                        multiple={selectMultiple}
+                        required={selectRequired}
+                        size={selectSize}
+                    ></c-picklist>
+                </div>
+            </template>
+
             <div
                 class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay regionPage hidden"
                 style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
                 tabindex="-1"
             >
                 <div
-                    class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+                    class="
+                        ReactModal__Content ReactModal__Content--after-open
+                        navno-dekorator
+                        comments-dialog-container
+                    "
                     role="dialog"
                     aria-labelledby="regions-header-id"
                 >

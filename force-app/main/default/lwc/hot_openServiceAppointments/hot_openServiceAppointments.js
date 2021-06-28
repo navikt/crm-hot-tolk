@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
@@ -8,6 +8,13 @@ import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 import { formatRecord } from 'c/hot_recordDetails';
 
 export default class Hot_openServiceAppointments extends LightningElement {
+    @track choices = [
+        { name: 'Alle', label: 'Alle' },
+        { name: 'Vanlige oppdrag', label: 'Vanlige oppdrag' },
+        { name: 'Fellesoppdrag', label: 'Fellesoppdrag' },
+        { name: 'Skjermtolk-oppdrag', label: 'Skjermtolk-oppdrag' }
+    ];
+
     @track columns = [
         {
             label: 'Frigitt dato',
@@ -102,7 +109,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     getRowActions(row, doneCallback) {
         let actions = [];
-        if (row['HOT_IsSerieoppdrag__c'] == true) {
+        if (row['HOT_IsSerieoppdrag__c'] === true) {
             actions.push({ label: 'Se hele serien', name: 'series' });
         }
         actions.push({ label: 'Detaljer', name: 'details' });
@@ -117,7 +124,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         if (result.data) {
             this.serviceResource = result.data;
             this.serviceResourceId = this.serviceResource.Id;
-            console.log(JSON.stringify(this.serviceResource));
             let tempRegions =
                 result.data.HOT_PreferredRegions__c != null ? result.data.HOT_PreferredRegions__c.split(';') : [];
             for (let tempRegion of tempRegions) {
@@ -126,50 +132,65 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
+    @track picklistValue = 'Alle';
+    handlePicklist(event) {
+        this.picklistValue = event.detail;
+        this.filterServiceAppointments();
+    }
+
     @track allServiceAppointments;
     @track allServiceAppointmentsFiltered;
     wiredAllServiceAppointmentsResult;
     @wire(getOpenServiceAppointments)
     wiredAllServiceAppointments(result) {
-        //console.log("wiredAllServiceAppointments");
         this.wiredAllServiceAppointmentsResult = result;
         if (result.data) {
             this.allServiceAppointments = result.data;
             this.error = undefined;
             this.filterServiceAppointments();
-            console.log('JSON.stringify(this.allServiceAppointments):');
-            console.log(JSON.stringify(this.allServiceAppointments));
-            console.log('JSON.stringify(this.allServiceAppointmentsFiltered):');
-            console.log(JSON.stringify(this.allServiceAppointmentsFiltered));
         } else if (result.error) {
             this.error = result.error;
-            console.log(this.error);
             this.allServiceAppointments = undefined;
         }
     }
+
     filterServiceAppointments() {
-        console.log('filterServiceAppointments');
-        var tempServiceAppointments = [];
-        for (var i = 0; i < this.allServiceAppointments.length; i++) {
-            if (this.isRequestNumberNull == false) {
-                if (this.allServiceAppointments[i].HOT_RequestNumber__c == this.requestNumber) {
+        let tempServiceAppointments = [];
+        let isRegion = false;
+        for (let i = 0; i < this.allServiceAppointments.length; i++) {
+            isRegion = this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c);
+            // Series
+            if (this.isSeriesSelected === true) {
+                if (this.allServiceAppointments[i].HOT_RequestNumber__c === this.requestNumber) {
                     tempServiceAppointments.push(this.allServiceAppointments[i]);
                 }
-            } else if (this.isScreenInterpretation) {
-                if (this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c) {
-                    tempServiceAppointments.push(this.allServiceAppointments[i]);
-                }
-            } else {
-                if (this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c)) {
-                    tempServiceAppointments.push(this.allServiceAppointments[i]);
-                }
+            } else if (this.picklistValue === 'Alle' && isRegion) {
+                tempServiceAppointments.push(this.allServiceAppointments[i]);
+            } else if (
+                this.picklistValue === 'Vanlige oppdrag' &&
+                !this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c &&
+                !this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c &&
+                isRegion
+            ) {
+                tempServiceAppointments.push(this.allServiceAppointments[i]);
+            } else if (
+                this.picklistValue === 'Fellesoppdrag' &&
+                this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c &&
+                isRegion
+            ) {
+                tempServiceAppointments.push(this.allServiceAppointments[i]);
+            } else if (
+                this.picklistValue === 'Skjermtolk-oppdrag' &&
+                this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c
+            ) {
+                tempServiceAppointments.push(this.allServiceAppointments[i]);
             }
         }
         this.allServiceAppointmentsFiltered = tempServiceAppointments;
     }
 
     connectedCallback() {
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             if (i < this.columnLabels.length) {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), this.columnLabels[i]);
             } else {
@@ -234,28 +255,21 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     @track requestNumber = null;
-    @track isRequestNumberNull = true;
+    @track isSeriesSelected = false;
     showSeries(row) {
         this.requestNumber = row.HOT_RequestNumber__c;
-        this.isRequestNumberNull = false;
+        this.isSeriesSelected = true;
         this.filterServiceAppointments();
     }
     handleBackToFullList() {
         this.requestNumber = null;
-        this.isRequestNumberNull = true;
-        this.isScreenInterpretation = false;
-        this.filterServiceAppointments();
-    }
-    @track isScreenInterpretation = false;
-    handleScreenInterpreter(event) {
-        this.isScreenInterpretation = event.detail.checked;
+        this.isSeriesSelected = false;
         this.filterServiceAppointments();
     }
 
     @track selectedRows = [];
     getSelectedName(event) {
         this.selectedRows = event.detail.selectedRows;
-        console.log(JSON.stringify(this.selectedRows));
     }
 
     @track serviceAppointmentCommentDetails = [];
