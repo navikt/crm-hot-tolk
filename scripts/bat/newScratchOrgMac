@@ -6,8 +6,8 @@ sfdx force:org:create -f ~/Developer/crm-hot/config/project-scratch-def.json --s
 # Installer crm-platform-base ver. 0.97
 sfdx force:package:install --package 04t2o000000ySFFAA2 -r -k navcrm --wait 10 --publishwait 10
 
-# Installer crm-platform-integration ver. 0.50
-sfdx force:package:install --package 04t2o000000ySTlAAM -r -k navcrm --wait 10 --publishwait 10
+# Installer crm-platform-integration ver. 0.51
+sfdx force:package:install --package 04t2o000000ySU0AAM -r -k navcrm --wait 10 --publishwait 10
 
 # Installer crm-platform-access-control ver. 0.68
 sfdx force:package:install --package 04t2o000000ySEMAA2 -r -k navcrm --wait 10 --publishwait 10
