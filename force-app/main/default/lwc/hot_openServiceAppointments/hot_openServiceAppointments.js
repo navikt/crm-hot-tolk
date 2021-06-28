@@ -14,10 +14,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         { name: 'Fellesoppdrag', label: 'Fellesoppdrag' },
         { name: 'Skjermtolk-oppdrag', label: 'Skjermtolk-oppdrag' }
     ];
-    @track selectDisable = false;
-    @track selectMultiple = false;
-    @track selectRequired = false;
-    @track selectSize = 1;
 
     @track columns = [
         {
@@ -136,11 +132,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    @track isScreenInterpretation = false;
     @track picklistValue = 'Alle';
     handlePicklist(event) {
         this.picklistValue = event.detail;
-        this.isScreenInterpretation = this.picklistValue === 'Skjermtolk-oppdrag';
         this.filterServiceAppointments();
     }
 
@@ -159,33 +153,40 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.allServiceAppointments = undefined;
         }
     }
+    show = false;
+    handleChange(event) {
+        this.show = event.target.checked;
+    }
 
     filterServiceAppointments() {
         let tempServiceAppointments = [];
-        let region = false;
+        let isRegion = false;
         for (let i = 0; i < this.allServiceAppointments.length; i++) {
-            region = this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c);
+            isRegion = this.regions.includes(this.allServiceAppointments[i].ServiceTerritory.HOT_DeveloperName__c);
             // Series
-            if (this.isRequestNumberNull === false) {
+            if (this.isSeriesSelected === true) {
                 if (this.allServiceAppointments[i].HOT_RequestNumber__c === this.requestNumber) {
                     tempServiceAppointments.push(this.allServiceAppointments[i]);
                 }
-            } else if (this.picklistValue === 'Alle' && region) {
+            } else if (this.picklistValue === 'Alle' && isRegion) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             } else if (
                 this.picklistValue === 'Vanlige oppdrag' &&
                 !this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c &&
                 !this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c &&
-                region
+                isRegion
             ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             } else if (
                 this.picklistValue === 'Fellesoppdrag' &&
                 this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c &&
-                region
+                isRegion
             ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
-            } else if (this.isScreenInterpretation && this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c) {
+            } else if (
+                this.picklistValue === 'Skjermtolk-oppdrag' &&
+                this.allServiceAppointments[i].HOT_IsScreenInterpreterNew__c
+            ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             }
         }
@@ -258,16 +259,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     @track requestNumber = null;
-    @track isRequestNumberNull = true;
+    @track isSeriesSelected = false;
     showSeries(row) {
         this.requestNumber = row.HOT_RequestNumber__c;
-        this.isRequestNumberNull = false;
+        this.isSeriesSelected = true;
         this.filterServiceAppointments();
     }
     handleBackToFullList() {
         this.requestNumber = null;
-        this.isRequestNumberNull = true;
-        this.isScreenInterpretation = false;
+        this.isSeriesSelected = false;
         this.filterServiceAppointments();
     }
 
