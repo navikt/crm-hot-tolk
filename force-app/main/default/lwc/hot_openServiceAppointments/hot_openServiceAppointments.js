@@ -153,10 +153,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.allServiceAppointments = undefined;
         }
     }
-    show = false;
-    handleChange(event) {
-        this.show = event.target.checked;
-    }
 
     filterServiceAppointments() {
         let tempServiceAppointments = [];

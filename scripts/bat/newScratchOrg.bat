@@ -5,7 +5,7 @@ echo "Installerer crm-platform-base ver. 0.97"
 call sfdx force:package:install --package 04t2o000000ySFFAA2 -r -k navcrm --wait 10 --publishwait 10
 
 echo "Installerer crm-platform-integration ver. 0.50"
-call sfdx force:package:install --package 04t2o000000yS5FAAU -r -k navcrm --wait 10 --publishwait 10
+call sfdx force:package:install --package 04t2o000000ySTlAAM -r -k navcrm --wait 10 --publishwait 10
 
 echo "Installerer crm-platform-access-control ver. 0.68"
 call sfdx force:package:install --package 04t2o000000ySEMAA2 -r -k navcrm --wait 10 --publishwait 10
