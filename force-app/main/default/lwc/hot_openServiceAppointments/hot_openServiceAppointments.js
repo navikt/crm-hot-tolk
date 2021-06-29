@@ -264,6 +264,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     handleBackToFullList() {
         this.requestNumber = null;
         this.isSeriesSelected = false;
+        this.picklistValue = 'Alle';
         this.filterServiceAppointments();
     }
 
