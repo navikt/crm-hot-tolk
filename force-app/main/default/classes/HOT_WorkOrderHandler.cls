@@ -256,7 +256,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
             }
             for (WorkOrder workOrder : request.Work_Orders__r) {
-                if (workOrder.Status != 'Canceled') {
+                if (workOrder.Status != 'Canceled' && workOrder.Status != 'Completed') {
                     request.StartTime__c = workOrder.StartDate;
                     request.EndTime__c = workOrder.EndDate;
                     request.SeriesStartDate__c = workOrder.StartDate.date();
