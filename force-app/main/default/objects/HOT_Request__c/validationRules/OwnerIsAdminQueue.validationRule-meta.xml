@@ -4,6 +4,6 @@
     <active>true</active>
     <description>Do not accept &quot;Godkjent&quot; status on Request if owner is Admin Queue.</description>
     <errorConditionFormula
-    >!Contains($Profile.Name, &apos;admin&apos;) &amp;&amp; Owner:Queue.QueueName == &apos;HOT Tolk Admin&apos; &amp;&amp; ISPICKVAL(Status__c, &apos;Godkjent&apos;) &amp;&amp; ISCHANGED(Status__c)</errorConditionFormula>
+    >!Contains(LOWER($Profile.Name), &apos;admin&apos;) &amp;&amp; Owner:Queue.QueueName == &apos;HoT Tolk Admin&apos; &amp;&amp; ISPICKVAL(Status__c, &apos;Godkjent&apos;) &amp;&amp; ISCHANGED(Status__c)</errorConditionFormula>
     <errorMessage>Forespørsel kan ikke godkjennes dersom eieren av forespørselen er Admin-køen.</errorMessage>
 </ValidationRule>
