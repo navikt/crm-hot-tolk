@@ -151,11 +151,19 @@ private class HOT_RequestHandlerTest {
 
     @isTest
     public static void setSourceFieldOnClonedRequest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
-        workType.HOT_DeveloperName__c = 'BTV';
+        Person__c personTromso = HOT_TestDataFactory.createPerson();
+        personTromso.INT_FirstName__c = 'Tromso';
+        personTromso.INT_LastName__c = 'User';
+        personTromso.INT_RegionNumber__c = '54';
+        insert personTromso;
+        Account accountTromso = [SELECT Id FROM Account WHERE FirstName = :personTromso.INT_FirstName__c LIMIT 1];
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Type__c = 'ImageInterpreter';
+        request.Source__c = 'Community';
+        request.Account__c = accountTromso.Id;
         insert request;
 
         Test.startTest();
