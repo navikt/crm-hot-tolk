@@ -205,13 +205,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     filterRequests() {
         let tempRequests = [];
         let pickListValue = this.picklistValue;
-        var today = new Date();
-        today =
-            today.getFullYear() +
-            '-' +
-            String(today.getMonth() + 1).padStart(2, '0') +
-            '-' +
-            String(today.getDate()).padStart(2, '0');
         for (let i = 0; i < this.allRequests.length; i++) {
             let status = this.allRequests[i].ExternalRequestStatus__c;
             if (status === pickListValue) {
@@ -219,7 +212,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             } else if (pickListValue === 'Alle') {
                 tempRequests = this.allRequests; // Already set correctly in handleRequestType
             } else if (pickListValue === 'Fremtidige') {
-                if (status !== 'Avlyst' && this.allRequests[i].SeriesEndDate__c > today) {
+                if (
+                    status !== 'Avlyst' &&
+                    this.allRequests[i].SeriesEndDate__c > new Date().toISOString().substring(0, 10)
+                ) {
                     tempRequests.push(this.allRequests[i]);
                 }
             }
