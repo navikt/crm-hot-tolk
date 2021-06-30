@@ -148,4 +148,24 @@ private class HOT_RequestHandlerTest {
         System.assertEquals('Image Interpreter', request.AssignmentType__c, 'Could not set AssignementType');
         System.assertEquals(workType.Id, request.InterpretationMethod__c, 'Could not set InterpretationMethod');
     }
+
+    @isTest
+    public static void setSourceFieldOnClonedRequest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
+        workType.HOT_DeveloperName__c = 'BTV';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Type__c = 'ImageInterpreter';
+        insert request;
+
+        Test.startTest();
+        HOT_Request__c req = request.clone();
+        insert req;
+        Test.stopTest();
+
+        // Validate if isClone in memory, not from DB
+        System.assertEquals(req.isClone(), true, 'Request was not a clone');
+        req = [SELECT Source__c FROM HOT_Request__c WHERE Id = :req.Id];
+        System.assertEquals(req.Source__c, 'Dispatcher', 'Request source is not "Dispatcher" (Formidler)');
+    }
 }
