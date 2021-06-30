@@ -163,7 +163,7 @@ private class HOT_RequestHandlerTest {
         insert req;
         Test.stopTest();
 
-        // Validate if isClone in memory, not from DB
+        // Validate isClone in memory, not from DB
         System.assertEquals(req.isClone(), true, 'Request was not a clone');
         req = [SELECT Source__c FROM HOT_Request__c WHERE Id = :req.Id];
         System.assertEquals(req.Source__c, 'Dispatcher', 'Request source is not "Dispatcher" (Formidler)');
