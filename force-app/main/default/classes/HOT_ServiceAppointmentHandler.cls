@@ -21,8 +21,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
-                triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != serviceAppointment.SchedStartTime ||
-                triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != serviceAppointment.SchedEndTime
+                triggerOldMap.get(serviceAppointment.Id).get('EarliestStartTime') != serviceAppointment.EarliestStartTime ||
+                triggerOldMap.get(serviceAppointment.Id).get('DueDate') != serviceAppointment.DueDate
             ) {
                 serviceAppointmentsWithHoursToSet.add(serviceAppointment);
             }
