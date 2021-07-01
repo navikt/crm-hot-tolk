@@ -13,6 +13,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 'NumberOfWorkOrders__c'
             }
         );
+        setSourceFieldOnClone((List<HOT_Request__c>) records);
         List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             if (request.Type__c == 'ImageInterpreter') {
@@ -288,6 +289,15 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
+    // If Request is cloned we can assume it is Formidler since users can't clone
+    public static void setSourceFieldOnClone(List<HOT_Request__c> requests) {
+        for (HOT_Request__c request : requests) {
+            if (request.isClone()) {
+                request.Source__c = 'Dispatcher';
+            }
+        }
+    }
+
     public static void resetNotifyDispatcher(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
             request.IsNotifyDispatcher__c = false;

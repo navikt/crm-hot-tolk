@@ -11,6 +11,7 @@ public without sharing class HOT_RequestListContoller {
                     Subject__c,
                     StartTime__c,
                     EndTime__c,
+                    SeriesEndDate__c,
                     MeetingStreet__c,
                     MeetingPostalCode__c,
                     MeetingPostalCity__c,

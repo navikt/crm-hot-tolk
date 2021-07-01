@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>IsMyRequest__c</fullName>
-    <description>Used to filter records in list views.</description>
+    <fullName>IsFellesOppdrag__c</fullName>
+    <description>Used in code to make conditions in if statements and filters more readable.</description>
     <externalId>false</externalId>
-    <formula>Dispatcher__r.Id = $User.Id</formula>
+    <formula>Contains(Owner:Queue.QueueName, &quot;Fellesoppdrag&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>My request?</label>
+    <label>IsFellesOppdrag</label>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
