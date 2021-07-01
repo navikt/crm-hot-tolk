@@ -4,8 +4,8 @@
     <assignments>
         <name>DeactivateFreelance</name>
         <label>DeactivateFreelance</label>
-        <locationX>710</locationX>
-        <locationY>638</locationY>
+        <locationX>885</locationX>
+        <locationY>1262</locationY>
         <assignmentItems>
             <assignToReference>CurrentResource.IsActive</assignToReference>
             <operator>Assign</operator>
@@ -20,8 +20,8 @@
     <assignments>
         <name>setUserProfile</name>
         <label>setUserProfile</label>
-        <locationX>842</locationX>
-        <locationY>1238</locationY>
+        <locationX>1017</locationX>
+        <locationY>1862</locationY>
         <assignmentItems>
             <assignToReference>getUser.ProfileId</assignToReference>
             <operator>Assign</operator>
@@ -34,10 +34,35 @@
         </connector>
     </assignments>
     <decisions>
+        <name>Access</name>
+        <label>Access?</label>
+        <locationX>441</locationX>
+        <locationY>460</locationY>
+        <defaultConnector>
+            <targetReference>No_Access_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Create_Community_Plus_User_Permission_Set_Assigment_Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>StartScreen</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>CheckIfFoundResource</name>
         <label>CheckIfFoundResource</label>
-        <locationX>281</locationX>
-        <locationY>398</locationY>
+        <locationX>456</locationX>
+        <locationY>1022</locationY>
         <defaultConnector>
             <targetReference>checkIfFreelance</targetReference>
         </defaultConnector>
@@ -61,8 +86,8 @@
     <decisions>
         <name>checkIfFoundUser</name>
         <label>checkIfFoundUser</label>
-        <locationX>710</locationX>
-        <locationY>878</locationY>
+        <locationX>885</locationX>
+        <locationY>1502</locationY>
         <defaultConnector>
             <targetReference>getProfile</targetReference>
         </defaultConnector>
@@ -86,8 +111,8 @@
     <decisions>
         <name>checkIfFreelance</name>
         <label>checkIfFreelance</label>
-        <locationX>512</locationX>
-        <locationY>518</locationY>
+        <locationX>687</locationX>
+        <locationY>1142</locationY>
         <defaultConnector>
             <targetReference>DeactivateFreelance</targetReference>
         </defaultConnector>
@@ -108,6 +133,11 @@
             <label>Is not freelance</label>
         </rules>
     </decisions>
+    <formulas>
+        <name>currentUser</name>
+        <dataType>String</dataType>
+        <expression>{!$User.Id}</expression>
+    </formulas>
     <interviewLabel>Deactivate Freelance Interpreter {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Deaktiver frilanstolk</label>
     <processMetadataValues>
@@ -119,7 +149,7 @@
     <processMetadataValues>
         <name>CanvasMode</name>
         <value>
-            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -132,8 +162,8 @@
     <recordCreates>
         <name>assignPermissionSet</name>
         <label>assignPermissionSet</label>
-        <locationX>842</locationX>
-        <locationY>1718</locationY>
+        <locationX>1017</locationX>
+        <locationY>2342</locationY>
         <connector>
             <targetReference>SuccessScreen</targetReference>
         </connector>
@@ -153,10 +183,63 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordLookups>
+        <name>Get_Current_User_Permission_Set_Assignment</name>
+        <label>Get Current User Permission Set Assignment</label>
+        <locationX>456</locationX>
+        <locationY>326</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Access</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>AssigneeId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>currentUser</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>PermissionSetId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Permission_Set.Id</elementReference>
+            </value>
+        </filters>
+        <object>PermissionSetAssignment</object>
+        <outputAssignments>
+            <assignToReference>Create_Community_Plus_User_Permission_Set_Assigment_Id</assignToReference>
+            <field>Id</field>
+        </outputAssignments>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Permission_Set</name>
+        <label>Get Permission Set</label>
+        <locationX>456</locationX>
+        <locationY>206</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Current_User_Permission_Set_Assignment</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Create_Community_Plus_User</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>PermissionSet</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>GetCurrentResource</name>
         <label>GetCurrentResource</label>
-        <locationX>281</locationX>
-        <locationY>278</locationY>
+        <locationX>456</locationX>
+        <locationY>902</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>CheckIfFoundResource</targetReference>
@@ -182,8 +265,8 @@
     <recordLookups>
         <name>getPermissonSet</name>
         <label>getPermissonSet</label>
-        <locationX>842</locationX>
-        <locationY>1118</locationY>
+        <locationX>1017</locationX>
+        <locationY>1742</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>setUserProfile</targetReference>
@@ -203,8 +286,8 @@
     <recordLookups>
         <name>getProfile</name>
         <label>getProfile</label>
-        <locationX>842</locationX>
-        <locationY>998</locationY>
+        <locationX>1017</locationX>
+        <locationY>1622</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>getPermissonSet</targetReference>
@@ -224,8 +307,8 @@
     <recordLookups>
         <name>getUser</name>
         <label>getUser</label>
-        <locationX>710</locationX>
-        <locationY>758</locationY>
+        <locationX>885</locationX>
+        <locationY>1382</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>checkIfFoundUser</targetReference>
@@ -245,8 +328,8 @@
     <recordUpdates>
         <name>updateResource</name>
         <label>updateResource</label>
-        <locationX>842</locationX>
-        <locationY>1358</locationY>
+        <locationX>1017</locationX>
+        <locationY>1982</locationY>
         <connector>
             <targetReference>breakTrans</targetReference>
         </connector>
@@ -255,8 +338,8 @@
     <recordUpdates>
         <name>updateUser</name>
         <label>updateUser</label>
-        <locationX>842</locationX>
-        <locationY>1598</locationY>
+        <locationX>1017</locationX>
+        <locationY>2222</locationY>
         <connector>
             <targetReference>assignPermissionSet</targetReference>
         </connector>
@@ -265,8 +348,8 @@
     <screens>
         <name>breakTrans</name>
         <label>breakTrans</label>
-        <locationX>842</locationX>
-        <locationY>1478</locationY>
+        <locationX>1017</locationX>
+        <locationY>2102</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -275,16 +358,34 @@
         </connector>
         <fields>
             <name>next</name>
+            <fieldText>&lt;p&gt;Endrer tilganger på bruker&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>No_Access_Screen</name>
+        <label>No Access</label>
+        <locationX>190</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>No_Access_Text</name>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt;Du har ikke tilgang til denne funksjonen.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>RecordNOTfoundScreen</name>
         <label>RecordNOTfoundScreen</label>
-        <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationX>225</locationX>
+        <locationY>1142</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -294,14 +395,14 @@
             >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14.6667px; font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; color: rgb(23, 43, 77);&quot;&gt;En feil oppstod! Fant ikke tjenesteressursen. &lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>RecordNotFreelanceScreen</name>
         <label>RecordNotFreelanceScreen</label>
-        <locationX>314</locationX>
-        <locationY>638</locationY>
+        <locationX>489</locationX>
+        <locationY>1262</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -310,14 +411,14 @@
             <fieldText>&lt;p&gt;Ressursen er ikke en frilanstolk!&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>RecordUserNotFoundScreen</name>
         <label>RecordUserNotFoundScreen</label>
-        <locationX>578</locationX>
-        <locationY>998</locationY>
+        <locationX>753</locationX>
+        <locationY>1622</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -326,14 +427,14 @@
             <fieldText>&lt;p&gt;Kunne ikke finne brukeren til tolken&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>StartScreen</name>
         <label>StartScreen</label>
-        <locationX>281</locationX>
-        <locationY>158</locationY>
+        <locationX>456</locationX>
+        <locationY>782</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -351,8 +452,8 @@
     <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>842</locationX>
-        <locationY>1838</locationY>
+        <locationX>1017</locationX>
+        <locationY>2462</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -365,13 +466,20 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>155</locationX>
-        <locationY>0</locationY>
+        <locationX>330</locationX>
+        <locationY>48</locationY>
         <connector>
-            <targetReference>StartScreen</targetReference>
+            <targetReference>Get_Permission_Set</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>Create_Community_Plus_User_Permission_Set_Assigment_Id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>CurrentResource</name>
         <dataType>SObject</dataType>
