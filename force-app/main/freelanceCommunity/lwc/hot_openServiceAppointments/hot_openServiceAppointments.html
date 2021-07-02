@@ -27,7 +27,7 @@
             </div>
             <template if:false={isSeriesSelected}>
                 <br /><br />
-                <div class="picklist">
+                <div class="third-width">
                     <c-picklist
                         master-label="Type oppdrag"
                         choices={choices}
@@ -46,11 +46,7 @@
                 tabindex="-1"
             >
                 <div
-                    class="
-                        ReactModal__Content ReactModal__Content--after-open
-                        navno-dekorator
-                        comments-dialog-container
-                    "
+                    class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
                     role="dialog"
                     aria-labelledby="regions-header-id"
                 >

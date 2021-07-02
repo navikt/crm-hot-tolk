@@ -2,6 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsNotifyDispatcher__c</fullName>
     <defaultValue>false</defaultValue>
+    <description>Used to send notification to Dispatchers. The checkbox is set to true from Experiences (external user), and dispatcher is notified about changes, and the field is reset.
+See RequestNotification.</description>
     <externalId>false</externalId>
     <label>IsNotifyDispatcher</label>
     <trackHistory>true</trackHistory>

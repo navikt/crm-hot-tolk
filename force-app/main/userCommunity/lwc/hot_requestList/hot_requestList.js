@@ -205,7 +205,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     filterRequests() {
         let tempRequests = [];
         let pickListValue = this.picklistValue;
-
         for (let i = 0; i < this.allRequests.length; i++) {
             let status = this.allRequests[i].ExternalRequestStatus__c;
             if (status === pickListValue) {
@@ -213,7 +212,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             } else if (pickListValue === 'Alle') {
                 tempRequests = this.allRequests; // Already set correctly in handleRequestType
             } else if (pickListValue === 'Fremtidige') {
-                if (status !== 'Avlyst' && this.allRequests[i].EndTime__c > new Date().toISOString()) {
+                if (
+                    status !== 'Avlyst' &&
+                    this.allRequests[i].SeriesEndDate__c > new Date().toISOString().substring(0, 10)
+                ) {
                     tempRequests.push(this.allRequests[i]);
                 }
             }
