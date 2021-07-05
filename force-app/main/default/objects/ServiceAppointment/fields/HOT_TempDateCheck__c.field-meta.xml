@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_TempDateCheck__c</fullName>
+    <externalId>false</externalId>
+    <formula
+    >IF(EarliestStartTime != SchedStartTime || DueDate != SchedEndTime, True, False) || IF(SchedStartTime == null || SchedEndTime = null, True, False)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>TempDateCheck</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>
