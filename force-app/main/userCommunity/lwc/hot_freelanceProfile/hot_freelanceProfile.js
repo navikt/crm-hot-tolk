@@ -6,7 +6,7 @@ export default class hot_userInformation extends NavigationMixin(LightningElemen
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
-                pageName: 'min-side-freelance'
+                pageName: 'min-side'
             }
         });
     }

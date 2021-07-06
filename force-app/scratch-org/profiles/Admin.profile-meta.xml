@@ -2222,10 +2222,6 @@
         <visible>false</visible>
     </recordTypeVisibilities>
     <tabVisibilities>
-        <tab>Freelance_my_profile</tab>
-        <visibility>DefaultOn</visibility>
-    </tabVisibilities>
-    <tabVisibilities>
         <tab>HOT_InterestedResource__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>

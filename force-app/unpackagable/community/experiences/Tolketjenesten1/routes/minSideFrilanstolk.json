@@ -3,8 +3,8 @@
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "configurationTags" : [ ],
   "id" : "836f27f7-03e2-4e6b-a058-d6a834b6c9a1",
-  "label" : "min-profil-frilanstolk",
+  "label" : "Min Side - Frilanstolk",
   "routeType" : "usersettings",
   "type" : "route",
-  "urlPrefix" : "min-side-freelancetolk"
+  "urlPrefix" : "min-side-frilanstolk"
 }
