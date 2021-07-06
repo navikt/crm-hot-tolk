@@ -3,7 +3,7 @@
     <apiVersion>47.0</apiVersion>
     <isExposed>true</isExposed>
     <description>Used to create a Request from the Community</description>
-    <masterLabel>Create Request</masterLabel>
+    <masterLabel>Freelance profile</masterLabel>
     <targets>
         <target>lightningCommunity__Page</target>
         <target>lightning__AppPage</target>

@@ -25,6 +25,14 @@
     "regionName" : "header",
     "type" : "region"
   }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:hot_freelanceProfile",
+      "id" : "ef2d527f-45a5-4db8-8a83-7a901b1f49d6",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
     "id" : "c4e10997-f671-4533-a885-eb7adfee5860",
     "regionName" : "content",
     "type" : "region"
