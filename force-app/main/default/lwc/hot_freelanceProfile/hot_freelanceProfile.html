@@ -1,0 +1,13 @@
+<template>
+    <div class="brodsmulesti">
+        <lightning-breadcrumbs class="liste-max-width">
+            <lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}> </lightning-breadcrumb>
+            <lightning-breadcrumb label="Freelance - Min side" href="/s/min-side-freelance" onclick={goToMyPage}>
+            </lightning-breadcrumb>
+        </lightning-breadcrumbs>
+    </div>
+
+    <c-hot_user-contact-information item-name="contactInformation"> </c-hot_user-contact-information>
+    <c-hot_tolketjenesten-user-information item-name="tolketjenestenInformation">
+    </c-hot_tolketjenesten-user-information>
+</template>
