@@ -297,30 +297,46 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
 
     public static void throwExceptionIfARHasSAOverlap(List<AssignedResource> assignedResources) {
         List<Id> serviceAppointmentIds = new List<Id>();
+        List<Id> serviceResourceIds = new List<Id>();
         for (AssignedResource assignedResource : assignedResources) {
             serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+            serviceResourceIds.add(assignedResource.ServiceResourceId);
         }
+
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, AssignedResource, ActualStartTime, ActualEndTime
+                SELECT Id, AssignedResource, SchedStartTime, SchedEndTime
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
         );
 
+        Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
+            [
+                SELECT Id, (SELECT Id, SchedStartTime, SchedEndTime FROM HOT_ServiceAppoinments__r)
+                FROM ServiceResource
+                WHERE Id IN :serviceResourceIds
+            ]
+        );
+
         List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
         for (AssignedResource ar : assignedResources) {
-            if (ar.ServiceAppointmentId == null || ar.ServiceAppointment == null) {
-                continue;
-            }
-            // TODO: Check if AR has service appointment overlapping with current SA
             // Check if no Assigned Resource exists on SA
             if (
-                serviceAppointments.get(ar.ServiceAppointmentId).HOT_NumberOfAssignedResources__c == 0 &&
-                serviceAppointments.get(ar.ServiceAppointmentId).HOT_AssignedResourceId__c == null
+                serviceAppointments.get(ar.ServiceAppointmentId).HOT_AssignedResourceId__c != null &&
+                serviceAppointments.get(ar.ServiceAppointmentId).HOT_NumberOfAssignedResources__c != 0
             ) {
+                continue;
+            }
+            // TODO: Check if AR has service appointment overlapping with current SA - HOT_ServiceAppointment__r is not correct. Need to loop over list of related SAs on SR
+            if (
+                serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointment__r.SchedStartTime <=
+                serviceAppointments.get(ar.ServiceAppointmentId).SchedEndTime &&
+                serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointment__r.SchedEndTime >=
+                serviceAppointments.get(ar.ServiceAppointmentId).SchedStartTime
+            ) {
+                throw new Exception('Ressursen har allerede et oppdrag i dette tidsrommet.');
             }
         }
-        // TODO: Throw exception
     }
 }
