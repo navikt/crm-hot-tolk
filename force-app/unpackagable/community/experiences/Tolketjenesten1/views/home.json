@@ -13,19 +13,19 @@
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
-    } ],
-    "id" : "cf0d62f9-2201-48c4-81d3-d43b062cca9d",
-    "regionName" : "header",
-    "type" : "region"
-  }, {
-    "components" : [ {
+    }, {
       "componentAttributes" : { },
       "componentName" : "c:hot_tolketjenestenHovedBanner",
       "id" : "685600bb-3cfd-4c31-ae0e-4c5ce27ab8c9",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
-    }, {
+    } ],
+    "id" : "cf0d62f9-2201-48c4-81d3-d43b062cca9d",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
       "componentAttributes" : { },
       "componentName" : "c:hot_home",
       "id" : "d19e8491-9698-4c04-a35c-71721b105397",
