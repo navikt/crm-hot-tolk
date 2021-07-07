@@ -2,6 +2,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
     public override void onBeforeInsert() {
         updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
         setResourceTypeOnServiceAppointment((List<AssignedResource>) records);
+        throwExceptionIfARHasSAOverlap((List<AssignedResource>) records);
     }
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<AssignedResource> assignedResourcesFiltered = new List<AssignedResource>();
@@ -13,6 +14,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         if (assignedResourcesFiltered.size() > 0) {
             updateServiceTerritoryOnServiceAppointment(assignedResourcesFiltered);
             setResourceTypeOnServiceAppointment(assignedResourcesFiltered);
+            throwExceptionIfARHasSAOverlap(assignedResourcesFiltered);
         }
     }
 
@@ -303,23 +305,24 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             serviceResourceIds.add(assignedResource.ServiceResourceId);
         }
 
+        // Find all service appointments related to assigned resources
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, AssignedResource, SchedStartTime, SchedEndTime
+                SELECT Id, HOT_AssignedResourceId__c, HOT_ServiceResource__c, SchedStartTime, SchedEndTime
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
         );
 
+        // Find all service resources related to assigned resources
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
             [
-                SELECT Id, (SELECT Id, SchedStartTime, SchedEndTime FROM HOT_ServiceAppoinments__r)
+                SELECT Id, (SELECT Id, SchedStartTime, SchedEndTime FROM HOT_ServiceAppointments__r)
                 FROM ServiceResource
                 WHERE Id IN :serviceResourceIds
             ]
         );
 
-        List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
         for (AssignedResource ar : assignedResources) {
             // Check if no Assigned Resource exists on SA
             if (
@@ -328,14 +331,21 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             ) {
                 continue;
             }
-            // TODO: Check if AR has service appointment overlapping with current SA - HOT_ServiceAppointment__r is not correct. Need to loop over list of related SAs on SR
-            if (
-                serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointment__r.SchedStartTime <=
-                serviceAppointments.get(ar.ServiceAppointmentId).SchedEndTime &&
-                serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointment__r.SchedEndTime >=
-                serviceAppointments.get(ar.ServiceAppointmentId).SchedStartTime
-            ) {
-                throw new Exception('Ressursen har allerede et oppdrag i dette tidsrommet.');
+            // Check if AR already has service appointment overlapping with current SA - loop over list of related SAs on AR's related SR
+            Boolean isOverlap = false;
+            for (Integer i = 0; i < serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r.size(); i++) {
+                if (
+                    serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r[i].SchedStartTime <=
+                    serviceAppointments.get(ar.ServiceAppointmentId).SchedEndTime &&
+                    serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r[i].SchedEndTime >=
+                    serviceAppointments.get(ar.ServiceAppointmentId).SchedStartTime
+                ) {
+                    isOverlap = true;
+                }
+            }
+            if (isOverlap) {
+                // TODO: Create custom Exception or use logger?
+                //throw Exception('Ressursen har allerede et oppdrag i dette tidsrommet.');
             }
         }
     }
