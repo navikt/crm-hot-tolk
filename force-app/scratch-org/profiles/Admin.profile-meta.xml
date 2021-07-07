@@ -1,26 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Profile xmlns="http://soap.sforce.com/2006/04/metadata">
     <applicationVisibilities>
         <application>HOT_Admin</application>
         <default>true</default>
         <visible>true</visible>
     </applicationVisibilities>
-    <classAccesses>
-        <apexClass>ChangePasswordController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>ChangePasswordControllerTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>CommunitiesLandingController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>CommunitiesLandingControllerTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
     <classAccesses>
         <apexClass>HOT_ARCreatedControllerTest</apexClass>
         <enabled>true</enabled>
@@ -54,35 +38,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_AutoScheduleService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_AutoScheduleServiceTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_CreateWorkOrderService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_CreateWorkOrderServiceTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_DuplicateHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_DuplicateHandlerTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_EventHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_EventHandlerTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -110,19 +70,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_InterestedResourceHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_InterestedResourceHandlerTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_InterestedResourcesListController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_KrrCalloutQueuable</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -131,14 +79,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_MyServiceAppointmentListController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_NotificationHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_NotificationHandlerTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -155,22 +95,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_ReleaseToFreelanceFlowControllerTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_ReminderSMSBatch</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_ReminderSMSBatchTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_ReminderSMSService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_ReminderSMSServiceTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -194,10 +118,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_RequestNotification</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_RequestRoutingHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -210,47 +130,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_ResourceAbsenceCreateService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_ResourceAbsenceDeleteService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_ResourceAbsenceServiceTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_SAReportControllerTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_SAReportingSchedulable</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_SAReportingSchedulableTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_ServiceAppointmentHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_ServiceAppointmentHandlerTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_ServiceAppointmentNotification</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_ServiceAppointmentNotificationTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_ServiceAppointmentReportController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -290,18 +174,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_UpdateExistingRecords</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_UriEventService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_UriEventServiceTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_UserHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -330,15 +202,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_WorkOrderHandlerTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_WorkOrderLineItemHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_WorkOrderLineItemHandlerTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -354,22 +218,42 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_WorkOrderNotification</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_WorkOrderStatusHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>MyProfilePageController</apexClass>
+        <apexClass>JWT</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>MyProfilePageControllerTest</apexClass>
+        <apexClass>HOT_KrrCalloutQueuable</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>KrrCalloutService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>KrrCalloutServiceTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>MaskinportenService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>MaskinportenServiceTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <custom>false</custom>
+    <customPermissions>
+        <enabled>false</enabled>
+        <name>RunWithoutTrigger</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>false</enabled>
+        <name>Validation_Override</name>
+    </customPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>AssignedResource.HOT_HasReservations__c</field>
@@ -383,21 +267,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Event.CRM_NAV_Department__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_HistoricallyAssignedResource__c.CanceledDate__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_HistoricallyAssignedResource__c.SchedEndTime__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_HistoricallyAssignedResource__c.SchedStartTime__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -417,32 +286,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_InterestedResource__c.AppointmentDeadlineDate__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_InterestedResource__c.AppointmentNumber__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_InterestedResource__c.AppointmentServiceTerritory__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_InterestedResource__c.AssignmentType__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_InterestedResource__c.Comments__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_InterestedResource__c.Dispatcher__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -463,11 +312,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_InterestedResource__c.NumberOfInterestedResources__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_InterestedResource__c.ResourceAddress__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -522,17 +366,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_InterestedResource__c.WorkOrderNumber__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_InterestedResource__c.WorkTypeName__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_InterestedResource__c.WorkType__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -612,11 +446,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.HOT_OverrideRate__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_Request__c.HOT_PersonContactId__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -662,16 +491,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.IsFellesOppdrag__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.IsImageInterpreter__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_Request__c.IsManuallyInvoiced__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -682,17 +501,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.IsNotifyDispatcher__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_Request__c.IsOtherEconomicProvicer__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.IsReminderSMS__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -728,16 +537,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.MessageToDispatcher__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.NavEmployeeNameAccount__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.NavEmployeeNameOrderer__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -782,11 +581,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.PaymentLiability__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_Request__c.Person__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -798,46 +592,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.PreferredInterpreter2__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.PreferredResource1__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.PreferredResource2__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.PreferredResource3__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.SeriesDurationDays__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.SeriesDurationWeeks__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.SeriesEndDate__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.SeriesPeriod__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.SeriesStartDate__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -896,11 +650,6 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Resource__c.Service_Resource__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_ServiceTerritoryByQueue__mdt.Queue__c</field>
         <readable>true</readable>
@@ -912,7 +661,32 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.HOT_Address__c</field>
+        <field>MaskinportenClient__mdt.Audience__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>MaskinportenClient__mdt.Endpoint__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>MaskinportenClient__mdt.Issuer__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>MaskinportenClient__mdt.KeyId__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>MaskinportenClient__mdt.PrivateKey__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>MaskinportenClient__mdt.Scopes__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -948,11 +722,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.HOT_InterpreterAtWork__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Person__c.HOT_IsReservationAgainstReminderSMS__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1011,186 +780,6 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>ReportingData__c.CRM_Category__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ReportingData__c.CRM_Date__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ReportingData__c.CRM_IsMyNavUnit__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ReportingData__c.CRM_IsMyRegion__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ReportingData__c.CRM_NavUnit__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ReportingData__c.CRM_Region__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ReportingData__c.CRM_Value__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_ActualDuration__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_ActualEndTime__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_ActualStartTime__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_CancelComment__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_CreatedDate__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_DeadlineDate__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_DueDate__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_DurationType__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_Duration__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_EarliestStartTime__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_FreelanceSubject__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_IsAcute__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_IsEmployedInterpreter__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_IsFreelanceInterpreter__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_IsHapticCommunication__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_IsScreenInterpreter__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_IsSerieoppdrag__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_Owner__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_RecordName__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_ReleaseDate__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_Request__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_SchedEndTime__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_SchedStartTime__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_ServiceAppointment__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_ServiceTerritory__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_Status2__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_Subject__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ReportingData__c.HOT_WorkType__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ResourceAbsence.HOT_EventId__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.AccountId</field>
         <readable>true</readable>
@@ -1217,11 +806,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>ServiceAppointment.ApptBookingInfoUrl</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>ServiceAppointment.ArrivalWindowEndTime</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1239,11 +823,6 @@
         <editable>true</editable>
         <field>ServiceAppointment.Description</field>
         <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_Account__c</field>
-        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -1267,22 +846,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_AutoDispatch__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_CancelComment__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_CanceledByInterpreter__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_DayOfWeek__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1297,17 +866,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_Dispatcher__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_DoNotCreateHAR__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_EndHour__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1322,11 +881,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_GenderAge__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_HapticCommunication__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -1334,11 +888,6 @@
         <editable>false</editable>
         <field>ServiceAppointment.HOT_Information__c</field>
         <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_InterestedResourceNames__c</field>
-        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -1357,11 +906,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_InterpretationType__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_IsAcute__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1372,22 +916,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_IsImageInterpreter__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_IsMyRequestDispatcher__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_IsNotifyDispatcher__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_IsOtherEconomicProvicer__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1412,11 +941,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_NavEmployeeName__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_NumberOfAssignedResources__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -1428,16 +952,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_PreferredInterpreter__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_PreferredResource__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_PreferredServiceResourceId__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1472,37 +986,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_ResetToDefault__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_ServiceAppointmentNumber__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_ServiceResource__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_ServiceTerritoryName__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_StartHour__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_TermsOfAgreement__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_TotalNumberOfInterpreters__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1517,18 +1006,8 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_WorkOrderNumber__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_WorkTypeName__c</field>
         <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceAppointment.IsOffsiteAppointment</field>
-        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -1577,37 +1056,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceResource.HOT_AddressOverride__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceResource.HOT_Address__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceResource.HOT_AgreementFreelance__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceResource.HOT_EmailOverride__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceResource.HOT_Email__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceResource.HOT_InterpreterSpace__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceResource.HOT_InterpreterType__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1726,11 +1180,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>WorkOrder.CanceledDate__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.CaseId</field>
         <readable>true</readable>
@@ -1746,7 +1195,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>WorkOrder.Discount</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1772,11 +1221,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>WorkOrder.EntitlementId</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>WorkOrder.GrandTotal</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1817,22 +1261,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>WorkOrder.HOT_IsImageInterpreter__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>WorkOrder.HOT_IsInvoiced__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>WorkOrder.HOT_IsNotifyDispatcher__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>WorkOrder.HOT_IsReminderSMSSendt__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1861,27 +1290,17 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>WorkOrder.HOT_TotalNumberOfInterpreters__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>WorkOrder.IsClosed</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>WorkOrder.IsGeneratedFromMaintenancePlan</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>WorkOrder.IsStopped</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>WorkOrder.LineItemCount</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1893,21 +1312,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.MaintenancePlanId</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.MaintenanceWorkRuleId</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.MilestoneStatus</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.MilestoneStatusIcon</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1932,21 +1336,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>WorkOrder.ProductServiceCampaignId</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.ProductServiceCampaignItemId</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>WorkOrder.RecommendedCrewSize</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>WorkOrder.ReturnOrderId</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1956,18 +1350,13 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>WorkOrder.RootWorkOrderId</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.ServiceAppointmentCount</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.ServiceContractId</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1982,16 +1371,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>WorkOrder.SlaExitDate</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.SlaStartDate</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>WorkOrder.StartDate</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2001,13 +1380,8 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>WorkOrder.StatusCategory</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
-        <field>WorkOrder.StopStartDate</field>
+        <field>WorkOrder.StatusCategory</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2016,7 +1390,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>WorkOrder.Subtotal</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2031,7 +1405,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>WorkOrder.TotalPrice</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2070,11 +1444,6 @@
         <field>WorkOrderLineItem.HOT_NumberOfInterpreters__c</field>
         <readable>false</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>WorkType.HOT_DeveloperName__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
     <layoutAssignments>
         <layout>HOT_HistoricallyAssignedResource__c-Historically Assigned Resource Layout</layout>
     </layoutAssignments>
@@ -2088,13 +1457,10 @@
         <layout>HOT_Request__c-Request Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>HOT_ResourceMember__c-Resource Member Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>HOT_Resource__c-Resource Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
         <layout>HOT_ServiceTerritoryByQueue__mdt-Service Territory By Queue Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>MaskinportenClient__mdt-Maskinporten Client Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>PersonAccount-HOT Admin Person Account Layout</layout>
@@ -2102,9 +1468,6 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>Person__c-HOT Person Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>ResourceAbsence-Resource Absence Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>ServiceAppointment-Service Appointment Layout</layout>
@@ -2151,33 +1514,6 @@
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
-        <object>HOT_ResourceMember__c</object>
-        <viewAllRecords>true</viewAllRecords>
-    </objectPermissions>
-    <objectPermissions>
-        <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
-        <object>HOT_Resource__c</object>
-        <viewAllRecords>true</viewAllRecords>
-    </objectPermissions>
-    <objectPermissions>
-        <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
-        <object>ReportingData__c</object>
-        <viewAllRecords>true</viewAllRecords>
-    </objectPermissions>
-    <objectPermissions>
-        <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
         <object>ServiceAppointment</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
@@ -2200,22 +1536,9 @@
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <pageAccesses>
-        <apexPage>ChangePassword</apexPage>
-        <enabled>true</enabled>
-    </pageAccesses>
-    <pageAccesses>
-        <apexPage>CommunitiesLanding</apexPage>
-        <enabled>true</enabled>
-    </pageAccesses>
-    <pageAccesses>
         <apexPage>HOT_ReleaseToFreelance</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
-    <recordTypeVisibilities>
-        <default>false</default>
-        <recordType>Event.HOT_Events</recordType>
-        <visible>false</visible>
-    </recordTypeVisibilities>
     <recordTypeVisibilities>
         <default>false</default>
         <recordType>Task.HOT_Task</recordType>
@@ -2227,10 +1550,6 @@
     </tabVisibilities>
     <tabVisibilities>
         <tab>HOT_Request__c</tab>
-        <visibility>Hidden</visibility>
-    </tabVisibilities>
-    <tabVisibilities>
-        <tab>HOT_Resource__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
@@ -2293,10 +1612,6 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>AssignTopics</name>
-    </userPermissions>
-    <userPermissions>
-        <enabled>true</enabled>
-        <name>AssignUserToSkill</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
@@ -2393,6 +1708,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>CreateTopics</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>CreateWorkBadgeDefinition</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
@@ -2580,6 +1899,10 @@
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
+        <name>ManageClearbitIntegration</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
         <name>ManageContentPermissions</name>
     </userPermissions>
     <userPermissions>
@@ -2749,6 +2072,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>ManageUsers</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ManageZapierIntegration</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
