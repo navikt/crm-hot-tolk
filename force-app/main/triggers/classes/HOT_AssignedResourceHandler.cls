@@ -344,8 +344,11 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 }
             }
             if (isOverlap) {
-                // TODO: Create custom Exception or use logger?
-                //throw Exception('Ressursen har allerede et oppdrag i dette tidsrommet.');
+                ar.addError('Ressursen har allerede et oppdrag i dette tidsrommet.');
+                // TODO: Where to put Exception in Try Catch? Can't fetch "records" outside of method
+                /*LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();*/
             }
         }
     }
