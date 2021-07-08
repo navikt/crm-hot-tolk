@@ -246,4 +246,34 @@ private class HOT_AssignedResourceHandlerTest {
         ];
         System.assertEquals(1, interestedResources.size(), 'Interested Resource should not have been created.');
     }
+
+    static void throwExceptionIfSAHasOverlapTest() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
+
+        ServiceAppointment serviceAppointment2 = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE Subject = 'subject 2'
+            LIMIT 1
+        ];
+
+        ServiceResource adminResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()];
+
+        Test.startTest();
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            adminResource.Id
+        );
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            adminResource.Id
+        );
+        insert assignedResource;
+        try {
+            insert assignedResource2;
+        } catch (Exception e) {
+            System.assertEquals(e.getMessage(), 'Ressursen har allerede et oppdrag i dette tidsrommet.');
+        }
+        Test.stopTest();
+    }
 }
