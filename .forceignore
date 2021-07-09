@@ -89,7 +89,7 @@
 **/experiences/*
 **/siteDotComSites/*
 **/sites/*
-**/community/pages/*
+# **/community/pages/*
 **/classes/ChangePasswordController*
 **/classes/CommunitiesLandingController*
 **/classes/MyProfilePageController*

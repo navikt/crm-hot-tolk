@@ -7,12 +7,20 @@ import getServiceResource from '@salesforce/apex/HOT_FreelanceUserInformationCon
 export default class Hot_frilanstolkUserInformation extends LightningElement {
     @track ServiceResource;
     @track Name;
-   // @track RelatedRecordId;
+    @track recordId;
+    // @track HOT_AddressOverride__c;
+    // @track HOT_Address__c;
+    // @track HOT_IsAvailableForAcuteAssignments__c;
+
     @wire(getServiceResource)
     wiredGetServiceResource(result) {
         if (result.data) {
             this.ServiceResource = result.data;
+            this.recordId = this.ServiceResource.Id;
             this.Name = this.ServiceResource.Name;
+            this.HOT_AddressOverride__c =this.ServiceResource.HOT_AddressOverride__c;
+            this.HOT_Address__c = this.ServiceResource.HOT_Address__c;
+            this.HOT_IsAvailableForAcuteAssignments__c = this.ServiceResource.HOT_IsAvailableForAcuteAssignments__c;
            
             //this.RelatedRecordId = this.person.Id;
         }
