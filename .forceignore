@@ -83,16 +83,16 @@
 
 # Community
 **/audience/*
-#**/networks/*
-#**/documents/*
-#**/networkBranding/*
-#**/experiences/*
-#**/siteDotComSites/*
-#**/sites/*
-#**/community/pages/*
-#**/classes/ChangePasswordController*
-#**/classes/CommunitiesLandingController*
-#**/classes/MyProfilePageController*
+**/networks/*
+**/documents/*
+**/networkBranding/*
+**/experiences/*
+**/siteDotComSites/*
+**/sites/*
+**/community/pages/*
+**/classes/ChangePasswordController*
+**/classes/CommunitiesLandingController*
+**/classes/MyProfilePageController*
 
 # MyTriggers
 **/classes/MyTriggers*
