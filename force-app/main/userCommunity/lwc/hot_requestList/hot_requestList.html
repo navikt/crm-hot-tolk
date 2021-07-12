@@ -18,6 +18,18 @@
             >
             </lightning-button>
 
+            <div class="mobile-only">
+                <c-picklist
+                    master-label="orter etter"
+                    choices={sortingOptions}
+                    onpicklistvaluechange={handleMobileSorting}
+                    disabled={selectDisable}
+                    multiple={selectMultiple}
+                    required={selectRequired}
+                    size={selectSize}
+                ></c-picklist>
+            </div>
+
             <lightning-combobox
                 class="mobile-only"
                 name="mobileSorting"

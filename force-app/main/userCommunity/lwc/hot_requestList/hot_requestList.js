@@ -263,8 +263,30 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     get sortingOptions() {
         return getMobileSortingOptions(this.columns);
     }
+    valueMap = {
+        'Start tid stigende': '{"fieldName": "StartTime__c", "sortDirection": "asc"}',
+        'Start tid synkende': '{"fieldName": "StartTime__c", "sortDirection": "desc"}',
+        'Slutt tid stigende': '{"fieldName": "EndTime__c", "sortDirection": "asc"}',
+        'Slutt tid synkende': '{"fieldName": "EndTime__c", "sortDirection": "desc"}',
+        'Bestilling A-Å': '{"fieldName": "Name", "sortDirection": "desc"}',
+        'Bestilling Å-A': '{"fieldName": "Name", "sortDirection": "asc"}',
+        'Oppmøtested A-Å': '{"fieldName": "MeetingStreet__c", "sortDirection": "desc"}',
+        'Oppmøtested Å-A': '{"fieldName": "MeetingStreet__c", "sortDirection": "asc"}',
+        'Tema A-Å': '{"fieldName": "Subject__c", "sortDirection": "asc"}',
+        'Tema Å-A': '{"fieldName": "Subject__c", "sortDirection": "asc"}',
+        'Serieoppdrag stigende': '{"fieldName": "IsSerieoppdrag__c", "sortDirection": "asc"}', // Does it make sense to have stigende/synkende on a checkbox?
+        'Serieoppdrag synkende': '{"fieldName": "IsSerieoppdrag__c", "sortDirection": "desc"}',
+        'Status A-Å': '{"fieldName": "ExternalRequestStatus__c", "sortDirection": "desc"}',
+        'Status Å-A': '{"fieldName": "ExternalRequestStatus__c", "sortDirection": "asc"}'
+    };
+
+    value = '{"fieldName": "StartTime__c", "sortDirection": "asc"}'; // Default
     handleMobileSorting(event) {
-        let value = JSON.parse(event.detail.value);
+        //let value = JSON.parse(event.detail.value);
+        console.log('event.detail.value: ' + event.detail.value);
+        console.log('event.detail: ' + event.detail);
+        this.value = JSON.parse(valuemap.get(event.detail));
+        console.log('value: ' + this.value);
         this.sortDirection = value.sortDirection;
         this.sortedBy = value.fieldName;
         this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
