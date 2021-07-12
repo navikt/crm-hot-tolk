@@ -3,12 +3,10 @@
         <div class="user-info-tile center-content">
             <section>
                 <lightning-record-view-form object-api-name="ServiceResource" record-id={recordId} mode="view">
-                    <lightning-output-field field-name="name" label="Navn"></lightning-output-field>
+                    <lightning-output-field field-name="Name" label="Navn"></lightning-output-field>
                     <lightning-output-field
                         field-name="HOT_Address__c"
                         label="Nåværende Adresse"
-                        placeholder="Sesam stasjon 1"
-                        value="1"
                     ></lightning-output-field>
                     <lightning-output-field field-name="HOT_Skilled__c" label="Utdanning"></lightning-output-field>
                     <lightning-output-field field-name="HOT_IsAvailableForAcuteAssignments__c"></lightning-output-field>
@@ -16,6 +14,8 @@
             </section>
             <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
                 <lightning-input-field field-name="HOT_AddressOverride__c"> </lightning-input-field>
+                <lightning-input-field field-name="HOT_Skilled__c" label="Utdanning"></lightning-input-field>
+                <lightning-input-field field-name="HOT_IsAvailableForAcuteAssignments__c"></lightning-input-field>
                 <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update">
                 </lightning-button>
             </lightning-record-edit-form>
