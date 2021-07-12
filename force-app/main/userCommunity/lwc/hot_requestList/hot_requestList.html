@@ -20,7 +20,7 @@
 
             <div class="mobile-only">
                 <c-picklist
-                    master-label="orter etter"
+                    master-label="Sorter etter"
                     choices={sortingOptions}
                     onpicklistvaluechange={handleMobileSorting}
                     disabled={selectDisable}
@@ -29,16 +29,6 @@
                     size={selectSize}
                 ></c-picklist>
             </div>
-
-            <lightning-combobox
-                class="mobile-only"
-                name="mobileSorting"
-                label="Sorter etter"
-                value={mobileSortingDefaultValue}
-                options={sortingOptions}
-                onchange={handleMobileSorting}
-            >
-            </lightning-combobox>
 
             <lightning-radio-group
                 label="Type bestilling"
