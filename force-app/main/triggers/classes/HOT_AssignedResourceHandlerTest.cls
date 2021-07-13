@@ -247,7 +247,8 @@ private class HOT_AssignedResourceHandlerTest {
         System.assertEquals(1, interestedResources.size(), 'Interested Resource should not have been created.');
     }
 
-    static void throwExceptionIfSAHasOverlapTest() {
+    @isTest
+    static void throwExceptionIfSAHasOverlapOnARInsertTest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
 
         ServiceAppointment serviceAppointment2 = [
@@ -272,7 +273,84 @@ private class HOT_AssignedResourceHandlerTest {
         try {
             insert assignedResource2;
         } catch (Exception e) {
-            System.assertEquals(e.getMessage(), 'Ressursen har allerede et oppdrag i dette tidsrommet.');
+            Boolean expectedExceptionThrown = e.getMessage()
+                .contains('Ressursen har allerede et oppdrag i dette tidsrommet');
+            System.assertEquals(expectedExceptionThrown, true);
+        }
+        Test.stopTest();
+    }
+
+    @isTest
+    static void throwExceptionIfSAHasOverlapOnAREditFalseTest() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
+
+        ServiceAppointment serviceAppointment2 = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE Subject = 'subject 2'
+            LIMIT 1
+        ];
+
+        ServiceResource adminResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()];
+        System.debug('adminResource: ' + adminResource);
+        User user2 = [SELECT Id FROM User WHERE Name = 'User2'];
+        ServiceResource resource2 = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :user2.Id];
+
+        System.debug('resource2: ' + resource2);
+
+        Test.startTest();
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            adminResource.Id
+        );
+
+        insert assignedResource;
+        try {
+            assignedResource.ServiceResourceId = resource2.Id;
+        } catch (Exception e) {
+            Boolean expectedExceptionThrown = e.getMessage()
+                .contains('Ressursen har allerede et oppdrag i dette tidsrommet');
+            System.assertEquals(expectedExceptionThrown, false);
+        }
+        Test.stopTest();
+    }
+
+    @isTest
+    static void throwExceptionIfSAHasOverlapOnAREditTrueTest() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
+
+        ServiceAppointment serviceAppointment2 = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE Subject = 'subject 2'
+            LIMIT 1
+        ];
+
+        ServiceResource adminResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()];
+        System.debug('adminResource: ' + adminResource);
+        User user2 = [SELECT Id FROM User WHERE Name = 'User2'];
+        ServiceResource resource2 = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :user2.Id];
+
+        System.debug('resource2: ' + resource2);
+
+        Test.startTest();
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            adminResource.Id
+        );
+
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            resource2.Id
+        );
+
+        insert assignedResource;
+        try {
+            assignedResource.ServiceResourceId = resource2.Id;
+        } catch (Exception e) {
+            Boolean expectedExceptionThrown = e.getMessage()
+                .contains('Ressursen har allerede et oppdrag i dette tidsrommet');
+            System.assertEquals(expectedExceptionThrown, true);
         }
         Test.stopTest();
     }

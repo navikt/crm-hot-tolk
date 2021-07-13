@@ -308,7 +308,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         // Find all service appointments related to assigned resources
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, HOT_AssignedResourceId__c, HOT_ServiceResource__c, SchedStartTime, SchedEndTime
+                SELECT Id, HOT_AssignedResourceId__c, HOT_NumberOfAssignedResources__c, SchedStartTime, SchedEndTime
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
@@ -317,22 +317,23 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         // Find all service resources related to assigned resources
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
             [
-                SELECT Id, (SELECT Id, SchedStartTime, SchedEndTime FROM HOT_ServiceAppointments__r)
+                SELECT Id, RelatedRecordId, (SELECT Id, SchedStartTime, SchedEndTime FROM HOT_ServiceAppointments__r)
                 FROM ServiceResource
                 WHERE Id IN :serviceResourceIds
             ]
         );
 
         for (AssignedResource ar : assignedResources) {
-            // Check if no Assigned Resource exists on SA
+            // Check if no Assigned Resource exists on SA. If AR is edited, it already exists on the SA, so need to check IDs to see if it's a different AR.
             if (
+                serviceAppointments.get(ar.ServiceAppointmentId).HOT_AssignedResourceId__c ==
+                serviceResources.get(ar.ServiceResourceId).RelatedRecordId &&
                 serviceAppointments.get(ar.ServiceAppointmentId).HOT_AssignedResourceId__c != null &&
                 serviceAppointments.get(ar.ServiceAppointmentId).HOT_NumberOfAssignedResources__c != 0
             ) {
                 continue;
             }
             // Check if AR already has service appointment overlapping with current SA - loop over list of related SAs on AR's related SR
-            Boolean isOverlap = false;
             for (Integer i = 0; i < serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r.size(); i++) {
                 if (
                     serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r[i].SchedStartTime <=
@@ -340,15 +341,9 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r[i].SchedEndTime >=
                     serviceAppointments.get(ar.ServiceAppointmentId).SchedStartTime
                 ) {
-                    isOverlap = true;
+                    // Is overlap
+                    ar.addError('Ressursen har allerede et oppdrag i dette tidsrommet.');
                 }
-            }
-            if (isOverlap) {
-                ar.addError('Ressursen har allerede et oppdrag i dette tidsrommet.');
-                // TODO: Where to put Exception in Try Catch? Can't fetch "records" outside of method
-                /*LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publishSynch();*/
             }
         }
     }
