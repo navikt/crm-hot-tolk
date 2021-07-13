@@ -239,10 +239,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
 
     @track deadlineDate;
-    @track detailInterestedResource;
+    @track interestedResourceDetails;
     openDetails(row) {
         this.interestedResourceDetails = formatRecord(row, interestedResourceFieldLabels);
-
         let detailPage = this.template.querySelector('.ReactModal__Overlay');
         detailPage.classList.remove('hidden');
         detailPage.focus();
