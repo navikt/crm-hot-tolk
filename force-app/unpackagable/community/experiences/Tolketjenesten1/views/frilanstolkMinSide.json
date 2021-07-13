@@ -1,0 +1,92 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "2884a4ab-0dc8-4263-bafe-10480856e27a",
+  "label" : "Frilanstolk Min Side",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "2e93bac3-6f53-45c2-a359-3f16ef1bc5f6",
+          "columns" : [ {
+            "UUID" : "a80186e7-8a3a-4e00-8697-9e7480feaf74",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "2e93bac3-6f53-45c2-a359-3f16ef1bc5f6",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "NAVarea" : "Privatperson"
+          },
+          "componentName" : "c:globalCommunityHeader",
+          "id" : "dc873343-8a74-4ef9-a492-d0133da1ccd1",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:hot_tolketjenestenHovedBanner",
+          "id" : "3fa8bac7-f8cf-4e2c-bff6-4f92f39902ee",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:freelanceProfileWrapper",
+          "id" : "656d9c78-466e-4542-9ba5-c0e4fccec257",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : {
+            "NAVarea" : "Privatperson"
+          },
+          "componentName" : "c:globalCommunityFooter",
+          "id" : "a7921771-67dc-4e3f-9561-e407e8ef502e",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "a80186e7-8a3a-4e00-8697-9e7480feaf74",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "0c802400-de30-4e5c-aa93-d6e247f9c3d5",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Frilanstolk Min Side"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "0545644e-8f53-4a11-b03a-2c73701efe9e",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "659414e7-b2ac-47a8-b144-c9005effab0e",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-frilanstolk-min-side"
+}

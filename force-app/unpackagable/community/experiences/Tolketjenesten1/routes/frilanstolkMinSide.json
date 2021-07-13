@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "2884a4ab-0dc8-4263-bafe-10480856e27a",
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "configurationTags" : [ ],
+  "id" : "c00d55e3-55c1-4aee-9e8d-a652cfbc2391",
+  "label" : "Frilanstolk Min Side",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-frilanstolk-min-side",
+  "type" : "route",
+  "urlPrefix" : "frilanstolk-min-side"
+}
