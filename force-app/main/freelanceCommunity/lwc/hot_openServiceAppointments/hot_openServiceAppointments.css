@@ -1,7 +1,3 @@
-.hidden {
-    display: none;
-}
-
 .main-content {
     font-family: 'Source Sans Pro', Arial, sans-serif;
     align-items: center;
@@ -40,4 +36,7 @@
         padding: 1rem 1rem 1rem 1rem;
         margin: 1rem auto 1rem auto;
     }
+}
+.hidden {
+    display: none;
 }

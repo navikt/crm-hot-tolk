@@ -1,9 +1,6 @@
 section.sub-form {
     margin-bottom: 4rem;
 }
-.hidden {
-    display: none;
-}
 
 .liste-max-width {
     max-width: 1480px;
@@ -53,4 +50,8 @@ section.sub-form {
         padding: 1rem 1rem 1rem 1rem;
         margin: 1rem auto 1rem auto;
     }
+}
+
+.hidden {
+    display: none;
 }

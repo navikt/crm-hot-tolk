@@ -1,7 +1,3 @@
-.hidden {
-    display: none;
-}
-
 .loader {
     border: 16px solid #f3f3f3;
     /* Light grey */
@@ -115,4 +111,7 @@ section.sub-form:last-child {
 }
 .tolk-skjema-input {
     font-size: 1rem;
+}
+.hidden {
+    display: none;
 }
