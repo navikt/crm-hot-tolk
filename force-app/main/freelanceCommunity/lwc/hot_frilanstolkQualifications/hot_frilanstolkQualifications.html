@@ -1,0 +1,31 @@
+<template>
+    <div class="user-info-wrapper center-content">
+        <div class="user-info-tile center-content">
+            <section>
+                <p>
+                    Hvorfor vises ingenting annet på denne siden? sikkert fordi jeg ikke har spesifisert hvilken
+                    informasjon fra hvem. jeg tror det er noe galt med kontrolleren, eller at jeg henter feil ting.
+                </p>
+                <lightning-record-view-form object-api-name="ServiceResourceSkill" record-id={recordId} mode="view">
+                    <lightning-card title="hot_frilanstolkQualifications">
+                        <ul class="slds-m-around_medium">
+                            <template for:each={serviceResourceSkillList} for:item="sr" for:index="index">
+                                <li key={sr.Id}>
+                                    {sr.SkillId}, {sr.EffectiveStartDate},{EffectiveEndDate}, {sr.ServiceResourceId},
+                                    {sr.SkillNumber}, {sr.SkillLevel}, {sr.Id}
+                                </li>
+                            </template>
+                        </ul>
+                    </lightning-card>
+                    <lightning-output-field field-name="SkillNumber"> </lightning-output-field>
+                    <lightning-output-field field-name="EffectiveEndDate"> </lightning-output-field>
+                    <lightning-output-field field-name="EffectiveStartDate"> </lightning-output-field>
+                    <!-- <lightning-output-field field-name="SkillId" label="Erfaring/skills"> </lightning-output-field> -->
+                </lightning-record-view-form>
+            </section>
+            <!-- <lightning-record-edit-form object-api-name="ServiceResourceSkill" record-id={recordId}>
+                <lightning-input-field field-name=""> </lightning-input-field>
+            </lightning-record-edit-form> -->
+        </div>
+    </div>
+</template>
