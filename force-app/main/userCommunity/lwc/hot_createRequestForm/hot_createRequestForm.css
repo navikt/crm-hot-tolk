@@ -83,3 +83,11 @@ section.sub-form:last-child {
     background-color: #dade99;
     border-bottom: 4px solid rgb(181, 189, 51);
 }
+
+.main-content {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}

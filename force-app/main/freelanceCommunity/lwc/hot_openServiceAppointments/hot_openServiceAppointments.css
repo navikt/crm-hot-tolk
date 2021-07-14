@@ -1,3 +1,11 @@
 .hidden {
     display: none;
 }
+
+.main-content {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
