@@ -25,3 +25,51 @@
 section.sub-form {
     margin-bottom: 4rem;
 }
+
+.skjema-ikon-img {
+    height: 70%;
+    margin-top: 0.6rem;
+}
+
+.skjema-ikon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    border: 0 !important;
+    margin-top: -2rem;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    z-index: 1;
+    position: relative;
+}
+
+@media (max-width: 576px) {
+    .skjema-ikon {
+        margin-bottom: -2rem;
+        margin-top: 0;
+    }
+}
+
+.skjema-max-width {
+    width: 100%;
+    max-width: 800px;
+}
+
+div.skjema {
+    margin-bottom: 2rem;
+    margin-top: -2rem;
+    border-radius: 0.5rem;
+    padding: 0 2rem;
+    background-color: #fff;
+}
+
+@media (max-width: 576px) {
+    div.skjema {
+        margin: 0;
+        padding: 0;
+    }
+    lightning-record-edit-form form {
+        padding: 4rem 2rem 1rem 2rem;
+    }
+}
