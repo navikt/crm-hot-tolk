@@ -74,3 +74,7 @@ lightning-record-edit-form section {
 section.sub-form:last-child {
     margin-bottom: 4rem;
 }
+
+.filter-list-checkbox {
+    width: 100%;
+}

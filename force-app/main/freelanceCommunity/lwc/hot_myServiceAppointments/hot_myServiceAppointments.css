@@ -1,3 +1,7 @@
 .hidden {
     display: none;
 }
+
+.filter-list-checkbox {
+    width: 100%;
+}
