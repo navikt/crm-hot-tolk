@@ -155,7 +155,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
                 value: '{"fieldName": "ServiceAppointmentCity__c", "sortDirection": "asc"} '
             },
             {
-                label: 'Poststed A - Å',
+                label: 'Poststed Å - A',
                 value: '{"fieldName": "ServiceAppointmentCity__c", "sortDirection": "desc"} '
             },
             {
@@ -163,7 +163,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
                 value: '{"fieldName": "ServiceAppointmentFreelanceSubject__c", "sortDirection": "asc"} '
             },
             {
-                label: 'Tema A - Å',
+                label: 'Tema Å - A',
                 value: '{"fieldName": "ServiceAppointmentFreelanceSubject__c", "sortDirection": "desc"} '
             },
             {
@@ -239,10 +239,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
 
     @track deadlineDate;
-    @track detailInterestedResource;
+    @track interestedResourceDetails;
     openDetails(row) {
         this.interestedResourceDetails = formatRecord(row, interestedResourceFieldLabels);
-
         let detailPage = this.template.querySelector('.ReactModal__Overlay');
         detailPage.classList.remove('hidden');
         detailPage.focus();
