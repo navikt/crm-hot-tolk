@@ -91,3 +91,28 @@ section.sub-form:last-child {
     justify-content: center;
     flex-direction: column;
 }
+
+.button-container {
+    text-align: center;
+    max-width: 792px;
+    padding: 1rem 2rem 1rem 2rem;
+}
+
+.back-button {
+    color: #0067c5;
+    text-decoration: underline;
+    text-decoration-color: #0067c5;
+}
+
+.back-button:hover {
+    color: #3385d1;
+}
+.dialog-boks {
+    background-color: white;
+    padding: 2rem;
+    margin: 2rem 0;
+    border-radius: 0.5rem;
+}
+.tolk-skjema-input {
+    font-size: 1rem;
+}
