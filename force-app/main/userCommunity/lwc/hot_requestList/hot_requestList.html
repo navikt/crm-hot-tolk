@@ -18,15 +18,17 @@
             >
             </lightning-button>
 
-            <lightning-combobox
-                class="mobile-only"
-                name="mobileSorting"
-                label="Sorter etter"
-                value={mobileSortingDefaultValue}
-                options={sortingOptions}
-                onchange={handleMobileSorting}
-            >
-            </lightning-combobox>
+            <div class="mobile-only">
+                <c-picklist
+                    master-label="Sorter etter"
+                    choices={sortingOptions}
+                    onpicklistvaluechange={handleMobileSorting}
+                    disabled={selectDisable}
+                    multiple={selectMultiple}
+                    required={selectRequired}
+                    size={selectSize}
+                ></c-picklist>
+            </div>
 
             <lightning-radio-group
                 label="Type bestilling"
