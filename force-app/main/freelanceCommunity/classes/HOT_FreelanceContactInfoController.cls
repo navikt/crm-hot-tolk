@@ -1,4 +1,4 @@
-public without sharing class HOT_FreelanceContactInformation {
+public without sharing class HOT_FreelanceContactInfoController {
     @AuraEnabled(cacheable=true)
     public static ServiceResource getServiceResource() {
         Id userId = UserInfo.getUserId();
