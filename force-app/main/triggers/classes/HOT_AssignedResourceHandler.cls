@@ -2,7 +2,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
     public override void onBeforeInsert() {
         updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
         setResourceTypeOnServiceAppointment((List<AssignedResource>) records);
-        throwExceptionIfARHasSAOverlap((List<AssignedResource>) records);
+        throwExceptionIfARHasSAOverlap((List<AssignedResource>) records, false);
     }
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<AssignedResource> assignedResourcesFiltered = new List<AssignedResource>();
@@ -14,7 +14,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         if (assignedResourcesFiltered.size() > 0) {
             updateServiceTerritoryOnServiceAppointment(assignedResourcesFiltered);
             setResourceTypeOnServiceAppointment(assignedResourcesFiltered);
-            throwExceptionIfARHasSAOverlap(assignedResourcesFiltered);
+            throwExceptionIfARHasSAOverlap(assignedResourcesFiltered, true);
         }
     }
 
@@ -297,7 +297,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         }
     }
 
-    public static void throwExceptionIfARHasSAOverlap(List<AssignedResource> assignedResources) {
+    public static void throwExceptionIfARHasSAOverlap(List<AssignedResource> assignedResources, Boolean isUpdate) {
         List<Id> serviceAppointmentIds = new List<Id>();
         List<Id> serviceResourceIds = new List<Id>();
         for (AssignedResource assignedResource : assignedResources) {
@@ -308,7 +308,13 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         // Find all service appointments related to assigned resources
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, HOT_AssignedResourceId__c, HOT_NumberOfAssignedResources__c, SchedStartTime, SchedEndTime
+                SELECT
+                    Id,
+                    HOT_AssignedResourceId__c,
+                    HOT_ServiceResource__c,
+                    HOT_NumberOfAssignedResources__c,
+                    EarliestStartTime,
+                    DueDate
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
@@ -317,32 +323,36 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         // Find all service resources related to assigned resources
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
             [
-                SELECT Id, RelatedRecordId, (SELECT Id, SchedStartTime, SchedEndTime FROM HOT_ServiceAppointments__r)
+                SELECT
+                    Id,
+                    (SELECT Id, EarliestStartTime, DueDate, HOT_ServiceResource__c FROM HOT_ServiceAppointments__r)
                 FROM ServiceResource
                 WHERE Id IN :serviceResourceIds
             ]
         );
-
+        // If new AR with SR is added from SA when AR on SA already exists - do not allow
+        // If SR is changed on AR - allow - as long as time slot is available
         for (AssignedResource ar : assignedResources) {
-            // Check if no Assigned Resource exists on SA. If AR is edited, it already exists on the SA, so need to check IDs to see if it's a different AR.
             if (
-                serviceAppointments.get(ar.ServiceAppointmentId).HOT_AssignedResourceId__c ==
-                serviceResources.get(ar.ServiceResourceId).RelatedRecordId &&
-                serviceAppointments.get(ar.ServiceAppointmentId).HOT_AssignedResourceId__c != null &&
-                serviceAppointments.get(ar.ServiceAppointmentId).HOT_NumberOfAssignedResources__c != 0
+                !isUpdate &&
+                (serviceAppointments.get(ar.ServiceAppointmentId).HOT_AssignedResourceId__c != null ||
+                serviceAppointments.get(ar.ServiceAppointmentId).HOT_NumberOfAssignedResources__c != 0)
             ) {
+                ar.addError('Du kan ikke sette opp flere ressurser på et oppdrag.');
                 continue;
             }
             // Check if AR already has service appointment overlapping with current SA - loop over list of related SAs on AR's related SR
             for (Integer i = 0; i < serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r.size(); i++) {
                 if (
-                    serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r[i].SchedStartTime <=
-                    serviceAppointments.get(ar.ServiceAppointmentId).SchedEndTime &&
-                    serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r[i].SchedEndTime >=
-                    serviceAppointments.get(ar.ServiceAppointmentId).SchedStartTime
+                    HOT_DateTimeHandler.checkOverlappingDateTimes(
+                        serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r[i].EarliestStartTime,
+                        serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r[i].DueDate,
+                        serviceAppointments.get(ar.ServiceAppointmentId).DueDate,
+                        serviceAppointments.get(ar.ServiceAppointmentId).EarliestStartTime
+                    )
                 ) {
-                    // Is overlap
                     ar.addError('Ressursen har allerede et oppdrag i dette tidsrommet.');
+                    continue;
                 }
             }
         }
