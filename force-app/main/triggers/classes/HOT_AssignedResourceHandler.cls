@@ -352,7 +352,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     )
                 ) {
                     ar.addError('Ressursen har allerede et oppdrag i dette tidsrommet.');
-                    continue;
                 }
             }
         }
