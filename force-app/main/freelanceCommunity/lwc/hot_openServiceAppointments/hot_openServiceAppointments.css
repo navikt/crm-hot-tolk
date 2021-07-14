@@ -9,3 +9,35 @@
     justify-content: center;
     flex-direction: column;
 }
+
+@media (min-width: 576px) {
+    .right-content {
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+    div.liste.liste-max-width > div > lightning-radio-group {
+        width: 50%;
+    }
+    .right-button > .slds-button_brand,
+    .right-button > .slds-button--brand {
+        float: right;
+    }
+    .filter-list-checkbox {
+        width: 50%;
+    }
+}
+
+@media (max-width: 576px) {
+    .right-content {
+        margin-bottom: 0;
+        width: 100%;
+    }
+    .slds-button_brand,
+    .slds-button--brand {
+        width: 100%;
+    }
+    .liste {
+        padding: 1rem 1rem 1rem 1rem;
+        margin: 1rem auto 1rem auto;
+    }
+}

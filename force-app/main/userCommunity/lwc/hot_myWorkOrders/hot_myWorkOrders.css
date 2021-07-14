@@ -1,3 +1,21 @@
 .hidden {
     display: none;
 }
+
+.liste-max-width {
+    max-width: 1480px;
+    width: 100%;
+    padding: 0 3.25rem;
+}
+
+.liste {
+    padding: 3.25rem 3.25rem 3.25rem 3.25rem;
+    background-color: #fff !important;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    margin: 1rem auto 1rem auto;
+    border-radius: 0.5rem;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
