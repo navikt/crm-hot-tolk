@@ -78,3 +78,8 @@ section.sub-form:last-child {
 .filter-list-checkbox {
     width: 100%;
 }
+
+.tolketjenesten {
+    background-color: #dade99;
+    border-bottom: 4px solid rgb(181, 189, 51);
+}
