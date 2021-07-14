@@ -292,11 +292,8 @@ private class HOT_AssignedResourceHandlerTest {
         ];
 
         ServiceResource adminResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()];
-        System.debug('adminResource: ' + adminResource);
         User user2 = [SELECT Id FROM User WHERE Name = 'User2'];
         ServiceResource resource2 = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :user2.Id];
-
-        System.debug('resource2: ' + resource2);
 
         Test.startTest();
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
@@ -307,6 +304,7 @@ private class HOT_AssignedResourceHandlerTest {
         insert assignedResource;
         try {
             assignedResource.ServiceResourceId = resource2.Id;
+            update assignedResource;
         } catch (Exception e) {
             Boolean expectedExceptionThrown = e.getMessage()
                 .contains('Ressursen har allerede et oppdrag i dette tidsrommet');
@@ -327,11 +325,8 @@ private class HOT_AssignedResourceHandlerTest {
         ];
 
         ServiceResource adminResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()];
-        System.debug('adminResource: ' + adminResource);
         User user2 = [SELECT Id FROM User WHERE Name = 'User2'];
         ServiceResource resource2 = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :user2.Id];
-
-        System.debug('resource2: ' + resource2);
 
         Test.startTest();
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
@@ -347,6 +342,7 @@ private class HOT_AssignedResourceHandlerTest {
         insert assignedResource;
         try {
             assignedResource.ServiceResourceId = resource2.Id;
+            update assignedResource;
         } catch (Exception e) {
             Boolean expectedExceptionThrown = e.getMessage()
                 .contains('Ressursen har allerede et oppdrag i dette tidsrommet');
