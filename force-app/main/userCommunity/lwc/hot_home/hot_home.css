@@ -76,7 +76,6 @@
 
 .panelMedBilde-single {
     max-width: 100%;
-    width: 100%;
     display: flex;
     flex-direction: row;
     padding-top: 1rem;
@@ -87,7 +86,6 @@
 @media (max-width: 576px) {
     .panelMedBilde {
         max-width: 576px;
-        width: 100%;
         margin: 0;
         padding: 1rem;
     }
