@@ -1,7 +1,8 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, track, wire, api } from 'lwc';
 import getServiceResource from '@salesforce/apex/HOT_FreelanceUserInformationController.getServiceResource';
 
 export default class Hot_frilanstolkEditProfile extends LightningElement {
+    @api resultCallback;
     @track serviceResource;
     @track recordId;
     @wire(getServiceResource)
@@ -11,8 +12,7 @@ export default class Hot_frilanstolkEditProfile extends LightningElement {
             this.recordId = this.serviceResource.Id;
         }
     }
-    // dummy function to test buttons
-    updateProfile() {
-        alert('Profil er oppdatert!');
+    updateProfileOnClick() {
+        this.resultCallback();
     }
 }

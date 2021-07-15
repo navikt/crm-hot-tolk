@@ -11,12 +11,16 @@
                     icon-position="left"
                     label="Rediger"
                     variant="brand"
-                    onclick={showSearch}
+                    onclick={editProfile}
                 >
                 </lightning-button>
             </div>
         </div>
     </div>
-    <c-hot_frilanstolk-user-information item-name="frilanstolkUserInformation"></c-hot_frilanstolk-user-information>
-    <c-hot_frilanstolk-edit-profile if:true={hot_frilanstolkEditProfile}></c-hot_frilanstolk-edit-profile>
+    <c-hot_frilanstolk-user-information if:true={hot_frilanstolkUserInformation} item-name="frilanstolkUserInformation">
+    </c-hot_frilanstolk-user-information>
+    <c-hot_frilanstolk-edit-profile
+        result-callback={updateProfile}
+        if:true={hot_frilanstolkEditProfile}
+    ></c-hot_frilanstolk-edit-profile>
 </template>
