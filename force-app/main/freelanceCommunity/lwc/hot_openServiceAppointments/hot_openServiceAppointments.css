@@ -37,6 +37,11 @@
         margin: 1rem auto 1rem auto;
     }
 }
+
+lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:after {
+    content: ' (ingen sensitive opplysninger)';
+}
+
 .hidden {
     display: none;
 }

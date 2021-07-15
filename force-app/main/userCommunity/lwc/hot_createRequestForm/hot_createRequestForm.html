@@ -162,7 +162,7 @@
                                     <div class="dynamic-time-inputs-with-line_button" key={it.value.id}>
                                         <div class="dynamic-time-inputs" aria-live>
                                             <lightning-input
-                                                label="Dato"
+                                                label="Dato (dd:mm:åååå)"
                                                 type="date"
                                                 class="tolk-skjema-input date"
                                                 date-style="short"
@@ -174,7 +174,7 @@
                                             </lightning-input>
                                             <div class="dynamic-time-inputs__times">
                                                 <lightning-input
-                                                    label="Fra"
+                                                    label="Fra (tt:mm)"
                                                     type="time"
                                                     class="tolk-skjema-input start-tid"
                                                     onchange={setStartTime}
@@ -184,7 +184,7 @@
                                                 >
                                                 </lightning-input>
                                                 <lightning-input
-                                                    label="Til"
+                                                    label="Til (tt:mm)"
                                                     type="time"
                                                     class="tolk-skjema-input slutt-tid"
                                                     onchange={setEndTime}

@@ -112,6 +112,33 @@ section.sub-form:last-child {
 .tolk-skjema-input {
     font-size: 1rem;
 }
+
+@media (max-width: 576px) {
+    .postnummer label {
+        left: -1000px;
+        visibility: hidden;
+        position: absolute;
+    }
+    .postnummer label:after {
+        visibility: visible;
+        position: absolute;
+        top: -23px;
+        left: 1000px;
+        content: 'Postnr';
+    }
+    .postnummer {
+        top: 29px;
+    }
+}
+
+lightning-input-field.ikke-sensitiv-fritekst > lightning-textarea > label:after {
+    content: ' (ingen sensitiv informasjon)';
+}
+
+lightning-input-field.adressefelt-hjelp > lightning-input > label:after {
+    content: ' (gatenavn, husnummer)';
+}
+
 .hidden {
     display: none;
 }

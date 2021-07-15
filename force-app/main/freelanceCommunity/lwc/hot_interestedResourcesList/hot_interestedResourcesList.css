@@ -41,6 +41,11 @@
         margin: 1rem auto 1rem auto;
     }
 }
+
+.ikke-sensitive-opplysninger__label:after {
+    content: ' (ingen sensitive opplysninger)';
+}
+
 .hidden {
     display: none;
 }
