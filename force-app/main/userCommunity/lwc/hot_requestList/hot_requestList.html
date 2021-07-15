@@ -8,40 +8,19 @@
     </div>
 
     <div class="liste liste-max-width">
-        <div class="right-content">
-            <lightning-button
-                title="Ny bestilling"
-                class="right-button"
-                variant="brand"
-                label="Ny bestilling"
-                onclick={goToNewRequest}
-            >
-            </lightning-button>
+        <div class="action-container">
+            <div class="left-content">
+                <lightning-radio-group
+                    label="Type bestilling"
+                    class="horizontal"
+                    name="radioGroup"
+                    options={requestTypes}
+                    value="my"
+                    type="radio"
+                    onchange={handleRequestType}
+                ></lightning-radio-group>
 
-            <div class="mobile-only">
-                <c-picklist
-                    master-label="Sorter etter"
-                    choices={sortingOptions}
-                    onpicklistvaluechange={handleMobileSorting}
-                    disabled={selectDisable}
-                    multiple={selectMultiple}
-                    required={selectRequired}
-                    size={selectSize}
-                ></c-picklist>
-            </div>
-
-            <lightning-radio-group
-                label="Type bestilling"
-                class="horizontal"
-                name="radioGroup"
-                options={requestTypes}
-                value="my"
-                type="radio"
-                onchange={handleRequestType}
-            ></lightning-radio-group>
-
-            <br /><br />
-            <div class="third-width">
+                <br />
                 <c-picklist
                     master-label="Filtrer på status"
                     choices={choices}
@@ -52,6 +31,21 @@
                     size={selectSize}
                 ></c-picklist>
             </div>
+            <div class="right-content">
+                <lightning-button title="Ny bestilling" variant="brand" label="Ny bestilling" onclick={goToNewRequest}>
+                </lightning-button>
+            </div>
+        </div>
+        <div class="mobile-only">
+            <c-picklist
+                master-label="Sorter etter"
+                choices={sortingOptions}
+                onpicklistvaluechange={handleMobileSorting}
+                disabled={selectDisable}
+                multiple={selectMultiple}
+                required={selectRequired}
+                size={selectSize}
+            ></c-picklist>
         </div>
         <p style="align-self: flex-start" class="typo-normal">
             Merk: For serieoppdrag vises start- og sluttid for den første forekomsten. For å se alle tidene under en

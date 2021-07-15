@@ -1,32 +1,36 @@
 <template>
     <div class="main-content">
-        <div class="right-content">
-            <lightning-button
-                title="Meld interesse"
-                class="right-button"
-                variant="brand"
-                label="Tilbaketrekk interesse"
-                onclick={retractInterest}
-            >
-            </lightning-button>
-            <lightning-input
-                type="checkbox"
-                class="filter-list-checkbox"
-                label={checkBoxLabel}
-                name="toggleTerritory"
-                onchange={handleChecked}
-            >
-            </lightning-input>
-            <lightning-combobox
-                class="mobile-only"
-                name="mobileSorting"
-                label="Sorter etter"
-                value={mobileSortingDefaultValue}
-                options={sortingOptions}
-                onchange={handleMobileSorting}
-            >
-            </lightning-combobox>
+        <div class="action-container">
+            <div class="left-content">
+                <lightning-input
+                    type="checkbox"
+                    class="filter-list-checkbox"
+                    label={checkBoxLabel}
+                    name="toggleTerritory"
+                    onchange={handleChecked}
+                >
+                </lightning-input>
+            </div>
+            <div class="right-content">
+                <lightning-button
+                    title="Meld interesse"
+                    variant="brand"
+                    label="Tilbaketrekk interesse"
+                    onclick={retractInterest}
+                >
+                </lightning-button>
+            </div>
         </div>
+        <lightning-combobox
+            class="mobile-only"
+            name="mobileSorting"
+            label="Sorter etter"
+            value={mobileSortingDefaultValue}
+            options={sortingOptions}
+            onchange={handleMobileSorting}
+        >
+        </lightning-combobox>
+
         <lightning-datatable
             key-field="Id"
             data={interestedResourcesFiltered}
