@@ -46,6 +46,10 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
     padding: 0;
 }
 
+.comment-form > form {
+    padding: 25px 0;
+}
+
 .hidden {
     display: none;
 }
