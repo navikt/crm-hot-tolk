@@ -139,6 +139,43 @@ lightning-input-field.adressefelt-hjelp > lightning-input > label:after {
     content: ' (gatenavn, husnummer)';
 }
 
+.dynamic-time-inputs-with-line_button {
+    display: grid;
+    grid-template-columns: 95% 5%;
+}
+
+.dynamic-time-inputs {
+    display: grid;
+    grid-template-columns: 32% 64%;
+    grid-column-gap: 4%;
+}
+
+.remove-time__button {
+    display: flex;
+    justify-content: center;
+    bottom: -20%;
+    position: relative;
+}
+
+.dynamic-time-inputs__times {
+    display: grid;
+    grid-template-columns: 47% 47%;
+    grid-column-gap: 6.25%;
+}
+
+@media (max-width: 564px) {
+    .dynamic-time-inputs-with-line_button {
+        grid-template-columns: 85% 15%;
+    }
+    .dynamic-time-inputs {
+        grid-template-columns: none;
+        grid-template-rows: 50% 50%;
+    }
+    .remove-time__button {
+        bottom: 15%;
+    }
+}
+
 .hidden {
     display: none;
 }
