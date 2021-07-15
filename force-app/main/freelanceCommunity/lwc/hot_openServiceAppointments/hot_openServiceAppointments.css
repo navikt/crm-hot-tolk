@@ -5,22 +5,32 @@
     justify-content: center;
     flex-direction: column;
 }
+.action-container {
+    margin-bottom: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
 
-@media (min-width: 576px) {
-    .right-content {
-        margin-bottom: 1rem;
-        width: 100%;
-    }
-    div.liste.liste-max-width > div > lightning-radio-group {
-        width: 50%;
-    }
-    .right-button > .slds-button_brand,
-    .right-button > .slds-button--brand {
-        float: right;
-    }
-    .filter-list-checkbox {
-        width: 50%;
-    }
+.left-content {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.right-content {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+div.liste.liste-max-width > div > lightning-radio-group {
+    width: 50%;
+}
+.filter-list-checkbox {
+    width: 50%;
 }
 
 @media (max-width: 576px) {

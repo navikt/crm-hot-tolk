@@ -1,33 +1,25 @@
 <template>
     <div class="main-content">
-        <div class="right-content">
-            <lightning-button
-                title="Meld interesse"
-                class="right-button"
-                variant="brand"
-                label="Meld interesse"
-                onclick={sendInterest}
-            >
-            </lightning-button>
-            <div style="display: flex; flex-direction: row">
-                <lightning-button
-                    if:true={isSeriesSelected}
-                    label="Vis alle"
-                    name="filterRegionButton"
-                    onclick={handleBackToFullList}
-                >
-                </lightning-button>
-                <lightning-button
-                    if:false={isSeriesSelected}
-                    label="Regioner"
-                    name="filterRegionButton"
-                    onclick={handleShowRegionFilter}
-                >
-                </lightning-button>
-            </div>
-            <template if:false={isSeriesSelected}>
-                <br /><br />
-                <div class="third-width">
+        <div class="action-container">
+            <div class="left-content">
+                <div style="display: flex; flex-direction: row">
+                    <lightning-button
+                        if:true={isSeriesSelected}
+                        label="Vis alle"
+                        name="filterRegionButton"
+                        onclick={handleBackToFullList}
+                    >
+                    </lightning-button>
+                    <lightning-button
+                        if:false={isSeriesSelected}
+                        label="Regioner"
+                        name="filterRegionButton"
+                        onclick={handleShowRegionFilter}
+                    >
+                    </lightning-button>
+                </div>
+                <template if:false={isSeriesSelected}>
+                    <br />
                     <c-picklist
                         master-label="Type oppdrag"
                         choices={choices}
@@ -37,53 +29,23 @@
                         required={selectRequired}
                         size={selectSize}
                     ></c-picklist>
-                </div>
-            </template>
-
-            <div
-                class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay regionPage hidden"
-                style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
-                tabindex="-1"
-            >
-                <div
-                    class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-                    role="dialog"
-                    aria-labelledby="regions-header-id"
-                >
-                    <section>
-                        <h2 id="regions-header-id" class="typo-undertittel">Regioner</h2>
-                        <lightning-record-edit-form
-                            class="no-padding"
-                            object-api-name="ServiceResource"
-                            density="comfy"
-                            onsubmit={handleSubmit}
-                            record-id={serviceResourceId}
-                        >
-                            <lightning-input-field field-name="HOT_PreferredRegions__c"> </lightning-input-field>
-                            <br />
-                            <lightning-button title="Lagre" variant="brand" label="Lagre" type="submit">
-                            </lightning-button>
-                        </lightning-record-edit-form>
-                    </section>
-                    <button
-                        class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
-                        onclick={handleHideRegionFilter}
-                    >
-                        <span class="text-hide">Lukk</span>
-                    </button>
-                </div>
+                </template>
             </div>
-
-            <lightning-combobox
-                class="mobile-only"
-                name="mobileSorting"
-                label="Sorter etter"
-                value={mobileSortingDefaultValue}
-                options={sortingOptions}
-                onchange={handleMobileSorting}
-            >
-            </lightning-combobox>
+            <div class="right-content">
+                <lightning-button title="Meld interesse" variant="brand" label="Meld interesse" onclick={sendInterest}>
+                </lightning-button>
+            </div>
         </div>
+
+        <lightning-combobox
+            class="mobile-only"
+            name="mobileSorting"
+            label="Sorter etter"
+            value={mobileSortingDefaultValue}
+            options={sortingOptions}
+            onchange={handleMobileSorting}
+        >
+        </lightning-combobox>
         <lightning-datatable
             key-field="AppointmentNumber"
             data={allServiceAppointmentsFiltered}
@@ -97,15 +59,42 @@
         >
         </lightning-datatable>
 
-        <div class="right-content" style="margin-top: 1rem">
-            <lightning-button
-                title="Meld interesse"
-                class="right-button"
-                variant="brand"
-                label="Meld interesse"
-                onclick={sendInterest}
-            >
-            </lightning-button>
+        <div class="action-container">
+            <div class="left-content"></div>
+            <div class="right-content" style="margin-top: 1rem">
+                <lightning-button title="Meld interesse" variant="brand" label="Meld interesse" onclick={sendInterest}>
+                </lightning-button>
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay regionPage hidden"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+        tabindex="-1"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            role="dialog"
+            aria-labelledby="regions-header-id"
+        >
+            <section>
+                <h2 id="regions-header-id" class="typo-undertittel">Regioner</h2>
+                <lightning-record-edit-form
+                    class="no-padding"
+                    object-api-name="ServiceResource"
+                    density="comfy"
+                    onsubmit={handleSubmit}
+                    record-id={serviceResourceId}
+                >
+                    <lightning-input-field field-name="HOT_PreferredRegions__c"> </lightning-input-field>
+                    <br />
+                    <lightning-button title="Lagre" variant="brand" label="Lagre" type="submit"> </lightning-button>
+                </lightning-record-edit-form>
+            </section>
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={handleHideRegionFilter}>
+                <span class="text-hide">Lukk</span>
+            </button>
         </div>
     </div>
 
