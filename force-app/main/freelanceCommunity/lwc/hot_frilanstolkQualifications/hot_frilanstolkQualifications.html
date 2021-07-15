@@ -14,7 +14,9 @@
                             </template>
                         </ul>
                     </lightning-card>
-                    <lightning-card title="hot_frilanstolkQualificationsSkills">
+                </lightning-record-view-form>
+                <lightning-record-view-form object-api-name="Skill" record-id={Id} mode="view">
+                    <lightning-card title="hot_Skills">
                         <ul class="slds-m-around_medium">
                             <template for:each={skillList} for:item="s" for:index="index">
                                 <li key={s.Id}>{s.Id}, {s.MasterLabel}</li>
