@@ -4,6 +4,12 @@ lightning-output-field.checkbox-inline {
     justify-content: flex-end;
 }
 
+lightning-output-field.checkbox-inline > div.slds-form-element__control {
+    width: unset;
+    flex-basis: unset;
+    top: 5px;
+}
+
 .center-content {
     align-items: center;
     display: flex !important;
@@ -23,4 +29,18 @@ lightning-output-field.checkbox-inline {
     margin-top: 1rem;
     max-width: 800px;
     width: 100%;
+}
+
+.sub-form > form {
+    padding: 0 1rem;
+}
+
+.sub-form > form > slot {
+    display: flex;
+    flex-direction: row;
+}
+
+.sub-form > form > slot > lightning-output-field > .slds-form-element__label {
+    background-color: red;
+    display: none !important;
 }

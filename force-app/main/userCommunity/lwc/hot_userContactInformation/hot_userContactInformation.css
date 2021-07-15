@@ -18,3 +18,17 @@
     max-width: 800px;
     width: 100%;
 }
+
+.sub-form > form {
+    padding: 0 1rem;
+}
+
+.sub-form > form > slot {
+    display: flex;
+    flex-direction: row;
+}
+
+.sub-form > form > slot > lightning-output-field > .slds-form-element__label {
+    background-color: red;
+    display: none !important;
+}

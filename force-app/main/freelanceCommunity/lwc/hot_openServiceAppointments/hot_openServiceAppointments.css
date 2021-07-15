@@ -42,6 +42,10 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
     content: ' (ingen sensitive opplysninger)';
 }
 
+.no-padding form {
+    padding: 0;
+}
+
 .hidden {
     display: none;
 }
