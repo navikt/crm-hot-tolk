@@ -1,48 +1,41 @@
 import { LightningElement, wire, track } from 'lwc';
 import getServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.getServiceResourceSkill';
-//import getInfoFromSkills from '@salesforce/apex/HOT_FreelanceUserInformationController.getInfoFromSkills';
-
+import getAllSkillsList from '@salesforce/apex/HOT_SkillController.getAllSkillsList';
 export default class Hot_frilanstolkQualifications extends LightningElement {
     @track serviceResourceSkill;
-    // @track serviceResourceId;
-    // @track skillNumber;
     @track recordId;
     @track serviceResourceSkillList;
-
+    @track Id;
     @wire(getServiceResourceSkill)
     wiredGetServiceResourceSkill(result) {
-        //Dette er nå en liste, og vi må legge dette inn i en liste, sånn at den henter ut riktig data til riktig indeksplassering.
         if (result.data) {
             this.serviceResourceSkill = result.data;
             this.recordId = this.serviceResourceSkill.Id;
-            console.log(this.serviceResourceSkill);
             this.serviceResourceSkillListFunction();
-
-            // this.recordId = this.serviceResourceSkill.Id;
-            // this.skillNumber = this.serviceResourceSkill.SkillNumber;
-            // console.log(this.skillNumber + 'tester ut skillnumber');
-            // console.log(this.recordId + ' tester ut recordId');
         }
+        //Denne kaller på en funksjon som henter ut alle skills unavhengig om serviceresource har noen skills eller ikke.
+        getAllSkillsList();
     }
+    //Denne henter ut skillsene serviceresource har.
     serviceResourceSkillListFunction() {
         var tempSRSkillList = [];
         for (var i = 0; i < this.serviceResourceSkill.length; i++) {
             tempSRSkillList.push(this.serviceResourceSkill[i]);
         }
         this.serviceResourceSkillList = tempSRSkillList;
-        //console.log(toString(serviceResourceSkillList));
     }
-
-    //Apinavnet til skills heter skill, så opprett en controller som henter inn skill. hent ut id og Name.
-
-    // @wire(getInfoFromSkills)
-    // wiredGetInfoFromSkills(result) {
-    //     if (result.data) {
-    //         console.log('success getinfo ´from skills');
-    //     }
-    // }
-
-    // for(let i=0 ; i<10; i++){
-    //     console.log(i);
-    //   }
+    //Denne henter ut alle skills som finnes. Denne fungerer ikke enda.
+    getAllSkillsList(result2) {
+        if (result2.data) {
+            this.skill = result2.data;
+            this.Id = result2.Id;
+        }
+        //Er dette feil? sjekkker jeg lengden på arrayet, eller sjekker jeg lengden på et objekt, type at svaret er 1, fordi id =[0] og masterlabel=[1]?
+        var tempSkillList = [];
+        for (var i2 = 0; i2 < this.skill.length; i2++) {
+            tempSkillList.push(this.skill[i2]);
+            console.log(tempSkillList);
+        }
+        this.skillList = tempSkillList;
+    }
 }
