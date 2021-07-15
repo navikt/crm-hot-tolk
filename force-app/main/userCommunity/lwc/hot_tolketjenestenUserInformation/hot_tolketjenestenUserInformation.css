@@ -1,15 +1,3 @@
-lightning-output-field.checkbox-inline {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-}
-
-lightning-output-field.checkbox-inline > div.slds-form-element__control {
-    width: unset;
-    flex-basis: unset;
-    top: 5px;
-}
-
 .center-content {
     align-items: center;
     display: flex !important;
