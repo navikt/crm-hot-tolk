@@ -84,6 +84,19 @@ section.sub-form {
     width: 100%;
 }
 
+.horizontal .slds-form-element__control {
+    display: flex;
+    flex-direction: row;
+}
+
+@media (max-width: 576px) {
+    .horizontal .slds-form-element__control {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 2rem;
+    }
+}
+
 .hidden {
     display: none;
 }

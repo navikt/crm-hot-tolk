@@ -190,6 +190,53 @@ lightning-input-field.adressefelt-hjelp > lightning-input > label:after {
     display: none !important;
 }
 
+lightning-radio-group.nav-radio-button-group {
+    padding-left: 0.25rem;
+}
+
+.horizontal .slds-form-element__control {
+    display: flex;
+    flex-direction: row;
+}
+
+@media (max-width: 576px) {
+    .horizontal .slds-form-element__control {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 2rem;
+    }
+}
+
+.radio-button-group_yes-no .slds-form-element__control {
+    max-width: 200px;
+}
+
+.nav-radio-button-group .slds-form-element__control .slds-radio {
+    margin-top: 0.25rem;
+    font-size: 1rem;
+    width: 100%;
+    border: 0 transparent;
+    border-radius: 8px;
+    display: flex;
+    align-content: flex-start;
+    justify-content: left;
+    height: 2.33rem;
+    margin-left: 1rem;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.nav-radio-button-group .slds-form-element__control .slds-radio_faux {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.75rem !important;
+}
+
+.nav-radio-button-group .slds-form-element__control .slds-radio:first-child {
+    margin-left: 0;
+}
+
 .hidden {
     display: none;
 }
