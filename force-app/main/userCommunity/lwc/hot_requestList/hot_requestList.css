@@ -27,7 +27,6 @@ section.sub-form {
     justify-content: space-between;
     flex-direction: row;
 }
-
 .left-content {
     width: 50%;
     display: flex;
@@ -41,6 +40,23 @@ section.sub-form {
     justify-content: flex-start;
     align-items: flex-end;
 }
+
+@media (max-width: 576px) {
+    .action-container {
+        margin-bottom: 1rem;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column-reverse;
+    }
+    .left-content {
+        width: 100%;
+    }
+    .right-content {
+        width: 100%;
+    }
+}
+
 div.liste.liste-max-width > div > lightning-radio-group {
     width: 50%;
 }
