@@ -30,6 +30,24 @@
     justify-content: flex-start;
     align-items: flex-end;
 }
+
+@media (max-width: 576px) {
+    .action-container {
+        margin-bottom: 1rem;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column-reverse;
+    }
+    .left-content {
+        width: 100%;
+        margin: 1rem 0;
+    }
+    .right-content {
+        width: 100%;
+    }
+}
+
 div.liste.liste-max-width > div > lightning-radio-group {
     width: 50%;
 }

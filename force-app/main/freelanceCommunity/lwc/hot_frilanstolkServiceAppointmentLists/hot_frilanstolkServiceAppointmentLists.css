@@ -19,3 +19,10 @@ lightning-tabset {
     justify-content: center;
     flex-direction: column;
 }
+
+@media (max-width: 576px) {
+    .liste {
+        padding: 1rem 1rem 1rem 1rem;
+        margin: 1rem auto 1rem auto;
+    }
+}
