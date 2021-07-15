@@ -34,7 +34,11 @@
                     >
                     </lightning-radio-group>
 
-                    <section if:true={publicEventForm} class="offentlig-arrangement-info-skjema sub-form">
+                    <div
+                        if:true={publicEventForm}
+                        class="offentlig-arrangement-info-skjema"
+                        style="margin-bottom: 1rem"
+                    >
                         <lightning-combobox
                             class="type-arrangement"
                             name="typeOfEvent"
@@ -44,7 +48,7 @@
                             required
                         >
                         </lightning-combobox>
-                    </section>
+                    </div>
 
                     <lightning-messages aria-live="assertive"> </lightning-messages>
                     <lightning-button if:true={showNextButton} variant="brand" onclick={onHandleNeste} label="Neste">
