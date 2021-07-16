@@ -121,7 +121,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         } catch (Exception e) {
             Boolean expectedExceptionThrown = e.getMessage()
                 .contains(
-                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and start values must be greater than end values.'
+                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and start values must be greater than their respective end value.'
                 );
             System.assertEquals(
                 expectedExceptionThrown,
@@ -145,7 +145,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         } catch (Exception e) {
             Boolean expectedExceptionThrown = e.getMessage()
                 .contains(
-                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and start values must be greater than end values.'
+                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and start values must be greater than their respective end value.'
                 );
             System.assertEquals(
                 expectedExceptionThrown,

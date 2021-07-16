@@ -248,16 +248,22 @@ private class HOT_AssignedResourceHandlerTest {
     }
 
     @isTest
-    static void throwExceptionIfSAHasOverlapOnARInsertTrueTest() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
+    static void throwExceptionIfSAHasOverlapOnARInsertExceptionTest() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, EarliestStartTime, DueDate
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
 
         ServiceAppointment serviceAppointment2 = [
-            SELECT Id
+            SELECT Id, EarliestStartTime, DueDate
             FROM ServiceAppointment
             WHERE Subject = 'subject 2'
             LIMIT 1
         ];
-
+        System.debug('serviceAppointment: ' + serviceAppointment);
+        System.debug('serviceAppointment2: ' + serviceAppointment2);
         ServiceResource adminResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()];
 
         Test.startTest();
@@ -274,7 +280,9 @@ private class HOT_AssignedResourceHandlerTest {
             insert assignedResource2;
         } catch (Exception e) {
             Boolean expectedExceptionThrown = e.getMessage()
-                .contains('Ressursen har allerede et oppdrag i dette tidsrommet');
+                .contains(
+                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and start values must be greater than their respective end value'
+                );
             System.assertEquals(
                 expectedExceptionThrown,
                 true,
