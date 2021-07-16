@@ -44,6 +44,8 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         //Du trenger ikke å legge til i en liste. result2.data ER en liste.
         //Utenom det ser dette veldig bra ut! Du kan vurdere å ikke bruke record-view-form, men kanskje datatable?
         //Du skal jo vise mer enn ett record. record-view-form fungerer best med kun ett record.
+
+        //VIKITG! Du må legge til apex-klassene du bruker i frilanstolkenes permission set. Se slack post.
         var tempSkillList = [];
         for (var i2 = 0; i2 < this.skill.length; i2++) {
             tempSkillList.push(this.skill[i2]);
