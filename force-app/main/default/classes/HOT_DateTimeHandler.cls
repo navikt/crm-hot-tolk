@@ -1,10 +1,6 @@
 public without sharing class HOT_DateTimeHandler {
     // Returns true if datetime fields are overlapping
     public static Boolean checkOverlappingDateTimes(DateTime aStart, DateTime aEnd, DateTime bStart, DateTime bEnd) {
-        System.debug('aStart: ' + aStart);
-        System.debug('aEnd: ' + aEnd);
-        System.debug('bStart: ' + bStart);
-        System.debug('bEnd: ' + bEnd);
         if (
             aStart == null ||
             aEnd == null ||
