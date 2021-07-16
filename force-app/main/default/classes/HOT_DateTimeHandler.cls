@@ -16,7 +16,7 @@ public without sharing class HOT_DateTimeHandler {
             aEnd == bStart)
         ) {
             throw new DateTimeHandlerException(
-                'A Datetime argument was null or invalid. All Datetime arguments must have a value and start values must be greater than their respective end value.'
+                'A Datetime argument was null or invalid. All Datetime arguments must have a value and end values must be greater than their respective start value.'
             );
         }
         return aStart < bEnd && aEnd > bStart;

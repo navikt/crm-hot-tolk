@@ -57,7 +57,7 @@ public with sharing class HOT_DateTimeHandlerTest {
     }
 
     @isTest
-    static void checkOverlappingDatesTrue1() {
+    static void checkOverlappingDatesTrue() {
         Datetime aStart = Datetime.now().addDays(2);
         Datetime aEnd = Datetime.now().addDays(7);
         Datetime bStart = Datetime.now().addDays(4);
@@ -121,7 +121,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         } catch (Exception e) {
             Boolean expectedExceptionThrown = e.getMessage()
                 .contains(
-                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and start values must be greater than their respective end value.'
+                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and end values must be greater than their respective start value.'
                 );
             System.assertEquals(
                 expectedExceptionThrown,
@@ -145,7 +145,55 @@ public with sharing class HOT_DateTimeHandlerTest {
         } catch (Exception e) {
             Boolean expectedExceptionThrown = e.getMessage()
                 .contains(
-                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and start values must be greater than their respective end value.'
+                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and end values must be greater than their respective start value.'
+                );
+            System.assertEquals(
+                expectedExceptionThrown,
+                true,
+                'checkOverlappingDateTimes should have returned exception.'
+            );
+        }
+        Test.stopTest();
+    }
+
+    @isTest
+    static void checkOverlappingDatesException3() {
+        Datetime aStart = Datetime.now().addDays(3);
+        Datetime aEnd = Datetime.now().addDays(3);
+        Datetime bStart = Datetime.now().addDays(3);
+        Datetime bEnd = Datetime.now().addDays(3);
+
+        Test.startTest();
+        try {
+            HOT_DateTimeHandler.checkOverlappingDateTimes(aStart, aEnd, bStart, bEnd);
+        } catch (Exception e) {
+            Boolean expectedExceptionThrown = e.getMessage()
+                .contains(
+                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and end values must be greater than their respective start value.'
+                );
+            System.assertEquals(
+                expectedExceptionThrown,
+                true,
+                'checkOverlappingDateTimes should have returned exception.'
+            );
+        }
+        Test.stopTest();
+    }
+
+    @isTest
+    static void checkOverlappingDatesException4() {
+        Datetime aStart = Datetime.now().addDays(3);
+        Datetime aEnd = Datetime.now().addDays(2);
+        Datetime bStart = Datetime.now().addDays(2);
+        Datetime bEnd = Datetime.now().addDays(3);
+
+        Test.startTest();
+        try {
+            HOT_DateTimeHandler.checkOverlappingDateTimes(aStart, aEnd, bStart, bEnd);
+        } catch (Exception e) {
+            Boolean expectedExceptionThrown = e.getMessage()
+                .contains(
+                    'A Datetime argument was null or invalid. All Datetime arguments must have a value and end values must be greater than their respective start value.'
                 );
             System.assertEquals(
                 expectedExceptionThrown,

@@ -347,8 +347,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     HOT_DateTimeHandler.checkOverlappingDateTimes(
                         serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r[i].EarliestStartTime,
                         serviceResources.get(ar.ServiceResourceId).HOT_ServiceAppointments__r[i].DueDate,
-                        serviceAppointments.get(ar.ServiceAppointmentId).DueDate,
-                        serviceAppointments.get(ar.ServiceAppointmentId).EarliestStartTime
+                        serviceAppointments.get(ar.ServiceAppointmentId).EarliestStartTime,
+                        serviceAppointments.get(ar.ServiceAppointmentId).DueDate
                     )
                 ) {
                     ar.addError('Ressursen har allerede et oppdrag i dette tidsrommet.');
