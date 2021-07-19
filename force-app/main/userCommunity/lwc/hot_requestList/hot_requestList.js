@@ -24,7 +24,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         { name: 'Under behandling', label: 'Under behandling' },
         { name: 'Du har fått tolk', label: 'Du har fått tolk' },
         { name: 'Ikke ledig tolk', label: 'Ikke ledig tolk' },
-        { name: 'Serieoppdrag', label: 'Serieoppdrag' }, // "Se tidsplan"
+        { name: 'Se tidsplan', label: 'Serieoppdrag' }, // "Se tidsplan"
         { name: 'Avlyst', label: 'Avlyst' },
         { name: 'Gjennomført', label: 'Gjennomført' }
     ];
