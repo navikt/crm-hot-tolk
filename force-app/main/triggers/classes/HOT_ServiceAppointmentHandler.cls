@@ -18,15 +18,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
-        List<ServiceAppointment> serviceAppointmentsOwnerChangedWithAssignedResource = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
-            if (
-                triggerOldMap.get(serviceAppointment.Id).get('OwnerId') != serviceAppointment.OwnerId &&
-                serviceAppointment.HOT_AssignedResourceId__c != null
-            ) {
-                serviceAppointmentsOwnerChangedWithAssignedResource.add(serviceAppointment);
-            }
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('EarliestStartTime') !=
                 serviceAppointment.EarliestStartTime ||
@@ -161,15 +154,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsToSetToDefault.size() > 0) {
             setDefaultFields(serviceAppointmentsToSetToDefault);
         }
-        if (serviceAppointmentsOwnerChangedWithAssignedResource.size() > 0) {
-            Map<String, Map<Id, Id>> appointmentAndResourceByAssignment = getAppointmentAndResourceByAssignment(
-                serviceAppointmentsOwnerChangedWithAssignedResource
-            );
-            HOT_ServiceAppointmentsSharingService.grantAccess(
-                appointmentAndResourceByAssignment.get('appointment'),
-                appointmentAndResourceByAssignment.get('resource')
-            );
-        }
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -178,8 +162,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithChangedAddress = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsOwnerChangedWithAssignedResource = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('OwnerId') != serviceAppointment.OwnerId &&
+                serviceAppointment.HOT_AssignedResourceId__c != null
+            ) {
+                serviceAppointmentsOwnerChangedWithAssignedResource.add(serviceAppointment);
+            }
             if (
                 (serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') &&
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')
@@ -221,6 +212,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             deleteRelatedEvents(serviceAppointmentsToRemoveAssignedResource);
+        }
+        if (serviceAppointmentsOwnerChangedWithAssignedResource.size() > 0) {
+            Map<String, Map<Id, Id>> appointmentAndResourceByAssignment = getAppointmentAndResourceByAssignment(
+                serviceAppointmentsOwnerChangedWithAssignedResource
+            );
+            HOT_ServiceAppointmentsSharingService.grantAccess(
+                appointmentAndResourceByAssignment.get('appointment'),
+                appointmentAndResourceByAssignment.get('resource')
+            );
         }
 
         HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
