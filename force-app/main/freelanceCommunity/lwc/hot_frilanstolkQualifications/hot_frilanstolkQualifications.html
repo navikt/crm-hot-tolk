@@ -2,28 +2,35 @@
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
             <section>
-                <p></p>
-                <lightning-record-view-form object-api-name="ServiceResourceSkill" record-id={recordId} mode="view">
-                    <lightning-card title="hot_frilanstolkQualifications">
+                <lightning-record-view-form object-api-name="serviceResourceSkillList" record-id={Id} mode="view">
+                    <lightning-card title="Dine Skills">
                         <ul class="slds-m-around_medium">
                             <template for:each={serviceResourceSkillList} for:item="sr" for:index="index">
-                                <li key={sr.Id}>
-                                    {sr.SkillId}, {sr.EffectiveStartDate},{EffectiveEndDate}, {sr.ServiceResourceId},
-                                    {sr.SkillNumber}, {sr.SkillLevel}, {sr.Id}
-                                </li>
+                                <li key={sr.Id}>{sr.MasterLabel}</li>
                             </template>
                         </ul>
                     </lightning-card>
                 </lightning-record-view-form>
-                <lightning-record-view-form object-api-name="Skill" record-id={Id} mode="view">
-                    <lightning-card title="hot_Skills">
-                        <ul class="slds-m-around_medium">
-                            <template for:each={skillList} for:item="s" for:index="index">
-                                <li key={s.Id}>{s.Id}, {s.MasterLabel}</li>
-                            </template>
-                        </ul>
-                    </lightning-card>
-                </lightning-record-view-form>
+                <lightning-datatable
+                    key-field="Id"
+                    data={serviceResourceSkillList}
+                    columns={masterLabelColumns}
+                    hide-checkbox-column="true"
+                >
+                </lightning-datatable>
+
+                <lightning-datatable
+                    key-field="Id"
+                    data={skill}
+                    columns={columns}
+                    onrowselection={selectedRowHandler}
+                    selected-rows={selectedRows}
+                >
+                </lightning-datatable>
+                <lightning-button label="Lagre" onclick={handleSelect}></lightning-button>
+
+                <!-- Denne må være med for å gi beskjed når en ny boks er klikket. så denne må lagres 
+                 onrowaction={handleRowAction}-->
             </section>
         </div>
     </div>

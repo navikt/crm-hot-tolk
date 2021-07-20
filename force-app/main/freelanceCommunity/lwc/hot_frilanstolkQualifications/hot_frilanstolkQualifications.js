@@ -1,57 +1,113 @@
 import { LightningElement, wire, track } from 'lwc';
 import getServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.getServiceResourceSkill';
 import getAllSkillsList from '@salesforce/apex/HOT_SkillController.getAllSkillsList';
+
 export default class Hot_frilanstolkQualifications extends LightningElement {
+    @track columns = [
+        {
+            label: 'Name',
+            fieldName: 'MasterLabel',
+            type: 'text'
+        },
+        {
+            label: 'Skill Id',
+            fieldName: 'Id',
+            type: 'text'
+        }
+    ];
+    @track masterLabelColumns = [
+        {
+            label: 'Name',
+            fieldName: 'MasterLabel',
+            type: 'text'
+        }
+    ];
+
     //tracking for serviceresourceskill
     @track serviceResourceSkill;
-    @track recordId;
+
     @track serviceResourceSkillList;
     //Tracking for Skills
     @track Id;
-    @track skillList;
+    @track skill;
+    //correct skillslist
+    @track showSkillList;
 
     @wire(getServiceResourceSkill)
     wiredGetServiceResourceSkill(result) {
         if (result.data) {
             this.serviceResourceSkill = result.data;
-            this.recordId = this.serviceResourceSkill.Id;
+            //this.recordId = this.serviceResourceSkill.Id;
+            // this.serviceResourceSkillListFunction();
+        }
+    }
+    //Denne henter ut alle skills
+    @wire(getAllSkillsList)
+    wiredgetAllSkillsList(resultList) {
+        if (resultList.data) {
+            this.skill = resultList.data;
             this.serviceResourceSkillListFunction();
         }
     }
+
     //Denne henter ut skillsene serviceresource har.
     serviceResourceSkillListFunction() {
-        var tempSRSkillList = [];
+        let tempSRSkillList = [];
+        let showSkillList = [];
         for (var i = 0; i < this.serviceResourceSkill.length; i++) {
             tempSRSkillList.push(this.serviceResourceSkill[i]);
         }
         this.serviceResourceSkillList = tempSRSkillList;
+
+        for (let j = 0; j < this.skill.length; j++) {
+            this.serviceResourceSkillList.forEach((element) => {
+                if (element.SkillId == this.skill[j].Id) {
+                    // console.log('et funn er funnet' + this.skill[j].MasterLabel);
+                    showSkillList.push(this.skill[j]);
+                    this.serviceResourceSkillList = [];
+                    this.serviceResourceSkillList = showSkillList;
+                }
+            });
+        }
+    }
+    //TODO Denne skal til edit-siden
+
+    @track selectedRows = [];
+
+    selectedRowHandler(event) {
+        let tempSelectedRows = [];
+        let anotherOne = [];
+        tempSelectedRows = event.detail.selectedRows;
+
+        anotherOne.push(tempSelectedRows[0]);
+        this.selectedRows = anotherOne;
+        console.log(this.selectedRows[0].MasterLabel);
+    }
+    handleSelect() {
+        // const rows = [Id];
+        // this.selectedRows = rows;
+        console.log(this.selectedRows + ' 1 ');
+        let counter = 0;
+        for (let h = 0; h < this.selectedRows.length; h++) {
+            counter++;
+
+            console.log(counter);
+            if (this.serviceResourceSkillList.Id != this.selectedRows[h].Id) {
+                this.serviceResourceSkillList.push(this.selectedRows[h]);
+            } else {
+                console.log('Denne finnes allerede ' + this.selectedRows[h].MasterLabel);
+            }
+
+            //Dette er bare front-end , ikke bakend, men skal prøve å pushe de nye taskene til brukeren.
+
+            //Her må vi opprette en serviceresourceskill først, og legge til startdate og ved sletting må vi sette enddate til now.
+            //this.serviceResourceSkill.push(this.selectedRows[h].)
+        }
     }
 
-    //TODO getAllSkillsList fungerer ikke. getAllSKillsList blir ikke importert fra controlleren. console.log blir ikke skrevet ut. @wire(GetAllSkillsList) gjør at hele komponenten forsvinner.
+    // Denne er til å refreshe apes kanskje?? kalle på servicecresourceskill?? så enkelt? ja takk.
+    //refreshApex(this.wiredServiceResourceSkill);
 
-    //Denne kaller på en funksjon som henter ut alle skills unavhengig om serviceresource har noen skills eller ikke. Jeg mistenker at det ikke er lov å bruke
-    //wire på to objekter i samme js fil, for når jeg brukte wire på begge funksjonene så forsvant hele komponenten.
-    // @wire(getAllSkillsList)
-    getAllSkillsList(result2) {
-        if (result2.data) {
-            this.skill = result2.data;
-            this.Id = result2.Id;
-        }
-        //Er dette feil? sjekkker jeg lengden på arrayet, eller sjekker jeg lengden på et objekt, type at svaret er 1, fordi id =[0] og masterlabel=[1]?
-        //Nei. Dette fører til at metoden tryner. klasse-variablen "skill" er ikke definert, og du refererer til den her.
-        // siden skill er undefined feiler metoden når du prøver å hente ut length (this.skill.length)
-        //bruk let istedenfor var
-        //Du trenger ikke å legge til i en liste. result2.data ER en liste.
-        //Utenom det ser dette veldig bra ut! Du kan vurdere å ikke bruke record-view-form, men kanskje datatable?
-        //Du skal jo vise mer enn ett record. record-view-form fungerer best med kun ett record.
-
-        //VIKITG! Du må legge til apex-klassene du bruker i frilanstolkenes permission set. Se slack post.
-        var tempSkillList = [];
-        for (var i2 = 0; i2 < this.skill.length; i2++) {
-            tempSkillList.push(this.skill[i2]);
-            console.log(tempSkillList() + ' console.loger hele arrayet med()');
-            console.log(tempSkillList + ' console.loger hele arrayet uten ()');
-        }
-        this.skillList = tempSkillList;
-    }
+    // jeg må sammenlikne skillid med id fra skills med skillid fra serviceresourceid, slik at serviceresourceskill blir oppdatert
+    //All info vil jo serviceresoruceskill fse for meg, så lenge jeg har id, og oppdaterer startdate og enddate
 }

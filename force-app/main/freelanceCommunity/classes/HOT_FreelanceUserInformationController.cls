@@ -15,5 +15,4 @@ public without sharing class HOT_FreelanceUserInformationController {
         ];
         return freelanceServiceResource;
     }
-   
 }
