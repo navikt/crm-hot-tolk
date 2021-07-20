@@ -44,7 +44,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Datetime aStart = Datetime.now().addDays(3);
         Datetime aEnd = Datetime.now().addDays(4);
         Datetime bStart = Datetime.now().addDays(2);
-        Datetime bEnd = Datetime.now().addDays(3);
+        Datetime bEnd = aStart;
 
         Test.startTest();
         Boolean isOverlap = HOT_DateTimeHandler.checkOverlappingDateTimes(aStart, aEnd, bStart, bEnd);

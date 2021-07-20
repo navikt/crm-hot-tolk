@@ -225,4 +225,69 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
             ]
         );
     }
+
+    @IsTest
+    private static void testKeepAccessOnSAOwnerChange() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.AccountId = account.Id;
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        List<ServiceResource> serviceResources = [SELECT Id, RelatedRecordId FROM ServiceResource];
+
+        AssignedResource assignedResource = new AssignedResource(
+            ServiceAppointmentId = serviceAppointment.Id,
+            ServiceResourceId = serviceResources[0].Id
+        );
+        insert assignedResource;
+
+        Test.startTest();
+        serviceAppointment.OwnerId = UserInfo.getUserId();
+        update serviceAppointment;
+        Test.stopTest();
+
+        System.assertEquals(
+            1,
+            [
+                SELECT COUNT()
+                FROM ServiceAppointmentShare
+                WHERE
+                    UserOrGroupId = :serviceResources[0].RelatedRecordId
+                    AND ParentId = :serviceAppointment.Id
+                    AND RowCause = 'Manual'
+            ]
+        );
+        System.assertEquals(
+            1,
+            [
+                SELECT COUNT()
+                FROM WorkOrderShare
+                WHERE
+                    UserOrGroupId = :serviceResources[0].RelatedRecordId
+                    AND ParentId = :workOrder.Id
+                    AND RowCause = 'Manual'
+            ]
+        );
+        System.assertEquals(
+            1,
+            [
+                SELECT COUNT()
+                FROM AccountShare
+                WHERE
+                    UserOrGroupId = :serviceResources[0].RelatedRecordId
+                    AND AccountId = :account.Id
+                    AND RowCause = 'Manual'
+            ]
+        );
+    }
 }
