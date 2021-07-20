@@ -9,7 +9,11 @@ public without sharing class HOT_FreelanceUserInformationController {
                 HOT_IsAvailableForAcuteAssignments__c,
                 RelatedRecordId,
                 HOT_Skilled__c,
-                Name
+                Name,
+                HOT_Email__c,
+                HOT_EmailOverride__c,
+                HOT_MobilePhone__c,
+                HOT_MobilePhoneOverride__c
             FROM ServiceResource
             WHERE RelatedRecordId = :userId
         ];
