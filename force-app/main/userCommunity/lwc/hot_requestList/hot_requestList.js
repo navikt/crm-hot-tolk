@@ -227,6 +227,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     handleRequestType(event) {
         this.isMyRequests = event.detail.value === 'my';
         this.allRequests = this.isMyRequests ? this.allMyRequests : this.allOrderedRequests;
+        this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
         this.filterRequests();
         let tempColumns = [...this.columns];
         let tempMobileColumns = [...this.mobileColumns];
