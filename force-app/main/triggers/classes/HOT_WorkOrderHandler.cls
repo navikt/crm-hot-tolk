@@ -255,13 +255,18 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 if (workOrder.Status != 'Canceled') {
                     request.StartTime__c = workOrder.StartDate;
                     request.EndTime__c = workOrder.EndDate;
-                    request.SeriesStartDate__c = workOrder.StartDate.date();
-                    break;
-                }
-            }
-            for (WorkOrder workOrder : request.Work_Orders__r) {
-                if (workOrder.Status != 'Canceled') {
-                    request.SeriesEndDate__c = workOrder.EndDate.date();
+                    if (
+                        workOrder.StartDate.date() != null && workOrder.StartDate.date() < request.SeriesStartDate__c ||
+                        request.SeriesStartDate__c == null
+                    ) {
+                        request.SeriesStartDate__c = workOrder.StartDate.date();
+                    }
+                    if (
+                        workOrder.EndDate.date() != null && workOrder.EndDate.date() > request.SeriesEndDate__c ||
+                        request.SeriesEndDate__c == null
+                    ) {
+                        request.SeriesEndDate__c = workOrder.EndDate.date();
+                    }
                 }
             }
         }
