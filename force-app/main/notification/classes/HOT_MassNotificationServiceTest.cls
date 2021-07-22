@@ -16,4 +16,9 @@ private class HOT_MassNotificationServiceTest {
         Id notificationTypeId = HOT_MassNotificationService.getMassNotificationTypeId();
         System.assertNotEquals(null, notificationTypeId, 'Could not get notificationTypeId');
     }
+    @isTest
+    static void prepNotificationTest() {
+        Messaging.CustomNotification notification = HOT_MassNotificationService.prepNotification();
+        System.assertNotEquals(null, notification, 'Could not get notification');
+    }
 }

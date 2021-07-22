@@ -9,13 +9,18 @@ public without sharing class HOT_MassNotificationService {
         return [SELECT Id, DeveloperName FROM CustomNotificationType WHERE DeveloperName = 'HOT_MassNotification'].Id;
     }
 
+    public static Messaging.CustomNotification prepNotification() {
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setNotificationTypeId(HOT_MassNotificationService.getMassNotificationTypeId());
+        notification.setTargetId('000000000000000AAA'); //Dummy-Id
+        return notification;
+    }
     //------ Example -------//
     /*
-    Messaging.CustomNotification notification = new Messaging.CustomNotification();
-    notification.setNotificationTypeId(HOT_MassNotificationService.getMassNotificationTypeId());
-    notification.setTargetId('000000000000000AAA'); //Dummy-Id
+    Set<String> recipients = getUsersWithProfiles(new List<String>{'NAV Samhandler', 'HOT Tolk Ansatt'});
+    Messaging.CustomNotification notification = HOT_MassNotificationService.prepNotification();
     notification.setTitle('Fjern Buffrede metadata');
     notification.setBody('Det har nå kommet oppdateringer, og vi ber deg derfor gå inn på innstillinger og trykke "Fjern Buffrede Metadata"');
-    notification.send(getUsersWithProfiles(new List<String>{'NAV Samhandler', 'HOT Tolk Ansatt'}));
+    notification.send(recipients);
     */
 }
