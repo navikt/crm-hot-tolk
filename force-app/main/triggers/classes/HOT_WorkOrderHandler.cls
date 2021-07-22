@@ -227,12 +227,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     public static void updateRequests(List<WorkOrder> workOrders) {
         Set<Id> requestIds = new Set<Id>();
-        List<Id> deletedWorkOrders = new List<Id>();
         for (WorkOrder workOrder : workOrders) {
             requestIds.add(workOrder.HOT_Request__c);
-            if (workOrder.IsDeleted) {
-                deletedWorkOrders.add(workOrder.Id);
-            }
         }
         List<HOT_Request__c> requests = [
             SELECT
@@ -245,7 +241,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 (
                     SELECT Id, StartDate, EndDate, Status
                     FROM HOT_Request__c.Work_Orders__r
-                    WHERE Id NOT IN :deletedWorkOrders AND Status != 'Annul'
+                    WHERE Status != 'Annul'
                     ORDER BY StartDate ASC
                 )
             FROM HOT_Request__c
