@@ -218,4 +218,17 @@ public class HOT_TestDataFactory {
 
         return event;
     }
+
+    public static HOT_Resource__c createResource(ServiceResource serviceResource) {
+        HOT_Resource__c resource = new HOT_Resource__c();
+        resource.Service_Resource__c = serviceResource.Id;
+        resource.Name = serviceResource.Name;
+        return resource;
+    }
+    public static HOT_ResourceMember__c createResourceMember(ServiceResource serviceResource, HOT_Resource__c resource) {
+        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
+        resourceMember.Service_Resource__c = serviceResource.Id;
+        resourceMember.Resource__c = resource.Id;
+        return resourceMember;
+    }
 }
