@@ -2,7 +2,6 @@ import { LightningElement, wire, track } from 'lwc';
 import getServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.getServiceResourceSkill';
 import createServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.createServiceResourceSkill';
 import myServiceResource from '@salesforce/apex/HOT_FreelanceQualificationsController.myServiceResource';
-
 import getAllSkillsList from '@salesforce/apex/HOT_SkillController.getAllSkillsList';
 
 export default class Hot_frilanstolkQualifications extends LightningElement {
@@ -26,16 +25,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         }
     ];
 
-    //tracking for serviceresourceskill
-    @track serviceResourceSkill;
-
-    @track serviceResourceSkillList;
-    //Tracking for Skills
-    @track Id;
-    @track skill;
-    //correct skillslist
-    @track showSkillList;
-
     //henter ut serviceresource
     @track serviceResource;
     @wire(myServiceResource)
@@ -44,15 +33,18 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             this.serviceResource = result.data;
         }
     }
-
     // henter ut informasjon om serviceresourceSkills som bruker har
+    @track serviceResourceSkill;
     @wire(getServiceResourceSkill)
     wiredGetServiceResourceSkill(result) {
         if (result.data) {
             this.serviceResourceSkill = result.data;
         }
     }
+
     //Denne henter ut alle skills
+    @track Id;
+    @track skill;
     @wire(getAllSkillsList)
     wiredgetAllSkillsList(resultList) {
         if (resultList.data) {
@@ -61,32 +53,38 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             this.serviceResourceSkillListFunction();
         }
     }
-
-    //Denne henter ut skillsene serviceresource har.
+    //Denne henter ut skillene serviceresource har.
+    @track serviceResourceSkillList;
+    @track showSkillList;
     serviceResourceSkillListFunction() {
         let tempSRSkillList = [];
         let showSkillList = [];
-        for (var i = 0; i < this.serviceResourceSkill.length; i++) {
-            tempSRSkillList.push(this.serviceResourceSkill[i]);
-        }
-        this.serviceResourceSkillList = tempSRSkillList;
+        if (typeof this.serviceResourceSkill !== 'undefined') {
+            // for (let s of this.serviceResourceSkill) {
+            //     tempSRSkillList.push(this.s);
+            // }
+            for (var i = 0; i < this.serviceResourceSkill.length; i++) {
+                tempSRSkillList.push(this.serviceResourceSkill[i]);
+            }
+            this.serviceResourceSkillList = tempSRSkillList;
 
-        for (let j = 0; j < this.skill.length; j++) {
-            this.serviceResourceSkillList.forEach((element) => {
-                if (element.SkillId == this.skill[j].Id) {
-                    showSkillList.push(this.skill[j]);
-                    this.serviceResourceSkillList = [];
-                    this.serviceResourceSkillList = showSkillList;
-                }
-            });
+            for (let j = 0; j < this.skill.length; j++) {
+                this.serviceResourceSkillList.forEach((element) => {
+                    if (element.SkillId == this.skill[j].Id) {
+                        showSkillList.push(this.skill[j]);
+                        this.serviceResourceSkillList = [];
+                        this.serviceResourceSkillList = showSkillList;
+                    }
+                });
+            }
         }
     }
     //TODO Denne skal til edit-siden
 
+    //funksjon som henter inn alle serviceResourceSkill-idene og sjekker de når man trykker på edit-knappen
     @track userSelectedRows = [];
     @track selectedRows = [];
     editSkills() {
-        //funksjon som henter inn alle serviceResourceSkill-idene og sjekker de når man trykker på edit-knappen
         let initialSelectedRows = [];
         this.serviceResourceSkillList.forEach((element) => {
             initialSelectedRows.push(element.Id);
@@ -108,7 +106,7 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
                 rowsForDeactivationsList.push(init);
             }
         }
-        //}
+
         // updateServiceResourceSkill({ serviceResource: this.serviceResource, skill: this.rowsForDeactivations });
         createServiceResourceSkill({ serviceResource: this.serviceResource, skill: this.userSelectedRows });
         // this.connectedCallback();
