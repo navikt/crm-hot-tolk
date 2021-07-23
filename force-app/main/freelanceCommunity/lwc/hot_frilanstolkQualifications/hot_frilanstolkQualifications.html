@@ -18,7 +18,7 @@
                     hide-checkbox-column="true"
                 >
                 </lightning-datatable>
-
+                <lightning-button label="Edit" onclick={editSkills}>Edit</lightning-button>
                 <lightning-datatable
                     key-field="Id"
                     data={skill}
@@ -30,6 +30,7 @@
                 <lightning-button label="Lagre" onclick={handleSelect}></lightning-button>
 
                 <!-- Denne må være med for å gi beskjed når en ny boks er klikket. så denne må lagres 
+                    selected-rows={selectedRows} denne er fjernet nå heheh
                  onrowaction={handleRowAction}-->
             </section>
         </div>
