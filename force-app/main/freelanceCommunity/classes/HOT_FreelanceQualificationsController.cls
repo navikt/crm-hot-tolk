@@ -19,17 +19,30 @@ public without sharing class HOT_FreelanceQualificationsController {
         return freelanceServiceResourceSkill;
     }
     @AuraEnabled
-    public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> skill) {
+    public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
         List<ServiceResourceSkill> newServiceResourceSkills = new List<ServiceResourceSkill>();
+        List<ServiceResourceSkill> currentSkillList = getServiceResourceSkill();
 
-        for (Skill sa : skill) {
+        for (Skill selectedSkill : selectedSkills) {
             ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
             serviceResourceSkill.ServiceResourceId = serviceResource.Id;
-            serviceResourceSkill.SkillId = sa.Id;
+            serviceResourceSkill.SkillId = selectedSkill.Id;
             serviceResourceSkill.EffectiveStartDate = Date.today();
+            // if (
+            //     serviceResourceSkill.EffectiveStartDate == null ||
+            //     serviceResourceSkill.EffectiveStartDate == undefined
+            // ) {
+            // }
+            for (serviceResourceSkill currentSkill : currentSkillList) {
+                if (currentSkill.SkillId == selectedSkill.Id) {
+                    serviceResourceSkill.EffectiveEndDate = Date.today();
+                }
+            }
+
             newServiceResourceSkills.add(serviceResourceSkill);
         }
-        insert newServiceResourceSkills;
+
+        upsert newServiceResourceSkills;
         //upsert , sjekker at du har id, og oppdatere og inserter samtidig.  sjekk det opp.
         // refreshapex
     }

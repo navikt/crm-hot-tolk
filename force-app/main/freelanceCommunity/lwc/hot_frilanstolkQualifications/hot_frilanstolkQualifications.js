@@ -99,16 +99,26 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     handleSelect() {
         //denne håndterer updating, men tror koden er feil nå, for den vil legge alle skills inn i rowsfordeactivation-listen
         let rowsForDeactivationsList = [];
-        //  for (let user of this.userSelectedRows) {
-        for (let init of initialSelectedRows) {
-            //bruke .contains?? her
-            if (user.Id != init.Id) {
-                rowsForDeactivationsList.push(init);
+
+        this.userSelectedRows.forEach((userSelectedRow) => {
+            for (let i = 0; i < this.selectedRows.length; i++) {
+                if (this.selectedRows[i].Id == userSelectedRow.Id) {
+                    this.userSelectedRows.splice(userSelectedRow);
+                }
             }
-        }
+        });
+        console.log(this.userSelectedRows.length);
+        //  for (let user of this.userSelectedRows) {
+        // for (let init of initialSelectedRows) {
+        //     //bruke .contains?? her
+        //     if (user.Id != init.Id) {
+        //         rowsForDeactivationsList.push(init);
+        //     }
+        // }
 
         // updateServiceResourceSkill({ serviceResource: this.serviceResource, skill: this.rowsForDeactivations });
         createServiceResourceSkill({ serviceResource: this.serviceResource, skill: this.userSelectedRows });
+        console.log('hvaskjer1');
         // this.connectedCallback();
     }
 
