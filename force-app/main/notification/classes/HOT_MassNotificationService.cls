@@ -17,7 +17,7 @@ public without sharing class HOT_MassNotificationService {
     }
     //------ Example -------//
     /*
-    Set<String> recipients = getUsersWithProfiles(new List<String>{'NAV Samhandler', 'HOT Tolk Ansatt'});
+    Set<String> recipients = HOT_MassNotificationService.getUsersWithProfiles(new List<String>{'NAV Samhandler', 'HOT Tolk Ansatt'});
     Messaging.CustomNotification notification = HOT_MassNotificationService.prepNotification();
     notification.setTitle('Fjern Buffrede metadata');
     notification.setBody('Det har nå kommet oppdateringer, og vi ber deg derfor gå inn på innstillinger og trykke "Fjern Buffrede Metadata"');
