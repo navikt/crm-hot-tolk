@@ -238,6 +238,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 EndTime__c,
                 SeriesStartDate__c,
                 SeriesEndDate__c,
+                Status__c,
                 (
                     SELECT Id, StartDate, EndDate, Status
                     FROM HOT_Request__c.Work_Orders__r
@@ -251,19 +252,34 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             if (request.NumberOfWorkOrders__c != request.Work_Orders__r.size()) {
                 request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
             }
+
+            if (request.Status__c != 'Avlyst') {
+                request.StartTime__c = null;
+                request.EndTime__c = null;
+                request.SeriesStartDate__c = null;
+                request.SeriesEndDate__c = null;
+            }
             for (WorkOrder workOrder : request.Work_Orders__r) {
                 if (workOrder.Status != 'Canceled') {
-                    request.StartTime__c = workOrder.StartDate;
-                    request.EndTime__c = workOrder.EndDate;
                     if (
-                        workOrder.StartDate.date() != null && workOrder.StartDate.date() < request.SeriesStartDate__c ||
-                        request.SeriesStartDate__c == null
+                        workOrder.StartDate != null &&
+                        (workOrder.StartDate < request.StartTime__c ||
+                        request.StartTime__c == null)
+                    ) {
+                        request.StartTime__c = workOrder.StartDate;
+                        request.EndTime__c = workOrder.EndDate;
+                    }
+                    if (
+                        workOrder.StartDate.date() != null &&
+                        (workOrder.StartDate.date() < request.SeriesStartDate__c ||
+                        request.SeriesStartDate__c == null)
                     ) {
                         request.SeriesStartDate__c = workOrder.StartDate.date();
                     }
                     if (
-                        workOrder.EndDate.date() != null && workOrder.EndDate.date() > request.SeriesEndDate__c ||
-                        request.SeriesEndDate__c == null
+                        workOrder.EndDate.date() != null &&
+                        (workOrder.EndDate.date() > request.SeriesEndDate__c ||
+                        request.SeriesEndDate__c == null)
                     ) {
                         request.SeriesEndDate__c = workOrder.EndDate.date();
                     }
