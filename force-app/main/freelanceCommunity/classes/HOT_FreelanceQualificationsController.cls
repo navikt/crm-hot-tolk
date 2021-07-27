@@ -30,8 +30,11 @@ public without sharing class HOT_FreelanceQualificationsController {
 
             newServiceResourceSkills.add(serviceResourceSkill);
         }
-
-        upsert newServiceResourceSkills;
+        try {
+            upsert newServiceResourceSkills;
+        } catch (DmlException e) {
+            throw e;
+        }
 
         // refreshapex
     }

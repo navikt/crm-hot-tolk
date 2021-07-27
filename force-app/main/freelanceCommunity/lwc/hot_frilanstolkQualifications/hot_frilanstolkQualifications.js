@@ -69,11 +69,11 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
                 this.serviceResourceSkillList.forEach((element) => {
                     if (element.SkillId == this.skill[j].Id) {
                         showSkillList.push(this.skill[j]);
-                        this.serviceResourceSkillList = [];
-                        this.serviceResourceSkillList = showSkillList;
                     }
                 });
             }
+            this.serviceResourceSkillList = [];
+            this.serviceResourceSkillList = showSkillList;
         }
     }
     //TODO Denne skal til edit-siden
@@ -114,8 +114,15 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         });
 
         // updateServiceResourceSkill({ serviceResource: this.serviceResource, skill: this.rowsForDeactivations });
-        createServiceResourceSkill({ serviceResource: this.serviceResource, skill: this.userSelectedRows });
 
+        try {
+            createServiceResourceSkill({
+                serviceResource: this.serviceResource,
+                selectedSkills: this.userSelectedRows
+            });
+        } catch (error) {
+            console.log(JSON.stringify(error));
+        }
         // this.connectedCallback();
     }
 
