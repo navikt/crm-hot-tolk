@@ -21,38 +21,18 @@ public without sharing class HOT_FreelanceQualificationsController {
     @AuraEnabled
     public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
         List<ServiceResourceSkill> newServiceResourceSkills = new List<ServiceResourceSkill>();
-        List<ServiceResourceSkill> currentSkillList = getServiceResourceSkill();
 
         for (Skill selectedSkill : selectedSkills) {
             ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
             serviceResourceSkill.ServiceResourceId = serviceResource.Id;
             serviceResourceSkill.SkillId = selectedSkill.Id;
             serviceResourceSkill.EffectiveStartDate = Date.today();
-            // if (
-            //     serviceResourceSkill.EffectiveStartDate == null ||
-            //     serviceResourceSkill.EffectiveStartDate == undefined
-            // ) {
-            // }
-            for (serviceResourceSkill currentSkill : currentSkillList) {
-                if (currentSkill.SkillId == selectedSkill.Id) {
-                    serviceResourceSkill.EffectiveEndDate = Date.today();
-                }
-            }
 
             newServiceResourceSkills.add(serviceResourceSkill);
         }
 
         upsert newServiceResourceSkills;
-        //upsert , sjekker at du har id, og oppdatere og inserter samtidig.  sjekk det opp.
+
         // refreshapex
     }
-    //     @AuraEnabled
-    //     public static void updateServiceResourceSkill(ServiceResource serviceResource, List<Skill> skill) {
-    //         serviceResourceSkill.EffectiveEndDate = Date.today();
-    //         //Ikke i en for-loop. insert listen samtidig.
-    //         insert serviceResourceSkill;
-    //         // insert new List<serviceResourceSkill>{ formidler1, formidler2 };
-    // }
-
-    // refreshapex
 }

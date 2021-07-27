@@ -60,9 +60,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         let tempSRSkillList = [];
         let showSkillList = [];
         if (typeof this.serviceResourceSkill !== 'undefined') {
-            // for (let s of this.serviceResourceSkill) {
-            //     tempSRSkillList.push(this.s);
-            // }
             for (var i = 0; i < this.serviceResourceSkill.length; i++) {
                 tempSRSkillList.push(this.serviceResourceSkill[i]);
             }
@@ -84,6 +81,7 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     //funksjon som henter inn alle serviceResourceSkill-idene og sjekker de når man trykker på edit-knappen
     @track userSelectedRows = [];
     @track selectedRows = [];
+    // @track initialSelectedRows = [];
     editSkills() {
         let initialSelectedRows = [];
         this.serviceResourceSkillList.forEach((element) => {
@@ -99,26 +97,25 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     handleSelect() {
         //denne håndterer updating, men tror koden er feil nå, for den vil legge alle skills inn i rowsfordeactivation-listen
         let rowsForDeactivationsList = [];
-
         this.userSelectedRows.forEach((userSelectedRow) => {
+            console.log(userSelectedRow.MasterLabel);
             for (let i = 0; i < this.selectedRows.length; i++) {
-                if (this.selectedRows[i].Id == userSelectedRow.Id) {
-                    this.userSelectedRows.splice(userSelectedRow);
+                if (this.selectedRows[i] == userSelectedRow.Id) {
+                    rowsForDeactivationsList.push(userSelectedRow.Id);
                 }
             }
         });
-        console.log(this.userSelectedRows.length);
-        //  for (let user of this.userSelectedRows) {
-        // for (let init of initialSelectedRows) {
-        //     //bruke .contains?? her
-        //     if (user.Id != init.Id) {
-        //         rowsForDeactivationsList.push(init);
-        //     }
-        // }
+        for (let ii = 0; ii < rowsForDeactivationsList.length; ii++) {
+            const removeIndex = this.userSelectedRows.findIndex((item) => item.Id === rowsForDeactivationsList[ii]);
+            this.userSelectedRows.splice(removeIndex, 1);
+        }
+        this.userSelectedRows.forEach((element) => {
+            console.log(element.MasterLabel + element.Id);
+        });
 
         // updateServiceResourceSkill({ serviceResource: this.serviceResource, skill: this.rowsForDeactivations });
         createServiceResourceSkill({ serviceResource: this.serviceResource, skill: this.userSelectedRows });
-        console.log('hvaskjer1');
+
         // this.connectedCallback();
     }
 
