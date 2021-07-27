@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsImageInterpreter__c</fullName>
+    <description>Used as filters in list views and in code.</description>
     <externalId>false</externalId>
     <formula>ISPICKVAL( Type__c, &apos;ImageInterpreter&apos;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>

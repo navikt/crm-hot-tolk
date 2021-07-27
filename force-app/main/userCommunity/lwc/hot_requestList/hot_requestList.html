@@ -1,0 +1,109 @@
+<template>
+    <div class="brodsmulesti">
+        <lightning-breadcrumbs class="liste-max-width">
+            <lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}> </lightning-breadcrumb>
+            <lightning-breadcrumb label="Mine bestillinger" href="/s/mine-bestillinger" onclick={goToMyRequests}>
+            </lightning-breadcrumb>
+        </lightning-breadcrumbs>
+    </div>
+
+    <div class="liste liste-max-width">
+        <div class="action-container">
+            <div class="left-content">
+                <lightning-radio-group
+                    label="Type bestilling"
+                    class="horizontal"
+                    name="radioGroup"
+                    options={requestTypes}
+                    value="my"
+                    type="radio"
+                    onchange={handleRequestType}
+                ></lightning-radio-group>
+
+                <br />
+                <c-picklist
+                    master-label="Filtrer på status"
+                    choices={choices}
+                    onpicklistvaluechange={handlePicklist}
+                    disabled={selectDisable}
+                    multiple={selectMultiple}
+                    required={selectRequired}
+                    size={selectSize}
+                ></c-picklist>
+            </div>
+            <div class="right-content">
+                <lightning-button title="Ny bestilling" variant="brand" label="Ny bestilling" onclick={goToNewRequest}>
+                </lightning-button>
+            </div>
+        </div>
+        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
+            <c-picklist
+                master-label="Sorter etter"
+                choices={sortingOptions}
+                onpicklistvaluechange={handleMobileSorting}
+                disabled={selectDisable}
+                multiple={selectMultiple}
+                required={selectRequired}
+                size={selectSize}
+            ></c-picklist>
+        </div>
+        <p style="align-self: flex-start" class="typo-normal">
+            Merk: For serieoppdrag vises start- og sluttid for den første forekomsten. For å se alle tidene under en
+            bestilling, inkludert status og tildelt tolk, kan du velge Se tidsplan i menyen til høyre på raden.
+        </p>
+
+        <br />
+        <lightning-datatable
+            key-field="Id"
+            data={requests}
+            columns={columns}
+            hide-checkbox-column="true"
+            default-sort-direction={defaultSortDirection}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={onHandleSort}
+            onrowaction={handleRowAction}
+        >
+        </lightning-datatable>
+    </div>
+
+    <div
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+        tabindex="-1"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            role="dialog"
+            aria-labelledby="details-header-id"
+        >
+            <div class="skjema skjema-max-width">
+                <h2 id="details-header-id" class="typo-undertittel">Detaljer</h2>
+                <section if:true={userForm} class="bruker-info-skjema sub-form">
+                    <h2 style="font-size: 1.25rem">Informasjon om bruker</h2>
+                    <c-hot_record-details record={userFields}></c-hot_record-details>
+                </section>
+
+                <section class="bestiller-info-skjema sub-form">
+                    <h2 style="font-size: 1.25rem">Informasjon om bestiller</h2>
+                    <c-hot_record-details record={ordererFields}></c-hot_record-details>
+                </section>
+
+                <section if:true={companyForm} class="virksomhet-info-skjema sub-form">
+                    <h2 style="font-size: 1.25rem">Informasjon om virksomhet</h2>
+                    <c-hot_record-details record={companyFields}></c-hot_record-details>
+                </section>
+
+                <section class="bestilling-info-skjema sub-form">
+                    <h2 style="font-size: 1.25rem">Informasjon om tolkebehov</h2>
+
+                    <c-hot_record-details record={requestFields}></c-hot_record-details>
+                </section>
+            </div>
+
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
+                <span class="text-hide">Lukk</span>
+            </button>
+        </div>
+    </div>
+</template>
