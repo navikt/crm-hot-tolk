@@ -21,18 +21,34 @@ public without sharing class HOT_FreelanceQualificationsController {
     @AuraEnabled
     public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
         List<ServiceResourceSkill> newServiceResourceSkills = new List<ServiceResourceSkill>();
+        List<serviceResourceSkill> serviceResourceSkillList = getServiceResourceSkill();
 
-        for (Skill selectedSkill : selectedSkills) {
-            ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
-            serviceResourceSkill.ServiceResourceId = serviceResource.Id;
-            serviceResourceSkill.SkillId = selectedSkill.Id;
-            serviceResourceSkill.EffectiveStartDate = Date.today();
+        for (serviceResourceSkill x : serviceResourceSkillList) {
+            for (Skill selectedSkill : selectedSkills) {
+                // if (x.Id == selectedSkill.Id) {
+                //const removeIndex = serviceResourceSkillList.indexOf(item.Id == selectedSkill.Id);
 
-            newServiceResourceSkills.add(serviceResourceSkill);
+                //     serviceResourceSkillList.remove(x);
+                // }
+                System.debug('inside 2 for loops');
+                // if (
+                //     x.Id == null //&& //selectedSkill.Id != null
+                // ) {
+                System.debug('make new skills');
+                ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
+                serviceResourceSkill.ServiceResourceId = serviceResource.Id;
+                serviceResourceSkill.SkillId = selectedSkill.Id;
+                serviceResourceSkill.EffectiveStartDate = Date.today();
+
+                newServiceResourceSkills.add(serviceResourceSkill);
+                //}
+                System.debug(newServiceResourceSkills + ' lengde: ' + newServiceResourceSkills.size());
+            }
         }
         try {
             upsert newServiceResourceSkills;
-        } catch (DmlException e) {
+            System.debug('upsert completed');
+        } catch (Exception e) {
             throw e;
         }
 

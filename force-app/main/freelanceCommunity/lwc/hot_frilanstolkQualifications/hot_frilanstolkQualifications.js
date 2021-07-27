@@ -96,22 +96,22 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
 
     handleSelect() {
         //denne håndterer updating, men tror koden er feil nå, for den vil legge alle skills inn i rowsfordeactivation-listen
-        let rowsForDeactivationsList = [];
-        this.userSelectedRows.forEach((userSelectedRow) => {
-            console.log(userSelectedRow.MasterLabel);
-            for (let i = 0; i < this.selectedRows.length; i++) {
-                if (this.selectedRows[i] == userSelectedRow.Id) {
-                    rowsForDeactivationsList.push(userSelectedRow.Id);
-                }
-            }
-        });
-        for (let ii = 0; ii < rowsForDeactivationsList.length; ii++) {
-            const removeIndex = this.userSelectedRows.findIndex((item) => item.Id === rowsForDeactivationsList[ii]);
-            this.userSelectedRows.splice(removeIndex, 1);
-        }
-        this.userSelectedRows.forEach((element) => {
-            console.log(element.MasterLabel + element.Id);
-        });
+        // let rowsForDeactivationsList = [];
+        // this.userSelectedRows.forEach((userSelectedRow) => {
+        //     console.log(userSelectedRow.MasterLabel);
+        //     for (let i = 0; i < this.selectedRows.length; i++) {
+        //         if (this.selectedRows[i] == userSelectedRow.Id) {
+        //             rowsForDeactivationsList.push(userSelectedRow.Id);
+        //         }
+        //     }
+        // });
+        // for (let ii = 0; ii < rowsForDeactivationsList.length; ii++) {
+        //     const removeIndex = this.userSelectedRows.findIndex((item) => item.Id === rowsForDeactivationsList[ii]);
+        //     this.userSelectedRows.splice(removeIndex, 1);
+        // }
+        // this.userSelectedRows.forEach((element) => {
+        //     console.log(element.MasterLabel + element.Id);
+        // });
 
         // updateServiceResourceSkill({ serviceResource: this.serviceResource, skill: this.rowsForDeactivations });
 
