@@ -18,6 +18,15 @@ public without sharing class HOT_FreelanceQualificationsController {
         ];
         return freelanceServiceResourceSkill;
     }
+
+    public static ServiceResourceSkill setresourceSkill(ServiceResource serviceResource, Skill selectedSkill) {
+        ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
+        serviceResourceSkill.ServiceResourceId = serviceResource.Id;
+        serviceResourceSkill.SkillId = selectedSkill.Id;
+        serviceResourceSkill.EffectiveStartDate = Date.today();
+        return serviceResourceSkill;
+    }
+
     @AuraEnabled
     public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
         List<ServiceResourceSkill> newServiceResourceSkills = new List<ServiceResourceSkill>();
@@ -29,24 +38,27 @@ public without sharing class HOT_FreelanceQualificationsController {
             Integer j = 0;
             System.debug('selected skill' + i);
             i++;
+            if (serviceResourceSkillList.isEmpty()) {
+                newServiceResourceSkills.add(setresourceSkill(serviceResource, selectedSkill));
+                checkIDs.add(selectedSkill.Id);
+                System.debug(serviceResourceSkillList);
+            }
+
             for (serviceResourceSkill x : serviceResourceSkillList) {
                 System.debug('serviceResourceskill' + j);
                 j++;
                 if (!checkIDs.contains(x.SkillId)) {
                     checkIDs.add(x.SkillId);
                 }
+
                 //finnes ikke fra før - Opprett nytt serviceReSkill og add til tempSkillList
                 if (
                     x.SkillId != selectedSkill.Id &&
                     (!checkIDs.contains(x.SkillId) || !checkIDs.contains(selectedSkill.Id))
                 ) {
-                    System.debug('x: ' + x.SkillId);
-                    System.debug('selected skill: ' + selectedSkill.Id);
-                    ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
-                    serviceResourceSkill.ServiceResourceId = serviceResource.Id;
-                    serviceResourceSkill.SkillId = selectedSkill.Id;
-                    serviceResourceSkill.EffectiveStartDate = Date.today();
-                    System.debug('før add: ' + checkIDs);
+                    // System.debug('x: ' + x.SkillId);
+                    // System.debug('selected skill: ' + selectedSkill.Id);
+                    // System.debug('før add: ' + checkIDs);
                     if (!checkIDs.contains(x.SkillId)) {
                         checkIDs.add(x.SkillId);
                     }
@@ -54,7 +66,8 @@ public without sharing class HOT_FreelanceQualificationsController {
                         checkIDs.add(selectedSkill.Id);
                     }
                     System.debug('etter add: ' + checkIDs);
-                    newServiceResourceSkills.add(serviceResourceSkill);
+                    //newServiceResourceSkills.add(serviceResourceSkill);
+                    newServiceResourceSkills.add(setresourceSkill(serviceResource, selectedSkill));
                 } // if (x.EffectiveEndDate != null) {
                 //   x.EffectiveEndDate =
                 // }
@@ -82,6 +95,6 @@ public without sharing class HOT_FreelanceQualificationsController {
             throw e;
         }
 
-        // refreshapex
+        //refreshApex(this.getServiceResourceSkill());
     }
 }
