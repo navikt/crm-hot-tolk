@@ -24,8 +24,14 @@ public without sharing class HOT_FreelanceQualificationsController {
         List<ServiceResourceSkill> serviceResourceSkillList = getServiceResourceSkill();
 
         List<String> checkIDs = new List<String>();
+        Integer i = 0;
         for (Skill selectedSkill : selectedSkills) {
+            Integer j = 0;
+            System.debug('selected skill' + i);
+            i++;
             for (serviceResourceSkill x : serviceResourceSkillList) {
+                System.debug('serviceResourceskill' + j);
+                j++;
                 if (!checkIDs.contains(x.SkillId)) {
                     checkIDs.add(x.SkillId);
                 }
