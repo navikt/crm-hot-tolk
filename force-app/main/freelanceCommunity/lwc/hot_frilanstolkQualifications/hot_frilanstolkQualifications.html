@@ -2,15 +2,6 @@
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
             <section>
-                <lightning-record-view-form object-api-name="serviceResourceSkillList" record-id={Id} mode="view">
-                    <lightning-card title="Dine Skills">
-                        <ul class="slds-m-around_medium">
-                            <template for:each={serviceResourceSkillList} for:item="sr" for:index="index">
-                                <li key={sr.Id}>{sr.MasterLabel}</li>
-                            </template>
-                        </ul>
-                    </lightning-card>
-                </lightning-record-view-form>
                 <lightning-datatable
                     key-field="Id"
                     data={serviceResourceSkillList}
@@ -28,10 +19,6 @@
                 >
                 </lightning-datatable>
                 <lightning-button label="Lagre" onclick={handleSelect}></lightning-button>
-
-                <!-- Denne må være med for å gi beskjed når en ny boks er klikket. så denne må lagres 
-                    selected-rows={selectedRows} denne er fjernet nå heheh
-                 onrowaction={handleRowAction}-->
             </section>
         </div>
     </div>

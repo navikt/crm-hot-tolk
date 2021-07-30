@@ -69,6 +69,7 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
                 this.serviceResourceSkillList.forEach((element) => {
                     if (element.SkillId == this.skill[j].Id && element.EffectiveEndDate == null) {
                         showSkillList.push(this.skill[j]);
+                        console.log(this.skill[j].MasterLabel);
                     }
                 });
             }
@@ -123,11 +124,5 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         } catch (error) {
             console.log(JSON.stringify(error));
         }
-        // this.connectedCallback();
     }
-
-    // connectedCallback() {
-    //     refreshApex(this.wiredGetServiceResourceSkill);
-    // }
-    //TODO sjekk ut denne force-app/main/freelanceCommunity/classes/HOT_MyServiceAppointmentListController.cls, og se hvordan de creater new.
 }

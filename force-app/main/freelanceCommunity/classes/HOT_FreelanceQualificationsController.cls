@@ -27,8 +27,8 @@ public without sharing class HOT_FreelanceQualificationsController {
         serviceResourceSkill.EffectiveStartDate = Date.today();
         return serviceResourceSkill;
     }
-    //public static ServiceResourceSkill checkSkillEndDate(ServiceResource serviceResource, Skill selectedSkill) {
-    //}
+
+    //TODO bytt ut checkIDs med serviceresourceskilllist, vi tror det er det som gir oss en bug.
 
     @AuraEnabled
     public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
@@ -36,11 +36,8 @@ public without sharing class HOT_FreelanceQualificationsController {
         List<ServiceResourceSkill> serviceResourceSkillList = getServiceResourceSkill();
 
         List<String> checkIDs = new List<String>();
-        Integer i = 0;
+
         for (Skill selectedSkill : selectedSkills) {
-            Integer j = 0;
-            // System.debug('selected skill' + i);
-            // i++;
             if (serviceResourceSkillList.isEmpty()) {
                 newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
                 serviceResourceSkillList.add(setResourceSkill(serviceResource, selectedSkill));
@@ -49,29 +46,22 @@ public without sharing class HOT_FreelanceQualificationsController {
             }
 
             for (serviceResourceSkill x : serviceResourceSkillList) {
-                System.debug('serviceResourceskill' + j);
-                j++;
                 if (!checkIDs.contains(x.SkillId)) {
                     checkIDs.add(x.SkillId);
                 }
 
                 if (x.SkillId != selectedSkill.Id && !checkIDs.contains(selectedSkill.Id)) {
-                    if (!checkIDs.contains(selectedSkill.Id)) {
-                        checkIDs.add(selectedSkill.Id);
-                    }
+                    checkIDs.add(selectedSkill.Id);
                     System.debug('etter add: ' + checkIDs);
                     newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
-                } //  if (x.SkillId == selectedSkill.Id && x.EffectiveEndDate != null) {
-                //    x.EffectiveEndDate = Date.today();
-                //  }
-
-                //newServiceResourceSkills.add(serviceResourceSkill);
-                if (
-                    x.SkillId == selectedSkill.Id && (x.EffectiveEndDate > Date.today() && x.EffectiveEndDate != null)
-                ) {
-                    System.debug(x.EffectiveEndDate + 'effektiv end1');
-                    x.EffectiveEndDate = null;
-                    System.debug(x.EffectiveEndDate + 'effektiv end2');
+                }
+                if (x.SkillId == selectedSkill.Id) {
+                    if (x.EffectiveEndDate <= Date.today() && x.EffectiveEndDate != null) {
+                        x.EffectiveEnddate = null;
+                        newServiceResourceSkills.add(x);
+                    }
+                } else {
+                    x.EffectiveEndDate = Date.today();
                 }
             }
         }
@@ -83,23 +73,6 @@ public without sharing class HOT_FreelanceQualificationsController {
             throw e;
         }
 
-        //refreshApex(this.getServiceResourceSkill());
+        //TODO  vi må refreshe apex. refreshApex(this.getServiceResourceSkill());
     }
 }
-
-// System.debug('x: ' + x.SkillId);
-// System.debug('selected skill: ' + selectedSkill.Id);
-// System.debug('før add: ' + checkIDs);
-
-// for (Skill selectedSkill : selectedSkills) {
-//     System.debug(x + 'x');
-//     System.debug(selectedSkill);
-//     if (x.SkillId == selectedSkill.Id) {
-//         System.debug(x + 'removed');
-//         selectedSkills.remove(x);
-
-//         System.debug(selectedSkills);
-//     }
-
-//System.debug(newServiceResourceSkills + ' lengde: ' + newServiceResourceSkills.size());
-
