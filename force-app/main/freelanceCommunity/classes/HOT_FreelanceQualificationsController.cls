@@ -19,7 +19,7 @@ public without sharing class HOT_FreelanceQualificationsController {
         return freelanceServiceResourceSkill;
     }
 
-    public static ServiceResourceSkill setresourceSkill(ServiceResource serviceResource, Skill selectedSkill) {
+    public static ServiceResourceSkill setResourceSkill(ServiceResource serviceResource, Skill selectedSkill) {
         ServiceResourceSkill serviceResourceSkill = new ServiceResourceSkill();
         serviceResourceSkill.ServiceResourceId = serviceResource.Id;
         serviceResourceSkill.SkillId = selectedSkill.Id;
@@ -39,7 +39,8 @@ public without sharing class HOT_FreelanceQualificationsController {
             System.debug('selected skill' + i);
             i++;
             if (serviceResourceSkillList.isEmpty()) {
-                newServiceResourceSkills.add(setresourceSkill(serviceResource, selectedSkill));
+                newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
+                serviceResourceSkillList.add(setResourceSkill(serviceResource, selectedSkill));
                 checkIDs.add(selectedSkill.Id);
                 System.debug(serviceResourceSkillList);
             }
@@ -51,50 +52,45 @@ public without sharing class HOT_FreelanceQualificationsController {
                     checkIDs.add(x.SkillId);
                 }
 
-                //finnes ikke fra før - Opprett nytt serviceReSkill og add til tempSkillList
-                if (
-                    x.SkillId != selectedSkill.Id &&
-                    (!checkIDs.contains(x.SkillId) || !checkIDs.contains(selectedSkill.Id))
-                ) {
-                    // System.debug('x: ' + x.SkillId);
-                    // System.debug('selected skill: ' + selectedSkill.Id);
-                    // System.debug('før add: ' + checkIDs);
-                    if (!checkIDs.contains(x.SkillId)) {
-                        checkIDs.add(x.SkillId);
-                    }
+                if (x.SkillId != selectedSkill.Id && !checkIDs.contains(selectedSkill.Id)) {
                     if (!checkIDs.contains(selectedSkill.Id)) {
                         checkIDs.add(selectedSkill.Id);
                     }
                     System.debug('etter add: ' + checkIDs);
-                    //newServiceResourceSkills.add(serviceResourceSkill);
-                    newServiceResourceSkills.add(setresourceSkill(serviceResource, selectedSkill));
-                } // if (x.EffectiveEndDate != null) {
-                //   x.EffectiveEndDate =
-                // }
+                    newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
+                    // }  if (x.SkillId == selectedSkill.Id && x.EffectiveEndDate != null) {
+                    //    x.EffectiveEndDate = Date.today();
+                    //  }
 
-                //newServiceResourceSkills.add(serviceResourceSkill);
+                    //newServiceResourceSkills.add(serviceResourceSkill);
+                }
+
+                // for (Skill selectedSkill : selectedSkills) {
+                //     System.debug(x + 'x');
+                //     System.debug(selectedSkill);
+                //     if (x.SkillId == selectedSkill.Id) {
+                //         System.debug(x + 'removed');
+                //         selectedSkills.remove(x);
+
+                //         System.debug(selectedSkills);
+                //     }
+
+                //System.debug(newServiceResourceSkills + ' lengde: ' + newServiceResourceSkills.size());
             }
 
-            // for (Skill selectedSkill : selectedSkills) {
-            //     System.debug(x + 'x');
-            //     System.debug(selectedSkill);
-            //     if (x.SkillId == selectedSkill.Id) {
-            //         System.debug(x + 'removed');
-            //         selectedSkills.remove(x);
+            try {
+                upsert newServiceResourceSkills;
+                System.debug('upsert completed');
+            } catch (Exception e) {
+                throw e;
+            }
 
-            //         System.debug(selectedSkills);
-            //     }
-
-            //System.debug(newServiceResourceSkills + ' lengde: ' + newServiceResourceSkills.size());
+            //refreshApex(this.getServiceResourceSkill());
         }
-
-        try {
-            upsert newServiceResourceSkills;
-            System.debug('upsert completed');
-        } catch (Exception e) {
-            throw e;
-        }
-
-        //refreshApex(this.getServiceResourceSkill());
     }
 }
+
+// System.debug('x: ' + x.SkillId);
+// System.debug('selected skill: ' + selectedSkill.Id);
+// System.debug('før add: ' + checkIDs);
+
