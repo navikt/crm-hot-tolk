@@ -51,50 +51,58 @@ public without sharing class HOT_FreelanceQualificationsController {
         if (selectedSkills.isEmpty()) {
             for (serviceResourceSkill x1 : getServiceResourceSkill()) {
                 x1.EffectiveEndDate = Date.today();
+                newServiceResourceSkills.add(x1);
             }
             System.debug('selectedskills should be empty' + selectedSkills);
-        }
+        } else {
+            for (Skill selectedSkill : selectedSkills) {
+                System.debug(checkIDs);
+                if (checkIDs.isEmpty()) {
+                    newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
 
-        for (Skill selectedSkill : selectedSkills) {
-            System.debug(checkIDs);
-            if (checkIDs.isEmpty()) {
-                newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
-                checkIDs.add(selectedSkill.Id);
-
-                System.debug('no previous skills: ' + checkIDs);
-            }
-
-            for (serviceResourceSkill x : getServiceResourceSkill()) {
-                if (!checkIDs.contains(x.SkillId)) {
-                    checkIDs.add(x.SkillId);
-                }
-                System.debug('inside for for...');
-                System.debug('selected skill: ' + selectedSkill);
-                System.debug('x: ' + x);
-                System.debug('checkID:' + checkIDs);
-                if (x.SkillId != selectedSkill.Id && !checkIDs.contains(selectedSkill.Id)) {
                     checkIDs.add(selectedSkill.Id);
 
-                    System.debug('etter add: ' + checkIDs);
-                    newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
+                    System.debug('no previous skills: ' + checkIDs);
                 }
-                if (x.SkillId == selectedSkill.Id && x.EffectiveEndDate <= Date.today() && x.EffectiveEndDate != null) {
-                    System.debug('x = selectedSkill');
-                    //if () {
-                    System.debug('End Date != null');
-                    x.EffectiveEnddate = null;
-                    newServiceResourceSkills.add(x);
-                    //}
-                } else {
-                    System.debug('End Date == null');
-                    System.debug(x.EffectiveEndDate);
-                    x.EffectiveEndDate = Date.today();
-                    System.debug(x.EffectiveEndDate);
-                    newServiceResourceSkills.add(x);
+
+                for (serviceResourceSkill x : getServiceResourceSkill()) {
+                    if (checkIDs.contains(x.SkillId) && x.EffectiveEndDate == null) {
+                        System.debug('End Date == null');
+                        System.debug(x.EffectiveEndDate);
+                        x.EffectiveEndDate = Date.today();
+                        System.debug(x.EffectiveEndDate);
+                        newServiceResourceSkills.add(x);
+                        break;
+                    }
+                    if (x.SkillId != selectedSkill.Id && !checkIDs.contains(selectedSkill.Id)) {
+                        checkIDs.add(selectedSkill.Id);
+
+                        System.debug('etter add: ' + checkIDs);
+                        newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
+                        break;
+                    }
+                    if (
+                        x.SkillId == selectedSkill.Id &&
+                        x.EffectiveEndDate <= Date.today() &&
+                        x.EffectiveEndDate != null
+                    ) {
+                        System.debug('x = selectedSkill');
+                        //if () {
+                        System.debug('End Date != null');
+                        x.EffectiveEnddate = null;
+                        newServiceResourceSkills.add(x);
+                        break; //}
+                    }
+                    if (!checkIDs.contains(x.SkillId)) {
+                        checkIDs.add(x.SkillId);
+                    }
+                    System.debug('inside for for...');
+                    System.debug('selected skill: ' + selectedSkill);
+                    System.debug('x: ' + x);
+                    System.debug('checkID:' + checkIDs);
                 }
             }
         }
-
         try {
             upsert newServiceResourceSkills;
             System.debug('upsert completed');
