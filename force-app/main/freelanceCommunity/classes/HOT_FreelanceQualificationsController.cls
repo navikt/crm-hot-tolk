@@ -29,39 +29,64 @@ public without sharing class HOT_FreelanceQualificationsController {
     }
 
     //TODO bytt ut checkIDs med serviceresourceskilllist, vi tror det er det som gir oss en bug.
+    public static List<String> checkIdList() {
+        List<String> checkIDs = new List<String>();
+        for (ServiceResourceSkill x : getServiceResourceSkill()) {
+            checkIDs.add(x.SkillId);
+        }
+        return checkIDs;
+    }
 
     @AuraEnabled
     public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
         List<ServiceResourceSkill> newServiceResourceSkills = new List<ServiceResourceSkill>();
-        List<ServiceResourceSkill> serviceResourceSkillList = getServiceResourceSkill();
 
-        List<String> checkIDs = new List<String>();
+        List<String> checkIDs = checkIdList();
+        System.debug('checkID: ' + checkIDs);
+        System.debug('selectedSkills: ' + selectedSkills);
+        if (selectedSkills.isEmpty()) {
+            for (serviceResourceSkill x1 : getServiceResourceSkill()) {
+                x1.EffectiveEndDate = Date.today();
+            }
+            System.debug('selectedskills should be empty' + selectedSkills);
+        }
 
         for (Skill selectedSkill : selectedSkills) {
-            if (serviceResourceSkillList.isEmpty()) {
+            System.debug(checkIDs);
+            if (checkIDs.isEmpty()) {
                 newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
-                serviceResourceSkillList.add(setResourceSkill(serviceResource, selectedSkill));
                 checkIDs.add(selectedSkill.Id);
-                System.debug(serviceResourceSkillList);
+
+                System.debug('no previous skills: ' + checkIDs);
             }
 
-            for (serviceResourceSkill x : serviceResourceSkillList) {
+            for (serviceResourceSkill x : getServiceResourceSkill()) {
                 if (!checkIDs.contains(x.SkillId)) {
                     checkIDs.add(x.SkillId);
                 }
-
+                System.debug('inside for for...');
+                System.debug('selected skill: ' + selectedSkill);
+                System.debug('x: ' + x);
+                System.debug('checkID:' + checkIDs);
                 if (x.SkillId != selectedSkill.Id && !checkIDs.contains(selectedSkill.Id)) {
                     checkIDs.add(selectedSkill.Id);
+
                     System.debug('etter add: ' + checkIDs);
                     newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
                 }
-                if (x.SkillId == selectedSkill.Id) {
-                    if (x.EffectiveEndDate <= Date.today() && x.EffectiveEndDate != null) {
-                        x.EffectiveEnddate = null;
-                        newServiceResourceSkills.add(x);
-                    }
+                if (x.SkillId == selectedSkill.Id && x.EffectiveEndDate <= Date.today() && x.EffectiveEndDate != null) {
+                    System.debug('x = selectedSkill');
+                    //if () {
+                    System.debug('End Date != null');
+                    x.EffectiveEnddate = null;
+                    newServiceResourceSkills.add(x);
+                    //}
                 } else {
+                    System.debug('End Date == null');
+                    System.debug(x.EffectiveEndDate);
                     x.EffectiveEndDate = Date.today();
+                    System.debug(x.EffectiveEndDate);
+                    newServiceResourceSkills.add(x);
                 }
             }
         }
