@@ -2,7 +2,11 @@ public without sharing class HOT_FreelanceQualificationsController {
     @AuraEnabled(cacheable=true)
     public static ServiceResource myServiceResource() {
         Id userId = UserInfo.getUserId();
-        ServiceResource myFreelanceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
+        ServiceResource myFreelanceResource = [
+            SELECT Id, RelatedRecordId
+            FROM ServiceResource
+            WHERE RelatedRecordId = :userId
+        ];
         return myFreelanceResource;
     }
 
