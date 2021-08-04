@@ -1,4 +1,4 @@
-public without sharing class HOT_FreelanceUserInformationController {
+public without sharing class HOT_FreelanceContactInfoController {
     @AuraEnabled(cacheable=true)
     public static ServiceResource getServiceResource() {
         Id userId = UserInfo.getUserId();
@@ -6,10 +6,7 @@ public without sharing class HOT_FreelanceUserInformationController {
             SELECT
                 HOT_IsFreelanceInterpreter__c,
                 AccountId,
-                HOT_IsAvailableForAcuteAssignments__c,
                 RelatedRecordId,
-                HOT_Skilled__c,
-                Name,
                 HOT_Email__c,
                 HOT_EmailOverride__c,
                 HOT_MobilePhone__c,

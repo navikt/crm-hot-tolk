@@ -1,8 +1,8 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getServiceResource from '@salesforce/apex/HOT_FreelanceUserInformationController.getServiceResource';
 
-export default class Hot_frilanstolkUserInformation extends LightningElement {
-    @api hot_frilanstolkEditProfile;
+export default class Hot_frilanstolkEditProfile extends LightningElement {
+    @api resultCallback;
     @track serviceResource;
     @track recordId;
     @wire(getServiceResource)
@@ -11,5 +11,8 @@ export default class Hot_frilanstolkUserInformation extends LightningElement {
             this.serviceResource = result.data;
             this.recordId = this.serviceResource.Id;
         }
+    }
+    updateProfileOnClick() {
+        this.resultCallback();
     }
 }
