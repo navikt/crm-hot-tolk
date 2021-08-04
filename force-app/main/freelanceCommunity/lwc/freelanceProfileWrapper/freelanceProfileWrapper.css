@@ -1,0 +1,11 @@
+h1 {
+    font-size: 30px;
+}
+
+.user-info-header {
+    margin-top: 10px;
+}
+
+.editButton {
+    text-align: right;
+}
