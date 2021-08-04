@@ -12,6 +12,10 @@ public without sharing class HOT_FreelanceQualificationsController {
 
     @AuraEnabled(cacheable=true)
     public static List<ServiceResourceSkill> getServiceResourceSkill() {
+        return getServiceResourceSkillMap().values();
+    }
+
+    public static Map<Id, ServiceResourceSkill> getServiceResourceSkillMap() {
         Id userId = UserInfo.getUserId();
         ServiceResource freelanceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
 
@@ -21,7 +25,11 @@ public without sharing class HOT_FreelanceQualificationsController {
             WHERE ServiceResourceId = :freelanceResource.Id
             WITH SECURITY_ENFORCED
         ];
-        return freelanceServiceResourceSkill;
+        Map<Id, ServiceResourceSkill> skillMap = new Map<Id, ServiceResourceSkill>();
+        for (ServiceResourceSkill srs : freelanceServiceResourceSkill) {
+            skillMap.put(srs.SkillId, srs);
+        }
+        return skillMap;
     }
 
     public static ServiceResourceSkill setResourceSkill(ServiceResource serviceResource, Skill selectedSkill) {
@@ -32,79 +40,34 @@ public without sharing class HOT_FreelanceQualificationsController {
         return serviceResourceSkill;
     }
 
-    //TODO bytt ut checkIDs med serviceresourceskilllist, vi tror det er det som gir oss en bug.
-    public static List<String> checkIdList() {
-        List<String> checkIDs = new List<String>();
-        for (ServiceResourceSkill x : getServiceResourceSkill()) {
-            checkIDs.add(x.SkillId);
-        }
-        return checkIDs;
-    }
-
     @AuraEnabled
     public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
-        List<ServiceResourceSkill> newServiceResourceSkills = new List<ServiceResourceSkill>();
+        Map<Id, ServiceResourceSkill> skillMap = getServiceResourceSkillMap();
+        Set<Id> selectedSkillsIds = new Set<Id>();
 
-        List<String> checkIDs = checkIdList();
-        System.debug('checkID: ' + checkIDs);
-        System.debug('selectedSkills: ' + selectedSkills);
+        for (Skill selectedSkill : selectedSkills) {
+            selectedSkillsIds.add(selectedSkill.Id);
+        }
         if (selectedSkills.isEmpty()) {
-            for (serviceResourceSkill x1 : getServiceResourceSkill()) {
+            for (serviceResourceSkill x1 : skillMap.values()) {
                 x1.EffectiveEndDate = Date.today();
-                newServiceResourceSkills.add(x1);
-            }
-            System.debug('selectedskills should be empty' + selectedSkills);
-        } else {
-            for (Skill selectedSkill : selectedSkills) {
-                System.debug(checkIDs);
-                if (checkIDs.isEmpty()) {
-                    newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
-
-                    checkIDs.add(selectedSkill.Id);
-
-                    System.debug('no previous skills: ' + checkIDs);
-                }
-
-                for (serviceResourceSkill x : getServiceResourceSkill()) {
-                    if (checkIDs.contains(x.SkillId) && x.EffectiveEndDate == null) {
-                        System.debug('End Date == null');
-                        System.debug(x.EffectiveEndDate);
-                        x.EffectiveEndDate = Date.today();
-                        System.debug(x.EffectiveEndDate);
-                        newServiceResourceSkills.add(x);
-                        break;
-                    }
-                    if (x.SkillId != selectedSkill.Id && !checkIDs.contains(selectedSkill.Id)) {
-                        checkIDs.add(selectedSkill.Id);
-
-                        System.debug('etter add: ' + checkIDs);
-                        newServiceResourceSkills.add(setResourceSkill(serviceResource, selectedSkill));
-                        break;
-                    }
-                    if (
-                        x.SkillId == selectedSkill.Id &&
-                        x.EffectiveEndDate <= Date.today() &&
-                        x.EffectiveEndDate != null
-                    ) {
-                        System.debug('x = selectedSkill');
-                        //if () {
-                        System.debug('End Date != null');
-                        x.EffectiveEnddate = null;
-                        newServiceResourceSkills.add(x);
-                        break; //}
-                    }
-                    if (!checkIDs.contains(x.SkillId)) {
-                        checkIDs.add(x.SkillId);
-                    }
-                    System.debug('inside for for...');
-                    System.debug('selected skill: ' + selectedSkill);
-                    System.debug('x: ' + x);
-                    System.debug('checkID:' + checkIDs);
-                }
             }
         }
+        for (Skill selectedSkill : selectedSkills) {
+            if (!skillMap.containsKey(selectedSkill.Id)) {
+                skillMap.put(selectedSkill.Id, setResourceSkill(serviceResource, selectedSkill));
+            } else {
+                skillMap.get(selectedSkill.Id).EffectiveEndDate = null;
+            }
+        }
+        for (Id skillId : skillMap.keySet()) {
+            if (!selectedSkillsIds.contains(skillId)) {
+                skillMap.get(skillId).EffectiveEndDate = Date.today();
+            }
+        }
+
         try {
-            upsert newServiceResourceSkills;
+            upsert skillMap.values();
             System.debug('upsert completed');
         } catch (Exception e) {
             throw e;
