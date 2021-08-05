@@ -69,5 +69,16 @@ private class HOT_FreelanceQualificationsCtlTest {
             null,
             'AssertNotEquals -> EffectiveEndDate = null failed'
         );
+        Skill skill1 = [SELECT Id, MasterLabel FROM Skill WHERE MasterLabel = 'Tegnspråktolk' LIMIT 1];
+        List<Skill> selectedSkills1 = new List<Skill>{ skill1 };
+        try {
+            HOT_FreelanceQualificationsController.createServiceResourceSkill(serviceResource, selectedSkills1);
+        } catch (Exception e) {
+            String expectedExceptionThrown = e.getMessage();
+            System.assertEquals(
+                'Upsert failed. First exception on row 1; first error: REQUIRED_FIELD_MISSING, Required fields are missing: [ServiceResourceId]: [ServiceResourceId]',
+                expectedExceptionThrown
+            );
+        }
     }
 }
