@@ -5,8 +5,7 @@ private class HOT_FreelanceQualificationsCtlTest {
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceResource;
         Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
-        // Skill skill = HOT_TestDataFactory.createSkill(getSkill.Id, getSkill.MasterLabel);
-        // insert skill;
+
         ServiceResourceSkill serviceResourceSkill = HOT_TestDataFactory.createServiceResourceSkill(
             serviceResource,
             skill
@@ -50,17 +49,17 @@ private class HOT_FreelanceQualificationsCtlTest {
     @isTest
     static void createServiceResourceSkillTest() {
         Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
-        //mulig denne er feil at jeg må deklarer listen først også legge inn skill.
         List<Skill> selectedSkills = new List<Skill>{ skill };
+
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         HOT_FreelanceQualificationsController.createServiceResourceSkill(serviceResource, selectedSkills);
         List<ServiceResourceSkill> freelanceSkills = HOT_FreelanceQualificationsController.getServiceResourceSkill();
 
         System.assertEquals(freelanceSkills[0].EffectiveStartDate, Date.today());
-
         System.assertEquals(freelanceSkills[0].EffectiveEndDate, null);
 
         selectedSkills.clear();
+
         HOT_FreelanceQualificationsController.createServiceResourceSkill(serviceResource, selectedSkills);
         List<ServiceResourceSkill> freelanceSkills1 = HOT_FreelanceQualificationsController.getServiceResourceSkill();
 
@@ -69,8 +68,10 @@ private class HOT_FreelanceQualificationsCtlTest {
             null,
             'AssertNotEquals -> EffectiveEndDate = null failed'
         );
+
         Skill skill1 = [SELECT Id, MasterLabel FROM Skill WHERE MasterLabel = 'Tegnspråktolk' LIMIT 1];
         List<Skill> selectedSkills1 = new List<Skill>{ skill1 };
+
         try {
             HOT_FreelanceQualificationsController.createServiceResourceSkill(serviceResource, selectedSkills1);
         } catch (Exception e) {
