@@ -2,23 +2,28 @@
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
             <section>
-                <lightning-datatable
-                    key-field="Id"
-                    data={serviceResourceSkillList}
-                    columns={masterLabelColumns}
-                    hide-checkbox-column="true"
-                >
-                </lightning-datatable>
-                <lightning-button label="Edit" onclick={editSkills}>Edit</lightning-button>
-                <lightning-datatable
-                    key-field="Id"
-                    data={skill}
-                    columns={columns}
-                    onrowselection={selectedRowHandler}
-                    selected-rows={selectedRows}
-                >
-                </lightning-datatable>
-                <lightning-button label="Lagre" onclick={handleSelect}></lightning-button>
+                <h1>Kvalifikasjoner</h1>
+                <section class="viewQualifications" if:true={viewQualifications}>
+                    <lightning-datatable
+                        key-field="Id"
+                        data={serviceResourceSkillList}
+                        columns={masterLabelColumns}
+                        hide-checkbox-column="true"
+                    >
+                    </lightning-datatable>
+                    <lightning-button label="Edit" onclick={editSkills}>Edit</lightning-button>
+                </section>
+                <section class="editQualifications" if:true={editQualifications}>
+                    <lightning-datatable
+                        key-field="Id"
+                        data={skill}
+                        columns={columns}
+                        onrowselection={selectedRowHandler}
+                        selected-rows={selectedRows}
+                    >
+                    </lightning-datatable>
+                    <lightning-button label="Lagre" onclick={handleSelect}></lightning-button>
+                </section>
             </section>
         </div>
     </div>

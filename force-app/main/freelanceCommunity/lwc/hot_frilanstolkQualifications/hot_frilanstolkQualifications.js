@@ -77,18 +77,22 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             this.serviceResourceSkillList = showSkillList;
         }
     }
-    //TODO Denne skal til edit-siden
 
     //funksjon som henter inn alle serviceResourceSkill-idene og sjekker de når man trykker på edit-knappen
+    @track viewQualifications = true;
+    @track editQualifications = false;
     @track userSelectedRows = [];
     @track selectedRows = [];
     // @track initialSelectedRows = [];
     editSkills() {
+        this.viewQualifications = false;
+        this.editQualifications = true;
         let initialSelectedRows = [];
         this.serviceResourceSkillList.forEach((element) => {
             initialSelectedRows.push(element.Id);
         });
         this.selectedRows = initialSelectedRows;
+        console.log('test this old');
     }
     //Jeg må sjekke initalselectedrows opp mot userselectedrow, og de som ikke er like, må det settes enddate til date.today();
     selectedRowHandler(event) {
@@ -96,31 +100,13 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     }
 
     handleSelect() {
-        //denne håndterer updating, men tror koden er feil nå, for den vil legge alle skills inn i rowsfordeactivation-listen
-        // let rowsForDeactivationsList = [];
-        // this.userSelectedRows.forEach((userSelectedRow) => {
-        //     console.log(userSelectedRow.MasterLabel);
-        //     for (let i = 0; i < this.selectedRows.length; i++) {
-        //         if (this.selectedRows[i] == userSelectedRow.Id) {
-        //             rowsForDeactivationsList.push(userSelectedRow.Id);
-        //         }
-        //     }
-        // });
-        // for (let ii = 0; ii < rowsForDeactivationsList.length; ii++) {
-        //     const removeIndex = this.userSelectedRows.findIndex((item) => item.Id === rowsForDeactivationsList[ii]);
-        //     this.userSelectedRows.splice(removeIndex, 1);
-        // }
-        // this.userSelectedRows.forEach((element) => {
-        //     console.log(element.MasterLabel + element.Id);
-        // });
-
-        // updateServiceResourceSkill({ serviceResource: this.serviceResource, skill: this.rowsForDeactivations });
-
         try {
             createServiceResourceSkill({
                 serviceResource: this.serviceResource,
                 selectedSkills: this.userSelectedRows
             });
+            this.viewQualifications = true;
+            this.editQualifications = false;
         } catch (error) {
             console.log(JSON.stringify(error));
         }
