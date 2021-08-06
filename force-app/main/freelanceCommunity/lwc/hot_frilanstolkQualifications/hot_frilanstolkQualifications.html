@@ -2,7 +2,6 @@
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
             <section>
-                <h1>Kvalifikasjoner</h1>
                 <section class="viewQualifications" if:true={viewQualifications}>
                     <lightning-datatable
                         key-field="Id"
@@ -11,7 +10,14 @@
                         hide-checkbox-column="true"
                     >
                     </lightning-datatable>
-                    <lightning-button label="Edit" onclick={editSkills}>Edit</lightning-button>
+                    <lightning-button
+                        class="slds-m-top_small"
+                        variant="brand"
+                        type="submit"
+                        name="Endre"
+                        label="Endre"
+                        onclick={editSkills}
+                    ></lightning-button>
                 </section>
                 <section class="editQualifications" if:true={editQualifications}>
                     <lightning-datatable
@@ -22,7 +28,14 @@
                         selected-rows={selectedRows}
                     >
                     </lightning-datatable>
-                    <lightning-button label="Lagre" onclick={handleSelect}></lightning-button>
+                    <lightning-button
+                        class="slds-m-top_small"
+                        variant="brand"
+                        type="submit"
+                        name="Lagre"
+                        label="Lagre"
+                        onclick={handleSelect}
+                    ></lightning-button>
                 </section>
             </section>
         </div>

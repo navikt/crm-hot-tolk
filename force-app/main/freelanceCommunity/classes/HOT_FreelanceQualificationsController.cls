@@ -72,7 +72,5 @@ public without sharing class HOT_FreelanceQualificationsController {
         } catch (Exception e) {
             throw e;
         }
-
-        //TODO  vi må refreshe apex. refreshApex(this.getServiceResourceSkill());
     }
 }
