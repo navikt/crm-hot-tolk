@@ -1,4 +1,10 @@
 <template>
+    <div class="brodsmulesti">
+        <lightning-breadcrumbs class="liste-max-width">
+            <lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}> </lightning-breadcrumb>
+            <lightning-breadcrumb label="Min Side" href="/s/frilanstolk-min-side"> </lightning-breadcrumb>
+        </lightning-breadcrumbs>
+    </div>
     <div class="user-info-header center-content">
         <div class="slds-grid">
             <div class="slds-col">
@@ -19,7 +25,7 @@
     </div>
     <c-hot_frilanstolk-user-information if:true={hot_frilanstolkUserInformation} item-name="frilanstolkUserInformation">
     </c-hot_frilanstolk-user-information>
-  <c-hot_frilanstolk-qualifications item-name="frilanstolkQualifications"></c-hot_frilanstolk-qualifications>
+    <c-hot_frilanstolk-qualifications item-name="frilanstolkQualifications"></c-hot_frilanstolk-qualifications>
     <c-hot_frilanstolk-edit-profile
         result-callback={updateProfile}
         if:true={hot_frilanstolkEditProfile}
