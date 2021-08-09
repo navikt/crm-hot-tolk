@@ -66,7 +66,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
                 this.serviceResourceSkillList.forEach((element) => {
                     if (element.SkillId == this.skill[j].Id && element.EffectiveEndDate == null) {
                         showSkillList.push(this.skill[j]);
-                        console.log(this.skill[j].MasterLabel);
                     }
                 });
             }
@@ -89,7 +88,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             initialSelectedRows.push(element.Id);
         });
         this.selectedRows = initialSelectedRows;
-        console.log('test this old');
     }
     //Jeg må sjekke initalselectedrows opp mot userselectedrow, og de som ikke er like, må det settes enddate til date.today();
     selectedRowHandler(event) {

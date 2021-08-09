@@ -1,6 +1,7 @@
 <template>
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
+            <h1 style="font-size: 20px">Kontaktinformasjon</h1>
             <section class="viewUserInformation" if:true={viewUserInformation}>
                 <lightning-record-view-form object-api-name="ServiceResource" record-id={recordId} mode="view">
                     <div class="slds-grid">
@@ -40,24 +41,37 @@
             </section>
             <section class="editUserInformation" if:true={editUserInformation}>
                 <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
-                    <lightning-input-field field-name="HOT_AddressOverride__c"> </lightning-input-field>
-                    <lightning-input-field field-name="HOT_Skilled__c" label="Utdanning"></lightning-input-field>
-                    <lightning-input-field field-name="HOT_IsAvailableForAcuteAssignments__c"></lightning-input-field>
-                    <lightning-input-field
-                        field-name="HOT_EmailOverride__c"
-                        label="Rediger Epost"
-                    ></lightning-input-field>
-                    <lightning-input-field
-                        field-name="HOT_MobilePhoneOverride__c"
-                        label="Rediger Telefonnummer"
-                    ></lightning-input-field>
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_1-of-2" style="margin: 20px">
+                            <lightning-input-field
+                                field-name="HOT_EmailOverride__c"
+                                label="Rediger Epost"
+                            ></lightning-input-field>
+                            <lightning-input-field field-name="HOT_AddressOverride__c"> </lightning-input-field>
+                            <lightning-input-field
+                                field-name="HOT_MobilePhoneOverride__c"
+                                label="Rediger Telefonnummer"
+                            ></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_2-of-3" style="margin: 20px">
+                            <lightning-input-field
+                                field-name="HOT_IsAvailableForAcuteAssignments__c"
+                                style="margin-bottom: 5px"
+                            ></lightning-input-field>
+
+                            <lightning-input-field
+                                field-name="HOT_Skilled__c"
+                                label="Utdanning"
+                            ></lightning-input-field>
+                        </div>
+                    </div>
                     <lightning-button
                         class="slds-m-top_small"
                         variant="brand"
                         type="submit"
-                        name="update1"
-                        label="Update1"
-                        onclick={updateProfile}
+                        name="update"
+                        label="Update"
+                        onclick={handleSubmit}
                     >
                     </lightning-button>
                 </lightning-record-edit-form>

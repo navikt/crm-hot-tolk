@@ -9,7 +9,6 @@ export default class Hot_frilanstolkUserInformation extends LightningElement {
         if (result.data) {
             this.serviceResource = result.data;
             this.recordId = this.serviceResource.Id;
-            console.log(result.data);
         }
     }
     @track viewUserInformation = true;
@@ -18,7 +17,8 @@ export default class Hot_frilanstolkUserInformation extends LightningElement {
         this.viewUserInformation = false;
         this.editUserInformation = true;
     }
-    updateProfile() {
+    handleSubmit() {
+        this.template.querySelector('lightning-record-edit-form').submit();
         this.viewUserInformation = true;
         this.editUserInformation = false;
     }
