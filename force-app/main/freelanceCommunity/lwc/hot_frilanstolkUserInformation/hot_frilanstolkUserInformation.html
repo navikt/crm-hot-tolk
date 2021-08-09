@@ -1,30 +1,81 @@
 <template>
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
-            <section>
+            <h1 style="font-size: 20px">Kontaktinformasjon</h1>
+            <section class="viewUserInformation" if:true={viewUserInformation}>
                 <lightning-record-view-form object-api-name="ServiceResource" record-id={recordId} mode="view">
-                    <lightning-output-field field-name="Name" label="Navn"></lightning-output-field>
-                    <lightning-output-field
-                        field-name="HOT_Address__c"
-                        label="Nåværende Adresse"
-                    ></lightning-output-field>
-                    <lightning-output-field field-name="HOT_Email__c" label="Epost"> </lightning-output-field>
-                    <lightning-output-field
-                        field-name="HOT_MobilePhone__c"
-                        label="Telefonnummer"
-                    ></lightning-output-field>
-                    <lightning-output-field field-name="HOT_Skilled__c" label="Utdanning"></lightning-output-field>
-                    <lightning-output-field field-name="HOT_IsAvailableForAcuteAssignments__c"></lightning-output-field>
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_1-of-2" style="margin: 20px">
+                            <lightning-output-field field-name="Name" label="Navn"></lightning-output-field>
+                            <lightning-output-field
+                                field-name="HOT_Address__c"
+                                label="Nåværende Adresse"
+                            ></lightning-output-field>
+                            <lightning-output-field
+                                field-name="HOT_Skilled__c"
+                                label="Utdanning"
+                            ></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2" style="margin: 20px">
+                            <lightning-output-field field-name="HOT_Email__c" label="Epost"> </lightning-output-field>
+                            <lightning-output-field
+                                field-name="HOT_MobilePhone__c"
+                                label="Telefonnummer"
+                            ></lightning-output-field>
+
+                            <lightning-output-field
+                                field-name="HOT_IsAvailableForAcuteAssignments__c"
+                            ></lightning-output-field>
+                        </div>
+                    </div>
+                    <lightning-button
+                        class="editButton"
+                        icon-name="utility:edit"
+                        icon-position="left"
+                        label="Rediger"
+                        variant="brand"
+                        onclick={editProfile}
+                    >
+                    </lightning-button>
                 </lightning-record-view-form>
             </section>
-            <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
-                Endringer
-                <lightning-input-field field-name="HOT_AddressOverride__c"> </lightning-input-field>
-                <lightning-input-field field-name="HOT_Skilled__c" label="Utdanning"></lightning-input-field>
-                <lightning-input-field field-name="HOT_IsAvailableForAcuteAssignments__c"></lightning-input-field>
-                <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update">
-                </lightning-button>
-            </lightning-record-edit-form>
+            <section class="editUserInformation" if:true={editUserInformation}>
+                <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_1-of-2" style="margin: 20px">
+                            <lightning-input-field
+                                field-name="HOT_EmailOverride__c"
+                                label="Rediger Epost"
+                            ></lightning-input-field>
+                            <lightning-input-field field-name="HOT_AddressOverride__c"> </lightning-input-field>
+                            <lightning-input-field
+                                field-name="HOT_MobilePhoneOverride__c"
+                                label="Rediger Telefonnummer"
+                            ></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_2-of-3" style="margin: 20px">
+                            <lightning-input-field
+                                field-name="HOT_IsAvailableForAcuteAssignments__c"
+                                style="margin-bottom: 5px"
+                            ></lightning-input-field>
+
+                            <lightning-input-field
+                                field-name="HOT_Skilled__c"
+                                label="Utdanning"
+                            ></lightning-input-field>
+                        </div>
+                    </div>
+                    <lightning-button
+                        class="slds-m-top_small"
+                        variant="brand"
+                        type="submit"
+                        name="update"
+                        label="Update"
+                        onclick={handleSubmit}
+                    >
+                    </lightning-button>
+                </lightning-record-edit-form>
+            </section>
         </div>
     </div>
 </template>
