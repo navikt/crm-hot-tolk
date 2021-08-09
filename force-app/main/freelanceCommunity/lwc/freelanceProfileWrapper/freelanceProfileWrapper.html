@@ -7,29 +7,9 @@
     </div>
     <div class="user-info-header center-content">
         <div class="slds-grid">
-            <div class="slds-col">
-                <h1>Profil</h1>
-            </div>
-            <div class="slds-col">
-                <lightning-button
-                    class="editButton"
-                    icon-name="utility:edit"
-                    icon-position="left"
-                    label="Rediger"
-                    variant="brand"
-                    onclick={editProfile}
-                >
-                </lightning-button>
-            </div>
+            <h1>Profil</h1>
         </div>
     </div>
-    <c-hot_frilanstolk-user-information
-        if:true={hot_frilanstolkUserInformation}
-        item-name="frilanstolkUserInformation"
-    ></c-hot_frilanstolk-user-information>
-    <c-hot_frilanstolk-edit-profile
-        result-callback={updateProfile}
-        if:true={hot_frilanstolkEditProfile}
-    ></c-hot_frilanstolk-edit-profile>
+    <c-hot_frilanstolk-user-information item-name="userInformation"></c-hot_frilanstolk-user-information>
     <c-hot_frilanstolk-qualifications item-name="frilanstolkQualifications"></c-hot_frilanstolk-qualifications>
 </template>
