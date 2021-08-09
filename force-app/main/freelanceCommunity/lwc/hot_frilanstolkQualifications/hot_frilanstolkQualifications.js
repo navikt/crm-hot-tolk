@@ -6,7 +6,7 @@ import getAllSkillsList from '@salesforce/apex/HOT_SkillController.getAllSkillsL
 export default class Hot_frilanstolkQualifications extends LightningElement {
     @track columns = [
         {
-            label: 'Kvalifikasjoner',
+            label: ' Velg dine kvalifikasjoner',
             fieldName: 'MasterLabel',
             type: 'text',
             initialWidth: 300
@@ -14,7 +14,7 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     ];
     @track masterLabelColumns = [
         {
-            label: 'Kvalifikasjonene du har',
+            label: 'Kvalifikasjonene du innehar',
             fieldName: 'MasterLabel',
             type: 'text',
             initialWidth: 300

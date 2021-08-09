@@ -1,42 +1,48 @@
 <template>
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
-            <section>
-                <h1 style="font-size: 20px">Kvalifikasjoner</h1>
+            <h1 style="font-size: 20px">Kvalifikasjoner</h1>
+            <section class="slds-m-top_large">
                 <section class="viewQualifications" if:true={viewQualifications}>
                     <lightning-datatable
                         key-field="Id"
                         data={serviceResourceSkillList}
                         columns={masterLabelColumns}
                         hide-checkbox-column="true"
+                        class="display"
                     >
                     </lightning-datatable>
-                    <lightning-button
-                        class="slds-m-top_small"
-                        variant="brand"
-                        type="submit"
-                        name="Endre"
-                        label="Endre"
-                        onclick={editSkills}
-                    ></lightning-button>
+                    <div class="slds-m-top_large">
+                        <lightning-button
+                            class="slds-m-top_large"
+                            variant="brand"
+                            type="submit"
+                            icon-name="utility:edit"
+                            label="Rediger kvalifikasjoner"
+                            onclick={editSkills}
+                        ></lightning-button>
+                    </div>
                 </section>
                 <section class="editQualifications" if:true={editQualifications}>
                     <lightning-datatable
                         key-field="Id"
+                        class="cell-border order-column"
                         data={skill}
                         columns={columns}
                         onrowselection={selectedRowHandler}
                         selected-rows={selectedRows}
                     >
                     </lightning-datatable>
-                    <lightning-button
-                        class="slds-m-top_small"
-                        variant="brand"
-                        type="submit"
-                        name="Lagre"
-                        label="Lagre"
-                        onclick={handleSelect}
-                    ></lightning-button>
+                    <div class="slds-m-top_large">
+                        <lightning-button
+                            class="slds-m-top_x-large"
+                            variant="brand"
+                            type="submit"
+                            name="Lagre"
+                            label="Lagre"
+                            onclick={handleSelect}
+                        ></lightning-button>
+                    </div>
                 </section>
             </section>
         </div>

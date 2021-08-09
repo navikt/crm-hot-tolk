@@ -32,7 +32,7 @@
                         class="editButton"
                         icon-name="utility:edit"
                         icon-position="left"
-                        label="Rediger"
+                        label="Rediger kontaktinformasjon"
                         variant="brand"
                         onclick={editProfile}
                     >
@@ -41,7 +41,7 @@
             </section>
             <section class="editUserInformation" if:true={editUserInformation}>
                 <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
-                    <div class="slds-grid">
+                    <div class="slds-grid slds-m-left_large">
                         <div class="slds-col slds-size_1-of-2" style="margin: 20px">
                             <lightning-input-field
                                 field-name="HOT_EmailOverride__c"
@@ -55,25 +55,26 @@
                         </div>
                         <div class="slds-col slds-size_2-of-3" style="margin: 20px">
                             <lightning-input-field
-                                field-name="HOT_IsAvailableForAcuteAssignments__c"
-                                style="margin-bottom: 5px"
-                            ></lightning-input-field>
-
-                            <lightning-input-field
                                 field-name="HOT_Skilled__c"
                                 label="Utdanning"
                             ></lightning-input-field>
+                            <lightning-input-field
+                                field-name="HOT_IsAvailableForAcuteAssignments__c"
+                                style="margin-bottom: 5px"
+                            ></lightning-input-field>
                         </div>
                     </div>
-                    <lightning-button
-                        class="slds-m-top_small"
-                        variant="brand"
-                        type="submit"
-                        name="update"
-                        label="Update"
-                        onclick={handleSubmit}
-                    >
-                    </lightning-button>
+                    <div class="slds-m-left_large">
+                        <lightning-button
+                            class="slds-m-top_x-large slds-m-left_large"
+                            variant="brand"
+                            type="submit"
+                            name="Lagre"
+                            label="Lagre"
+                            onclick={handleSubmit}
+                        >
+                        </lightning-button>
+                    </div>
                 </lightning-record-edit-form>
             </section>
         </div>
