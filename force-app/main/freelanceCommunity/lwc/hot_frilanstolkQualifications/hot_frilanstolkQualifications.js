@@ -8,14 +8,16 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         {
             label: 'Kvalifikasjoner',
             fieldName: 'MasterLabel',
-            type: 'text'
+            type: 'text',
+            initialWidth: 300
         }
     ];
     @track masterLabelColumns = [
         {
             label: 'Kvalifikasjonene du har',
             fieldName: 'MasterLabel',
-            type: 'text'
+            type: 'text',
+            initialWidth: 300
         }
     ];
     //henter ut serviceResource
