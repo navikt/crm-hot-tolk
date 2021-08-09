@@ -9,19 +9,16 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         {
             label: 'Name',
             fieldName: 'MasterLabel',
-            type: 'text'
-        },
-        {
-            label: 'Skill Id',
-            fieldName: 'Id',
-            type: 'text'
+            type: 'text',
+            initialWidth: 300
         }
     ];
     @track masterLabelColumns = [
         {
             label: 'Name',
             fieldName: 'MasterLabel',
-            type: 'text'
+            type: 'text',
+            initialWidth: 300
         }
     ];
 

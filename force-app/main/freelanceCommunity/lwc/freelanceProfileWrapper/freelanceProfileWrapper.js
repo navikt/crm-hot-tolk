@@ -1,4 +1,4 @@
-import { LightningElement, track, api } from 'lwc';
+import { LightningElement, track } from 'lwc';
 
 export default class FreelanceProfileWrapper extends LightningElement {
     @track hot_frilanstolkEditProfile = false;
@@ -10,6 +10,5 @@ export default class FreelanceProfileWrapper extends LightningElement {
     updateProfile = () => {
         this.hot_frilanstolkEditProfile = false;
         this.hot_frilanstolkUserInformation = true;
-        alert('Profilen er oppdatert!');
     };
 }
