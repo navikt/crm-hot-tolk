@@ -3,11 +3,10 @@ import getServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualification
 import createServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.createServiceResourceSkill';
 import myServiceResource from '@salesforce/apex/HOT_FreelanceQualificationsController.myServiceResource';
 import getAllSkillsList from '@salesforce/apex/HOT_SkillController.getAllSkillsList';
-
 export default class Hot_frilanstolkQualifications extends LightningElement {
     @track columns = [
         {
-            label: 'Name',
+            label: ' Velg dine kvalifikasjoner',
             fieldName: 'MasterLabel',
             type: 'text',
             initialWidth: 300
@@ -15,14 +14,13 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     ];
     @track masterLabelColumns = [
         {
-            label: 'Name',
+            label: 'Kvalifikasjonene du innehar',
             fieldName: 'MasterLabel',
             type: 'text',
             initialWidth: 300
         }
     ];
-
-    //henter ut serviceresource
+    //henter ut serviceResource
     @track serviceResource;
     @wire(myServiceResource)
     wiredMyServiceresource(result) {
@@ -30,7 +28,7 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             this.serviceResource = result.data;
         }
     }
-    // henter ut informasjon om serviceresourceSkills som bruker har
+    //Henter ut ServiceResourceSkills som bruker har
     @track serviceResourceSkill;
     @wire(getServiceResourceSkill)
     wiredGetServiceResourceSkill(result) {
@@ -38,19 +36,17 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             this.serviceResourceSkill = result.data;
         }
     }
-
-    //Denne henter ut alle skills
+    //Henter ut alle skills
     @track Id;
     @track skill;
     @wire(getAllSkillsList)
     wiredgetAllSkillsList(resultList) {
         if (resultList.data) {
             this.skill = resultList.data;
-
             this.serviceResourceSkillListFunction();
         }
     }
-    //Denne henter ut skillene serviceresource har.
+    //Sjekker serviceResourceSkills
     @track serviceResourceSkillList;
     @track showSkillList;
     serviceResourceSkillListFunction() {
@@ -61,7 +57,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
                 tempSRSkillList.push(this.serviceResourceSkill[i]);
             }
             this.serviceResourceSkillList = tempSRSkillList;
-
             for (let j = 0; j < this.skill.length; j++) {
                 this.serviceResourceSkillList.forEach((element) => {
                     if (element.SkillId == this.skill[j].Id && element.EffectiveEndDate == null) {
@@ -77,9 +72,10 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     //funksjon som henter inn alle serviceResourceSkill-idene og sjekker de når man trykker på edit-knappen
     @track viewQualifications = true;
     @track editQualifications = false;
+
     @track userSelectedRows = [];
     @track selectedRows = [];
-    // @track initialSelectedRows = [];
+    //Lager en liste som viser alle eksisterende skills ServiceResourcen har
     editSkills() {
         this.viewQualifications = false;
         this.editQualifications = true;
@@ -89,17 +85,18 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         });
         this.selectedRows = initialSelectedRows;
     }
-    //Jeg må sjekke initalselectedrows opp mot userselectedrow, og de som ikke er like, må det settes enddate til date.today();
+    //Lagrer alle huket av skills i en liste
     selectedRowHandler(event) {
         this.userSelectedRows = event.detail.selectedRows;
     }
-
+    //Sender inn alle huket av skills til Controller og refresher siden når det er fullført.
     handleSelect() {
         try {
             createServiceResourceSkill({
                 serviceResource: this.serviceResource,
                 selectedSkills: this.userSelectedRows
             });
+            location.reload();
             this.viewQualifications = true;
             this.editQualifications = false;
         } catch (error) {

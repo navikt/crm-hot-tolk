@@ -68,11 +68,8 @@ public without sharing class HOT_FreelanceQualificationsController {
 
         try {
             upsert skillMap.values();
-            System.debug('upsert completed');
         } catch (Exception e) {
             throw e;
         }
-
-        //TODO  vi må refreshe apex. refreshApex(this.getServiceResourceSkill());
     }
 }
