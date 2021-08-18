@@ -1,3 +1,7 @@
+lightning-tabset {
+    width: 100%;
+}
+
 .liste-max-width {
     max-width: 1480px;
     width: 100%;
@@ -16,24 +20,9 @@
     flex-direction: column;
 }
 
-.comments-dialog-container {
-    all: unset;
-    background-color: #fff;
-    display: block;
-    padding: 5rem;
-    border-radius: 4px;
-    position: relative;
-    flex-grow: 0;
-    overflow-x: auto;
-    max-height: 100%;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    z-index: 1010;
-    max-width: 432px;
-    max-height: 75%;
-    width: 100%;
-}
-
-.hidden {
-    display: none;
+@media (max-width: 576px) {
+    .liste {
+        padding: 1rem 1rem 1rem 1rem;
+        margin: 1rem auto 1rem auto;
+    }
 }

@@ -34,7 +34,11 @@
                     >
                     </lightning-radio-group>
 
-                    <section if:true={publicEventForm} class="offentlig-arrangement-info-skjema sub-form">
+                    <div
+                        if:true={publicEventForm}
+                        class="offentlig-arrangement-info-skjema"
+                        style="margin-bottom: 1rem"
+                    >
                         <lightning-combobox
                             class="type-arrangement"
                             name="typeOfEvent"
@@ -44,7 +48,7 @@
                             required
                         >
                         </lightning-combobox>
-                    </section>
+                    </div>
 
                     <lightning-messages aria-live="assertive"> </lightning-messages>
                     <lightning-button if:true={showNextButton} variant="brand" onclick={onHandleNeste} label="Neste">
@@ -52,12 +56,11 @@
                 </section>
 
                 <div if:false={showNextButton} class="actual-form">
-                    <p if:true={showInformationSharingText} class="typo-normal">
-                        Navn på bestiller/virksomhet (ikke kontaktinformasjon) og bestillingens øvrige informasjon om
-                        behov for tolk, vil være tilgjengelig for tolkebruker
-                    </p>
-
                     <section if:true={ordererForm} class="bestiller-info-skjema sub-form">
+                        <p if:true={showInformationSharingText} class="typo-normal">
+                            Navn på bestiller/virksomhet (ikke kontaktinformasjon) og bestillingens øvrige informasjon
+                            om behov for tolk, vil være tilgjengelig for tolkebruker
+                        </p>
                         <h2 style="font-size: 1.25rem">
                             Kontaktinformasjon
                             <lightning-helptext
@@ -163,7 +166,7 @@
                                     <div class="dynamic-time-inputs-with-line_button" key={it.value.id}>
                                         <div class="dynamic-time-inputs" aria-live>
                                             <lightning-input
-                                                label="Dato"
+                                                label="Dato (dd:mm:åååå)"
                                                 type="date"
                                                 class="tolk-skjema-input date"
                                                 date-style="short"
@@ -175,7 +178,7 @@
                                             </lightning-input>
                                             <div class="dynamic-time-inputs__times">
                                                 <lightning-input
-                                                    label="Fra"
+                                                    label="Fra (tt:mm)"
                                                     type="time"
                                                     class="tolk-skjema-input start-tid"
                                                     onchange={setStartTime}
@@ -185,7 +188,7 @@
                                                 >
                                                 </lightning-input>
                                                 <lightning-input
-                                                    label="Til"
+                                                    label="Til (tt:mm)"
                                                     type="time"
                                                     class="tolk-skjema-input slutt-tid"
                                                     onchange={setEndTime}
