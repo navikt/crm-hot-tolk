@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>EconomicProvider__c</fullName>
     <externalId>false</externalId>
-    <formula>IF( IsOtherEconomicProvicer__c, IF(Company__c != null, Company__r.Name,  OrganizationNumber__c), &apos;NAV&apos;)</formula>
+    <formula>IF( IsOtherEconomicProvicer__c, &apos;Annen betaler&apos;, &apos;Dekket av folketrygden&apos;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Economic Provider</label>
     <required>false</required>
