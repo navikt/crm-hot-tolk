@@ -27,7 +27,6 @@ public without sharing class HOT_RequestListContoller {
                     Status__c,
                     ExternalRequestStatus__c,
                     Account__c,
-                    EconomicalProvider__c,
                     ActualUserName__c,
                     TempAccountId__c,
                     OrganizationNumber__c,
