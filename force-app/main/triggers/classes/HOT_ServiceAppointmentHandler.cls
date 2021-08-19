@@ -21,7 +21,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
-                triggerOldMap.get(serviceAppointment.Id).get('EarliestStartTime') != serviceAppointment.EarliestStartTime ||
+                triggerOldMap.get(serviceAppointment.Id).get('EarliestStartTime') !=
+                serviceAppointment.EarliestStartTime ||
                 triggerOldMap.get(serviceAppointment.Id).get('DueDate') != serviceAppointment.DueDate
             ) {
                 serviceAppointmentsWithHoursToSet.add(serviceAppointment);
@@ -161,8 +162,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithChangedAddress = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsOwnerChangedWithAssignedResource = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('OwnerId') != serviceAppointment.OwnerId &&
+                serviceAppointment.HOT_AssignedResourceId__c != null
+            ) {
+                serviceAppointmentsOwnerChangedWithAssignedResource.add(serviceAppointment);
+            }
             if (
                 (serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') &&
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')
@@ -204,6 +212,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             deleteRelatedEvents(serviceAppointmentsToRemoveAssignedResource);
+        }
+        if (serviceAppointmentsOwnerChangedWithAssignedResource.size() > 0) {
+            Map<String, Map<Id, Id>> appointmentAndResourceByAssignment = getAppointmentAndResourceByAssignment(
+                serviceAppointmentsOwnerChangedWithAssignedResource
+            );
+            HOT_ServiceAppointmentsSharingService.grantAccess(
+                appointmentAndResourceByAssignment.get('appointment'),
+                appointmentAndResourceByAssignment.get('resource')
+            );
         }
 
         HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
@@ -702,5 +719,25 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.HOT_Account__c = null;
         }
+    }
+
+    public static Map<String, Map<Id, Id>> getAppointmentAndResourceByAssignment(
+        List<ServiceAppointment> serviceAppointments
+    ) {
+        Map<String, Map<Id, Id>> returnMap = new Map<String, Map<Id, Id>>();
+        Map<Id, Id> appointmentByAssignment = new Map<Id, Id>();
+        Map<Id, Id> resourceByAssignment = new Map<Id, Id>();
+        List<AssignedResource> assignedResources = [
+            SELECT Id, ServiceAppointmentId, ServiceResourceId
+            FROM AssignedResource
+            WHERE ServiceAppointmentId IN :serviceAppointments
+        ];
+        for (AssignedResource assignedResource : assignedResources) {
+            appointmentByAssignment.put(assignedResource.Id, assignedResource.ServiceAppointmentId);
+            resourceByAssignment.put(assignedResource.Id, assignedResource.ServiceResourceId);
+        }
+        returnMap.put('appointment', appointmentByAssignment);
+        returnMap.put('resource', resourceByAssignment);
+        return returnMap;
     }
 }
