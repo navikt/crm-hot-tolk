@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_DatesOutOfSync__c</fullName>
     <externalId>false</externalId>
-    <formula>EarliestStartTime != SchedStartTime || DueDate != SchedEndTime</formula>
+    <formula>EarliestStartTime != SchedStartTime || DueDate != SchedEndTime || ISNULL(SchedStartTime) || ISNULL(SchedStartTime)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Dates Out Of Sync</label>
     <trackHistory>false</trackHistory>
