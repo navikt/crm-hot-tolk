@@ -4,25 +4,24 @@
             <h1 style="font-size: 20px">Kontaktinformasjon</h1>
             <section class="viewUserInformation" if:true={viewUserInformation}>
                 <lightning-record-view-form object-api-name="ServiceResource" record-id={recordId} mode="view">
-                    <div class="slds-grid">
-                        <div class="slds-col slds-size_1-of-2" style="margin: 20px">
+                    <div class="form-wrapper">
+                        <div class="form-section">
                             <lightning-output-field field-name="Name" label="Navn"></lightning-output-field>
-                            <lightning-output-field
-                                field-name="HOT_Address__c"
-                                label="Nåværende Adresse"
-                            ></lightning-output-field>
-                            <lightning-output-field
-                                field-name="HOT_Skilled__c"
-                                label="Utdanning"
-                            ></lightning-output-field>
-                        </div>
-                        <div class="slds-col slds-size_1-of-2" style="margin: 20px">
                             <lightning-output-field field-name="HOT_Email__c" label="Epost"> </lightning-output-field>
                             <lightning-output-field
                                 field-name="HOT_MobilePhone__c"
                                 label="Telefonnummer"
                             ></lightning-output-field>
-
+                            <lightning-output-field
+                                field-name="HOT_Address__c"
+                                label="Nåværende Adresse"
+                            ></lightning-output-field>
+                        </div>
+                        <div class="form-section">
+                            <lightning-output-field
+                                field-name="HOT_Skilled__c"
+                                label="Utdanning"
+                            ></lightning-output-field>
                             <lightning-output-field
                                 field-name="HOT_IsAvailableForAcuteAssignments__c"
                             ></lightning-output-field>
@@ -41,19 +40,19 @@
             </section>
             <section class="editUserInformation" if:true={editUserInformation}>
                 <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
-                    <div class="slds-grid slds-m-left_large">
-                        <div class="slds-col slds-size_1-of-2" style="margin: 20px">
+                    <div class="form-wrapper">
+                        <div class="form-section">
                             <lightning-input-field
                                 field-name="HOT_EmailOverride__c"
                                 label="Rediger Epost"
                             ></lightning-input-field>
-                            <lightning-input-field field-name="HOT_AddressOverride__c"> </lightning-input-field>
                             <lightning-input-field
                                 field-name="HOT_MobilePhoneOverride__c"
                                 label="Rediger Telefonnummer"
                             ></lightning-input-field>
+                            <lightning-input-field field-name="HOT_AddressOverride__c"> </lightning-input-field>
                         </div>
-                        <div class="slds-col slds-size_2-of-3" style="margin: 20px">
+                        <div class="form-section">
                             <lightning-input-field
                                 field-name="HOT_Skilled__c"
                                 label="Utdanning"
@@ -64,9 +63,9 @@
                             ></lightning-input-field>
                         </div>
                     </div>
-                    <div class="slds-m-left_large button-spaced">
+                    <div class="slds-m-top_large button-spaced">
                         <lightning-button
-                            class="slds-m-top_x-large slds-m-left_large"
+                            class="slds-m-top_x-large"
                             variant="brand"
                             type="submit"
                             name="Lagre"
@@ -75,7 +74,7 @@
                         >
                         </lightning-button>
                         <lightning-button
-                            class="slds-m-top_x-large slds-m-right_large"
+                            class="slds-m-top_x-large"
                             variant="base"
                             name="Avbryt"
                             label="Avbryt"

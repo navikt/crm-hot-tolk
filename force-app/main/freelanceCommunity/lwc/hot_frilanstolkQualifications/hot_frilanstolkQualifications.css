@@ -43,3 +43,15 @@
     display: flex;
     justify-content: space-around;
 }
+
+@media (max-width: 576px) {
+    .button-spaced {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    lightning-button {
+        display: flex;
+        justify-content: center;
+    }
+}

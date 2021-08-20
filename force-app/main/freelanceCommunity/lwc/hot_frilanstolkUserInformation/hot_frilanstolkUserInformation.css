@@ -37,3 +37,30 @@
     display: flex;
     justify-content: space-around;
 }
+
+.form-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+.form-section {
+    margin: 0 1rem;
+}
+
+@media (max-width: 576px) {
+    .form-wrapper {
+        flex-direction: column;
+    }
+    .button-spaced {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    lightning-button {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}
