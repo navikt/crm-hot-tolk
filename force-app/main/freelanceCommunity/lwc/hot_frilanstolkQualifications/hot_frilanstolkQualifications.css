@@ -33,6 +33,12 @@
     display: none !important;
 }
 
+.viewQualifications {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .button-spaced {
     display: flex;
     justify-content: space-around;
