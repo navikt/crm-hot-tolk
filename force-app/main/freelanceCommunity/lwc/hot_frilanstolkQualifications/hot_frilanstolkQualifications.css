@@ -32,3 +32,8 @@
     background-color: red;
     display: none !important;
 }
+
+.button-spaced {
+    display: flex;
+    justify-content: space-around;
+}

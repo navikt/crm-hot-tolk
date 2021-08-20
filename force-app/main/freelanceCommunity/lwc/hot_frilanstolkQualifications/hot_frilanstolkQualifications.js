@@ -126,4 +126,9 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             console.log('else');
         }
     }
+
+    handleAbort() {
+        this.viewQualifications = true;
+        this.editQualifications = false;
+    }
 }

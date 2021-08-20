@@ -33,7 +33,7 @@
                         selected-rows={selectedRows}
                     >
                     </lightning-datatable>
-                    <div class="slds-m-top_large">
+                    <div class="slds-m-top_large button-spaced">
                         <lightning-button
                             class="slds-m-top_x-large"
                             variant="brand"
@@ -41,6 +41,13 @@
                             name="Lagre"
                             label="Lagre"
                             onclick={handleSelect}
+                        ></lightning-button>
+                        <lightning-button
+                            class="slds-m-top_x-large"
+                            variant="base"
+                            name="Avbryt"
+                            label="Avbryt"
+                            onclick={handleAbort}
                         ></lightning-button>
                     </div>
                 </section>
