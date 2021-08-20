@@ -11,6 +11,45 @@
     <div if:true={isFrilans} class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler-single">
+                <a
+                    class="panelMedBilde panelMedBilde-single"
+                    href="/s/mine-oppdrag"
+                    onclick={goToOppdrag}
+                    style="width: 66%"
+                >
+                    <div class="panelMedBilde__imageOnPanel-single">
+                        <div class="panelMedBilde__svgContainer-single">
+                            <img
+                                if:false={isProd}
+                                style="height: 60%"
+                                src="/sfsites/c/resource/1590665878000/OppdragIkon"
+                                alt="Til mine oppdrag"
+                            />
+                            <img
+                                if:true={isProd}
+                                style="height: 60%"
+                                src="/s/sfsites/c/resource/1590665878000/OppdragIkon"
+                                alt="Til mine oppdrag"
+                            />
+                        </div>
+                    </div>
+                    <div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
+                        <h2 class="typo-undertittel">Oppdrag</h2>
+                        <div>
+                            <p class="typo-normal">
+                                <span>
+                                    Se oversikt over dine oppdrag, og åpne oppdrag som du kan melde interesse om.</span
+                                >
+                            </p>
+                        </div>
+                    </div>
+                    <div class="panelMedBilde__imageOnPanel-single">
+                        <div class="panelMedBilde__svgContainer-single">
+                            <img if:false={isProd} src="/sfsites/c/resource/1590666405000/rightArrow" alt="" />
+                            <img if:true={isProd} src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
+                        </div>
+                    </div>
+                </a>
                 <a class="panelMedBilde panelMedBilde-single" href="/s/frilanstolk-min-side" onclick={goToProfile}>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
@@ -34,47 +73,7 @@
                         <h2 class="typo-undertittel">Frilanstolk Min side</h2>
                         <div>
                             <p class="typo-normal">
-                                <span> Se og rediger din profil.</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="panelMedBilde__imageOnPanel-single">
-                        <div class="panelMedBilde__svgContainer-single">
-                            <img if:false={isProd} src="/sfsites/c/resource/1590666405000/rightArrow" alt="" />
-                            <img if:true={isProd} src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-    <div if:true={isFrilans} class="informasjonstavle__body">
-        <div class="informasjonstavle__content">
-            <div class="informasjonstavle__bildepaneler-single">
-                <a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag" onclick={goToOppdrag}>
-                    <div class="panelMedBilde__imageOnPanel-single">
-                        <div class="panelMedBilde__svgContainer-single">
-                            <img
-                                if:false={isProd}
-                                style="height: 60%"
-                                src="/sfsites/c/resource/1590665878000/OppdragIkon"
-                                alt="Til mine oppdrag"
-                            />
-                            <img
-                                if:true={isProd}
-                                style="height: 60%"
-                                src="/s/sfsites/c/resource/1590665878000/OppdragIkon"
-                                alt="Til mine oppdrag"
-                            />
-                        </div>
-                    </div>
-                    <div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
-                        <h2 class="typo-undertittel">Frilanstolk</h2>
-                        <div>
-                            <p class="typo-normal">
-                                <span>
-                                    Se oversikt over dine oppdrag, og åpne oppdrag som du kan melde interesse om.</span
-                                >
+                                <span> Se og rediger kontaktinformasjon og kvalifikasjoner.</span>
                             </p>
                         </div>
                     </div>
