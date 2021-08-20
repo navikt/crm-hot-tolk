@@ -3,7 +3,6 @@ import getServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualification
 import createServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.createServiceResourceSkill';
 import myServiceResource from '@salesforce/apex/HOT_FreelanceQualificationsController.myServiceResource';
 import getAllSkillsList from '@salesforce/apex/HOT_SkillController.getAllSkillsList';
-import { refreshApex } from '@salesforce/apex';
 export default class Hot_frilanstolkQualifications extends LightningElement {
     @track columns = [
         {
@@ -51,7 +50,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     @track serviceResourceSkillList;
     @track showSkillList;
     serviceResourceSkillListFunction() {
-        console.log('serviceResourceSkillListFunction');
         let tempSRSkillList = [];
         let showSkillList = [];
         if (typeof this.serviceResourceSkill !== 'undefined') {
@@ -68,8 +66,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             }
             this.serviceResourceSkillList = [];
             this.serviceResourceSkillList = showSkillList;
-            console.log(JSON.stringify(this.serviceResourceSkillList));
-            console.log(this.serviceResourceSkillList.length);
         }
     }
 
@@ -102,28 +98,10 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             }).then(() => {
                 this.viewQualifications = true;
                 this.editQualifications = false;
-                this.refreshList();
+                location.reload();
             });
         } catch (error) {
             console.log(JSON.stringify(error));
-        }
-    }
-
-    refreshList() {
-        console.log('refreshList');
-        getServiceResourceSkill()
-            .then((result) => {
-                this.serviceResourceSkill = result;
-            })
-            .catch((error) => {
-                console.log(JSON.stringify(error));
-            });
-        if (this.serviceResourceSkill) {
-            console.log('was true');
-            this.serviceResourceSkillListFunction();
-            refreshApex(this.serviceResourceSkillResult);
-        } else {
-            console.log('else');
         }
     }
 
