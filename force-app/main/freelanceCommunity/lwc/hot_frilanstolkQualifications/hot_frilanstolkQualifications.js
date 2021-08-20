@@ -3,21 +3,20 @@ import getServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualification
 import createServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.createServiceResourceSkill';
 import myServiceResource from '@salesforce/apex/HOT_FreelanceQualificationsController.myServiceResource';
 import getAllSkillsList from '@salesforce/apex/HOT_SkillController.getAllSkillsList';
+import { refreshApex } from '@salesforce/apex';
 export default class Hot_frilanstolkQualifications extends LightningElement {
     @track columns = [
         {
             label: ' Velg dine kvalifikasjoner',
             fieldName: 'MasterLabel',
-            type: 'text',
-            initialWidth: 300
+            type: 'text'
         }
     ];
     @track masterLabelColumns = [
         {
             label: 'Kvalifikasjonene du innehar',
             fieldName: 'MasterLabel',
-            type: 'text',
-            initialWidth: 300
+            type: 'text'
         }
     ];
     //henter ut serviceResource
@@ -30,8 +29,10 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     }
     //Henter ut ServiceResourceSkills som bruker har
     @track serviceResourceSkill;
+    serviceResourceSkillResult;
     @wire(getServiceResourceSkill)
     wiredGetServiceResourceSkill(result) {
+        this.serviceResourceSkillResult = result;
         if (result.data) {
             this.serviceResourceSkill = result.data;
         }
@@ -50,10 +51,11 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     @track serviceResourceSkillList;
     @track showSkillList;
     serviceResourceSkillListFunction() {
+        console.log('serviceResourceSkillListFunction');
         let tempSRSkillList = [];
         let showSkillList = [];
         if (typeof this.serviceResourceSkill !== 'undefined') {
-            for (var i = 0; i < this.serviceResourceSkill.length; i++) {
+            for (let i = 0; i < this.serviceResourceSkill.length; i++) {
                 tempSRSkillList.push(this.serviceResourceSkill[i]);
             }
             this.serviceResourceSkillList = tempSRSkillList;
@@ -66,6 +68,8 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             }
             this.serviceResourceSkillList = [];
             this.serviceResourceSkillList = showSkillList;
+            console.log(JSON.stringify(this.serviceResourceSkillList));
+            console.log(this.serviceResourceSkillList.length);
         }
     }
 
@@ -95,12 +99,31 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
             createServiceResourceSkill({
                 serviceResource: this.serviceResource,
                 selectedSkills: this.userSelectedRows
+            }).then(() => {
+                this.viewQualifications = true;
+                this.editQualifications = false;
+                this.refreshList();
             });
-            location.reload();
-            this.viewQualifications = true;
-            this.editQualifications = false;
         } catch (error) {
             console.log(JSON.stringify(error));
+        }
+    }
+
+    refreshList() {
+        console.log('refreshList');
+        getServiceResourceSkill()
+            .then((result) => {
+                this.serviceResourceSkill = result;
+            })
+            .catch((error) => {
+                console.log(JSON.stringify(error));
+            });
+        if (this.serviceResourceSkill) {
+            console.log('was true');
+            this.serviceResourceSkillListFunction();
+            refreshApex(this.serviceResourceSkillResult);
+        } else {
+            console.log('else');
         }
     }
 }

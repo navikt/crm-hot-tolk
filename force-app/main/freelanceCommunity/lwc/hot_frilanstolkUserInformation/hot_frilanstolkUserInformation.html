@@ -64,7 +64,7 @@
                             ></lightning-input-field>
                         </div>
                     </div>
-                    <div class="slds-m-left_large">
+                    <div class="slds-m-left_large button-spaced">
                         <lightning-button
                             class="slds-m-top_x-large slds-m-left_large"
                             variant="brand"
@@ -72,6 +72,14 @@
                             name="Lagre"
                             label="Lagre"
                             onclick={handleSubmit}
+                        >
+                        </lightning-button>
+                        <lightning-button
+                            class="slds-m-top_x-large slds-m-right_large"
+                            variant="base"
+                            name="Avbryt"
+                            label="Avbryt"
+                            onclick={handleAbort}
                         >
                         </lightning-button>
                     </div>

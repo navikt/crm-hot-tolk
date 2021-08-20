@@ -17,6 +17,10 @@ export default class Hot_frilanstolkUserInformation extends LightningElement {
         this.viewUserInformation = false;
         this.editUserInformation = true;
     }
+    handleAbort() {
+        this.viewUserInformation = true;
+        this.editUserInformation = false;
+    }
     handleSubmit() {
         this.template.querySelector('lightning-record-edit-form').submit();
         this.viewUserInformation = true;
