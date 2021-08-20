@@ -2,7 +2,7 @@
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
             <h1 style="font-size: 20px">Kvalifikasjoner</h1>
-            <section class="viewQualifications" if:true={viewQualifications}>
+            <section class="viewQualifications" if:true={viewQualifications} aria-live>
                 <lightning-datatable
                     key-field="Id"
                     data={serviceResourceSkillList}
@@ -22,7 +22,7 @@
                     ></lightning-button>
                 </div>
             </section>
-            <section class="editQualifications" if:true={editQualifications}>
+            <section class="editQualifications" if:true={editQualifications} aria-live>
                 <lightning-datatable
                     key-field="Id"
                     class="cell-border order-column"
