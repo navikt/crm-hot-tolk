@@ -2,7 +2,7 @@ import { LightningElement, wire, track } from 'lwc';
 import getServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.getServiceResourceSkill';
 import createServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.createServiceResourceSkill';
 import myServiceResource from '@salesforce/apex/HOT_FreelanceQualificationsController.myServiceResource';
-import getAllSkillsList from '@salesforce/apex/HOT_SkillController.getAllSkillsList';
+import getAllSkillsList from '@salesforce/apex/HOT_FreelanceQualificationsController.getAllSkillsList';
 export default class Hot_frilanstolkQualifications extends LightningElement {
     @track columns = [
         {
