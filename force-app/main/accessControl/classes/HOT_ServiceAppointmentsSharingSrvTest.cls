@@ -290,4 +290,70 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
             ]
         );
     }
+
+    @IsTest
+    private static void testRecalculateManualSharing() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        List<ServiceResource> serviceResources = [SELECT Id, RelatedRecordId FROM ServiceResource];
+
+        AssignedResource assignedResource = new AssignedResource(
+            ServiceAppointmentId = serviceAppointment.Id,
+            ServiceResourceId = serviceResources[0].Id
+        );
+        insert assignedResource;
+
+        serviceAppointment = [
+            SELECT Id, HOT_IsRecalculateManualSharing__c, HOT_ServiceResource__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        serviceAppointment.HOT_IsRecalculateManualSharing__c = true;
+        serviceAppointment.HOT_ServiceResource__c = null;
+        update serviceAppointment;
+
+        serviceAppointment = [
+            SELECT Id, HOT_IsRecalculateManualSharing__c, HOT_ServiceResource__c, HOT_ServiceResource__r.RelatedRecordId
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        System.assertEquals(
+            true,
+            serviceAppointment.HOT_IsRecalculateManualSharing__c,
+            'Could not set flag on service appointment'
+        );
+
+        Test.startTest();
+        HOT_ServiceAppointmentsSharingService.recalculateManualSharing(
+            new List<ServiceAppointment>{ serviceAppointment }
+        );
+        Test.stopTest();
+
+        List<ServiceAppointmentShare> serviceAppointmentShares = [
+            SELECT Id
+            FROM ServiceAppointmentShare
+            WHERE ParentId = :serviceAppointment.Id AND RowCause = 'Manual'
+        ];
+        serviceAppointment = [
+            SELECT Id, HOT_IsRecalculateManualSharing__c, HOT_ServiceResource__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        System.assertEquals(0, serviceAppointmentShares.size(), 'Could not delete service appointment share');
+        System.assertEquals(
+            false,
+            serviceAppointment.HOT_IsRecalculateManualSharing__c,
+            'Could not reset flag on service appointment'
+        );
+    }
 }
