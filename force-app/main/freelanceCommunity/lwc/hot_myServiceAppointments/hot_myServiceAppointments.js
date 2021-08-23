@@ -3,6 +3,7 @@ import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentL
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { myServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 import { formatRecord } from 'c/hot_recordDetails';
+import { sortList, getMobileSortingOptions } from 'c/sortController';
 
 var actions = [{ label: 'Detaljer', name: 'details' }];
 
@@ -117,81 +118,20 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
     get sortingOptions() {
-        return [
-            {
-                label: 'Start tid stigende',
-                value: '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Start tid synkende',
-                value: '{"fieldName": "EarliestStartTime", "sortDirection": "desc"} '
-            },
-            {
-                label: 'Slutt tid stigende',
-                value: '{"fieldName": "DueDate", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Slutt tid synkende',
-                value: '{"fieldName": "DueDate", "sortDirection": "desc"} '
-            },
-            {
-                label: 'Poststed A - Å',
-                value: '{"fieldName": "City", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Poststed A - Å',
-                value: '{"fieldName": "City", "sortDirection": "desc"} '
-            },
-            {
-                label: 'Tema A - Å',
-                value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Tema A - Å',
-                value: '{"fieldName": "HOT_FreelanceSubject__c", "sortDirection": "desc"} '
-            },
-            {
-                label: 'Arbeidstype A - Å',
-                value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Arbeidstype Å - A',
-                value: '{"fieldName": "HOT_WorkTypeName__c", "sortDirection": "desc"} '
-            }
-        ];
+        return getMobileSortingOptions(this.columns);
     }
+
     handleMobileSorting(event) {
-        this.sortList(JSON.parse(event.detail.value));
-    }
-    sortBy(field, reverse) {
-        const key = function (x) {
-            return x[field];
-        };
-        if (field == 'HOT_NumberOfInterestedResources__c') {
-            return function (a, b) {
-                a = key(a);
-                b = key(b);
-                return reverse * ((a > b) - (b > a));
-            };
-        } else {
-            return function (a, b) {
-                a = key(a).toLowerCase();
-                b = key(b).toLowerCase();
-                return reverse * ((a > b) - (b > a));
-            };
-        }
+        let value = JSON.parse(event.detail.value);
+        this.sortDirection = value.sortDirection;
+        this.sortedBy = value.fieldName;
+        this.myServiceAppointments = sortList(this.myServiceAppointments, this.sortedBy, this.sortDirection);
+        this.showHideAll();
     }
     onHandleSort(event) {
-        this.sortList(event.detail);
-    }
-    sortList(input) {
-        const { fieldName: sortedBy, sortDirection } = input;
-        let cloneData = [...this.myServiceAppointments];
-        cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
-
-        this.myServiceAppointments = cloneData;
-        this.sortDirection = sortDirection;
-        this.sortedBy = sortedBy;
+        this.sortDirection = event.detail.sortDirection;
+        this.sortedBy = event.detail.fieldName;
+        this.myServiceAppointments = sortList(this.myServiceAppointments, this.sortedBy, this.sortDirection);
         this.showHideAll();
     }
 
