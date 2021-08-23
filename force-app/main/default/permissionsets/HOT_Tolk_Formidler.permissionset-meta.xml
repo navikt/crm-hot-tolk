@@ -1830,6 +1830,10 @@
         <apexPage>HOT_ReleaseToFreelance</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
+    <pageAccesses>
+        <apexPage>HOT_RetractFromFreelance</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
     <recordTypeVisibilities>
         <recordType>PersonAccount.PersonAccount</recordType>
         <visible>true</visible>
