@@ -14,5 +14,19 @@ public without sharing class HOT_RecalculateManualSharingBatch implements Databa
     }
 
     public void finish(Database.BatchableContext bc) {
+        if (!Test.isRunningTest()) {
+            try {
+                System.scheduleBatch(
+                    new HOT_RecalculateManualSharingBatch(),
+                    'HOT_RecalculateManualSharingBatch',
+                    60,
+                    10
+                );
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
+        }
     }
 }
