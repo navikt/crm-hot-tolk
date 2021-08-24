@@ -39,7 +39,7 @@ private class HOT_AssignedResourceAccessHandlerTest {
     }
 
     @IsTest
-    private static void testUserLoseAccessWhenAssignedResourceIsDeleted() {
+    private static void testSharingRecalculationFlagWhenAssignedResourceIsDeleted() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user1 = HOT_TestDataFactory.createUser('user1', profile);
         insert user1;
@@ -78,14 +78,13 @@ private class HOT_AssignedResourceAccessHandlerTest {
         Test.startTest();
         delete assignedResource;
         Test.stopTest();
-        System.assertEquals(
-            0,
-            [
-                SELECT COUNT()
-                FROM ServiceAppointmentShare
-                WHERE UserOrGroupId = :userId AND ParentId = :serviceAppointmentId AND RowCause = 'Manual'
-            ]
-        );
+
+        ServiceAppointment serviceAppointment = [
+            SELECT HOT_IsRecalculateManualSharing__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId
+        ];
+        System.assertEquals(true, serviceAppointment.HOT_IsRecalculateManualSharing__c);
     }
 
     @IsTest
@@ -117,44 +116,19 @@ private class HOT_AssignedResourceAccessHandlerTest {
         );
         insert assignedResource;
 
-        System.assertEquals(
-            1,
-            [
-                SELECT COUNT()
-                FROM ServiceAppointmentShare
-                WHERE UserOrGroupId = :userId1 AND ParentId = :serviceAppointmentId AND RowCause = 'Manual'
-            ]
-        );
-
         Id serviceResourceId2 = serviceResources[1].Id;
         Id userId2 = serviceResources[1].RelatedRecordId;
-        System.assertEquals(
-            0,
-            [
-                SELECT COUNT()
-                FROM ServiceAppointmentShare
-                WHERE UserOrGroupId = :userId2 AND ParentId = :serviceAppointmentId AND RowCause = 'Manual'
-            ]
-        );
+
         Test.startTest();
         assignedResource.ServiceResourceId = serviceResourceId2;
         update assignedResource;
         Test.stopTest();
-        System.assertEquals(
-            0,
-            [
-                SELECT COUNT()
-                FROM ServiceAppointmentShare
-                WHERE UserOrGroupId = :userId1 AND ParentId = :serviceAppointmentId AND RowCause = 'Manual'
-            ]
-        );
-        System.assertEquals(
-            1,
-            [
-                SELECT COUNT()
-                FROM ServiceAppointmentShare
-                WHERE UserOrGroupId = :userId2 AND ParentId = :serviceAppointmentId AND RowCause = 'Manual'
-            ]
-        );
+
+        ServiceAppointment serviceAppointment = [
+            SELECT HOT_IsRecalculateManualSharing__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId
+        ];
+        System.assertEquals(true, serviceAppointment.HOT_IsRecalculateManualSharing__c);
     }
 }
