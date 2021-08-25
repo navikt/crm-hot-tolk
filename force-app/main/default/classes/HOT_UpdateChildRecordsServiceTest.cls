@@ -7,7 +7,6 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Old Subject', workType);
         request.InterpretationPostalCode__c = '0000';
         request.MeetingPostalCode__c = '0000';
-        request.AssignmentType__c = 'Work';
         insert request;
         request.Status__c = 'Godkjent';
         update request;
@@ -24,7 +23,6 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
         input.subject = 'New subject';
         input.description = 'New description';
         input.isScreenInterpreter = true;
-        input.assignmentType = 'Private';
 
         Test.startTest();
         HOT_UpdateChildRecordsService.updateChildRecordsFromRequest(new List<HOT_UpdateChildRecordsService>{ input });
@@ -41,13 +39,7 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
                 MeetingPostalCity__c,
                 Subject__c,
                 Description__c,
-                IsScreenInterpreter__c,
-                AssignmentType__c,
-                PreferredResource1__c,
-                PreferredResource2__c,
-                PreferredResource3__c,
-                InterpretationMethod__c,
-                InterpretationMethodSecondary__c
+                IsScreenInterpreter__c
             FROM HOT_Request__c
             WHERE Id = :request.Id
         ];
