@@ -53,10 +53,7 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         let tempSRSkillList = [];
         let showSkillList = [];
         if (typeof this.serviceResourceSkill !== 'undefined') {
-            for (let i = 0; i < this.serviceResourceSkill.length; i++) {
-                tempSRSkillList.push(this.serviceResourceSkill[i]);
-            }
-            this.serviceResourceSkillList = tempSRSkillList;
+            this.serviceResourceSkillList = this.serviceResourceSkill;
             for (let j = 0; j < this.skill.length; j++) {
                 this.serviceResourceSkillList.forEach((element) => {
                     if (element.SkillId == this.skill[j].Id && element.EffectiveEndDate == null) {
@@ -64,7 +61,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
                     }
                 });
             }
-            this.serviceResourceSkillList = [];
             this.serviceResourceSkillList = showSkillList;
         }
     }
