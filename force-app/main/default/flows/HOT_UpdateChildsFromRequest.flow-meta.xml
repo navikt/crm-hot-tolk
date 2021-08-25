@@ -1,5 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>UpdateChildRecords</name>
+        <label>UpdateChildRecords</label>
+        <locationX>50</locationX>
+        <locationY>638</locationY>
+        <actionName>HOT_UpdateChildRecordsService</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>description</name>
+            <value>
+                <elementReference>getRequest.Description__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>interpretationPostalCity</name>
+            <value>
+                <elementReference>getRequest.InterpretationPostalCity__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>interpretationPostalCode</name>
+            <value>
+                <elementReference>getRequest.InterpretationPostalCode__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>interpretationStreet</name>
+            <value>
+                <elementReference>getRequest.InterpretationStreet__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>isScreenInterpreter</name>
+            <value>
+                <elementReference>getRequest.IsScreenInterpreter__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>meetingPostalCity</name>
+            <value>
+                <elementReference>getRequest.MeetingPostalCity__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>meetingPostalCode</name>
+            <value>
+                <elementReference>getRequest.MeetingPostalCode__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>meetingStreet</name>
+            <value>
+                <elementReference>getRequest.MeetingStreet__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>ownerId</name>
+            <value>
+                <elementReference>NewOwner.recordId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>requestId</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>subject</name>
+            <value>
+                <elementReference>getRequest.Subject__c</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
     <apiVersion>52.0</apiVersion>
     <choices>
         <name>Address</name>
@@ -7,14 +83,6 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Address</stringValue>
-        </value>
-    </choices>
-    <choices>
-        <name>AssignmentType</name>
-        <choiceText>Oppdragstype</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>AssignmentType</stringValue>
         </value>
     </choices>
     <choices>
@@ -65,6 +133,38 @@
             <stringValue>Subject</stringValue>
         </value>
     </choices>
+    <decisions>
+        <name>Check_Request</name>
+        <label>Check Request</label>
+        <locationX>182</locationX>
+        <locationY>278</locationY>
+        <defaultConnector>
+            <targetReference>Cannot_update_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>StatusOpenApproved</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Åpen</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Godkjent</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>ChooseFieldScreen</targetReference>
+            </connector>
+            <label>StatusOpenApproved</label>
+        </rules>
+    </decisions>
     <interviewLabel>HOT_UpdateChildsFromRequest {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_UpdateChildsFromRequest</label>
     <processMetadataValues>
@@ -89,11 +189,11 @@
     <recordLookups>
         <name>getRequest</name>
         <label>getRequest</label>
-        <locationX>176</locationX>
+        <locationX>182</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>ChooseFieldScreen</targetReference>
+            <targetReference>Check_Request</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -108,10 +208,26 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <screens>
+        <name>Cannot_update_Screen</name>
+        <label>Cannot update Screen</label>
+        <locationX>314</locationX>
+        <locationY>398</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>cannotUpdateText</name>
+            <fieldText>&lt;p&gt;Denne funksjonaliteten kan KUN benyttes når forespørselen har status Åpen eller Godkjent.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>ChooseFieldScreen</name>
         <label>ChooseFieldScreen</label>
-        <locationX>176</locationX>
-        <locationY>278</locationY>
+        <locationX>50</locationX>
+        <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -124,9 +240,6 @@
             <choiceReferences>Subject</choiceReferences>
             <choiceReferences>Description</choiceReferences>
             <choiceReferences>ScreenInterpreter</choiceReferences>
-            <choiceReferences>AssignmentType</choiceReferences>
-            <choiceReferences>PreferredResource</choiceReferences>
-            <choiceReferences>InterpretationType</choiceReferences>
             <choiceReferences>Owner</choiceReferences>
             <dataType>String</dataType>
             <fieldText>ChosenFields</fieldText>
@@ -139,11 +252,14 @@
     <screens>
         <name>NewValuesScreen</name>
         <label>NewValuesScreen</label>
-        <locationX>176</locationX>
-        <locationY>398</locationY>
+        <locationX>50</locationX>
+        <locationY>518</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
+        <connector>
+            <targetReference>UpdateChildRecords</targetReference>
+        </connector>
         <fields>
             <name>NewValuesScreen_Section1</name>
             <fieldType>RegionContainer</fieldType>
@@ -311,102 +427,31 @@
                 <name>NewValuesScreen_Section5_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
-                    <name>AssignmentTypeField</name>
-                    <choiceReferences>Address</choiceReferences>
-                    <dataType>String</dataType>
-                    <fieldText>Oppdragstype</fieldText>
-                    <fieldType>DropdownBox</fieldType>
+                    <name>NewOwner</name>
+                    <extensionName>flowruntime:lookup</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>fieldApiName</name>
+                        <value>
+                            <stringValue>OwnerId</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value>
+                            <stringValue>Eier</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value>
+                            <stringValue>HOT_Request__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
                 </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>AssignmentType</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>NewValuesScreen_Section6</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>NewValuesScreen_Section6_Column1</name>
-                <fieldType>Region</fieldType>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>6</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>NewValuesScreen_Section6_Column2</name>
-                <fieldType>Region</fieldType>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>6</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>PreferredResource</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>NewValuesScreen_Section7</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>NewValuesScreen_Section7_Column1</name>
-                <fieldType>Region</fieldType>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>InterpretationType</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>NewValuesScreen_Section8</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>NewValuesScreen_Section8_Column1</name>
-                <fieldType>Region</fieldType>
                 <inputParameters>
                     <name>width</name>
                     <value>
@@ -431,7 +476,7 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
+        <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>getRequest</targetReference>
