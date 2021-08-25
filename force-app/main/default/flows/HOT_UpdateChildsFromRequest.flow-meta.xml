@@ -57,12 +57,6 @@
             </value>
         </inputParameters>
         <inputParameters>
-            <name>ownerId</name>
-            <value>
-                <elementReference>NewOwner.recordId</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
             <name>requestId</name>
             <value>
                 <elementReference>recordId</elementReference>
@@ -94,27 +88,11 @@
         </value>
     </choices>
     <choices>
-        <name>InterpretationType</name>
-        <choiceText>Tolkemetode</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>InterpretationType</stringValue>
-        </value>
-    </choices>
-    <choices>
         <name>Owner</name>
         <choiceText>Eier</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>Owner</stringValue>
-        </value>
-    </choices>
-    <choices>
-        <name>PreferredResource</name>
-        <choiceText>Foretrukket tolk</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>PreferredResource</stringValue>
         </value>
     </choices>
     <choices>
@@ -143,26 +121,26 @@
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>StatusOpenApproved</name>
-            <conditionLogic>or</conditionLogic>
+            <name>Ok</name>
+            <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>getRequest.Status__c</leftValueReference>
-                <operator>EqualTo</operator>
+                <operator>NotEqualTo</operator>
                 <rightValue>
-                    <stringValue>Åpen</stringValue>
+                    <stringValue>Avlyst</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>getRequest.Status__c</leftValueReference>
-                <operator>EqualTo</operator>
+                <operator>NotEqualTo</operator>
                 <rightValue>
-                    <stringValue>Godkjent</stringValue>
+                    <stringValue>Annullert</stringValue>
                 </rightValue>
             </conditions>
             <connector>
                 <targetReference>ChooseFieldScreen</targetReference>
             </connector>
-            <label>StatusOpenApproved</label>
+            <label>Ok</label>
         </rules>
     </decisions>
     <interviewLabel>HOT_UpdateChildsFromRequest {!$Flow.CurrentDateTime}</interviewLabel>
@@ -217,7 +195,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>cannotUpdateText</name>
-            <fieldText>&lt;p&gt;Denne funksjonaliteten kan KUN benyttes når forespørselen har status Åpen eller Godkjent.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status Avlyst eller Annullert.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -240,7 +218,6 @@
             <choiceReferences>Subject</choiceReferences>
             <choiceReferences>Description</choiceReferences>
             <choiceReferences>ScreenInterpreter</choiceReferences>
-            <choiceReferences>Owner</choiceReferences>
             <dataType>String</dataType>
             <fieldText>ChosenFields</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -416,58 +393,6 @@
                     <operator>Contains</operator>
                     <rightValue>
                         <elementReference>ScreenInterpreter</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>NewValuesScreen_Section5</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>NewValuesScreen_Section5_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>NewOwner</name>
-                    <extensionName>flowruntime:lookup</extensionName>
-                    <fieldType>ComponentInstance</fieldType>
-                    <inputParameters>
-                        <name>fieldApiName</name>
-                        <value>
-                            <stringValue>OwnerId</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>label</name>
-                        <value>
-                            <stringValue>Eier</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>objectApiName</name>
-                        <value>
-                            <stringValue>HOT_Request__c</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <storeOutputAutomatically>true</storeOutputAutomatically>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>Owner</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
