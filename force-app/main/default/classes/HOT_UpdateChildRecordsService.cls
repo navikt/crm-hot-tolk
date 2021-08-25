@@ -20,8 +20,6 @@ public without sharing class HOT_UpdateChildRecordsService {
     @InvocableVariable
     public Boolean isScreenInterpreter;
     @InvocableVariable
-    public String assignmentType;
-    @InvocableVariable
     public String preferredResource1;
     @InvocableVariable
     public String preferredResource2;
@@ -54,7 +52,6 @@ public without sharing class HOT_UpdateChildRecordsService {
                 Subject__c,
                 Description__c,
                 IsScreenInterpreter__c,
-                AssignmentType__c,
                 PreferredResource1__c,
                 PreferredResource2__c,
                 PreferredResource3__c,
@@ -143,9 +140,6 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         if (input.isScreenInterpreter != null) {
             request.IsScreenInterpreter__c = input.isScreenInterpreter;
-        }
-        if (input.assignmentType != null) {
-            request.AssignmentType__c = input.assignmentType;
         }
         if (input.preferredResource1 != null) {
             request.PreferredResource1__c = input.preferredResource1;
