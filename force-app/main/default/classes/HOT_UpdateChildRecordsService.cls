@@ -19,24 +19,12 @@ public without sharing class HOT_UpdateChildRecordsService {
     public String description;
     @InvocableVariable
     public Boolean isScreenInterpreter;
-    @InvocableVariable
-    public String preferredResource1;
-    @InvocableVariable
-    public String preferredResource2;
-    @InvocableVariable
-    public String preferredResource3;
-    @InvocableVariable
-    public String interpretationMethod;
-    @InvocableVariable
-    public String interpretationMethodSecondary;
-    @InvocableVariable
-    public String ownerId;
 
     @InvocableMethod
     public static List<String> updateChildRecordsFromRequest(List<HOT_UpdateChildRecordsService> inputVariables) {
-        List<String> woStatuses = new List<String>{ 'New' };
-        List<String> woliStatuses = new List<String>{ 'New' };
-        List<String> saStatuses = new List<String>{ 'None' };
+        List<String> woStatuses = new List<String>{ 'New', 'Scheduled', 'Dispatched' };
+        List<String> woliStatuses = new List<String>{ 'New', 'Scheduled', 'Dispatched' };
+        List<String> saStatuses = new List<String>{ 'None', 'Released to Freelance', 'Scheduled', 'Dispatched' };
         HOT_UpdateChildRecordsService input = inputVariables[0];
         List<String> errors = new List<String>();
 
@@ -51,12 +39,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 MeetingPostalCity__c,
                 Subject__c,
                 Description__c,
-                IsScreenInterpreter__c,
-                PreferredResource1__c,
-                PreferredResource2__c,
-                PreferredResource3__c,
-                InterpretationMethod__c,
-                InterpretationMethodSecondary__c
+                IsScreenInterpreter__c
             FROM HOT_Request__c
             WHERE Id = :input.requestId
         ];
@@ -140,21 +123,6 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         if (input.isScreenInterpreter != null) {
             request.IsScreenInterpreter__c = input.isScreenInterpreter;
-        }
-        if (input.preferredResource1 != null) {
-            request.PreferredResource1__c = input.preferredResource1;
-        }
-        if (input.preferredResource2 != null) {
-            request.PreferredResource2__c = input.preferredResource2;
-        }
-        if (input.preferredResource3 != null) {
-            request.PreferredResource3__c = input.preferredResource3;
-        }
-        if (input.interpretationMethod != null) {
-            request.InterpretationMethod__c = input.interpretationMethod;
-        }
-        if (input.interpretationMethodSecondary != null) {
-            request.InterpretationMethodSecondary__c = input.interpretationMethodSecondary;
         }
         try {
             update request;
