@@ -50,7 +50,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     @track serviceResourceSkillList;
     @track showSkillList;
     serviceResourceSkillListFunction() {
-        let tempSRSkillList = [];
         let showSkillList = [];
         if (typeof this.serviceResourceSkill !== 'undefined') {
             this.serviceResourceSkillList = this.serviceResourceSkill;
