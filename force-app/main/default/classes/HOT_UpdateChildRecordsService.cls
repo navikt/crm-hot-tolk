@@ -74,7 +74,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                     Subject,
                     Description
                 FROM WorkOrderLineItem
-                WHERE WorkOrderId IN :workOrders.keySet() AND Status IN :woliStatuses
+                WHERE WorkOrder.HOT_Request__c = :input.requestId AND Status IN :woliStatuses
             ]
         );
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
