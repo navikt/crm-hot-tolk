@@ -74,7 +74,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                     Subject,
                     Description
                 FROM WorkOrderLineItem
-                WHERE WorkOrderId IN :workOrders.keySet() AND Status IN :woliStatuses
+                WHERE WorkOrder.HOT_Request__c = :input.requestId AND Status IN :woliStatuses
             ]
         );
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
@@ -135,31 +135,29 @@ public without sharing class HOT_UpdateChildRecordsService {
 
         //Updates WorkOrders
         for (WorkOrder workOrder : workOrders.values()) {
-            if (workOrder.Status == 'New') {
-                if (input.interpretationStreet != null) {
-                    workOrder.HOT_InterpretationStreet__c = input.interpretationStreet;
-                }
-                if (input.interpretationPostalCode != null) {
-                    workOrder.HOT_InterpretationPostalCode__c = input.interpretationPostalCode;
-                }
-                if (input.interpretationPostalCity != null) {
-                    workOrder.HOT_InterpretationPostalCity__c = input.interpretationPostalCity;
-                }
-                if (input.meetingStreet != null) {
-                    workOrder.Street = input.meetingStreet;
-                }
-                if (input.meetingPostalCode != null) {
-                    workOrder.PostalCode = input.meetingPostalCode;
-                }
-                if (input.meetingPostalCity != null) {
-                    workOrder.City = input.meetingPostalCity;
-                }
-                if (input.subject != null) {
-                    workOrder.Subject = input.subject;
-                }
-                if (input.description != null) {
-                    workOrder.Description = input.description;
-                }
+            if (input.interpretationStreet != null) {
+                workOrder.HOT_InterpretationStreet__c = input.interpretationStreet;
+            }
+            if (input.interpretationPostalCode != null) {
+                workOrder.HOT_InterpretationPostalCode__c = input.interpretationPostalCode;
+            }
+            if (input.interpretationPostalCity != null) {
+                workOrder.HOT_InterpretationPostalCity__c = input.interpretationPostalCity;
+            }
+            if (input.meetingStreet != null) {
+                workOrder.Street = input.meetingStreet;
+            }
+            if (input.meetingPostalCode != null) {
+                workOrder.PostalCode = input.meetingPostalCode;
+            }
+            if (input.meetingPostalCity != null) {
+                workOrder.City = input.meetingPostalCity;
+            }
+            if (input.subject != null) {
+                workOrder.Subject = input.subject;
+            }
+            if (input.description != null) {
+                workOrder.Description = input.description;
             }
         }
         try {
@@ -172,33 +170,31 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         //Updates WorkOrderLineItems
         for (WorkOrderLineItem workOrderLineItem : workOrderLineItems.values()) {
-            if (workOrderLineItem.Status == 'New') {
-                if (input.interpretationStreet != null) {
-                    workOrderLineItem.HOT_InterpretationPostalStreet__c = input.interpretationStreet;
-                }
-                if (input.interpretationPostalCode != null) {
-                    workOrderLineItem.HOT_InterpretationPostalCode__c = input.interpretationPostalCode;
-                }
-                if (input.interpretationPostalCity != null) {
-                    workOrderLineItem.HOT_InterpretationPostalCity__c = input.interpretationPostalCity;
-                }
-                if (input.meetingStreet != null) {
-                    workOrderLineItem.Street = input.meetingStreet;
-                }
-                if (input.meetingPostalCode != null) {
-                    workOrderLineItem.PostalCode = input.meetingPostalCode;
-                }
-                if (input.meetingPostalCity != null) {
-                    workOrderLineItem.City = input.meetingPostalCity;
-                }
-                if (input.subject != null) {
-                    workOrderLineItem.Subject = input.subject;
-                }
-                if (input.description != null) {
-                    workOrderLineItem.Description = input.description;
-                }
-                //Set WorkType
+            if (input.interpretationStreet != null) {
+                workOrderLineItem.HOT_InterpretationPostalStreet__c = input.interpretationStreet;
             }
+            if (input.interpretationPostalCode != null) {
+                workOrderLineItem.HOT_InterpretationPostalCode__c = input.interpretationPostalCode;
+            }
+            if (input.interpretationPostalCity != null) {
+                workOrderLineItem.HOT_InterpretationPostalCity__c = input.interpretationPostalCity;
+            }
+            if (input.meetingStreet != null) {
+                workOrderLineItem.Street = input.meetingStreet;
+            }
+            if (input.meetingPostalCode != null) {
+                workOrderLineItem.PostalCode = input.meetingPostalCode;
+            }
+            if (input.meetingPostalCity != null) {
+                workOrderLineItem.City = input.meetingPostalCity;
+            }
+            if (input.subject != null) {
+                workOrderLineItem.Subject = input.subject;
+            }
+            if (input.description != null) {
+                workOrderLineItem.Description = input.description;
+            }
+            //Set WorkType
         }
 
         try {
@@ -211,36 +207,34 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         //Updates ServiceAppointment
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
-            if (serviceAppointment.Status == 'None') {
-                if (input.interpretationStreet != null) {
-                    serviceAppointment.HOT_InterpretationStreet__c = input.interpretationStreet;
-                }
-                if (input.interpretationPostalCode != null) {
-                    serviceAppointment.HOT_InterpretationPostalCode__c = input.interpretationPostalCode;
-                }
-                if (input.interpretationPostalCity != null) {
-                    serviceAppointment.HOT_InterpretationPostalCity__c = input.interpretationPostalCity;
-                }
-                if (input.meetingStreet != null) {
-                    serviceAppointment.Street = input.meetingStreet;
-                }
-                if (input.meetingPostalCode != null) {
-                    serviceAppointment.PostalCode = input.meetingPostalCode;
-                }
-                if (input.meetingPostalCity != null) {
-                    serviceAppointment.City = input.meetingPostalCity;
-                }
-                if (input.subject != null) {
-                    serviceAppointment.Subject = input.subject;
-                }
-                if (input.description != null) {
-                    serviceAppointment.Description = input.description;
-                }
-                if (input.isScreenInterpreter != null) {
-                    serviceAppointment.HOT_IsScreenInterpreterNew__c = input.isScreenInterpreter;
-                }
-                //Set Preferred Resource
+            if (input.interpretationStreet != null) {
+                serviceAppointment.HOT_InterpretationStreet__c = input.interpretationStreet;
             }
+            if (input.interpretationPostalCode != null) {
+                serviceAppointment.HOT_InterpretationPostalCode__c = input.interpretationPostalCode;
+            }
+            if (input.interpretationPostalCity != null) {
+                serviceAppointment.HOT_InterpretationPostalCity__c = input.interpretationPostalCity;
+            }
+            if (input.meetingStreet != null) {
+                serviceAppointment.Street = input.meetingStreet;
+            }
+            if (input.meetingPostalCode != null) {
+                serviceAppointment.PostalCode = input.meetingPostalCode;
+            }
+            if (input.meetingPostalCity != null) {
+                serviceAppointment.City = input.meetingPostalCity;
+            }
+            if (input.subject != null) {
+                serviceAppointment.Subject = input.subject;
+            }
+            if (input.description != null) {
+                serviceAppointment.Description = input.description;
+            }
+            if (input.isScreenInterpreter != null) {
+                serviceAppointment.HOT_IsScreenInterpreterNew__c = input.isScreenInterpreter;
+            }
+            //Set Preferred Resource
         }
         try {
             update serviceAppointments.values();
