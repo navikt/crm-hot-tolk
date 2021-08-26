@@ -89,6 +89,10 @@
         margin: 0;
         padding: 1rem;
     }
+    .panelMedBilde-single {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
 }
 
 @media (min-width: 576px) {

@@ -1,0 +1,29 @@
+<template>
+    <div class="user-info-wrapper center-content">
+        <div class="user-info-tile center-content">
+            <section>
+                <lightning-record-view-form object-api-name="ServiceResource" record-id={recordId} mode="view">
+                    <lightning-output-field field-name="HOT_Email__c" label="Epost"> </lightning-output-field>
+                    <lightning-output-field
+                        field-name="HOT_MobilePhone__c"
+                        label="Telefonnummer"
+                    ></lightning-output-field>
+                </lightning-record-view-form>
+            </section>
+            <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
+                <lightning-input-field field-name="HOT_EmailOverride__c" label="Rediger Epost"></lightning-input-field>
+                <lightning-input-field
+                    field-name="HOT_MobilePhoneOverride__c"
+                    label="Rediger Telefonnummer"
+                ></lightning-input-field>
+                <lightning-button
+                    class="slds-m-top_small"
+                    variant="brand"
+                    type="submit"
+                    name="update"
+                    label="Lagre"
+                ></lightning-button>
+            </lightning-record-edit-form>
+        </div>
+    </div>
+</template>
