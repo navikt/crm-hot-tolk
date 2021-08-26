@@ -26,7 +26,8 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_AssignmentType__c,
                 AssignmentType__c,
                 AppointmentDeadlineDate__c,
-                AppointmentServiceTerritory__c
+                AppointmentServiceTerritory__c,
+                WorkOrderCanceledDate__c
             FROM HOT_InterestedResource__c
             WHERE ServiceResource__c IN :serviceResource
         ];
