@@ -61,7 +61,7 @@ jobs:
       
       # Create scratch org
       - name: Create scratch org
-        run: sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1 --dev-debug
+        run: sfdx force:org:create -f config/project-scratch-def.json -a scratch-org -s -d 1 --dev-debug -w 15
       
       # Set SCRATCH_ORG_SFDX_AUTH_URL.txt
       # ! saves sfdx auth url as artifact to circumvent GitHub Actions censoring of the value (which occurs when used with job output)
