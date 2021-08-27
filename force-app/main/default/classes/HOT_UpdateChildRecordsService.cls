@@ -20,11 +20,6 @@ public without sharing class HOT_UpdateChildRecordsService {
         HOT_Request__c request = input.request;
         List<String> errors = new List<String>();
 
-        System.debug('updateChildRecordsFromRequest');
-        System.debug(request);
-        System.debug(request.IsScreenInterpreter__c);
-        System.debug(input);
-
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
         if (input.isAddressChoice) {
             requestToUpdate.InterpretationStreet__c = request.InterpretationStreet__c;
