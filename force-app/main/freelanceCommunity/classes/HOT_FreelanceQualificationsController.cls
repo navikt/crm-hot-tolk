@@ -75,7 +75,7 @@ public without sharing class HOT_FreelanceQualificationsController {
 
     @AuraEnabled(cacheable=true)
     public static List<Skill> getAllSkillsList() {
-        List<Skill> allSkills = [SELECT Id, MasterLabel FROM Skill];
+        List<Skill> allSkills = [SELECT Id, MasterLabel FROM Skill WHERE DeveloperName != 'Bildetolkvakt'];
         return allSkills;
     }
 }
