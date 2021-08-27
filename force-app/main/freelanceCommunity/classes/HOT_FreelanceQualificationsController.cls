@@ -42,34 +42,38 @@ public without sharing class HOT_FreelanceQualificationsController {
 
     @AuraEnabled
     public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
-        Map<Id, ServiceResourceSkill> skillMap = getServiceResourceSkillMap();
-        Set<Id> selectedSkillsIds = new Set<Id>();
+        List<ServiceResourceSkill> serviceResourceSkillsToDelete = new List<ServiceResourceSkill>();
+        List<ServiceResourceSkill> serviceResourceSkillsToCreate = new List<ServiceResourceSkill>();
 
-        for (Skill selectedSkill : selectedSkills) {
-            selectedSkillsIds.add(selectedSkill.Id);
-        }
-        if (selectedSkills.isEmpty()) {
-            for (serviceResourceSkill x1 : skillMap.values()) {
-                x1.EffectiveEndDate = Date.today();
+        Map<Id, ServiceResourceSkill> serviceResourceSkills = getServiceResourceSkillMap();
+
+        Set<Id> selectedSkillsIds = new Set<Id>();
+        for (Skill skill : selectedSkills) {
+            selectedSkillsIds.add(skill.Id);
+            if (!serviceResourceSkills.keySet().contains(skill.Id)) {
+                serviceResourceSkillsToCreate.add(setResourceSkill(serviceResource, skill));
             }
         }
-        for (Skill selectedSkill : selectedSkills) {
-            if (!skillMap.containsKey(selectedSkill.Id)) {
-                skillMap.put(selectedSkill.Id, setResourceSkill(serviceResource, selectedSkill));
-            } else {
-                skillMap.get(selectedSkill.Id).EffectiveEndDate = null;
-            }
-        }
-        for (Id skillId : skillMap.keySet()) {
+
+        for (Id skillId : serviceResourceSkills.keySet()) {
             if (!selectedSkillsIds.contains(skillId)) {
-                skillMap.get(skillId).EffectiveEndDate = Date.today();
+                serviceResourceSkillsToDelete.add(serviceResourceSkills.get(skillId));
             }
         }
 
         try {
-            upsert skillMap.values();
+            insert serviceResourceSkillsToCreate;
         } catch (Exception e) {
-            throw e;
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+        try {
+            delete serviceResourceSkillsToDelete;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
         }
     }
 
