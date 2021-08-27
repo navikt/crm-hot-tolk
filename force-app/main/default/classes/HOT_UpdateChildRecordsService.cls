@@ -1,24 +1,15 @@
 public without sharing class HOT_UpdateChildRecordsService {
     @InvocableVariable
-    public String requestId;
+    public HOT_Request__c request;
+
     @InvocableVariable
-    public String interpretationStreet;
+    public Boolean isAddressChoice;
     @InvocableVariable
-    public String interpretationPostalCode;
+    public Boolean isSubjectChoice;
     @InvocableVariable
-    public String interpretationPostalCity;
+    public Boolean isDescriptionChoice;
     @InvocableVariable
-    public String meetingStreet;
-    @InvocableVariable
-    public String meetingPostalCode;
-    @InvocableVariable
-    public String meetingPostalCity;
-    @InvocableVariable
-    public String subject;
-    @InvocableVariable
-    public String description;
-    @InvocableVariable
-    public Boolean isScreenInterpreter;
+    public Boolean isScreenInterpreterChoice;
 
     @InvocableMethod
     public static List<String> updateChildRecordsFromRequest(List<HOT_UpdateChildRecordsService> inputVariables) {
@@ -26,23 +17,18 @@ public without sharing class HOT_UpdateChildRecordsService {
         List<String> woliStatuses = new List<String>{ 'New', 'Scheduled', 'Dispatched' };
         List<String> saStatuses = new List<String>{ 'None', 'Released to Freelance', 'Scheduled', 'Dispatched' };
         HOT_UpdateChildRecordsService input = inputVariables[0];
+        HOT_Request__c request = input.request;
         List<String> errors = new List<String>();
 
-        HOT_Request__c request = [
-            SELECT
-                Id,
-                InterpretationStreet__c,
-                InterpretationPostalCode__c,
-                InterpretationPostalCity__c,
-                MeetingStreet__c,
-                MeetingPostalCode__c,
-                MeetingPostalCity__c,
-                Subject__c,
-                Description__c,
-                IsScreenInterpreter__c
-            FROM HOT_Request__c
-            WHERE Id = :input.requestId
-        ];
+        try {
+            update request;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+            errors.add('Could not update request');
+        }
+
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(
             [
                 SELECT
@@ -57,7 +43,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                     Subject,
                     Description
                 FROM WorkOrder
-                WHERE HOT_Request__c = :input.requestId AND Status IN :woStatuses
+                WHERE HOT_Request__c = :request.Id AND Status IN :woStatuses
             ]
         );
         Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
@@ -74,7 +60,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                     Subject,
                     Description
                 FROM WorkOrderLineItem
-                WHERE WorkOrder.HOT_Request__c = :input.requestId AND Status IN :woliStatuses
+                WHERE WorkOrder.HOT_Request__c = :request.Id AND Status IN :woliStatuses
             ]
         );
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
@@ -92,72 +78,25 @@ public without sharing class HOT_UpdateChildRecordsService {
                     Description,
                     HOT_IsScreenInterpreterNew__c
                 FROM ServiceAppointment
-                WHERE HOT_Request__c = :input.requestId AND Status IN :saStatuses
+                WHERE HOT_Request__c = :request.Id AND Status IN :saStatuses
             ]
         );
 
-        //Update Request
-        if (input.interpretationStreet != null) {
-            request.interpretationStreet__c = input.interpretationStreet;
-        }
-        if (input.interpretationPostalCode != null) {
-            request.interpretationPostalCode__c = input.interpretationPostalCode;
-        }
-        if (input.interpretationPostalCity != null) {
-            request.interpretationPostalCity__c = input.interpretationPostalCity;
-        }
-        if (input.meetingStreet != null) {
-            request.MeetingStreet__c = input.meetingStreet;
-        }
-        if (input.meetingPostalCode != null) {
-            request.MeetingPostalCode__c = input.meetingPostalCode;
-        }
-        if (input.meetingPostalCity != null) {
-            request.MeetingPostalCity__c = input.meetingPostalCity;
-        }
-        if (input.subject != null) {
-            request.Subject__c = input.subject;
-        }
-        if (input.description != null) {
-            request.Description__c = input.description;
-        }
-        if (input.isScreenInterpreter != null) {
-            request.IsScreenInterpreter__c = input.isScreenInterpreter;
-        }
-        try {
-            update request;
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-            errors.add('Could not update request');
-        }
-
         //Updates WorkOrders
         for (WorkOrder workOrder : workOrders.values()) {
-            if (input.interpretationStreet != null) {
-                workOrder.HOT_InterpretationStreet__c = input.interpretationStreet;
+            if (input.isAddressChoice) {
+                workOrder.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
+                workOrder.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
+                workOrder.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
+                workOrder.Street = request.MeetingStreet__c;
+                workOrder.PostalCode = request.MeetingPostalCode__c;
+                workOrder.City = request.MeetingPostalCity__c;
             }
-            if (input.interpretationPostalCode != null) {
-                workOrder.HOT_InterpretationPostalCode__c = input.interpretationPostalCode;
+            if (input.isSubjectChoice) {
+                workOrder.Subject = request.Subject__c;
             }
-            if (input.interpretationPostalCity != null) {
-                workOrder.HOT_InterpretationPostalCity__c = input.interpretationPostalCity;
-            }
-            if (input.meetingStreet != null) {
-                workOrder.Street = input.meetingStreet;
-            }
-            if (input.meetingPostalCode != null) {
-                workOrder.PostalCode = input.meetingPostalCode;
-            }
-            if (input.meetingPostalCity != null) {
-                workOrder.City = input.meetingPostalCity;
-            }
-            if (input.subject != null) {
-                workOrder.Subject = input.subject;
-            }
-            if (input.description != null) {
-                workOrder.Description = input.description;
+            if (input.isDescriptionChoice) {
+                workOrder.Description = request.Description__c;
             }
         }
         try {
@@ -170,31 +109,20 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         //Updates WorkOrderLineItems
         for (WorkOrderLineItem workOrderLineItem : workOrderLineItems.values()) {
-            if (input.interpretationStreet != null) {
-                workOrderLineItem.HOT_InterpretationPostalStreet__c = input.interpretationStreet;
+            if (input.isAddressChoice) {
+                workOrderLineItem.HOT_InterpretationPostalStreet__c = request.InterpretationStreet__c;
+                workOrderLineItem.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
+                workOrderLineItem.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
+                workOrderLineItem.Street = request.MeetingStreet__c;
+                workOrderLineItem.PostalCode = request.MeetingPostalCode__c;
+                workOrderLineItem.City = request.MeetingPostalCity__c;
             }
-            if (input.interpretationPostalCode != null) {
-                workOrderLineItem.HOT_InterpretationPostalCode__c = input.interpretationPostalCode;
+            if (input.isSubjectChoice) {
+                workOrderLineItem.Subject = request.Subject__c;
             }
-            if (input.interpretationPostalCity != null) {
-                workOrderLineItem.HOT_InterpretationPostalCity__c = input.interpretationPostalCity;
+            if (input.isDescriptionChoice) {
+                workOrderLineItem.Description = request.Description__c;
             }
-            if (input.meetingStreet != null) {
-                workOrderLineItem.Street = input.meetingStreet;
-            }
-            if (input.meetingPostalCode != null) {
-                workOrderLineItem.PostalCode = input.meetingPostalCode;
-            }
-            if (input.meetingPostalCity != null) {
-                workOrderLineItem.City = input.meetingPostalCity;
-            }
-            if (input.subject != null) {
-                workOrderLineItem.Subject = input.subject;
-            }
-            if (input.description != null) {
-                workOrderLineItem.Description = input.description;
-            }
-            //Set WorkType
         }
 
         try {
@@ -205,37 +133,29 @@ public without sharing class HOT_UpdateChildRecordsService {
             logger.publishSynch();
             errors.add('Could not update workOrderLineItems');
         }
+
         //Updates ServiceAppointment
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
-            if (input.interpretationStreet != null) {
-                serviceAppointment.HOT_InterpretationStreet__c = input.interpretationStreet;
+            if (input.isAddressChoice) {
+                serviceAppointment.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
+                serviceAppointment.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
+                serviceAppointment.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
+                serviceAppointment.Street = request.MeetingStreet__c;
+                serviceAppointment.PostalCode = request.MeetingPostalCode__c;
+                serviceAppointment.City = request.MeetingPostalCity__c;
             }
-            if (input.interpretationPostalCode != null) {
-                serviceAppointment.HOT_InterpretationPostalCode__c = input.interpretationPostalCode;
+            if (input.isSubjectChoice) {
+                serviceAppointment.Subject = request.Subject__c;
             }
-            if (input.interpretationPostalCity != null) {
-                serviceAppointment.HOT_InterpretationPostalCity__c = input.interpretationPostalCity;
+            if (input.isDescriptionChoice) {
+                serviceAppointment.Description = request.Description__c;
             }
-            if (input.meetingStreet != null) {
-                serviceAppointment.Street = input.meetingStreet;
+
+            if (input.isScreenInterpreterChoice) {
+                serviceAppointment.HOT_IsScreenInterpreterNew__c = request.IsScreenInterpreter__c;
             }
-            if (input.meetingPostalCode != null) {
-                serviceAppointment.PostalCode = input.meetingPostalCode;
-            }
-            if (input.meetingPostalCity != null) {
-                serviceAppointment.City = input.meetingPostalCity;
-            }
-            if (input.subject != null) {
-                serviceAppointment.Subject = input.subject;
-            }
-            if (input.description != null) {
-                serviceAppointment.Description = input.description;
-            }
-            if (input.isScreenInterpreter != null) {
-                serviceAppointment.HOT_IsScreenInterpreterNew__c = input.isScreenInterpreter;
-            }
-            //Set Preferred Resource
         }
+
         try {
             update serviceAppointments.values();
         } catch (Exception e) {
@@ -244,7 +164,7 @@ public without sharing class HOT_UpdateChildRecordsService {
             logger.publishSynch();
             errors.add('Could not update serviceAppointments');
         }
-        //What do we do with Time??
+
         return errors;
     }
 }
