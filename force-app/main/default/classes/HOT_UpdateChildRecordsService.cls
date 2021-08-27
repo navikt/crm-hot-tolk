@@ -20,8 +20,32 @@ public without sharing class HOT_UpdateChildRecordsService {
         HOT_Request__c request = input.request;
         List<String> errors = new List<String>();
 
+        System.debug('updateChildRecordsFromRequest');
+        System.debug(request);
+        System.debug(request.IsScreenInterpreter__c);
+        System.debug(input);
+
+        HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
+        if (input.isAddressChoice) {
+            requestToUpdate.InterpretationStreet__c = request.InterpretationStreet__c;
+            requestToUpdate.InterpretationPostalCode__c = request.InterpretationPostalCode__c;
+            requestToUpdate.InterpretationPostalCity__c = request.InterpretationPostalCity__c;
+            requestToUpdate.MeetingStreet__c = request.MeetingStreet__c;
+            requestToUpdate.MeetingPostalCode__c = request.MeetingPostalCode__c;
+            requestToUpdate.MeetingPostalCity__c = request.MeetingPostalCity__c;
+        }
+        if (input.isSubjectChoice) {
+            requestToUpdate.Subject__c = request.Subject__c;
+        }
+        if (input.isDescriptionChoice) {
+            requestToUpdate.Description__c = request.Description__c;
+        }
+        if (input.isScreenInterpreterChoice) {
+            requestToUpdate.IsScreenInterpreter__c = request.IsScreenInterpreter__c;
+        }
+
         try {
-            update request;
+            update requestToUpdate;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
