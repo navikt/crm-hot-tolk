@@ -231,7 +231,7 @@
         <label>NewValuesScreen</label>
         <locationX>50</locationX>
         <locationY>518</locationY>
-        <allowBack>true</allowBack>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
