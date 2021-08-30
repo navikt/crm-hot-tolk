@@ -13,16 +13,38 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
 
         HOT_UpdateChildRecordsService input = new HOT_UpdateChildRecordsService();
 
-        input.requestId = request.Id;
-        input.interpretationStreet = 'New interpretationStreet';
-        input.interpretationPostalCode = '1111';
-        input.interpretationPostalCity = 'New interpretationPostalCity';
-        input.meetingStreet = 'New meetingStreet';
-        input.meetingPostalCode = '1111';
-        input.meetingPostalCity = 'New meetingPostalCity';
-        input.subject = 'New subject';
-        input.description = 'New description';
-        input.isScreenInterpreter = true;
+        request = [
+            SELECT
+                Id,
+                InterpretationStreet__c,
+                InterpretationPostalCode__c,
+                InterpretationPostalCity__c,
+                MeetingStreet__c,
+                MeetingPostalCode__c,
+                MeetingPostalCity__c,
+                Subject__c,
+                Description__c,
+                IsScreenInterpreter__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+
+        request.InterpretationStreet__c = 'New interpretationStreet';
+        request.InterpretationPostalCode__c = '1111';
+        request.InterpretationPostalCity__c = 'New interpretationPostalCity';
+        request.MeetingStreet__c = 'New meetingStreet';
+        request.MeetingPostalCode__c = '1111';
+        request.MeetingPostalCity__c = 'New meetingPostalCity';
+        request.Subject__c = 'New subject';
+        request.Description__c = 'New description';
+        request.IsScreenInterpreter__c = true;
+
+        input.request = request;
+
+        input.isAddressChoice = true;
+        input.isSubjectChoice = true;
+        input.isDescriptionChoice = true;
+        input.isScreenInterpreterChoice = true;
 
         Test.startTest();
         HOT_UpdateChildRecordsService.updateChildRecordsFromRequest(new List<HOT_UpdateChildRecordsService>{ input });

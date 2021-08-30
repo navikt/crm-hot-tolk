@@ -9,63 +9,33 @@
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
-            <name>description</name>
+            <name>isAddressChoice</name>
             <value>
-                <elementReference>getRequest.Description__c</elementReference>
+                <elementReference>isAddress</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
-            <name>interpretationPostalCity</name>
+            <name>isDescriptionChoice</name>
             <value>
-                <elementReference>getRequest.InterpretationPostalCity__c</elementReference>
+                <elementReference>isDescription</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
-            <name>interpretationPostalCode</name>
+            <name>isScreenInterpreterChoice</name>
             <value>
-                <elementReference>getRequest.InterpretationPostalCode__c</elementReference>
+                <elementReference>isScreenInterpreter</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
-            <name>interpretationStreet</name>
+            <name>isSubjectChoice</name>
             <value>
-                <elementReference>getRequest.InterpretationStreet__c</elementReference>
+                <elementReference>isSubject</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
-            <name>isScreenInterpreter</name>
+            <name>request</name>
             <value>
-                <elementReference>getRequest.IsScreenInterpreter__c</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>meetingPostalCity</name>
-            <value>
-                <elementReference>getRequest.MeetingPostalCity__c</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>meetingPostalCode</name>
-            <value>
-                <elementReference>getRequest.MeetingPostalCode__c</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>meetingStreet</name>
-            <value>
-                <elementReference>getRequest.MeetingStreet__c</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>requestId</name>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>subject</name>
-            <value>
-                <elementReference>getRequest.Subject__c</elementReference>
+                <elementReference>getRequest</elementReference>
             </value>
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -85,14 +55,6 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Description</stringValue>
-        </value>
-    </choices>
-    <choices>
-        <name>Owner</name>
-        <choiceText>Eier</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>Owner</stringValue>
         </value>
     </choices>
     <choices>
@@ -143,6 +105,26 @@
             <label>Ok</label>
         </rules>
     </decisions>
+    <formulas>
+        <name>isAddress</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!Address})</expression>
+    </formulas>
+    <formulas>
+        <name>isDescription</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!Description})</expression>
+    </formulas>
+    <formulas>
+        <name>isScreenInterpreter</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!ScreenInterpreter})</expression>
+    </formulas>
+    <formulas>
+        <name>isSubject</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!Subject})</expression>
+    </formulas>
     <interviewLabel>HOT_UpdateChildsFromRequest {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_UpdateChildsFromRequest</label>
     <processMetadataValues>
