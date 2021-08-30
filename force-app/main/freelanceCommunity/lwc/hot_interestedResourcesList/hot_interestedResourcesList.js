@@ -7,6 +7,7 @@ import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.a
 import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
 import { interestedResourceFieldLabels } from 'c/hot_fieldLabels';
 import { formatRecord } from 'c/hot_recordDetails';
+import { sortList, getMobileSortingOptions } from 'c/sortController';
 
 var actions = [
     //{ label: 'Kommenter', name: 'comment' },
@@ -133,81 +134,20 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     mobileSortingDefaultValue = '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "asc"} ';
     get sortingOptions() {
-        return [
-            {
-                label: 'Start tid stigende',
-                value: '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Start tid synkende',
-                value: '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "desc"} '
-            },
-            {
-                label: 'Slutt tid stigende',
-                value: '{"fieldName": "ServiceAppointmentEndTime__c", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Slutt tid synkende',
-                value: '{"fieldName": "ServiceAppointmentEndTime__c", "sortDirection": "desc"} '
-            },
-            {
-                label: 'Poststed A - Å',
-                value: '{"fieldName": "ServiceAppointmentCity__c", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Poststed A - Å',
-                value: '{"fieldName": "ServiceAppointmentCity__c", "sortDirection": "desc"} '
-            },
-            {
-                label: 'Tema A - Å',
-                value: '{"fieldName": "ServiceAppointmentFreelanceSubject__c", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Tema A - Å',
-                value: '{"fieldName": "ServiceAppointmentFreelanceSubject__c", "sortDirection": "desc"} '
-            },
-            {
-                label: 'Arbeidstype A - Å',
-                value: '{"fieldName": "WorkTypeName__c", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Arbeidstype Å - A',
-                value: '{"fieldName": "WorkTypeName__c", "sortDirection": "desc"} '
-            },
-            {
-                label: 'Status A - Å',
-                value: '{"fieldName": "Status__c", "sortDirection": "asc"} '
-            },
-            {
-                label: 'Status Å - A',
-                value: '{"fieldName": "Status__c", "sortDirection": "desc"} '
-            }
-        ];
+        return getMobileSortingOptions(this.columns);
     }
+
     handleMobileSorting(event) {
-        this.sortList(JSON.parse(event.detail.value));
-    }
-    sortBy(field, reverse) {
-        const key = function (x) {
-            return x[field];
-        };
-        return function (a, b) {
-            a = key(a).toLowerCase();
-            b = key(b).toLowerCase();
-            return reverse * ((a > b) - (b > a));
-        };
+        let value = JSON.parse(event.detail.value);
+        this.sortDirection = value.sortDirection;
+        this.sortedBy = value.fieldName;
+        this.interestedResources = sortList(this.interestedResources, this.sortedBy, this.sortDirection);
+        this.showHideAll();
     }
     onHandleSort(event) {
-        this.sortList(event.detail);
-    }
-    sortList(input) {
-        const { fieldName: sortedBy, sortDirection } = input;
-        let cloneData = [...this.interestedResources];
-        cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
-
-        this.interestedResources = cloneData;
-        this.sortDirection = sortDirection;
-        this.sortedBy = sortedBy;
+        this.sortDirection = event.detail.sortDirection;
+        this.sortedBy = event.detail.fieldName;
+        this.interestedResources = sortList(this.interestedResources, this.sortedBy, this.sortDirection);
         this.showHideAll();
     }
 

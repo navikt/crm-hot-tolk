@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
     <assignments>
         <name>SetReleasedToFreelanceToFalse</name>
         <label>SetReleasedToFreelanceToFalse</label>
-        <locationX>314</locationX>
-        <locationY>638</locationY>
+        <locationX>578</locationX>
+        <locationY>758</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToFreelance__c</assignToReference>
             <operator>Assign</operator>
@@ -60,8 +61,8 @@
 Status == &quot;Ingen&quot;</description>
         <name>Check_isReleasedToFreelance</name>
         <label>Check isReleasedToFreelance</label>
-        <locationX>248</locationX>
-        <locationY>278</locationY>
+        <locationX>512</locationX>
+        <locationY>398</locationY>
         <defaultConnector>
             <targetReference>AlreadyScheduled</targetReference>
         </defaultConnector>
@@ -85,8 +86,8 @@ Status == &quot;Ingen&quot;</description>
     <decisions>
         <name>CheckChoice</name>
         <label>CheckChoice</label>
-        <locationX>446</locationX>
-        <locationY>518</locationY>
+        <locationX>710</locationX>
+        <locationY>638</locationY>
         <defaultConnector>
             <targetReference>OutScreen</targetReference>
         </defaultConnector>
@@ -105,6 +106,28 @@ Status == &quot;Ingen&quot;</description>
                 <targetReference>SetReleasedToFreelanceToFalse</targetReference>
             </connector>
             <label>Retract</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>CheckIfFoundRecord</name>
+        <label>CheckIfFoundRecord</label>
+        <locationX>281</locationX>
+        <locationY>278</locationY>
+        <defaultConnector>
+            <targetReference>Check_isReleasedToFreelance</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>notFound</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>recordId</leftValueReference>
+                <operator>EqualTo</operator>
+            </conditions>
+            <connector>
+                <targetReference>recordNOTfoundScreen</targetReference>
+            </connector>
+            <label>notFound</label>
         </rules>
     </decisions>
     <interviewLabel>HOT_RetractFromFreelance {!$Flow.CurrentDateTime}</interviewLabel>
@@ -131,12 +154,13 @@ Status == &quot;Ingen&quot;</description>
     <recordLookups>
         <name>GetCurrentServiceAppointment</name>
         <label>GetCurrentServiceAppointment</label>
-        <locationX>248</locationX>
+        <locationX>281</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_isReleasedToFreelance</targetReference>
+            <targetReference>CheckIfFoundRecord</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
@@ -160,8 +184,8 @@ Status == &quot;Ingen&quot;</description>
     <recordUpdates>
         <name>UpdateServiceAppointment</name>
         <label>UpdateServiceAppointment</label>
-        <locationX>314</locationX>
-        <locationY>758</locationY>
+        <locationX>578</locationX>
+        <locationY>878</locationY>
         <connector>
             <targetReference>SuccessScreen</targetReference>
         </connector>
@@ -170,8 +194,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>AlreadyScheduled</name>
         <label>AlreadyScheduled</label>
-        <locationX>446</locationX>
-        <locationY>398</locationY>
+        <locationX>710</locationX>
+        <locationY>518</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -193,15 +217,14 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>NotReleased</name>
         <label>NotReleased</label>
-        <locationX>50</locationX>
-        <locationY>398</locationY>
+        <locationX>314</locationX>
+        <locationY>518</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>NotReleasedText</name>
-            <fieldText
-            >&lt;p&gt;Oppdraget er ikke frigitt til frilanstolker, og kan derfor ikke tilbakekalles.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Oppdraget er ikke frigitt til frilanstolker, og kan derfor ikke tilbakekalles.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -210,8 +233,8 @@ Status == &quot;Ingen&quot;</description>
     <screens>
         <name>OutScreen</name>
         <label>OutScreen</label>
-        <locationX>578</locationX>
-        <locationY>638</locationY>
+        <locationX>842</locationX>
+        <locationY>758</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -224,10 +247,26 @@ Status == &quot;Ingen&quot;</description>
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>recordNOTfoundScreen</name>
+        <label>recordNOTfoundScreen</label>
+        <locationX>50</locationX>
+        <locationY>398</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>recordNOTfoundScreenText</name>
+            <fieldText>&lt;p&gt;Oppdatert, lukk vinduet&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>314</locationX>
-        <locationY>878</locationY>
+        <locationX>578</locationX>
+        <locationY>998</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -240,7 +279,7 @@ Status == &quot;Ingen&quot;</description>
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>122</locationX>
+        <locationX>155</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>GetCurrentServiceAppointment</targetReference>

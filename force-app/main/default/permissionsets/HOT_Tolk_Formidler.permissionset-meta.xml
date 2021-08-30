@@ -320,7 +320,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.EconomicalProvider__c</field>
+        <field>HOT_Request__c.EconomicProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1828,6 +1828,10 @@
     </objectPermissions>
     <pageAccesses>
         <apexPage>HOT_ReleaseToFreelance</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>HOT_RetractFromFreelance</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
     <recordTypeVisibilities>

@@ -155,18 +155,6 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                     workOrderLineItem.HOT_InterpretationPostalStreet__c = workOrders.get(workOrderLineItem.WorkOrderId)
                         .HOT_InterpretationStreet__c;
                 }
-                if (
-                    workOrderLineItem.PostalCode == null &&
-                    workOrders.get(workOrderLineItem.WorkOrderId).PostalCode != null
-                ) {
-                    workOrderLineItem.PostalCode = workOrders.get(workOrderLineItem.WorkOrderId).PostalCode;
-                }
-                if (workOrderLineItem.Street == null && workOrders.get(workOrderLineItem.WorkOrderId).Street != null) {
-                    workOrderLineItem.Street = workOrders.get(workOrderLineItem.WorkOrderId).Street;
-                }
-                if (workOrderLineItem.City == null && workOrders.get(workOrderLineItem.WorkOrderId).City != null) {
-                    workOrderLineItem.City = workOrders.get(workOrderLineItem.WorkOrderId).City;
-                }
             }
         }
     }

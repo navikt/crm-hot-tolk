@@ -9,7 +9,9 @@ public without sharing class HOT_UserHandler extends MyTriggers {
                     userIds.add(user.Id);
                 }
             }
-            HOT_ServiceResourceHandler.createServiceResourceFuture(userIds);
+            if (userIds.size() > 0) {
+                HOT_ServiceResourceHandler.createServiceResourceFuture(userIds);
+            }
         }
     }
 }

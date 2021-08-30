@@ -227,12 +227,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     public static void updateRequests(List<WorkOrder> workOrders) {
         Set<Id> requestIds = new Set<Id>();
-        List<Id> deletedWorkOrders = new List<Id>();
         for (WorkOrder workOrder : workOrders) {
             requestIds.add(workOrder.HOT_Request__c);
-            if (workOrder.IsDeleted) {
-                deletedWorkOrders.add(workOrder.Id);
-            }
         }
         List<HOT_Request__c> requests = [
             SELECT
@@ -242,10 +238,11 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 EndTime__c,
                 SeriesStartDate__c,
                 SeriesEndDate__c,
+                Status__c,
                 (
                     SELECT Id, StartDate, EndDate, Status
                     FROM HOT_Request__c.Work_Orders__r
-                    WHERE Id NOT IN :deletedWorkOrders AND Status != 'Annul'
+                    WHERE Status != 'Annul'
                     ORDER BY StartDate ASC
                 )
             FROM HOT_Request__c
@@ -255,17 +252,37 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             if (request.NumberOfWorkOrders__c != request.Work_Orders__r.size()) {
                 request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
             }
-            for (WorkOrder workOrder : request.Work_Orders__r) {
-                if (workOrder.Status != 'Canceled') {
-                    request.StartTime__c = workOrder.StartDate;
-                    request.EndTime__c = workOrder.EndDate;
-                    request.SeriesStartDate__c = workOrder.StartDate.date();
-                    break;
-                }
+
+            if (request.Status__c != 'Avlyst') {
+                request.StartTime__c = null;
+                request.EndTime__c = null;
+                request.SeriesStartDate__c = null;
+                request.SeriesEndDate__c = null;
             }
             for (WorkOrder workOrder : request.Work_Orders__r) {
                 if (workOrder.Status != 'Canceled') {
-                    request.SeriesEndDate__c = workOrder.EndDate.date();
+                    if (
+                        workOrder.StartDate != null &&
+                        (workOrder.StartDate < request.StartTime__c ||
+                        request.StartTime__c == null)
+                    ) {
+                        request.StartTime__c = workOrder.StartDate;
+                        request.EndTime__c = workOrder.EndDate;
+                    }
+                    if (
+                        workOrder.StartDate.date() != null &&
+                        (workOrder.StartDate.date() < request.SeriesStartDate__c ||
+                        request.SeriesStartDate__c == null)
+                    ) {
+                        request.SeriesStartDate__c = workOrder.StartDate.date();
+                    }
+                    if (
+                        workOrder.EndDate.date() != null &&
+                        (workOrder.EndDate.date() > request.SeriesEndDate__c ||
+                        request.SeriesEndDate__c == null)
+                    ) {
+                        request.SeriesEndDate__c = workOrder.EndDate.date();
+                    }
                 }
             }
         }
@@ -326,17 +343,20 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             [SELECT Id, CanceledDate__c FROM HOT_Request__c WHERE Id IN :requestIds]
         );
         for (WorkOrder workOrder : workorders) {
-            if (requests.get(workOrder.HOT_Request__c).CanceledDate__c != null) {
-                workOrder.CanceledDate__c = requests.get(workOrder.HOT_Request__c).CanceledDate__c;
-            } else if (workOrder.CanceledDate__c != null) {
-                workOrder.CanceledDate__c = Date.today();
+            if (workOrder.CanceledDate__c == null) {
+                if (requests.get(workOrder.HOT_Request__c).CanceledDate__c != null) {
+                    workOrder.CanceledDate__c = requests.get(workOrder.HOT_Request__c).CanceledDate__c;
+                } else {
+                    workOrder.CanceledDate__c = Date.today();
+                }
             }
         }
     }
 
-    public static void resetNotifyDispatcher(List<WorkOrder> workOrders) {
+    public static List<WorkOrder> resetNotifyDispatcher(List<WorkOrder> workOrders) {
         for (WorkOrder workOrder : workOrders) {
             workOrder.HOT_IsNotifyDispatcher__c = false;
         }
+        return workOrders;
     }
 }
