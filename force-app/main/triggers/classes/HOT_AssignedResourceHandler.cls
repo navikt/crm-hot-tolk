@@ -103,6 +103,9 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             sa.HOT_ResetToDefault__c = true;
         }
         update serviceAppointments;
+        update HOT_AssignedResourceAccessHandler.setRecalculateManualSharingFlagOnServiceAppointment(
+            serviceAppointmentIds
+        );
     }
 
     List<HOT_InterestedResource__c> createInterestedResources(List<AssignedResource> records) {
