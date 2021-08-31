@@ -40,8 +40,6 @@ public without sharing class HOT_AssignedResourceAccessHandler extends MyTrigger
             apppointmentByAssignment.put(ar.Id, ar.ServiceAppointmentId);
             resourceByAssignment.put(ar.Id, ar.ServiceResourceId);
         }
-
-        update setRecalculateManualSharingFlagOnServiceAppointment(apppointmentByAssignment.values());
     }
 
     public static List<ServiceAppointment> setRecalculateManualSharingFlagOnServiceAppointment(
