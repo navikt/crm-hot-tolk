@@ -4,6 +4,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         setDefaultFields((List<ServiceAppointment>) records);
     }
 
+    public override void onAfterInsert() {
+        //Kall på metoden din her
+        // variablen records er av typen List<SObject>, men den kan castes til List<ServiceAppointment> slik:
+        List<ServiceAppointment> serviceAppointments = (List<ServiceAppointment>) records;
+    }
+
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<ServiceAppointment> serviceAppointmentsStatusFromCannotCompleteToNone = new List<ServiceAppointment>();
         List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
