@@ -107,6 +107,17 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
             });
         }
     }
+    goToProfile(event) {
+        if (!this.isProd) {
+            event.preventDefault();
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'frilanstolk-min-side'
+                }
+            });
+        }
+    }
 
     goToMyTimeplan(event) {
         if (!this.isProd) {

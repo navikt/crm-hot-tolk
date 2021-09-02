@@ -144,4 +144,38 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         }
         return AccountIdByServiceAppointmentId;
     }
+
+    public static void recalculateManualSharing(List<ServiceAppointment> records) {
+        Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(records);
+        List<ServiceAppointmentShare> serviceAppointmentShares = [
+            SELECT Id, UserOrGroupId, ParentId
+            FROM ServiceAppointmentShare
+            WHERE ParentId IN :serviceAppointmentMap.keySet() AND RowCause = 'Manual'
+        ];
+        List<ServiceAppointmentShare> sharesToBeDeleted = new List<ServiceAppointmentShare>();
+        for (ServiceAppointmentShare share : serviceAppointmentShares) {
+            if (
+                share.UserOrGroupId != serviceAppointmentMap.get(share.ParentId).HOT_ServiceResource__r.RelatedRecordId
+            ) {
+                sharesToBeDeleted.add(share);
+            }
+        }
+        try {
+            delete sharesToBeDeleted;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+        for (ServiceAppointment serviceAppointment : serviceAppointmentMap.values()) {
+            serviceAppointment.HOT_IsRecalculateManualSharing__c = false;
+        }
+        try {
+            update serviceAppointmentMap.values();
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
 }

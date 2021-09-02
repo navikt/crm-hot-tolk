@@ -27,10 +27,7 @@ public without sharing class HOT_AssignedResourceAccessHandler extends MyTrigger
             }
         }
         if (runSharingService) {
-            HOT_ServiceAppointmentsSharingService.removeAccessForSpecificUsers(
-                apppointmentByAssignment,
-                resourceToRemoveByAssignment
-            );
+            update setRecalculateManualSharingFlagOnServiceAppointment(apppointmentByAssignment.values());
             HOT_ServiceAppointmentsSharingService.grantAccess(apppointmentByAssignment, resourceToAddByAssignment);
         }
     }
@@ -43,10 +40,15 @@ public without sharing class HOT_AssignedResourceAccessHandler extends MyTrigger
             apppointmentByAssignment.put(ar.Id, ar.ServiceAppointmentId);
             resourceByAssignment.put(ar.Id, ar.ServiceResourceId);
         }
+    }
 
-        HOT_ServiceAppointmentsSharingService.removeAccessForSpecificUsers(
-            apppointmentByAssignment,
-            resourceByAssignment
-        );
+    public static List<ServiceAppointment> setRecalculateManualSharingFlagOnServiceAppointment(
+        List<Id> serviceAppointmentIds
+    ) {
+        List<ServiceAppointment> serviceAppointments = new List<ServiceAppointment>();
+        for (Id id : serviceAppointmentIds) {
+            serviceAppointments.add(new ServiceAppointment(Id = id, HOT_IsRecalculateManualSharing__c = true));
+        }
+        return serviceAppointments;
     }
 }
