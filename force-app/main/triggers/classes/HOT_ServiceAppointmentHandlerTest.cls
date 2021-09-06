@@ -48,6 +48,9 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE HOT_PreferredResource__c != NULL
         ];
         System.assertEquals('None', serviceAppointment.Status, 'Default status was not set on ServiceAppointment.');
+        
+        System.assertEquals(false, serviceAppointment.HOT_IsReleasedToFreelance__c, 'Default HOT_IsReleasedToFreelance was not set on ServiceAppointment.');
+        
     }
 
     @isTest

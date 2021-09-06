@@ -8,6 +8,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         //Kall på metoden din her
         // variablen records er av typen List<SObject>, men den kan castes til List<ServiceAppointment> slik:
         List<ServiceAppointment> serviceAppointments = (List<ServiceAppointment>) records;
+        setAttachedFiles((List<ServiceAppointment>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -714,6 +715,29 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime;
             serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime;
         }
+    }
+
+    public static void setAttachedFiles(List<ServiceAppointment> serviceAppointments){
+        
+        List<ContentDocumentLink> ContentDocumentLinks = new List<ContentDocumentLink>();
+        List<Id> requests = new List<Id>();
+        
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            requests.add(serviceAppointment.HOT_Request__c);
+        }
+
+        Map<Id, HOT_Request__c> idRequestMap = new Map<Id,HOT_Request__c>([SELECT Id, (SELECT ContentDocumentId, LinkedEntityId, ShareType, Visibility FROM HOT_Request__c.ContentDocumentLinks) FROM HOT_Request__c WHERE Id IN  :requestIds]);
+
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            HOT_Request__c request = idRequestMap.get(serviceAppointment.HOT_Request__c);
+            
+            for (ContentDocumentLink cdl : request.ContentDocumentLinks){
+                ContentDocumentLink temp1 = cdl.clone(false, false, false, false);
+                temp1.LinkedEntityId = serviceAppointment.Id;
+                ContentDocumentLinks.add(temp1);
+            }
+        }
+        insert ContentDocumentLinks;
     }
 
     public static void resetNotifyDispatcher(List<ServiceAppointment> serviceAppointments) {
