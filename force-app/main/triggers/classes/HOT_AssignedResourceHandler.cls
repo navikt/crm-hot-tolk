@@ -361,9 +361,28 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
         }
     }
-
     public static void createWageClaims(List<AssignedResource> assignedResources) {
         List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
+        List<Id> serviceAppointmentIds = new List<Id>();
+        List<Id> serviceResourceIds = new List<Id>();
+        for (AssignedResource assignedResource : assignedResources) {
+            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+            serviceResourceIds.add(assignedResource.ServiceResourceId);
+        }
+        Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
+            [
+                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId, HOT_Request__r.IsAgreement__c
+                FROM ServiceAppointment
+                WHERE Id IN :serviceAppointmentIds
+            ]
+        );
+        Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
+            [
+                SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_AgreementFreelance__c
+                FROM ServiceResource
+                WHERE Id IN :serviceResourceIds
+            ]
+        );
         for (AssignedResource assignedResource : assignedResources) {
             Date criticalDate = serviceAppointments.get(assignedResource.ServiceAppointmentId)
                     .HOT_Request__r.IsAgreement__c == true &&
