@@ -15,6 +15,7 @@ import {
     recurringDaysValidations,
     recurringEndDateValidations
 } from './hot_createRequestForm_validationRules';
+import uploadFile from '@salesforce/apex/HOT_RequestListContoller.uploadFile';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
     @track reRender = 0;
@@ -26,7 +27,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     @track submitted = false; // if:false={submitted}
-    acceptedFormat = '[.pdf, .png, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
+    acceptedFormat = '[.pdf, .png, .jpg, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
 
     @track recordId = null;
     @track allRequests;
@@ -671,11 +672,22 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         window.scrollTo(0, 0);
     }
 
+    uploadedFiles;
     handleUploadFinished(event) {
         // Get the list of uploaded files
-        const uploadedFiles = event.detail.files;
-        alert(uploadedFiles.length + ' filer ble lastet opp.');
+        this.uploadedFiles = event.detail.files;
+        alert(this.uploadedFiles.length + ' filer ble lastet opp.');
+        //console.log(this.uploadedFiles);
+        console.log(this.uploadedFiles);
+        console.log(typeof this.uploadedFiles);
+        const target_copy = Object.assign({}, this.uploadedFiles);
+        uploadFile(this.uploadedFiles);
+        //let map = new Map();
+        //this.uploadedFiles.forEach((ele) => map.set(ele.documentId, ele));
+
+        //createDocumentLink({ files: this.uploadedFiles, recordId: 'a0Q1x000004PMNdEAO' });
     }
+    // https://platform-customization-1910.lightning.force.com/lightning/r/HOT_Request__c/a0Q1x000004PMNdEAO/view
 
     toggled() {
         this.sameLocation = !this.sameLocation;

@@ -1,4 +1,52 @@
 public without sharing class HOT_RequestListContoller {
+    @AuraEnabled
+    public static ContentDocumentLink createContentLink(String contentVersionId, String recordId) {
+        if (contentVersionId == null || recordId == null) {
+            return null;
+        }
+        ContentDocumentLink cdl = new ContentDocumentLink();
+        cdl.ContentDocumentId = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :contentVersionId]
+        .ContentDocumentId;
+        cdl.LinkedEntityId = recordId;
+        // ShareType is either 'V', 'C', or 'I'
+        // V = Viewer, C = Collaborator, I = Inferred
+        cdl.ShareType = 'V';
+        try {
+            insert cdl;
+            return cdl;
+        } catch (DMLException e) {
+            System.debug(e);
+            return null;
+        }
+    }
+
+    @AuraEnabled
+    public static String uploadFile(ContentDocumentLink params) {
+        System.debug('hallo');
+        System.debug(params);
+        /*ContentVersion cv = createContentVersion(base64, filename);
+        ContentDocumentLink cdl = createContentLink(cv.Id, recordId);
+        if (cv == null || cdl == null) {
+            return null;
+        }
+        return cdl.Id;*/
+        return '';
+    }
+
+    private static ContentVersion createContentVersion(String base64, String filename) {
+        ContentVersion cv = new ContentVersion();
+        cv.VersionData = EncodingUtil.base64Decode(base64);
+        cv.Title = filename;
+        cv.PathOnClient = filename;
+        try {
+            insert cv;
+            return cv;
+        } catch (DMLException e) {
+            System.debug(e);
+            return null;
+        }
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<HOT_Request__c> getRequestList() {
         Id userId = UserInfo.getUserId();
