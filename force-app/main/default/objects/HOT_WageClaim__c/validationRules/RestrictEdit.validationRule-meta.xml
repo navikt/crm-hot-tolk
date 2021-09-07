@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RestrictEdit</fullName>
+    <active>true</active>
+    <errorConditionFormula>IsAutomaticallyCreated__c == true &amp;&amp;
+ CONTAINS($Profile.Name, &apos;Formidler&apos;)</errorConditionFormula>
+    <errorMessage>Du kan ikke endre på dette lønnskravet</errorMessage>
+</ValidationRule>
