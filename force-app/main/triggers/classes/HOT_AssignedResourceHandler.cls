@@ -394,6 +394,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 serviceResources.get(assignedResource.ServiceResourceId).HOT_IsFreelanceInterpreter__c == true
             ) {
                 HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
+                wageClaim.IsAutomaticallyCreated__c = true;
                 wageClaim.Type__c = 'Available on Wage';
                 wageClaim.Status__c = 'Open';
                 wageClaim.ServiceResource__c = assignedResource.ServiceResourceId;
