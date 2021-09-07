@@ -1,6 +1,29 @@
 public without sharing class HOT_RequestListContoller {
     @AuraEnabled
-    public static ContentDocumentLink createContentLink(String contentVersionId, String recordId) {
+    public static String uploadFile(String base64, String filename, String recordId) {
+        ContentVersion cv = createContentVersion(base64, filename);
+        ContentDocumentLink cdl = createContentLink(cv.Id, recordId);
+        if (cv == null || cdl == null) {
+            return null;
+        }
+        return cdl.Id;
+    }
+
+    private static ContentVersion createContentVersion(String base64, String filename) {
+        ContentVersion cv = new ContentVersion();
+        cv.VersionData = EncodingUtil.base64Decode(base64);
+        cv.Title = filename;
+        cv.PathOnClient = filename;
+        try {
+            insert cv;
+            return cv;
+        } catch (DMLException e) {
+            System.debug(e);
+            return null;
+        }
+    }
+
+    private static ContentDocumentLink createContentLink(String contentVersionId, String recordId) {
         if (contentVersionId == null || recordId == null) {
             return null;
         }
@@ -14,33 +37,6 @@ public without sharing class HOT_RequestListContoller {
         try {
             insert cdl;
             return cdl;
-        } catch (DMLException e) {
-            System.debug(e);
-            return null;
-        }
-    }
-
-    @AuraEnabled
-    public static String uploadFile(ContentDocumentLink params) {
-        System.debug('hallo');
-        System.debug(params);
-        /*ContentVersion cv = createContentVersion(base64, filename);
-        ContentDocumentLink cdl = createContentLink(cv.Id, recordId);
-        if (cv == null || cdl == null) {
-            return null;
-        }
-        return cdl.Id;*/
-        return '';
-    }
-
-    private static ContentVersion createContentVersion(String base64, String filename) {
-        ContentVersion cv = new ContentVersion();
-        cv.VersionData = EncodingUtil.base64Decode(base64);
-        cv.Title = filename;
-        cv.PathOnClient = filename;
-        try {
-            insert cv;
-            return cv;
         } catch (DMLException e) {
             System.debug(e);
             return null;

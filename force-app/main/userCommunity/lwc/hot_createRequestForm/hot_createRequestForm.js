@@ -27,7 +27,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     @track submitted = false; // if:false={submitted}
-    acceptedFormat = '[.pdf, .png, .jpg, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
+    acceptedFileFormats = '[.pdf, .png, .jpg, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
 
     @track recordId = null;
     @track allRequests;
@@ -488,6 +488,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
     submit() {
         console.log('Sumbitting');
+        //this.handleFileUpload();
         this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
         console.log('submitted');
 
@@ -672,22 +673,71 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         window.scrollTo(0, 0);
     }
 
-    uploadedFiles;
-    handleUploadFinished(event) {
+    /*handleUploadFinished(event) {
+        console.log('hallo');
         // Get the list of uploaded files
-        this.uploadedFiles = event.detail.files;
-        alert(this.uploadedFiles.length + ' filer ble lastet opp.');
-        //console.log(this.uploadedFiles);
-        console.log(this.uploadedFiles);
-        console.log(typeof this.uploadedFiles);
-        const target_copy = Object.assign({}, this.uploadedFiles);
-        uploadFile(this.uploadedFiles);
-        //let map = new Map();
-        //this.uploadedFiles.forEach((ele) => map.set(ele.documentId, ele));
+        let uploadedFiles = event.detail.files;
+        let files = [];
+        for (let i = 0; i < uploadedFiles.length; i++) {
+            files.push({
+                sObjectType: 'ContentDocumentLink ',
+                Name: uploadedFiles[i].name,
+                Id: uploadedFiles[i].documentId,
+                contentVersionId: uploadedFiles[i].contentVersionId
+            });
+        }
+        console.log(JSON.stringify(files));
+        alert(JSON.stringify(files));
 
-        //createDocumentLink({ files: this.uploadedFiles, recordId: 'a0Q1x000004PMNdEAO' });
+        uploadFile({ files: files })
+            .then((result) => {
+                alert('Success!');
+                console.log(JSON.stringify(result));
+            })
+            .catch((error) => {
+                alert('Error!');
+                console.log(error);
+            });
+    }*/
+
+    // https://www.salesforcetroop.com/custom_file_upload_using_lwc
+    fileData;
+    onFileUpload(event) {
+        const file = event.target.files[0];
+        let reader = new FileReader();
+        reader.onload = () => {
+            let base64 = reader.result.split(',')[1];
+            this.fileData = {
+                filename: file.name,
+                base64: base64,
+                recordId: 'a0Q1x000004PMNdEAO' // TODO: Set recordid of Request here
+            };
+            console.log(this.fileData);
+            this.handleFileUpload(this.fileData);
+        };
+        reader.readAsDataURL(file);
+        console.log('this.fileData1: ' + this.fileData);
     }
-    // https://platform-customization-1910.lightning.force.com/lightning/r/HOT_Request__c/a0Q1x000004PMNdEAO/view
+
+    // TODO: Call this on submit and use this.fileData, not fileData as argument
+    handleFileUpload(fileData) {
+        console.log('handleFileUpload');
+        console.log('this.fileData: ' + fileData);
+        const { base64, filename, recordId } = this.fileData;
+        console.log('this.fileData2: ' + this.fileData);
+        uploadFile({ base64, filename, recordId })
+            .then((result) => {
+                this.fileData = null;
+                let title = `${filename} uploaded successfully!!`;
+                alert(title);
+                console.log('result');
+                console.log(result);
+            })
+            .catch((error) => {
+                console.log('error');
+                console.log(JSON.stringify(error));
+            });
+    }
 
     toggled() {
         this.sameLocation = !this.sameLocation;

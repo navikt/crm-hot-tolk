@@ -185,3 +185,46 @@ section.sub-form:last-child {
 .hidden {
     display: none;
 }
+
+.data-element-container {
+    margin-left: 1rem;
+}
+
+.file-container {
+    border: 2px dashed #bdbdbd, 100%;
+    padding: 25px;
+}
+
+.button-standard {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-family: Source Sans Pro, Arial, sans-serif;
+    font-size: 1em;
+    white-space: nowrap;
+    border-radius: 0.125em;
+    cursor: pointer;
+    user-select: none;
+    letter-spacing: 0.0625em;
+    line-height: 1.375rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    background-color: #fff;
+    padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px);
+    min-height: 2.5rem;
+    vertical-align: middle;
+    border: 2px solid #0067c5;
+    color: #0067c5;
+}
+
+.button-standard:hover {
+    background-color: #0067c5;
+    color: #fff;
+}
+
+.dropzone-label {
+    font-weight: 600;
+    color: #0067c5;
+    text-transform: uppercase;
+}
