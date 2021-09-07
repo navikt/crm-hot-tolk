@@ -111,17 +111,24 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
             Datetime serviceAppointmentEndTime = wageClaimMap.get(wageClaimId).get('serviceAppointmentEndTime');
             HOT_WageClaim__c wageClaim = wageClaims.get(wageClaimId);
             //Completely covered
+            System.debug('wageClaim.StartTime__c: ' + wageClaim.StartTime__c);
+            System.debug('wageClaim.EndTime__c: ' + wageClaim.EndTime__c);
+            System.debug('serviceAppointmentStartTime: ' + serviceAppointmentStartTime);
+            System.debug('serviceAppointmentEndTime: ' + serviceAppointmentEndTime);
             if (
+                //Needs to compare on Minute level?
                 serviceAppointmentStartTime <= wageClaim.StartTime__c &&
                 serviceAppointmentEndTime >= wageClaim.EndTime__c
             ) {
+                System.debug('Completely covered');
                 wageClaim.IsParent__c = true;
-            }
-            //Split
-            if (
+                newWageClaims.add(wageClaim);
+            } else if (
                 serviceAppointmentStartTime > wageClaim.StartTime__c &&
                 serviceAppointmentEndTime < wageClaim.EndTime__c
             ) {
+                //Split
+                System.debug('Split');
                 HOT_WageClaim__c lowerWageClaim = new HOT_WageClaim__c(
                     ParentWageClaim__c = wageClaim.Id,
                     ServiceResource__c = wageClaim.ServiceResource__c,
@@ -136,12 +143,12 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
                 );
                 newWageClaims.add(lowerWageClaim);
                 newWageClaims.add(upperWageClaim);
-            }
-            //lower
-            if (
+            } else if (
                 serviceAppointmentStartTime <= wageClaim.StartTime__c &&
                 serviceAppointmentEndTime > wageClaim.StartTime__c
             ) {
+                //lower
+                System.debug('lower');
                 HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
                     ParentWageClaim__c = wageClaim.Id,
                     ServiceResource__c = wageClaim.ServiceResource__c,
@@ -149,12 +156,12 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
                     EndTime__c = wageClaim.EndTime__c
                 );
                 newWageClaims.add(newWageClaim);
-            }
-            //upper
-            if (
+            } else if (
                 serviceAppointmentStartTime <= wageClaim.EndTime__c &&
                 serviceAppointmentEndTime > wageClaim.EndTime__c
             ) {
+                //upper
+                System.debug('upper');
                 HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
                     ParentWageClaim__c = wageClaim.Id,
                     ServiceResource__c = wageClaim.ServiceResource__c,
@@ -166,7 +173,7 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
         }
 
         try {
-            insert newWageClaims;
+            upsert newWageClaims;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
