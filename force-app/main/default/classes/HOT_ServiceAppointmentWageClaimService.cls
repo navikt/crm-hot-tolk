@@ -51,17 +51,51 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
     public Datetime serviceAppointmentEndTime;
     @InvocableMethod
     public static List<String> updateWageClaimsInvocable(List<HOT_ServiceAppointmentWageClaimService> inputVariables) {
-        return updateWageClaims(inputVariables);
-    }
-
-    public static List<String> updateWageClaims(List<HOT_ServiceAppointmentWageClaimService> inputVariables) {
         Map<Id, Map<String, Datetime>> wageClaimMap = new Map<Id, Map<String, Datetime>>();
         for (HOT_ServiceAppointmentWageClaimService input : inputVariables) {
             Map<String, Datetime> tempDateTimes = new Map<String, Datetime>();
             tempDateTimes.put('serviceAppointmentStartTime', input.serviceAppointmentStartTime);
-            tempDateTimes.put('serviceAppointmentStartTime', input.serviceAppointmentEndTime);
+            tempDateTimes.put('serviceAppointmentEndTime', input.serviceAppointmentEndTime);
             wageClaimMap.put(input.wageClaimId, tempDateTimes);
         }
+        return updateWageClaims(wageClaimMap);
+    }
+
+    @Future
+    public static void updateWageClaimsFuture(Set<Id> serviceAppointmentIds) {
+        Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
+            [
+                SELECT Id, SchedStartTime, SchedEndTime, HOT_IsReleasedToFreelance__c, HOT_ServiceResource__c
+                FROM ServiceAppointment
+                WHERE Id IN :serviceAppointmentIds AND HOT_IsReleasedToFreelance__c = TRUE
+            ]
+        );
+        List<Id> serviceResourceIds = new List<Id>();
+        for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
+            serviceResourceIds.add(serviceAppointment.HOT_ServiceResource__c);
+        }
+        List<HOT_WageClaim__c> wageClaims = [
+            SELECT Id, ServiceAppointment__c
+            FROM HOT_WageClaim__c
+            WHERE ServiceResource__c IN :serviceResourceIds
+        ];
+        Map<Id, Map<String, Datetime>> wageClaimMap = new Map<Id, Map<String, Datetime>>();
+        for (HOT_WageClaim__c wageClaim : wageClaims) {
+            Map<String, Datetime> tempDateTimes = new Map<String, Datetime>();
+            tempDateTimes.put(
+                'serviceAppointmentStartTime',
+                serviceAppointments.get(wageClaim.ServiceAppointment__c).SchedStartTime
+            );
+            tempDateTimes.put(
+                'serviceAppointmentEndTime',
+                serviceAppointments.get(wageClaim.ServiceAppointment__c).SchedEndTime
+            );
+            wageClaimMap.put(wageClaim.Id, tempDateTimes);
+        }
+        updateWageClaims(wageClaimMap);
+    }
+
+    public static List<String> updateWageClaims(Map<Id, Map<String, Datetime>> wageClaimMap) {
         Map<Id, HOT_WageClaim__c> wageClaims = new Map<Id, HOT_WageClaim__c>(
             [
                 SELECT Id, StartTime__c, EndTime__c, ServiceResource__c, IsParent__c
