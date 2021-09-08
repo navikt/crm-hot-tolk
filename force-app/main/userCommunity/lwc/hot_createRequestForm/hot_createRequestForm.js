@@ -177,11 +177,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     wiredTimesValue;
     @wire(getTimes, { requestIds: '$requestIds' })
     wiredTimes(result) {
-        console.log('wiredTimes');
         this.wiredTimesValue = result.data;
         if (result.data) {
             if (result.data.length === 0) {
-                console.log('result is empty');
                 this.times = [
                     {
                         id: 0,
@@ -192,7 +190,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     }
                 ];
             } else {
-                console.log('Setting Times');
                 //this.times = [...result.data];
                 for (let timeMap of result.data) {
                     let temp = new Object({
@@ -215,7 +212,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     setDate(event) {
-        console.log(event.detail.value);
         let index = this.getIndexById(event.target.name);
         this.times[index].date = event.detail.value;
         let now = new Date();
@@ -252,8 +248,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
     setStartTime(event) {
         let index = this.getIndexById(event.target.name);
-        console.log(event.detail.value);
-
         let tempTime = event.detail.value.split('');
         this.times[index].startTime = tempTime.join('').substring(0, 5);
 
@@ -272,13 +266,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     setEndTime(event) {
-        console.log(event.detail.value);
         const index = this.getIndexById(event.target.name);
         this.times[index].endTime = event.detail.value.substring(0, 5);
     }
 
     updateValues(event, index) {
-        console.log('updateValues');
         let elements = event.target.parentElement.querySelector('.start-tid');
         elements.value = this.times[index].startTime;
         elements = event.target.parentElement.querySelector('.date');
@@ -444,7 +436,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     async handleSubmit(event) {
-        console.log('handleSubmit');
         this.spin = true;
         event.preventDefault();
         const fields = event.detail.fields;
@@ -452,7 +443,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         if (fields) {
             this.setFieldValues(fields);
             let isValid = this.handleValidation();
-            console.log('isValid: ' + isValid);
             if (isValid) {
                 if (!this.isAdvancedTimes) {
                     let accountId = this.personAccount.Id;
@@ -618,7 +608,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     handleError(event) {
-        console.log(JSON.stringify(event));
         this.spin = false;
     }
 
@@ -650,6 +639,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.recordId = event.detail.id;
 
         let requestId = event.detail.id;
+        this.handleFileUpload();
         let times = this.timesListToObject(this.times);
         if (times !== {}) {
             if (this.isAdvancedTimes) {
@@ -673,70 +663,69 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         window.scrollTo(0, 0);
     }
 
-    /*handleUploadFinished(event) {
-        console.log('hallo');
-        // Get the list of uploaded files
-        let uploadedFiles = event.detail.files;
-        let files = [];
-        for (let i = 0; i < uploadedFiles.length; i++) {
-            files.push({
-                sObjectType: 'ContentDocumentLink ',
-                Name: uploadedFiles[i].name,
-                Id: uploadedFiles[i].documentId,
-                contentVersionId: uploadedFiles[i].contentVersionId
-            });
-        }
-        console.log(JSON.stringify(files));
-        alert(JSON.stringify(files));
-
-        uploadFile({ files: files })
-            .then((result) => {
-                alert('Success!');
-                console.log(JSON.stringify(result));
-            })
-            .catch((error) => {
-                alert('Error!');
-                console.log(error);
-            });
-    }*/
-
-    // https://www.salesforcetroop.com/custom_file_upload_using_lwc
-    fileData;
-    onFileUpload(event) {
-        const file = event.target.files[0];
-        let reader = new FileReader();
-        reader.onload = () => {
-            let base64 = reader.result.split(',')[1];
-            this.fileData = {
-                filename: file.name,
-                base64: base64,
-                recordId: 'a0Q1x000004PMNdEAO' // TODO: Set recordid of Request here
-            };
-            console.log(this.fileData);
-            this.handleFileUpload(this.fileData);
-        };
-        reader.readAsDataURL(file);
-        console.log('this.fileData1: ' + this.fileData);
+    showModal() {
+        this.template.querySelector('c-alertdialog').showModal();
     }
 
-    // TODO: Call this on submit and use this.fileData, not fileData as argument
-    handleFileUpload(fileData) {
-        console.log('handleFileUpload');
-        console.log('this.fileData: ' + fileData);
-        const { base64, filename, recordId } = this.fileData;
-        console.log('this.fileData2: ' + this.fileData);
-        uploadFile({ base64, filename, recordId })
-            .then((result) => {
-                this.fileData = null;
-                let title = `${filename} uploaded successfully!!`;
-                alert(title);
-                console.log('result');
-                console.log(result);
-            })
-            .catch((error) => {
-                console.log('error');
-                console.log(JSON.stringify(error));
+    handleClick(event) {
+        this.buttonValue = event.detail;
+        if (this.buttonValue !== 'confirm') {
+            this.fileData = null;
+        }
+    }
+
+    // Reset value of file input path so that same file can be uploaded again if pressing no on consent
+    resetFileValue() {
+        this.template.querySelector('input').value = null;
+    }
+
+    // https://www.salesforcetroop.com/custom_file_upload_using_lwc
+    // TODO: Fix file drop not working
+    fileData = [];
+    async onFileUpload(event) {
+        try {
+            const numFiles = this.fileData.length;
+            const result = await Promise.all(Array.from(event.target.files).map((item) => this.parseFile(item)));
+            result.forEach((item) => {
+                if (this.fileData.findIndex((storedItem) => storedItem.base64 === item.base64) === -1) {
+                    this.fileData.push(item);
+                }
             });
+
+            if (numFiles !== this.fileData.length) {
+                this.showModal();
+            }
+            console.log(this.fileData);
+        } catch (err) {
+            console.log('err: ', err);
+        }
+    }
+
+    parseFile(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                resolve({
+                    filename: file.name,
+                    base64: reader.result.split(',')[1],
+                    recordId: this.recordId
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    handleFileUpload() {
+        console.log('handleFileUpload');
+        console.log(this.fileData);
+        for (let i = 0; i < this.numberOfFiles; i++) {
+            console.log('fileData ' + i + ': ' + JSON.stringify(this.fileData[i]));
+            this.fileData[i].recordId = this.recordId;
+            const { base64, filename, recordId } = this.fileData[i];
+            uploadFile({ base64, filename, recordId }).then(() => {});
+        }
+        this.fileData = null;
+        console.log('handleFileUpload2');
     }
 
     toggled() {
@@ -746,8 +735,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     previousPage = 'home';
 
     connectedCallback() {
-        console.log('connectedCallback');
-
         window.scrollTo(0, 0);
         let testURL = window.location.href;
         let params = testURL.split('?')[1];
@@ -805,7 +792,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 if (!!parsed_params.copy) {
                     delete this.fieldValues.Id;
                 } else {
-                    console.log('Is Edit: Refreshing apex times');
                     this.recordId = this.fieldValues.Id;
                     let requestIds = [];
                     requestIds.push(this.fieldValues.Id);

@@ -353,6 +353,15 @@
                         >
                         </lightning-input-field>
 
+                        <c-alertdialog
+                            header="Samtykke"
+                            content="Ved opplasting av denne filen samtykker du til at NAV kan bla bla bla"
+                            desktop-style="text-align: center;"
+                            center-buttons="true"
+                            onbuttonclick={handleClick}
+                        >
+                        </c-alertdialog>
+
                         <div class="data-element-container">
                             <div class="file-container">
                                 <div class="slds-form-element">
@@ -362,6 +371,7 @@
                                                 <input
                                                     type="file"
                                                     onchange={onFileUpload}
+                                                    onclick={resetFileValue}
                                                     name="uploadFile"
                                                     accept={acceptedFileFormats}
                                                     data-id="file-input"
@@ -370,6 +380,7 @@
                                                     class="slds-file-selector__input slds-assistive-text"
                                                     id="file-upload-input-01"
                                                     aria-labelledby="file-selector-primary-label file-selector-secondary-label"
+                                                    multiple
                                                 />
                                                 <label
                                                     class="slds-file-selector__body"
@@ -378,6 +389,7 @@
                                                 >
                                                     <span class="button button-standard">
                                                         <svg
+                                                            style="margin: 0 5 0 0"
                                                             width="1em"
                                                             height="1em"
                                                             viewBox="0 0 24 24"
@@ -391,7 +403,7 @@
                                                                 fill="currentColor"
                                                             ></path>
                                                         </svg>
-                                                        Laste opp fil</span
+                                                        Last opp fil</span
                                                     >
                                                     <span
                                                         class="slds-file-selector__text slds-medium-show dropzone-label"
