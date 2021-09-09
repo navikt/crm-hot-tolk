@@ -478,7 +478,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
     submit() {
         console.log('Sumbitting');
-        //this.handleFileUpload();
         this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
         console.log('submitted');
 
@@ -637,7 +636,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         x = this.template.querySelector('.submitted-false');
         x.classList.add('hidden');
         this.recordId = event.detail.id;
-
         let requestId = event.detail.id;
         this.handleFileUpload();
         let times = this.timesListToObject(this.times);
@@ -691,7 +689,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     async onFileUpload(event) {
         try {
             const numFiles = this.fileData.length;
-            const result = await Promise.all(Array.from(event.target.files).map((item) => this.readFile(item)));
+            const result = await Promise.all([...event.target.files].map((item) => this.readFile(item)));
             result.forEach((item) => {
                 // Only push new files
                 if (this.fileData.findIndex((storedItem) => storedItem.base64 === item.base64) === -1) {
