@@ -43,6 +43,55 @@ public without sharing class HOT_WageClaimService {
         return serviceAppointments;
     }
 
+    public static void createWageClaims(List<AssignedResource> assignedResources) {
+        List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
+        List<Id> serviceAppointmentIds = new List<Id>();
+        List<Id> serviceResourceIds = new List<Id>();
+        for (AssignedResource assignedResource : assignedResources) {
+            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+            serviceResourceIds.add(assignedResource.ServiceResourceId);
+        }
+        Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
+            [
+                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId, HOT_Request__r.IsAgreement__c
+                FROM ServiceAppointment
+                WHERE Id IN :serviceAppointmentIds
+            ]
+        );
+        Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
+            [
+                SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_AgreementFreelance__c
+                FROM ServiceResource
+                WHERE Id IN :serviceResourceIds
+            ]
+        );
+        for (AssignedResource assignedResource : assignedResources) {
+            Date criticalDate = serviceAppointments.get(assignedResource.ServiceAppointmentId)
+                    .HOT_Request__r.IsAgreement__c == true &&
+                serviceResources.get(assignedResource.ServiceResourceId).HOT_AgreementFreelance__c == true
+                ? Date.today().addDays(30)
+                : Date.today().addDays(14);
+            if (
+                criticalDate >= serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime.date() &&
+                serviceResources.get(assignedResource.ServiceResourceId).HOT_IsFreelanceInterpreter__c == true
+            ) {
+                HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
+                wageClaim.IsAutomaticallyCreated__c = true;
+                wageClaim.Type__c = 'Available on Wage';
+                wageClaim.Status__c = 'Open';
+                wageClaim.ServiceResource__c = assignedResource.ServiceResourceId;
+                wageClaim.ServiceAppointment__c = assignedResource.ServiceAppointmentId;
+                wageClaim.StartTime__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime;
+                wageClaim.EndTime__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedEndTime;
+                wageClaim.WorkType__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).WorkTypeId;
+                wageClaim.ServiceTerritory__c = serviceAppointments.get(assignedResource.ServiceAppointmentId)
+                    .ServiceTerritoryId;
+                wageClaims.add(wageClaim);
+            }
+        }
+        insert wageClaims;
+    }
+
     @Future
     public static void updateWageClaimsFuture(Set<Id> serviceAppointmentIds) {
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
