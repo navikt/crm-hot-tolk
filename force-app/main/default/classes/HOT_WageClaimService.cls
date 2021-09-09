@@ -1,4 +1,4 @@
-public without sharing class HOT_ServiceAppointmentWageClaimService {
+public without sharing class HOT_WageClaimService {
     @AuraEnabled
     public static void assign(Id wageClaimId, Id serviceAppointmentId) {
         HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c WHERE Id = :wageClaimId];

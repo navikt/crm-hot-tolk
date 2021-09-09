@@ -1,5 +1,5 @@
 @isTest
-private class HOT_SAWageClaimServiceTest {
+private class HOT_WageClaimServiceTest {
     @testSetup
     static void setup() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
@@ -35,7 +35,7 @@ private class HOT_SAWageClaimServiceTest {
         HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
 
         Test.startTest();
-        HOT_ServiceAppointmentWageClaimService.assign(wageClaim.Id, assignedResource.serviceAppointmentId);
+        HOT_WageClaimService.assign(wageClaim.Id, assignedResource.serviceAppointmentId);
         Test.stopTest();
 
         List<AssignedResource> assignedResources = [
@@ -58,9 +58,7 @@ private class HOT_SAWageClaimServiceTest {
         delete assignedResource;
 
         HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
-        List<ServiceAppointment> serviceAppointments = HOT_ServiceAppointmentWageClaimService.getServiceAppointments(
-            wageClaim.Id
-        );
+        List<ServiceAppointment> serviceAppointments = HOT_WageClaimService.getServiceAppointments(wageClaim.Id);
 
         System.assertEquals(
             1,

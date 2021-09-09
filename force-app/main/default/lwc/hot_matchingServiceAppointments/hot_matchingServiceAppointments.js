@@ -1,5 +1,5 @@
-import getServiceAppointments from '@salesforce/apex/HOT_ServiceAppointmentWageClaimService.getServiceAppointments';
-import assign from '@salesforce/apex/HOT_ServiceAppointmentWageClaimService.assign';
+import getServiceAppointments from '@salesforce/apex/HOT_WageClaimService.getServiceAppointments';
+import assign from '@salesforce/apex/HOT_WageClaimService.assign';
 import { LightningElement, wire, track, api } from 'lwc';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
 

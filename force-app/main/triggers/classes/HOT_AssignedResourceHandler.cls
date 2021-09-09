@@ -32,7 +32,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         );
         update interestedResources;
         Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(serviceAppointments);
-        HOT_ServiceAppointmentWageClaimService.updateWageClaimsFuture(serviceAppointmentMap.keySet());
+        HOT_WageClaimService.updateWageClaimsFuture(serviceAppointmentMap.keySet());
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
