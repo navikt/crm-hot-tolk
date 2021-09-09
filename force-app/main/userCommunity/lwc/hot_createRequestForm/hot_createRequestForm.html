@@ -354,11 +354,12 @@
                         </lightning-input-field>
 
                         <c-alertdialog
-                            header="Samtykke"
-                            content="Ved opplasting av denne filen samtykker du til at NAV kan bla bla bla"
+                            header={header}
+                            content={content}
                             desktop-style="text-align: center;"
                             center-buttons="true"
                             onbuttonclick={handleClick}
+                            no-cancel-button={noCancelButton}
                         >
                         </c-alertdialog>
 
@@ -414,7 +415,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p if:true={fileData}>{fileData.filename}</p>
+                                <div if:true={filesAdded}>
+                                    <template for:each={fileData} for:item="file">
+                                        <p key={file.filename}>{file.filename}</p>
+                                    </template>
+                                </div>
                             </div>
                         </div>
 

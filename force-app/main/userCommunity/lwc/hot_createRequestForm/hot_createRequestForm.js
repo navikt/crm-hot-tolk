@@ -670,7 +670,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     handleClick(event) {
         this.buttonValue = event.detail;
         if (this.buttonValue !== 'confirm') {
-            this.fileData = null;
+            this.fileData = [];
         }
     }
 
@@ -679,36 +679,47 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.template.querySelector('input').value = null;
     }
 
-    // https://www.salesforcetroop.com/custom_file_upload_using_lwc
     // TODO: Fix file drop not working
+    header = 'Samtykke';
+    content = 'Ved opplasting av denne filen samtykker du til at NAV kan bla bla bla';
+    noCancelButton = false;
     fileData = [];
+    filesAdded = false;
     async onFileUpload(event) {
         try {
             const numFiles = this.fileData.length;
-            const result = await Promise.all(Array.from(event.target.files).map((item) => this.parseFile(item)));
+            const result = await Promise.all(Array.from(event.target.files).map((item) => this.readFile(item)));
             result.forEach((item) => {
+                // Only push new files
                 if (this.fileData.findIndex((storedItem) => storedItem.base64 === item.base64) === -1) {
                     this.fileData.push(item);
+                    this.filesAdded = false; // Trigger change so that new files will be displayed
+                    this.filesAdded = true;
                 }
             });
-
+            if (this.fileData.length > 1) {
+                this.content = 'Ved opplasting av disse filene samtykker du til at NAV kan bla bla bla';
+            }
             if (numFiles !== this.fileData.length) {
                 this.showModal();
             }
-            console.log(this.fileData);
         } catch (err) {
-            console.log('err: ', err);
+            this.fileData = [];
+            this.header = 'Noe gikk galt';
+            this.content = 'Filene kunne ikke lastes opp. Feilmelding: ' + err;
+            this.noCancelButton = true;
+            this.showModal();
         }
     }
 
-    parseFile(file) {
+    readFile(file) {
         return new Promise((resolve) => {
             const reader = new FileReader();
             reader.onload = () => {
                 resolve({
                     filename: file.name,
                     base64: reader.result.split(',')[1],
-                    recordId: this.recordId
+                    recordId: this.recordId // Will be null here since record is not created yet. Add it on submit in handleFileUpload().
                 });
             };
             reader.readAsDataURL(file);
@@ -716,16 +727,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     handleFileUpload() {
-        console.log('handleFileUpload');
-        console.log(this.fileData);
-        for (let i = 0; i < this.numberOfFiles; i++) {
-            console.log('fileData ' + i + ': ' + JSON.stringify(this.fileData[i]));
-            this.fileData[i].recordId = this.recordId;
-            const { base64, filename, recordId } = this.fileData[i];
+        this.fileData.forEach((item) => {
+            item.recordId = this.recordId;
+            const { base64, filename, recordId } = item;
             uploadFile({ base64, filename, recordId }).then(() => {});
-        }
+        });
         this.fileData = null;
-        console.log('handleFileUpload2');
     }
 
     toggled() {
