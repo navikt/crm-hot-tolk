@@ -24,14 +24,52 @@ private class HOT_SAWageClaimServiceTest {
             serviceResourceId
         );
         insert assignedResource;
+        delete assignedResource;
     }
 
     @isTest
-    static void testMethod1() {
-        AssignedResource assignedResource = [SELECT Id FROM AssignedResource];
+    static void assignTest() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
         delete assignedResource;
 
-        List<HOT_WageClaim__c> wageClaims = [SELECT Id FROM HOT_WageClaim__c];
-        System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claim');
+        HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
+
+        Test.startTest();
+        HOT_ServiceAppointmentWageClaimService.assign(wageClaim.Id, assignedResource.serviceAppointmentId);
+        Test.stopTest();
+
+        List<AssignedResource> assignedResources = [
+            SELECT Id
+            FROM AssignedResource
+            WHERE
+                ServiceAppointmentId = :assignedResource.ServiceAppointmentId
+                AND ServiceResourceId = :wageClaim.ServiceResource__c
+        ];
+        System.assertEquals(
+            1,
+            assignedResources.size(),
+            'Could not assign resource to service appointment from Wage Claim'
+        );
+    }
+
+    @isTest
+    static void getServiceAppointmentsTest() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
+        delete assignedResource;
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
+        List<ServiceAppointment> serviceAppointments = HOT_ServiceAppointmentWageClaimService.getServiceAppointments(
+            wageClaim.Id
+        );
+
+        System.assertEquals(
+            1,
+            serviceAppointments.size(),
+            'Could not get Service Appointments overlapping with Wage Claim'
+        );
+    }
+
+    @isTest
+    static void updateWageClaimsFutureTest() {
     }
 }
