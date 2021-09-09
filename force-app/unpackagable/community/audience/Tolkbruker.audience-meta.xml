@@ -11,7 +11,15 @@
             <operator>Equal</operator>
             <type>Profile</type>
         </criterion>
+        <criterion>
+            <criteriaNumber>2</criteriaNumber>
+            <criterionValue>
+                <profile>nav bruker plus</profile>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>Profile</type>
+        </criterion>
     </criteria>
-    <formulaFilterType>AllCriteriaMatch</formulaFilterType>
+    <formulaFilterType>AnyCriterionMatches</formulaFilterType>
     <isDefaultAudience>false</isDefaultAudience>
 </Audience>
