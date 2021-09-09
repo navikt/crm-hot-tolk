@@ -3,8 +3,6 @@ import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 
-var actions = [{ label: 'Tilbaketrekk tilgjengelighet', name: 'retract availability' }];
-
 export default class Hot_wageClaimList extends LightningElement {
     @track columns = [
         {
@@ -36,6 +34,12 @@ export default class Hot_wageClaimList extends LightningElement {
             }
         },
         {
+            label: 'Døv/Døvblind',
+            fieldName: 'DegreeOfHearingAndVisualImpairment__c',
+            type: 'text',
+            sortable: true
+        },
+        {
             label: 'Oppdragstype',
             fieldName: 'AssignmentType__c',
             type: 'text',
@@ -54,30 +58,52 @@ export default class Hot_wageClaimList extends LightningElement {
             sortable: true
         },
         {
-            label: 'Status',
-            fieldName: 'Status__c',
+            label: 'Oppdrag',
+            fieldName: 'ServiceAppointmentName__c',
             type: 'text',
             sortable: true
         },
         {
             type: 'action',
-            typeAttributes: { rowActions: actions }
+            typeAttributes: { rowActions: this.getRowActions }
         }
     ];
 
-    @track wageClaims;
+    mobileColumns = [
+        "'Start tid'",
+        "'Slutt tid'",
+        "'Døv/Døvblind'",
+        "'Oppdragstype'",
+        "'Region'",
+        "'Arbeidstype'",
+        "'Oppdrag'"
+    ];
+
+    getRowActions(row, doneCallback) {
+        let actions = [];
+        let tempEndDate = new Date(row['EndTime__c']);
+        if (row['Status__c'] === 'Open' && tempEndDate.getTime() > Date.now()) {
+            actions.push({ label: 'Tilbaketrekk tilgjengelighet', name: 'retract availability' });
+        }
+
+        doneCallback(actions);
+    }
+
+    @track wageClaims = [];
+    @track allWageClaims = [];
     wiredWageClaimsResult;
     @wire(getMyWageClaims)
     wiredWageClaims(result) {
         console.log(JSON.stringify(result));
         this.wiredWageClaimsResult = result;
         if (result.data) {
-            this.wageClaims = result.data;
+            this.allWageClaims = result.data;
             this.error = undefined;
             //console.log(JSON.stringify(this.wageClaims));
+            this.filterWageClaims();
         } else if (result.error) {
             this.error = result.error;
-            this.wageClaims = undefined;
+            this.allWageClaims = undefined;
         }
     }
 
@@ -111,5 +137,40 @@ export default class Hot_wageClaimList extends LightningElement {
                 alert(JSON.stringify(error));
             }
         }
+    }
+
+    @track choices = [
+        { name: 'Ledig på lønn', label: 'Ledig på lønn' },
+        { name: 'Lønnskrav', label: 'Lønnskrav' },
+        { name: 'Tilbaketrukket', label: 'Tilbaketrukket' },
+        { name: 'Alle', label: 'Alle' }
+    ];
+
+    @track picklistValue = 'Ledig på lønn';
+    handlePicklist(event) {
+        this.picklistValue = event.detail;
+        this.filterWageClaims();
+    }
+
+    filterWageClaims() {
+        let tempWageClaim = [];
+        for (let i = 0; i < this.allWageClaims.length; i++) {
+            if (this.picklistValue === 'Ledig på lønn') {
+                if (this.allWageClaims[i].Status__c === 'Open') {
+                    tempWageClaim.push(this.allWageClaims[i]);
+                }
+            } else if (this.picklistValue === 'Lønnskrav') {
+                if (this.allWageClaims[i].ServiceAppointment__c !== null) {
+                    tempWageClaim.push(this.allWageClaims[i]);
+                }
+            } else if (this.picklistValue === 'Alle') {
+                tempWageClaim.push(this.allWageClaims[i]);
+            } else if (this.picklistValue === 'Tilbaketrukket') {
+                if (this.allWageClaims[i].Status__c === 'Retracted Availability') {
+                    tempWageClaim.push(this.allWageClaims[i]);
+                }
+            }
+        }
+        this.wageClaims = tempWageClaim;
     }
 }

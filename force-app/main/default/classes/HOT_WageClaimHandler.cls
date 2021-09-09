@@ -1,15 +1,10 @@
 public without sharing class HOT_WageClaimHandler extends MyTriggers {
     public override void onAfterInsert() {
-        List<Id> parentWageClaimIds = new List<Id>();
         List<Id> wageClaimsWithParent = new List<Id>();
         for (HOT_WageClaim__c wageClaim : (List<HOT_WageClaim__c>) records) {
             if (wageClaim.ParentWageClaim__c != null) {
-                parentWageClaimIds.add(wageClaim.ParentWageClaim__c);
                 wageClaimsWithParent.add(wageClaim.Id);
             }
-        }
-        if (parentWageClaimIds.size() > 0) {
-            setParentFieldTrue(parentWageClaimIds);
         }
         if (wageClaimsWithParent.size() > 0) {
             setFieldsBasedOnParent(wageClaimsWithParent);
@@ -40,14 +35,6 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
             wageClaim.Status__c = 'Retracted Availability';
         }
         update childWageClaims;
-    }
-
-    public static void setParentFieldTrue(List<Id> wageClaimIds) {
-        List<HOT_WageClaim__c> wageClaims = [SELECT Id, IsParent__c FROM HOT_WageClaim__c WHERE Id IN :wageClaimIds];
-        for (HOT_WageClaim__c wageClaim : wageClaims) {
-            wageClaim.IsParent__c = true;
-        }
-        update wageClaims;
     }
 
     public static void setFieldsBasedOnParent(List<Id> wageClaimIds) {

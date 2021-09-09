@@ -10,11 +10,6 @@
     <columns>AssignmentType__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
-        <field>IsParent__c</field>
-        <operation>equals</operation>
-        <value>0</value>
-    </filters>
-    <filters>
         <field>Status__c</field>
         <operation>equals</operation>
         <value>Open</value>

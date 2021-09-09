@@ -34,6 +34,10 @@
                 <behavior>Edit</behavior>
                 <field>ParentWageClaim__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>DegreeOfHearingAndVisualImpairment__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

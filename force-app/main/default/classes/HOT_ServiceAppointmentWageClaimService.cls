@@ -43,24 +43,6 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
         return serviceAppointments;
     }
 
-    @InvocableVariable
-    public Id wageClaimId;
-    @InvocableVariable
-    public Datetime serviceAppointmentStartTime;
-    @InvocableVariable
-    public Datetime serviceAppointmentEndTime;
-    @InvocableMethod
-    public static List<String> updateWageClaimsInvocable(List<HOT_ServiceAppointmentWageClaimService> inputVariables) {
-        Map<Id, Map<String, Datetime>> wageClaimMap = new Map<Id, Map<String, Datetime>>();
-        for (HOT_ServiceAppointmentWageClaimService input : inputVariables) {
-            Map<String, Datetime> tempDateTimes = new Map<String, Datetime>();
-            tempDateTimes.put('serviceAppointmentStartTime', input.serviceAppointmentStartTime);
-            tempDateTimes.put('serviceAppointmentEndTime', input.serviceAppointmentEndTime);
-            wageClaimMap.put(input.wageClaimId, tempDateTimes);
-        }
-        return updateWageClaims(wageClaimMap);
-    }
-
     @Future
     public static void updateWageClaimsFuture(Set<Id> serviceAppointmentIds) {
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
@@ -70,35 +52,61 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
                 WHERE Id IN :serviceAppointmentIds AND HOT_IsReleasedToFreelance__c = TRUE
             ]
         );
-        List<Id> serviceResourceIds = new List<Id>();
+        Map<Id, Id> serviceResourceByServiceAppointment = new Map<Id, Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
-            serviceResourceIds.add(serviceAppointment.HOT_ServiceResource__c);
+            serviceResourceByServiceAppointment.put(serviceAppointment.Id, serviceAppointment.HOT_ServiceResource__c);
         }
         List<HOT_WageClaim__c> wageClaims = [
             SELECT Id, ServiceAppointment__c
             FROM HOT_WageClaim__c
-            WHERE ServiceResource__c IN :serviceResourceIds
+            WHERE
+                ServiceResource__c IN :serviceResourceByServiceAppointment.values()
+                AND Status__c = 'Open'
+                AND Type__c = 'Available on Wage'
         ];
-        Map<Id, Map<String, Datetime>> wageClaimMap = new Map<Id, Map<String, Datetime>>();
+        Map<Id, List<HOT_WageClaim__c>> wageClaimsByServiceResourceId = new Map<Id, List<HOT_WageClaim__c>>();
         for (HOT_WageClaim__c wageClaim : wageClaims) {
-            Map<String, Datetime> tempDateTimes = new Map<String, Datetime>();
-            tempDateTimes.put(
-                'serviceAppointmentStartTime',
-                serviceAppointments.get(wageClaim.ServiceAppointment__c).SchedStartTime
-            );
-            tempDateTimes.put(
-                'serviceAppointmentEndTime',
-                serviceAppointments.get(wageClaim.ServiceAppointment__c).SchedEndTime
-            );
-            wageClaimMap.put(wageClaim.Id, tempDateTimes);
+            System.debug('wageClaim: ' + wageClaim);
+            System.debug('wageClaim.ServiceResource__c: ' + wageClaim.ServiceResource__c);
+            if (wageClaimsByServiceResourceId.get(wageClaim.ServiceResource__c) == null) {
+                wageClaimsByServiceResourceId.put(
+                    wageClaim.ServiceResource__c,
+                    new List<HOT_WageClaim__c>{ wageClaim }
+                );
+            } else {
+                wageClaimsByServiceResourceId.get(wageClaim.ServiceResource__c).add(wageClaim);
+            }
         }
-        updateWageClaims(wageClaimMap);
+        System.debug(wageClaimsByServiceResourceId.keySet());
+        Map<Id, Map<String, Datetime>> wageClaimMap = new Map<Id, Map<String, Datetime>>();
+        for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
+            System.debug('serviceAppointment.HOT_ServiceResource__c: ' + serviceAppointment.HOT_ServiceResource__c);
+            System.debug(
+                'wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c): ' +
+                wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c)
+            );
+            if (wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c) != null) {
+                for (
+                    HOT_WageClaim__c wageClaim : wageClaimsByServiceResourceId.get(
+                        serviceAppointment.HOT_ServiceResource__c
+                    )
+                ) {
+                    Map<String, Datetime> tempDateTimes = new Map<String, Datetime>();
+                    tempDateTimes.put('serviceAppointmentStartTime', serviceAppointment.SchedStartTime);
+                    tempDateTimes.put('serviceAppointmentEndTime', serviceAppointment.SchedEndTime);
+                    wageClaimMap.put(wageClaim.Id, tempDateTimes);
+                }
+            }
+        }
+        if (!wageClaimMap.isEmpty()) {
+            updateWageClaims(wageClaimMap);
+        }
     }
 
     public static List<String> updateWageClaims(Map<Id, Map<String, Datetime>> wageClaimMap) {
         Map<Id, HOT_WageClaim__c> wageClaims = new Map<Id, HOT_WageClaim__c>(
             [
-                SELECT Id, StartTime__c, EndTime__c, ServiceResource__c, IsParent__c
+                SELECT Id, StartTime__c, EndTime__c, ServiceResource__c
                 FROM HOT_WageClaim__c
                 WHERE Id IN :wageClaimMap.keySet()
                 LIMIT 1
@@ -111,24 +119,17 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
             Datetime serviceAppointmentEndTime = wageClaimMap.get(wageClaimId).get('serviceAppointmentEndTime');
             HOT_WageClaim__c wageClaim = wageClaims.get(wageClaimId);
             //Completely covered
-            System.debug('wageClaim.StartTime__c: ' + wageClaim.StartTime__c);
-            System.debug('wageClaim.EndTime__c: ' + wageClaim.EndTime__c);
-            System.debug('serviceAppointmentStartTime: ' + serviceAppointmentStartTime);
-            System.debug('serviceAppointmentEndTime: ' + serviceAppointmentEndTime);
             if (
-                //Needs to compare on Minute level?
                 serviceAppointmentStartTime <= wageClaim.StartTime__c &&
                 serviceAppointmentEndTime >= wageClaim.EndTime__c
             ) {
-                System.debug('Completely covered');
-                wageClaim.IsParent__c = true;
+                wageClaim.Status__c = 'Covered';
                 newWageClaims.add(wageClaim);
             } else if (
                 serviceAppointmentStartTime > wageClaim.StartTime__c &&
                 serviceAppointmentEndTime < wageClaim.EndTime__c
             ) {
                 //Split
-                System.debug('Split');
                 HOT_WageClaim__c lowerWageClaim = new HOT_WageClaim__c(
                     ParentWageClaim__c = wageClaim.Id,
                     ServiceResource__c = wageClaim.ServiceResource__c,
@@ -141,6 +142,8 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
                     StartTime__c = serviceAppointmentEndTime,
                     EndTime__c = wageClaim.EndTime__c
                 );
+                wageClaim.Status__c = 'Partly Covered';
+                newWageClaims.add(wageClaim);
                 newWageClaims.add(lowerWageClaim);
                 newWageClaims.add(upperWageClaim);
             } else if (
@@ -148,26 +151,28 @@ public without sharing class HOT_ServiceAppointmentWageClaimService {
                 serviceAppointmentEndTime > wageClaim.StartTime__c
             ) {
                 //lower
-                System.debug('lower');
                 HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
                     ParentWageClaim__c = wageClaim.Id,
                     ServiceResource__c = wageClaim.ServiceResource__c,
                     StartTime__c = serviceAppointmentEndTime,
                     EndTime__c = wageClaim.EndTime__c
                 );
+                wageClaim.Status__c = 'Partly Covered';
+                newWageClaims.add(wageClaim);
                 newWageClaims.add(newWageClaim);
             } else if (
                 serviceAppointmentStartTime <= wageClaim.EndTime__c &&
                 serviceAppointmentEndTime > wageClaim.EndTime__c
             ) {
                 //upper
-                System.debug('upper');
                 HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
                     ParentWageClaim__c = wageClaim.Id,
                     ServiceResource__c = wageClaim.ServiceResource__c,
                     StartTime__c = wageClaim.StartTime__c,
                     EndTime__c = serviceAppointmentStartTime
                 );
+                wageClaim.Status__c = 'Partly Covered';
+                newWageClaims.add(wageClaim);
                 newWageClaims.add(newWageClaim);
             }
         }
