@@ -670,7 +670,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     handleClick(event) {
         this.buttonValue = event.detail;
         if (this.buttonValue !== 'confirm') {
-            this.fileData = [];
+            this.fileData = this.fileDataCopy.slice(); // Slice copies by value instead of by reference
+        } else {
+            this.fileDataCopy = this.fileData.slice();
         }
     }
 
@@ -681,9 +683,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
     // TODO: Fix file drop not working
     header = 'Samtykke';
-    content = 'Ved opplasting av denne filen samtykker du til at NAV kan bla bla bla';
+    content;
     noCancelButton = false;
     fileData = [];
+    fileDataCopy = [];
     filesAdded = false;
     async onFileUpload(event) {
         try {
@@ -697,9 +700,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     this.filesAdded = true;
                 }
             });
-            if (this.fileData.length > 1) {
-                this.content = 'Ved opplasting av disse filene samtykker du til at NAV kan bla bla bla';
-            }
+            this.content =
+                result.length > 1
+                    ? 'Ved opplasting av disse filene samtykker du til at NAV kan bla bla bla'
+                    : 'Ved opplasting av denne filen samtykker du til at NAV kan bla bla bla';
+
             if (numFiles !== this.fileData.length) {
                 this.showModal();
             }
