@@ -733,7 +733,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.fileData.forEach((item) => {
             item.recordId = this.recordId;
             const { base64, filename, recordId } = item;
-            uploadFile({ base64, filename, recordId }).then(() => {});
+            uploadFile({ base64, filename, recordId });
         });
         this.fileData = null;
     }
