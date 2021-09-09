@@ -66,11 +66,10 @@ public without sharing class HOT_WageClaimService {
             ]
         );
         for (AssignedResource assignedResource : assignedResources) {
-            Date criticalDate = serviceAppointments.get(assignedResource.ServiceAppointmentId)
-                    .HOT_Request__r.IsAgreement__c == true &&
-                serviceResources.get(assignedResource.ServiceResourceId).HOT_AgreementFreelance__c == true
-                ? Date.today().addDays(30)
-                : Date.today().addDays(14);
+            Boolean isAgreement =
+                serviceAppointments.get(assignedResource.ServiceAppointmentId).HOT_Request__r.IsAgreement__c == true &&
+                serviceResources.get(assignedResource.ServiceResourceId).HOT_AgreementFreelance__c == true;
+            Date criticalDate = isAgreement ? Date.today().addDays(30) : Date.today().addDays(14);
             if (
                 criticalDate >= serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime.date() &&
                 serviceResources.get(assignedResource.ServiceResourceId).HOT_IsFreelanceInterpreter__c == true
@@ -106,7 +105,7 @@ public without sharing class HOT_WageClaimService {
             serviceResourceByServiceAppointment.put(serviceAppointment.Id, serviceAppointment.HOT_ServiceResource__c);
         }
         List<HOT_WageClaim__c> wageClaims = [
-            SELECT Id, ServiceAppointment__c
+            SELECT Id, ServiceAppointment__c, ServiceResource__c
             FROM HOT_WageClaim__c
             WHERE
                 ServiceResource__c IN :serviceResourceByServiceAppointment.values()
@@ -115,8 +114,6 @@ public without sharing class HOT_WageClaimService {
         ];
         Map<Id, List<HOT_WageClaim__c>> wageClaimsByServiceResourceId = new Map<Id, List<HOT_WageClaim__c>>();
         for (HOT_WageClaim__c wageClaim : wageClaims) {
-            System.debug('wageClaim: ' + wageClaim);
-            System.debug('wageClaim.ServiceResource__c: ' + wageClaim.ServiceResource__c);
             if (wageClaimsByServiceResourceId.get(wageClaim.ServiceResource__c) == null) {
                 wageClaimsByServiceResourceId.put(
                     wageClaim.ServiceResource__c,
@@ -126,14 +123,8 @@ public without sharing class HOT_WageClaimService {
                 wageClaimsByServiceResourceId.get(wageClaim.ServiceResource__c).add(wageClaim);
             }
         }
-        System.debug(wageClaimsByServiceResourceId.keySet());
         Map<Id, Map<String, Datetime>> wageClaimMap = new Map<Id, Map<String, Datetime>>();
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
-            System.debug('serviceAppointment.HOT_ServiceResource__c: ' + serviceAppointment.HOT_ServiceResource__c);
-            System.debug(
-                'wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c): ' +
-                wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c)
-            );
             if (wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c) != null) {
                 for (
                     HOT_WageClaim__c wageClaim : wageClaimsByServiceResourceId.get(
@@ -191,7 +182,7 @@ public without sharing class HOT_WageClaimService {
                     StartTime__c = serviceAppointmentEndTime,
                     EndTime__c = wageClaim.EndTime__c
                 );
-                wageClaim.Status__c = 'Partly Covered';
+                wageClaim.Status__c = 'Partially Covered';
                 newWageClaims.add(wageClaim);
                 newWageClaims.add(lowerWageClaim);
                 newWageClaims.add(upperWageClaim);
@@ -206,7 +197,7 @@ public without sharing class HOT_WageClaimService {
                     StartTime__c = serviceAppointmentEndTime,
                     EndTime__c = wageClaim.EndTime__c
                 );
-                wageClaim.Status__c = 'Partly Covered';
+                wageClaim.Status__c = 'Partially Covered';
                 newWageClaims.add(wageClaim);
                 newWageClaims.add(newWageClaim);
             } else if (
@@ -220,7 +211,7 @@ public without sharing class HOT_WageClaimService {
                     StartTime__c = wageClaim.StartTime__c,
                     EndTime__c = serviceAppointmentStartTime
                 );
-                wageClaim.Status__c = 'Partly Covered';
+                wageClaim.Status__c = 'Partially Covered';
                 newWageClaims.add(wageClaim);
                 newWageClaims.add(newWageClaim);
             }

@@ -18,13 +18,11 @@ private class HOT_WageClaimServiceTest {
 
         Id serviceAppointmentId = [SELECT Id FROM ServiceAppointment LIMIT 1].Id;
         Id serviceResourceId = [SELECT Id FROM ServiceResource LIMIT 1].Id;
-        Id userId = [SELECT RelatedRecordId FROM ServiceResource LIMIT 1].RelatedRecordId;
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointmentId,
             serviceResourceId
         );
         insert assignedResource;
-        delete assignedResource;
     }
 
     @isTest
@@ -68,6 +66,203 @@ private class HOT_WageClaimServiceTest {
     }
 
     @isTest
-    static void updateWageClaimsFutureTest() {
+    static void createWageClaimTest() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
+
+        Test.startTest();
+        delete assignedResource;
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
+        System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims');
+    }
+
+    @isTest
+    static void updateWageClaimsFutureTest_CompletelyCovered() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        delete assignedResource;
+        AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
+            assignedResource.ServiceAppointmentId,
+            assignedResource.ServiceResourceId
+        );
+
+        Test.startTest();
+        insert newAssignedResource;
+        Test.stopTest();
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, Status__c FROM HOT_WageClaim__c LIMIT 1];
+        System.assertEquals('Covered', wageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+    }
+    @isTest
+    static void updateWageClaimsFutureTest_PartiallyCovered_split() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        delete assignedResource;
+        AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
+            assignedResource.ServiceAppointmentId,
+            assignedResource.ServiceResourceId
+        );
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
+        Datetime saStartTime = wageClaim.StartTime__c;
+        Datetime saEndTime = wageClaim.EndTime__c;
+        wageClaim.StartTime__c = wageClaim.StartTime__c.addMinutes(-10);
+        wageClaim.EndTime__c = wageClaim.EndTime__c.addMinutes(10);
+        update wageClaim;
+
+        Test.startTest();
+        insert newAssignedResource;
+        Test.stopTest();
+
+        wageClaim = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id];
+        List<HOT_WageClaim__c> newWageClaims = [
+            SELECT Id, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE Id != :wageClaim.Id
+            ORDER BY StartTime__c ASC
+        ];
+        System.assertEquals(
+            'Partially Covered',
+            wageClaim.Status__c,
+            'Could not set WageClaim.Status = \'Partially Covered\''
+        );
+
+        System.assertEquals(2, newWageClaims.size(), 'Could not split Wage Claim');
+
+        System.assertEquals(
+            wageClaim.StartTime__c,
+            newWageClaims[0].StartTime__c,
+            'Could not set correct Start Time for new WageClaim1'
+        );
+        System.assertEquals(
+            saStartTime,
+            newWageClaims[0].EndTime__c,
+            'Could not set correct End Time for new WageClaim1'
+        );
+        System.assertEquals(
+            saEndTime,
+            newWageClaims[1].StartTime__c,
+            'Could not set correct Start Time for new WageClaim2'
+        );
+        System.assertEquals(
+            wageClaim.EndTime__c,
+            newWageClaims[1].EndTime__c,
+            'Could not set correct End Time for new WageClaim2'
+        );
+    }
+    @isTest
+    static void updateWageClaimsFutureTest_PartiallyCovered_lower() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        delete assignedResource;
+        AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
+            assignedResource.ServiceAppointmentId,
+            assignedResource.ServiceResourceId
+        );
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
+        Datetime saStartTime = wageClaim.StartTime__c;
+        Datetime saEndTime = wageClaim.EndTime__c;
+        wageClaim.StartTime__c = wageClaim.StartTime__c.addMinutes(10);
+        wageClaim.EndTime__c = wageClaim.EndTime__c.addMinutes(10);
+        update wageClaim;
+
+        Test.startTest();
+        insert newAssignedResource;
+        Test.stopTest();
+
+        wageClaim = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id];
+        List<HOT_WageClaim__c> newWageClaims = [
+            SELECT Id, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE Id != :wageClaim.Id
+            ORDER BY StartTime__c ASC
+        ];
+        System.assertEquals(
+            'Partially Covered',
+            wageClaim.Status__c,
+            'Could not set WageClaim.Status = \'Partially Covered\''
+        );
+
+        System.assertEquals(1, newWageClaims.size(), 'Could not create updated Wage Claim');
+
+        System.assertEquals(
+            saEndTime,
+            newWageClaims[0].StartTime__c,
+            'Could not set correct Start Time for new WageClaim'
+        );
+        System.assertEquals(
+            wageClaim.EndTime__c,
+            newWageClaims[0].EndTime__c,
+            'Could not set correct End Time for new WageClaim'
+        );
+    }
+    @isTest
+    static void updateWageClaimsFutureTest_PartiallyCovered_upper() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        delete assignedResource;
+        AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
+            assignedResource.ServiceAppointmentId,
+            assignedResource.ServiceResourceId
+        );
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
+        Datetime saStartTime = wageClaim.StartTime__c;
+        Datetime saEndTime = wageClaim.EndTime__c;
+        wageClaim.StartTime__c = wageClaim.StartTime__c.addMinutes(-10);
+        wageClaim.EndTime__c = wageClaim.EndTime__c.addMinutes(-10);
+        update wageClaim;
+
+        Test.startTest();
+        insert newAssignedResource;
+        Test.stopTest();
+
+        wageClaim = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id];
+        List<HOT_WageClaim__c> newWageClaims = [
+            SELECT Id, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE Id != :wageClaim.Id
+            ORDER BY StartTime__c ASC
+        ];
+        System.assertEquals(
+            'Partially Covered',
+            wageClaim.Status__c,
+            'Could not set WageClaim.Status = \'Partially Covered\''
+        );
+
+        System.assertEquals(1, newWageClaims.size(), 'Could not create updated Wage Claim');
+
+        System.assertEquals(
+            wageClaim.StartTime__c,
+            newWageClaims[0].StartTime__c,
+            'Could not set correct Start Time for new WageClaim'
+        );
+        System.assertEquals(
+            saStartTime,
+            newWageClaims[0].EndTime__c,
+            'Could not set correct End Time for new WageClaim'
+        );
+    }
+
+    @isTest
+    static void updateWageClaimsFutureTest_codeCov() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        delete assignedResource;
+        AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
+            assignedResource.ServiceAppointmentId,
+            assignedResource.ServiceResourceId
+        );
+        HOT_WageClaim__c wageClaim = [
+            SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            LIMIT 1
+        ];
+        HOT_WageClaim__c newWageClaim = wageClaim.clone(false, true, false, false);
+        insert newWageClaim;
+
+        Test.startTest();
+        insert newAssignedResource;
+        Test.stopTest();
+
+        wageClaim = [SELECT Id, Status__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id LIMIT 1];
+        System.assertEquals('Covered', wageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
     }
 }
