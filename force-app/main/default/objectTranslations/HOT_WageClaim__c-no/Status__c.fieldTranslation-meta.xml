@@ -7,8 +7,16 @@
         <translation>Annullert</translation>
     </picklistValues>
     <picklistValues>
+        <masterLabel>Covered</masterLabel>
+        <translation>Dekket</translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>Open</masterLabel>
         <translation>Åpen</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Partially Covered</masterLabel>
+        <translation>Delvis dekket</translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Retracted Availability</masterLabel>
