@@ -57,6 +57,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 (List<AssignedResource>) records
             );
             update interestedResources;
+            Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(serviceAppointments);
+            HOT_WageClaimService.updateWageClaimsFuture(serviceAppointmentMap.keySet());
         }
     }
 
