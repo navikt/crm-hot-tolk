@@ -606,7 +606,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         return newDateTime;
     }
 
-    handleError(event) {
+    handleError() {
         this.spin = false;
     }
 
@@ -665,12 +665,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.template.querySelector('c-alertdialog').showModal();
     }
 
+    // Alertdialog click
     handleClick(event) {
         this.buttonValue = event.detail;
         if (this.buttonValue !== 'confirm') {
-            this.fileData = this.fileDataCopy.slice(); // Slice copies by value instead of by reference
+            this.fileData = [...this.fileDataCopy]; // Copy by value
         } else {
-            this.fileDataCopy = this.fileData.slice();
+            this.fileDataCopy = [...this.fileData]; // Copy by value
         }
     }
 
@@ -679,25 +680,49 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.template.querySelector('input').value = null;
     }
 
-    // TODO: Fix file drop not working
+    isDrop = false;
+    dropHandler(event) {
+        event.preventDefault();
+        this.isDrop = true;
+        this.onFileUpload(event);
+    }
+
+    dragOverHandler(event) {
+        event.preventDefault();
+    }
+
+    // TODO: Set checkbox isFileConsent to true if files are uploaded
+    onFileButtonClick(event) {
+        const index = event.currentTarget.dataset.index;
+        if (this.fileData.length < index) {
+            return;
+        }
+        this.fileData.splice(index, 1);
+        this.filesChanged = false; // Make boolean change value to refresh filelist
+        this.filesChanged = true;
+    }
+
     header = 'Samtykke';
     content;
     noCancelButton = false;
     fileData = [];
     fileDataCopy = [];
-    filesAdded = false;
+    filesChanged = false; // If true shows new files
     async onFileUpload(event) {
         try {
             const numFiles = this.fileData.length;
-            const result = await Promise.all([...event.target.files].map((item) => this.readFile(item)));
+            const result = this.isDrop
+                ? await Promise.all([...event.dataTransfer.files].map((item) => this.readFile(item)))
+                : await Promise.all([...event.target.files].map((item) => this.readFile(item)));
             result.forEach((item) => {
                 // Only push new files
                 if (this.fileData.findIndex((storedItem) => storedItem.base64 === item.base64) === -1) {
                     this.fileData.push(item);
-                    this.filesAdded = false; // Trigger change so that new files will be displayed
-                    this.filesAdded = true;
+                    this.filesChanged = false; // Make boolean change value to refresh filelist
+                    this.filesChanged = true;
                 }
             });
+            // TODO: Change this text to something appropriate
             this.content =
                 result.length > 1
                     ? 'Ved opplasting av disse filene samtykker du til at NAV kan bla bla bla'
@@ -713,6 +738,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             this.noCancelButton = true;
             this.showModal();
         }
+        this.isDrop = false;
     }
 
     readFile(file) {

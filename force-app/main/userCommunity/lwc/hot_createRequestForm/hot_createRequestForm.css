@@ -177,22 +177,8 @@ section.sub-form:last-child {
     flex-direction: row;
 }
 
-.sub-form > form > slot > lightning-output-field > .slds-form-element__label {
-    background-color: red;
-    display: none !important;
-}
-
 .hidden {
     display: none;
-}
-
-.data-element-container {
-    margin-left: 1rem;
-}
-
-.file-container {
-    border: 2px dashed #bdbdbd, 100%;
-    padding: 25px;
 }
 
 .button-standard {
@@ -227,4 +213,72 @@ section.sub-form:last-child {
     font-weight: 600;
     color: #0067c5;
     text-transform: uppercase;
+    padding: 0.5rem;
+    font-size: 13.33px;
+}
+
+.dropzone {
+    padding: 0.125rem;
+    border: 1px dashed #d4d4d4;
+    border-radius: 0.25rem;
+    width: auto;
+    white-space: nowrap;
+}
+
+.uploadFileElement {
+    width: fit-content;
+}
+
+.filesClass {
+    padding: 0.25em 0 0 0;
+}
+
+.fileNameClass {
+    font-family: Source Sans Pro, Arial, sans-serif;
+    font-size: 14px;
+    margin: 0 0.5em 0 0;
+}
+
+.fileAndButton {
+    width: fit-content;
+    height: fit-content;
+}
+
+.navds-modal__button--shake {
+    transform: rotate(0deg);
+    transition: transform 100ms cubic-bezier(0.82, 2, 1, 0.3);
+}
+
+.navds-button--secondary {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.navds-modal__button svg {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.navds-button--s > svg {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.navds-button {
+    cursor: pointer;
+    background-color: #ffffff;
+    color: #a32a17;
+    text-align: center;
+    text-decoration: none;
+    align-items: center;
+    padding: 0;
+}
+
+.navds-button--secondary:active {
+    color: #ffffff;
+}
+
+.navds-button--secondary:hover {
+    opacity: 0.8;
 }
