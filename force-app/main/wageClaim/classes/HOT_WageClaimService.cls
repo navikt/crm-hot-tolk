@@ -165,55 +165,42 @@ public without sharing class HOT_WageClaimService {
             ) {
                 wageClaim.Status__c = 'Covered';
                 newWageClaims.add(wageClaim);
-            } else if (
-                serviceAppointmentStartTime > wageClaim.StartTime__c &&
+            }
+            //lower
+            if (
+                serviceAppointmentStartTime <= wageClaim.StartTime__c &&
+                serviceAppointmentEndTime > wageClaim.StartTime__c &&
                 serviceAppointmentEndTime < wageClaim.EndTime__c
             ) {
-                //Split
-                HOT_WageClaim__c lowerWageClaim = new HOT_WageClaim__c(
-                    ParentWageClaim__c = wageClaim.Id,
-                    ServiceResource__c = wageClaim.ServiceResource__c,
-                    StartTime__c = wageClaim.StartTime__c,
-                    EndTime__c = serviceAppointmentStartTime
-                );
-                HOT_WageClaim__c upperWageClaim = new HOT_WageClaim__c(
-                    ParentWageClaim__c = wageClaim.Id,
-                    ServiceResource__c = wageClaim.ServiceResource__c,
-                    StartTime__c = serviceAppointmentEndTime,
-                    EndTime__c = wageClaim.EndTime__c
-                );
-                wageClaim.Status__c = 'Partially Covered';
-                newWageClaims.add(wageClaim);
-                newWageClaims.add(lowerWageClaim);
-                newWageClaims.add(upperWageClaim);
-            } else if (
-                serviceAppointmentStartTime <= wageClaim.StartTime__c &&
-                serviceAppointmentEndTime > wageClaim.StartTime__c
-            ) {
-                //lower
                 HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
                     ParentWageClaim__c = wageClaim.Id,
                     ServiceResource__c = wageClaim.ServiceResource__c,
                     StartTime__c = serviceAppointmentEndTime,
                     EndTime__c = wageClaim.EndTime__c
                 );
-                wageClaim.Status__c = 'Partially Covered';
-                newWageClaims.add(wageClaim);
                 newWageClaims.add(newWageClaim);
-            } else if (
+                if (!newWageClaims.contains(wageClaim)) {
+                    wageClaim.Status__c = 'Partially Covered';
+                    newWageClaims.add(wageClaim);
+                }
+            }
+            //upper
+            if (
                 serviceAppointmentStartTime <= wageClaim.EndTime__c &&
-                serviceAppointmentEndTime > wageClaim.EndTime__c
+                serviceAppointmentEndTime > wageClaim.EndTime__c &&
+                serviceAppointmentStartTime > wageClaim.StartTime__c
             ) {
-                //upper
                 HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
                     ParentWageClaim__c = wageClaim.Id,
                     ServiceResource__c = wageClaim.ServiceResource__c,
                     StartTime__c = wageClaim.StartTime__c,
                     EndTime__c = serviceAppointmentStartTime
                 );
-                wageClaim.Status__c = 'Partially Covered';
-                newWageClaims.add(wageClaim);
                 newWageClaims.add(newWageClaim);
+                if (!newWageClaims.contains(wageClaim)) {
+                    wageClaim.Status__c = 'Partially Covered';
+                    newWageClaims.add(wageClaim);
+                }
             }
         }
 
