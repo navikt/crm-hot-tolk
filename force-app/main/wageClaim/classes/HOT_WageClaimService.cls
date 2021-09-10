@@ -53,7 +53,7 @@ public without sharing class HOT_WageClaimService {
         }
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId, HOT_Request__r.IsAgreement__c
+                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
@@ -65,11 +65,8 @@ public without sharing class HOT_WageClaimService {
                 WHERE Id IN :serviceResourceIds
             ]
         );
+        Date criticalDate = Date.today().addDays(14);
         for (AssignedResource assignedResource : assignedResources) {
-            Boolean isAgreement =
-                serviceAppointments.get(assignedResource.ServiceAppointmentId).HOT_Request__r.IsAgreement__c == true &&
-                serviceResources.get(assignedResource.ServiceResourceId).HOT_AgreementFreelance__c == true;
-            Date criticalDate = isAgreement ? Date.today().addDays(30) : Date.today().addDays(14);
             if (
                 criticalDate >= serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime.date() &&
                 serviceResources.get(assignedResource.ServiceResourceId).HOT_IsFreelanceInterpreter__c == true
