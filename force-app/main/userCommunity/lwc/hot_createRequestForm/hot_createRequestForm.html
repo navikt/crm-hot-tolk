@@ -353,18 +353,6 @@
                         >
                         </lightning-input-field>
 
-                        <c-alertdialog
-                            header={header}
-                            content={content}
-                            desktop-style="text-align: center;"
-                            center-buttons="true"
-                            onbuttonclick={handleClick}
-                            no-cancel-button={noCancelButton}
-                            max-width="fit-content"
-                            max-height="fit-content"
-                        >
-                        </c-alertdialog>
-
                         <div class="uploadFileElement">
                             <div class="dropzone" ondrop={dropHandler} ondragover={dragOverHandler}>
                                 <input
@@ -409,6 +397,8 @@
                                 <div key={file.filename} class="fileAndButton">
                                     <span key={file.filename} class="fileNameClass">{file.filename}</span>
                                     <button
+                                        onfocus={onFileFocus}
+                                        aria-label={fileButtonLabel}
                                         data-index={index}
                                         key={file.filename}
                                         type="button"
@@ -495,4 +485,16 @@
             </lightning-button>
         </div>
     </div>
+
+    <c-alertdialog
+        header={header}
+        content={content}
+        desktop-style="text-align: center;"
+        center-buttons="true"
+        onbuttonclick={handleClick}
+        no-cancel-button={noCancelButton}
+        max-width="fit-content"
+        max-height="fit-content"
+    >
+    </c-alertdialog>
 </template>

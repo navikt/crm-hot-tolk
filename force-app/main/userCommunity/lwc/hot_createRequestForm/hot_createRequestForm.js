@@ -697,6 +697,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.filesChanged = true;
     }
 
+    fileButtonLabel;
+    onFileFocus(event) {
+        this.fileButtonLabel = '';
+        const index = event.currentTarget.dataset.index;
+        this.fileButtonLabel = 'Slett vedlegg ' + this.fileData[index].filename;
+    }
+
     header = 'Samtykke';
     content;
     noCancelButton = false;
@@ -728,7 +735,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         } catch (err) {
             this.fileData = [];
             this.header = 'Noe gikk galt';
-            this.content = 'Filene kunne ikke lastes opp. Feilmelding: ' + err;
+            this.content = 'Filen(e) kunne ikke lastes opp. Feilmelding: ' + err;
             this.noCancelButton = true;
             this.showModal();
         }

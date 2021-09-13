@@ -24,6 +24,7 @@ public without sharing class HOT_RequestListContoller {
         }
     }
     // TODO: Create test classes for new functions
+    // TODO: Ask for consent on submit instead?
     private static ContentDocumentLink createContentLink(String contentVersionId, String recordId) {
         if (contentVersionId == null || recordId == null) {
             return null;
