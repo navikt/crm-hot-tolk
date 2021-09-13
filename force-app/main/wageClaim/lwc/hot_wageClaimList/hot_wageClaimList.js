@@ -2,6 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
+import { sortList, getMobileSortingOptions } from 'c/sortController';
 
 export default class Hot_wageClaimList extends LightningElement {
     @track columns = [
@@ -172,5 +173,27 @@ export default class Hot_wageClaimList extends LightningElement {
             }
         }
         this.wageClaims = tempWageClaim;
+    }
+
+    //Sorting methods
+    @track defaultSortDirection = 'asc';
+    @track sortDirection = 'asc';
+    @track sortedBy = 'StartTime__c';
+
+    mobileSortingDefaultValue = '{"fieldName": "StartTime__c", "sortDirection": "asc"} ';
+    get sortingOptions() {
+        return getMobileSortingOptions(this.columns);
+    }
+
+    handleMobileSorting(event) {
+        let value = JSON.parse(event.detail.value);
+        this.sortDirection = value.sortDirection;
+        this.sortedBy = value.fieldName;
+        this.wageClaims = sortList(this.wageClaims, this.sortedBy, this.sortDirection);
+    }
+    onHandleSort(event) {
+        this.sortDirection = event.detail.sortDirection;
+        this.sortedBy = event.detail.fieldName;
+        this.wageClaims = sortList(this.wageClaims, this.sortedBy, this.sortDirection);
     }
 }
