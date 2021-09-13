@@ -12,7 +12,6 @@ public without sharing class HOT_WageClaimService {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
-            addError('Kunne ikke tildele tolk');
         }
     }
 
