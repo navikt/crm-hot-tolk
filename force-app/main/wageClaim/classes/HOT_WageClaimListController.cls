@@ -18,6 +18,7 @@ public without sharing class HOT_WageClaimListController {
                 Type__c = 'Available on Wage'
                 AND Status__c != 'Annul'
                 AND ServiceResource__r.RelatedRecordId = :UserInfo.getUserId()
+                ORDER BY StartTime__c ASC
         ];
         return wageClaims;
     }
