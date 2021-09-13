@@ -202,6 +202,8 @@ section.sub-form:last-child {
     vertical-align: middle;
     border: 2px solid #0067c5;
     color: #0067c5;
+    outline: var(--outline);
+    box-shadow: var(--boxShadow);
 }
 
 .button-standard:hover {
@@ -281,4 +283,7 @@ section.sub-form:last-child {
 
 .navds-button--secondary:hover {
     opacity: 0.8;
+}
+
+.button-standard:focus {
 }

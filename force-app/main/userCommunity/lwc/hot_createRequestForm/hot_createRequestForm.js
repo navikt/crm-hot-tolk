@@ -477,10 +477,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
     submit() {
-        console.log('Sumbitting');
         this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-        console.log('submitted');
-
         window.scrollBy(0, 100);
         window.scrollBy(0, -100);
     }
@@ -628,7 +625,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
     @track isEditMode = false;
     handleSuccess(event) {
-        console.log('handleSuccess');
         this.spin = false;
         let x = this.template.querySelector('.submitted-true');
         x.classList.remove('hidden');
@@ -691,7 +687,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         event.preventDefault();
     }
 
-    // TODO: Set checkbox isFileConsent to true if files are uploaded
     onFileButtonClick(event) {
         const index = event.currentTarget.dataset.index;
         if (this.fileData.length < index) {
@@ -722,11 +717,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     this.filesChanged = true;
                 }
             });
-            // TODO: Change this text to something appropriate
             this.content =
                 result.length > 1
-                    ? 'Ved opplasting av disse filene samtykker du til at NAV kan bla bla bla'
-                    : 'Ved opplasting av denne filen samtykker du til at NAV kan bla bla bla';
+                    ? 'Dokumentene som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedleggene vil bli delt med tolken(e) som blir tildelt oppdraget.'
+                    : 'Dokumentet som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedlegget vil bli delt med tolken(e) som blir tildelt oppdraget.';
 
             if (numFiles !== this.fileData.length) {
                 this.showModal();
@@ -739,6 +733,17 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             this.showModal();
         }
         this.isDrop = false;
+    }
+
+    setButtonStyleOnFocus() {
+        let inputEle = this.template.querySelector('[data-id="file-input"]');
+        if (this.template.activeElement === inputEle) {
+            document.documentElement.style.setProperty('--outline', 'none');
+            document.documentElement.style.setProperty('--boxShadow', '0 0 0 3px #00347d');
+        } else {
+            document.documentElement.style.setProperty('--outline', 'none');
+            document.documentElement.style.setProperty('--boxShadow', 'none');
+        }
     }
 
     readFile(file) {

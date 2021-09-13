@@ -3,6 +3,7 @@ public without sharing class HOT_RequestListContoller {
     public static String uploadFile(String base64, String filename, String recordId) {
         ContentVersion cv = createContentVersion(base64, filename);
         ContentDocumentLink cdl = createContentLink(cv.Id, recordId);
+        setFileConsentToTrue(recordId);
         if (cv == null || cdl == null) {
             return null;
         }
@@ -22,7 +23,7 @@ public without sharing class HOT_RequestListContoller {
             return null;
         }
     }
-
+    // TODO: Create test classes for new functions
     private static ContentDocumentLink createContentLink(String contentVersionId, String recordId) {
         if (contentVersionId == null || recordId == null) {
             return null;
@@ -34,6 +35,7 @@ public without sharing class HOT_RequestListContoller {
         // ShareType is either 'V', 'C', or 'I'
         // V = Viewer, C = Collaborator, I = Inferred
         cdl.ShareType = 'V';
+        cdl.Visibility = 'AllUsers';
         try {
             insert cdl;
             return cdl;
@@ -41,6 +43,12 @@ public without sharing class HOT_RequestListContoller {
             System.debug(e);
             return null;
         }
+    }
+
+    private static void setFileConsentToTrue(String recordId) {
+        HOT_Request__c requestToUpdate = [SELECT isFileConsent__c FROM HOT_Request__c WHERE Id = :recordId LIMIT 1];
+        requestToUpdate.isFileConsent__c = true;
+        update requestToUpdate;
     }
 
     @AuraEnabled(cacheable=true)

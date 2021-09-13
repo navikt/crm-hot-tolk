@@ -360,6 +360,8 @@
                             center-buttons="true"
                             onbuttonclick={handleClick}
                             no-cancel-button={noCancelButton}
+                            max-width="fit-content"
+                            max-height="fit-content"
                         >
                         </c-alertdialog>
 
@@ -367,14 +369,14 @@
                             <div class="dropzone" ondrop={dropHandler} ondragover={dragOverHandler}>
                                 <input
                                     type="file"
+                                    onfocus={setButtonStyleOnFocus}
+                                    onblur={setButtonStyleOnFocus}
                                     onchange={onFileUpload}
                                     onclick={resetFileValue}
                                     name="uploadFile"
                                     accept={acceptedFileFormats}
                                     data-id="file-input"
-                                    required
-                                    hidden
-                                    class="slds-file-selector__input slds-assistive-text"
+                                    class="slds-assistive-text"
                                     id="file-upload-input-01"
                                     aria-labelledby="file-selector-primary-label file-selector-secondary-label"
                                     multiple
