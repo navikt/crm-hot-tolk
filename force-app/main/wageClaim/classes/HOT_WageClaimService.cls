@@ -6,7 +6,14 @@ public without sharing class HOT_WageClaimService {
             ServiceAppointmentId = serviceAppointmentId,
             ServiceResourceId = wageClaim.ServiceResource__c
         );
-        insert assignedResource;
+        try {
+            insert assignedResource;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+            addError('Kunne ikke tildele tolk');
+        }
     }
 
     @AuraEnabled(cacheable=true)
@@ -85,7 +92,13 @@ public without sharing class HOT_WageClaimService {
                 wageClaims.add(wageClaim);
             }
         }
-        insert wageClaims;
+        try {
+            insert wageClaims;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     @Future

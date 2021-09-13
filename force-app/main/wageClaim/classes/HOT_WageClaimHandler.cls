@@ -34,7 +34,13 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
         for (HOT_WageClaim__c wageClaim : childWageClaims) {
             wageClaim.Status__c = 'Retracted Availability';
         }
-        update childWageClaims;
+        try {
+            update childWageClaims;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void setFieldsBasedOnParent(List<Id> wageClaimIds) {
@@ -59,6 +65,12 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
             wageClaim.ServiceTerritory__c = wageClaim.ParentWageClaim__r.ServiceTerritory__c;
             wageClaim.WorkType__c = wageClaim.ParentWageClaim__r.WorkType__c;
         }
-        update wageClaims;
+        try {
+            update wageClaims;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 }
