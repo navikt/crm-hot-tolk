@@ -109,18 +109,74 @@ public without sharing class HOT_WageClaimService {
                 WHERE Id IN :serviceAppointmentIds AND HOT_IsReleasedToFreelance__c = TRUE
             ]
         );
-        Map<Id, Id> serviceResourceByServiceAppointment = new Map<Id, Id>();
+        List<HOT_WageClaim__c> wageClaims = getWageClaimsFromServiceAppointments(serviceAppointments.values());
+        Map<Id, List<HOT_WageClaim__c>> wageClaimsByServiceResourceId = getWageClaimsByServiceResourceId(wageClaims);
+
+        List<HOT_WageClaim__c> newWageClaims = new List<HOT_WageClaim__c>();
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
-            serviceResourceByServiceAppointment.put(serviceAppointment.Id, serviceAppointment.HOT_ServiceResource__c);
+            if (wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c) != null) {
+                for (
+                    HOT_WageClaim__c wageClaim : wageClaimsByServiceResourceId.get(
+                        serviceAppointment.HOT_ServiceResource__c
+                    )
+                ) {
+                    Datetime serviceAppointmentStartTime = serviceAppointment.SchedStartTime;
+                    Datetime serviceAppointmentEndTime = serviceAppointment.SchedEndTime;
+                    //Completely covered
+                    if (
+                        serviceAppointmentStartTime <= wageClaim.StartTime__c &&
+                        serviceAppointmentEndTime >= wageClaim.EndTime__c
+                    ) {
+                        wageClaim.Status__c = 'Covered';
+                        newWageClaims.add(wageClaim);
+                    }
+                    //lower
+                    if (
+                        serviceAppointmentEndTime > wageClaim.StartTime__c &&
+                        serviceAppointmentEndTime < wageClaim.EndTime__c
+                    ) {
+                        HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
+                            ParentWageClaim__c = wageClaim.Id,
+                            ServiceResource__c = wageClaim.ServiceResource__c,
+                            StartTime__c = serviceAppointmentEndTime,
+                            EndTime__c = wageClaim.EndTime__c
+                        );
+                        newWageClaims.add(newWageClaim);
+                        if (!newWageClaims.contains(wageClaim)) {
+                            wageClaim.Status__c = 'Partially Covered';
+                            newWageClaims.add(wageClaim);
+                        }
+                    }
+                    //upper
+                    if (
+                        serviceAppointmentStartTime < wageClaim.EndTime__c &&
+                        serviceAppointmentStartTime > wageClaim.StartTime__c
+                    ) {
+                        HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
+                            ParentWageClaim__c = wageClaim.Id,
+                            ServiceResource__c = wageClaim.ServiceResource__c,
+                            StartTime__c = wageClaim.StartTime__c,
+                            EndTime__c = serviceAppointmentStartTime
+                        );
+                        newWageClaims.add(newWageClaim);
+                        if (!newWageClaims.contains(wageClaim)) {
+                            wageClaim.Status__c = 'Partially Covered';
+                            newWageClaims.add(wageClaim);
+                        }
+                    }
+                }
+            }
         }
-        List<HOT_WageClaim__c> wageClaims = [
-            SELECT Id, ServiceAppointment__c, ServiceResource__c
-            FROM HOT_WageClaim__c
-            WHERE
-                ServiceResource__c IN :serviceResourceByServiceAppointment.values()
-                AND Status__c = 'Open'
-                AND Type__c = 'Available on Wage'
-        ];
+        try {
+            upsert newWageClaims;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    private static Map<Id, List<HOT_WageClaim__c>> getWageClaimsByServiceResourceId(List<HOT_WageClaim__c> wageClaims) {
         Map<Id, List<HOT_WageClaim__c>> wageClaimsByServiceResourceId = new Map<Id, List<HOT_WageClaim__c>>();
         for (HOT_WageClaim__c wageClaim : wageClaims) {
             if (wageClaimsByServiceResourceId.get(wageClaim.ServiceResource__c) == null) {
@@ -132,94 +188,25 @@ public without sharing class HOT_WageClaimService {
                 wageClaimsByServiceResourceId.get(wageClaim.ServiceResource__c).add(wageClaim);
             }
         }
-        Map<Id, Map<String, Datetime>> wageClaimMap = new Map<Id, Map<String, Datetime>>();
-        for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
-            if (wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c) != null) {
-                for (
-                    HOT_WageClaim__c wageClaim : wageClaimsByServiceResourceId.get(
-                        serviceAppointment.HOT_ServiceResource__c
-                    )
-                ) {
-                    Map<String, Datetime> tempDateTimes = new Map<String, Datetime>();
-                    tempDateTimes.put('serviceAppointmentStartTime', serviceAppointment.SchedStartTime);
-                    tempDateTimes.put('serviceAppointmentEndTime', serviceAppointment.SchedEndTime);
-                    wageClaimMap.put(wageClaim.Id, tempDateTimes);
-                }
-            }
-        }
-        if (!wageClaimMap.isEmpty()) {
-            updateWageClaims(wageClaimMap);
-        }
+        return wageClaimsByServiceResourceId;
     }
 
-    public static List<String> updateWageClaims(Map<Id, Map<String, Datetime>> wageClaimMap) {
-        Map<Id, HOT_WageClaim__c> wageClaims = new Map<Id, HOT_WageClaim__c>(
-            [
-                SELECT Id, StartTime__c, EndTime__c, ServiceResource__c
-                FROM HOT_WageClaim__c
-                WHERE Id IN :wageClaimMap.keySet()
-                LIMIT 1
-            ]
-        );
-        List<HOT_WageClaim__c> newWageClaims = new List<HOT_WageClaim__c>();
-
-        for (Id wageClaimId : wageClaims.keySet()) {
-            Datetime serviceAppointmentStartTime = wageClaimMap.get(wageClaimId).get('serviceAppointmentStartTime');
-            Datetime serviceAppointmentEndTime = wageClaimMap.get(wageClaimId).get('serviceAppointmentEndTime');
-            HOT_WageClaim__c wageClaim = wageClaims.get(wageClaimId);
-            //Completely covered
-            if (
-                serviceAppointmentStartTime <= wageClaim.StartTime__c &&
-                serviceAppointmentEndTime >= wageClaim.EndTime__c
-            ) {
-                wageClaim.Status__c = 'Covered';
-                newWageClaims.add(wageClaim);
-            }
-            //lower
-            if (
-                serviceAppointmentStartTime <= wageClaim.StartTime__c &&
-                serviceAppointmentEndTime > wageClaim.StartTime__c &&
-                serviceAppointmentEndTime < wageClaim.EndTime__c
-            ) {
-                HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
-                    ParentWageClaim__c = wageClaim.Id,
-                    ServiceResource__c = wageClaim.ServiceResource__c,
-                    StartTime__c = serviceAppointmentEndTime,
-                    EndTime__c = wageClaim.EndTime__c
-                );
-                newWageClaims.add(newWageClaim);
-                if (!newWageClaims.contains(wageClaim)) {
-                    wageClaim.Status__c = 'Partially Covered';
-                    newWageClaims.add(wageClaim);
-                }
-            }
-            //upper
-            if (
-                serviceAppointmentStartTime <= wageClaim.EndTime__c &&
-                serviceAppointmentEndTime > wageClaim.EndTime__c &&
-                serviceAppointmentStartTime > wageClaim.StartTime__c
-            ) {
-                HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
-                    ParentWageClaim__c = wageClaim.Id,
-                    ServiceResource__c = wageClaim.ServiceResource__c,
-                    StartTime__c = wageClaim.StartTime__c,
-                    EndTime__c = serviceAppointmentStartTime
-                );
-                newWageClaims.add(newWageClaim);
-                if (!newWageClaims.contains(wageClaim)) {
-                    wageClaim.Status__c = 'Partially Covered';
-                    newWageClaims.add(wageClaim);
-                }
-            }
+    private static List<HOT_WageClaim__c> getWageClaimsFromServiceAppointments(
+        List<ServiceAppointment> serviceAppointments
+    ) {
+        Map<Id, Id> serviceResourceByServiceAppointment = new Map<Id, Id>();
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceResourceByServiceAppointment.put(serviceAppointment.Id, serviceAppointment.HOT_ServiceResource__c);
         }
-
-        try {
-            upsert newWageClaims;
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-        return null;
+        System.debug('serviceResourceByServiceAppointment.values(): ' + serviceResourceByServiceAppointment.values());
+        List<HOT_WageClaim__c> wageClaims = [
+            SELECT Id, ServiceAppointment__c, ServiceResource__c, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE
+                ServiceResource__c IN :serviceResourceByServiceAppointment.values()
+                AND Status__c = 'Open'
+                AND Type__c = 'Available on Wage'
+        ];
+        return wageClaims;
     }
 }
