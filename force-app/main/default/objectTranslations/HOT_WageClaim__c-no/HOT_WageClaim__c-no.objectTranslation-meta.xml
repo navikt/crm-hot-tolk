@@ -34,6 +34,10 @@
     <layouts>
         <layout>Wage Claim Layout</layout>
         <sections>
+            <label>Mer informasjon</label>
+            <section>Additional Information</section>
+        </sections>
+        <sections>
             <label><!-- Custom Links --></label>
             <section>Custom Links</section>
         </sections>
