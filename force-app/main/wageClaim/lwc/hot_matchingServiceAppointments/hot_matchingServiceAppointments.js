@@ -10,7 +10,7 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
     @track columns = [
         {
             label: 'Oppdrag',
-            fieldName: 'AppointmentNumber',
+            fieldName: 'ServiceAppointmentName',
             type: 'url',
             typeAttributes: { label: { fieldName: 'AppointmentNumber' }, target: '_blank' },
             sortable: true
@@ -79,7 +79,13 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
         console.log(JSON.stringify(result));
         console.log('derp');
         if (result.data) {
-            this.serviceAppointments = result.data;
+            let tempServiceAppointments = [];
+            result.data.forEach((record) => {
+                let tempRecord = Object.assign({}, record);
+                tempRecord.ServiceAppointmentName = '/' + tempRecord.Id;
+                tempServiceAppointments.push(tempRecord);
+            });
+            this.serviceAppointments = tempServiceAppointments;
             //console.log(this.serviceAppointments.length);
         }
     }
