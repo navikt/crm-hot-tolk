@@ -84,4 +84,23 @@ private class HOT_RequestListControllerTest {
         List<Map<String, String>> times = HOT_RequestListContoller.getTimes(new List<String>{ (String) request.Id });
         System.assertEquals(1, times.size(), 'Could not get times');
     }
+
+    @isTest
+    private static void uploadFileTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Hot_request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        request.Status__c = 'Godkjent';
+        update request;
+
+        HOT_RequestListContoller.uploadFile('base64test', 'filename', request.Id);
+        List<ContentDocumentLink> file = [
+            SELECT ContentDocumentId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :request.Id
+        ];
+        Boolean hasFile = file.size() > 0;
+        System.assertEquals(true, hasFile, 'File was not uploaded');
+    }
 }

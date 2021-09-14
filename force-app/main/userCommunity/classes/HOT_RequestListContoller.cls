@@ -1,13 +1,9 @@
 public without sharing class HOT_RequestListContoller {
     @AuraEnabled
-    public static String uploadFile(String base64, String filename, String recordId) {
+    public static void uploadFile(String base64, String filename, String recordId) {
         ContentVersion cv = createContentVersion(base64, filename);
-        ContentDocumentLink cdl = createContentLink(cv.Id, recordId);
+        createContentLink(cv.Id, recordId);
         setFileConsentToTrue(recordId);
-        if (cv == null || cdl == null) {
-            return null;
-        }
-        return cdl.Id;
     }
 
     private static ContentVersion createContentVersion(String base64, String filename) {
@@ -23,26 +19,21 @@ public without sharing class HOT_RequestListContoller {
             return null;
         }
     }
-    // TODO: Create test classes for new functions
-    // TODO: Ask for consent on submit instead?
-    private static ContentDocumentLink createContentLink(String contentVersionId, String recordId) {
+
+    private static void createContentLink(String contentVersionId, String recordId) {
         if (contentVersionId == null || recordId == null) {
-            return null;
+            return;
         }
         ContentDocumentLink cdl = new ContentDocumentLink();
         cdl.ContentDocumentId = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :contentVersionId]
         .ContentDocumentId;
         cdl.LinkedEntityId = recordId;
-        // ShareType is either 'V', 'C', or 'I'
-        // V = Viewer, C = Collaborator, I = Inferred
-        cdl.ShareType = 'V';
+        cdl.ShareType = 'V'; // V = Viewer, C = Collaborator, I = Inferred
         cdl.Visibility = 'AllUsers';
         try {
             insert cdl;
-            return cdl;
         } catch (DMLException e) {
             System.debug(e);
-            return null;
         }
     }
 
