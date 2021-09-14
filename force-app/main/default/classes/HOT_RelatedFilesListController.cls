@@ -13,7 +13,7 @@ public without sharing class HOT_RelatedFilesListController {
         List<ContentDocument> contentDocuments = [
             SELECT Id, FileType, CreatedDate, Title
             FROM ContentDocument
-            WHERE Id IN :contentDocumentIds
+            WHERE Id IN :contentDocumentIds AND ContentAssetId = NULL
         ];
         return contentDocuments;
     }
