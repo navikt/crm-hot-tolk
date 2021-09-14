@@ -497,6 +497,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
 
+    myselfForm = false;
     @track showInformationSharingText = true;
     onHandleNeste() {
         this.fieldValues.Type__c = this.currentRequestType;
@@ -512,6 +513,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             if (this.currentRequestType === 'User') {
                 this.ordererForm = true;
                 this.userForm = true;
+            } else if (this.currentRequestType === 'Me') {
+                this.myselfForm = true;
             } else if (this.currentRequestType === 'Company') {
                 this.ordererForm = true;
                 this.userForm = true;
@@ -661,15 +664,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.template.querySelector('c-alertdialog').showModal();
     }
 
-    // Alertdialog click
-    handleClick(event) {
-        this.buttonValue = event.detail;
-        if (this.buttonValue !== 'confirm') {
-            this.fileData = [...this.fileDataCopy]; // Copy by value
-        } else {
-            this.fileDataCopy = [...this.fileData]; // Copy by value
-        }
+    // TODO: Can this be done from here instead of creating new func in checkbox?
+    // TODO: If not, remember to add code to community base checkbox and merge
+    focusCheckbox() {
+        this.template.querySelector('c-checkbox').focusCheckbox();
     }
+
+    // TODO: Validate checkbox with hot_createrequestform_validationRules function
+    // File checkbox
+    validateCheckbox(event) {}
 
     // Reset value of file input path so that same file can be uploaded again if pressing no on consent
     resetFileValue() {
@@ -695,8 +698,18 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.fileData.splice(index, 1);
         this.filesChanged = false; // Make boolean change value to refresh filelist
         this.filesChanged = true;
+        if (this.fileData.length === 0) {
+            this.showOrHideCheckbox(false);
+        }
+        this.setCheckboxContent();
     }
 
+    setCheckboxContent() {
+        this.checkboxContent =
+            this.fileData.length > 1
+                ? 'Dokumentene som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedleggene vil bli delt med tolken(e) som blir tildelt oppdraget.'
+                : 'Dokumentet som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedlegget vil bli delt med tolken(e) som blir tildelt oppdraget.';
+    }
     fileButtonLabel;
     onFileFocus(event) {
         this.fileButtonLabel = '';
@@ -704,15 +717,24 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.fileButtonLabel = 'Slett vedlegg ' + this.fileData[index].filename;
     }
 
-    header = 'Samtykke';
-    content;
+    showOrHideCheckbox(show) {
+        if (show) {
+            this.template.querySelector('.checkboxClass').classList.remove('hidden');
+            //this.template.querySelector('c-checkbox').focus();
+            this.focusCheckbox();
+        } else {
+            this.template.querySelector('.checkboxClass').classList.add('hidden');
+        }
+    }
+
     noCancelButton = false;
-    fileData = [];
-    fileDataCopy = [];
     filesChanged = false; // If true shows new files
+    header = 'Samtykke';
+    checkboxContent;
+    modalContent;
+    fileData = [];
     async onFileUpload(event) {
         try {
-            const numFiles = this.fileData.length;
             const result = this.isDrop
                 ? await Promise.all([...event.dataTransfer.files].map((item) => this.readFile(item)))
                 : await Promise.all([...event.target.files].map((item) => this.readFile(item)));
@@ -724,18 +746,12 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     this.filesChanged = true;
                 }
             });
-            this.content =
-                result.length > 1
-                    ? 'Dokumentene som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedleggene vil bli delt med tolken(e) som blir tildelt oppdraget.'
-                    : 'Dokumentet som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedlegget vil bli delt med tolken(e) som blir tildelt oppdraget.';
-
-            if (numFiles !== this.fileData.length) {
-                this.showModal();
-            }
+            this.setCheckboxContent();
+            this.showOrHideCheckbox(true);
         } catch (err) {
             this.fileData = [];
             this.header = 'Noe gikk galt';
-            this.content = 'Filen(e) kunne ikke lastes opp. Feilmelding: ' + err;
+            this.modalContent = 'Filen(e) kunne ikke lastes opp. Feilmelding: ' + err;
             this.noCancelButton = true;
             this.showModal();
         }
