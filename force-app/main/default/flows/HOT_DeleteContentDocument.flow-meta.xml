@@ -4,7 +4,7 @@
     <decisions>
         <name>CheckPermission</name>
         <label>CheckPermission</label>
-        <locationX>182</locationX>
+        <locationX>314</locationX>
         <locationY>158</locationY>
         <defaultConnector>
             <targetReference>NotPermittetScreen</targetReference>
@@ -52,13 +52,32 @@
         <label>DeleteContentDocumentLinks</label>
         <locationX>50</locationX>
         <locationY>398</locationY>
+        <faultConnector>
+            <targetReference>FaultScreen</targetReference>
+        </faultConnector>
         <inputReference>RelatedFilesListComponent.selectedRows</inputReference>
     </recordDeletes>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
+        <name>FaultScreen</name>
+        <label>FaultScreen</label>
+        <locationX>314</locationX>
+        <locationY>518</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>FaultText</name>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>NotPermittetScreen</name>
         <label>NotPermittetScreen</label>
-        <locationX>314</locationX>
+        <locationX>578</locationX>
         <locationY>278</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -104,13 +123,20 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
+        <locationX>188</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>CheckPermission</targetReference>
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>error</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>filesToDelete</name>
         <dataType>SObject</dataType>

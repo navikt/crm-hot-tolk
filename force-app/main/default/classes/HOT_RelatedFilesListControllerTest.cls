@@ -21,6 +21,6 @@ private class HOT_RelatedFilesListControllerTest {
     static void testMethod1() {
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
         List<ContentDocument> contentDocuments = HOT_RelatedFilesListController.getContentDocuments(request.Id);
-        System.assertEquals(1, contentDocuments.size(), 'Could not get ContentDocuments');
+        System.assertEquals(1, contentDocuments.size(), 'Could not get ContentDocuments related to request');
     }
 }
