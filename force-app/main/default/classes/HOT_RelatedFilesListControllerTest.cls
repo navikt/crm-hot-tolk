@@ -7,16 +7,14 @@ private class HOT_RelatedFilesListControllerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
         insert request;
 
-        /*
-        Contentdocument contentdocumentObj = new Contentdocument();
-        insert contentdocumentObj;
-        Contentdocumentlink contentdocumentlinkObj = new Contentdocumentlink(
-            ShareType = 'V',
-            LinkedEntityId = request.Id,
-            ContentDocumentId = contentdocumentObj.Id
+        ContentVersion contentVersion = HOT_TestDataFactory.createContentVersion();
+        insert contentVersion;
+        List<ContentDocument> documents = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument];
+        ContentDocumentLink contentDocumentLink = HOT_TestDataFactory.createContentDocumentLink(
+            request.Id,
+            documents[0].Id
         );
-        insert contentdocumentlinkObj;
-        */
+        insert contentDocumentLink;
     }
 
     @isTest
