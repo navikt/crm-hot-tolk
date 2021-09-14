@@ -38,6 +38,10 @@
     </classAccesses>
     <customPermissions>
         <enabled>true</enabled>
+        <name>HOT_DeleteFiles</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>HOT_ReleaseToFreelance</name>
     </customPermissions>
     <customPermissions>
