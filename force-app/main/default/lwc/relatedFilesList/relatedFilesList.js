@@ -1,5 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import getContentDocuments from '@salesforce/apex/HOT_RelatedFilesListController.getContentDocuments';
+import { sortList, getMobileSortingOptions } from 'c/sortController';
 
 export default class RelatedFilesList extends LightningElement {
     @api selectedRows = [];
@@ -24,10 +25,27 @@ export default class RelatedFilesList extends LightningElement {
 
     @track columns = [
         {
-            label: 'Id',
-            fieldName: 'Id',
-            type: 'text',
-            sortable: true
+            label: 'Tittel',
+            fieldName: 'Title',
+            type: 'text'
+        },
+        {
+            label: 'Filtype',
+            fieldName: 'FileType',
+            type: 'text'
+        },
+        {
+            label: 'Opprettelsesdato',
+            fieldName: 'CreatedDate',
+            type: 'date',
+            typeAttributes: {
+                day: 'numeric',
+                month: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }
         }
     ];
 }

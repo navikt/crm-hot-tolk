@@ -1,13 +1,4 @@
 <template>
-    <lightning-datatable
-        key-field="Id"
-        data={contentDocuments}
-        columns={columns}
-        default-sort-direction={defaultSortDirection}
-        sorted-direction={sortDirection}
-        sorted-by={sortedBy}
-        onsort={onHandleSort}
-        onrowselection={handleRowSelection}
-    >
+    <lightning-datatable key-field="Id" data={contentDocuments} columns={columns} onrowselection={handleRowSelection}>
     </lightning-datatable>
 </template>

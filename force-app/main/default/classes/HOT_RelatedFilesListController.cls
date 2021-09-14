@@ -10,7 +10,11 @@ public without sharing class HOT_RelatedFilesListController {
         for (ContentDocumentLink contentDocumentLink : contentDocumentLinks) {
             contentDocumentIds.add(contentDocumentLink.ContentDocumentId);
         }
-        List<ContentDocument> contentDocuments = [SELECT Id FROM ContentDocument WHERE Id IN :contentDocumentIds];
+        List<ContentDocument> contentDocuments = [
+            SELECT Id, FileType, CreatedDate, Title
+            FROM ContentDocument
+            WHERE Id IN :contentDocumentIds
+        ];
         return contentDocuments;
     }
 }
