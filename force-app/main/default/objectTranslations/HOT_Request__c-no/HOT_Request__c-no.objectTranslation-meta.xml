@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseValues>
         <article>Definite</article>
@@ -68,26 +68,41 @@
     </layouts>
     <nameFieldLabel>Forespørselsnummer</nameFieldLabel>
     <quickActions>
+        <label><!-- Automatisk planlegg --></label>
+        <name>AutoSchedule</name>
+    </quickActions>
+    <quickActions>
         <label><!-- Opprett arbeidsordre --></label>
         <name>CreateWorkOrder</name>
     </quickActions>
     <quickActions>
+        <aspect>Master</aspect>
+        <label>Slett filer</label>
+        <name>DeleteFIles</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
         <label>Beskjed til formidler</label>
         <name>MessageToDispatcher</name>
     </quickActions>
+    <quickActions>
+        <label><!-- Oppdater felter til oppdrag --></label>
+        <name>Update_Child_Records</name>
+    </quickActions>
     <validationRules>
-        <errorMessage
-        ><!-- Eieren av en forespørsel kan ikke settes til en bruker, den må settest til en kø. --></errorMessage>
+        <errorMessage><!-- Forespørsel kan ikke godkjennes dersom eieren av forespørselen er Admin-køen. --></errorMessage>
+        <name>OwnerIsAdminQueue</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Eieren av en forespørsel kan ikke settes til en bruker, den må settes til en kø. --></errorMessage>
         <name>OwnerIsQueue</name>
     </validationRules>
     <validationRules>
-        <errorMessage
-        ><!-- Du må fylle ut feltene antall tolker, tolkemetode, oppdragstype, start tid og slutt tid før du kan godkjenne forespørselen. --></errorMessage>
+        <errorMessage><!-- Du må fylle ut feltene antall tolker, tolkemetode, oppdragstype, start tid og slutt tid før du kan godkjenne forespørselen. --></errorMessage>
         <name>RequestStatusApproved</name>
     </validationRules>
     <validationRules>
-        <errorMessage
-        ><!-- Forespørselen må være koblet til en person eller virksomhet. Fyll ut Bruker-, Bestiller- eller Virksomhet-feltet. --></errorMessage>
+        <errorMessage><!-- Forespørselen må være koblet til en person eller virksomhet. Fyll ut Bruker-, Bestiller- eller Virksomhet-feltet. --></errorMessage>
         <name>RequireAccountLookup</name>
     </validationRules>
     <validationRules>
@@ -95,8 +110,16 @@
         <name>RequireCompanyIfCompanyFromCommunity</name>
     </validationRules>
     <validationRules>
+        <errorMessage><!-- Når du har valgt &quot;Tolk på arbeidsplass - TPA&quot; som oppdragstype må du fylle ut feltet Virksomhet. --></errorMessage>
+        <name>RequireCompanyOnTPA</name>
+    </validationRules>
+    <validationRules>
         <errorMessage><!-- Tjenesteområde kan ikke være tomt --></errorMessage>
         <name>RequireServiceTerritory</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Bildetolkvakt skal ikke kobles opp mot en bruker eller virksomhet. --></errorMessage>
+        <name>RestrictAccountLookupForImageInterpreter</name>
     </validationRules>
     <validationRules>
         <errorMessage><!-- Lagre forespørselen før du godkjenner den. --></errorMessage>
