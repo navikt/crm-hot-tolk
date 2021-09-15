@@ -59,7 +59,7 @@ public without sharing class HOT_WageClaimService {
         }
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId
+                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId, Status
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
@@ -75,7 +75,8 @@ public without sharing class HOT_WageClaimService {
         for (AssignedResource assignedResource : assignedResources) {
             if (
                 criticalDate >= serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime.date() &&
-                serviceResources.get(assignedResource.ServiceResourceId).HOT_IsFreelanceInterpreter__c == true
+                serviceResources.get(assignedResource.ServiceResourceId).HOT_IsFreelanceInterpreter__c == true &&
+                serviceAppointments.get(assignedResource.ServiceAppointmentId).Status == 'Dispatched'
             ) {
                 HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
                 wageClaim.IsAutomaticallyCreated__c = true;
