@@ -65,6 +65,12 @@ export default class Hot_wageClaimList extends LightningElement {
             sortable: true
         },
         {
+            label: 'Status',
+            fieldName: 'Status__c',
+            type: 'text',
+            sortable: true
+        },
+        {
             type: 'action',
             typeAttributes: { rowActions: this.getRowActions }
         }
@@ -77,7 +83,8 @@ export default class Hot_wageClaimList extends LightningElement {
         "'Oppdragstype'",
         "'Region'",
         "'Arbeidstype'",
-        "'Oppdrag'"
+        "'Oppdrag'",
+        "'Status'"
     ];
 
     getRowActions(row, doneCallback) {
