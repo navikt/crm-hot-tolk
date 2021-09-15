@@ -27,11 +27,6 @@
                 <label>Covered</label>
             </value>
             <value>
-                <fullName>Partially Covered</fullName>
-                <default>false</default>
-                <label>Partially Covered</label>
-            </value>
-            <value>
                 <fullName>Annul</fullName>
                 <default>false</default>
                 <label>Annul</label>

@@ -23,12 +23,12 @@ private class HOT_WageClaimServiceTest {
             serviceResourceId
         );
         insert assignedResource;
+        update new ServiceAppointment(Id = serviceAppointmentId, Status = 'Dispatched');
     }
 
     @isTest
     static void assignTest() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
-        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         delete assignedResource;
 
         HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
@@ -54,7 +54,6 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void getServiceAppointmentsTest() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
-        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         delete assignedResource;
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
 
@@ -71,7 +70,6 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void createWageClaimTest() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
-        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
 
         Test.startTest();
         delete assignedResource;
@@ -84,7 +82,6 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void updateWageClaimsFutureTest_CompletelyCovered() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         delete assignedResource;
         AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
             assignedResource.ServiceAppointmentId,
@@ -101,7 +98,6 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void updateWageClaimsFutureTest_PartiallyCovered_split() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         delete assignedResource;
         AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
             assignedResource.ServiceAppointmentId,
@@ -126,11 +122,7 @@ private class HOT_WageClaimServiceTest {
             WHERE Id != :wageClaim.Id
             ORDER BY StartTime__c ASC
         ];
-        System.assertEquals(
-            'Partially Covered',
-            wageClaim.Status__c,
-            'Could not set WageClaim.Status = \'Partially Covered\''
-        );
+        System.assertEquals('Covered', wageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
 
         System.assertEquals(2, newWageClaims.size(), 'Could not split Wage Claim');
 
@@ -158,7 +150,6 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void updateWageClaimsFutureTest_PartiallyCovered_lower() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         delete assignedResource;
         AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
             assignedResource.ServiceAppointmentId,
@@ -176,17 +167,22 @@ private class HOT_WageClaimServiceTest {
         insert newAssignedResource;
         Test.stopTest();
 
-        wageClaim = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id];
+        HOT_WageClaim__c updatedWageClaim = [
+            SELECT Id, Status__c, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE Id = :wageClaim.Id
+        ];
         List<HOT_WageClaim__c> newWageClaims = [
             SELECT Id, StartTime__c, EndTime__c
             FROM HOT_WageClaim__c
             WHERE Id != :wageClaim.Id
             ORDER BY StartTime__c ASC
         ];
+        System.assertEquals('Covered', updatedWageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
         System.assertEquals(
-            'Partially Covered',
-            wageClaim.Status__c,
-            'Could not set WageClaim.Status = \'Partially Covered\''
+            saEndTime,
+            updatedWageClaim.EndTime__c,
+            'Could not set correct End Time for original WageClaim'
         );
 
         System.assertEquals(1, newWageClaims.size(), 'Could not create updated Wage Claim');
@@ -205,7 +201,6 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void updateWageClaimsFutureTest_PartiallyCovered_upper() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         delete assignedResource;
         AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
             assignedResource.ServiceAppointmentId,
@@ -230,11 +225,7 @@ private class HOT_WageClaimServiceTest {
             WHERE Id != :wageClaim.Id
             ORDER BY StartTime__c ASC
         ];
-        System.assertEquals(
-            'Partially Covered',
-            wageClaim.Status__c,
-            'Could not set WageClaim.Status = \'Partially Covered\''
-        );
+        System.assertEquals('Covered', wageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
 
         System.assertEquals(1, newWageClaims.size(), 'Could not create updated Wage Claim');
 
@@ -253,7 +244,6 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void updateWageClaimsFutureTest_codeCov() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         delete assignedResource;
         AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
             assignedResource.ServiceAppointmentId,

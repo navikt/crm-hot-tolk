@@ -121,6 +121,7 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointment.HOT_ServiceResource__c
                     )
                 ) {
+                    HOT_WageClaim__c updatedWageClaim = new HOT_WageClaim__c(Id = wageClaim.Id);
                     Datetime serviceAppointmentStartTime = serviceAppointment.SchedStartTime;
                     Datetime serviceAppointmentEndTime = serviceAppointment.SchedEndTime;
                     //Completely covered
@@ -128,8 +129,7 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointmentStartTime <= wageClaim.StartTime__c &&
                         serviceAppointmentEndTime >= wageClaim.EndTime__c
                     ) {
-                        wageClaim.Status__c = 'Covered';
-                        newWageClaims.add(wageClaim);
+                        updatedWageClaim.Status__c = 'Covered';
                     }
                     //lower
                     if (
@@ -143,10 +143,8 @@ public without sharing class HOT_WageClaimService {
                             EndTime__c = wageClaim.EndTime__c
                         );
                         newWageClaims.add(newWageClaim);
-                        if (!newWageClaims.contains(wageClaim)) {
-                            wageClaim.Status__c = 'Partially Covered';
-                            newWageClaims.add(wageClaim);
-                        }
+                        updatedWageClaim.Status__c = 'Covered';
+                        updatedWageClaim.EndTime__c = serviceAppointmentEndTime;
                     }
                     //upper
                     if (
@@ -160,11 +158,10 @@ public without sharing class HOT_WageClaimService {
                             EndTime__c = serviceAppointmentStartTime
                         );
                         newWageClaims.add(newWageClaim);
-                        if (!newWageClaims.contains(wageClaim)) {
-                            wageClaim.Status__c = 'Partially Covered';
-                            newWageClaims.add(wageClaim);
-                        }
+                        updatedWageClaim.Status__c = 'Covered';
+                        updatedWageClaim.StartTime__c = serviceAppointmentStartTime;
                     }
+                    newWageClaims.add(updatedWageClaim);
                 }
             }
         }
