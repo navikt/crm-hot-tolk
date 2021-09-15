@@ -400,13 +400,27 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         return recurringTypeValid && recurringDaysValid && recurringEndDateValid;
     }
 
+    checkboxValue = false;
+    handleCheckboxValue(event) {
+        this.checkboxValue = event.detail;
+        this.template.querySelector('c-checkbox').validationHandler(''); // Clear validation when clicking checkbox. Only validate on Submit.
+    }
+
     handleValidation() {
+        let checkboxValid = true;
+        if (this.fileData.length > 0) {
+            if (!this.checkboxValue) {
+                this.template.querySelector('c-checkbox').validationHandler('Sjekkboks må være fylt ut');
+            }
+            checkboxValid = this.checkboxValue;
+        }
         let datetimeValid = this.handleDatetimeValidation().length === 0;
         let advancedValid = true;
+
         if (this.isAdvancedTimes) {
             advancedValid = this.handleAdvancedTimeValidations();
         }
-        return datetimeValid && this.handlePersonNumberValidation() && advancedValid;
+        return datetimeValid && this.handlePersonNumberValidation() && advancedValid && checkboxValid;
     }
 
     handleDatetimeValidation() {
@@ -664,15 +678,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.template.querySelector('c-alertdialog').showModal();
     }
 
-    // TODO: Can this be done from here instead of creating new func in checkbox?
-    // TODO: If not, remember to add code to community base checkbox and merge
     focusCheckbox() {
         this.template.querySelector('c-checkbox').focusCheckbox();
     }
-
-    // TODO: Validate checkbox with hot_createrequestform_validationRules function
-    // File checkbox
-    validateCheckbox(event) {}
 
     // Reset value of file input path so that same file can be uploaded again if pressing no on consent
     resetFileValue() {
@@ -720,7 +728,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     showOrHideCheckbox(show) {
         if (show) {
             this.template.querySelector('.checkboxClass').classList.remove('hidden');
-            //this.template.querySelector('c-checkbox').focus();
             this.focusCheckbox();
         } else {
             this.template.querySelector('.checkboxClass').classList.add('hidden');

@@ -393,7 +393,11 @@
                                 </div>
                             </div>
                             <div class="checkboxClass hidden">
-                                <c-checkbox label={checkboxContent}></c-checkbox>
+                                <c-checkbox
+                                    label={checkboxContent}
+                                    custom-validity="true"
+                                    oncheckboxclick={handleCheckboxValue}
+                                ></c-checkbox>
                             </div>
                             <div if:true={filesChanged} class="filesClass">
                                 <template for:each={fileData} for:item="file" for:index="index">
