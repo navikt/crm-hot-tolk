@@ -20,6 +20,18 @@
         </lightning-breadcrumbs>
     </div>
     <div class="liste liste-max-width">
+        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
+            <c-picklist
+                master-label="Sorter etter"
+                choices={sortingOptions}
+                onpicklistvaluechange={handleMobileSorting}
+                disabled={selectDisable}
+                multiple={selectMultiple}
+                required={selectRequired}
+                size={selectSize}
+            ></c-picklist>
+        </div>
+
         <lightning-datatable
             key-field="Id"
             data={workOrders}
