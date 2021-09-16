@@ -1,25 +1,16 @@
 public with sharing class HOT_ContentDocumentLinkService {
-
-
-    public static void setContentDocumentLinks(Map<Id, List<ContentDocumentLink>> serviceAppointmentMap){
-        
+    public static void setContentDocumentLinks(Map<Id, List<ContentDocumentLink>> serviceAppointmentMap) {
         List<ContentDocumentLink> contentDocumentLinks = new List<ContentDocumentLink>();
 
         for (Id serviceAppointmentId : serviceAppointmentMap.keySet()) {
-            for (ContentDocumentLink contentDocumentLink: serviceAppointmentMap.get(serviceAppointmentId)){
+            for (ContentDocumentLink contentDocumentLink : serviceAppointmentMap.get(serviceAppointmentId)) {
                 ContentDocumentLink contentDocumentLinkCopy = contentDocumentLink.clone(false, false, false, false);
                 contentDocumentLinkCopy.LinkedEntityId = serviceAppointmentId;
+                contentDocumentLinkCopy.Visibility = 'AllUsers';
+                contentDocumentLinkCopy.ShareType = 'V';
                 contentDocumentLinks.add(contentDocumentLinkCopy);
             }
         }
         insert contentDocumentLinks;
     }
 }
-
-
-
-
-
-
-
-

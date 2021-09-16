@@ -717,8 +717,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
     }
 
-    
-
     public static void resetNotifyDispatcher(List<ServiceAppointment> serviceAppointments) {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.HOT_IsNotifyDispatcher__c = false;
@@ -750,26 +748,33 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         return returnMap;
     }
 
-
-    public static void createContentDocumentLinks(
-        List<ServiceAppointment> serviceAppointments
-    ) {
-        
+    public static void createContentDocumentLinks(List<ServiceAppointment> serviceAppointments) {
         List<Id> requestId = new List<Id>();
 
-
-
-        for (ServiceAppointment ServiceAppointment:serviceAppointments) {
+        for (ServiceAppointment ServiceAppointment : serviceAppointments) {
             requestId.add(serviceAppointment.HOT_Request__c);
         }
 
-        Map<Id, Hot_Request__c> requestMap = new Map<Id, HOT_Request__c>([SELECT Id, (SELECT ContentDocumentId, LinkedEntityId, ShareType, Visibility 
-        FROM HOT_Request__c.ContentDocumentLinks) FROM HOT_Request__C WHERE Id IN :requestId]);
+        Map<Id, Hot_Request__c> requestMap = new Map<Id, HOT_Request__c>(
+            [
+                SELECT
+                    Id,
+                    (
+                        SELECT ContentDocumentId, LinkedEntityId, ShareType, Visibility
+                        FROM HOT_Request__c.ContentDocumentLinks
+                    )
+                FROM HOT_Request__C
+                WHERE Id IN :requestId
+            ]
+        );
 
         Map<Id, List<ContentDocumentLink>> serviceAppointmentMap = new Map<Id, List<ContentDocumentLink>>();
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointmentMap.put(serviceAppointment.Id, requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks);
+            serviceAppointmentMap.put(
+                serviceAppointment.Id,
+                requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks
+            );
         }
 
         HOT_ContentDocumentLinkService.setContentDocumentLinks(serviceAppointmentMap);
