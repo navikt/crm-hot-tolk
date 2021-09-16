@@ -18,11 +18,36 @@ public without sharing class HOT_WageClaimService {
     @AuraEnabled(cacheable=true)
     public static List<ServiceAppointment> getServiceAppointments(String wageClaimId) {
         HOT_WageClaim__c wageClaim = [
-            SELECT Id, StartTime__c, EndTime__c, WorkType__c
+            SELECT Id, StartTime__c, EndTime__c, WorkType__c, ServiceResource__c
             FROM HOT_WageClaim__c
             WHERE Id = :wageClaimId
             LIMIT 1
         ];
+        List<ServiceResourceSkill> serviceResourceSkills = [
+            SELECT Id, SkillId
+            FROM ServiceResourceSkill
+            WHERE ServiceResourceId = :wageClaim.ServiceResource__c
+        ];
+        List<Id> skillIds = new List<Id>();
+        for (ServiceResourceSkill serviceResourceSkill : serviceResourceSkills) {
+            skillIds.add(serviceResourceSkill.SkillId);
+        }
+        List<WorkType> allWorkTypes = [SELECT Id, (SELECT Id, SkillId FROM WorkType.SkillRequirements) FROM WorkType];
+        List<Id> workTypeIds = new List<Id>();
+
+        for (WorkType workType : allWorkTypes) {
+            List<Id> subNeededSkillIds = new List<Id>();
+            Integer n = 0;
+            for (SkillRequirement sreq : workType.SkillRequirements) {
+                if (skillIds.contains(sreq.SkillId)) {
+                    n++;
+                }
+            }
+            if (n == workType.SkillRequirements.size()) {
+                workTypeIds.add(workType.Id);
+            }
+        }
+
         List<ServiceAppointment> serviceAppointments = [
             SELECT
                 Id,
@@ -35,7 +60,7 @@ public without sharing class HOT_WageClaimService {
                 Status
             FROM ServiceAppointment
             WHERE
-                WorkTypeId = :wageClaim.WorkType__c
+                WorkTypeId IN :workTypeIds
                 AND (Status = 'None'
                 OR Status = 'Released to Freelance')
                 AND ((SchedStartTime >= :wageClaim.StartTime__c
