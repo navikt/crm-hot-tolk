@@ -90,6 +90,7 @@ private class HOT_WageClaimServiceTest {
 
         Test.startTest();
         insert newAssignedResource;
+        update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'Dispatched');
         Test.stopTest();
 
         HOT_WageClaim__c wageClaim = [SELECT Id, Status__c FROM HOT_WageClaim__c LIMIT 1];
@@ -113,16 +114,31 @@ private class HOT_WageClaimServiceTest {
 
         Test.startTest();
         insert newAssignedResource;
+        update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'Dispatched');
         Test.stopTest();
 
-        wageClaim = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id];
+        HOT_WageClaim__c updatedWageClaim = [
+            SELECT Id, Status__c, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE Id = :wageClaim.Id
+        ];
         List<HOT_WageClaim__c> newWageClaims = [
             SELECT Id, StartTime__c, EndTime__c
             FROM HOT_WageClaim__c
             WHERE Id != :wageClaim.Id
             ORDER BY StartTime__c ASC
         ];
-        System.assertEquals('Covered', wageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+        System.assertEquals('Covered', updatedWageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+        System.assertEquals(
+            saStartTime,
+            updatedWageClaim.StartTime__c,
+            'Could not set correct Start Time for original WageClaim'
+        );
+        System.assertEquals(
+            saEndTime,
+            updatedWageClaim.EndTime__c,
+            'Could not set correct End Time for original WageClaim'
+        );
 
         System.assertEquals(2, newWageClaims.size(), 'Could not split Wage Claim');
 
@@ -165,6 +181,7 @@ private class HOT_WageClaimServiceTest {
 
         Test.startTest();
         insert newAssignedResource;
+        update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'Dispatched');
         Test.stopTest();
 
         HOT_WageClaim__c updatedWageClaim = [
@@ -216,16 +233,26 @@ private class HOT_WageClaimServiceTest {
 
         Test.startTest();
         insert newAssignedResource;
+        update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'Dispatched');
         Test.stopTest();
 
-        wageClaim = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id];
+        HOT_WageClaim__c updatedWageClaim = [
+            SELECT Id, Status__c, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE Id = :wageClaim.Id
+        ];
         List<HOT_WageClaim__c> newWageClaims = [
             SELECT Id, StartTime__c, EndTime__c
             FROM HOT_WageClaim__c
             WHERE Id != :wageClaim.Id
             ORDER BY StartTime__c ASC
         ];
-        System.assertEquals('Covered', wageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+        System.assertEquals('Covered', updatedWageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+        System.assertEquals(
+            saStartTime,
+            updatedWageClaim.StartTime__c,
+            'Could not set correct Start Time for original WageClaim'
+        );
 
         System.assertEquals(1, newWageClaims.size(), 'Could not create updated Wage Claim');
 
@@ -259,6 +286,7 @@ private class HOT_WageClaimServiceTest {
 
         Test.startTest();
         insert newAssignedResource;
+        update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'Dispatched');
         Test.stopTest();
 
         wageClaim = [SELECT Id, Status__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id LIMIT 1];

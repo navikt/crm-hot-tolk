@@ -19,6 +19,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
 
+        Map<Id, ServiceAppointment> serviceAppointmentMapWageClaim = new Map<Id, ServiceAppointment>();
+
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('EarliestStartTime') !=
@@ -102,6 +104,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
             if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
                 setGanttColor(serviceAppointment);
+                if (
+                    serviceAppointment.Status == 'Dispatched' &&
+                    serviceAppointment.HOT_IsReleasedToFreelance__c == true
+                ) {
+                    serviceAppointmentMapWageClaim.put(serviceAppointment.Id, serviceAppointment);
+                }
             }
             if (
                 serviceAppointment.HOT_ResetToDefault__c !=
@@ -153,6 +161,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         if (serviceAppointmentsToSetToDefault.size() > 0) {
             setDefaultFields(serviceAppointmentsToSetToDefault);
+        }
+        if (!serviceAppointmentMapWageClaim.isEmpty()) {
+            HOT_WageClaimService.updateWageClaimsFuture(serviceAppointmentMapWageClaim.keySet());
         }
     }
 
