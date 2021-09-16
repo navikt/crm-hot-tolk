@@ -133,9 +133,9 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns/>
-        <layoutColumns/>
-        <layoutColumns/>
+        <layoutColumns />
+        <layoutColumns />
+        <layoutColumns />
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
@@ -156,6 +156,15 @@
     <relatedLists>
         <fields>ServiceAppointment</fields>
         <relatedList>ServiceAppointments</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>StartTime__c</fields>
+        <fields>EndTime__c</fields>
+        <fields>Status__c</fields>
+        <fields>AssignmentType__c</fields>
+        <fields>WorkType__c</fields>
+        <relatedList>HOT_WageClaim__c.ServiceResource__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>SkillMasterLabel</fields>
@@ -247,7 +256,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1X0000036DV1</masterLabel>
+        <masterLabel>00h1j000003235G</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
