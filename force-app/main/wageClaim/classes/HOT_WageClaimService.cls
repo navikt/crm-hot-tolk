@@ -107,7 +107,7 @@ public without sharing class HOT_WageClaimService {
             [
                 SELECT Id, SchedStartTime, SchedEndTime, HOT_IsReleasedToFreelance__c, HOT_ServiceResource__c
                 FROM ServiceAppointment
-                WHERE Id IN :serviceAppointmentIds AND HOT_IsReleasedToFreelance__c = TRUE
+                WHERE Id IN :serviceAppointmentIds AND HOT_IsReleasedToFreelance__c = TRUE AND Status = 'Dispatched'
             ]
         );
         List<HOT_WageClaim__c> wageClaims = getWageClaimsFromServiceAppointments(serviceAppointments.values());
