@@ -100,8 +100,13 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
             default:
         }
     }
+    @track assigned = false;
+    serviceAppointmentId = null;
     assignResourceToServiceAppointment(serviceAppointmentId) {
-        assign({ wageClaimId: this.recordId, serviceAppointmentId: serviceAppointmentId });
+        this.serviceAppointmentId = serviceAppointmentId;
+        assign({ wageClaimId: this.recordId, serviceAppointmentId: serviceAppointmentId }).then((result) => {
+            this.assigned = true;
+        });
     }
 
     //Sorting methods
@@ -124,5 +129,9 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
         this.serviceAppointments = sortList(this.serviceAppointments, this.sortedBy, this.sortDirection);
+    }
+
+    goToServiceAppointment() {
+        window.location.pathname = '/' + this.serviceAppointmentId;
     }
 }
