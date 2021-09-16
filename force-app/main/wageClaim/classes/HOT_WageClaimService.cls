@@ -49,46 +49,39 @@ public without sharing class HOT_WageClaimService {
         return serviceAppointments;
     }
 
-    public static void createWageClaims(List<AssignedResource> assignedResources) {
+    public static void createWageClaims(Map<Id, Id> resourceByAppointment) {
         List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
-        List<Id> serviceAppointmentIds = new List<Id>();
-        List<Id> serviceResourceIds = new List<Id>();
-        for (AssignedResource assignedResource : assignedResources) {
-            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
-            serviceResourceIds.add(assignedResource.ServiceResourceId);
-        }
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
                 SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId, Status
                 FROM ServiceAppointment
-                WHERE Id IN :serviceAppointmentIds
+                WHERE Id IN :resourceByAppointment.keySet()
             ]
         );
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
             [
                 SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_AgreementFreelance__c
                 FROM ServiceResource
-                WHERE Id IN :serviceResourceIds
+                WHERE Id IN :resourceByAppointment.values()
             ]
         );
         Date criticalDate = Date.today().addDays(14);
-        for (AssignedResource assignedResource : assignedResources) {
+        for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (
-                criticalDate >= serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime.date() &&
-                serviceResources.get(assignedResource.ServiceResourceId).HOT_IsFreelanceInterpreter__c == true &&
-                serviceAppointments.get(assignedResource.ServiceAppointmentId).Status == 'Dispatched'
+                criticalDate >= serviceAppointment.SchedStartTime.date() &&
+                serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)).HOT_IsFreelanceInterpreter__c ==
+                true
             ) {
                 HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
                 wageClaim.IsAutomaticallyCreated__c = true;
                 wageClaim.Type__c = 'Available on Wage';
                 wageClaim.Status__c = 'Open';
-                wageClaim.ServiceResource__c = assignedResource.ServiceResourceId;
-                wageClaim.ServiceAppointment__c = assignedResource.ServiceAppointmentId;
-                wageClaim.StartTime__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedStartTime;
-                wageClaim.EndTime__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedEndTime;
-                wageClaim.WorkType__c = serviceAppointments.get(assignedResource.ServiceAppointmentId).WorkTypeId;
-                wageClaim.ServiceTerritory__c = serviceAppointments.get(assignedResource.ServiceAppointmentId)
-                    .ServiceTerritoryId;
+                wageClaim.ServiceResource__c = resourceByAppointment.get(serviceAppointment.Id);
+                wageClaim.ServiceAppointment__c = serviceAppointment.Id;
+                wageClaim.StartTime__c = serviceAppointment.SchedStartTime;
+                wageClaim.EndTime__c = serviceAppointment.SchedEndTime;
+                wageClaim.WorkType__c = serviceAppointment.WorkTypeId;
+                wageClaim.ServiceTerritory__c = serviceAppointment.ServiceTerritoryId;
                 wageClaims.add(wageClaim);
             }
         }

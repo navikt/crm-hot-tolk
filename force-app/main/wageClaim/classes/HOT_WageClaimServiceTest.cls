@@ -27,52 +27,22 @@ private class HOT_WageClaimServiceTest {
     }
 
     @isTest
-    static void assignTest() {
+    static void createWageClaimTest_saStatusNone() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
-        delete assignedResource;
-
-        HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
 
         Test.startTest();
-        HOT_WageClaimService.assign(wageClaim.Id, assignedResource.serviceAppointmentId);
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
         Test.stopTest();
 
-        List<AssignedResource> assignedResources = [
-            SELECT Id
-            FROM AssignedResource
-            WHERE
-                ServiceAppointmentId = :assignedResource.ServiceAppointmentId
-                AND ServiceResourceId = :wageClaim.ServiceResource__c
-        ];
-        System.assertEquals(
-            1,
-            assignedResources.size(),
-            'Could not assign resource to service appointment from Wage Claim'
-        );
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
+        System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims');
     }
-
     @isTest
-    static void getServiceAppointmentsTest() {
-        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
-        delete assignedResource;
-        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
-
-        HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
-        List<ServiceAppointment> serviceAppointments = HOT_WageClaimService.getServiceAppointments(wageClaim.Id);
-
-        System.assertEquals(
-            1,
-            serviceAppointments.size(),
-            'Could not get Service Appointments overlapping with Wage Claim'
-        );
-    }
-
-    @isTest
-    static void createWageClaimTest() {
+    static void createWageClaimTest_saStatusCanceled() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
         Test.startTest();
-        delete assignedResource;
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Canceled');
         Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
@@ -80,16 +50,27 @@ private class HOT_WageClaimServiceTest {
     }
 
     @isTest
+    static void createWageClaimTest_negative() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
+
+        Test.startTest();
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Completed');
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
+        System.assertEquals(0, wageClaims.size(), 'Could not create Wage Claims');
+    }
+
+    @isTest
     static void updateWageClaimsFutureTest_CompletelyCovered() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        delete assignedResource;
         AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
             assignedResource.ServiceAppointmentId,
             assignedResource.ServiceResourceId
         );
+        update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'None');
 
         Test.startTest();
-        insert newAssignedResource;
         update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'Dispatched');
         Test.stopTest();
 
@@ -100,10 +81,7 @@ private class HOT_WageClaimServiceTest {
     static void updateWageClaimsFutureTest_PartiallyCovered_split() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         delete assignedResource;
-        AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
-            assignedResource.ServiceAppointmentId,
-            assignedResource.ServiceResourceId
-        );
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
 
         HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
         Datetime saStartTime = wageClaim.StartTime__c;
@@ -113,8 +91,7 @@ private class HOT_WageClaimServiceTest {
         update wageClaim;
 
         Test.startTest();
-        insert newAssignedResource;
-        update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'Dispatched');
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         Test.stopTest();
 
         HOT_WageClaim__c updatedWageClaim = [
@@ -166,11 +143,7 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void updateWageClaimsFutureTest_PartiallyCovered_lower() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        delete assignedResource;
-        AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
-            assignedResource.ServiceAppointmentId,
-            assignedResource.ServiceResourceId
-        );
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
 
         HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
         Datetime saStartTime = wageClaim.StartTime__c;
@@ -180,8 +153,7 @@ private class HOT_WageClaimServiceTest {
         update wageClaim;
 
         Test.startTest();
-        insert newAssignedResource;
-        update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'Dispatched');
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         Test.stopTest();
 
         HOT_WageClaim__c updatedWageClaim = [
@@ -218,11 +190,7 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void updateWageClaimsFutureTest_PartiallyCovered_upper() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        delete assignedResource;
-        AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
-            assignedResource.ServiceAppointmentId,
-            assignedResource.ServiceResourceId
-        );
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
 
         HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
         Datetime saStartTime = wageClaim.StartTime__c;
@@ -232,8 +200,7 @@ private class HOT_WageClaimServiceTest {
         update wageClaim;
 
         Test.startTest();
-        insert newAssignedResource;
-        update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'Dispatched');
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         Test.stopTest();
 
         HOT_WageClaim__c updatedWageClaim = [
@@ -271,11 +238,8 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void updateWageClaimsFutureTest_codeCov() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        delete assignedResource;
-        AssignedResource newAssignedResource = HOT_TestDataFactory.createAssignedResource(
-            assignedResource.ServiceAppointmentId,
-            assignedResource.ServiceResourceId
-        );
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
+
         HOT_WageClaim__c wageClaim = [
             SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c, StartTime__c, EndTime__c
             FROM HOT_WageClaim__c
@@ -285,11 +249,51 @@ private class HOT_WageClaimServiceTest {
         insert newWageClaim;
 
         Test.startTest();
-        insert newAssignedResource;
-        update new ServiceAppointment(Id = newAssignedResource.ServiceAppointmentId, Status = 'Dispatched');
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Dispatched');
         Test.stopTest();
 
         wageClaim = [SELECT Id, Status__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id LIMIT 1];
         System.assertEquals('Covered', wageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+    }
+
+    //Overlapping Service Appointments
+    @isTest
+    static void assignTest() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
+        delete assignedResource;
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
+
+        Test.startTest();
+        HOT_WageClaimService.assign(wageClaim.Id, assignedResource.serviceAppointmentId);
+        Test.stopTest();
+
+        List<AssignedResource> assignedResources = [
+            SELECT Id
+            FROM AssignedResource
+            WHERE
+                ServiceAppointmentId = :assignedResource.ServiceAppointmentId
+                AND ServiceResourceId = :wageClaim.ServiceResource__c
+        ];
+        System.assertEquals(
+            1,
+            assignedResources.size(),
+            'Could not assign resource to service appointment from Wage Claim'
+        );
+    }
+
+    @isTest
+    static void getServiceAppointmentsTest() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
+        List<ServiceAppointment> serviceAppointments = HOT_WageClaimService.getServiceAppointments(wageClaim.Id);
+
+        System.assertEquals(
+            1,
+            serviceAppointments.size(),
+            'Could not get Service Appointments overlapping with Wage Claim'
+        );
     }
 }
