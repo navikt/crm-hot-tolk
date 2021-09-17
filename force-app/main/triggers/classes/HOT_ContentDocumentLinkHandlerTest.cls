@@ -2,38 +2,9 @@
 private class HOT_ContentDocumentLinkHandlerTest {
     @testSetup
     static void setup() {
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsFreelanceInterpreter__c = true;
-        insert serviceResource;
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
-            serviceResource,
-            serviceTerritory
-        );
-        insert serviceTerritoryMember;
-
-        HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
-        resource.Service_Resource__c = serviceResource.Id;
-        insert resource;
-
-        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
-        resourceMember.Resource__c = resource.Id;
-        resourceMember.Service_Resource__c = serviceResource.Id;
-        insert resourceMember;
-
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert WorkType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        request.PreferredResource1__c = resource.Id;
-        request.NumberOfInterpreters__c = 3;
         insert request;
 
         request.Status__c = 'Godkjent';
@@ -64,7 +35,10 @@ private class HOT_ContentDocumentLinkHandlerTest {
             ContentDocumentId = contentDocument.Id,
             LinkedEntityId = request.Id
         );
+
+        Test.startTest();
         insert contentDocumentLink;
+        Test.stopTest();
 
         ContentDocumentLink contentDocumentLinkRequest = [
             SELECT ContentDocumentId

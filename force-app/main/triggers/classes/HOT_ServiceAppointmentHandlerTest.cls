@@ -52,7 +52,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         System.assertEquals(
             false,
             serviceAppointment.HOT_IsReleasedToFreelance__c,
-            'Default HOT_IsReleasedToFreelance was not set on ServiceAppointment.'
+            'HOT_IsReleasedToFreelance was not set to false on creation of ServiceAppointment.'
         );
     }
 
@@ -787,13 +787,6 @@ private class HOT_ServiceAppointmentHandlerTest {
         insert serviceAppointmentCopy;
         Test.stopTest();
 
-        ContentDocumentLink contentDocumentLink_Request = [
-            SELECT ContentDocumentId
-            FROM ContentDocumentLink
-            WHERE LinkedEntityId = :request.Id
-            LIMIT 1
-        ];
-
         ContentDocumentLink contentDocumentLink_ServiceAppointment = [
             SELECT ContentDocumentId
             FROM ContentDocumentLink
@@ -801,7 +794,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             LIMIT 1
         ];
 
-        Id requestContentDocumentid = contentDocumentLink_Request.ContentDocumentId;
+        Id requestContentDocumentid = contentDocumentLink.ContentDocumentId;
         Id serviceAppointmentContentDocumentId = contentDocumentLink_ServiceAppointment.ContentDocumentId;
 
         System.assertEquals(

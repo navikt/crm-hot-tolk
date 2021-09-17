@@ -5,9 +5,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
 
     public override void onAfterInsert() {
-        //Kall på metoden din her
-        // variablen records er av typen List<SObject>, men den kan castes til List<ServiceAppointment> slik:
-        List<ServiceAppointment> serviceAppointments = (List<ServiceAppointment>) records;
         createContentDocumentLinks((List<ServiceAppointment>) records);
     }
 
@@ -749,10 +746,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
 
     public static void createContentDocumentLinks(List<ServiceAppointment> serviceAppointments) {
-        List<Id> requestId = new List<Id>();
+        List<Id> requestIds = new List<Id>();
 
-        for (ServiceAppointment ServiceAppointment : serviceAppointments) {
-            requestId.add(serviceAppointment.HOT_Request__c);
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            requestIds.add(serviceAppointment.HOT_Request__c);
         }
 
         Map<Id, Hot_Request__c> requestMap = new Map<Id, HOT_Request__c>(
@@ -764,7 +761,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         FROM HOT_Request__c.ContentDocumentLinks
                     )
                 FROM HOT_Request__C
-                WHERE Id IN :requestId
+                WHERE Id IN :requestIds
             ]
         );
 

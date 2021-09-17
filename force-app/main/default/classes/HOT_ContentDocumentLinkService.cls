@@ -1,9 +1,15 @@
 public with sharing class HOT_ContentDocumentLinkService {
-    public static void setContentDocumentLinks(Map<Id, List<ContentDocumentLink>> serviceAppointmentMap) {
+    public static void setContentDocumentLinks(
+        Map<Id, List<ContentDocumentLink>> contentDocumentLinksByServiceAppointment
+    ) {
         List<ContentDocumentLink> contentDocumentLinks = new List<ContentDocumentLink>();
 
-        for (Id serviceAppointmentId : serviceAppointmentMap.keySet()) {
-            for (ContentDocumentLink contentDocumentLink : serviceAppointmentMap.get(serviceAppointmentId)) {
+        for (Id serviceAppointmentId : contentDocumentLinksByServiceAppointment.keySet()) {
+            for (
+                ContentDocumentLink contentDocumentLink : contentDocumentLinksByServiceAppointment.get(
+                    serviceAppointmentId
+                )
+            ) {
                 ContentDocumentLink contentDocumentLinkCopy = contentDocumentLink.clone(false, false, false, false);
                 contentDocumentLinkCopy.LinkedEntityId = serviceAppointmentId;
                 contentDocumentLinkCopy.Visibility = 'AllUsers';
@@ -11,6 +17,12 @@ public with sharing class HOT_ContentDocumentLinkService {
                 contentDocumentLinks.add(contentDocumentLinkCopy);
             }
         }
-        insert contentDocumentLinks;
+        try {
+            insert contentDocumentLinks;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 }

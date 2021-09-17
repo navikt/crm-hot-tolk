@@ -7,7 +7,7 @@ trigger HOT_ContentDocumentLinkTrigger on ContentDocumentLink(
     after delete,
     after undelete
 ) {
-    System.debug('ServiceAppointmentTrigger: ' + Trigger.operationType);
+    System.debug('ContentDocumentLinkTrigger: ' + Trigger.operationType);
     MyTriggers.run();
 
 }
