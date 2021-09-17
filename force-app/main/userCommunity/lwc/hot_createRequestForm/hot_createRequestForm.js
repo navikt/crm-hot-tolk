@@ -682,11 +682,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.template.querySelector('c-checkbox').focusCheckbox();
     }
 
-    // Reset value of file input path so that same file can be uploaded again if pressing no on consent
-    resetFileValue() {
-        this.template.querySelector('input').value = null;
-    }
-
     isDrop = false;
     dropHandler(event) {
         event.preventDefault();
