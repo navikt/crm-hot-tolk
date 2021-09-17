@@ -308,6 +308,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             serviceResourceIds.add(assignedResource.ServiceResourceId);
         }
 
+        List<String> exludedStatuses = new List<String>{ 'Annul', 'Canceled', 'Completed' };
         // Find all service appointments related to assigned resources
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
@@ -319,7 +320,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     EarliestStartTime,
                     DueDate
                 FROM ServiceAppointment
-                WHERE Id IN :serviceAppointmentIds
+                WHERE Id IN :serviceAppointmentIds AND Status NOT IN :exludedStatuses
             ]
         );
 

@@ -396,4 +396,24 @@ private class HOT_AssignedResourceHandlerTest {
         }
         Test.stopTest();
     }
+
+    @isTest
+    static void updateInterestedResourceStatusTest() {
+        Hot_interestedresource__c interestedResource = [
+            SELECT Id, ServiceAppointment__c, ServiceResource__c, Status__c
+            FROM Hot_interestedresource__c
+        ];
+        AssignedResource assignedResource = new AssignedResource();
+        assignedResource.ServiceAppointmentId = interestedResource.ServiceAppointment__c;
+        assignedResource.ServiceResourceId = interestedResource.ServiceResource__c;
+        insert assignedResource;
+
+        interestedResource = [SELECT Id, Status__c FROM Hot_interestedresource__c];
+
+        System.assertEquals(
+            'Assigned',
+            interestedResource.Status__c,
+            'Could not set Interested Resource Status to Assigned'
+        );
+    }
 }
