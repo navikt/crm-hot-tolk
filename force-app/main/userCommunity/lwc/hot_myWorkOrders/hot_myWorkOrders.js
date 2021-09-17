@@ -195,14 +195,8 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
     @track sortDirection = 'asc';
     @track sortedBy = 'StartDate';
 
-    mobileSortingDefaultValue = '{"fieldName": "StartDate", "sortDirection": "asc"} ';
     get sortingOptions() {
         return getMobileSortingOptions(this.columns);
-    }
-    handleMobileSorting(event) {
-        this.sortDirection = event.detail.sortDirection;
-        this.sortedBy = event.detail.fieldName;
-        this.workOrders = sortList(this.workOrders, this.sortedBy, this.sortDirection);
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;

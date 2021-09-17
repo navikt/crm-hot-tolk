@@ -24,11 +24,7 @@
             <c-picklist
                 master-label="Sorter etter"
                 choices={sortingOptions}
-                onpicklistvaluechange={handleMobileSorting}
-                disabled={selectDisable}
-                multiple={selectMultiple}
-                required={selectRequired}
-                size={selectSize}
+                onpicklistvaluechange={onHandleSort}
             ></c-picklist>
         </div>
 
