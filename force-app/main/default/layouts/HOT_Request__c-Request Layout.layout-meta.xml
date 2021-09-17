@@ -357,12 +357,12 @@
             <sortOrder>2</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>HOT_Request__c.MessageToDispatcher</actionName>
+            <actionName>HOT_Request__c.DeleteFiles</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>3</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>HOT_Request__c.DeleteFIles</actionName>
+            <actionName>HOT_Request__c.MessageToDispatcher</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>4</sortOrder>
         </platformActionListItems>
@@ -459,7 +459,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1X0000037K9s</masterLabel>
+        <masterLabel>00h1x000002q2aP</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
