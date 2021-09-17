@@ -1,9 +1,44 @@
 public without sharing class HOT_RequestListContoller {
     @AuraEnabled
-    public static void uploadFile(String base64, String filename, String recordId) {
+    /*public static void uploadFile(String base64, String filename, String recordId) {
         ContentVersion cv = createContentVersion(base64, filename);
         createContentDocumentLink(cv.Id, recordId);
         setFileConsentToTrue(recordId);
+    }*/
+
+    public static void uploadFile(Map<String, String> files, String recordId) {
+        // TODO: Debug files
+        System.debug('files' + files);
+        List<ContentVersion> cvList = new List<ContentVersion>();
+        List<ContentDocumentLink> cdlList = new List<ContentDocumentLink>();
+        for (String base64 : files.keySet()) {
+            cvList.add(createContentVersion(base64, files.get(base64)));
+        }
+        insertContentVersions(cvList);
+        for (ContentVersion cv : cvList) {
+            cdlList.add(createContentDocumentLink(cv.Id, recordId));
+        }
+        insertContentDocumentLinks(cdlList);
+    }
+
+    private static void insertContentDocumentLinks(List<ContentDocumentLink> cdlList) {
+        try {
+            insert cdlList;
+        } catch (DMLException e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    private static void insertContentVersions(List<ContentVersion> cvList) {
+        try {
+            insert cvList;
+        } catch (DMLException e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     private static ContentVersion createContentVersion(String base64, String filename) {
@@ -11,40 +46,20 @@ public without sharing class HOT_RequestListContoller {
         cv.VersionData = EncodingUtil.base64Decode(base64);
         cv.Title = filename;
         cv.PathOnClient = filename;
-        try {
-            insert cv;
-            return cv;
-        } catch (DMLException e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-            return null;
-        }
+        return cv;
     }
 
-    private static void createContentDocumentLink(String contentVersionId, String recordId) {
+    private static ContentDocumentLink createContentDocumentLink(String contentVersionId, String recordId) {
         if (contentVersionId == null || recordId == null) {
-            return;
+            return null;
         }
         ContentDocumentLink cdl = new ContentDocumentLink();
-        cdl.ContentDocumentId = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :contentVersionId]
-        .ContentDocumentId;
+        ContentVersion cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :contentVersionId];
+        cdl.ContentDocumentId = cv.ContentDocumentId;
         cdl.LinkedEntityId = recordId;
         cdl.ShareType = 'V'; // V = Viewer, C = Collaborator, I = Inferred
         cdl.Visibility = 'AllUsers';
-        try {
-            insert cdl;
-        } catch (DMLException e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-    }
-
-    private static void setFileConsentToTrue(String recordId) {
-        HOT_Request__c requestToUpdate = [SELECT IsFileConsent__c FROM HOT_Request__c WHERE Id = :recordId LIMIT 1];
-        requestToUpdate.IsFileConsent__c = true;
-        update requestToUpdate;
+        return cdl;
     }
 
     @AuraEnabled(cacheable=true)

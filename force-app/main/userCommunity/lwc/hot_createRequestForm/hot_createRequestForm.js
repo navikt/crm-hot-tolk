@@ -137,6 +137,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         MeetingPostalCity__c: '',
         MeetingPostalCode__c: '',
         Description__C: '',
+        IsFileConsent__c: false,
         IsOtherEconomicProvicer__c: false,
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
@@ -413,6 +414,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 this.template.querySelector('c-checkbox').validationHandler('Sjekkboks må være fylt ut');
             }
             checkboxValid = this.checkboxValue;
+            this.fieldValues.IsFileConsent__c = true;
         }
         let datetimeValid = this.handleDatetimeValidation().length === 0;
         let advancedValid = true;
@@ -778,7 +780,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 resolve({
                     filename: file.name,
                     base64: reader.result.split(',')[1],
-                    recordId: this.recordId // Will be null here since record is not created yet. Add it on submit in handleFileUpload().
+                    recordId: this.recordId // Will be null here since Request record is not created yet. Add it on submit in handleFileUpload().
                 });
             };
             reader.readAsDataURL(file);
@@ -786,11 +788,14 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     handleFileUpload() {
+        const filesToUpload = {};
         this.fileData.forEach((item) => {
-            item.recordId = this.recordId;
-            const { base64, filename, recordId } = item;
-            uploadFile({ base64, filename, recordId });
+            const { base64, filename } = item;
+            filesToUpload[base64] = filename;
         });
+        console.log('filesToUpload: ', filesToUpload);
+        console.log('this.recordId: ', this.recordId);
+        uploadFile(filesToUpload, this.recordId);
         this.fileData = null;
     }
 
