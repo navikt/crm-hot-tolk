@@ -27,7 +27,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     @track submitted = false; // if:false={submitted}
-    acceptedFileFormats = '[.pdf, .png, .jpg, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
+    acceptedFileFormats = '[.pdf, .png, .jpg, .jpeg, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
 
     @track recordId = null;
     @track allRequests;

@@ -2,7 +2,7 @@ public without sharing class HOT_RequestListContoller {
     @AuraEnabled
     public static void uploadFile(String base64, String filename, String recordId) {
         ContentVersion cv = createContentVersion(base64, filename);
-        createContentLink(cv.Id, recordId);
+        createContentDocumentLink(cv.Id, recordId);
         setFileConsentToTrue(recordId);
     }
 
@@ -15,12 +15,14 @@ public without sharing class HOT_RequestListContoller {
             insert cv;
             return cv;
         } catch (DMLException e) {
-            System.debug(e);
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
             return null;
         }
     }
 
-    private static void createContentLink(String contentVersionId, String recordId) {
+    private static void createContentDocumentLink(String contentVersionId, String recordId) {
         if (contentVersionId == null || recordId == null) {
             return;
         }
@@ -33,13 +35,15 @@ public without sharing class HOT_RequestListContoller {
         try {
             insert cdl;
         } catch (DMLException e) {
-            System.debug(e);
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
         }
     }
 
     private static void setFileConsentToTrue(String recordId) {
-        HOT_Request__c requestToUpdate = [SELECT isFileConsent__c FROM HOT_Request__c WHERE Id = :recordId LIMIT 1];
-        requestToUpdate.isFileConsent__c = true;
+        HOT_Request__c requestToUpdate = [SELECT IsFileConsent__c FROM HOT_Request__c WHERE Id = :recordId LIMIT 1];
+        requestToUpdate.IsFileConsent__c = true;
         update requestToUpdate;
     }
 
