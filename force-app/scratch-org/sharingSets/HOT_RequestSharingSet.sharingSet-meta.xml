@@ -20,5 +20,6 @@
     </accessMappings>
     <name>HOT_RequestSharingSet</name>
     <profiles>nav bruker</profiles>
+    <profiles>nav bruker plus</profiles>
     <profiles>nav samhandler</profiles>
 </SharingSet>

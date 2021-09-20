@@ -59,11 +59,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>AssignedResource.HOT_HasReservations__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>AssignedResource.HOT_TriggerValidation__c</field>
         <readable>false</readable>
     </fieldPermissions>
