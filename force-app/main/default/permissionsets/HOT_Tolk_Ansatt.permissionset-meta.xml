@@ -5,10 +5,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_AssignedResourcesCreatedController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_CreateWorkOrderService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
