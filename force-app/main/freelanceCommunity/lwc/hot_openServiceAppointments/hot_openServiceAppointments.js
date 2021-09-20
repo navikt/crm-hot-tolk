@@ -134,7 +134,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     @track picklistValue = 'Alle';
     handlePicklist(event) {
-        this.picklistValue = event.detail;
+        this.picklistValue = event.detail.name;
         this.filterServiceAppointments();
     }
 
