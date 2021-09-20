@@ -1,6 +1,5 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import getContentDocuments from '@salesforce/apex/HOT_RelatedFilesListController.getContentDocuments';
-import { sortList, getMobileSortingOptions } from 'c/sortController';
 
 export default class RelatedFilesList extends LightningElement {
     @api selectedRows = [];
