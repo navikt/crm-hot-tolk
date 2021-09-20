@@ -325,7 +325,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.EconomicProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
