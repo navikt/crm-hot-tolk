@@ -93,8 +93,10 @@ private class HOT_RequestListControllerTest {
         insert request;
         request.Status__c = 'Godkjent';
         update request;
+        Map<String, String> files = new Map<String, String>();
+        files.put('base64test', 'filename');
 
-        HOT_RequestListContoller.uploadFile('base64test', 'filename', request.Id);
+        HOT_RequestListContoller.uploadFile(files, request.Id);
         List<ContentDocumentLink> file = [
             SELECT ContentDocumentId
             FROM ContentDocumentLink

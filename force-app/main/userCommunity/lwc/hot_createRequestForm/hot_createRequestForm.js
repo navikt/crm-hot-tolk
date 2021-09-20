@@ -414,7 +414,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 this.template.querySelector('c-checkbox').validationHandler('Sjekkboks må være fylt ut');
             }
             checkboxValid = this.checkboxValue;
-            this.fieldValues.IsFileConsent__c = true;
         }
         let datetimeValid = this.handleDatetimeValidation().length === 0;
         let advancedValid = true;
@@ -499,6 +498,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     setFieldValues(fields) {
+        this.fieldValues.IsFileConsent__c = true; // TODO: Find out why this does not work
         this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
         this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
 
@@ -793,9 +793,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             const { base64, filename } = item;
             filesToUpload[base64] = filename;
         });
-        console.log('filesToUpload: ', filesToUpload);
-        console.log('this.recordId: ', this.recordId);
-        uploadFile(filesToUpload, this.recordId);
+        uploadFile({ files: filesToUpload, recordId: this.recordId });
         this.fileData = null;
     }
 

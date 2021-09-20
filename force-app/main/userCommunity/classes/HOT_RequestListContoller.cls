@@ -1,14 +1,6 @@
 public without sharing class HOT_RequestListContoller {
     @AuraEnabled
-    /*public static void uploadFile(String base64, String filename, String recordId) {
-        ContentVersion cv = createContentVersion(base64, filename);
-        createContentDocumentLink(cv.Id, recordId);
-        setFileConsentToTrue(recordId);
-    }*/
-
     public static void uploadFile(Map<String, String> files, String recordId) {
-        // TODO: Debug files
-        System.debug('files' + files);
         List<ContentVersion> cvList = new List<ContentVersion>();
         List<ContentDocumentLink> cdlList = new List<ContentDocumentLink>();
         for (String base64 : files.keySet()) {
