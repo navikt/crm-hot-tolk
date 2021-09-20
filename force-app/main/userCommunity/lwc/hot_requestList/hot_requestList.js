@@ -198,7 +198,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     @track picklistValue = 'Fremtidige';
     handlePicklist(event) {
-        this.picklistValue = event.detail;
+        this.picklistValue = event.detail.name;
         this.filterRequests();
     }
 
@@ -214,7 +214,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             } else if (pickListValue === 'Fremtidige') {
                 if (
                     status !== 'Avlyst' &&
-                    this.allRequests[i].SeriesEndDate__c > new Date().toISOString().substring(0, 10)
+                    (this.allRequests[i].SeriesEndDate__c > new Date().toISOString().substring(0, 10) ||
+                        this.allRequests[i].EndTime__c > new Date().toISOString().substring(0, 10))
                 ) {
                     tempRequests.push(this.allRequests[i]);
                 }
