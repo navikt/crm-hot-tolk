@@ -325,7 +325,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>HOT_Request__c.EconomicProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -397,6 +397,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.IsFellesOppdrag__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsFileConsent__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
