@@ -498,7 +498,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     setFieldValues(fields) {
-        this.fieldValues.IsFileConsent__c = true; // TODO: Find out why this does not work
+        this.fieldValues.IsFileConsent__c = true;
         this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
         this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
 
