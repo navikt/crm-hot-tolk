@@ -1,6 +1,5 @@
 public without sharing class HOT_ReminderSMSService {
     public static void reminderSMS(List<WorkOrder> workOrderList) {
-        Date dayAfterTomorrow = Date.today().addDays(2);
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(workOrderList);
         List<WorkOrderLineItem> workOrderLineItems = [
             SELECT
@@ -71,6 +70,39 @@ public without sharing class HOT_ReminderSMSService {
         return message;
     }
 
+    public static void sendSMSToOtherOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
+        List<SMS__c> smsList = new List<SMS__c>();
+        for (WorkOrder workOrder : workOrderList) {
+            // TODO: Change type(?)
+            smsList.add(
+                createSMSRecord(
+                    'HOT',
+                    '24 Hour Scheduled Reminder',
+                    workOrder.AccountId,
+                    workOrder.Id,
+                    workOrder.HOT_Request__r.OrdererPhone__c,
+                    constructStatusChangedMessage(workOrder)
+                )
+            );
+        }
+
+        try {
+            insert smsList;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, null, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    // TODO: Change content? Ask Svenn Terje.
+    private static String constructStatusChangedMessage(WorkOrder workOrder) {
+        String message = 'PÅMINNELSE \nStatus endret til ' + workOrder.Status;
+        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate) + '\n';
+        message += '\nMvh NAV Tolketjeneste';
+        return message;
+    }
+
     private static String formatTimePeriod(Datetime startDate, Datetime endDate) {
         String timePeriod =
             startDate.date().format() +
@@ -84,5 +116,23 @@ public without sharing class HOT_ReminderSMSService {
             (endDate.minute() < 10 ? '0' + String.valueOf(endDate.minute()) : String.valueOf(endDate.minute()));
 
         return timePeriod;
+    }
+
+    private static SMS__c createSMSRecord(
+        String domain,
+        String type,
+        String accountId,
+        String workOrderId,
+        String recipient,
+        String message
+    ) {
+        SMS__c sms = new SMS__c();
+        sms.Domain__c = domain;
+        sms.Type__c = type;
+        sms.Account__c = accountID;
+        sms.WorkOrder__c = workOrderId;
+        sms.Recipient__c = recipient;
+        sms.Message__c = message;
+        return sms;
     }
 }

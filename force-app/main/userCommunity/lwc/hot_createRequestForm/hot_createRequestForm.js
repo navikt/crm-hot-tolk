@@ -137,6 +137,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         MeetingPostalCode__c: '',
         Description__C: '',
         IsOtherEconomicProvicer__c: false,
+        IsOrdererWantStatusUpdateOnSMS: false,
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
         AdditionalInvoiceText__c: '',
@@ -494,9 +495,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         window.scrollBy(0, -100);
     }
 
+    ordererSMSUpdateOnStatus = false;
+    handleSMSCheckbox(event) {
+        this.ordererSMSUpdateOnStatus = event.detail;
+    }
+
     setFieldValues(fields) {
         this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
         this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
+        this.fieldValues.IsOrdererWantStatusUpdateOnSMS = this.ordererSMSUpdateOnStatus;
 
         this.fieldValues.Orderer__c = this.personAccount.Id;
         for (const k in fields) {

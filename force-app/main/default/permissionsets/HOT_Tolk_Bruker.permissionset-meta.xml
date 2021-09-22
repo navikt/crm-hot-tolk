@@ -78,7 +78,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>HOT_Request__c.EconomicProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -130,6 +130,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsNotifyDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsOrdererWantStatusUpdateOnSMS__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -326,11 +331,6 @@
         <editable>false</editable>
         <field>Person__c.INT_SecurityMeasures__c</field>
         <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_IsNotifyDispatcher__c</field>
-        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
