@@ -116,7 +116,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
     @track sortDirection = 'asc';
     @track sortedBy = 'EarliestStartTime';
 
-    mobileSortingDefaultValue = '{"fieldName": "EarliestStartTime", "sortDirection": "asc"} ';
     get sortingOptions() {
         return getMobileSortingOptions(this.columns);
     }
