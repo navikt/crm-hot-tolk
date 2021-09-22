@@ -210,13 +210,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         return getMobileSortingOptions(this.columns);
     }
 
-    handleMobileSorting(event) {
-        let value = JSON.parse(event.detail.value);
-        this.sortDirection = value.sortDirection;
-        this.sortedBy = value.fieldName;
-        this.allServiceAppointments = sortList(this.allServiceAppointments, this.sortedBy, this.sortDirection);
-        this.filterServiceAppointments();
-    }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
