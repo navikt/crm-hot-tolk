@@ -132,18 +132,10 @@ export default class Hot_interestedResourcesList extends LightningElement {
     @track sortDirection = 'asc';
     @track sortedBy = 'ServiceAppointmentStartTime__c';
 
-    mobileSortingDefaultValue = '{"fieldName": "ServiceAppointmentStartTime__c", "sortDirection": "asc"} ';
     get sortingOptions() {
         return getMobileSortingOptions(this.columns);
     }
 
-    handleMobileSorting(event) {
-        let value = JSON.parse(event.detail.value);
-        this.sortDirection = value.sortDirection;
-        this.sortedBy = value.fieldName;
-        this.interestedResources = sortList(this.interestedResources, this.sortedBy, this.sortDirection);
-        this.showHideAll();
-    }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
