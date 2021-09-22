@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <formula>ServiceResourceWithAgreement1__c != null ||  ServiceResourceWithAgreement2__c != null ||  ServiceResourceWithAgreement3__c != null</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Agreement?</label>
+    <label>Request part of agreement with Freelance Interpreter</label>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
