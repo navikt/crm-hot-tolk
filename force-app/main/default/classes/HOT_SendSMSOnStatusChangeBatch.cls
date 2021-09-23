@@ -1,7 +1,7 @@
 // TODO: Figure out which statuses to filter (if any)
 // TODO: Figure out how often to run (every hour?)
-// TODO: Create schedulable class
-// TODO: How to add records to batch when status is changed? Logic in Schedulable?
+// TODO: Create schedulable class or use System.schedule()?
+// TODO: Set HOT_StatusChanged__c to true in WorkOrder trigger on status change
 
 public without sharing class HOT_SendSMSOnStatusChangeBatch implements Database.Batchable<sObject>, Schedulable {
     public void execute(SchedulableContext sc) {
@@ -20,12 +20,12 @@ public without sharing class HOT_SendSMSOnStatusChangeBatch implements Database.
         query += 'FROM WorkOrder ';
         query += 'WHERE HOT_Request__r.OrdererPhone__c != null ';
         query += 'AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = TRUE ';
+        query += 'AND HOT_StatusChanged__c = TRUE';
 
         return Database.getQueryLocator(query);
     }
 
     public void execute(Database.BatchableContext bc, List<WorkOrder> records) {
-        System.debug('records in HOT_SendSMSOnStatusChangeBatch batch: ' + records);
         HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(records);
     }
 

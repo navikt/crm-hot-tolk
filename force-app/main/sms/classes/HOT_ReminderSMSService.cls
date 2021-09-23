@@ -84,10 +84,19 @@ public without sharing class HOT_ReminderSMSService {
                     constructStatusChangedMessage(workOrder)
                 )
             );
+            workOrder.HOT_StatusChanged__c = false;
         }
 
         try {
             insert smsList;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, null, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+
+        try {
+            update workOrderList;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, null, CRM_ApplicationDomain.Domain.HOT);

@@ -34,9 +34,13 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
         List<WorkOrder> updateStatusWorkOrders = new List<WorkOrder>();
         List<WorkOrder> canceledWorkOrders = new List<WorkOrder>();
         List<WorkOrder> notifyDispatcherWorkOrders = new List<WorkOrder>();
+        List<WorkOrder> changedStatusWorkOrders = new List<WorkOrder>();
 
         for (SObject record : records) {
             System.debug('record: ' + record);
+            if (record.get('Status') != triggerOldMap.get(record.Id).get('Status')) {
+                changedStatusWorkOrders.add((WorkOrder) record);
+            }
             if (
                 record.getSObjectType() == Schema.WorkOrder.getSObjectType() &&
                 record.get('HOT_IsUpdateStatus__c') == true
@@ -47,7 +51,8 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 canceledWorkOrders.add((WorkOrder) record);
             }
             if (
-                record.get('HOT_IsNotifyDispatcher__c') != triggerOldMap.get(record.Id).get('HOT_IsNotifyDispatcher__c') &&
+                record.get('HOT_IsNotifyDispatcher__c') !=
+                triggerOldMap.get(record.Id).get('HOT_IsNotifyDispatcher__c') &&
                 record.get('HOT_IsNotifyDispatcher__c') == true
             ) {
                 notifyDispatcherWorkOrders.add((WorkOrder) record);
@@ -61,6 +66,9 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
             HOT_WorkOrderNotification.notifyDispatchers_workOrderChanged(notifyDispatcherWorkOrders, triggerOldMap);
             HOT_WorkOrderHandler.resetNotifyDispatcher(notifyDispatcherWorkOrders);
         }
+        if (changedStatusWorkOrders.size() > 0) {
+            updateStatusChangedFieldOnWorkOrder(changedStatusWorkOrders);
+        }
     }
 
     private static void updateRequestStatus(List<WorkOrder> changedWorkOrders) {
@@ -72,6 +80,12 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
             }
         }
         update requestsToUpdate;
+    }
+
+    private static void updateStatusChangedFieldOnWorkOrder(List<WorkOrder> changedWorkOrders) {
+        for (WorkOrder workOrder : changedWorkOrders) {
+            workOrder.HOT_StatusChanged__c = true;
+        }
     }
 
     private static void updateWorkOrderStatus(List<WorkOrder> workOrders) {
