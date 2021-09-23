@@ -186,18 +186,17 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
     }
     @track thisURL = window.location.href;
 
+    @track selectDisable = false;
+    @track selectMultiple = false;
+    @track selectRequired = false;
+    @track selectSize = 1;
+
     @track defaultSortDirection = 'asc';
     @track sortDirection = 'asc';
     @track sortedBy = 'StartDate';
 
-    mobileSortingDefaultValue = '{"fieldName": "StartDate", "sortDirection": "asc"} ';
     get sortingOptions() {
         return getMobileSortingOptions(this.columns);
-    }
-    handleMobileSorting(event) {
-        this.sortDirection = event.detail.value.sortDirection;
-        this.sortedBy = event.detail.value.fieldName;
-        this.workOrders = sortList(this.workOrders, this.sortedBy, this.sortDirection);
     }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;

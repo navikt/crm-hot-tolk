@@ -225,10 +225,34 @@ public class HOT_TestDataFactory {
         resource.Name = serviceResource.Name;
         return resource;
     }
-    public static HOT_ResourceMember__c createResourceMember(ServiceResource serviceResource, HOT_Resource__c resource) {
+    public static HOT_ResourceMember__c createResourceMember(
+        ServiceResource serviceResource,
+        HOT_Resource__c resource
+    ) {
         HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
         resourceMember.Service_Resource__c = serviceResource.Id;
         resourceMember.Resource__c = resource.Id;
         return resourceMember;
+    }
+
+    public static ContentVersion createContentVersion() {
+        return createContentVersion('a picture', 'Pic.jpg', 'Test Content');
+    }
+    public static ContentVersion createContentVersion(String title, String filename, String versionDataString) {
+        ContentVersion contentVersion = new ContentVersion(
+            Title = title,
+            PathOnClient = filename,
+            VersionData = Blob.valueOf(versionDataString),
+            IsMajorVersion = true
+        );
+        return contentVersion;
+    }
+    public static ContentDocumentLink createContentDocumentLink(Id linkedEntityId, Id contentDocumentId) {
+        ContentDocumentLink contentDocumentLink = new ContentDocumentLink();
+        contentDocumentLink.LinkedEntityId = linkedEntityId;
+        contentDocumentLink.ContentDocumentId = contentDocumentId;
+        contentDocumentLink.shareType = 'V';
+        contentDocumentLink.visibility = 'AllUsers';
+        return contentDocumentLink;
     }
 }
