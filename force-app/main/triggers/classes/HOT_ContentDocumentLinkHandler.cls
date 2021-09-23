@@ -1,4 +1,4 @@
-public with sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
+public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
     public override void onBeforeInsert() {
         confirmVisibilitySettings((List<ContentDocumentLink>) records);
     }
@@ -31,7 +31,9 @@ public with sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
                 linkedEntityMap.get(serviceAppointment.HOT_Request__c)
             );
         }
-        HOT_ContentDocumentLinkService.setContentDocumentLinks(contentDocumentLinksByServiceAppointment);
+        if (!contentDocumentLinksByServiceAppointment.isEmpty()) {
+            HOT_ContentDocumentLinkService.setContentDocumentLinks(contentDocumentLinksByServiceAppointment);
+        }
     }
 
     public void confirmVisibilitySettings(List<ContentDocumentLink> contentDocumentLinks) {

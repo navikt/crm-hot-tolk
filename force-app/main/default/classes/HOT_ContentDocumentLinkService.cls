@@ -1,4 +1,4 @@
-public with sharing class HOT_ContentDocumentLinkService {
+public without sharing class HOT_ContentDocumentLinkService {
     public static void setContentDocumentLinks(
         Map<Id, List<ContentDocumentLink>> contentDocumentLinksByServiceAppointment
     ) {
