@@ -73,11 +73,10 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSToOtherOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
         List<SMS__c> smsList = new List<SMS__c>();
         for (WorkOrder workOrder : workOrderList) {
-            // TODO: Change type(?)
             smsList.add(
                 createSMSRecord(
                     'HOT',
-                    '24 Hour Scheduled Reminder',
+                    'Hourly SMS on Status Update',
                     workOrder.AccountId,
                     workOrder.Id,
                     workOrder.HOT_Request__r.OrdererPhone__c,
@@ -106,7 +105,7 @@ public without sharing class HOT_ReminderSMSService {
 
     // TODO: Change content? Ask Svenn Terje.
     private static String constructStatusChangedMessage(WorkOrder workOrder) {
-        String message = 'PÅMINNELSE \nStatus endret til ' + workOrder.Status;
+        String message = 'PÅMINNELSE \nStatus på bestilling endret til ' + workOrder.Status;
         message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate) + '\n';
         message += '\nMvh NAV Tolketjeneste';
         return message;

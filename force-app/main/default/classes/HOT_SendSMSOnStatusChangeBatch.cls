@@ -1,7 +1,5 @@
-// TODO: Figure out which statuses to filter (if any)
-// TODO: Figure out how often to run (every hour?)
-// TODO: Create schedulable class or use System.schedule()?
-// TODO: Set HOT_StatusChanged__c to true in WorkOrder trigger on status change
+// TODO: Figure out which statuses to filter (if any) - Ask Svenn Terje
+// TODO: Figure out how often to run (every hour?) Ask Vegard about getMinutes()
 
 public without sharing class HOT_SendSMSOnStatusChangeBatch implements Database.Batchable<sObject>, Schedulable {
     public void execute(SchedulableContext sc) {
@@ -33,6 +31,7 @@ public without sharing class HOT_SendSMSOnStatusChangeBatch implements Database.
         Long minutes = getMinutes();
         if (!Test.isRunningTest()) {
             try {
+                // TODO: Will this pick up fields from above or new fields with HOT_StatusChanged__c set to false again?
                 System.scheduleBatch(
                     new HOT_SendSMSOnStatusChangeBatch(),
                     'HOT_SendSMSOnStatusChangeBatch',
