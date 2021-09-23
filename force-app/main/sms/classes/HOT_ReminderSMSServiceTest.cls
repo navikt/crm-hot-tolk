@@ -38,7 +38,7 @@ private class HOT_ReminderSMSServiceTest {
     @isTest
     static void sendSMSToOtherOrdererOnStatusUpdateTest() {
         List<WorkOrder> workOrders = [
-            SELECT Id, AccountId, HOT_Request__r.OrdererPhone__c, StartDate, EndDate
+            SELECT Id, AccountId, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Subject__c
             FROM WorkOrder
         ];
         HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
