@@ -27,16 +27,16 @@ public without sharing class HOT_ReminderSMSService {
 
         List<SMS__c> smsList = new List<SMS__c>();
         for (WorkOrder workOrder : workOrders.values()) {
-            String message = constructReminderMessage(workOrder, serviceAppointmentsByWorkOrderId.get(workOrder.Id));
-            SMS__c sms = new SMS__c();
-            sms.Domain__c = 'HOT';
-            sms.Type__c = '24 Hour Scheduled Reminder';
-            sms.Account__c = workOrder.AccountId;
-            sms.WorkOrder__c = workOrder.Id;
-            sms.Recipient__c = workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
-            sms.Message__c = message;
-            smsList.add(sms);
-
+            smsList.add(
+                createSMSRecord(
+                    'HOT',
+                    '24 Hour Scheduled Reminder',
+                    workOrder.AccountId,
+                    workOrder.Id,
+                    workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                    constructReminderMessage(workOrder, serviceAppointmentsByWorkOrderId.get(workOrder.Id))
+                )
+            );
             workOrder.HOT_IsReminderSMSSendt__c = true;
         }
 
