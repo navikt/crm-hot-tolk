@@ -35,6 +35,7 @@ private class HOT_ReminderSMSServiceTest {
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
 
+    @isTest
     static void sendSMSToOtherOrdererOnStatusUpdateTest() {
         List<WorkOrder> workOrders = [
             SELECT Id, AccountId, HOT_Request__r.OrdererPhone__c, StartDate, EndDate
