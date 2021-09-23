@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Related Files List</masterLabel>
+    <description>Returns a list of selected rows, called selectedRows</description>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="recordId" type="String" label="Record Id" role="inputOnly" description="Request Record Id" />
+            <propertyType name="T" extends="SObject" label="Object API Name" description="Select the api name of the SObject this component is going to be looking for" />
+            <property name="selectedRows" type="{T}" label="Selected Rows" role="outputOnly" description="Selected Rows" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
