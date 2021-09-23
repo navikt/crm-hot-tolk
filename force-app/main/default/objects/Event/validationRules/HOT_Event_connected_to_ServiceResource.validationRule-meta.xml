@@ -2,7 +2,7 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_Event_connected_to_ServiceResource</fullName>
     <active>true</active>
-    <errorConditionFormula>RecordType.Name == &apos;HOT_Event&apos;
+    <errorConditionFormula>RecordType.DeveloperName== &apos;HOT_Events&apos;
 &amp;&amp;
  Owner:User.Profile.Name == &apos;NAV Samhandler&apos;
 &amp;&amp;
