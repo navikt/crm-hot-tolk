@@ -438,6 +438,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.IsAgreement__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.IsFellesOppdrag__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -494,6 +499,21 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.SeriesStartDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement1__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement2__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement3__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

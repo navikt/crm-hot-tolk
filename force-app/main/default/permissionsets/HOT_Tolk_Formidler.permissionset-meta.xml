@@ -323,7 +323,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>HOT_Request__c.EconomicProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -346,6 +346,11 @@
         <editable>true</editable>
         <field>HOT_Request__c.HOT_OverrideRate__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.HOT_PersonContactId__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -389,6 +394,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.IsFellesOppdrag__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.IsImageInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -401,6 +411,11 @@
         <editable>false</editable>
         <field>HOT_Request__c.IsMyRequest__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsNotifyDispatcher__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -421,6 +436,11 @@
         <editable>false</editable>
         <field>HOT_Request__c.IsSerieoppdrag__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsUpdateStatus__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -503,6 +523,16 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.PreferredInterpreter1__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.PreferredInterpreter2__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.PreferredResource1__c</field>
         <readable>true</readable>
@@ -540,6 +570,21 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.SeriesStartDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement1__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement2__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement3__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
