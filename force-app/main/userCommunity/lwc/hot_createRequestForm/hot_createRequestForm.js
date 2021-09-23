@@ -411,7 +411,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         let checkboxValid = true;
         if (this.fileData.length > 0) {
             if (!this.checkboxValue) {
-                this.template.querySelector('c-checkbox').validationHandler('Sjekkboks må være fylt ut');
+                this.template
+                    .querySelector('c-checkbox')
+                    .validationHandler(
+                        'For å legge til vedlegg må du gi samtykke til at formidler og tolk kan se vedleggene som lastes opp'
+                    );
             }
             checkboxValid = this.checkboxValue;
         }
@@ -531,6 +535,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 this.userForm = true;
             } else if (this.currentRequestType === 'Me') {
                 this.myRequest = true;
+                this.showInformationSharingText = false;
             } else if (this.currentRequestType === 'Company') {
                 this.ordererForm = true;
                 this.userForm = true;
@@ -550,8 +555,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     this.fieldValues.IsOtherEconomicProvicer__c = true;
                 }
                 typeOfEventElement.reportValidity();
-            } else {
-                this.showInformationSharingText = false;
             }
             if (valid) {
                 this.requestForm = true;
