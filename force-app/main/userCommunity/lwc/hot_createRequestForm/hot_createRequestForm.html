@@ -352,11 +352,92 @@
                             value={fieldValues.Description__c}
                         >
                         </lightning-input-field>
-
-                        <!--lightning-file-upload if:true={edit} label="Legg til filer" name="fileUploader"
-							accept={acceptedFormat} record-id={recordId} onuploadfinished={handleUploadFinished}
-							multiple>
-						</lightning-file-upload!-->
+                        <div if:true={myRequest}>
+                            <div class="uploadFileElement">
+                                <div class="dropzone" ondrop={dropHandler} ondragover={dragOverHandler}>
+                                    <input
+                                        type="file"
+                                        onfocus={setButtonStyleOnFocus}
+                                        onblur={setButtonStyleOnFocus}
+                                        onchange={onFileUpload}
+                                        name="uploadFile"
+                                        accept={acceptedFileFormats}
+                                        data-id="file-input"
+                                        class="slds-assistive-text"
+                                        id="file-upload-input-01"
+                                        aria-labelledby="file-selector-primary-label file-selector-secondary-label"
+                                        multiple
+                                    />
+                                    <label for="file-upload-input-01" id="file-selector-secondary-label">
+                                        <span class="button button-standard">
+                                            <svg
+                                                style="margin: 0 5 0 0"
+                                                width="1em"
+                                                height="1em"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    clip-rule="evenodd"
+                                                    d="M12 0l7 6.625h-5V16h-4V6.625H5L12 0zm9 18h2v2a4 4 0 01-4 4H5a4 4 0 01-4-4v-2h20z"
+                                                    fill="currentColor"
+                                                ></path>
+                                            </svg>
+                                            Last opp fil</span
+                                        >
+                                        <span class="dropzone-label">Eller slipp filen her</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checkboxClass hidden">
+                                <c-checkbox
+                                    label={checkboxContent}
+                                    custom-validity="true"
+                                    oncheckboxclick={handleCheckboxValue}
+                                ></c-checkbox>
+                            </div>
+                            <div if:true={filesChanged} class="filesClass">
+                                <template for:each={fileData} for:item="file" for:index="index">
+                                    <div key={file.filename} class="fileAndButton">
+                                        <span key={file.filename} class="fileNameClass">{file.filename}</span>
+                                        <button
+                                            onfocus={onFileFocus}
+                                            aria-label={fileButtonLabel}
+                                            data-index={index}
+                                            key={file.filename}
+                                            type="button"
+                                            value={file.filename}
+                                            class="
+                                                navds-modal__button navds-modal__button--shake
+                                                navds-button navds-button--secondary navds-button--s
+                                                navds-body-short
+                                                navds-body--s
+                                            "
+                                            onclick={onFileButtonClick}
+                                        >
+                                            <svg
+                                                width="1em"
+                                                height="1em"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                focusable="false"
+                                                role="img"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    clip-rule="evenodd"
+                                                    d="M21 4.385L13.385 12 21 19.615 19.615 21 12 13.385 4.385 21 3 19.615 10.615 12 3 4.385 4.385 3 12 10.615 19.615 3 21 4.385z"
+                                                    fill="currentColor"
+                                                ></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
 
                         <lightning-messages aria-live="assertive"> </lightning-messages>
 
@@ -411,4 +492,16 @@
             </lightning-button>
         </div>
     </div>
+
+    <c-alertdialog
+        header={header}
+        content={modalContent}
+        desktop-style="text-align: center;"
+        center-buttons="true"
+        onbuttonclick={handleClick}
+        no-cancel-button={noCancelButton}
+        max-width="fit-content"
+        max-height="fit-content"
+    >
+    </c-alertdialog>
 </template>
