@@ -31,7 +31,6 @@ public without sharing class HOT_SendSMSOnStatusChangeBatch implements Database.
         Long minutes = getMinutes();
         if (!Test.isRunningTest()) {
             try {
-                // TODO: Will this pick up fields from above or new fields with HOT_StatusChanged__c set to false again?
                 System.scheduleBatch(
                     new HOT_SendSMSOnStatusChangeBatch(),
                     'HOT_SendSMSOnStatusChangeBatch',
