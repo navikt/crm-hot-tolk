@@ -15,6 +15,7 @@ import {
     recurringDaysValidations,
     recurringEndDateValidations
 } from './hot_createRequestForm_validationRules';
+import uploadFile from '@salesforce/apex/HOT_RequestListContoller.uploadFile';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
     @track reRender = 0;
@@ -26,7 +27,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     @track submitted = false; // if:false={submitted}
-    acceptedFormat = '[.pdf, .png, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
+    acceptedFileFormats = '[.pdf, .png, .jpg, .jpeg, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
 
     @track recordId = null;
     @track allRequests;
@@ -136,6 +137,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         MeetingPostalCity__c: '',
         MeetingPostalCode__c: '',
         Description__C: '',
+        IsFileConsent__c: false,
         IsOtherEconomicProvicer__c: false,
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
@@ -176,11 +178,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     wiredTimesValue;
     @wire(getTimes, { requestIds: '$requestIds' })
     wiredTimes(result) {
-        console.log('wiredTimes');
         this.wiredTimesValue = result.data;
         if (result.data) {
             if (result.data.length === 0) {
-                console.log('result is empty');
                 this.times = [
                     {
                         id: 0,
@@ -191,7 +191,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     }
                 ];
             } else {
-                console.log('Setting Times');
                 //this.times = [...result.data];
                 for (let timeMap of result.data) {
                     let temp = new Object({
@@ -214,7 +213,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     setDate(event) {
-        console.log(event.detail.value);
         let index = this.getIndexById(event.target.name);
         this.times[index].date = event.detail.value;
         let now = new Date();
@@ -251,8 +249,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
     setStartTime(event) {
         let index = this.getIndexById(event.target.name);
-        console.log(event.detail.value);
-
         let tempTime = event.detail.value.split('');
         this.times[index].startTime = tempTime.join('').substring(0, 5);
 
@@ -271,13 +267,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     setEndTime(event) {
-        console.log(event.detail.value);
         const index = this.getIndexById(event.target.name);
         this.times[index].endTime = event.detail.value.substring(0, 5);
     }
 
     updateValues(event, index) {
-        console.log('updateValues');
         let elements = event.target.parentElement.querySelector('.start-tid');
         elements.value = this.times[index].startTime;
         elements = event.target.parentElement.querySelector('.date');
@@ -407,13 +401,31 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         return recurringTypeValid && recurringDaysValid && recurringEndDateValid;
     }
 
+    checkboxValue = false;
+    handleCheckboxValue(event) {
+        this.checkboxValue = event.detail;
+        this.template.querySelector('c-checkbox').validationHandler(''); // Clear validation when clicking checkbox. Only validate on Submit.
+    }
+
     handleValidation() {
+        let checkboxValid = true;
+        if (this.fileData.length > 0) {
+            if (!this.checkboxValue) {
+                this.template
+                    .querySelector('c-checkbox')
+                    .validationHandler(
+                        'For å legge til vedlegg må du gi samtykke til at formidler og tolk kan se vedleggene som lastes opp'
+                    );
+            }
+            checkboxValid = this.checkboxValue;
+        }
         let datetimeValid = this.handleDatetimeValidation().length === 0;
         let advancedValid = true;
+
         if (this.isAdvancedTimes) {
             advancedValid = this.handleAdvancedTimeValidations();
         }
-        return datetimeValid && this.handlePersonNumberValidation() && advancedValid;
+        return datetimeValid && this.handlePersonNumberValidation() && advancedValid && checkboxValid;
     }
 
     handleDatetimeValidation() {
@@ -443,7 +455,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     async handleSubmit(event) {
-        console.log('handleSubmit');
         this.spin = true;
         event.preventDefault();
         const fields = event.detail.fields;
@@ -451,7 +462,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         if (fields) {
             this.setFieldValues(fields);
             let isValid = this.handleValidation();
-            console.log('isValid: ' + isValid);
             if (isValid) {
                 if (!this.isAdvancedTimes) {
                     let accountId = this.personAccount.Id;
@@ -486,15 +496,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
     submit() {
-        console.log('Sumbitting');
         this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-        console.log('submitted');
-
         window.scrollBy(0, 100);
         window.scrollBy(0, -100);
     }
 
     setFieldValues(fields) {
+        this.fieldValues.IsFileConsent__c = this.checkboxValue;
         this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
         this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
 
@@ -509,6 +517,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
 
+    myRequest = false;
     @track showInformationSharingText = true;
     onHandleNeste() {
         this.fieldValues.Type__c = this.currentRequestType;
@@ -524,6 +533,9 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             if (this.currentRequestType === 'User') {
                 this.ordererForm = true;
                 this.userForm = true;
+            } else if (this.currentRequestType === 'Me') {
+                this.myRequest = true;
+                this.showInformationSharingText = false;
             } else if (this.currentRequestType === 'Company') {
                 this.ordererForm = true;
                 this.userForm = true;
@@ -543,8 +555,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     this.fieldValues.IsOtherEconomicProvicer__c = true;
                 }
                 typeOfEventElement.reportValidity();
-            } else {
-                this.showInformationSharingText = false;
             }
             if (valid) {
                 this.requestForm = true;
@@ -615,8 +625,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         return newDateTime;
     }
 
-    handleError(event) {
-        console.log(JSON.stringify(event));
+    handleError() {
         this.spin = false;
     }
 
@@ -638,7 +647,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
     @track isEditMode = false;
     handleSuccess(event) {
-        console.log('handleSuccess');
         this.spin = false;
         let x = this.template.querySelector('.submitted-true');
         x.classList.remove('hidden');
@@ -646,8 +654,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         x = this.template.querySelector('.submitted-false');
         x.classList.add('hidden');
         this.recordId = event.detail.id;
-
         let requestId = event.detail.id;
+        this.handleFileUpload();
         let times = this.timesListToObject(this.times);
         if (times !== {}) {
             if (this.isAdvancedTimes) {
@@ -671,10 +679,125 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         window.scrollTo(0, 0);
     }
 
-    handleUploadFinished(event) {
-        // Get the list of uploaded files
-        const uploadedFiles = event.detail.files;
-        alert(uploadedFiles.length + ' filer ble lastet opp.');
+    showModal() {
+        this.template.querySelector('c-alertdialog').showModal();
+    }
+
+    focusCheckbox() {
+        this.template.querySelector('c-checkbox').focusCheckbox();
+    }
+
+    isDrop = false;
+    dropHandler(event) {
+        event.preventDefault();
+        this.isDrop = true;
+        this.onFileUpload(event);
+    }
+
+    dragOverHandler(event) {
+        event.preventDefault();
+    }
+
+    onFileButtonClick(event) {
+        const index = event.currentTarget.dataset.index;
+        if (this.fileData.length < index) {
+            return;
+        }
+        this.fileData.splice(index, 1);
+        this.filesChanged = false; // Make boolean change value to refresh filelist
+        this.filesChanged = true;
+        if (this.fileData.length === 0) {
+            this.showOrHideCheckbox(false);
+        }
+        this.setCheckboxContent();
+    }
+
+    setCheckboxContent() {
+        this.checkboxContent =
+            this.fileData.length > 1
+                ? 'Dokumentene som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedleggene vil bli delt med tolken(e) som blir tildelt oppdraget.'
+                : 'Dokumentet som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedlegget vil bli delt med tolken(e) som blir tildelt oppdraget.';
+    }
+    fileButtonLabel;
+    onFileFocus(event) {
+        this.fileButtonLabel = '';
+        const index = event.currentTarget.dataset.index;
+        this.fileButtonLabel = 'Slett vedlegg ' + this.fileData[index].filename;
+    }
+
+    showOrHideCheckbox(show) {
+        if (show) {
+            this.template.querySelector('.checkboxClass').classList.remove('hidden');
+            this.focusCheckbox();
+        } else {
+            this.template.querySelector('.checkboxClass').classList.add('hidden');
+        }
+    }
+
+    noCancelButton = false;
+    filesChanged = false; // If true shows new files
+    header = 'Samtykke';
+    checkboxContent;
+    modalContent;
+    fileData = [];
+    async onFileUpload(event) {
+        try {
+            const result = this.isDrop
+                ? await Promise.all([...event.dataTransfer.files].map((item) => this.readFile(item)))
+                : await Promise.all([...event.target.files].map((item) => this.readFile(item)));
+            result.forEach((item) => {
+                // Only push new files
+                if (this.fileData.findIndex((storedItem) => storedItem.base64 === item.base64) === -1) {
+                    this.fileData.push(item);
+                    this.filesChanged = false; // Make boolean change value to refresh filelist
+                    this.filesChanged = true;
+                }
+            });
+            this.setCheckboxContent();
+            this.showOrHideCheckbox(true);
+        } catch (err) {
+            this.fileData = [];
+            this.header = 'Noe gikk galt';
+            this.modalContent = 'Filen(e) kunne ikke lastes opp. Feilmelding: ' + err;
+            this.noCancelButton = true;
+            this.showModal();
+        }
+        this.isDrop = false;
+    }
+
+    setButtonStyleOnFocus() {
+        let inputEle = this.template.querySelector('[data-id="file-input"]');
+        if (this.template.activeElement === inputEle) {
+            document.documentElement.style.setProperty('--outline', 'none');
+            document.documentElement.style.setProperty('--boxShadow', '0 0 0 3px #00347d');
+        } else {
+            document.documentElement.style.setProperty('--outline', 'none');
+            document.documentElement.style.setProperty('--boxShadow', 'none');
+        }
+    }
+
+    readFile(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                resolve({
+                    filename: file.name,
+                    base64: reader.result.split(',')[1],
+                    recordId: this.recordId // Will be null here since Request record is not created yet. Add it on submit in handleFileUpload().
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    handleFileUpload() {
+        const filesToUpload = {};
+        this.fileData.forEach((item) => {
+            const { base64, filename } = item;
+            filesToUpload[base64] = filename;
+        });
+        uploadFile({ files: filesToUpload, recordId: this.recordId });
+        this.fileData = null;
     }
 
     toggled() {
@@ -684,8 +807,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     previousPage = 'home';
 
     connectedCallback() {
-        console.log('connectedCallback');
-
         window.scrollTo(0, 0);
         let testURL = window.location.href;
         let params = testURL.split('?')[1];
@@ -739,11 +860,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                         this.userForm = this.fieldValues.Type__c !== 'PublicEvent';
                         this.companyForm = this.fieldValues.Type__c !== 'User';
                     }
+                    if (this.fieldValues.Type__c === 'Me') {
+                        this.myRequest = true;
+                    }
                 }
                 if (!!parsed_params.copy) {
                     delete this.fieldValues.Id;
                 } else {
-                    console.log('Is Edit: Refreshing apex times');
                     this.recordId = this.fieldValues.Id;
                     let requestIds = [];
                     requestIds.push(this.fieldValues.Id);
