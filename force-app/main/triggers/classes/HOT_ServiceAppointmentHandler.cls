@@ -768,10 +768,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, List<ContentDocumentLink>> serviceAppointmentMap = new Map<Id, List<ContentDocumentLink>>();
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointmentMap.put(
-                serviceAppointment.Id,
-                requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks
-            );
+            if (requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks.size() > 0) {
+                serviceAppointmentMap.put(
+                    serviceAppointment.Id,
+                    requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks
+                );
+            }
         }
 
         HOT_ContentDocumentLinkService.setContentDocumentLinks(serviceAppointmentMap);
