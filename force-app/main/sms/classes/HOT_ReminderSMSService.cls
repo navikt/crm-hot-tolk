@@ -103,10 +103,12 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    // TODO: Change content? Ask Svenn Terje.
     private static String constructStatusChangedMessage(WorkOrder workOrder) {
-        String message = 'PÅMINNELSE \nStatus på bestilling endret til ' + workOrder.Status;
-        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate) + '\n';
+        String message =
+            'INFO \nStatus for bestilling ' +
+            workOrder.HOT_Request__r.Subject__c +
+            ' er nå: ' +
+            workOrder.Status;
         message += '\nMvh NAV Tolketjeneste';
         return message;
     }

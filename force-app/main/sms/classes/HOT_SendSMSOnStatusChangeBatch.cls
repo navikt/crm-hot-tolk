@@ -1,6 +1,3 @@
-// TODO: Figure out which statuses to filter (if any) - Ask Svenn Terje
-// TODO: Figure out how often to run (every hour?) Ask Vegard about getMinutes()
-
 public without sharing class HOT_SendSMSOnStatusChangeBatch implements Database.Batchable<sObject>, Schedulable {
     public void execute(SchedulableContext sc) {
         HOT_SendSMSOnStatusChangeBatch instance = new HOT_SendSMSOnStatusChangeBatch();
@@ -14,7 +11,7 @@ public without sharing class HOT_SendSMSOnStatusChangeBatch implements Database.
             horizonDate = Date.today().addDays(4);
         }
         String query = 'SELECT ';
-        query += 'Id, AccountId, HOT_Request__r.OrdererPhone__c, StartDate, EndDate, Status ';
+        query += 'Id, AccountId, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Subject__c, Status ';
         query += 'FROM WorkOrder ';
         query += 'WHERE HOT_Request__r.OrdererPhone__c != null ';
         query += 'AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = TRUE ';
