@@ -1,5 +1,5 @@
 @isTest
-private class HOT_SendSMSOnStatusChangeBatchTest {
+private class HOT_SendSMSToOrdererOnStatusChangeBatchTest {
     @TestSetup
     static void setup() {
     }
@@ -23,7 +23,7 @@ private class HOT_SendSMSOnStatusChangeBatchTest {
         workOrder.Status = 'Dispatched';
         update workOrder;
 
-        HOT_SendSMSOnStatusChangeBatch instance = new HOT_SendSMSOnStatusChangeBatch();
+        HOT_SendSMSToOrdererOnStatusChangeBatchTest instance = new HOT_SendSMSToOrdererOnStatusChangeBatchTest();
         Test.startTest();
         database.executebatch(instance);
         Test.stopTest();
@@ -34,9 +34,9 @@ private class HOT_SendSMSOnStatusChangeBatchTest {
         String cron_exp = '0 0 0 30 9 ? 2030';
         Test.startTest();
         String jobId = System.schedule(
-            'HOT_SendSMSOnStatusChangeBatch',
+            'HOT_SendSMSToOrdererOnStatusChangeBatchTest',
             cron_exp,
-            new HOT_SendSMSOnStatusChangeBatch()
+            new HOT_SendSMSToOrdererOnStatusChangeBatchTest()
         );
         Test.stopTest();
         System.assert(jobId != null);

@@ -1,6 +1,6 @@
-public without sharing class HOT_SendSMSOnStatusChangeBatch implements Database.Batchable<sObject>, Schedulable {
+public without sharing class HOT_SendSMSToOrdererOnStatusChangeBatch implements Database.Batchable<sObject>, Schedulable {
     public void execute(SchedulableContext sc) {
-        HOT_SendSMSOnStatusChangeBatch instance = new HOT_SendSMSOnStatusChangeBatch();
+        HOT_SendSMSToOrdererOnStatusChangeBatch instance = new HOT_SendSMSToOrdererOnStatusChangeBatch();
         database.executebatch(instance, 10);
     }
 
@@ -26,8 +26,8 @@ public without sharing class HOT_SendSMSOnStatusChangeBatch implements Database.
         if (!Test.isRunningTest()) {
             try {
                 System.scheduleBatch(
-                    new HOT_SendSMSOnStatusChangeBatch(),
-                    'HOT_SendSMSOnStatusChangeBatch',
+                    new HOT_SendSMSToOrdererOnStatusChangeBatch(),
+                    'HOT_SendSMSToOrdererOnStatusChangeBatch',
                     (Integer) minutes,
                     10
                 );
