@@ -4,6 +4,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         setDefaultFields((List<ServiceAppointment>) records);
     }
 
+    public override void onAfterInsert() {
+        createContentDocumentLinks((List<ServiceAppointment>) records);
+    }
+
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<ServiceAppointment> serviceAppointmentsStatusFromCannotCompleteToNone = new List<ServiceAppointment>();
         List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
@@ -739,5 +743,39 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         returnMap.put('appointment', appointmentByAssignment);
         returnMap.put('resource', resourceByAssignment);
         return returnMap;
+    }
+
+    public static void createContentDocumentLinks(List<ServiceAppointment> serviceAppointments) {
+        List<Id> requestIds = new List<Id>();
+
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            requestIds.add(serviceAppointment.HOT_Request__c);
+        }
+
+        Map<Id, Hot_Request__c> requestMap = new Map<Id, HOT_Request__c>(
+            [
+                SELECT
+                    Id,
+                    (
+                        SELECT ContentDocumentId, LinkedEntityId, ShareType, Visibility
+                        FROM HOT_Request__c.ContentDocumentLinks
+                    )
+                FROM HOT_Request__C
+                WHERE Id IN :requestIds
+            ]
+        );
+
+        Map<Id, List<ContentDocumentLink>> serviceAppointmentMap = new Map<Id, List<ContentDocumentLink>>();
+
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            if (requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks.size() > 0) {
+                serviceAppointmentMap.put(
+                    serviceAppointment.Id,
+                    requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks
+                );
+            }
+        }
+
+        HOT_ContentDocumentLinkService.setContentDocumentLinks(serviceAppointmentMap);
     }
 }
