@@ -10,7 +10,8 @@ public with sharing class HOT_ContentDocumentLinkService {
                     serviceAppointmentId
                 )
             ) {
-                ContentDocumentLink contentDocumentLinkCopy = contentDocumentLink.clone(false, false, false, false);
+                ContentDocumentLink contentDocumentLinkCopy = new ContentDocumentLink();
+                contentDocumentLinkCopy.ContentDocumentId = contentDocumentLink.ContentDocumentId;
                 contentDocumentLinkCopy.LinkedEntityId = serviceAppointmentId;
                 contentDocumentLinkCopy.Visibility = 'AllUsers';
                 contentDocumentLinkCopy.ShareType = 'V';
