@@ -6,7 +6,7 @@
 &amp;&amp;
  Owner:User.Profile.Name == &apos;NAV Samhandler&apos;
 &amp;&amp;
- WhatId != null</errorConditionFormula>
+ WhatId == null</errorConditionFormula>
     <errorDisplayField>WhatId</errorDisplayField>
     <errorMessage>Du må koble Avtalen til en Tjenesteressurs. Velg Tjenesteressurs, og finn frilanstolken.</errorMessage>
 </ValidationRule>
