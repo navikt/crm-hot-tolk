@@ -6,14 +6,11 @@ public without sharing class HOT_SendSMSOnStatusChangeBatch implements Database.
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
-        Date horizonDate = Date.today().addDays(2);
-        if (now.format('EEEE') == 'Friday') {
-            horizonDate = Date.today().addDays(4);
-        }
         String query = 'SELECT ';
         query += 'Id, AccountId, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Subject__c, Status ';
         query += 'FROM WorkOrder ';
         query += 'WHERE HOT_Request__r.OrdererPhone__c != null ';
+        query += 'AND EndDate > :now ';
         query += 'AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = TRUE ';
         query += 'AND HOT_StatusChanged__c = TRUE';
 
