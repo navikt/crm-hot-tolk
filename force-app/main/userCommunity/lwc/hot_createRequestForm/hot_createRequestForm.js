@@ -709,15 +709,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             return;
         }
         this.fileData.splice(index, 1);
-        this.filesChanged = false; // Make boolean change value to refresh filelist
-        this.filesChanged = true;
-        if (this.fileData.length === 0) {
-            this.showOrHideCheckbox(false);
-        }
+        this.boolSwitch();
+        this.showOrHideCheckbox();
         this.setCheckboxContent();
         this.resetFileValue();
     }
 
+    checkboxContent;
     setCheckboxContent() {
         this.checkboxContent =
             this.fileData.length > 1
@@ -731,19 +729,21 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.fileButtonLabel = 'Slett vedlegg ' + this.fileData[index].filename;
     }
 
-    showOrHideCheckbox(show) {
-        if (show) {
+    showOrHideCheckbox() {
+        if (this.fileData.length === 0) {
+            this.template.querySelector('.checkboxClass').classList.add('hidden');
+        } else {
             this.template.querySelector('.checkboxClass').classList.remove('hidden');
             this.focusCheckbox();
-        } else {
-            this.template.querySelector('.checkboxClass').classList.add('hidden');
         }
     }
+    // Make boolean value change and set it to true to show new files added
+    boolSwitch() {
+        this.filesChanged = false;
+        this.filesChanged = true;
+    }
 
-    noCancelButton = false;
-    filesChanged = false; // If true shows new files
-    header = 'Samtykke';
-    checkboxContent;
+    filesChanged = false; // If true -> shows new files added in list
     modalContent;
     fileData = [];
     async onFileUpload(event) {
@@ -755,17 +755,14 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 // Only push new files
                 if (this.fileData.findIndex((storedItem) => storedItem.base64 === item.base64) === -1) {
                     this.fileData.push(item);
-                    this.filesChanged = false; // Make boolean change value to refresh filelist
-                    this.filesChanged = true;
+                    this.boolSwitch();
                 }
             });
             this.setCheckboxContent();
-            this.showOrHideCheckbox(true);
+            this.showOrHideCheckbox();
         } catch (err) {
             this.fileData = [];
-            this.header = 'Noe gikk galt';
             this.modalContent = 'Filen(e) kunne ikke lastes opp. Feilmelding: ' + err;
-            this.noCancelButton = true;
             this.showModal();
         }
         this.isDrop = false;
