@@ -698,6 +698,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         event.preventDefault();
     }
 
+    // Reset value of file input path so that same file can be uploaded again if deleting file and re-uploading
+    resetFileValue() {
+        this.template.querySelector('[data-id="file-input"]').value = null;
+    }
+
     onFileButtonClick(event) {
         const index = event.currentTarget.dataset.index;
         if (this.fileData.length < index) {
@@ -710,6 +715,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             this.showOrHideCheckbox(false);
         }
         this.setCheckboxContent();
+        this.resetFileValue();
     }
 
     setCheckboxContent() {
