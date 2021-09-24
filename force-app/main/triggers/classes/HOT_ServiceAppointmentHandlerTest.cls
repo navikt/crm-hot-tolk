@@ -749,4 +749,52 @@ private class HOT_ServiceAppointmentHandlerTest {
             'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDeletePreferredResourceNotNull'
         );
     }
+
+    @isTest
+    public static void addContentDocumentLinkToServiceAppointment() {
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_Request__c, ParentRecordId
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        ContentVersion contentVersion = new ContentVersion(
+            Title = 'a picture',
+            PathOnClient = 'Pic.jpg',
+            VersionData = Blob.valueOf('Test Content'),
+            IsMajorVersion = true
+        );
+        insert contentVersion;
+
+        ContentDocument contentDocument = [SELECT Id FROM ContentDocument LIMIT 1];
+
+        ContentDocumentLink contentDocumentLink = new ContentDocumentLink(
+            ContentDocumentId = contentDocument.Id,
+            LinkedEntityId = request.Id
+        );
+        insert contentDocumentLink;
+
+        ServiceAppointment serviceAppointmentCopy = serviceAppointment.Clone(false, true, false, false);
+        Test.startTest();
+        insert serviceAppointmentCopy;
+        Test.stopTest();
+
+        ContentDocumentLink contentDocumentLink_ServiceAppointment = [
+            SELECT ContentDocumentId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :serviceAppointmentCopy.Id
+            LIMIT 1
+        ];
+
+        Id requestContentDocumentid = contentDocumentLink.ContentDocumentId;
+        Id serviceAppointmentContentDocumentId = contentDocumentLink_ServiceAppointment.ContentDocumentId;
+
+        System.assertEquals(
+            requestContentDocumentId,
+            serviceAppointmentContentDocumentId,
+            'ContentDocumentId fra request og serviceAppointment stemmer ikke overens.'
+        );
+    }
 }

@@ -21,16 +21,13 @@
                 </lightning-button>
             </div>
         </div>
-        <lightning-combobox
-            class="mobile-only"
-            style="width: 100%"
-            name="mobileSorting"
-            label="Sorter etter"
-            value={mobileSortingDefaultValue}
-            options={sortingOptions}
-            onchange={onHandleSort}
-        >
-        </lightning-combobox>
+        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
+            <c-picklist
+                master-label="Sorter etter"
+                choices={sortingOptions}
+                onpicklistvaluechange={onHandleSort}
+            ></c-picklist>
+        </div>
 
         <lightning-datatable
             key-field="Id"

@@ -320,7 +320,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     EarliestStartTime,
                     DueDate
                 FROM ServiceAppointment
-                WHERE Id IN :serviceAppointmentIds AND Status NOT IN :exludedStatuses
+                WHERE Id IN :serviceAppointmentIds
             ]
         );
 
@@ -329,7 +329,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             [
                 SELECT
                     Id,
-                    (SELECT Id, EarliestStartTime, DueDate, HOT_ServiceResource__c FROM HOT_ServiceAppointments__r)
+                    (SELECT Id, EarliestStartTime, DueDate, HOT_ServiceResource__c FROM HOT_ServiceAppointments__r WHERE Status NOT IN :exludedStatuses)
                 FROM ServiceResource
                 WHERE Id IN :serviceResourceIds
             ]

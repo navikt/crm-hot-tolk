@@ -34,6 +34,10 @@
     </classAccesses>
     <customPermissions>
         <enabled>true</enabled>
+        <name>HOT_DeleteFiles</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>HOT_ReleaseToFreelance</name>
     </customPermissions>
     <customPermissions>
@@ -325,7 +329,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>HOT_Request__c.EconomicProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -396,7 +400,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.IsAgreement__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.IsFellesOppdrag__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsFileConsent__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -577,6 +591,21 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.SeriesStartDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement1__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement2__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement3__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
