@@ -104,7 +104,12 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     private static String constructStatusChangedMessage(WorkOrder workOrder) {
-        String message = 'INFO \nStatus på din bestilling er: ' + workOrder.Status;
+        String message = 'INFO\nStatus på din bestilling er: ';
+        if (workOrder.Status == 'Dispatched') {
+            message += 'Du har fått tolk';
+        } else if (workOrder.Status == 'Cannot Complete') {
+            message += 'Ikke ledig tolk';
+        }
         message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
         message += '\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh NAV Tolketjeneste';
