@@ -488,10 +488,6 @@
             </lightning-icon>
             <br />
             <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1">Bestilling mottatt</h2>
-
-            <!--lightning-file-upload if:false={edit} label="Legg til filer" name="fileUploader" accept={acceptedFormat}
-				record-id={recordId} onuploadfinished={handleUploadFinished} multiple>
-			</lightning-file-upload!-->
             <br />
             <lightning-button title="Gå til mine bestillinger" variant="brand" label="OK" onclick={goToMyRequests}>
             </lightning-button>
@@ -499,12 +495,12 @@
     </div>
 
     <c-alertdialog
-        header={header}
+        header="Noe gikk galt"
         content={modalContent}
         desktop-style="text-align: center;"
         center-buttons="true"
         onbuttonclick={handleClick}
-        no-cancel-button={noCancelButton}
+        no-cancel-button="true"
         max-width="fit-content"
         max-height="fit-content"
     >
