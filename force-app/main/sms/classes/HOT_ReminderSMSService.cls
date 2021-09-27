@@ -65,7 +65,7 @@ public without sharing class HOT_ReminderSMSService {
             message += serviceAppointment.HOT_ServiceResource__r.Name + ', ';
         }
         message = message.removeEnd(', ');
-        message += '\n\nGi beskjed dersom du har symptomer på Korona. For mer informasjon tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\n\nGi beskjed dersom du har symptomer på Korona. For mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh NAV Tolketjeneste';
         return message;
     }
@@ -104,11 +104,9 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     private static String constructStatusChangedMessage(WorkOrder workOrder) {
-        String message =
-            'INFO \nStatus for bestilling ' +
-            workOrder.HOT_Request__r.Subject__c +
-            ' er nå: ' +
-            workOrder.Status;
+        String message = 'INFO \nStatus på din bestilling er: ' + workOrder.Status;
+        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+        message += '\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh NAV Tolketjeneste';
         return message;
     }

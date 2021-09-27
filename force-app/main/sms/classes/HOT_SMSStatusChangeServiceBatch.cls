@@ -7,7 +7,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
         String query = 'SELECT ';
-        query += 'Id, AccountId, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Subject__c, Status ';
+        query += 'Id, AccountId, HOT_Request__r.OrdererPhone__c, Status, StartDate, EndDate ';
         query += 'FROM WorkOrder ';
         query += 'WHERE HOT_Request__r.OrdererPhone__c != null ';
         query += 'AND EndDate > :now ';
