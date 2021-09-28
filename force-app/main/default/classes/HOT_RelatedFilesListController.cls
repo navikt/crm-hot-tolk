@@ -17,4 +17,9 @@ public without sharing class HOT_RelatedFilesListController {
         ];
         return contentDocuments;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static String createBaseUrlLink() {
+        return URL.getSalesforceBaseUrl().toExternalForm() + '/sfc/servlet.shepherd/document/download/';
+    }
 }

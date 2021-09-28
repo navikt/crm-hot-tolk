@@ -4,9 +4,7 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { myServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 import { formatRecord } from 'c/hot_recordDetails';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
-import getContentDocumentLinks from '@salesforce/apex/HOT_MyServiceAppointmentListController.getContentDocumentLinks';
 import getContentDocuments from '@salesforce/apex/HOT_RelatedFilesListController.getContentDocuments';
-import ElapsedTimeInHours from '@salesforce/schema/ProcessInstance.ElapsedTimeInHours';
 
 var actions = [{ label: 'Detaljer', name: 'details' }];
 
@@ -142,43 +140,14 @@ export default class Hot_myServiceAppointments extends LightningElement {
         }
     }
 
-    contentDocuments = [];
-
-    @track recordId;
-    @wire(getContentDocuments, { recordId: '$recordId' })
-    wiredGetContentDocuments(result) {
-        console.log(JSON.stringify(result));
-
-        if (result.data) {
-            console.log(JSON.stringify(result.data));
-
-            this.contentDocuments = result.data;
-        }
-    }
-
-    setRecordId(rowId) {
-        this.recordId = rowId;
-    }
-
-    contentDocumentsNotEmpty = false;
-
-    getDownloadLinkWithoutPostfix() {
-        this.downloadLinkWithoutPostfix = 'Hei'; //URL.getSalesforceBaseUrl().toExternalForm() + '/' må nok brukes i apex-klasse;
-    }
-
-    checkIfContentDocumentNotEmpty() {
-        this.contentDocumentsNotEmpty = this.contentDocuments !== null;
-    }
-
+    recordId;
     @track serviceAppointmentDetails;
     showDetails(row) {
+        this.recordId = row.Id;
         this.serviceAppointmentDetails = formatRecord(row, myServiceAppointmentFieldLabels);
         let detailPage = this.template.querySelector('.detailPage');
         detailPage.classList.remove('hidden');
-        this.getDownloadLinkWithoutPostfix();
         detailPage.focus();
-        this.setRecordId(row.Id);
-        this.checkIfContentDocumentNotEmpty();
     }
 
     abortShowDetails() {

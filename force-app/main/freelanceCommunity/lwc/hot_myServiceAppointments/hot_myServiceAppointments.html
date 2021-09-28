@@ -45,17 +45,12 @@
                 <h2 id="details-header-id" class="typo-undertittel">Detaljer</h2>
                 <c-hot_record-details record={serviceAppointmentDetails}></c-hot_record-details>
             </section>
-            <section if:true={contentDocumentsNotEmpty}>
-                <div class="listelement__header"><p class="typo-element">Vedlegg</p></div>
-                <template iterator:it={contentDocuments}>
-                    <a class="typo-normal content" href="$downloadLinkWithoutPostfix . $it.value.Id" key={it.value.Id}>
-                        {downloadLinkWithoutPostfix}{it.value.Title}
-                    </a>
-                </template>
+            <section>
+                <c-record-files record-id={recordId}></c-record-files>
             </section>
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
-                <span class="text-hide">Lukk</span></button
-            ><!-- ToDo, se om vi kan hente ut alt fra  HOT_Record-Details istedenfor slik det er nå.-->
+                <span class="text-hide">Lukk</span>
+            </button>
         </div>
     </div>
 </template>

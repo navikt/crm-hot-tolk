@@ -1,0 +1,12 @@
+<template>
+    <section if:false={contentDocumentsEmpty}>
+        <div class="listelement__header"><p class="typo-element">Vedlegg</p></div>
+        <ul class="list-column-2">
+            <template iterator:it={contentDocuments} for:index="index">
+                <li key={it.value.Id}>
+                    <a class="typo-normal content" href={it.value.downloadLink} key={it.value.Id}>{it.value.Title} </a>
+                </li>
+            </template>
+        </ul>
+    </section>
+</template>
