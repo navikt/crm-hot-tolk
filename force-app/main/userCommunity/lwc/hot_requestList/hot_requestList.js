@@ -198,7 +198,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     @track picklistValue = 'Fremtidige';
     handlePicklist(event) {
-        this.picklistValue = event.detail;
+        this.picklistValue = event.detail.name;
         this.filterRequests();
     }
 
@@ -214,7 +214,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             } else if (pickListValue === 'Fremtidige') {
                 if (
                     status !== 'Avlyst' &&
-                    this.allRequests[i].SeriesEndDate__c > new Date().toISOString().substring(0, 10)
+                    (this.allRequests[i].SeriesEndDate__c > new Date().toISOString().substring(0, 10) ||
+                        this.allRequests[i].EndTime__c > new Date().toISOString().substring(0, 10))
                 ) {
                     tempRequests.push(this.allRequests[i]);
                 }
@@ -264,32 +265,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         return getMobileSortingOptions(this.columns);
     }
 
-    valueMap = {
-        'Start tid stigende': '{"fieldName": "StartTime__c", "sortDirection": "asc"}',
-        'Start tid synkende': '{"fieldName": "StartTime__c", "sortDirection": "desc"}',
-        'Slutt tid stigende': '{"fieldName": "EndTime__c", "sortDirection": "asc"}',
-        'Slutt tid synkende': '{"fieldName": "EndTime__c", "sortDirection": "desc"}',
-        'Bestilling A - Å': '{"fieldName": "Name", "sortDirection": "asc"}',
-        'Bestilling Å - A': '{"fieldName": "Name", "sortDirection": "desc"}',
-        'Oppmøtested A - Å': '{"fieldName": "MeetingStreet__c", "sortDirection": "asc"}',
-        'Oppmøtested Å - A': '{"fieldName": "MeetingStreet__c", "sortDirection": "desc"}',
-        'Tema A - Å': '{"fieldName": "Subject__c", "sortDirection": "asc"}',
-        'Tema Å - A': '{"fieldName": "Subject__c", "sortDirection": "desc"}',
-        'Serieoppdrag stigende': '{"fieldName": "IsSerieoppdrag__c", "sortDirection": "asc"}',
-        'Serieoppdrag synkende': '{"fieldName": "IsSerieoppdrag__c", "sortDirection": "desc"}',
-        'Status A - Å': '{"fieldName": "ExternalRequestStatus__c", "sortDirection": "asc"}',
-        'Status Å - A': '{"fieldName": "ExternalRequestStatus__c", "sortDirection": "desc"}',
-        'Bruker A - Å': '{"fieldName": "UserName__c", "sortDirection": "asc"}',
-        'Bruker Å - A': '{"fieldName": "UserName__c", "sortDirection": "desc"}'
-    };
-
-    handleMobileSorting(event) {
-        let value = JSON.parse(this.valueMap[event.detail]);
-        this.sortDirection = value.sortDirection;
-        this.sortedBy = value.fieldName;
-        this.allRequests = sortList(this.allRequests, this.sortedBy, this.sortDirection);
-        this.filterRequests();
-    }
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;

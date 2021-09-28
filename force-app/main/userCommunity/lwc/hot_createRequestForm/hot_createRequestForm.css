@@ -177,11 +177,110 @@ section.sub-form:last-child {
     flex-direction: row;
 }
 
-.sub-form > form > slot > lightning-output-field > .slds-form-element__label {
-    background-color: red;
-    display: none !important;
-}
-
 .hidden {
     display: none;
+}
+
+.button-standard {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-family: Source Sans Pro, Arial, sans-serif;
+    font-size: 1em;
+    white-space: nowrap;
+    border-radius: 0.125em;
+    cursor: pointer;
+    user-select: none;
+    letter-spacing: 0.0625em;
+    line-height: 1.375rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    background-color: #fff;
+    padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px);
+    min-height: 2.5rem;
+    vertical-align: middle;
+    border: 2px solid #0067c5;
+    color: #0067c5;
+    outline: var(--outline);
+    box-shadow: var(--boxShadow);
+}
+
+.button-standard:hover {
+    background-color: #0067c5;
+    color: #fff;
+}
+
+.dropzone-label {
+    font-weight: 600;
+    color: #0067c5;
+    text-transform: uppercase;
+    padding: 0.5rem;
+    font-size: 13.33px;
+}
+
+.dropzone {
+    padding: 0.125rem;
+    border: 1px dashed #d4d4d4;
+    border-radius: 0.25rem;
+    width: auto;
+    white-space: nowrap;
+}
+
+.uploadFileElement {
+    width: fit-content;
+}
+
+.filesClass {
+    padding: 0.25em 0 0 0;
+}
+
+.fileNameClass {
+    font-family: Source Sans Pro, Arial, sans-serif;
+    font-size: 14px;
+    margin: 0 0.5em 0 0;
+}
+
+.fileAndButton {
+    width: fit-content;
+    height: fit-content;
+}
+
+.navds-modal__button--shake {
+    transform: rotate(0deg);
+    transition: transform 100ms cubic-bezier(0.82, 2, 1, 0.3);
+}
+
+.navds-button--secondary {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.navds-modal__button svg {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.navds-button--s > svg {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.navds-button {
+    cursor: pointer;
+    background-color: #ffffff;
+    color: #a32a17;
+    text-align: center;
+    text-decoration: none;
+    align-items: center;
+    padding: 0;
+}
+
+.navds-button--secondary:active {
+    color: #ffffff;
+}
+
+.navds-button--secondary:hover {
+    opacity: 0.8;
 }

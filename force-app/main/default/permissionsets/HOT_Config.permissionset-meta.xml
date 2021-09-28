@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
-        <apexClass>HOT_ARCreatedControllerTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_AddCommentController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -26,10 +22,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_AssignedResourceHandlerTest</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_AssignedResourcesCreatedController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -102,6 +94,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_OpenServiceAppointmentListController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_RelatedFilesListController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -236,6 +232,10 @@
         <apexClass>HOT_WorkOrderStatusHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>HOT_DeleteFiles</name>
+    </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
         <name>HOT_SetInvoiceStatus</name>
@@ -442,7 +442,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.IsAgreement__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.IsFellesOppdrag__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsFileConsent__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -498,6 +508,21 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.SeriesStartDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement1__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement2__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.ServiceResourceWithAgreement3__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
