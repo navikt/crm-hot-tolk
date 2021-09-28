@@ -11,7 +11,7 @@
         <targetConfig targets="lightning__FlowScreen">
             <property name="recordId" type="String" label="Record Id" role="inputOnly" description="Request Record Id" />
             <propertyType name="T" extends="SObject" label="Object API Name" description="Select the api name of the SObject this component is going to be looking for" />
-            <property name="selectedRows" type="{T}" label="Selected Rows" role="outputOnly" description="Selected Rows" />
+            <property name="selectedRows" type="{T[]}" label="Selected Rows" role="outputOnly" description="Selected Rows" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
