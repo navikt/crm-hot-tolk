@@ -712,7 +712,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.boolSwitch();
         this.showOrHideCheckbox();
         this.setCheckboxContent();
-        this.resetFileValue();
     }
 
     checkboxContent;
@@ -758,6 +757,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     this.boolSwitch();
                 }
             });
+            this.resetFileValue();
             this.setCheckboxContent();
             this.showOrHideCheckbox();
         } catch (err) {
