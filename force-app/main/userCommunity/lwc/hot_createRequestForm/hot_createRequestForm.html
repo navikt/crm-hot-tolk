@@ -401,27 +401,25 @@
                             <div if:true={filesChanged} class="filesClass">
                                 <ul aria-label="Liste over filer">
                                     <template for:each={fileData} for:item="file" for:index="index">
-                                        <div key={file.filename} class="fileAndButton">
-                                            <li>
-                                                <span key={file.filename} class="fileNameClass">{file.filename}</span>
-                                                <button
-                                                    onfocus={onFileFocus}
-                                                    aria-label={fileButtonLabel}
-                                                    data-index={index}
-                                                    key={file.filename}
-                                                    type="button"
-                                                    value={file.filename}
-                                                    class="
-                                                        navds-button navds-button--secondary navds-button--s
-                                                        navds-body-short
-                                                        navds-body--s
-                                                    "
-                                                    onclick={onFileButtonClick}
-                                                >
-                                                    Slett
-                                                </button>
-                                            </li>
-                                        </div>
+                                        <li key={file.filename} class="fileAndButton">
+                                            <span key={file.filename} class="fileNameClass">{file.filename}</span>
+                                            <button
+                                                onfocus={onFileFocus}
+                                                aria-label={fileButtonLabel}
+                                                data-index={index}
+                                                key={file.filename}
+                                                type="button"
+                                                value={file.filename}
+                                                class="
+                                                    navds-button navds-button--secondary navds-button--s
+                                                    navds-body-short
+                                                    navds-body--s
+                                                "
+                                                onclick={onFileButtonClick}
+                                            >
+                                                Slett
+                                            </button>
+                                        </li>
                                     </template>
                                 </ul>
                             </div>
