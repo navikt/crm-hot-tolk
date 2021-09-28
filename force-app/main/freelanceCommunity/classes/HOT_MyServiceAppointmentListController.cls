@@ -64,4 +64,15 @@ public without sharing class HOT_MyServiceAppointmentListController {
         ];
         return serviceAppointments;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<ContentDocumentLink> getContentDocumentLinks(String recordId) {
+        List<ContentDocumentLink> contentDocumentLinks = [
+            SELECT ContentDocumentId, Id, LinkedEntityId, ShareType
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :recordId AND Visibility = 'AllUsers'
+        ];
+
+        return contentDocumentLinks;
+    }
 }
