@@ -78,7 +78,16 @@ public without sharing class HOT_WageClaimService {
         List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, SchedStartTime, SchedEndTime, WorkTypeId, ServiceTerritoryId, Status
+                SELECT
+                    Id,
+                    SchedStartTime,
+                    SchedEndTime,
+                    WorkTypeId,
+                    ServiceTerritoryId,
+                    Status,
+                    HOT_Request__r.ServiceResourceWithAgreement1__c,
+                    HOT_Request__r.ServiceResourceWithAgreement2__c,
+                    HOT_Request__r.ServiceResourceWithAgreement3__c
                 FROM ServiceAppointment
                 WHERE Id IN :resourceByAppointment.keySet()
             ]
@@ -92,22 +101,28 @@ public without sharing class HOT_WageClaimService {
         );
         Date criticalDate = Date.today().addDays(14);
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
-            if (
-                criticalDate >= serviceAppointment.SchedStartTime.date() &&
-                serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)).HOT_IsFreelanceInterpreter__c ==
-                true
-            ) {
-                HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
-                wageClaim.IsAutomaticallyCreated__c = true;
-                wageClaim.Type__c = 'Available on Wage';
-                wageClaim.Status__c = 'Open';
-                wageClaim.ServiceResource__c = resourceByAppointment.get(serviceAppointment.Id);
-                wageClaim.ServiceAppointment__c = serviceAppointment.Id;
-                wageClaim.StartTime__c = serviceAppointment.SchedStartTime;
-                wageClaim.EndTime__c = serviceAppointment.SchedEndTime;
-                wageClaim.WorkType__c = serviceAppointment.WorkTypeId;
-                wageClaim.ServiceTerritory__c = serviceAppointment.ServiceTerritoryId;
-                wageClaims.add(wageClaim);
+            if (serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)) != null) {
+                if (
+                    criticalDate >= serviceAppointment.SchedStartTime.date() &&
+                    serviceResources.get(resourceByAppointment.get(serviceAppointment.Id))
+                        .HOT_IsFreelanceInterpreter__c == true &&
+                    !isAgreement(
+                        serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)),
+                        serviceAppointment
+                    )
+                ) {
+                    HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
+                    wageClaim.IsAutomaticallyCreated__c = true;
+                    wageClaim.Type__c = 'Available on Wage';
+                    wageClaim.Status__c = 'Open';
+                    wageClaim.ServiceResource__c = resourceByAppointment.get(serviceAppointment.Id);
+                    wageClaim.ServiceAppointment__c = serviceAppointment.Id;
+                    wageClaim.StartTime__c = serviceAppointment.SchedStartTime;
+                    wageClaim.EndTime__c = serviceAppointment.SchedEndTime;
+                    wageClaim.WorkType__c = serviceAppointment.WorkTypeId;
+                    wageClaim.ServiceTerritory__c = serviceAppointment.ServiceTerritoryId;
+                    wageClaims.add(wageClaim);
+                }
             }
         }
         try {
@@ -117,6 +132,13 @@ public without sharing class HOT_WageClaimService {
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
         }
+    }
+
+    private static Boolean isAgreement(ServiceResource serviceResource, ServiceAppointment serviceAppointment) {
+        return serviceResource.HOT_AgreementFreelance__c == true &&
+            (serviceResource.Id == serviceAppointment.HOT_Request__r.ServiceResourceWithAgreement1__c ||
+            serviceResource.Id == serviceAppointment.HOT_Request__r.ServiceResourceWithAgreement2__c ||
+            serviceResource.Id == serviceAppointment.HOT_Request__r.ServiceResourceWithAgreement3__c);
     }
 
     @Future
