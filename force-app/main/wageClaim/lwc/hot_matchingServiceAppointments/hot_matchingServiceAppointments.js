@@ -86,18 +86,14 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
                 tempServiceAppointments.push(tempRecord);
             });
             this.serviceAppointments = tempServiceAppointments;
-            //console.log(this.serviceAppointments.length);
         }
     }
 
     handleRowAction(event) {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
-        switch (actionName) {
-            case 'assign':
-                this.assignResourceToServiceAppointment(row.Id);
-                break;
-            default:
+        if (actionName == 'assign') {
+            this.assignResourceToServiceAppointment(row.Id);
         }
     }
     @track assigned = false;

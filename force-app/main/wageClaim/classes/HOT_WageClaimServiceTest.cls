@@ -35,7 +35,7 @@ private class HOT_WageClaimServiceTest {
         Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
-        System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims');
+        System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims when SA Status None');
     }
     @isTest
     static void createWageClaimTest_saStatusCanceled() {
@@ -46,7 +46,7 @@ private class HOT_WageClaimServiceTest {
         Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
-        System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims');
+        System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims when SA Status Canceled');
     }
 
     @isTest
@@ -58,7 +58,7 @@ private class HOT_WageClaimServiceTest {
         Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
-        System.assertEquals(0, wageClaims.size(), 'Could not create Wage Claims');
+        System.assertEquals(0, wageClaims.size(), 'Wrongly created Wage Claims');
     }
 
     @isTest
@@ -75,7 +75,11 @@ private class HOT_WageClaimServiceTest {
         Test.stopTest();
 
         HOT_WageClaim__c wageClaim = [SELECT Id, Status__c FROM HOT_WageClaim__c LIMIT 1];
-        System.assertEquals('Covered', wageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+        System.assertEquals(
+            'Covered',
+            wageClaim.Status__c,
+            'Could not set WageClaim.Status = \'Covered\', complete cover'
+        );
     }
     @isTest
     static void updateWageClaimsFutureTest_PartiallyCovered_split() {
@@ -104,7 +108,11 @@ private class HOT_WageClaimServiceTest {
             WHERE Id != :wageClaim.Id
             ORDER BY StartTime__c ASC
         ];
-        System.assertEquals('Covered', updatedWageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+        System.assertEquals(
+            'Covered',
+            updatedWageClaim.Status__c,
+            'Could not set WageClaim.Status = \'Covered\', split cover'
+        );
         System.assertEquals(
             saStartTime,
             updatedWageClaim.StartTime__c,
@@ -145,7 +153,6 @@ private class HOT_WageClaimServiceTest {
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
 
         HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
-        Datetime saStartTime = wageClaim.StartTime__c;
         Datetime saEndTime = wageClaim.EndTime__c;
         wageClaim.StartTime__c = wageClaim.StartTime__c.addMinutes(10);
         wageClaim.EndTime__c = wageClaim.EndTime__c.addMinutes(10);
@@ -166,7 +173,11 @@ private class HOT_WageClaimServiceTest {
             WHERE Id != :wageClaim.Id
             ORDER BY StartTime__c ASC
         ];
-        System.assertEquals('Covered', updatedWageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+        System.assertEquals(
+            'Covered',
+            updatedWageClaim.Status__c,
+            'Could not set WageClaim.Status = \'Covered\', lower cover'
+        );
         System.assertEquals(
             saEndTime,
             updatedWageClaim.EndTime__c,
@@ -193,7 +204,6 @@ private class HOT_WageClaimServiceTest {
 
         HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
         Datetime saStartTime = wageClaim.StartTime__c;
-        Datetime saEndTime = wageClaim.EndTime__c;
         wageClaim.StartTime__c = wageClaim.StartTime__c.addMinutes(-10);
         wageClaim.EndTime__c = wageClaim.EndTime__c.addMinutes(-10);
         update wageClaim;
@@ -213,7 +223,11 @@ private class HOT_WageClaimServiceTest {
             WHERE Id != :wageClaim.Id
             ORDER BY StartTime__c ASC
         ];
-        System.assertEquals('Covered', updatedWageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+        System.assertEquals(
+            'Covered',
+            updatedWageClaim.Status__c,
+            'Could not set WageClaim.Status = \'Covered\', upper cover'
+        );
         System.assertEquals(
             saStartTime,
             updatedWageClaim.StartTime__c,
@@ -252,7 +266,11 @@ private class HOT_WageClaimServiceTest {
         Test.stopTest();
 
         wageClaim = [SELECT Id, Status__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id LIMIT 1];
-        System.assertEquals('Covered', wageClaim.Status__c, 'Could not set WageClaim.Status = \'Covered\'');
+        System.assertEquals(
+            'Covered',
+            wageClaim.Status__c,
+            'Could not set WageClaim.Status = \'Covered\', code coverage'
+        );
     }
 
     //Overlapping Service Appointments

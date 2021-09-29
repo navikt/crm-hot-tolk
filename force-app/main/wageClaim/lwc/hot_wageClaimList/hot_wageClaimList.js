@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
@@ -107,7 +107,6 @@ export default class Hot_wageClaimList extends LightningElement {
         if (result.data) {
             this.allWageClaims = result.data;
             this.error = undefined;
-            //console.log(JSON.stringify(this.wageClaims));
             this.filterWageClaims();
         } else if (result.error) {
             this.error = result.error;
@@ -123,11 +122,8 @@ export default class Hot_wageClaimList extends LightningElement {
     handleRowAction(event) {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
-        switch (actionName) {
-            case 'retract availability':
-                this.retractAvailability(row);
-                break;
-            default:
+        if (actionName == 'retract availability') {
+            this.retractAvailability(row);
         }
     }
 
@@ -162,20 +158,20 @@ export default class Hot_wageClaimList extends LightningElement {
 
     filterWageClaims() {
         let tempWageClaim = [];
-        for (let i = 0; i < this.allWageClaims.length; i++) {
+        for (let wageClaim of this.allWageClaims) {
             if (this.picklistValue === 'Ledig på lønn') {
-                if (this.allWageClaims[i].Status__c === 'Open') {
-                    tempWageClaim.push(this.allWageClaims[i]);
+                if (wageClaim.Status__c === 'Open') {
+                    tempWageClaim.push(wageClaim);
                 }
             } else if (this.picklistValue === 'Lønnskrav') {
-                if (this.allWageClaims[i].ServiceAppointment__c !== null) {
-                    tempWageClaim.push(this.allWageClaims[i]);
+                if (wageClaim.ServiceAppointment__c !== null) {
+                    tempWageClaim.push(wageClaim);
                 }
             } else if (this.picklistValue === 'Alle') {
-                tempWageClaim.push(this.allWageClaims[i]);
+                tempWageClaim.push(wageClaim);
             } else if (this.picklistValue === 'Tilbaketrukket') {
-                if (this.allWageClaims[i].Status__c === 'Retracted Availability') {
-                    tempWageClaim.push(this.allWageClaims[i]);
+                if (wageClaim.Status__c === 'Retracted Availability') {
+                    tempWageClaim.push(wageClaim);
                 }
             }
         }
