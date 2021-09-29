@@ -2,9 +2,8 @@ import getServiceAppointments from '@salesforce/apex/HOT_WageClaimService.getSer
 import assign from '@salesforce/apex/HOT_WageClaimService.assign';
 import { LightningElement, wire, track, api } from 'lwc';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
-import ThursdayStartTime from '@salesforce/schema/BusinessHours.ThursdayStartTime';
 
-var actions = [{ label: 'Tildel', name: 'assign' }];
+var actions = [{ label: 'Reserver', name: 'assign' }];
 export default class Hot_matchingServiceAppointments extends LightningElement {
     @api recordId;
 
