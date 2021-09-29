@@ -402,7 +402,9 @@
                                 <ul aria-label="Liste over filer">
                                     <template for:each={fileData} for:item="file" for:index="index">
                                         <li key={file.filename} class="fileAndButton">
-                                            <span key={file.filename} class="fileNameClass">{file.filename}</span>
+                                            <span key={file.filename} class="typo-normal content fileNameClass"
+                                                >{file.filename}</span
+                                            >
                                             <button
                                                 onfocus={onFileFocus}
                                                 aria-label={fileButtonLabel}
