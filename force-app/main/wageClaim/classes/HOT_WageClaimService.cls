@@ -143,7 +143,7 @@ public without sharing class HOT_WageClaimService {
             [
                 SELECT Id, SchedStartTime, SchedEndTime, HOT_IsReleasedToFreelance__c, HOT_ServiceResource__c
                 FROM ServiceAppointment
-                WHERE Id IN :serviceAppointmentIds AND HOT_IsReleasedToFreelance__c = TRUE AND Status = 'Dispatched'
+                WHERE Id IN :serviceAppointmentIds
             ]
         );
         List<HOT_WageClaim__c> wageClaims = getWageClaimsFromServiceAppointments(serviceAppointments.values());
@@ -232,7 +232,6 @@ public without sharing class HOT_WageClaimService {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceResourceByServiceAppointment.put(serviceAppointment.Id, serviceAppointment.HOT_ServiceResource__c);
         }
-        System.debug('serviceResourceByServiceAppointment.values(): ' + serviceResourceByServiceAppointment.values());
         List<HOT_WageClaim__c> wageClaims = [
             SELECT Id, ServiceAppointment__c, ServiceResource__c, StartTime__c, EndTime__c
             FROM HOT_WageClaim__c

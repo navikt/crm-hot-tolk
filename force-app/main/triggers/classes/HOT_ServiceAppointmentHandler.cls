@@ -107,31 +107,22 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 annulServiceAppointments.add(serviceAppointment);
             }
-            if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
-                setGanttColor(serviceAppointment);
-                if (
-                    serviceAppointment.Status == 'Dispatched' &&
-                    serviceAppointment.HOT_IsReleasedToFreelance__c == true
-                ) {
-                    resourceByAppointmentUpdateWageClaim.put(
-                        serviceAppointment.Id,
-                        serviceAppointment.HOT_ServiceResource__c
-                    );
-                }
-                if (
-                    triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Dispatched' &&
-                    serviceAppointment.Status != 'Completed'
-                ) {
-                    resourceByAppointmentCreateWageClaim.put(
-                        serviceAppointment.Id,
-                        (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
-                    );
-                }
+
+            if (
+                (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
+                serviceAppointment.HOT_ServiceResource__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) &&
+                serviceAppointment.Status == 'Dispatched' &&
+                serviceAppointment.HOT_IsReleasedToFreelance__c == true
+            ) {
+                resourceByAppointmentUpdateWageClaim.put(
+                    serviceAppointment.Id,
+                    serviceAppointment.HOT_ServiceResource__c
+                );
             }
             if (
-                serviceAppointment.get('HOT_ServiceResource__c') !=
+                serviceAppointment.HOT_ServiceResource__c !=
                 triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') &&
-                serviceAppointment.get('HOT_ServiceResource__c') != null &&
                 triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') != null &&
                 serviceAppointment.Status == 'Dispatched'
             ) {
@@ -139,10 +130,23 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     serviceAppointment.Id,
                     (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
                 );
-                resourceByAppointmentUpdateWageClaim.put(
+            }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Dispatched' &&
+                (serviceAppointment.Status == null ||
+                serviceAppointment.Status == 'Canceled' ||
+                serviceAppointment.Status == 'Annul' ||
+                serviceAppointment.Status == 'None')
+            ) {
+                resourceByAppointmentCreateWageClaim.put(
                     serviceAppointment.Id,
-                    (Id) serviceAppointment.get('HOT_ServiceResource__c')
+                    (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
                 );
+            }
+
+            if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
+                setGanttColor(serviceAppointment);
             }
             if (
                 serviceAppointment.HOT_ResetToDefault__c !=
