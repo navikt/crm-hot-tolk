@@ -1,6 +1,7 @@
-import { LightningElement, api, wire, track } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import getContentDocuments from '@salesforce/apex/HOT_RelatedFilesListController.getContentDocuments';
 import createBaseUrlLink from '@salesforce/apex/HOT_RelatedFilesListController.createBaseUrlLink';
+import { setDefaultValue } from 'c/componentHelperClass';
 
 export default class hot_recordFiles extends LightningElement {
     @api recordId;
@@ -8,6 +9,10 @@ export default class hot_recordFiles extends LightningElement {
 
     contentDocuments = [];
     contentDocumentsEmpty = true;
+
+    get defaultTitle() {
+        return setDefaultValue(this.title, 'Vedlegg');
+    }
 
     @wire(getContentDocuments, { recordId: '$recordId' })
     async wiredgetContentDocuments(result) {
