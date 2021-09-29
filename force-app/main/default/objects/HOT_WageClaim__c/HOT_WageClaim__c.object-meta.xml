@@ -129,7 +129,7 @@
     <actionOverrides>
         <actionName>View</actionName>
         <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Wage_Claim_Record_Page</content>
+        <content>HOT_Wage_Claim_Record_Page</content>
         <formFactor>Large</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
@@ -137,7 +137,7 @@
     <actionOverrides>
         <actionName>View</actionName>
         <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Wage_Claim_Record_Page</content>
+        <content>HOT_Wage_Claim_Record_Page</content>
         <formFactor>Small</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
@@ -161,13 +161,13 @@
     <externalSharingModel>ControlledByParent</externalSharingModel>
     <label>Wage Claim</label>
     <nameField>
-        <displayFormat>WC-{00000}</displayFormat>
+        <displayFormat>LK-{00000}</displayFormat>
         <label>Wage Claim Name</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Wage Claims</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts />
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

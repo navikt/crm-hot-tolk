@@ -6,10 +6,10 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
     onOpen() {
         const columnLabels = [
-            "'Frigitt Dato'",
+            "'Frigitt dato'",
             "''",
-            "'Start Tid'",
-            "'Slutt Tid'",
+            "'Start tid'",
+            "'Slutt tid'",
             "'Forespørsel'",
             "'Informasjon'",
             "'Tema'",
@@ -25,9 +25,9 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     }
     onInterested() {
         const columnLabels = [
-            "'Start Tid'",
+            "'Start tid'",
             "''",
-            "'Slutt Tid'",
+            "'Slutt tid'",
             "'Poststed'",
             "'Tema'",
             "'Arbeidstype'",
@@ -43,7 +43,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         }
     }
     onMy() {
-        const columnLabels = ["'Start Tid'", "'Slutt Tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "''", "''", "''"];
+        const columnLabels = ["'Start tid'", "'Slutt tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "''", "''", "''"];
         for (var i = 0; i < 10; i++) {
             if (i < columnLabels.length) {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);
@@ -55,8 +55,8 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
     onWageClaim() {
         const columnLabels = [
-            "'Start Tid'",
-            "'Slutt Tid'",
+            "'Start tid'",
+            "'Slutt tid'",
             "'Oppdragstype'",
             "'Region'",
             "'Arbeidstype'",
