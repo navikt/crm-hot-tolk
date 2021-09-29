@@ -1,6 +1,6 @@
 <template>
     <section if:false={contentDocumentsEmpty}>
-        <div class="listelement__header"><p class="typo-element">Vedlegg</p></div>
+        <div class="listelement__header"><p class="typo-element">{title}</p></div>
         <ul class="list-column-2">
             <template iterator:it={contentDocuments} for:index="index">
                 <li key={it.value.Id}>
