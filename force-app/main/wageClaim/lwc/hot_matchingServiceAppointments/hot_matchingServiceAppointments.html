@@ -1,6 +1,6 @@
 <template>
     <lightning-datatable
-        if:false={assigned}
+        if:true={showList}
         key-field="Id"
         data={serviceAppointments}
         columns={columns}
@@ -12,16 +12,31 @@
         onrowaction={handleRowAction}
     >
     </lightning-datatable>
-    <div if:true={assigned}>
-        <h2>Ressursen ble tildelt. Klikk OK for å gå til oppdraget</h2>
+    <div if:true={assigned} class="success-container">
+        <h2 style="margin: 1rem">Ressursen ble tildelt oppdraget</h2>
         <div class="button-container">
             <lightning-button
                 title="Gå til oppdrag"
                 class="slds-m-left_x-small"
                 type="button"
                 variant="brand"
-                label="OK"
+                label="Gå til oppdraget"
                 onclick={goToServiceAppointment}
+            >
+            </lightning-button>
+        </div>
+    </div>
+
+    <div if:true={isError} class="success-container">
+        <h2 style="margin: 1rem">{errorMessage}</h2>
+        <div class="button-container">
+            <lightning-button
+                title="tilbake"
+                class="slds-m-left_x-small"
+                type="button"
+                variant="brand"
+                label="Tilbake"
+                onclick={reset}
             >
             </lightning-button>
         </div>

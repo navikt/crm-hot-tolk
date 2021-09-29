@@ -2,6 +2,7 @@ import getServiceAppointments from '@salesforce/apex/HOT_WageClaimService.getSer
 import assign from '@salesforce/apex/HOT_WageClaimService.assign';
 import { LightningElement, wire, track, api } from 'lwc';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
+import ThursdayStartTime from '@salesforce/schema/BusinessHours.ThursdayStartTime';
 
 var actions = [{ label: 'Tildel', name: 'assign' }];
 export default class Hot_matchingServiceAppointments extends LightningElement {
@@ -76,8 +77,6 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
     @track serviceAppointments;
     @wire(getServiceAppointments, { wageClaimId: '$recordId' })
     wiredServiceAppointments(result) {
-        console.log(JSON.stringify(result));
-        console.log('derp');
         if (result.data) {
             let tempServiceAppointments = [];
             result.data.forEach((record) => {
@@ -96,13 +95,31 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
             this.assignResourceToServiceAppointment(row.Id);
         }
     }
+    @track showList = true;
     @track assigned = false;
     serviceAppointmentId = null;
+    @track isError = false;
+    @track errorMessage = '';
     assignResourceToServiceAppointment(serviceAppointmentId) {
+        console.log('assignResourceToServiceAppointment');
         this.serviceAppointmentId = serviceAppointmentId;
-        assign({ wageClaimId: this.recordId, serviceAppointmentId: serviceAppointmentId }).then((result) => {
-            this.assigned = true;
-        });
+        assign({ wageClaimId: this.recordId, serviceAppointmentId: serviceAppointmentId })
+            .then((result) => {
+                console.log(JSON.stringify(result));
+                this.assigned = true;
+                this.showList = false;
+            })
+            .catch((error) => {
+                console.log(JSON.stringify(error));
+                this.errorMessage = error.body.pageErrors[0].message;
+                this.isError = true;
+                this.showList = false;
+            });
+    }
+    reset() {
+        this.showList = true;
+        this.isError = false;
+        this.errorMessage = '';
     }
 
     //Sorting methods
