@@ -4,7 +4,6 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { myServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 import { formatRecord } from 'c/hot_recordDetails';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
-import getContentDocuments from '@salesforce/apex/HOT_RelatedFilesListController.getContentDocuments';
 
 var actions = [{ label: 'Detaljer', name: 'details' }];
 
@@ -163,6 +162,4 @@ export default class Hot_myServiceAppointments extends LightningElement {
             this.filterServiceAppointments();
         }
     }
-
-    @track testList = ['hei', 'mitt navn er', 'eller etter eller annet sånt'];
 }
