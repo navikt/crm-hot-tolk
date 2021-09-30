@@ -139,7 +139,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         }
     }
 
-    recordId;
+    @track recordId;
     @track serviceAppointmentDetails;
     showDetails(row) {
         this.recordId = row.Id;
