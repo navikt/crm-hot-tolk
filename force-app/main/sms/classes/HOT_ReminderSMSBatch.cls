@@ -29,7 +29,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
     }
 
     public void finish(Database.BatchableContext bc) {
-        Long minutes = getMinutes();
+        Long minutes = HOT_Utility.getMinutes();
         if (!Test.isRunningTest()) {
             try {
                 System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', (Integer) minutes, 10);
@@ -39,25 +39,5 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
                 logger.publishSynch();
             }
         }
-    }
-
-    private Long getMinutes() {
-        Long minutes = 60;
-        Datetime now = Datetime.now();
-        Datetime datetime_1600 = Datetime.newInstance(Date.today(), Time.newInstance(16, 0, 0, 0));
-        Boolean isLastIsNext = datetime_1600.getTime() - Datetime.now().getTime() < 3600000;
-        Boolean isLast = datetime_1600.getTime() - Datetime.now().getTime() < 600000;
-        Boolean isFriday = now.format('EEEE') == 'Friday';
-        if (isLast) {
-            Datetime nextDay = Datetime.newInstance(now.addDays(1).date(), Time.newInstance(9, 0, 0, 0));
-            minutes = (nextDay.getTime() - now.getTime()) / 60000;
-            if (isFriday) {
-                Datetime monday = Datetime.newInstance(now.addDays(3).date(), Time.newInstance(9, 0, 0, 0));
-                minutes = (monday.getTime() - now.getTime()) / 60000;
-            }
-        } else if (isLastIsNext) {
-            minutes = (datetime_1600.getTime() - now.getTime()) / 60000;
-        }
-        return minutes;
     }
 }
