@@ -83,8 +83,14 @@ private class HOT_FieldServiceStatusHandlerTest {
 
         workOrderLineItem_2.Status = 'Dispatched';
         update workOrderLineItem_2;
-
+        // Status på WO skal ikke være 'Dispatched' før også WOLI1 er 'Dispatched'.
         workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals('Scheduled', workOrder.Status, 'Status on the work order did not update to correct value');
+
+        workOrderLineItem_1.Status = 'Dispatched';
+        update workOrderLineItem_1;
+        workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+        // Berre WOLI er nå endret, WO skal derfor nå være endret.
         System.assertEquals('Dispatched', workOrder.Status, 'Status on the work order did not update to correct value');
 
         workOrderLineItem_2.Status = 'Cannot Complete';
