@@ -29,7 +29,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             initialWidth: 135
         },
         {
-            label: 'Start Tid',
+            label: 'Start tid',
             fieldName: 'EarliestStartTime',
             type: 'date',
             sortable: true,
@@ -44,7 +44,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             initialWidth: 135
         },
         {
-            label: 'Slutt Tid',
+            label: 'Slutt tid',
             fieldName: 'DueDate',
             type: 'date',
             sortable: true,
@@ -97,10 +97,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
     ];
 
     columnLabels = [
-        "'Frigitt Dato'",
+        "'Frigitt dato'",
         "''",
-        "'Start Tid'",
-        "'Slutt Tid'",
+        "'Start tid'",
+        "'Slutt tid'",
         "'Forespørsel'",
         "'Informasjon'",
         "'Tema'",

@@ -1,0 +1,38 @@
+<template>
+    <div class="main-content">
+        <div class="right-content">
+            <c-picklist
+                master-label="Filtrer på status"
+                choices={choices}
+                onpicklistvaluechange={handlePicklist}
+                disabled={selectDisable}
+                multiple={selectMultiple}
+                required={selectRequired}
+                size={selectSize}
+            ></c-picklist>
+
+            <lightning-combobox
+                class="mobile-only"
+                name="mobileSorting"
+                label="Sorter etter"
+                value={mobileSortingDefaultValue}
+                options={sortingOptions}
+                onchange={handleMobileSorting}
+            >
+            </lightning-combobox>
+        </div>
+    </br>
+        <lightning-datatable
+            key-field="Id"
+            data={wageClaims}
+            columns={columns}
+            hide-checkbox-column="true"
+            default-sort-direction={defaultSortDirection}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={onHandleSort}
+            onrowaction={handleRowAction}
+        >
+        </lightning-datatable>
+    </div>
+</template>
