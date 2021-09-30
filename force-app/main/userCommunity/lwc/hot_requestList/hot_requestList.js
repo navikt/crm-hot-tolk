@@ -180,12 +180,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
     }
 
+    @track isUser = false;
     distributeRequests(data) {
         this.allMyRequests = [];
         this.allOrderedRequests = [];
         for (let request of data) {
             if (request.Account__c === this.userRecord.AccountId) {
                 this.allMyRequests.push(request);
+                this.isUser = true;
             } else if (
                 request.Orderer__c === this.userRecord.AccountId &&
                 request.Account__c !== this.userRecord.AccountId
@@ -368,6 +370,32 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
     }
 
+    @track files = [
+        {
+            Id: '0691x000002W0d6AAC',
+            FileType: 'PNG',
+            CreatedDate: '2021-09-29T13:28:26.000Z',
+            Title: 'jens',
+            downloadLink:
+                'https://sandbox-saas-site-9549-17c311753fa.cs100.force.com/sfc/servlet.shepherd/document/download/0691x000002W0d6AAC'
+        },
+        {
+            Id: '0691x000002W0cwAAC',
+            FileType: 'PNG',
+            CreatedDate: '2021-09-29T13:28:23.000Z',
+            Title: 'johnny',
+            downloadLink:
+                'https://sandbox-saas-site-9549-17c311753fa.cs100.force.com/sfc/servlet.shepherd/document/download/0691x000002W0cwAAC'
+        },
+        {
+            Id: '0691x000002W0d1AAC',
+            FileType: 'PNG',
+            CreatedDate: '2021-09-29T13:28:25.000Z',
+            Title: 'kjetil',
+            downloadLink:
+                'https://sandbox-saas-site-9549-17c311753fa.cs100.force.com/sfc/servlet.shepherd/document/download/0691x000002W0d1AAC'
+        }
+    ];
     editOrder(row) {
         const { Id } = row;
         const index = this.findRowIndexById(Id);
