@@ -352,6 +352,7 @@
                             value={fieldValues.Description__c}
                         >
                         </lightning-input-field>
+
                         <div if:true={myRequest}>
                             <div class="uploadFileElement">
                                 <div class="dropzone" ondrop={dropHandler} ondragover={dragOverHandler}>
@@ -426,6 +427,11 @@
                                 </ul>
                             </div>
                         </div>
+                        <br />
+                        <c-hot_record-files
+                            record-id={recordId}
+                            title="Tidligere opplastede vedlegg"
+                        ></c-hot_record-files>
 
                         <lightning-messages aria-live="assertive"> </lightning-messages>
 
