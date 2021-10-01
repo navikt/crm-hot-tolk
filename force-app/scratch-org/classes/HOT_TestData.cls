@@ -212,6 +212,7 @@ public class HOT_TestData {
             serviceResource.Name = user.Name;
             serviceResource.IsActive = true;
             serviceResource.RelatedRecordId = user.Id;
+            serviceResource.HOT_IsFreelanceInterpreter__c = true;
             serviceResources.add(serviceResource);
         }
         return serviceResources;

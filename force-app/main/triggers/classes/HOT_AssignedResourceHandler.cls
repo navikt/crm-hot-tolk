@@ -334,6 +334,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 WHERE Id IN :serviceResourceIds
             ]
         );
+
         // If new AR with SR is added from SA when AR on SA already exists - do not allow
         // If SR is changed on AR - allow - as long as time slot is available
         for (AssignedResource ar : assignedResources) {

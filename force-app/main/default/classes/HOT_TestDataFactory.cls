@@ -235,6 +235,14 @@ public class HOT_TestDataFactory {
         return resourceMember;
     }
 
+    public static HOT_WageClaim__c createWageClaim(ServiceResource serviceResource) {
+        HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
+        wageClaim.ServiceResource__c = serviceResource.Id;
+        wageClaim.StartTime__c = Datetime.now().addHours(1);
+        wageClaim.EndTime__c = Datetime.now().addHours(2);
+        return wageClaim;
+    }
+
     public static ContentVersion createContentVersion() {
         return createContentVersion('a picture', 'Pic.jpg', 'Test Content');
     }
