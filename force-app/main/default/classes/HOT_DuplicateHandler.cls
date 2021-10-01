@@ -60,14 +60,13 @@ public without sharing class HOT_DuplicateHandler {
         Map<Id, String> result = new Map<Id, String>();
         for (WorkOrder workOrder : workOrders) {
             for (String dateTimeId : workOrderDatetimes.keySet()) {
+                DateTime aStart = workOrder.StartDate;
+                DateTime aEnd = workOrder.EndDate;
+                DateTime bStart = workOrderDatetimes.get(dateTimeId).get('StartDate');
+                DateTime bEnd = workOrderDatetimes.get(dateTimeId).get('EndDate');
                 if (
                     dateTimeId != (String) workOrder.Id &&
-                    (workOrderDatetimes.get(dateTimeId).get('StartDate') > workOrder.StartDate &&
-                    workOrderDatetimes.get(dateTimeId).get('StartDate') < workOrder.EndDate ||
-                    workOrderDatetimes.get(dateTimeId).get('EndDate') > workOrder.StartDate &&
-                    workOrderDatetimes.get(dateTimeId).get('EndDate') < workOrder.EndDate ||
-                    workOrderDatetimes.get(dateTimeId).get('StartDate') <= workOrder.StartDate &&
-                    workOrderDatetimes.get(dateTimeId).get('EndDate') >= workOrder.EndDate)
+                    HOT_DateTimeHandler.checkOverlappingDateTimes(aStart, aEnd, bStart, bEnd)
                 ) {
                     if (isRequestLevel && !result.keySet().contains(workOrder.HOT_Request__c)) {
                         result.put(workOrder.HOT_Request__c, dateTimeId);
