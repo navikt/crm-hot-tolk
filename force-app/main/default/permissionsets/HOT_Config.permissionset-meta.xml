@@ -546,6 +546,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_WageClaim__c.Information__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_WageClaim__c.InterpretationType__c</field>
         <readable>true</readable>
@@ -568,6 +573,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_WageClaim__c.ServiceAppointment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_WageClaim__c.ServiceResourceAddress__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_WageClaim__c.ServiceResourceMobile__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
