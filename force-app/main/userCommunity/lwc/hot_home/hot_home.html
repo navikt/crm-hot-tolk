@@ -11,17 +11,10 @@
     <div if:true={isFrilans} class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler-single">
-                <a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag" onclick={goToOppdrag}>
+                <a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag">
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
                             <img
-                                if:false={isProd}
-                                style="height: 60%"
-                                src="/sfsites/c/resource/1590665878000/OppdragIkon"
-                                alt="Til mine oppdrag"
-                            />
-                            <img
-                                if:true={isProd}
                                 style="height: 60%"
                                 src="/s/sfsites/c/resource/1590665878000/OppdragIkon"
                                 alt="Til mine oppdrag"
@@ -40,23 +33,14 @@
                     </div>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
-                            <img if:false={isProd} src="/sfsites/c/resource/1590666405000/rightArrow" alt="" />
-                            <img if:true={isProd} src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
+                            <img src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde panelMedBilde-single" href="/s/frilanstolk-min-side" onclick={goToProfile}>
+                <a class="panelMedBilde panelMedBilde-single" href="/s/frilanstolk-min-side">
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
                             <lightning-icon
-                                if:false={isProd}
-                                icon-name="utility:user"
-                                alternative-text="Til frilanstolk min side"
-                                style="height: 60%"
-                                title="Min side frilanstolk"
-                            ></lightning-icon>
-                            <lightning-icon
-                                if:true={isProd}
                                 icon-name="utility:user"
                                 alternative-text="Til frilanstolk min side"
                                 style="height: 60%"
@@ -74,8 +58,7 @@
                     </div>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
-                            <img if:false={isProd} src="/sfsites/c/resource/1590666405000/rightArrow" alt="" />
-                            <img if:true={isProd} src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
+                            <img src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
                         </div>
                     </div>
                 </a>
@@ -86,17 +69,10 @@
     <div class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler">
-                <a class="panelMedBilde" href="/s/ny-bestilling" onclick={goToNewRequest}>
+                <a class="panelMedBilde" href="/s/ny-bestilling">
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
-                                if:false={isProd}
-                                class="illustrasjon"
-                                src="/sfsites/c/resource/1584959871000/BestilleTolk"
-                                alt="Til ny bestilling"
-                            />
-                            <img
-                                if:true={isProd}
                                 class="illustrasjon"
                                 src="/s/sfsites/c/resource/1584959871000/BestilleTolk"
                                 alt="Til ny bestilling"
@@ -112,17 +88,10 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde" href="/s/mine-bestillinger" onclick={goToMyRequests}>
+                <a class="panelMedBilde" href="/s/mine-bestillinger">
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
-                                if:false={isProd}
-                                class="illustrasjon"
-                                src="/sfsites/c/resource/1584959850000/MineBestillinger"
-                                alt="Til mine bestillinger"
-                            />
-                            <img
-                                if:true={isProd}
                                 class="illustrasjon"
                                 src="/s/sfsites/c/resource/1584959850000/MineBestillinger"
                                 alt="Til mine bestillinger"
@@ -138,17 +107,10 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde" href="/s/min-tidsplan" onclick={goToMyTimeplan}>
+                <a class="panelMedBilde" href="/s/min-tidsplan">
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
-                                if:false={isProd}
-                                class="illustrasjon"
-                                src="/sfsites/c/resource/1607003312000/MinTidsplan"
-                                alt="Til min tidsplan"
-                            />
-                            <img
-                                if:true={isProd}
                                 class="illustrasjon"
                                 src="/s/sfsites/c/resource/1607003312000/MinTidsplan"
                                 alt="Til min tidsplan"
@@ -162,17 +124,10 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde" href="/s/min-side" onclick={goToMyPage}>
+                <a class="panelMedBilde" href="/s/min-side">
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
-                                if:false={isProd}
-                                class="illustrasjon"
-                                src="/sfsites/c/resource/1602568081000/MinSide"
-                                alt="Til min side"
-                            />
-                            <img
-                                if:true={isProd}
                                 class="illustrasjon"
                                 src="/s/sfsites/c/resource/1602568081000/MinSide"
                                 alt="Til min side"
@@ -192,13 +147,6 @@
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
-                                if:false={isProd}
-                                class="illustrasjon"
-                                src="/sfsites/c/resource/1584957822000/Kunnskapsbanken"
-                                alt="Til kunnskapsbanken"
-                            />
-                            <img
-                                if:true={isProd}
                                 class="illustrasjon"
                                 src="/s/sfsites/c/resource/1584957822000/Kunnskapsbanken"
                                 alt="Til kunnskapsbanken"
