@@ -539,6 +539,11 @@
                 <fieldItem>Record.OrdererPhone__c</fieldItem>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.IsOrdererWantStatusUpdateOnSMS__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-269f7238-196e-4375-bcc8-9265cb9c9544</name>
         <type>Facet</type>
     </flexiPageRegions>

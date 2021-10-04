@@ -25,8 +25,9 @@ private class HOT_SMSStatusChangeServiceBatchTest {
 
         HOT_SMSStatusChangeServiceBatch instance = new HOT_SMSStatusChangeServiceBatch();
         Test.startTest();
-        database.executebatch(instance);
+        Id batchId = database.executebatch(instance);
         Test.stopTest();
+        System.assert(batchId != null);
     }
 
     @isTest

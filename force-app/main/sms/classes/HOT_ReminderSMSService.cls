@@ -83,7 +83,7 @@ public without sharing class HOT_ReminderSMSService {
                     constructStatusChangedMessage(workOrder)
                 )
             );
-            workOrder.HOT_StatusChanged__c = false;
+            workOrder.HOT_SendSMSNotificationOnStatusChanged__c = false;
         }
 
         try {
