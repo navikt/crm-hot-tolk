@@ -152,7 +152,7 @@ export default class Hot_wageClaimList extends LightningElement {
 
     @track picklistValue = 'Ledig på lønn';
     handlePicklist(event) {
-        this.picklistValue = event.detail;
+        this.picklistValue = event.detail.name;
         this.filterWageClaims();
     }
 
@@ -160,7 +160,7 @@ export default class Hot_wageClaimList extends LightningElement {
         let tempWageClaim = [];
         for (let wageClaim of this.allWageClaims) {
             if (this.picklistValue === 'Ledig på lønn') {
-                if (wageClaim.Status__c === 'Open') {
+                if (wageClaim.Status__c === 'Åpen') {
                     tempWageClaim.push(wageClaim);
                 }
             } else if (this.picklistValue === 'Lønnskrav') {
@@ -170,7 +170,7 @@ export default class Hot_wageClaimList extends LightningElement {
             } else if (this.picklistValue === 'Alle') {
                 tempWageClaim.push(wageClaim);
             } else if (this.picklistValue === 'Tilbaketrukket') {
-                if (wageClaim.Status__c === 'Retracted Availability') {
+                if (wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet') {
                     tempWageClaim.push(wageClaim);
                 }
             }

@@ -8,7 +8,7 @@ public without sharing class HOT_WageClaimListController {
                 EndTime__c,
                 AssignmentType__c,
                 WorkTypeName__c,
-                Status__c,
+                toLabel(Status__c),
                 ServiceTerritoryName__c,
                 ServiceAppointmentName__c,
                 ParentWageClaim__c,
@@ -18,7 +18,7 @@ public without sharing class HOT_WageClaimListController {
                 Type__c = 'Available on Wage'
                 AND Status__c != 'Annul'
                 AND ServiceResource__r.RelatedRecordId = :UserInfo.getUserId()
-                ORDER BY StartTime__c ASC
+            ORDER BY StartTime__c ASC
         ];
         return wageClaims;
     }
