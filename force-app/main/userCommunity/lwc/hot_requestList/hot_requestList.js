@@ -439,6 +439,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         });
     }
 
+    goToMyRequests(event) {
+        if (!this.isProd) {
+            event.preventDefault();
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-bestillinger'
+                }
+            });
+        }
+    }
+
     goToNewRequest() {
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
@@ -449,5 +461,16 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 fromList: true
             }
         });
+    }
+    goToHome(event) {
+        if (!this.isProd) {
+            event.preventDefault();
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'home'
+                }
+            });
+        }
     }
 }

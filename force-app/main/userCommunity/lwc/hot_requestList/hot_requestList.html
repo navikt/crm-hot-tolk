@@ -1,8 +1,9 @@
 <template>
     <div class="brodsmulesti">
         <lightning-breadcrumbs class="liste-max-width">
-            <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
-            <lightning-breadcrumb label="Mine bestillinger" href="/s/mine-bestillinger"> </lightning-breadcrumb>
+            <lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}> </lightning-breadcrumb>
+            <lightning-breadcrumb label="Mine bestillinger" href="/s/mine-bestillinger" onclick={goToMyRequests}>
+            </lightning-breadcrumb>
         </lightning-breadcrumbs>
     </div>
 

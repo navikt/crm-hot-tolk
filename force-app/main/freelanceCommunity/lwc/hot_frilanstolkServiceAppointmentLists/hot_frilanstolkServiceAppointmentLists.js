@@ -72,4 +72,16 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
             }
         }
     }
+
+    goToHome(event) {
+        if (!this.isProd) {
+            event.preventDefault();
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'home'
+                }
+            });
+        }
+    }
 }

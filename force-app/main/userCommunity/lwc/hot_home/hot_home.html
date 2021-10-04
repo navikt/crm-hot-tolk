@@ -11,7 +11,7 @@
     <div if:true={isFrilans} class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler-single">
-                <a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag">
+                <a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag" onclick={goToOppdrag}>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
                             <img
@@ -45,7 +45,7 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde panelMedBilde-single" href="/s/frilanstolk-min-side">
+                <a class="panelMedBilde panelMedBilde-single" href="/s/frilanstolk-min-side" onclick={goToProfile}>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
                             <lightning-icon
@@ -86,7 +86,7 @@
     <div class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler">
-                <a class="panelMedBilde" href="/s/ny-bestilling">
+                <a class="panelMedBilde" href="/s/ny-bestilling" onclick={goToNewRequest}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -112,7 +112,7 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde" href="/s/mine-bestillinger">
+                <a class="panelMedBilde" href="/s/mine-bestillinger" onclick={goToMyRequests}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -138,7 +138,7 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde" href="/s/min-tidsplan">
+                <a class="panelMedBilde" href="/s/min-tidsplan" onclick={goToMyTimeplan}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -162,7 +162,7 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde" href="/s/min-side">
+                <a class="panelMedBilde" href="/s/min-side" onclick={goToMyPage}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img

@@ -885,6 +885,19 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
 
+    //Navigation functions
+    goToNewRequest(event) {
+        if (!this.isProd) {
+            event.preventDefault();
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'ny-bestilling'
+                }
+            });
+        }
+    }
+
     goToMyRequests() {
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
@@ -892,6 +905,17 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 pageName: 'mine-bestillinger'
             }
         });
+    }
+    goToHome(event) {
+        if (!this.isProd) {
+            event.preventDefault();
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'home'
+                }
+            });
+        }
     }
     goToPrevousPage() {
         window.scrollTo(0, 0);
