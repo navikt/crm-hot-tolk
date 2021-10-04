@@ -52,14 +52,11 @@ private class HOT_ReminderSMSServiceTest {
             SELECT Id, AccountId, HOT_Request__r.OrdererPhone__c, StartDate, EndDate, Status
             FROM WorkOrder
         ];
-        // Other status to get more coverage
-        List<WorkOrder> toUpdate = new List<WorkOrder>();
         for (WorkOrder wo : workOrders) {
             wo.Status = 'Cannot Complete';
-            toUpdate.add(wo);
         }
-        update toUpdate;
-        HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(toUpdate);
+        update workOrders;
+        HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }

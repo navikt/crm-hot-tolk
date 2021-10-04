@@ -76,7 +76,7 @@ public without sharing class HOT_ReminderSMSService {
             smsList.add(
                 createSMSRecord(
                     'HOT',
-                    'Hourly SMS on Status Update',
+                    '24 Hour Scheduled Reminder',
                     workOrder.AccountId,
                     workOrder.Id,
                     workOrder.HOT_Request__r.OrdererPhone__c,
@@ -134,8 +134,8 @@ public without sharing class HOT_ReminderSMSService {
     private static SMS__c createSMSRecord(
         String domain,
         String type,
-        String accountId,
-        String workOrderId,
+        Id accountId,
+        Id workOrderId,
         String recipient,
         String message
     ) {

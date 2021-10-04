@@ -461,7 +461,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.IsOrdererWantStatusUpdateOnSMS__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -858,11 +858,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_IsUpdateStatus__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.HOT_StatusChanged__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
