@@ -150,40 +150,6 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
         }
     }
 
-    goToHome(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'home'
-                }
-            });
-        }
-    }
-
-    goToMyWorkOrders(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'min-tidsplan'
-                }
-            });
-        }
-    }
-    goToMyRequests(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'mine-bestillinger'
-                }
-            });
-        }
-    }
     @track thisURL = window.location.href;
 
     @track selectDisable = false;
