@@ -34,42 +34,6 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
         window.scrollTo(0, 0);
     }
 
-    goToMyRequests(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'mine-bestillinger'
-                }
-            });
-        }
-    }
-
-    goToNewRequest(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'ny-bestilling'
-                }
-            });
-        }
-    }
-
-    goToMyPage(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'min-side'
-                }
-            });
-        }
-    }
-
     @track isFrilans = false;
     @wire(checkAssignedPermissionSetGroup, {
         permissionSetGroupName: 'HOT_Tolk_Frilans_Gruppe'
@@ -81,53 +45,6 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
     wireIsAdmin({ error, data }) {
         if (!this.isFrilans) {
             this.isFrilans = data;
-        }
-    }
-
-    goToHome(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'home'
-                }
-            });
-        }
-    }
-
-    goToOppdrag(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'mine-oppdrag'
-                }
-            });
-        }
-    }
-    goToProfile(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'frilanstolk-min-side'
-                }
-            });
-        }
-    }
-
-    goToMyTimeplan(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'min-tidsplan'
-                }
-            });
         }
     }
 }

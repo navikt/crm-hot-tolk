@@ -162,28 +162,6 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
         }
     }
 
-    goToMyWorkOrders(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'min-tidsplan'
-                }
-            });
-        }
-    }
-    goToMyRequests(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'mine-bestillinger'
-                }
-            });
-        }
-    }
     @track thisURL = window.location.href;
 
     @track selectDisable = false;
