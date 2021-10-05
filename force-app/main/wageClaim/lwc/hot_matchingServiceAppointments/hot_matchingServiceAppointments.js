@@ -96,10 +96,13 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
     }
     @track showList = true;
     @track assigned = false;
+    @track loading = false;
     serviceAppointmentId = null;
     @track isError = false;
     @track errorMessage = '';
     assignResourceToServiceAppointment(serviceAppointmentId) {
+        this.showList = false;
+        this.loading = true;
         console.log('assignResourceToServiceAppointment');
         this.serviceAppointmentId = serviceAppointmentId;
         assign({ wageClaimId: this.recordId, serviceAppointmentId: serviceAppointmentId })
@@ -107,12 +110,14 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
                 console.log(JSON.stringify(result));
                 this.assigned = true;
                 this.showList = false;
+                this.loading = false;
             })
             .catch((error) => {
                 console.log(JSON.stringify(error));
                 this.errorMessage = error.body.pageErrors[0].message;
                 this.isError = true;
                 this.showList = false;
+                this.loading = false;
             });
     }
     reset() {

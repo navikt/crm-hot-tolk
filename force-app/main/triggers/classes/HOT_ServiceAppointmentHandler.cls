@@ -138,6 +138,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Canceled' ||
                 serviceAppointment.Status == 'Annul' ||
                 serviceAppointment.Status == 'None')
+                &&
+                serviceAppointment.HOT_CanceledByInterpreter__c == false
             ) {
                 resourceByAppointmentCreateWageClaim.put(
                     serviceAppointment.Id,
