@@ -39,6 +39,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     wiredGetRecord({ data }) {
         if (data) {
             this.userRecord.AccountId = data.AccountId;
+            console.log('wiredGetRecord: ' + this.userRecord.AccountId);
         }
     }
 
@@ -398,7 +399,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     showDetails(row) {
         this.record = row;
         this.recordId = row.Id;
-        this.myRequest = this.record.Orderer__c === this.userRecord.AccountId;
+        this.myRequest = this.record.Account__c === this.userRecord.AccountId;
         this.userForm =
             (this.record.Type__c === 'User' || this.record.Type__c === 'Company') && this.record.UserName__c !== '';
         this.companyForm = this.record.Type__c === 'Company' || this.record.Type__c === 'PublicEvent';
