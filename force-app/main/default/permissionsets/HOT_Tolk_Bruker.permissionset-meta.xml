@@ -13,10 +13,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_RelatedFilesListController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_RequestHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -34,6 +30,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_WorkOrderListController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RecordFilesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <fieldPermissions>
