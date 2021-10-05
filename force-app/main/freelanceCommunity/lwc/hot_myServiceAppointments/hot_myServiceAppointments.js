@@ -10,7 +10,7 @@ var actions = [{ label: 'Detaljer', name: 'details' }];
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [
         {
-            label: 'Start Tid',
+            label: 'Start tid',
             fieldName: 'EarliestStartTime',
             type: 'date',
             sortable: true,
@@ -24,7 +24,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
             }
         },
         {
-            label: 'Slutt Tid',
+            label: 'Slutt tid',
             fieldName: 'DueDate',
             type: 'date',
             sortable: true,

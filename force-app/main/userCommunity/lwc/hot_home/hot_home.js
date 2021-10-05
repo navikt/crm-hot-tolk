@@ -5,16 +5,9 @@ import USER_ID from '@salesforce/user/Id';
 import NAME_FIELD from '@salesforce/schema/User.FirstName';
 import checkAssignedPermissionSet from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSet';
 import checkAssignedPermissionSetGroup from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSetGroup';
-import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
-    @track isProd;
     @track error;
-    @wire(isProdFunction)
-    wiredIsProd({ error, data }) {
-        this.isProd = data;
-        //console.log("isProd: " + this.isProd);
-    }
 
     @track name;
     @wire(getRecord, {
@@ -34,42 +27,6 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
         window.scrollTo(0, 0);
     }
 
-    goToMyRequests(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'mine-bestillinger'
-                }
-            });
-        }
-    }
-
-    goToNewRequest(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'ny-bestilling'
-                }
-            });
-        }
-    }
-
-    goToMyPage(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'min-side'
-                }
-            });
-        }
-    }
-
     @track isFrilans = false;
     @wire(checkAssignedPermissionSetGroup, {
         permissionSetGroupName: 'HOT_Tolk_Frilans_Gruppe'
@@ -81,53 +38,6 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
     wireIsAdmin({ error, data }) {
         if (!this.isFrilans) {
             this.isFrilans = data;
-        }
-    }
-
-    goToHome(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'home'
-                }
-            });
-        }
-    }
-
-    goToOppdrag(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'mine-oppdrag'
-                }
-            });
-        }
-    }
-    goToProfile(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'frilanstolk-min-side'
-                }
-            });
-        }
-    }
-
-    goToMyTimeplan(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'min-tidsplan'
-                }
-            });
         }
     }
 }
