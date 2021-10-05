@@ -124,7 +124,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                 if (numberOfScheduled > 0) {
                     request.Status__c = statusMap.get('Scheduled');
                 }
-                if (numberOfDispatched > 0) {
+                if (numberOfDispatched == numberOfWorkOrder) {
                     request.Status__c = statusMap.get('Dispatched');
                 }
                 if (numberOfPartiallyComplete > 0) {

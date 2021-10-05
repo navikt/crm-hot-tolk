@@ -47,7 +47,8 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 canceledWorkOrders.add((WorkOrder) record);
             }
             if (
-                record.get('HOT_IsNotifyDispatcher__c') != triggerOldMap.get(record.Id).get('HOT_IsNotifyDispatcher__c') &&
+                record.get('HOT_IsNotifyDispatcher__c') !=
+                triggerOldMap.get(record.Id).get('HOT_IsNotifyDispatcher__c') &&
                 record.get('HOT_IsNotifyDispatcher__c') == true
             ) {
                 notifyDispatcherWorkOrders.add((WorkOrder) record);
@@ -146,7 +147,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 if (numberOfScheduled > 0) {
                     workOrder.Status = 'Scheduled';
                 }
-                if (numberOfDispatched > 0) {
+                if (numberOfDispatched == numberOfWorkOrderLineItem) {
                     workOrder.Status = 'Dispatched';
                 }
                 if (numberOfPartiallyComplete > 0) {
