@@ -1,7 +1,7 @@
 <template>
     <div class="brodsmulesti">
         <lightning-breadcrumbs class="liste-max-width">
-            <lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}> </lightning-breadcrumb>
+            <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
             <lightning-breadcrumb label="Oppdrag" href="/tolketjenesten/s/mine-oppdrag"> </lightning-breadcrumb>
         </lightning-breadcrumbs>
     </div>
@@ -18,6 +18,10 @@
 
             <lightning-tab label="Mine oppdrag" value="my" onactive={onMy}>
                 <c-hot_my-service-appointments item-name="myServiceAppointments"> </c-hot_my-service-appointments>
+            </lightning-tab>
+
+            <lightning-tab label="Ledig på lønn" value="wageClaim" onactive={onWageClaim}>
+                <c-hot_wage-claim-list item-name="wageClaims"> </c-hot_wage-claim-list>
             </lightning-tab>
         </lightning-tabset>
     </div>

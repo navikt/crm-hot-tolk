@@ -23,6 +23,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
 
+        Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
+        Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
+
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('EarliestStartTime') !=
@@ -104,6 +107,44 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 annulServiceAppointments.add(serviceAppointment);
             }
+
+            if (
+                (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
+                serviceAppointment.HOT_ServiceResource__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) &&
+                serviceAppointment.Status == 'Dispatched' &&
+                serviceAppointment.HOT_IsReleasedToFreelance__c == true
+            ) {
+                resourceByAppointmentUpdateWageClaim.put(
+                    serviceAppointment.Id,
+                    serviceAppointment.HOT_ServiceResource__c
+                );
+            }
+            if (
+                serviceAppointment.HOT_ServiceResource__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') &&
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') != null &&
+                serviceAppointment.Status == 'Dispatched'
+            ) {
+                resourceByAppointmentCreateWageClaim.put(
+                    serviceAppointment.Id,
+                    (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
+                );
+            }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Dispatched' &&
+                (serviceAppointment.Status == null ||
+                serviceAppointment.Status == 'Canceled' ||
+                serviceAppointment.Status == 'Annul' ||
+                serviceAppointment.Status == 'None')
+            ) {
+                resourceByAppointmentCreateWageClaim.put(
+                    serviceAppointment.Id,
+                    (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
+                );
+            }
+
             if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
                 setGanttColor(serviceAppointment);
             }
@@ -157,6 +198,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         if (serviceAppointmentsToSetToDefault.size() > 0) {
             setDefaultFields(serviceAppointmentsToSetToDefault);
+        }
+        if (!resourceByAppointmentCreateWageClaim.isEmpty()) {
+            HOT_WageClaimService.createWageClaims(resourceByAppointmentCreateWageClaim);
+        }
+        if (!resourceByAppointmentUpdateWageClaim.isEmpty()) {
+            HOT_WageClaimService.updateWageClaimsFuture(resourceByAppointmentUpdateWageClaim.keySet());
         }
     }
 

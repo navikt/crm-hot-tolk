@@ -2,7 +2,6 @@ import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
-import isProdFunction from '@salesforce/apex/GlobalCommunityHeaderFooterController.isProd';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
@@ -18,14 +17,6 @@ import {
 import uploadFile from '@salesforce/apex/HOT_RequestListContoller.uploadFile';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
-    @track reRender = 0;
-
-    @track isProd;
-    @wire(isProdFunction)
-    wiredIsProd({ data }) {
-        this.isProd = data;
-    }
-
     @track submitted = false; // if:false={submitted}
     acceptedFileFormats = '[.pdf, .png, .jpg, .jpeg, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
 
@@ -885,19 +876,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
 
-    //Navigation functions
-    goToNewRequest(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'ny-bestilling'
-                }
-            });
-        }
-    }
-
     goToMyRequests() {
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
@@ -905,17 +883,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 pageName: 'mine-bestillinger'
             }
         });
-    }
-    goToHome(event) {
-        if (!this.isProd) {
-            event.preventDefault();
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'home'
-                }
-            });
-        }
     }
     goToPrevousPage() {
         window.scrollTo(0, 0);
