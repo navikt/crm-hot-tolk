@@ -90,7 +90,7 @@ export default class Hot_wageClaimList extends LightningElement {
     getRowActions(row, doneCallback) {
         let actions = [];
         let tempEndDate = new Date(row['EndTime__c']);
-        if (row['Status__c'] === 'Open' && tempEndDate.getTime() > Date.now()) {
+        if (row['Status__c'] === 'Åpen' && tempEndDate.getTime() > Date.now()) {
             actions.push({ label: 'Tilbaketrekk tilgjengelighet', name: 'retract availability' });
         }
 
