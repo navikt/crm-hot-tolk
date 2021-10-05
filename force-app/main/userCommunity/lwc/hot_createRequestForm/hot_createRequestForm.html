@@ -391,10 +391,7 @@
                                 </div>
                             </div>
                             <div class="checkboxClass hidden">
-                                <c-checkbox
-                                    label={checkboxContent}
-                                    oncheckboxclick={handleCheckboxValue}
-                                ></c-checkbox>
+                                <c-checkbox label={checkboxContent} oncheckboxclick={handleCheckboxValue}></c-checkbox>
                             </div>
                             <div if:true={filesChanged} class="filesClass">
                                 <ul aria-label="Liste over filer">
@@ -410,7 +407,11 @@
                                                 key={file.filename}
                                                 type="button"
                                                 value={file.filename}
-                                                class="navds-button navds-button--secondary navds-button--s navds-body-short navds-body--s"
+                                                class="
+                                                    navds-button navds-button--secondary navds-button--s
+                                                    navds-body-short
+                                                    navds-body--s
+                                                "
                                                 onclick={onFileButtonClick}
                                             >
                                                 Slett
@@ -421,10 +422,7 @@
                             </div>
                         </div>
                         <br />
-                        <c-hot_record-files
-                            record-id={recordId}
-                            title="Tidligere opplastede vedlegg"
-                        ></c-hot_record-files>
+                        <c-record-files record-id={recordId} title="Tidligere opplastede vedlegg"></c-record-files>
 
                         <lightning-messages aria-live="assertive"> </lightning-messages>
 

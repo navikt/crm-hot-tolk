@@ -1,5 +1,5 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import getContentDocuments from '@salesforce/apex/HOT_RelatedFilesListController.getContentDocuments';
+import getContentDocuments from '@salesforce/apex/RecordFilesController.getContentDocuments';
 
 export default class RelatedFilesList extends LightningElement {
     @api selectedRows = [];
