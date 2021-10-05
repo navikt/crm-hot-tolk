@@ -362,14 +362,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
     }
 
-    @track isUser = false;
     editOrder(row) {
         const { Id } = row;
         const index = this.findRowIndexById(Id);
         if (index !== -1) {
             if (row.Orderer__c === this.userRecord.AccountId) {
-                this.isUser = true;
-                console.log(this.isUser);
                 if (this.requests[index].ExternalRequestStatus__c.includes('Åpen')) {
                     //Here we should get the entire record from salesforce, to get entire interpretation address.
                     let clone = this.requests[index];
@@ -386,17 +383,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                     });
                 }
             } else {
-                this.isUser = false;
                 alert('Denne bestillingen er bestilt av noen andre, og du har ikke rettigheter til å endre den.');
             }
         }
     }
+
     @track record = null;
     @track recordId;
     @track userForm = false;
     @track myRequest = false;
     @track companyForm = false;
     @track publicEvent = false;
+
     showDetails(row) {
         this.record = row;
         this.recordId = row.Id;
