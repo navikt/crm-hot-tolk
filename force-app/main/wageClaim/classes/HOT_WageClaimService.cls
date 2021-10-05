@@ -157,6 +157,7 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointment.HOT_ServiceResource__c
                     )
                 ) {
+                    Boolean isWageClaimChanged = false;
                     HOT_WageClaim__c updatedWageClaim = new HOT_WageClaim__c(Id = wageClaim.Id);
                     Datetime serviceAppointmentStartTime = serviceAppointment.SchedStartTime;
                     Datetime serviceAppointmentEndTime = serviceAppointment.SchedEndTime;
@@ -166,6 +167,7 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointmentEndTime >= wageClaim.EndTime__c
                     ) {
                         updatedWageClaim.Status__c = 'Covered';
+                        isWageClaimChanged = true;
                     }
                     //lower
                     if (
@@ -181,6 +183,7 @@ public without sharing class HOT_WageClaimService {
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
                         updatedWageClaim.EndTime__c = serviceAppointmentEndTime;
+                        isWageClaimChanged = true;
                     }
                     //upper
                     if (
@@ -196,8 +199,11 @@ public without sharing class HOT_WageClaimService {
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
                         updatedWageClaim.StartTime__c = serviceAppointmentStartTime;
+                        isWageClaimChanged = true;
                     }
-                    newWageClaims.add(updatedWageClaim);
+                    if (isWageClaimChanged) {
+                        newWageClaims.add(updatedWageClaim);
+                    }
                 }
             }
         }
