@@ -1,6 +1,5 @@
 public without sharing class HOT_ReminderSMSService {
     public static void reminderSMS(List<WorkOrder> workOrderList) {
-        Date dayAfterTomorrow = Date.today().addDays(2);
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(workOrderList);
         List<WorkOrderLineItem> workOrderLineItems = [
             SELECT
@@ -28,16 +27,16 @@ public without sharing class HOT_ReminderSMSService {
 
         List<SMS__c> smsList = new List<SMS__c>();
         for (WorkOrder workOrder : workOrders.values()) {
-            String message = constructReminderMessage(workOrder, serviceAppointmentsByWorkOrderId.get(workOrder.Id));
-            SMS__c sms = new SMS__c();
-            sms.Domain__c = 'HOT';
-            sms.Type__c = '24 Hour Scheduled Reminder';
-            sms.Account__c = workOrder.AccountId;
-            sms.WorkOrder__c = workOrder.Id;
-            sms.Recipient__c = workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
-            sms.Message__c = message;
-            smsList.add(sms);
-
+            smsList.add(
+                SMSService.createSMSRecord(
+                    'HOT',
+                    '24 Hour Scheduled Reminder',
+                    workOrder.AccountId,
+                    workOrder.Id,
+                    workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                    constructReminderMessage(workOrder, serviceAppointmentsByWorkOrderId.get(workOrder.Id))
+                )
+            );
             workOrder.HOT_IsReminderSMSSendt__c = true;
         }
 
@@ -66,7 +65,53 @@ public without sharing class HOT_ReminderSMSService {
             message += serviceAppointment.HOT_ServiceResource__r.Name + ', ';
         }
         message = message.removeEnd(', ');
-        message += '\n\nGi beskjed dersom du har symptomer på Korona. For mer informasjon tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\n\nGi beskjed dersom du har symptomer på Korona. For mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\nMvh NAV Tolketjeneste';
+        return message;
+    }
+
+    public static void sendSMSToOtherOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
+        List<SMS__c> smsList = new List<SMS__c>();
+        for (WorkOrder workOrder : workOrderList) {
+            smsList.add(
+                SMSService.createSMSRecord(
+                    'HOT',
+                    'Orderer On Status Update',
+                    workOrder.AccountId,
+                    workOrder.Id,
+                    workOrder.HOT_Request__r.OrdererPhone__c,
+                    constructStatusChangedMessage(workOrder)
+                )
+            );
+            workOrder.HOT_SendSMSNotificationOnStatusChanged__c = false;
+        }
+
+        try {
+            insert smsList;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, null, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+
+        try {
+            update workOrderList;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, null, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    private static String constructStatusChangedMessage(WorkOrder workOrder) {
+        String message = 'INFO\nStatus på din bestilling er: ';
+        if (workOrder.Status == 'Dispatched') {
+            message += 'Du har fått tolk';
+        } else if (workOrder.Status == 'Cannot Complete') {
+            message += 'Ikke ledig tolk';
+        }
+        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+        message += '\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh NAV Tolketjeneste';
         return message;
     }
@@ -85,4 +130,6 @@ public without sharing class HOT_ReminderSMSService {
 
         return timePeriod;
     }
+
+    
 }
