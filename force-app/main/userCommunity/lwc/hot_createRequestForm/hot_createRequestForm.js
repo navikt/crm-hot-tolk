@@ -508,7 +508,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
 
-    myRequest = false;
     @track showInformationSharingText = true;
     onHandleNeste() {
         this.fieldValues.Type__c = this.currentRequestType;
@@ -525,7 +524,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                 this.ordererForm = true;
                 this.userForm = true;
             } else if (this.currentRequestType === 'Me') {
-                this.myRequest = true;
                 this.showInformationSharingText = false;
             } else if (this.currentRequestType === 'Company') {
                 this.ordererForm = true;
@@ -853,9 +851,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                         this.ordererForm = true;
                         this.userForm = this.fieldValues.Type__c !== 'PublicEvent';
                         this.companyForm = this.fieldValues.Type__c !== 'User';
-                    }
-                    if (this.fieldValues.Type__c === 'Me') {
-                        this.myRequest = true;
                     }
                 }
                 if (!!parsed_params.copy) {

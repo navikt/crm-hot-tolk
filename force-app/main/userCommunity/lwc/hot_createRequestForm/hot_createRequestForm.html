@@ -350,74 +350,80 @@
                             value={fieldValues.Description__c}
                         >
                         </lightning-input-field>
-                        <div if:true={myRequest}>
-                            <div class="uploadFileElement">
-                                <div class="dropzone" ondrop={dropHandler} ondragover={dragOverHandler}>
-                                    <input
-                                        type="file"
-                                        onfocus={setButtonStyleOnFocus}
-                                        onblur={setButtonStyleOnFocus}
-                                        onchange={onFileUpload}
-                                        name="uploadFile"
-                                        accept={acceptedFileFormats}
-                                        data-id="file-input"
-                                        class="slds-assistive-text"
-                                        id="file-upload-input-01"
-                                        aria-labelledby="file-selector-primary-label file-selector-secondary-label"
-                                        multiple
-                                    />
-                                    <label for="file-upload-input-01" id="file-selector-secondary-label">
-                                        <span class="button button-standard">
-                                            <svg
-                                                style="margin: 0 5 0 0"
-                                                width="1em"
-                                                height="1em"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path
-                                                    fill-rule="evenodd"
-                                                    clip-rule="evenodd"
-                                                    d="M12 0l7 6.625h-5V16h-4V6.625H5L12 0zm9 18h2v2a4 4 0 01-4 4H5a4 4 0 01-4-4v-2h20z"
-                                                    fill="currentColor"
-                                                ></path>
-                                            </svg>
-                                            Last opp fil</span
+
+                        <div class="uploadFileElement">
+                            <div class="dropzone" ondrop={dropHandler} ondragover={dragOverHandler}>
+                                <input
+                                    type="file"
+                                    onfocus={setButtonStyleOnFocus}
+                                    onblur={setButtonStyleOnFocus}
+                                    onchange={onFileUpload}
+                                    name="uploadFile"
+                                    accept={acceptedFileFormats}
+                                    data-id="file-input"
+                                    class="slds-assistive-text"
+                                    id="file-upload-input-01"
+                                    aria-labelledby="file-selector-primary-label file-selector-secondary-label"
+                                    multiple
+                                />
+                                <label for="file-upload-input-01" id="file-selector-secondary-label">
+                                    <span class="button button-standard">
+                                        <svg
+                                            style="margin: 0 5 0 0"
+                                            width="1em"
+                                            height="1em"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
                                         >
-                                        <span class="dropzone-label">Eller slipp filen her</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="checkboxClass hidden">
-                                <c-checkbox
-                                    label={checkboxContent}
-                                    custom-validity="true"
-                                    oncheckboxclick={handleCheckboxValue}
-                                ></c-checkbox>
-                            </div>
-                            <div if:true={filesChanged} class="filesClass">
-                                <ul aria-label="Liste over filer">
-                                    <template for:each={fileData} for:item="file" for:index="index">
-                                        <li key={file.filename} class="fileAndButton">
-                                            <span key={file.filename} class="fileNameClass">{file.filename}</span>
-                                            <button
-                                                onfocus={onFileFocus}
-                                                aria-label={fileButtonLabel}
-                                                data-index={index}
-                                                key={file.filename}
-                                                type="button"
-                                                value={file.filename}
-                                                class="navds-button navds-button--secondary navds-button--s navds-body-short navds-body--s"
-                                                onclick={onFileButtonClick}
-                                            >
-                                                Slett
-                                            </button>
-                                        </li>
-                                    </template>
-                                </ul>
+                                            <path
+                                                fill-rule="evenodd"
+                                                clip-rule="evenodd"
+                                                d="M12 0l7 6.625h-5V16h-4V6.625H5L12 0zm9 18h2v2a4 4 0 01-4 4H5a4 4 0 01-4-4v-2h20z"
+                                                fill="currentColor"
+                                            ></path>
+                                        </svg>
+                                        Last opp fil</span
+                                    >
+                                    <span class="dropzone-label">Eller slipp filen her</span>
+                                </label>
                             </div>
                         </div>
+                        <div class="checkboxClass hidden">
+                            <c-checkbox label={checkboxContent} oncheckboxclick={handleCheckboxValue}></c-checkbox>
+                        </div>
+                        <div if:true={filesChanged} class="filesClass">
+                            <ul aria-label="Liste over filer">
+                                <template for:each={fileData} for:item="file" for:index="index">
+                                    <li key={file.filename} class="fileAndButton">
+                                        <span key={file.filename} class="typo-normal content fileNameClass"
+                                            >{file.filename}</span
+                                        >
+                                        <button
+                                            onfocus={onFileFocus}
+                                            aria-label={fileButtonLabel}
+                                            data-index={index}
+                                            key={file.filename}
+                                            type="button"
+                                            value={file.filename}
+                                            class="
+                                                navds-button navds-button--secondary navds-button--s
+                                                navds-body-short
+                                                navds-body--s
+                                            "
+                                            onclick={onFileButtonClick}
+                                        >
+                                            Slett
+                                        </button>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                        <br />
+                        <c-record-files-without-sharing
+                            record-id={recordId}
+                            title="Tidligere opplastede vedlegg"
+                        ></c-record-files-without-sharing>
 
                         <lightning-messages aria-live="assertive"> </lightning-messages>
 
