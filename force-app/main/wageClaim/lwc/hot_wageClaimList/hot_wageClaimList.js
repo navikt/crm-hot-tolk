@@ -145,7 +145,6 @@ export default class Hot_wageClaimList extends LightningElement {
 
     @track choices = [
         { name: 'Ledig på lønn', label: 'Ledig på lønn' },
-        { name: 'Lønnskrav', label: 'Lønnskrav' },
         { name: 'Tilbaketrukket', label: 'Tilbaketrukket' },
         { name: 'Alle', label: 'Alle' }
     ];
@@ -161,10 +160,6 @@ export default class Hot_wageClaimList extends LightningElement {
         for (let wageClaim of this.allWageClaims) {
             if (this.picklistValue === 'Ledig på lønn') {
                 if (wageClaim.Status__c === 'Åpen') {
-                    tempWageClaim.push(wageClaim);
-                }
-            } else if (this.picklistValue === 'Lønnskrav') {
-                if (wageClaim.ServiceAppointment__c !== null) {
                     tempWageClaim.push(wageClaim);
                 }
             } else if (this.picklistValue === 'Alle') {
