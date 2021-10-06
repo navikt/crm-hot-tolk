@@ -84,7 +84,8 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
 
     private static void updateStatusChangedFieldOnWorkOrder(List<WorkOrder> changedWorkOrders) {
         for (WorkOrder workOrder : changedWorkOrders) {
-            workOrder.HOT_SendSMSNotificationOnStatusChanged__c = true;
+            if (workOrder.Status == 'Dispatched' || workOrder.Status == 'Cannot Complete')
+                workOrder.HOT_SendSMSNotificationOnStatusChanged__c = true;
         }
     }
 

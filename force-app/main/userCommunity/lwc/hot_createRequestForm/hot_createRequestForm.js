@@ -493,17 +493,14 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         window.scrollBy(0, -100);
     }
 
-    ordererSMSUpdateOnStatus = false;
     handleSMSCheckbox(event) {
-        this.ordererSMSUpdateOnStatus = event.detail;
+        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 
     setFieldValues(fields) {
         this.fieldValues.IsFileConsent__c = this.checkboxValue;
         this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
         this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
-        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = this.ordererSMSUpdateOnStatus;
-
         this.fieldValues.Orderer__c = this.personAccount.Id;
         for (const k in fields) {
             this.fieldValues[k] = fields[k];

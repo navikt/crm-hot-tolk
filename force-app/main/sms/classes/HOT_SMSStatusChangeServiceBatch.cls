@@ -14,7 +14,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
         query += 'AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = TRUE ';
         query += 'AND HOT_SendSMSNotificationOnStatusChanged__c = TRUE ';
         query += 'AND (Status = \'Dispatched\' ';
-        query += 'OR Status = \'Cannot Complete \')';
+        query += 'OR Status = \'Cannot Complete\')';
 
         return Database.getQueryLocator(query);
     }
@@ -24,7 +24,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
     }
 
     public void finish(Database.BatchableContext bc) {
-        Long minutes = HOT_Utility.getMinutes();
+        Long minutes = HOT_Utility.getMinutesUntilNextSMSBatch();
         if (!Test.isRunningTest()) {
             try {
                 System.scheduleBatch(

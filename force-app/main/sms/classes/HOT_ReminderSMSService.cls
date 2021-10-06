@@ -28,7 +28,7 @@ public without sharing class HOT_ReminderSMSService {
         List<SMS__c> smsList = new List<SMS__c>();
         for (WorkOrder workOrder : workOrders.values()) {
             smsList.add(
-                createSMSRecord(
+                SMSService.createSMSRecord(
                     'HOT',
                     '24 Hour Scheduled Reminder',
                     workOrder.AccountId,
@@ -74,7 +74,7 @@ public without sharing class HOT_ReminderSMSService {
         List<SMS__c> smsList = new List<SMS__c>();
         for (WorkOrder workOrder : workOrderList) {
             smsList.add(
-                createSMSRecord(
+                SMSService.createSMSRecord(
                     'HOT',
                     'Orderer On Status Update',
                     workOrder.AccountId,
@@ -131,21 +131,5 @@ public without sharing class HOT_ReminderSMSService {
         return timePeriod;
     }
 
-    private static SMS__c createSMSRecord(
-        String domain,
-        String type,
-        Id accountId,
-        Id workOrderId,
-        String recipient,
-        String message
-    ) {
-        SMS__c sms = new SMS__c();
-        sms.Domain__c = domain;
-        sms.Type__c = type;
-        sms.Account__c = accountID;
-        sms.WorkOrder__c = workOrderId;
-        sms.Recipient__c = recipient;
-        sms.Message__c = message;
-        return sms;
-    }
+    
 }

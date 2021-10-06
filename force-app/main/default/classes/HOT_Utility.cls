@@ -104,7 +104,7 @@ public without sharing class HOT_Utility {
         return ordererDetails;
     }
 
-    public static Long getMinutes() {
+    public static Long getMinutesUntilNextSMSBatch() {
         Long minutes = 60;
         Datetime now = Datetime.now();
         Datetime datetime_1600 = Datetime.newInstance(Date.today(), Time.newInstance(16, 0, 0, 0));

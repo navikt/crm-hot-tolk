@@ -29,7 +29,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
     }
 
     public void finish(Database.BatchableContext bc) {
-        Long minutes = HOT_Utility.getMinutes();
+        Long minutes = HOT_Utility.getMinutesUntilNextSMSBatch();
         if (!Test.isRunningTest()) {
             try {
                 System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', (Integer) minutes, 10);
