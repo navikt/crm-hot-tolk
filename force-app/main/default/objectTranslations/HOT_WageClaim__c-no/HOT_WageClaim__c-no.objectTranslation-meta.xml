@@ -43,8 +43,4 @@
         </sections>
     </layouts>
     <nameFieldLabel><!-- Wage Claim Name --></nameFieldLabel>
-    <validationRules>
-        <errorMessage><!-- Du kan ikke endre på dette lønnskravet --></errorMessage>
-        <name>RestrictEdit</name>
-    </validationRules>
 </CustomObjectTranslation>

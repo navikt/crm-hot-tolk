@@ -2,5 +2,5 @@
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Arbeidstype</label>
     <name>WorkType__c</name>
-    <relationshipLabel><!-- Wage Claims --></relationshipLabel>
+    <relationshipLabel>Lønnskrav</relationshipLabel>
 </CustomFieldTranslation>
