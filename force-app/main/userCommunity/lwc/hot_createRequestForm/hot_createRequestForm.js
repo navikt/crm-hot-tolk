@@ -508,7 +508,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
 
-    myRequest = false;
+    myOrOrdererRequest = false;
     @track showInformationSharingText = true;
     onHandleNeste() {
         this.fieldValues.Type__c = this.currentRequestType;
@@ -522,12 +522,14 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             this.spin = false;
 
             if (this.currentRequestType === 'User') {
+                this.myOrOrdererRequest = true;
                 this.ordererForm = true;
                 this.userForm = true;
             } else if (this.currentRequestType === 'Me') {
-                this.myRequest = true;
+                this.myOrOrdererRequest = true;
                 this.showInformationSharingText = false;
             } else if (this.currentRequestType === 'Company') {
+                this.myOrOrdererRequest = true;
                 this.ordererForm = true;
                 this.userForm = true;
                 this.companyForm = true;
@@ -854,8 +856,8 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                         this.userForm = this.fieldValues.Type__c !== 'PublicEvent';
                         this.companyForm = this.fieldValues.Type__c !== 'User';
                     }
-                    if (this.fieldValues.Type__c === 'Me') {
-                        this.myRequest = true;
+                    if (this.fieldValues.Type__c !== 'PublicEvent') {
+                        this.myOrOrdererRequest = true;
                     }
                 }
                 if (!!parsed_params.copy) {
