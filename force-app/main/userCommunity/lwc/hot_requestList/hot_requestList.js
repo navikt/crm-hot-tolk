@@ -387,14 +387,16 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             }
         }
     }
+
     @track record = null;
+    @track recordId;
     @track userForm = false;
-    @track myRequest = false;
     @track companyForm = false;
     @track publicEvent = false;
+
     showDetails(row) {
         this.record = row;
-        this.myRequest = this.record.Orderer__c === this.userRecord.AccountId;
+        this.recordId = row.Id;
         this.userForm =
             (this.record.Type__c === 'User' || this.record.Type__c === 'Company') && this.record.UserName__c !== '';
         this.companyForm = this.record.Type__c === 'Company' || this.record.Type__c === 'PublicEvent';
