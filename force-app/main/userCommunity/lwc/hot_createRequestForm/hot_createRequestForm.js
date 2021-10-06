@@ -508,7 +508,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
 
-    myOrOrdererRequest = false;
     @track showInformationSharingText = true;
     onHandleNeste() {
         this.fieldValues.Type__c = this.currentRequestType;
@@ -522,14 +521,11 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
             this.spin = false;
 
             if (this.currentRequestType === 'User') {
-                this.myOrOrdererRequest = true;
                 this.ordererForm = true;
                 this.userForm = true;
             } else if (this.currentRequestType === 'Me') {
-                this.myOrOrdererRequest = true;
                 this.showInformationSharingText = false;
             } else if (this.currentRequestType === 'Company') {
-                this.myOrOrdererRequest = true;
                 this.ordererForm = true;
                 this.userForm = true;
                 this.companyForm = true;
@@ -855,9 +851,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                         this.ordererForm = true;
                         this.userForm = this.fieldValues.Type__c !== 'PublicEvent';
                         this.companyForm = this.fieldValues.Type__c !== 'User';
-                    }
-                    if (this.fieldValues.Type__c !== 'PublicEvent') {
-                        this.myOrOrdererRequest = true;
                     }
                 }
                 if (!!parsed_params.copy) {
