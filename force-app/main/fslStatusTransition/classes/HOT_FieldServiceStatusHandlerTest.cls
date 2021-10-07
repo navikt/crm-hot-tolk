@@ -32,11 +32,15 @@ private class HOT_FieldServiceStatusHandlerTest {
 
         System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
 
+        workOrder2.Status = 'Cannot Complete';
+        update workOrder2;
+
+        request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+        System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
+
         workOrder1.Status = 'Completed';
         update workOrder1;
-
-        workOrder2.Status = 'Cannot Completed';
-        update workOrder2;
 
         request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
@@ -52,6 +56,16 @@ private class HOT_FieldServiceStatusHandlerTest {
         request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
         System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
+
+        workOrder1.Status = 'Cannot Complete';
+        update workOrder1;
+
+        workOrder2.Status = 'Cannot Complete';
+        update workOrder2;
+
+        request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+        System.assertEquals('Udekket', request.Status__c, 'Status on the request did not update to correct value');
     }
 
     @isTest
@@ -83,15 +97,23 @@ private class HOT_FieldServiceStatusHandlerTest {
 
         workOrderLineItem_2.Status = 'Dispatched';
         update workOrderLineItem_2;
+
         workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals('Scheduled', workOrder.Status, 'Status on the work order did not update to correct value');
 
         workOrderLineItem_1.Status = 'Dispatched';
         update workOrderLineItem_1;
+
         workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals('Dispatched', workOrder.Status, 'Status on the work order did not update to correct value');
 
         workOrderLineItem_2.Status = 'Cannot Complete';
+        update workOrderLineItem_2;
+
+        workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals('Dispatched', workOrder.Status, 'Status on the work order did not update to correct value');
+
+        workOrderLineItem_2.Status = 'Partially Complete';
         update workOrderLineItem_2;
 
         workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
@@ -101,8 +123,11 @@ private class HOT_FieldServiceStatusHandlerTest {
             'Status on the work order did not update to correct value'
         );
 
-        workOrderLineItem_2.Status = 'Partially Complete';
+        workOrderLineItem_2.Status = 'Cannot Complete';
         update workOrderLineItem_2;
+
+        workOrderLineItem_1.Status = 'Complete';
+        update workOrderLineItem_1;
 
         workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals(
@@ -179,8 +204,30 @@ private class HOT_FieldServiceStatusHandlerTest {
             'Status on the work order line item did not update to correct value'
         );
 
+        serviceAppointment_1.Status = 'Dispatched';
+        update serviceAppointment_1;
+
+        workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+        System.assertEquals(
+            'Dispatched',
+            workOrderLineItem.Status,
+            'Status on the work order line item did not update to correct value'
+        );
+
         serviceAppointment_1.Status = 'Cannot Complete';
         update serviceAppointment_1;
+
+        workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+        System.assertEquals(
+            'Dispatched',
+            workOrderLineItem.Status,
+            'Status on the work order line item did not update to correct value'
+        );
+
+        System.debug('SA1FSA2' + serviceAppointment_1.Status);
+        System.debug('SA2' + serviceAppointment_2.Status);
+        serviceAppointment_2.Status = 'Completed';
+        update serviceAppointment_2;
 
         workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
         System.assertEquals(
