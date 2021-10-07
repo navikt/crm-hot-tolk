@@ -139,13 +139,16 @@ export default class Hot_myServiceAppointments extends LightningElement {
         }
     }
 
+    @track recordId;
     @track serviceAppointmentDetails;
     showDetails(row) {
+        this.recordId = row.Id;
         this.serviceAppointmentDetails = formatRecord(row, myServiceAppointmentFieldLabels);
         let detailPage = this.template.querySelector('.detailPage');
         detailPage.classList.remove('hidden');
         detailPage.focus();
     }
+
     abortShowDetails() {
         this.template.querySelector('.detailPage').classList.add('hidden');
     }

@@ -29,15 +29,15 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_RelatedFilesListController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_UpdateChildRecordsService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_WageClaimService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RecordFilesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <customPermissions>
@@ -439,6 +439,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsNotifyDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsOrdererWantStatusUpdateOnSMS__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1619,6 +1624,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_Request__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_SendSMSNotificationOnStatusChanged__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

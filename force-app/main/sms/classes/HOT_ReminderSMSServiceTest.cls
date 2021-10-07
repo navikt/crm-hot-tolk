@@ -34,4 +34,30 @@ private class HOT_ReminderSMSServiceTest {
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
+
+    @isTest
+    static void sendSMSToOtherOrdererOnStatusUpdateTest() {
+        List<WorkOrder> workOrders = [
+            SELECT Id, AccountId, HOT_Request__r.OrdererPhone__c, StartDate, EndDate, Status
+            FROM WorkOrder
+        ];
+        HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
+        List<SMS__c> smsList = [SELECT Id FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
+
+    @isTest
+    static void sendSMSToOtherOrdererOnStatusUpdateTest2() {
+        List<WorkOrder> workOrders = [
+            SELECT Id, AccountId, HOT_Request__r.OrdererPhone__c, StartDate, EndDate, Status
+            FROM WorkOrder
+        ];
+        for (WorkOrder wo : workOrders) {
+            wo.Status = 'Cannot Complete';
+        }
+        update workOrders;
+        HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
+        List<SMS__c> smsList = [SELECT Id FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
 }
