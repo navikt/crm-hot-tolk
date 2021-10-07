@@ -136,6 +136,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
         actions.push({ label: 'Detaljer', name: 'details' });
         actions.push({ label: 'Se tidsplan', name: 'see_times' });
+        actions.push({ label: 'Legg til filer', name: 'add_files' });
 
         doneCallback(actions);
     }
@@ -286,6 +287,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             case 'see_times':
                 this.showTimes(row);
                 break;
+            case 'add_files':
+                this.addFiles(row);
+                break;
             default:
         }
     }
@@ -421,6 +425,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     abortShowDetails() {
         this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+        this.clearFileData();
     }
 
     showTimes(row) {
@@ -433,6 +438,40 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 id: row.Name
             }
         });
+    }
+
+    handleFileUpload() {
+        this.template.querySelector('c-upload-files').handleFileUpload();
+    }
+
+    clearFileData() {
+        this.template.querySelector('c-upload-files').clearFileData();
+    }
+
+    checkFileDataSize() {
+        value = this.template.querySelector('c-upload-files').checkFileDataSize();
+        console.log(value);
+    }
+
+    //TODO: Indicate success?
+    //TODO: Fix styling
+    //TODO: Hide save button unless files have been chosen
+    //TODO: Only show row action if status is open || under behandling
+    //TODO: Put "eller slipp filen her" under "last opp fil" for mobile style
+    //TODO: Check why accepted formats in uploadFiles does not block files not listed in acceptedformats
+    handleFileUploadButton() {
+        this.handleFileUpload();
+        //let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        //detailPage.classList.add('hidden');
+    }
+
+    addFiles(row) {
+        this.recordId = row.Id;
+        let skjema = this.template.querySelector('.skjema');
+        skjema.classList.add('hidden');
+        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        detailPage.classList.remove('hidden');
+        detailPage.focus();
     }
 
     goToNewRequest() {
