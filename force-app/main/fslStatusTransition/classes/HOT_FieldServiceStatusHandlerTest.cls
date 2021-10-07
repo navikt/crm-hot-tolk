@@ -446,4 +446,71 @@ private class HOT_FieldServiceStatusHandlerTest {
 
         System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
     }
+
+    @isTest
+    private static void testOrdererSMSStatusChangeCheckbox_workOrderChanged() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        WorkOrder workOrder = [
+            SELECT Id, Status, Subject, HOT_SendSMSNotificationOnStatusChanged__c
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
+
+        Test.startTest();
+        workOrder.Status = 'Dispatched';
+        update workOrder;
+        Test.stopTest();
+
+        workOrder = [
+            SELECT Id, Status, Subject, HOT_SendSMSNotificationOnStatusChanged__c
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
+        System.assertEquals(
+            true,
+            workOrder.HOT_SendSMSNotificationOnStatusChanged__c,
+            'HOT_SendSMSNotificationOnStatusChanged__c on work order did not update to correct value'
+        );
+    }
+
+    @isTest
+    private static void testOrdererSMSStatusChangeCheckbox_serviceAppointmentChanged() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, Status
+            FROM serviceAppointment
+            WHERE HOT_Request__c = :request.Id
+        ];
+
+        Test.startTest();
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+        Test.stopTest();
+
+        WorkOrder workOrder = [
+            SELECT Id, Status, Subject, HOT_SendSMSNotificationOnStatusChanged__c
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
+        System.assertEquals('Dispatched', workOrder.Status, 'Status on work order did not update to correct value');
+        System.assertEquals(
+            true,
+            workOrder.HOT_SendSMSNotificationOnStatusChanged__c,
+            'HOT_SendSMSNotificationOnStatusChanged__c on work order did not update to correct value'
+        );
+    }
 }
