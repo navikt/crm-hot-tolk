@@ -58,16 +58,16 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 notifyDispatcherWorkOrders.add((WorkOrder) record);
             }
         }
-
         if (updateStatusWorkOrders.size() > 0) {
             updateWorkOrderStatus(updateStatusWorkOrders);
+            updateStatusChangedFieldOnWorkOrder(updateStatusWorkOrders, triggerOldMap);
         }
         if (notifyDispatcherWorkOrders.size() > 0) {
             HOT_WorkOrderNotification.notifyDispatchers_workOrderChanged(notifyDispatcherWorkOrders, triggerOldMap);
             HOT_WorkOrderHandler.resetNotifyDispatcher(notifyDispatcherWorkOrders);
         }
         if (changedStatusWorkOrders.size() > 0) {
-            updateStatusChangedFieldOnWorkOrder(changedStatusWorkOrders);
+            updateStatusChangedFieldOnWorkOrder(changedStatusWorkOrders, triggerOldMap);
         }
     }
 
@@ -82,9 +82,16 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
         update requestsToUpdate;
     }
 
-    private static void updateStatusChangedFieldOnWorkOrder(List<WorkOrder> changedWorkOrders) {
+    private static void updateStatusChangedFieldOnWorkOrder(
+        List<WorkOrder> changedWorkOrders,
+        Map<Id, sObject> triggerOldMap
+    ) {
         for (WorkOrder workOrder : changedWorkOrders) {
-            if (workOrder.Status == 'Dispatched' || workOrder.Status == 'Cannot Complete')
+            if (
+                triggerOldMap.get(workOrder.Id).get('Status') != workOrder.Status &&
+                (workOrder.Status == 'Dispatched' ||
+                workOrder.Status == 'Cannot Complete')
+            )
                 workOrder.HOT_SendSMSNotificationOnStatusChanged__c = true;
         }
     }
