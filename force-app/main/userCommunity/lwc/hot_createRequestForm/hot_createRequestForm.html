@@ -90,6 +90,11 @@
                             required
                         >
                         </lightning-input-field>
+                        <br />
+                        <c-checkbox
+                            label="Ønsker SMS-varsel ved statusendring på bestillingen"
+                            oncheckboxclick={handleSMSCheckbox}
+                        ></c-checkbox>
                     </section>
 
                     <section if:true={userForm} class="bruker-info-skjema sub-form">
