@@ -672,10 +672,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         }
     }
 
-    clearFileData() {
-        this.template.querySelector('c-upload-files').clearFileData();
-    }
-
     hasFiles = false;
     checkFileDataLength(event) {
         this.hasFiles = event.detail > 0;
