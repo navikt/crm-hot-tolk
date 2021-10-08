@@ -224,8 +224,6 @@ private class HOT_FieldServiceStatusHandlerTest {
             'Status on the work order line item did not update to correct value'
         );
 
-        System.debug('SA1FSA2' + serviceAppointment_1.Status);
-        System.debug('SA2' + serviceAppointment_2.Status);
         serviceAppointment_2.Status = 'Completed';
         update serviceAppointment_2;
 
