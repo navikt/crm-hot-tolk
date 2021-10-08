@@ -5,6 +5,7 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
 
     public override void onAfterInsert() {
         createContentDocumentLinksToSA((List<ContentDocumentLink>) records);
+        createContentDocumentLinksToAccount((List<ContentDocumentLink>) records);
     }
 
     public void createContentDocumentLinksToSA(List<ContentDocumentLink> contentDocumentLinks) {
@@ -48,7 +49,11 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
                 }
             }
         }
-        List<HOT_Request__c> requests = [SELECT Id, Account__c, Orderer__c FROM HOT_Request__c WHERE Id IN :requestIds];
+        List<HOT_Request__c> requests = [
+            SELECT Id, Account__c, Orderer__c
+            FROM HOT_Request__c
+            WHERE Id IN :linkedEntityMap.keySet()
+        ];
         List<ContentDocumentLink> contentDocumentLinksToAccount = new List<ContentDocumentLink>();
         for (HOT_Request__c request : requests) {
             for (ContentDocumentLink cdl : linkedEntityMap.get(request.Id)) {
