@@ -469,7 +469,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         let detailPage = this.template.querySelector('.ReactModal__Overlay');
         detailPage.classList.add('hidden');
         this.showUploadFilesComponent = false;
-        this.clearFileData();
     }
 
     validateCheckbox() {
