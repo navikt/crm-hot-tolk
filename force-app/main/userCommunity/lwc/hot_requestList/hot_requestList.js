@@ -133,10 +133,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             }
             actions.push({ label: 'Kopier', name: 'clone_order' });
         }
-
         actions.push({ label: 'Detaljer', name: 'details' });
         actions.push({ label: 'Se tidsplan', name: 'see_times' });
-        actions.push({ label: 'Legg til filer', name: 'add_files' });
+
+        if (row['Status__c'] === 'Åpen' || row['Status__c'] === 'Godkjent' || row['Status__c'] === 'Reservert') {
+            actions.push({ label: 'Legg til filer', name: 'add_files' });
+        }
 
         doneCallback(actions);
     }
@@ -305,6 +307,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         refreshApex(this.wiredRequestsResult);
     }
 
+    renderedCallback() {
+        if (this.showUploadFilesComponent) {
+            document.documentElement.style.setProperty('--dialogMaxWidth', '50%');
+        } else {
+            document.documentElement.style.setProperty('--dialogMaxWidth', '432px');
+        }
+    }
+
     findRowIndexById(Id) {
         let ret = -1;
         this.requests.some((row, index) => {
@@ -426,6 +436,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     abortShowDetails() {
         this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
         this.clearFileData();
+        this.template.querySelector('.skjema').classList.remove('hidden');
+        this.showUploadFilesComponent = false;
     }
 
     showTimes(row) {
@@ -448,27 +460,31 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.template.querySelector('c-upload-files').clearFileData();
     }
 
-    checkFileDataSize() {
-        value = this.template.querySelector('c-upload-files').checkFileDataSize();
-        console.log(value);
+    hasFiles = false;
+    checkFileDataLength(event) {
+        this.hasFiles = event.detail > 0;
     }
 
-    //TODO: Indicate success?
-    //TODO: Fix styling
-    //TODO: Hide save button unless files have been chosen
-    //TODO: Only show row action if status is open || under behandling
-    //TODO: Put "eller slipp filen her" under "last opp fil" for mobile style
-    //TODO: Check why accepted formats in uploadFiles does not block files not listed in acceptedformats
-    handleFileUploadButton() {
+    onUploadComplete() {
+        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        detailPage.classList.add('hidden');
+        this.showUploadFilesComponent = false;
+    }
+
+    validateCheckbox() {
+        this.template.querySelector('c-upload-files').validateCheckbox();
+    }
+
+    uploadFilesOnSave() {
+        this.validateCheckbox();
         this.handleFileUpload();
-        //let detailPage = this.template.querySelector('.ReactModal__Overlay');
-        //detailPage.classList.add('hidden');
     }
 
+    showUploadFilesComponent = false;
     addFiles(row) {
+        this.showUploadFilesComponent = true;
         this.recordId = row.Id;
-        let skjema = this.template.querySelector('.skjema');
-        skjema.classList.add('hidden');
+        this.template.querySelector('.skjema').classList.add('hidden');
         let detailPage = this.template.querySelector('.ReactModal__Overlay');
         detailPage.classList.remove('hidden');
         detailPage.focus();

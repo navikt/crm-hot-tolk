@@ -99,14 +99,17 @@
                     <c-record-files-without-sharing record-id={recordId}></c-record-files-without-sharing>
                 </section>
             </div>
-            <c-upload-files record-id={recordId}></c-upload-files>
+            <div if:true={showUploadFilesComponent}>
+                <c-upload-files
+                    record-id={recordId}
+                    onfiledatalength={checkFileDataLength}
+                    onuploadcomplete={onUploadComplete}
+                ></c-upload-files>
+            </div>
+
             <br />
-            <div style="text-align: center">
-                <c-button
-                    button-styling="action"
-                    button-label="Lagre"
-                    onbuttonclick={handleFileUploadButton}
-                ></c-button>
+            <div if:true={hasFiles} style="text-align: center">
+                <c-button button-styling="action" button-label="Lagre" onbuttonclick={uploadFilesOnSave}></c-button>
             </div>
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
                 <span class="text-hide">Lukk</span>
