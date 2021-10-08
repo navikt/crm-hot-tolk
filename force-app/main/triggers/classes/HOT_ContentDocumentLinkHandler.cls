@@ -9,17 +9,7 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
     }
 
     public void createContentDocumentLinksToSA(List<ContentDocumentLink> contentDocumentLinks) {
-        Map<Id, List<ContentDocumentLink>> linkedEntityMap = new Map<Id, List<ContentDocumentLink>>();
-        HOT_Request__c requestObject = new HOT_Request__c();
-        for (ContentDocumentLink cli : contentDocumentLinks) {
-            if (cli.LinkedEntityId.getSObjectType() == requestObject.getSObjectType()) {
-                if (linkedEntityMap.get(cli.LinkedEntityId) == null) {
-                    linkedEntityMap.put(cli.LinkedEntityId, new List<ContentDocumentLink>{ cli });
-                } else {
-                    linkedEntityMap.get(cli.LinkedEntityId).add(cli);
-                }
-            }
-        }
+        Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByRequest(contentDocumentLinks);
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, HOT_Request__c
             FROM ServiceAppointment
@@ -38,17 +28,7 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
     }
 
     public void createContentDocumentLinksToAccount(List<ContentDocumentLink> contentDocumentLinks) {
-        Map<Id, List<ContentDocumentLink>> linkedEntityMap = new Map<Id, List<ContentDocumentLink>>();
-        HOT_Request__c requestObject = new HOT_Request__c();
-        for (ContentDocumentLink cli : contentDocumentLinks) {
-            if (cli.LinkedEntityId.getSObjectType() == requestObject.getSObjectType()) {
-                if (linkedEntityMap.get(cli.LinkedEntityId) == null) {
-                    linkedEntityMap.put(cli.LinkedEntityId, new List<ContentDocumentLink>{ cli });
-                } else {
-                    linkedEntityMap.get(cli.LinkedEntityId).add(cli);
-                }
-            }
-        }
+        Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByRequest(contentDocumentLinks);
         List<HOT_Request__c> requests = [
             SELECT Id, Account__c, Orderer__c
             FROM HOT_Request__c
@@ -84,5 +64,20 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
                 contentDocumentLink.Visibility = 'AllUsers';
             }
         }
+    }
+
+    private Map<Id, List<ContentDocumentLink>> getContentDocumentLinksByRequest(List<ContentDocumentLink> contentDocumentLinks){
+        Map<Id, List<ContentDocumentLink>> linkedEntityMap = new Map<Id, List<ContentDocumentLink>>();
+        HOT_Request__c requestObject = new HOT_Request__c();
+        for (ContentDocumentLink cli : contentDocumentLinks) {
+            if (cli.LinkedEntityId.getSObjectType() == requestObject.getSObjectType()) {
+                if (linkedEntityMap.get(cli.LinkedEntityId) == null) {
+                    linkedEntityMap.put(cli.LinkedEntityId, new List<ContentDocumentLink>{ cli });
+                } else {
+                    linkedEntityMap.get(cli.LinkedEntityId).add(cli);
+                }
+            }
+        }
+        return linkedEntityMap
     }
 }
