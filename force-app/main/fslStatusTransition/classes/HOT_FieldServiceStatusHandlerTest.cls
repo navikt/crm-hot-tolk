@@ -66,6 +66,20 @@ private class HOT_FieldServiceStatusHandlerTest {
         request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
         System.assertEquals('Udekket', request.Status__c, 'Status on the request did not update to correct value');
+
+        workOrder1.Status = 'Partially Complete';
+        update workOrder1;
+
+        workOrder2.Status = 'Completed';
+        update workOrder2;
+
+        request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+        System.assertEquals(
+            'Delvis dekket',
+            request.Status__c,
+            'Status on the request did not update to correct value'
+        );
     }
 
     @isTest
@@ -117,6 +131,12 @@ private class HOT_FieldServiceStatusHandlerTest {
         update workOrderLineItem_2;
 
         workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals('Dispatched', workOrder.Status, 'Status on the work order did not update to correct value');
+
+        workOrderLineItem_1.Status = 'Completed';
+        update workOrderLineItem_1;
+
+        workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals(
             'Partially Complete',
             workOrder.Status,
@@ -125,9 +145,6 @@ private class HOT_FieldServiceStatusHandlerTest {
 
         workOrderLineItem_2.Status = 'Cannot Complete';
         update workOrderLineItem_2;
-
-        workOrderLineItem_1.Status = 'Complete';
-        update workOrderLineItem_1;
 
         workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals(

@@ -168,17 +168,20 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 if (numberOfScheduled > 0) {
                     workOrder.Status = 'Scheduled';
                 }
-                if (numberOfDispatched == numberOfWorkOrderLineItem) {
+                if (
+                    numberOfDispatched + numberOfPartiallyComplete == numberOfWorkOrderLineItem ||
+                    numberOfDispatched == numberOfWorkOrderLineItem
+                ) {
                     workOrder.Status = 'Dispatched';
                     continue;
                 }
-                if (numberOfPartiallyComplete > 0) {
+                if (numberOfPartiallyComplete > 0 && numberOfDispatched == 0) {
                     workOrder.Status = 'Partially Complete';
                 }
                 if (
                     numberOfCannotComplete > 0 &&
                     numberOfCompleted > 0 &&
-                    (numberOfCannotComplete + numberOfCompleted == numberOfWorkOrderLineItem)
+                    numberOfCannotComplete + numberOfCompleted == numberOfWorkOrderLineItem
                 ) {
                     workOrder.Status = 'Partially Complete';
                     continue;
