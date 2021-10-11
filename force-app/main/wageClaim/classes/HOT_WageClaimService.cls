@@ -211,10 +211,10 @@ public without sharing class HOT_WageClaimService {
             }
         }
         List<HOT_WageClaim__c> wageClaimsToUpsert = new List<HOT_WageClaim__c>();
-        wageClaimsTOUpsert.addAll(newWageClaims);
-        wageClaimsTOUpsert.addAll(updatedWageClaims.values());
+        wageClaimsToUpsert.addAll(newWageClaims);
+        wageClaimsToUpsert.addAll(updatedWageClaims.values());
         try {
-            upsert wageClaimsTOUpsert;
+            upsert wageClaimsToUpsert;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
