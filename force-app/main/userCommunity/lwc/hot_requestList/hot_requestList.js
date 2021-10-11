@@ -3,6 +3,7 @@ import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequest
 import { updateRecord } from 'lightning/uiRecordApi';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
+import FILE_CONSENT from '@salesforce/schema/HOT_Request__c.IsFileConsent__c';
 import NOTIFY_DISPATCHER from '@salesforce/schema/HOT_Request__c.IsNotifyDispatcher__c';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
@@ -475,9 +476,23 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.template.querySelector('c-upload-files').validateCheckbox();
     }
 
+    checkboxValue = false;
+    getCheckboxValue(event) {
+        this.checkboxValue = event.detail;
+    }
+
     uploadFilesOnSave() {
         this.validateCheckbox();
         this.handleFileUpload();
+        this.setFileConsent();
+    }
+
+    setFileConsent() {
+        let fields = {};
+        fields[REQUEST_ID.fieldApiName] = this.recordId;
+        fields[FILE_CONSENT.fieldApiName] = this.checkboxValue;
+        const recordInput = { fields };
+        updateRecord(recordInput);
     }
 
     showUploadFilesComponent = false;
