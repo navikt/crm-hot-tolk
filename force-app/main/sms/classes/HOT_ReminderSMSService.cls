@@ -73,16 +73,24 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSToOtherOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
         List<SMS__c> smsList = new List<SMS__c>();
         for (WorkOrder workOrder : workOrderList) {
-            smsList.add(
-                SMSService.createSMSRecord(
-                    'HOT',
-                    'Orderer On Status Update',
-                    workOrder.AccountId,
-                    workOrder.Id,
-                    workOrder.HOT_Request__r.OrdererPhone__c,
-                    constructStatusChangedMessage(workOrder)
-                )
-            );
+            if (
+                workOrder.HOT_Request__r.OrdererPhone__c != null &&
+                workOrder.EndDate > Datetime.now() &&
+                workOrder.HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c == true &&
+                (workOrder.Status == 'Dispatched' ||
+                workOrder.Status == 'Cannot Complete')
+            ) {
+                smsList.add(
+                    SMSService.createSMSRecord(
+                        'HOT',
+                        'Orderer On Status Update',
+                        workOrder.AccountId,
+                        workOrder.Id,
+                        workOrder.HOT_Request__r.OrdererPhone__c,
+                        constructStatusChangedMessage(workOrder)
+                    )
+                );
+            }
             workOrder.HOT_SendSMSNotificationOnStatusChanged__c = false;
         }
 
@@ -130,6 +138,4 @@ public without sharing class HOT_ReminderSMSService {
 
         return timePeriod;
     }
-
-    
 }
