@@ -40,6 +40,10 @@
         <apexClass>RecordFilesControllerWithoutSharing</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>UploadFilesController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.CRM_Person__c</field>

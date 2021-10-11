@@ -232,6 +232,10 @@
         <apexClass>RecordFilesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>UploadFilesController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <customPermissions>
         <enabled>true</enabled>
         <name>HOT_DeleteFiles</name>
