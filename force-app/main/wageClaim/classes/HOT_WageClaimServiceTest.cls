@@ -413,4 +413,42 @@ private class HOT_WageClaimServiceTest {
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
         System.assertEquals(1, wageClaims.size(), 'Wrongly created Wage Claims');
     }
+
+    @isTest
+    static void updateWageClaimsFutureTest_MultipleSA() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
+        Datetime saStartTime = wageClaim.StartTime__c;
+        wageClaim.StartTime__c = wageClaim.StartTime__c;
+        wageClaim.EndTime__c = wageClaim.EndTime__c.addHours(2);
+        update wageClaim;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, Status, ParentRecordId
+            FROM ServiceAppointment
+            WHERE Id = :assignedResource.ServiceAppointmentId
+        ];
+        ServiceAppointment newServiceAppointment = serviceAppointment.clone(false, true, false, false);
+        newServiceAppointment.SchedStartTime = wageClaim.EndTime__c.addHours(-1);
+        newServiceAppointment.SchedEndTime = wageClaim.EndTime__c;
+        newServiceAppointment.EarliestStartTime = newServiceAppointment.SchedStartTime;
+        newServiceAppointment.DueDate = newServiceAppointment.SchedEndTime;
+        insert newServiceAppointment;
+
+        Test.startTest();
+        insert new AssignedResource(
+            ServiceAppointmentId = newServiceAppointment.Id,
+            ServiceResourceId = assignedResource.ServiceResourceId
+        );
+
+        serviceAppointment.Status = 'Dispatched';
+        newServiceAppointment.Status = 'Dispatched';
+        update new List<ServiceAppointment>{ serviceAppointment, newServiceAppointment };
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
+        System.assertEquals(3, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
+    }
 }
