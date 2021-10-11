@@ -75,7 +75,7 @@ public without sharing class HOT_ReminderSMSService {
         for (WorkOrder workOrder : workOrderList) {
             if (
                 workOrder.HOT_Request__r.OrdererPhone__c != null &&
-                workOrder.EndDate > Datetime.now() &&
+                workOrder.StartDate > Datetime.now() &&
                 workOrder.HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c == true &&
                 (workOrder.Status == 'Dispatched' ||
                 workOrder.Status == 'Cannot Complete')
