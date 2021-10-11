@@ -36,6 +36,10 @@
         <apexClass>RecordFilesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>RecordFilesControllerWithoutSharing</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.CRM_Person__c</field>
