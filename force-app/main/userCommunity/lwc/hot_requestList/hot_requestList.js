@@ -366,6 +366,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         const { Id } = row;
         const index = this.findRowIndexById(Id);
         if (index !== -1) {
+            this.isGetAllFiles = request.Account__c === this.userRecord.AccountId ? true : false;
             if (row.Orderer__c === this.userRecord.AccountId) {
                 if (this.requests[index].ExternalRequestStatus__c.includes('Åpen')) {
                     //Here we should get the entire record from salesforce, to get entire interpretation address.
@@ -393,10 +394,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track userForm = false;
     @track companyForm = false;
     @track publicEvent = false;
+    @track isGetAllFiles = false;
 
     showDetails(row) {
         this.record = row;
         this.recordId = row.Id;
+        this.isGetAllFiles = request.Account__c === this.userRecord.AccountId ? true : false;
         this.userForm =
             (this.record.Type__c === 'User' || this.record.Type__c === 'Company') && this.record.UserName__c !== '';
         this.companyForm = this.record.Type__c === 'Company' || this.record.Type__c === 'PublicEvent';

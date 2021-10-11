@@ -96,7 +96,10 @@
                 <section class="bestilling-info-skjema sub-form">
                     <h2 style="font-size: 1.25rem">Informasjon om tolkebehov</h2>
                     <c-hot_record-details record={requestFields}></c-hot_record-details>
-                    <c-record-files-without-sharing record-id={recordId}></c-record-files-without-sharing>
+                    <c-record-files-without-sharing
+                        record-id={recordId}
+                        files-to-get={isGetAllFiles}
+                    ></c-record-files-without-sharing>
                 </section>
             </div>
 
