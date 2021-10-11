@@ -8,7 +8,7 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
         createContentDocumentLinksToAccount((List<ContentDocumentLink>) records);
     }
 
-    public void createContentDocumentLinksToSA(List<ContentDocumentLink> contentDocumentLinks) {
+    public static void createContentDocumentLinksToSA(List<ContentDocumentLink> contentDocumentLinks) {
         Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByRequest(contentDocumentLinks);
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, HOT_Request__c
@@ -27,7 +27,7 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
         }
     }
 
-    public void createContentDocumentLinksToAccount(List<ContentDocumentLink> contentDocumentLinks) {
+    public static void createContentDocumentLinksToAccount(List<ContentDocumentLink> contentDocumentLinks) {
         Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByRequest(contentDocumentLinks);
         List<HOT_Request__c> requests = [
             SELECT Id, Account__c, Orderer__c
@@ -54,7 +54,7 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
         }
     }
 
-    public void confirmVisibilitySettings(List<ContentDocumentLink> contentDocumentLinks) {
+    public static void confirmVisibilitySettings(List<ContentDocumentLink> contentDocumentLinks) {
         SObjectType requestType = new HOT_Request__c().getSObjectType();
         SObjectType serviceAppointmentType = new ServiceAppointment().getSObjectType();
 
@@ -66,7 +66,7 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
         }
     }
 
-    private Map<Id, List<ContentDocumentLink>> getContentDocumentLinksByRequest(
+    private static Map<Id, List<ContentDocumentLink>> getContentDocumentLinksByRequest(
         List<ContentDocumentLink> contentDocumentLinks
     ) {
         Map<Id, List<ContentDocumentLink>> linkedEntityMap = new Map<Id, List<ContentDocumentLink>>();

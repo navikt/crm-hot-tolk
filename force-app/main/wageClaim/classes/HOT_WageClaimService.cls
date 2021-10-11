@@ -150,6 +150,7 @@ public without sharing class HOT_WageClaimService {
         Map<Id, List<HOT_WageClaim__c>> wageClaimsByServiceResourceId = getWageClaimsByServiceResourceId(wageClaims);
 
         List<HOT_WageClaim__c> newWageClaims = new List<HOT_WageClaim__c>();
+        Map<Id, HOT_WageClaim__c> updatedWageClaims = new Map<Id, HOT_WageClaim__c>();
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c) != null) {
                 for (
@@ -158,7 +159,9 @@ public without sharing class HOT_WageClaimService {
                     )
                 ) {
                     Boolean isWageClaimChanged = false;
-                    HOT_WageClaim__c updatedWageClaim = new HOT_WageClaim__c(Id = wageClaim.Id);
+                    HOT_WageClaim__c updatedWageClaim = updatedWageClaims.get(wageClaim.Id) != null
+                        ? updatedWageClaims.get(wageClaim.Id)
+                        : new HOT_WageClaim__c(Id = wageClaim.Id);
                     Datetime serviceAppointmentStartTime = serviceAppointment.SchedStartTime;
                     Datetime serviceAppointmentEndTime = serviceAppointment.SchedEndTime;
                     //Completely covered
@@ -202,13 +205,16 @@ public without sharing class HOT_WageClaimService {
                         isWageClaimChanged = true;
                     }
                     if (isWageClaimChanged) {
-                        newWageClaims.add(updatedWageClaim);
+                        updatedWageClaims.put(updatedWageClaim.Id, updatedWageClaim);
                     }
                 }
             }
         }
+        List<HOT_WageClaim__c> wageClaimsToUpsert = new List<HOT_WageClaim__c>();
+        wageClaimsToUpsert.addAll(newWageClaims);
+        wageClaimsToUpsert.addAll(updatedWageClaims.values());
         try {
-            upsert newWageClaims;
+            upsert wageClaimsToUpsert;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
