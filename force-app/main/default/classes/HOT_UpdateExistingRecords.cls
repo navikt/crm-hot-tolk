@@ -2,13 +2,12 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
         return Database.getQueryLocator(
-            'SELECT Id, SchedStartTime, SchedEndTime, EarliestStartTime, DueDate, HOT_StartHour__c, HOT_EndHour__c FROM ServiceAppointment WHERE EarliestStartTime != null AND DueDate != null AND HOT_DatesOutOfSync__c = true'
+            'SELECT Id, ContentDocumentId, LinkedEntityId FROM ContentDocumentLink WHERE LinkedEntity.Type = \'HOT_Request__c\''
         );
     }
-    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
-        records = HOT_ServiceAppointmentHandler.setStartAndEndHour(records);
+    public void execute(Database.BatchableContext bc, List<ContentDocumentLink> records) {
         try {
-            update records;
+            HOT_ContentDocumentLinkHandler.createContentDocumentLinksToAccount(records);
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
