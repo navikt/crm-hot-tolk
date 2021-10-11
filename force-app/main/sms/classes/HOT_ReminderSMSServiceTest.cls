@@ -12,20 +12,21 @@ private class HOT_ReminderSMSServiceTest {
         request.Account__c = account.Id;
         request.StartTime__c = request.StartTime__c.addDays(3);
         request.EndTime__c = request.EndTime__c.addDays(3);
+        request.OrdererPhone__c = '00000000';
+        request.IsOrdererWantStatusUpdateOnSMS__c = true;
         insert request;
         // To create child records
         request.Status__c = 'Godkjent';
         update request;
         WorkOrder workOrder = [SELECT Id, Status, StartDate, EndDate FROM WorkOrder];
         workOrder.Status = 'Dispatched';
-        update workOrder;
         workOrder.StartDate = workOrder.StartDate.addDays(-2);
         workOrder.EndDate = workOrder.EndDate.addDays(-2);
         update workOrder;
     }
 
     @isTest
-    static void testMethod1() {
+    static void reminderSMSTest() {
         List<WorkOrder> workOrders = [
             SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
             FROM WorkOrder
@@ -38,7 +39,14 @@ private class HOT_ReminderSMSServiceTest {
     @isTest
     static void sendSMSToOtherOrdererOnStatusUpdateTest() {
         List<WorkOrder> workOrders = [
-            SELECT Id, AccountId, HOT_Request__r.OrdererPhone__c, StartDate, EndDate, Status
+            SELECT
+                Id,
+                AccountId,
+                HOT_Request__r.OrdererPhone__c,
+                StartDate,
+                EndDate,
+                Status,
+                HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
         ];
         HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
@@ -49,7 +57,14 @@ private class HOT_ReminderSMSServiceTest {
     @isTest
     static void sendSMSToOtherOrdererOnStatusUpdateTest2() {
         List<WorkOrder> workOrders = [
-            SELECT Id, AccountId, HOT_Request__r.OrdererPhone__c, StartDate, EndDate, Status
+            SELECT
+                Id,
+                AccountId,
+                HOT_Request__r.OrdererPhone__c,
+                StartDate,
+                EndDate,
+                Status,
+                HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
         ];
         for (WorkOrder wo : workOrders) {
