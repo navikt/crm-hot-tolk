@@ -137,7 +137,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         actions.push({ label: 'Detaljer', name: 'details' });
         actions.push({ label: 'Se tidsplan', name: 'see_times' });
 
-        if (row['Status__c'] === 'Åpen' || row['Status__c'] === 'Godkjent' || row['Status__c'] === 'Reservert') {
+        if (
+            row['Status__c'] === 'Åpen' ||
+            row['Status__c'] === 'Godkjent' ||
+            row['Status__c'] === 'Reservert' ||
+            row['Status__c'] === 'Tildelt'
+        ) {
             actions.push({ label: 'Legg til filer', name: 'add_files' });
         }
 
