@@ -62,6 +62,9 @@ public with sharing class HOT_DatabaseOperations {
                 when 'undelete' {
                     undelete records;
                 }
+                when else {
+                    System.debug('Invalid choise');
+                }
             }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
