@@ -1,22 +1,21 @@
 @isTest
 public with sharing class HOT_DatabaseOperationsTest {
-    @TestSetup
     @isTest
     public static void testInsertRecord() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
-        String name = 'Willy Wonka';
-        request. = name;
+        String subject = 'Willy Wonka';
+        request.Subject__c = subject;
 
         Test.startTest();
         HOT_DatabaseOperations.insertRecords(request);
         Test.stopTest();
 
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Name = :name];
+        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
 
-        assert(requestResult != null, 'Expected to find a request');
+        System.assert(requestResult != null, 'Expected to find a request');
     }
 
     @isTest
@@ -25,8 +24,8 @@ public with sharing class HOT_DatabaseOperationsTest {
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
-        String name = 'Willy Wonka';
-        request.Name = name;
+        String subject = 'Willy Wonka';
+        request.Subject__c = subject;
 
         List<SObject> sObjects = new List<SObject>{ request };
 
@@ -34,9 +33,9 @@ public with sharing class HOT_DatabaseOperationsTest {
         HOT_DatabaseOperations.insertRecords(sObjects);
         Test.stopTest();
 
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Name = :name];
+        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
 
-        assert(requestResult != null, 'Expected to find a request');
+        System.assert(requestResult != null, 'Expected to find a request');
     }
 
     @isTest
@@ -45,22 +44,22 @@ public with sharing class HOT_DatabaseOperationsTest {
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
-        String name = 'Willy Wonka';
-        request.Name = name;
+        String subject = 'Willy Wonkas chocolate';
+        request.Subject__c = subject;
         insert request;
 
-        request = [SELECT Id, Name FROM HOT_Request__c WHERE Name = :name];
+        request = [SELECT Id, Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
 
-        String name2 = 'Wenche Wonka';
-        request.Name = name2;
+        String subject2 = 'Wenche Wonkas chcocolate';
+        request.Subject__c = subject2;
 
         Test.startTest();
         HOT_DatabaseOperations.updateRecords(request);
         Test.stopTest();
 
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Name = :name2];
+        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject2];
 
-        assert(requestResult != null, 'Expected to find a request');
+        System.assert(requestResult != null, 'Expected to find a request');
     }
 
     @isTest
@@ -69,14 +68,14 @@ public with sharing class HOT_DatabaseOperationsTest {
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
-        String name = 'Willy Wonka';
-        request.Name = name;
+        String subject = 'Willy Wonka';
+        request.Subject__c = subject;
         insert request;
 
-        request = [SELECT Name FROM HOT_Request__c WHERE Name = :name];
+        request = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
 
-        String name2 = 'Wenche Wonka';
-        request.Name = name2;
+        String subject2 = 'Wenche Wonka';
+        request.Subject__c = subject2;
 
         List<SObject> sObjects = new List<SObject>{ request };
 
@@ -84,9 +83,9 @@ public with sharing class HOT_DatabaseOperationsTest {
         HOT_DatabaseOperations.updateRecords(sObjects);
         Test.stopTest();
 
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Name = :name2];
+        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject2];
 
-        assert(requestResult != null, 'Expected to find a request');
+        System.assert(requestResult != null, 'Expected to find a request');
     }
 
     @isTest
@@ -95,16 +94,16 @@ public with sharing class HOT_DatabaseOperationsTest {
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
-        String name = 'Willy Wonka';
-        request.Name = name;
+        String subject = 'Willy Wonka';
+        request.Subject__c = subject;
         insert request;
 
-        request = [SELECT Id, Name FROM HOT_Request__c WHERE Name = :name];
-        String name2 = 'Wenche Wonka';
-        request.Name = name2;
+        request = [SELECT Id, Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        String subject2 = 'Wenche Wonka';
+        request.Subject__c = subject2;
 
         HOT_Request__c request2 = HOT_TestDataFactory.createRequest('Adding comment', workType);
-        request2.Name = name;
+        request2.Subject__c = subject;
 
         Test.startTest();
         HOT_DatabaseOperations.upsertRecords(request);
@@ -113,7 +112,7 @@ public with sharing class HOT_DatabaseOperationsTest {
 
         List<HOT_Request__c> requestResults = [SELECT Name FROM HOT_Request__c];
 
-        assert(requestResults.size() == 2, 'Expected to find two request');
+        System.assert(requestResults.size() == 2, 'Expected to find two request');
     }
 
     @isTest
@@ -122,16 +121,16 @@ public with sharing class HOT_DatabaseOperationsTest {
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
-        String name = 'Willy Wonka';
-        request.Name = name;
+        String subject = 'Willy Wonka';
+        request.Subject__c = subject;
         insert request;
 
-        request = [SELECT Id, Name FROM HOT_Request__c WHERE Name = :name];
-        String name2 = 'Wenche Wonka';
-        request.Name = name2;
+        request = [SELECT Id, Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        String subject2 = 'Wenche Wonka';
+        request.Subject__c = subject2;
 
         HOT_Request__c request2 = HOT_TestDataFactory.createRequest('Adding comment', workType);
-        request2.Name = name;
+        request2.Subject__c = subject;
 
         List<HOT_Request__c> requests = new List<HOT_Request__c>{ request, request2 };
 
@@ -141,22 +140,111 @@ public with sharing class HOT_DatabaseOperationsTest {
 
         List<HOT_Request__c> requestResults = [SELECT Name FROM HOT_Request__c];
 
-        assert(requestResults.size() == 2, 'Expected to find two request');
+        System.assert(requestResults.size() == 2, 'Expected to find two request');
     }
 
     @isTest
     public static void deleteRecord() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
+        String subject = 'Willy Wonka';
+        request.Subject__c = subject;
+
+        insert request;
+        Test.startTest();
+        HOT_DatabaseOperations.deleteRecords(request);
+        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        Test.stopTest();
+
+        System.assert(requestResult == null, 'Expected to find no requests');
+    }
+
+    @isTest
+    public static void deleteRecordFail() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
+        String subject = 'Willy Wonka';
+        request.Subject__c = subject;
+
+        insert request;
+        delete request;
+
+        Test.startTest();
+        HOT_DatabaseOperations.deleteRecords(request);
+        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+
+        Test.stopTest();
+
+        System.assert(requestResult == null, 'Expected to find no records and an error since no records exists.');
     }
 
     @isTest
     public static void deleteRecords() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
+        String subject = 'Willy Wonka';
+        request.Subject__c = subject;
+
+        insert request;
+
+        List<SObject> sObjects = new List<SObject>{ request };
+
+        Test.startTest();
+        HOT_DatabaseOperations.deleteRecords(sObjects);
+        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+
+        Test.stopTest();
+
+        System.assert(requestResult == null, 'Expected to find no requests');
     }
 
     @isTest
     public static void undeleteRecord() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
+        String subject = 'Willy Wonka';
+        request.Subject__c = subject;
+
+        insert request;
+        delete request;
+
+        Test.startTest();
+        HOT_DatabaseOperations.undeleteRecords(request);
+        Test.stopTest();
+
+        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+
+        System.assert(requestResult != null, 'Expected to find a request');
     }
 
-    @AisTest
+    @isTest
     public static void undeleteRecords() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Adding comment', workType);
+        String subject = 'Willy Wonka';
+        request.Subject__c = subject;
+
+        List<SObject> sObjects = new List<SObject>{ request };
+
+        insert request;
+        delete request;
+
+        Test.startTest();
+        HOT_DatabaseOperations.undeleteRecords(sObjects);
+        Test.stopTest();
+
+        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+
+        System.assert(requestResult != null, 'Expected to find a request');
     }
 }
