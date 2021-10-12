@@ -132,20 +132,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             if (row['Status__c'] === 'Åpen') {
                 actions.push({ label: 'Rediger', name: 'edit_order' });
             }
+            if (
+                row['Status__c'] === 'Åpen' ||
+                row['Status__c'] === 'Godkjent' ||
+                row['Status__c'] === 'Reservert' ||
+                row['Status__c'] === 'Tildelt'
+            ) {
+                actions.push({ label: 'Legg til filer', name: 'add_files' });
+            }
             actions.push({ label: 'Kopier', name: 'clone_order' });
         }
         actions.push({ label: 'Detaljer', name: 'details' });
         actions.push({ label: 'Se tidsplan', name: 'see_times' });
-
-        if (
-            row['Status__c'] === 'Åpen' ||
-            row['Status__c'] === 'Godkjent' ||
-            row['Status__c'] === 'Reservert' ||
-            row['Status__c'] === 'Tildelt'
-        ) {
-            actions.push({ label: 'Legg til filer', name: 'add_files' });
-        }
-
         doneCallback(actions);
     }
 
@@ -387,6 +385,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         const index = this.findRowIndexById(Id);
         if (index !== -1) {
             if (row.Orderer__c === this.userRecord.AccountId) {
+                this.isGetAllFiles = true;
                 if (this.requests[index].ExternalRequestStatus__c.includes('Åpen')) {
                     //Here we should get the entire record from salesforce, to get entire interpretation address.
                     let clone = this.requests[index];
@@ -413,10 +412,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track userForm = false;
     @track companyForm = false;
     @track publicEvent = false;
+    @track isGetAllFiles = false;
 
     showDetails(row) {
         this.record = row;
         this.recordId = row.Id;
+        this.isGetAllFiles = row.Account__c === this.userRecord.AccountId ? true : false;
         this.userForm =
             (this.record.Type__c === 'User' || this.record.Type__c === 'Company') && this.record.UserName__c !== '';
         this.companyForm = this.record.Type__c === 'Company' || this.record.Type__c === 'PublicEvent';
@@ -488,8 +489,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     uploadFilesOnSave() {
         this.validateCheckbox();
-        this.handleFileUpload();
-        this.setFileConsent();
+        if (this.checkboxValue) {
+            this.handleFileUpload();
+            this.setFileConsent();
+        }
     }
 
     setFileConsent() {
