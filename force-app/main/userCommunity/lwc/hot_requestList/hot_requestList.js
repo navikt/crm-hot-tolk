@@ -460,7 +460,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     handleFileUpload() {
-        this.template.querySelector('c-upload-files').handleFileUpload();
+        this.template.querySelector('c-upload-files').handleFileUpload(this.recordId);
     }
 
     clearFileData() {
