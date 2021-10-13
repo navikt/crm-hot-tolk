@@ -3,6 +3,7 @@ import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequest
 import { updateRecord } from 'lightning/uiRecordApi';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
+import FILE_CONSENT from '@salesforce/schema/HOT_Request__c.IsFileConsent__c';
 import NOTIFY_DISPATCHER from '@salesforce/schema/HOT_Request__c.IsNotifyDispatcher__c';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
@@ -131,12 +132,18 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             if (row['Status__c'] === 'Åpen') {
                 actions.push({ label: 'Rediger', name: 'edit_order' });
             }
+            if (
+                row['Status__c'] === 'Åpen' ||
+                row['Status__c'] === 'Godkjent' ||
+                row['Status__c'] === 'Reservert' ||
+                row['Status__c'] === 'Tildelt'
+            ) {
+                actions.push({ label: 'Legg til filer', name: 'add_files' });
+            }
             actions.push({ label: 'Kopier', name: 'clone_order' });
         }
-
         actions.push({ label: 'Detaljer', name: 'details' });
         actions.push({ label: 'Se tidsplan', name: 'see_times' });
-
         doneCallback(actions);
     }
 
@@ -286,6 +293,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             case 'see_times':
                 this.showTimes(row);
                 break;
+            case 'add_files':
+                this.addFiles(row);
+                break;
             default:
         }
     }
@@ -299,6 +309,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
         window.scrollTo(0, 0);
         refreshApex(this.wiredRequestsResult);
+    }
+
+    renderedCallback() {
+        if (this.showUploadFilesComponent) {
+            document.documentElement.style.setProperty('--dialogMaxWidth', '50%');
+        } else {
+            document.documentElement.style.setProperty('--dialogMaxWidth', '432px');
+        }
     }
 
     findRowIndexById(Id) {
@@ -367,6 +385,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         const index = this.findRowIndexById(Id);
         if (index !== -1) {
             if (row.Orderer__c === this.userRecord.AccountId) {
+                this.isGetAllFiles = true;
                 if (this.requests[index].ExternalRequestStatus__c.includes('Åpen')) {
                     //Here we should get the entire record from salesforce, to get entire interpretation address.
                     let clone = this.requests[index];
@@ -393,10 +412,12 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     @track userForm = false;
     @track companyForm = false;
     @track publicEvent = false;
+    @track isGetAllFiles = false;
 
     showDetails(row) {
         this.record = row;
         this.recordId = row.Id;
+        this.isGetAllFiles = row.Account__c === this.userRecord.AccountId ? true : false;
         this.userForm =
             (this.record.Type__c === 'User' || this.record.Type__c === 'Company') && this.record.UserName__c !== '';
         this.companyForm = this.record.Type__c === 'Company' || this.record.Type__c === 'PublicEvent';
@@ -421,6 +442,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     abortShowDetails() {
         this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+        this.clearFileData();
+        this.template.querySelector('.skjema').classList.remove('hidden');
+        this.showUploadFilesComponent = false;
     }
 
     showTimes(row) {
@@ -433,6 +457,60 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 id: row.Name
             }
         });
+    }
+
+    handleFileUpload() {
+        this.template.querySelector('c-upload-files').handleFileUpload();
+    }
+
+    clearFileData() {
+        this.template.querySelector('c-upload-files').clearFileData();
+    }
+
+    hasFiles = false;
+    checkFileDataLength(event) {
+        this.hasFiles = event.detail > 0;
+    }
+
+    onUploadComplete() {
+        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        detailPage.classList.add('hidden');
+        this.showUploadFilesComponent = false;
+    }
+
+    validateCheckbox() {
+        this.template.querySelector('c-upload-files').validateCheckbox();
+    }
+
+    checkboxValue = false;
+    getCheckboxValue(event) {
+        this.checkboxValue = event.detail;
+    }
+
+    uploadFilesOnSave() {
+        this.validateCheckbox();
+        if (this.checkboxValue) {
+            this.handleFileUpload();
+            this.setFileConsent();
+        }
+    }
+
+    setFileConsent() {
+        let fields = {};
+        fields[REQUEST_ID.fieldApiName] = this.recordId;
+        fields[FILE_CONSENT.fieldApiName] = this.checkboxValue;
+        const recordInput = { fields };
+        updateRecord(recordInput);
+    }
+
+    showUploadFilesComponent = false;
+    addFiles(row) {
+        this.showUploadFilesComponent = true;
+        this.recordId = row.Id;
+        this.template.querySelector('.skjema').classList.add('hidden');
+        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        detailPage.classList.remove('hidden');
+        detailPage.focus();
     }
 
     goToNewRequest() {
