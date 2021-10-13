@@ -5,13 +5,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-        "type": "java",
-        "name": "Launch AClass",
-        "request": "launch",
-        "mainClass": "AClass",
-        "projectName": "crm-hot_9c02aa67"
-    },
-    {
         "name": "Launch Apex Replay Debugger",
         "type": "apex-replay",
         "request": "launch",
