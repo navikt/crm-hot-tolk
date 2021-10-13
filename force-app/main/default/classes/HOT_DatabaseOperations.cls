@@ -50,7 +50,6 @@ public with sharing class HOT_DatabaseOperations {
         dmlOperation(UNDELETEOPERATOR, records);
     }
 
-    @testvisible
     private static void dmlOperation(String operation, List<SObject> records) {
         try {
             switch on operation {
