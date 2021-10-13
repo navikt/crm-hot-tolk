@@ -489,10 +489,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     uploadFilesOnSave() {
         this.validateCheckbox();
-        if (this.checkboxValue) {
-            this.handleFileUpload();
-            this.setFileConsent();
-        }
+        this.handleFileUpload();
+        this.setFileConsent();
     }
 
     setFileConsent() {
