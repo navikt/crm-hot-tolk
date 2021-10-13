@@ -427,7 +427,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.ordererFields = formatRecord(this.record, requestFieldLabels.getSubFields('orderer'));
         this.companyFields = formatRecord(this.record, requestFieldLabels.getSubFields('company'));
         this.requestFields = formatRecord(this.record, requestFieldLabels.getSubFields('request'));
-
         let detailPage = this.template.querySelector('.ReactModal__Overlay');
         detailPage.classList.remove('hidden');
         detailPage.focus();
@@ -460,7 +459,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     handleFileUpload() {
-        this.template.querySelector('c-upload-files').handleFileUpload();
+        this.template.querySelector('c-upload-files').handleFileUpload(this.recordId);
     }
 
     clearFileData() {
@@ -475,6 +474,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     onUploadComplete() {
         let detailPage = this.template.querySelector('.ReactModal__Overlay');
         detailPage.classList.add('hidden');
+        this.template.querySelector('.skjema').classList.remove('hidden');
         this.showUploadFilesComponent = false;
     }
 
@@ -489,10 +489,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     uploadFilesOnSave() {
         this.validateCheckbox();
-        if (this.checkboxValue) {
-            this.handleFileUpload();
-            this.setFileConsent();
-        }
+        this.handleFileUpload();
+        this.setFileConsent();
     }
 
     setFileConsent() {

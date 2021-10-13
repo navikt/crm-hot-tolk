@@ -668,7 +668,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
     handleFileUpload() {
         if (this.hasFiles) {
-            this.template.querySelector('c-upload-files').handleFileUpload();
+            this.template.querySelector('c-upload-files').handleFileUpload(this.recordId);
         }
     }
 
