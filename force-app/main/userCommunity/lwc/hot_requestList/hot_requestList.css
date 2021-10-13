@@ -106,7 +106,7 @@ div.liste.liste-max-width > div > lightning-radio-group {
     margin-bottom: 1rem;
     margin-top: 1rem;
     z-index: 1010;
-    max-width: 432px;
+    max-width: var(--dialogMaxWidth);
     max-height: 75%;
     width: 100%;
 }
