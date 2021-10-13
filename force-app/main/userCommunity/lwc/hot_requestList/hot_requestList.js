@@ -509,7 +509,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     uploadFilesOnSave() {
-        let file = this.fileLength > 1 ? 'Filer' : 'Filen';
+        let file = this.fileLength > 1 ? 'Filene' : 'Filen';
         this.content = file + ' ble lagt til i bestillingen.';
         this.validateCheckbox();
 
