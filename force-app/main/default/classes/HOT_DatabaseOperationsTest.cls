@@ -13,7 +13,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         HOT_DatabaseOperations.insertRecords(request);
         Test.stopTest();
 
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
 
         System.assert(requestResult != null, 'Expected to find a request');
     }
@@ -27,13 +27,13 @@ public with sharing class HOT_DatabaseOperationsTest {
         String subject = 'Willy Wonka';
         request.Subject__c = subject;
 
-        List<SObject> sObjects = new List<SObject>{ request };
+        List<HOT_Request__c> requests = new List<HOT_Request__c>{ request };
 
         Test.startTest();
-        HOT_DatabaseOperations.insertRecords(sObjects);
+        HOT_DatabaseOperations.insertRecords(requests);
         Test.stopTest();
 
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
 
         System.assert(requestResult != null, 'Expected to find a request');
     }
@@ -57,7 +57,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         HOT_DatabaseOperations.updateRecords(request);
         Test.stopTest();
 
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject2];
+        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject2];
 
         System.assert(requestResult != null, 'Expected to find a request');
     }
@@ -72,18 +72,18 @@ public with sharing class HOT_DatabaseOperationsTest {
         request.Subject__c = subject;
         insert request;
 
-        request = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        request = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
 
         String subject2 = 'Wenche Wonka';
         request.Subject__c = subject2;
 
-        List<SObject> sObjects = new List<SObject>{ request };
+        List<HOT_Request__c> requests = new List<HOT_Request__c>{ request };
 
         Test.startTest();
-        HOT_DatabaseOperations.updateRecords(sObjects);
+        HOT_DatabaseOperations.updateRecords(requests);
         Test.stopTest();
 
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject2];
+        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject2];
 
         System.assert(requestResult != null, 'Expected to find a request');
     }
@@ -98,7 +98,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         request.Subject__c = subject;
         insert request;
 
-        request = [SELECT Id, Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        request = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
         String subject2 = 'Wenche Wonka';
         request.Subject__c = subject2;
 
@@ -110,9 +110,19 @@ public with sharing class HOT_DatabaseOperationsTest {
         HOT_DatabaseOperations.upsertRecords(request2);
         Test.stopTest();
 
-        List<HOT_Request__c> requestResults = [SELECT Name FROM HOT_Request__c];
+        List<HOT_Request__c> requestResults = [SELECT Subject__c FROM HOT_Request__c];
+
+        List<String> subjects = new List<String>();
+
+        for (HOT_Request__c req : requestResults) {
+            subjects.add(req.Subject__c);
+        }
 
         System.assert(requestResults.size() == 2, 'Expected to find two request');
+        System.assert(
+            subjects.contains(subject) && subjects.contains(subject2),
+            'Expected to find both requests with correct subject'
+        );
     }
 
     @isTest
@@ -125,7 +135,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         request.Subject__c = subject;
         insert request;
 
-        request = [SELECT Id, Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        request = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
         String subject2 = 'Wenche Wonka';
         request.Subject__c = subject2;
 
@@ -138,9 +148,19 @@ public with sharing class HOT_DatabaseOperationsTest {
         HOT_DatabaseOperations.upsertRecords(requests);
         Test.stopTest();
 
-        List<HOT_Request__c> requestResults = [SELECT Name FROM HOT_Request__c];
+        List<HOT_Request__c> requestResults = [SELECT Subject__c FROM HOT_Request__c];
+
+        List<String> subjects = new List<String>();
+
+        for (HOT_Request__c req : requestResults) {
+            subjects.add(req.Subject__c);
+        }
 
         System.assert(requestResults.size() == 2, 'Expected to find two request');
+        System.assert(
+            subjects.contains(subject) && subjects.contains(subject2),
+            'Expected to find both requests with correct subject'
+        );
     }
 
     @isTest
@@ -155,7 +175,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         insert request;
         Test.startTest();
         HOT_DatabaseOperations.deleteRecords(request);
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
         Test.stopTest();
 
         System.assert(requestResult == null, 'Expected to find no requests');
@@ -175,7 +195,7 @@ public with sharing class HOT_DatabaseOperationsTest {
 
         Test.startTest();
         HOT_DatabaseOperations.deleteRecords(request);
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
 
         Test.stopTest();
 
@@ -197,7 +217,7 @@ public with sharing class HOT_DatabaseOperationsTest {
 
         Test.startTest();
         HOT_DatabaseOperations.deleteRecords(sObjects);
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
 
         Test.stopTest();
 
@@ -220,9 +240,10 @@ public with sharing class HOT_DatabaseOperationsTest {
         HOT_DatabaseOperations.undeleteRecords(request);
         Test.stopTest();
 
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
 
         System.assert(requestResult != null, 'Expected to find a request');
+        System.assert(requestResult.Subject__c == subject, 'Expected to find a request with correct subject.');
     }
 
     @isTest
@@ -243,8 +264,9 @@ public with sharing class HOT_DatabaseOperationsTest {
         HOT_DatabaseOperations.undeleteRecords(sObjects);
         Test.stopTest();
 
-        HOT_Request__c requestResult = [SELECT Name FROM HOT_Request__c WHERE Subject__c = :subject];
+        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
 
         System.assert(requestResult != null, 'Expected to find a request');
+        System.assert(requestResult.Subject__c == subject, 'Expected to find a request with correct subject.');
     }
 }

@@ -1,49 +1,56 @@
 public with sharing class HOT_DatabaseOperations {
+    private static final String INSERTOPERATOR = 'insert';
+    private static final String UPDATEOPERATOR = 'update';
+    private static final String UPSERTOPERATOR = 'upsert';
+    private static final String DELETEOPERATOR = 'delete';
+    private static final String UNDELETEOPERATOR = 'undelete';
+
     public static void insertRecords(SObject record) {
         List<SObject> records = new List<SObject>{ record };
-        dmlOperation('insert', records);
+        dmlOperation(INSERTOPERATOR, records);
     }
 
     public static void insertRecords(List<SObject> records) {
-        dmlOperation('insert', records);
+        dmlOperation(INSERTOPERATOR, records);
     }
 
     public static void updateRecords(SObject record) {
         List<SObject> records = new List<SObject>{ record };
-        dmlOperation('update', records);
+        dmlOperation(UPDATEOPERATOR, records);
     }
 
     public static void updateRecords(List<SObject> records) {
-        dmlOperation('update', records);
+        dmlOperation(UPDATEOPERATOR, records);
     }
 
     public static void upsertRecords(SObject record) {
         List<SObject> records = new List<SObject>{ record };
-        dmlOperation('upsert', records);
+        dmlOperation(UPSERTOPERATOR, records);
     }
 
     public static void upsertRecords(List<SObject> records) {
-        dmlOperation('upsert', records);
+        dmlOperation(UPSERTOPERATOR, records);
     }
 
     public static void deleteRecords(SObject record) {
         List<SObject> records = new List<SObject>{ record };
-        dmlOperation('delete', records);
+        dmlOperation(DELETEOPERATOR, records);
     }
 
     public static void deleteRecords(List<SObject> records) {
-        dmlOperation('delete', records);
+        dmlOperation(DELETEOPERATOR, records);
     }
 
     public static void undeleteRecords(SObject record) {
         List<SObject> records = new List<SObject>{ record };
-        dmlOperation('undelete', records);
+        dmlOperation(UNDELETEOPERATOR, records);
     }
 
     public static void undeleteRecords(List<SObject> records) {
-        dmlOperation('undelete', records);
+        dmlOperation(UNDELETEOPERATOR, records);
     }
 
+    @testvisible
     private static void dmlOperation(String operation, List<SObject> records) {
         try {
             switch on operation {
@@ -63,7 +70,7 @@ public with sharing class HOT_DatabaseOperations {
                     undelete records;
                 }
                 when else {
-                    System.debug('Invalid choise');
+                    System.debug('Invalid dmlOperation choice. The given choice was ' + operation);
                 }
             }
         } catch (Exception e) {
