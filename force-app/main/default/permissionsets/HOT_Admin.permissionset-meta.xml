@@ -786,6 +786,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Person__c.CRM_Age__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Person__c.HOT_Address__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -962,6 +967,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.INT_SecurityMeasures__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.INT_Sex__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
