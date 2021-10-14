@@ -682,7 +682,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     previousPage = 'home';
-
+    isGetAll = false;
     connectedCallback() {
         window.scrollTo(0, 0);
         let testURL = window.location.href;
@@ -718,6 +718,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
             if (parsed_params.fieldValues != null) {
                 this.fieldValues = JSON.parse(parsed_params.fieldValues);
+                this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
 
                 delete this.fieldValues.Account__c;
                 delete this.fieldValues.Company__c;
