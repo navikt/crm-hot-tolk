@@ -1,25 +1,21 @@
 <template>
     <div class="main-content">
-        <div class="right-content">
-            <c-picklist
+        <div class="action-container">
+            <div class="left-content">
+                <c-picklist
                 master-label="Filtrer på status"
                 choices={choices}
                 onpicklistvaluechange={handlePicklist}
-                disabled={selectDisable}
-                multiple={selectMultiple}
-                required={selectRequired}
-                size={selectSize}
             ></c-picklist>
-
-            <lightning-combobox
-                class="mobile-only"
-                name="mobileSorting"
-                label="Sorter etter"
-                value={mobileSortingDefaultValue}
-                options={sortingOptions}
-                onchange={handleMobileSorting}
-            >
-            </lightning-combobox>
+            </div>
+            <div class="right-content"></div>
+        </div>
+        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
+            <c-picklist
+                master-label="Sorter etter"
+                choices={sortingOptions}
+                onpicklistvaluechange={onHandleSort}
+            ></c-picklist>
         </div>
     </br>
         <lightning-datatable
