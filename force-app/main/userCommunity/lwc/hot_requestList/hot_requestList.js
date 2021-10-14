@@ -467,15 +467,36 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     hasFiles = false;
+    fileLength;
     checkFileDataLength(event) {
+        this.fileLength = event.detail;
         this.hasFiles = event.detail > 0;
     }
 
+    showModal() {
+        this.template.querySelector('c-alertdialog').showModal();
+    }
+
+    header;
+    content;
     onUploadComplete() {
-        let detailPage = this.template.querySelector('.ReactModal__Overlay');
-        detailPage.classList.add('hidden');
+        this.template.querySelector('.loader').classList.add('hidden');
+        this.header = 'Suksess!';
+        // Only show pop-up modal if in add files window
+        if (this.isAddFiles) {
+            this.showModal();
+        }
+        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
         this.template.querySelector('.skjema').classList.remove('hidden');
-        this.showUploadFilesComponent = false;
+    }
+
+    onUploadError(err) {
+        this.template.querySelector('.loader').classList.add('hidden');
+        this.header = 'Noe gikk galt';
+        this.content = 'Kunne ikke laste opp fil(er). Feilmelding: ' + err;
+        this.showModal();
+        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+        this.template.querySelector('.skjema').classList.remove('hidden');
     }
 
     validateCheckbox() {
@@ -488,7 +509,15 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     uploadFilesOnSave() {
+        let file = this.fileLength > 1 ? 'Filene' : 'Filen';
+        this.content = file + ' ble lagt til i bestillingen.';
         this.validateCheckbox();
+
+        // Show spinner
+        if (this.checkboxValue) {
+            this.template.querySelector('.loader').classList.remove('hidden');
+            this.showUploadFilesComponent = false;
+        }
         this.handleFileUpload();
         this.setFileConsent();
     }
@@ -502,7 +531,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     showUploadFilesComponent = false;
+    isAddFiles = false;
     addFiles(row) {
+        this.isAddFiles = true;
         this.showUploadFilesComponent = true;
         this.recordId = row.Id;
         this.template.querySelector('.skjema').classList.add('hidden');
