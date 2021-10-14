@@ -175,10 +175,8 @@ public with sharing class HOT_DatabaseOperationsTest {
         insert request;
         Test.startTest();
         HOT_DatabaseOperations.deleteRecords(request);
-        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
+        System.assert(request.IsDeleted, 'Expected to find no requests');
         Test.stopTest();
-
-        System.assert(requestResult == null, 'Expected to find no requests');
     }
 
     @isTest
@@ -193,13 +191,18 @@ public with sharing class HOT_DatabaseOperationsTest {
         insert request;
         delete request;
 
+        Boolean exceptionOccured = false;
+
         Test.startTest();
-        HOT_DatabaseOperations.deleteRecords(request);
-        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
+        try {
+            HOT_DatabaseOperations.deleteRecords(request);
+        } catch (Exception e) {
+            exceptionOccured = true;
+        }
 
         Test.stopTest();
 
-        System.assert(requestResult == null, 'Expected to find no records and an error since no records exists.');
+        System.assert(exceptionOccured, 'Expected to find no records and an error since no records exists.');
     }
 
     @isTest
@@ -218,10 +221,8 @@ public with sharing class HOT_DatabaseOperationsTest {
         Test.startTest();
         HOT_DatabaseOperations.deleteRecords(sObjects);
         HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
-
+        System.assert(request.IsDeleted, 'Expected to find no requests');
         Test.stopTest();
-
-        System.assert(requestResult == null, 'Expected to find no requests');
     }
 
     @isTest
