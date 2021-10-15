@@ -206,6 +206,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_InterestedResource__c.HOT_TermsOfAgreement__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_InterestedResource__c.IsDispatcherNewComment__c</field>
         <readable>true</readable>
     </fieldPermissions>

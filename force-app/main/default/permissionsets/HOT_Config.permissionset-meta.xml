@@ -360,6 +360,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_InterestedResource__c.HOT_TermsOfAgreement__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_InterestedResource__c.IsDispatcherNewComment__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -870,12 +875,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>WorkOrderLineItem.HOT_IsUpdateStatus__c</field>
+        <field>WorkOrder.HOT_SendSMSNotificationOnStatusChanged__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>WorkOrder.HOT_SendSMSNotificationOnStatusChanged__c</field>
+        <field>WorkOrderLineItem.HOT_IsUpdateStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
