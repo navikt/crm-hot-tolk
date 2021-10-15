@@ -1800,11 +1800,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>WorkOrderLineItem.WOLIName__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrderLineItem.WorkTypeId</field>
         <readable>true</readable>

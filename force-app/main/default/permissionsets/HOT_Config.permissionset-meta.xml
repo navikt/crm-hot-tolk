@@ -884,11 +884,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>WorkOrderLineItem.WOLIName__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>WorkType.HOT_DeveloperName__c</field>
         <readable>true</readable>
