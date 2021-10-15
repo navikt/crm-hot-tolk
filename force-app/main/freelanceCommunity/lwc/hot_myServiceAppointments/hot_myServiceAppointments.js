@@ -56,9 +56,22 @@ export default class Hot_myServiceAppointments extends LightningElement {
             sortable: true
         },
         {
+            label: 'Status',
+            fieldName: 'Status',
+            type: 'text',
+            sortable: true
+        },
+        {
             type: 'action',
             typeAttributes: { rowActions: actions }
         }
+    ];
+
+    @track choices = [
+        { name: 'Alle', label: 'Alle' },
+        { name: 'Fremtidige', label: 'Fremtidige' },
+        { name: 'Tildelt', label: 'Tildelt' },
+        { name: 'Dekket', label: 'Dekket' }
     ];
 
     @track serviceResource;
@@ -74,14 +87,11 @@ export default class Hot_myServiceAppointments extends LightningElement {
     wiredMyServiceAppointmentsResult;
     @wire(getMyServiceAppointments)
     wiredMyServiceAppointments(result) {
-        console.log('wiredMyServiceAppointments');
         this.wiredMyServiceAppointmentsResult = result;
         if (result.data) {
             this.myServiceAppointments = result.data;
             this.error = undefined;
-            console.log(JSON.stringify(this.myServiceAppointments));
             this.filterServiceAppointments();
-            console.log(JSON.stringify(this.myServiceAppointmentsFiltered));
         } else if (result.error) {
             this.error = result.error;
             this.myServiceAppointments = undefined;
@@ -89,26 +99,29 @@ export default class Hot_myServiceAppointments extends LightningElement {
     }
 
     filterServiceAppointments() {
-        console.log('filterServiceAppointments');
         var tempServiceAppointments = [];
         for (var i = 0; i < this.myServiceAppointments.length; i++) {
-            if (
-                this.myServiceAppointments[i].Status != 'Avlyst' &&
-                this.myServiceAppointments[i].Status != 'Udekket' &&
-                this.myServiceAppointments[i].Status != 'Dekket'
+            let status = this.myServiceAppointments[i].Status;
+            if (this.picklistValue === 'Alle') {
+                tempServiceAppointments.push(this.myServiceAppointments[i]);
+            } else if (
+                this.picklistValue === 'Fremtidige' &&
+                status !== 'Avlyst' &&
+                this.myServiceAppointments[i].SchedEndTime > new Date().toISOString().substring(0, 10)
             ) {
+                tempServiceAppointments.push(this.myServiceAppointments[i]);
+                // Covers 'Tildelt' and 'Dekket'
+            } else if (this.picklistValue === status) {
                 tempServiceAppointments.push(this.myServiceAppointments[i]);
             }
         }
         this.myServiceAppointmentsFiltered = tempServiceAppointments;
     }
 
-    showHideAll() {
-        if (this.isChecked) {
-            this.myServiceAppointmentsFiltered = this.myServiceAppointments;
-        } else {
-            this.filterServiceAppointments();
-        }
+    @track picklistValue = 'Alle';
+    handlePicklist(event) {
+        this.picklistValue = event.detail.name;
+        this.filterServiceAppointments();
     }
 
     //Sorting methods
@@ -124,7 +137,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
         this.myServiceAppointments = sortList(this.myServiceAppointments, this.sortedBy, this.sortDirection);
-        this.showHideAll();
+        this.filterServiceAppointments();
     }
 
     //Row action methods
@@ -151,15 +164,5 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     abortShowDetails() {
         this.template.querySelector('.detailPage').classList.add('hidden');
-    }
-
-    isChecked = false;
-    handleChecked(event) {
-        this.isChecked = event.detail.checked;
-        if (this.isChecked) {
-            this.myServiceAppointmentsFiltered = this.myServiceAppointments;
-        } else {
-            this.filterServiceAppointments();
-        }
     }
 }
