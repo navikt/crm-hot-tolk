@@ -124,17 +124,20 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                 if (numberOfScheduled > 0) {
                     request.Status__c = statusMap.get('Scheduled');
                 }
-                if (numberOfDispatched > 0) {
+                if (numberOfDispatched == numberOfWorkOrder) {
                     request.Status__c = statusMap.get('Dispatched');
+                    continue;
                 }
                 if (numberOfPartiallyComplete > 0) {
                     request.Status__c = statusMap.get('Partially Complete');
                 }
-                if (numberOfCannotComplete > 0) {
+                if (
+                    numberOfCompleted > 0 &&
+                    numberOfCannotComplete > 0 &&
+                    (numberOfCannotComplete + numberOfCompleted == numberOfWorkOrder)
+                ) {
                     request.Status__c = statusMap.get('Partially Complete');
-                }
-                if (numberOfCompleted > 0) {
-                    request.Status__c = statusMap.get('Partially Complete');
+                    continue;
                 }
                 if (numberOfCompleted == numberOfWorkOrder) {
                     request.Status__c = statusMap.get('Completed');
