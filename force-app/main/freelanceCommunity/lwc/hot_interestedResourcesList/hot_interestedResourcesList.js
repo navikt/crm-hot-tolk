@@ -82,6 +82,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     @track choices = [
         { name: 'Alle', label: 'Alle' },
         { name: 'Påmeldt', label: 'Påmeldt' },
+        { name: 'Tildelt', label: 'Tildelt' },
         { name: 'Ikke tildelt deg', label: 'Ikke tildelt deg' },
         { name: 'Tilbaketrukket påmelding', label: 'Tilbaketrukket påmelding' },
         { name: 'Avlyst', label: 'Avlyst' },
