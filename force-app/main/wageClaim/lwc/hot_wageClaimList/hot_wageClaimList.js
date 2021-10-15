@@ -102,7 +102,6 @@ export default class Hot_wageClaimList extends LightningElement {
     wiredWageClaimsResult;
     @wire(getMyWageClaims)
     wiredWageClaims(result) {
-        console.log(JSON.stringify(result));
         this.wiredWageClaimsResult = result;
         if (result.data) {
             this.allWageClaims = result.data;
@@ -185,10 +184,6 @@ export default class Hot_wageClaimList extends LightningElement {
     onHandleSort(event) {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
-        console.log('this.wageClaims', JSON.stringify(this.wageClaims));
-        console.log('this.sortedBy: ' + this.sortedBy);
-        console.log('this.sortDirection: ', this.sortDirection);
         this.wageClaims = sortList(this.wageClaims, this.sortedBy, this.sortDirection);
-        this.filterWageClaims();
     }
 }
