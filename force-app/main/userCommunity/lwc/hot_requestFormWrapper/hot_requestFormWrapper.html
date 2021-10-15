@@ -1,0 +1,62 @@
+<template>
+    <div class="brodsmulesti">
+        <lightning-breadcrumbs class="skjema-max-width">
+            <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
+            <lightning-breadcrumb label="Ny bestilling" href="/s/ny-bestilling"> </lightning-breadcrumb>
+        </lightning-breadcrumbs>
+    </div>
+
+    <div class="main-content submitted-false">
+        <div class="skjema-ikon tolketjenesten">
+            <img class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon" alt="" />
+        </div>
+        <div class="skjema skjema-max-width">
+            <lightning-record-edit-form
+                object-api-name="HOT_Request__c"
+                density="comfy"
+                onsuccess={handleSuccess}
+                onerror={handleError}
+                onsubmit={handleSubmit}
+                record-id={recordId}
+            >
+                <c-hot_request-form_type></c-hot_request-form_type>
+                <div if:false={showNextButton} class="actual-form">
+                    <c-hot_request-form_user></c-hot_request-form_user>
+                    <c-hot_request-form_orderer></c-hot_request-form_orderer>
+                    <c-hot_request-form_company></c-hot_request-form_company>
+                    <c-hot_request-form_request></c-hot_request-form_request>
+                </div>
+            </lightning-record-edit-form>
+        </div>
+    </div>
+
+    <div class="main-content hidden submitted-true">
+        <div class="main-content dialog-boks skjema-max-width">
+            <lightning-icon
+                icon-name="utility:success"
+                alternative-text="Suksess"
+                title="Suksess"
+                variant="success"
+                size="large"
+            >
+            </lightning-icon>
+            <br />
+            <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1">Bestilling mottatt</h2>
+            <br />
+            <lightning-button title="Gå til mine bestillinger" variant="brand" label="OK" onclick={goToMyRequests}>
+            </lightning-button>
+        </div>
+    </div>
+
+    <c-alertdialog
+        header="Noe gikk galt"
+        content={modalContent}
+        desktop-style="text-align: center;"
+        center-buttons="true"
+        onbuttonclick={handleClick}
+        no-cancel-button="true"
+        max-width="fit-content"
+        max-height="fit-content"
+    >
+    </c-alertdialog>
+</template>

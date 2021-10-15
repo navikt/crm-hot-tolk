@@ -137,8 +137,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 (serviceAppointment.Status == null ||
                 serviceAppointment.Status == 'Canceled' ||
                 serviceAppointment.Status == 'Annul' ||
-                serviceAppointment.Status == 'None')
-                &&
+                serviceAppointment.Status == 'None') &&
                 serviceAppointment.HOT_CanceledByInterpreter__c == false
             ) {
                 resourceByAppointmentCreateWageClaim.put(
@@ -607,6 +606,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ganttColorByStatus.put('Completed', '#59981A');
         }
         return ganttColorByStatus;
+    }
+
+    public void derp() {
+        List<AssignedResource> assignedResources = [
+            SELECT Id
+            FROM AssignedResource
+            WHERE ServiceAppointment.Status = 'Cannot Complete' OR ServiceAppointment.Status = 'Canceled'
+        ];
     }
 
     public static void setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
