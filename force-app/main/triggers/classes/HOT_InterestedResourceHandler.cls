@@ -76,7 +76,7 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
         }
 
         try {
-            insert irList;
+            update irList;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
