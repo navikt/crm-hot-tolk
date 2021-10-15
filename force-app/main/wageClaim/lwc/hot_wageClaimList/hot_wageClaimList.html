@@ -3,10 +3,10 @@
         <div class="action-container">
             <div class="left-content">
                 <c-picklist
-                master-label="Filtrer på status"
-                choices={choices}
-                onpicklistvaluechange={handlePicklist}
-            ></c-picklist>
+                    master-label="Filtrer på status"
+                    choices={choices}
+                    onpicklistvaluechange={handlePicklist}
+                ></c-picklist>
             </div>
             <div class="right-content"></div>
         </div>
@@ -17,7 +17,6 @@
                 onpicklistvaluechange={onHandleSort}
             ></c-picklist>
         </div>
-    </br>
         <lightning-datatable
             key-field="Id"
             data={wageClaims}
