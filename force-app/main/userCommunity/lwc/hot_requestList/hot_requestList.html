@@ -64,7 +64,7 @@
 
     <div
         class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
-        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+        style="z-index: 9999; background-color: rgba(38, 38, 38, 0.7)"
         tabindex="-1"
     >
         <div
@@ -98,6 +98,7 @@
                     ></c-record-files-without-sharing>
                 </section>
             </div>
+            <div class="loader hidden"></div>
             <div if:true={showUploadFilesComponent}>
                 <h2 style="font-size: 1.25rem; text-align: center">Legg til filer i bestillingen</h2>
                 <br />
@@ -105,6 +106,7 @@
                     record-id={recordId}
                     onfiledatalength={checkFileDataLength}
                     onuploadcomplete={onUploadComplete}
+                    onuploaderror={onUploadError}
                     ongetcheckboxvalue={getCheckboxValue}
                 ></c-upload-files>
             </div>
@@ -118,4 +120,13 @@
             </button>
         </div>
     </div>
+
+    <c-alertdialog
+        header={header}
+        content={content}
+        desktop-style="text-align: center; max-width: 30%"
+        center-buttons="true"
+        no-cancel-button="true"
+        mobile-style="text-align: center; max-width: fit-content"
+    ></c-alertdialog>
 </template>
