@@ -69,18 +69,4 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
         }
         update serviceAppointmentsToUpdate;
     }
-
-    public static void copyTermsOfAgreementFromSAToIR(List<HOT_InterestedResource__c> irList) {
-        for (HOT_InterestedResource__c ir : irList) {
-            ir.HOT_TermsOfAgreement__c = ir.ServiceAppointment__r.HOT_TermsOfAgreement__c;
-        }
-
-        try {
-            insert irList;
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-    }
 }
