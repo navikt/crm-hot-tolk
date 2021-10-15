@@ -14,12 +14,9 @@ import {
     recurringDaysValidations,
     recurringEndDateValidations
 } from './hot_createRequestForm_validationRules';
-import uploadFile from '@salesforce/apex/HOT_RequestListContoller.uploadFile';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
     @track submitted = false; // if:false={submitted}
-    acceptedFileFormats = '[.pdf, .png, .jpg, .jpeg, .doc, .docx, .xls, .xlsx, .ppt, pptx, .txt, .rtf]';
-
     @track recordId = null;
     @track allRequests;
     @track requests;
@@ -393,22 +390,19 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         return recurringTypeValid && recurringDaysValid && recurringEndDateValid;
     }
 
+    validateCheckbox() {
+        this.template.querySelector('c-upload-files').validateCheckbox();
+    }
+
     checkboxValue = false;
-    handleCheckboxValue(event) {
+    getCheckboxValue(event) {
         this.checkboxValue = event.detail;
-        this.template.querySelector('c-checkbox').validationHandler(''); // Clear validation when clicking checkbox. Only validate on Submit.
     }
 
     handleValidation() {
         let checkboxValid = true;
-        if (this.fileData.length > 0) {
-            if (!this.checkboxValue) {
-                this.template
-                    .querySelector('c-checkbox')
-                    .validationHandler(
-                        'For å legge til vedlegg må du gi samtykke til at formidler og tolk kan se vedleggene som lastes opp'
-                    );
-            }
+        if (this.hasFiles) {
+            this.validateCheckbox();
             checkboxValid = this.checkboxValue;
         }
         let datetimeValid = this.handleDatetimeValidation().length === 0;
@@ -672,128 +666,15 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         window.scrollTo(0, 0);
     }
 
-    showModal() {
-        this.template.querySelector('c-alertdialog').showModal();
-    }
-
-    focusCheckbox() {
-        this.template.querySelector('c-checkbox').focusCheckbox();
-    }
-
-    isDrop = false;
-    dropHandler(event) {
-        event.preventDefault();
-        this.isDrop = true;
-        this.onFileUpload(event);
-    }
-
-    dragOverHandler(event) {
-        event.preventDefault();
-    }
-
-    // Reset value of file input path so that same file can be uploaded again if deleting file and re-uploading
-    resetFileValue() {
-        this.template.querySelector('[data-id="file-input"]').value = null;
-    }
-
-    onFileButtonClick(event) {
-        const index = event.currentTarget.dataset.index;
-        if (this.fileData.length < index) {
-            return;
-        }
-        this.fileData.splice(index, 1);
-        this.boolSwitch();
-        this.showOrHideCheckbox();
-        this.setCheckboxContent();
-    }
-
-    checkboxContent;
-    setCheckboxContent() {
-        this.checkboxContent =
-            this.fileData.length > 1
-                ? 'Dokumentene som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedleggene vil bli delt med tolken(e) som blir tildelt oppdraget.'
-                : 'Dokumentet som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedlegget vil bli delt med tolken(e) som blir tildelt oppdraget.';
-    }
-    fileButtonLabel;
-    onFileFocus(event) {
-        this.fileButtonLabel = '';
-        const index = event.currentTarget.dataset.index;
-        this.fileButtonLabel = 'Slett vedlegg ' + this.fileData[index].filename;
-    }
-
-    showOrHideCheckbox() {
-        if (this.fileData.length === 0) {
-            this.template.querySelector('.checkboxClass').classList.add('hidden');
-        } else {
-            this.template.querySelector('.checkboxClass').classList.remove('hidden');
-            this.focusCheckbox();
-        }
-    }
-    // Make boolean value change and set it to true to show new files added
-    boolSwitch() {
-        this.filesChanged = false;
-        this.filesChanged = true;
-    }
-
-    filesChanged = false; // If true -> shows new files added in list
-    modalContent;
-    fileData = [];
-    async onFileUpload(event) {
-        try {
-            const result = this.isDrop
-                ? await Promise.all([...event.dataTransfer.files].map((item) => this.readFile(item)))
-                : await Promise.all([...event.target.files].map((item) => this.readFile(item)));
-            result.forEach((item) => {
-                // Only push new files
-                if (this.fileData.findIndex((storedItem) => storedItem.base64 === item.base64) === -1) {
-                    this.fileData.push(item);
-                    this.boolSwitch();
-                }
-            });
-            this.resetFileValue();
-            this.setCheckboxContent();
-            this.showOrHideCheckbox();
-        } catch (err) {
-            this.fileData = [];
-            this.modalContent = 'Filen(e) kunne ikke lastes opp. Feilmelding: ' + err;
-            this.showModal();
-        }
-        this.isDrop = false;
-    }
-
-    setButtonStyleOnFocus() {
-        let inputEle = this.template.querySelector('[data-id="file-input"]');
-        if (this.template.activeElement === inputEle) {
-            document.documentElement.style.setProperty('--outline', 'none');
-            document.documentElement.style.setProperty('--boxShadow', '0 0 0 3px #00347d');
-        } else {
-            document.documentElement.style.setProperty('--outline', 'none');
-            document.documentElement.style.setProperty('--boxShadow', 'none');
-        }
-    }
-
-    readFile(file) {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                resolve({
-                    filename: file.name,
-                    base64: reader.result.split(',')[1],
-                    recordId: this.recordId // Will be null here since Request record is not created yet. Add it on submit in handleFileUpload().
-                });
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
     handleFileUpload() {
-        const filesToUpload = {};
-        this.fileData.forEach((item) => {
-            const { base64, filename } = item;
-            filesToUpload[base64] = filename;
-        });
-        uploadFile({ files: filesToUpload, recordId: this.recordId });
-        this.fileData = null;
+        if (this.hasFiles) {
+            this.template.querySelector('c-upload-files').handleFileUpload(this.recordId);
+        }
+    }
+
+    hasFiles = false;
+    checkFileDataLength(event) {
+        this.hasFiles = event.detail > 0;
     }
 
     toggled() {
@@ -801,7 +682,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     }
 
     previousPage = 'home';
-
+    isGetAll = false;
     connectedCallback() {
         window.scrollTo(0, 0);
         let testURL = window.location.href;
@@ -837,6 +718,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
             if (parsed_params.fieldValues != null) {
                 this.fieldValues = JSON.parse(parsed_params.fieldValues);
+                this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
 
                 delete this.fieldValues.Account__c;
                 delete this.fieldValues.Company__c;

@@ -1,22 +1,23 @@
 <template>
     <div class="main-content">
-        <div class="right-content">
-            <lightning-input
-                type="checkbox"
-                class="filter-list-checkbox"
-                label="Vis historiske oppdrag"
-                name="ShowAll"
-                onchange={handleChecked}
-            >
-            </lightning-input>
-            <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
+        <div class="action-container">
+            <div class="left-content">
                 <c-picklist
-                    master-label="Sorter etter"
-                    choices={sortingOptions}
-                    onpicklistvaluechange={onHandleSort}
+                    master-label="Filtrer på status"
+                    choices={choices}
+                    onpicklistvaluechange={handlePicklist}
                 ></c-picklist>
             </div>
+            <div class="right-content"></div>
         </div>
+        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
+            <c-picklist
+                master-label="Sorter etter"
+                choices={sortingOptions}
+                onpicklistvaluechange={onHandleSort}
+            ></c-picklist>
+        </div>
+
         <lightning-datatable
             key-field="AppointmentNumber"
             data={myServiceAppointmentsFiltered}
@@ -44,7 +45,7 @@
             <section>
                 <h2 id="details-header-id" class="typo-undertittel">Detaljer</h2>
                 <c-hot_record-details record={serviceAppointmentDetails}></c-hot_record-details>
-                <c-record-files-without-sharing record-id={recordId}></c-record-files-without-sharing>
+                <c-record-files-without-sharing record-id={recordId} is-get-all="true"></c-record-files-without-sharing>
             </section>
 
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>

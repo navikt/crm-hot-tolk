@@ -37,7 +37,15 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>RecordFilesController</apexClass>
+        <apexClass>RecordFilesControllerWithSharing</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RecordFilesControllerWithoutSharing</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>UploadFilesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <customPermissions>
@@ -783,6 +791,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Person__c.CRM_Age__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Person__c.HOT_Address__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -959,6 +972,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.INT_SecurityMeasures__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.INT_Sex__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

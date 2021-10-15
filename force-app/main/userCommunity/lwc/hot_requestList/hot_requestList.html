@@ -40,10 +40,6 @@
                 master-label="Sorter etter"
                 choices={sortingOptions}
                 onpicklistvaluechange={onHandleSort}
-                disabled={selectDisable}
-                multiple={selectMultiple}
-                required={selectRequired}
-                size={selectSize}
             ></c-picklist>
         </div>
         <p style="align-self: flex-start" class="typo-normal">
@@ -68,7 +64,7 @@
 
     <div
         class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
-        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+        style="z-index: 9999; background-color: rgba(38, 38, 38, 0.7)"
         tabindex="-1"
     >
         <div
@@ -96,13 +92,41 @@
                 <section class="bestilling-info-skjema sub-form">
                     <h2 style="font-size: 1.25rem">Informasjon om tolkebehov</h2>
                     <c-hot_record-details record={requestFields}></c-hot_record-details>
-                    <c-record-files-without-sharing record-id={recordId}></c-record-files-without-sharing>
+                    <c-record-files-without-sharing
+                        record-id={recordId}
+                        is-get-all={isGetAllFiles}
+                    ></c-record-files-without-sharing>
                 </section>
             </div>
+            <div class="loader hidden"></div>
+            <div if:true={showUploadFilesComponent}>
+                <h2 style="font-size: 1.25rem; text-align: center">Legg til filer i bestillingen</h2>
+                <br />
+                <c-upload-files
+                    record-id={recordId}
+                    onfiledatalength={checkFileDataLength}
+                    onuploadcomplete={onUploadComplete}
+                    onuploaderror={onUploadError}
+                    ongetcheckboxvalue={getCheckboxValue}
+                ></c-upload-files>
+            </div>
 
+            <br />
+            <div if:true={hasFiles} style="text-align: center" aria-live="polite">
+                <c-button button-styling="action" button-label="Lagre" onbuttonclick={uploadFilesOnSave}></c-button>
+            </div>
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
                 <span class="text-hide">Lukk</span>
             </button>
         </div>
     </div>
+
+    <c-alertdialog
+        header={header}
+        content={content}
+        desktop-style="text-align: center; max-width: 30%"
+        center-buttons="true"
+        no-cancel-button="true"
+        mobile-style="text-align: center; max-width: fit-content"
+    ></c-alertdialog>
 </template>

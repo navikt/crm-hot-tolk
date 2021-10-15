@@ -2,14 +2,11 @@
     <div class="main-content">
         <div class="action-container">
             <div class="left-content">
-                <lightning-input
-                    type="checkbox"
-                    class="filter-list-checkbox"
-                    label={checkBoxLabel}
-                    name="toggleTerritory"
-                    onchange={handleChecked}
-                >
-                </lightning-input>
+                <c-picklist
+                    master-label="Filtrer på status"
+                    choices={choices}
+                    onpicklistvaluechange={handlePicklist}
+                ></c-picklist>
             </div>
             <div class="right-content">
                 <lightning-button

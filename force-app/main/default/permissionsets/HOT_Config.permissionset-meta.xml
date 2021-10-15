@@ -229,7 +229,15 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>RecordFilesController</apexClass>
+        <apexClass>RecordFilesControllerWithSharing</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RecordFilesControllerWithoutSharing</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>UploadFilesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <customPermissions>
