@@ -29,11 +29,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         { name: 'Gjennomført', label: 'Gjennomført' }
     ];
 
-    @track selectDisable = false;
-    @track selectMultiple = false;
-    @track selectRequired = false;
-    @track selectSize = 1;
-
     @track error;
     @track userRecord = { AccountId: null };
     @wire(getPersonAccount)

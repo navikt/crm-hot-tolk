@@ -1,22 +1,23 @@
 <template>
     <div class="main-content">
-        <div class="right-content">
-            <lightning-input
-                type="checkbox"
-                class="filter-list-checkbox"
-                label="Vis historiske oppdrag"
-                name="ShowAll"
-                onchange={handleChecked}
-            >
-            </lightning-input>
-            <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
+        <div class="action-container">
+            <div class="left-content">
                 <c-picklist
-                    master-label="Sorter etter"
-                    choices={sortingOptions}
-                    onpicklistvaluechange={onHandleSort}
+                    master-label="Filtrer på status"
+                    choices={choices}
+                    onpicklistvaluechange={handlePicklist}
                 ></c-picklist>
             </div>
+            <div class="right-content"></div>
         </div>
+        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
+            <c-picklist
+                master-label="Sorter etter"
+                choices={sortingOptions}
+                onpicklistvaluechange={onHandleSort}
+            ></c-picklist>
+        </div>
+
         <lightning-datatable
             key-field="AppointmentNumber"
             data={myServiceAppointmentsFiltered}
