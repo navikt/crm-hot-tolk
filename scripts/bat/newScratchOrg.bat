@@ -2,19 +2,19 @@ echo "Oppretter scratch org"
 call sfdx force:org:create -f config\project-scratch-def.json --setalias %1 --durationdays %2 --setdefaultusername --json --loglevel fatal  --wait 10
 
 echo "Installerer crm-platform-base ver. 0.122"
-call sfdx force:package:install --package 04t2o000000yT8KAAU -r -k navcrm --wait 10 --publishwait 10
+call sfdx force:package:install --package 04t2o000000yT8KAAU -r -k %3 --wait 10 --publishwait 10
 
-echo "Installerer crm-platform-integration ver. 0.51"
-call sfdx force:package:install --package 04t2o000000ySU0AAM -r -k navcrm --wait 10 --publishwait 10
+echo "Installerer crm-platform-integration ver. 0.60"
+call sfdx force:package:install --package 04t2o000000yTIAAA2 -r -k %3 --wait 10 --publishwait 10
 
 echo "Installerer crm-platform-access-control ver. 0.68"
-call sfdx force:package:install --package 04t2o000000ySEMAA2 -r -k navcrm --wait 10 --publishwait 10
+call sfdx force:package:install --package 04t2o000000ySEMAA2 -r -k %3 --wait 10 --publishwait 10
 
-echo "Installerer crm-community-base ver. 0.22"
-call sfdx force:package:install --package 04t2o000000yT35AAE -r -k navcrm --wait 10 --publishwait 10
+echo "Installerer crm-community-base ver. 0.28"
+call sfdx force:package:install --package 04t2o000000yTQnAAM -r -k %3 --wait 10 --publishwait 10
 
 echo "Installerer crm-platform-reporting ver. 0.25"
-call sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k navcrm --wait 10 --publishwait 10
+call sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k %3 --wait 10 --publishwait 10
 
 echo "Dytter kildekoden til scratch org'en"
 call sfdx force:source:push

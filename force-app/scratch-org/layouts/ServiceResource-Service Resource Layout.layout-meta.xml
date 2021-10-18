@@ -133,9 +133,9 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns />
-        <layoutColumns />
-        <layoutColumns />
+        <layoutColumns/>
+        <layoutColumns/>
+        <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
@@ -159,6 +159,7 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>ServiceAppointment__c</fields>
         <fields>StartTime__c</fields>
         <fields>EndTime__c</fields>
         <fields>Status__c</fields>
@@ -256,7 +257,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1j000003235G</masterLabel>
+        <masterLabel>00h0E000002J2xC</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

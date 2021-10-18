@@ -23,7 +23,7 @@ private class HOT_FieldServiceStatusHandlerTest {
 
         request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
-        System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
+        System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
 
         workOrder1.Status = 'Dispatched';
         update workOrder1;
@@ -32,11 +32,15 @@ private class HOT_FieldServiceStatusHandlerTest {
 
         System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
 
+        workOrder2.Status = 'Cannot Complete';
+        update workOrder2;
+
+        request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+        System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
+
         workOrder1.Status = 'Completed';
         update workOrder1;
-
-        workOrder2.Status = 'Cannot Completed';
-        update workOrder2;
 
         request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
@@ -52,6 +56,30 @@ private class HOT_FieldServiceStatusHandlerTest {
         request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
         System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
+
+        workOrder1.Status = 'Cannot Complete';
+        update workOrder1;
+
+        workOrder2.Status = 'Cannot Complete';
+        update workOrder2;
+
+        request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+        System.assertEquals('Udekket', request.Status__c, 'Status on the request did not update to correct value');
+
+        workOrder1.Status = 'Partially Complete';
+        update workOrder1;
+
+        workOrder2.Status = 'Completed';
+        update workOrder2;
+
+        request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+        System.assertEquals(
+            'Delvis dekket',
+            request.Status__c,
+            'Status on the request did not update to correct value'
+        );
     }
 
     @isTest
@@ -85,10 +113,28 @@ private class HOT_FieldServiceStatusHandlerTest {
         update workOrderLineItem_2;
 
         workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals('Scheduled', workOrder.Status, 'Status on the work order did not update to correct value');
+
+        workOrderLineItem_1.Status = 'Dispatched';
+        update workOrderLineItem_1;
+
+        workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals('Dispatched', workOrder.Status, 'Status on the work order did not update to correct value');
 
         workOrderLineItem_2.Status = 'Cannot Complete';
         update workOrderLineItem_2;
+
+        workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals('Dispatched', workOrder.Status, 'Status on the work order did not update to correct value');
+
+        workOrderLineItem_2.Status = 'Partially Complete';
+        update workOrderLineItem_2;
+
+        workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals('Dispatched', workOrder.Status, 'Status on the work order did not update to correct value');
+
+        workOrderLineItem_1.Status = 'Completed';
+        update workOrderLineItem_1;
 
         workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals(
@@ -97,7 +143,7 @@ private class HOT_FieldServiceStatusHandlerTest {
             'Status on the work order did not update to correct value'
         );
 
-        workOrderLineItem_2.Status = 'Partially Complete';
+        workOrderLineItem_2.Status = 'Cannot Complete';
         update workOrderLineItem_2;
 
         workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
@@ -170,6 +216,16 @@ private class HOT_FieldServiceStatusHandlerTest {
 
         workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
         System.assertEquals(
+            'Scheduled',
+            workOrderLineItem.Status,
+            'Status on the work order line item did not update to correct value'
+        );
+
+        serviceAppointment_1.Status = 'Dispatched';
+        update serviceAppointment_1;
+
+        workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+        System.assertEquals(
             'Dispatched',
             workOrderLineItem.Status,
             'Status on the work order line item did not update to correct value'
@@ -177,6 +233,16 @@ private class HOT_FieldServiceStatusHandlerTest {
 
         serviceAppointment_1.Status = 'Cannot Complete';
         update serviceAppointment_1;
+
+        workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
+        System.assertEquals(
+            'Dispatched',
+            workOrderLineItem.Status,
+            'Status on the work order line item did not update to correct value'
+        );
+
+        serviceAppointment_2.Status = 'Completed';
+        update serviceAppointment_2;
 
         workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
         System.assertEquals(
@@ -445,5 +511,72 @@ private class HOT_FieldServiceStatusHandlerTest {
         request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
         System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
+    }
+
+    @isTest
+    private static void testOrdererSMSStatusChangeCheckbox_workOrderChanged() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        WorkOrder workOrder = [
+            SELECT Id, Status, Subject, HOT_SendSMSNotificationOnStatusChanged__c
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
+
+        Test.startTest();
+        workOrder.Status = 'Dispatched';
+        update workOrder;
+        Test.stopTest();
+
+        workOrder = [
+            SELECT Id, Status, Subject, HOT_SendSMSNotificationOnStatusChanged__c
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
+        System.assertEquals(
+            true,
+            workOrder.HOT_SendSMSNotificationOnStatusChanged__c,
+            'HOT_SendSMSNotificationOnStatusChanged__c on work order did not update to correct value'
+        );
+    }
+
+    @isTest
+    private static void testOrdererSMSStatusChangeCheckbox_serviceAppointmentChanged() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, Status
+            FROM serviceAppointment
+            WHERE HOT_Request__c = :request.Id
+        ];
+
+        Test.startTest();
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+        Test.stopTest();
+
+        WorkOrder workOrder = [
+            SELECT Id, Status, Subject, HOT_SendSMSNotificationOnStatusChanged__c
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
+        System.assertEquals('Dispatched', workOrder.Status, 'Status on work order did not update to correct value');
+        System.assertEquals(
+            true,
+            workOrder.HOT_SendSMSNotificationOnStatusChanged__c,
+            'HOT_SendSMSNotificationOnStatusChanged__c on work order did not update to correct value'
+        );
     }
 }

@@ -79,12 +79,22 @@ export default class Hot_interestedResourcesList extends LightningElement {
         }
     ];
 
+    @track choices = [
+        { name: 'Alle', label: 'Alle' },
+        { name: 'Påmeldt', label: 'Påmeldt' },
+        { name: 'Tildelt', label: 'Tildelt' },
+        { name: 'Ikke tildelt deg', label: 'Ikke tildelt deg' },
+        { name: 'Tilbaketrukket påmelding', label: 'Tilbaketrukket påmelding' },
+        { name: 'Avlyst', label: 'Avlyst' },
+        { name: 'Oppdrag tilbaketrukket', label: 'Oppdrag tilbaketrukket' },
+        { name: 'Avlyst av tolk', label: 'Avlyst av tolk' }
+    ];
+
     @track serviceResource;
     @wire(getServiceResource)
     wiredServiceresource(result) {
         if (result.data) {
             this.serviceResource = result.data;
-            //console.log(JSON.stringify(this.serviceResource));
         }
     }
 
@@ -98,8 +108,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
             this.interestedResources = result.data;
             this.error = undefined;
             this.filterInterestedResources();
-            this.showHideAll();
-            //console.log(JSON.stringify(this.interestedResources));
         } else if (result.error) {
             this.error = result.error;
             this.interestedResources = undefined;
@@ -108,19 +116,20 @@ export default class Hot_interestedResourcesList extends LightningElement {
     filterInterestedResources() {
         var tempInterestedResources = [];
         for (var i = 0; i < this.interestedResources.length; i++) {
-            if (this.interestedResources[i].Status__c == 'Påmeldt') {
+            if (this.picklistValue === 'Alle') {
+                tempInterestedResources.push(this.interestedResources[i]);
+                // Covers statuses: 'Tildelt', 'Påmeldt', 'Ikke tildelt deg', 'Tilbaketrukket påmelding', 'Avlyst', 'Oppdrag tilbaketrukket' and 'Avlyst av tolk'
+            } else if (this.picklistValue === this.interestedResources[i].Status__c) {
                 tempInterestedResources.push(this.interestedResources[i]);
             }
         }
         this.interestedResourcesFiltered = tempInterestedResources;
     }
 
-    showHideAll() {
-        if (this.isChecked) {
-            this.interestedResourcesFiltered = this.interestedResources;
-        } else {
-            this.filterInterestedResources();
-        }
+    @track picklistValue = 'Alle';
+    handlePicklist(event) {
+        this.picklistValue = event.detail.name;
+        this.filterInterestedResources();
     }
 
     connectedCallback() {
@@ -140,7 +149,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
         this.interestedResources = sortList(this.interestedResources, this.sortedBy, this.sortDirection);
-        this.showHideAll();
+        this.filterInterestedResources();
     }
 
     //Row action methods
@@ -198,25 +207,12 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.selectedRows = event.detail.selectedRows;
     }
 
-    isChecked = false;
-    @track checkBoxLabel = 'Vis lukkede oppdrag';
-    handleChecked(event) {
-        this.isChecked = event.detail.checked;
-        if (this.isChecked) {
-            //this.checkBoxLabel = "Vis oppdrag fra mine regioner";
-            this.interestedResourcesFiltered = this.interestedResources;
-        } else {
-            //this.checkBoxLabel = "Vis oppdrag fra alle regioner";
-            this.filterInterestedResources();
-        }
-    }
     retractInterest() {
         if (this.selectedRows.length > 0) {
             let retractionIds = [];
             for (var i = 0; i < this.selectedRows.length; i++) {
                 retractionIds.push(this.selectedRows[i].Id);
             }
-            //console.log(retractionIds);
             if (confirm('Er du sikker på at du vil tilbaketrekke interesse for valgte oppdrag?')) {
                 retractInterests({ retractionIds }).then(() => {
                     refreshApex(this.wiredInterestedResourcesResult);

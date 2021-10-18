@@ -59,18 +59,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
             initialWidth: 135
         },
         {
-            label: 'Forespørsel',
-            fieldName: 'HOT_RequestNumber__c',
-            type: 'text',
-            sortable: true,
-            initialWidth: 125
-        },
-        {
             label: 'Informasjon',
             fieldName: 'HOT_Information__c',
             type: 'text',
             sortable: true,
-            initialWidth: 240
+            initialWidth: 270
         },
         {
             label: 'Tema',
@@ -96,16 +89,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     ];
 
-    columnLabels = [
-        "'Frigitt dato'",
-        "''",
-        "'Start tid'",
-        "'Slutt tid'",
-        "'Forespørsel'",
-        "'Informasjon'",
-        "'Tema'",
-        "'Frist"
-    ];
+    columnLabels = ["'Frigitt dato'", "''", "'Start tid'", "'Slutt tid'", "'Informasjon'", "'Tema'", "'Frist"];
 
     getRowActions(row, doneCallback) {
         let actions = [];

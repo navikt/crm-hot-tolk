@@ -32,6 +32,18 @@
         <apexClass>HOT_WorkOrderListController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>RecordFilesControllerWithSharing</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RecordFilesControllerWithoutSharing</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>UploadFilesController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.CRM_Person__c</field>
@@ -135,6 +147,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsNotifyDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsOrdererWantStatusUpdateOnSMS__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

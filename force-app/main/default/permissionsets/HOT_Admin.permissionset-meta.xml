@@ -29,15 +29,23 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_RelatedFilesListController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_UpdateChildRecordsService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_WageClaimService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RecordFilesControllerWithSharing</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RecordFilesControllerWithoutSharing</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>UploadFilesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <customPermissions>
@@ -204,6 +212,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_InterestedResource__c.HOT_IsMyRequestDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_InterestedResource__c.HOT_TermsOfAgreement__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -439,6 +452,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsNotifyDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsOrdererWantStatusUpdateOnSMS__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -773,6 +791,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Person__c.CRM_Age__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Person__c.HOT_Address__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -949,6 +972,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.INT_SecurityMeasures__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.INT_Sex__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1619,6 +1647,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_Request__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_SendSMSNotificationOnStatusChanged__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

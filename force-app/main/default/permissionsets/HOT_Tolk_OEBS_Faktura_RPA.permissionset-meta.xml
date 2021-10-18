@@ -171,6 +171,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.OrdererName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.OrdererPhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -276,11 +281,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_GenderAge__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceAppointment.HOT_IsAcute__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -347,6 +347,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_WorkOrderNumber__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_WorkTypeName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -564,6 +569,16 @@
         <field>WorkOrder.Subject</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrderLineItem.WorkTypeId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkType.HOT_DeveloperName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT Tolk OEBS Faktura RPA</label>
     <objectPermissions>
@@ -647,6 +662,15 @@
         <object>WorkOrder</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>WorkType</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
     <recordTypeVisibilities>
         <recordType>Account.Business_Account</recordType>
         <visible>true</visible>
@@ -669,6 +693,10 @@
     </tabSettings>
     <tabSettings>
         <tab>standard-WorkOrder</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>standard-WorkType</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <userPermissions>
