@@ -47,11 +47,16 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
+        this.fieldValues.EventType__c = this.requestTypeResult.eventType;
     }
 
-    //TODO: Fix validation
     handleValidation() {
         console.log('handleValidation');
+        this.template.querySelectorAll('.subform').forEach((subForm) => {
+            subForm.validateFields();
+        });
+
+        //Removeable
         let checkboxValid = true;
         if (this.hasFiles) {
             this.validateCheckbox();
@@ -77,10 +82,10 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         console.log('handleSubmit');
         event.preventDefault();
         this.spin = true;
-        let isValid = true;
+        let isValid = false;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
-        //isValid = this.handleValidation();
+        isValid = this.handleValidation();
         if (isValid) {
             //} && this.promptOverlap()) {
             this.submitForm();

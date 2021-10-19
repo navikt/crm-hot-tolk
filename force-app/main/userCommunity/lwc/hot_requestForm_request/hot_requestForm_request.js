@@ -16,19 +16,14 @@ export default class Hot_requestForm_request extends LightningElement {
         MeetingPostalCode__c: '',
         Description__C: '',
         IsFileConsent__c: false,
-        OrganizationNumber__c: '',
-        UserName__c: '',
-        UserPersonNumber__c: '',
-        OrdererEmail__c: '',
-        OrdererPhone__c: '',
-        Source__c: 'Community',
-        EventType__c: ''
+        Source__c: 'Community'
     };
     @api
     setFieldValues() {
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             this.fieldValues[element.name] = element.value;
         });
+        this.setDependentFields();
     }
 
     @api
@@ -46,6 +41,10 @@ export default class Hot_requestForm_request extends LightningElement {
         this.hasFiles = event.detail > 0;
     }
 
+    @api
+    validateFields() {
+        return false;
+    }
     checkPostalCode(event) {
         //check postal code ExpReg
     }
@@ -71,7 +70,7 @@ export default class Hot_requestForm_request extends LightningElement {
         this.template.querySelector('c-upload-files').validateCheckbox();
     }
 
-    setFieldValuesOLD() {
+    setDependentFields() {
         this.fieldValues.IsFileConsent__c = this.checkboxValue;
         if (this.sameLocation) {
             this.fieldValues.InterpretationStreet__c = this.fieldValues.MeetingStreet__c;
