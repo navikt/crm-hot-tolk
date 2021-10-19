@@ -5,51 +5,49 @@ import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequest
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
+import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 
 export default class Hot_requestFormWrapper extends NavigationMixin(LightningElement) {
     @track submitted = false; // if:false={submitted}
     @track recordId = null;
-    @track allRequests;
     @track requests;
-    @track error;
-    wiredRequestsResult;
+    @track spin = false;
+    @track requestTypeChosen = false;
 
     //TODO: Create js helper file to handle overlap
+    //TODO: Vurdere hvordan dette kan gjøres bedre.
     @wire(getRequestList)
     wiredRequest(result) {
-        this.wiredRequestsResult = result;
         if (result.data) {
-            this.allRequests = result.data;
-            this.filterRequests();
-            this.error = undefined;
-        } else if (result.error) {
-            this.error = result.error;
-            this.requests = undefined;
+            let tempRequests = [];
+            for (let i = 0; i < result.data.length; i++) {
+                if (
+                    result.data[i].ExternalRequestStatus__c !== 'Avlyst' &&
+                    result.data[i].ExternalRequestStatus__c !== 'Dekket' &&
+                    result.data[i].ExternalRequestStatus__c !== 'Udekket'
+                ) {
+                    tempRequests.push(result.data[i]);
+                }
+            }
+            this.requests = tempRequests;
         }
     }
-    filterRequests() {
-        let tempRequests = [];
-        for (let i = 0; i < this.allRequests.length; i++) {
-            if (
-                this.allRequests[i].ExternalRequestStatus__c !== 'Avlyst' &&
-                this.allRequests[i].ExternalRequestStatus__c !== 'Dekket' &&
-                this.allRequests[i].ExternalRequestStatus__c !== 'Udekket'
-            ) {
-                tempRequests.push(this.allRequests[i]);
-            }
+    @track personAccount = { Id: '', Name: '' };
+    @wire(getPersonAccount)
+    wiredGetPersonAccount(result) {
+        if (result.data) {
+            this.personAccount.Id = result.data.AccountId;
+            this.personAccount.Name = result.data.Account.CRM_Person__r.CRM_FullName__c;
         }
-        this.requests = tempRequests;
     }
 
     @track requestTypeResult;
-    @track showNextButton = true;
     handleRequestType(event) {
         console.log(JSON.stringify(event.detail));
         this.requestTypeResult = event.detail;
-        this.showNextButton = false;
+        this.requestTypeChosen = true;
+        this.fieldValues.Type__c = this.requestTypeResult.type;
     }
-
-    @track spin = false;
 
     //TODO: Fix validation
     handleValidation() {
@@ -80,6 +78,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         event.preventDefault();
         this.spin = true;
         let isValid = true;
+        this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
         //isValid = this.handleValidation();
         if (isValid) {
@@ -87,6 +86,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.submitForm();
         } else {
             this.spin = false;
+        }
+    }
+    setAccountLookupFieldsBasedOnRequestType() {
+        this.fieldValues.Orderer__c = this.personAccount.Id;
+        if (this.requestTypeResult.type === 'Me') {
+            this.fieldValues.Account__c = this.personAccount.Id;
         }
     }
 
@@ -113,7 +118,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track fieldValues = {};
     submitForm() {
-        console.log('submitForm');
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
     }
 
@@ -125,17 +129,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
     setFieldValues(fields) {
         for (let k in fields) {
-            console.log(k + ': ' + fields[k]);
             this.fieldValues[k] = fields[k];
         }
-    }
-
-    throwInputValidationError(element, errorText) {
-        element.setCustomValidity(errorText);
-        if (errorText !== '') {
-            element.focus();
-        }
-        element.reportValidity();
     }
 
     handleError(error) {
@@ -147,46 +142,45 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     handleSuccess(event) {
         console.log('handle Success');
         this.spin = false;
-        let x = this.template.querySelector('.submitted-true');
-        x.classList.remove('hidden');
-        this.template.querySelector('.h2-successMessage').focus();
-        x = this.template.querySelector('.submitted-false');
-        x.classList.add('hidden');
         this.recordId = event.detail.id;
-        let requestId = event.detail.id;
-        this.handleFileUpload();
-        let times = this.timesListToObject(this.times);
-        if (times !== {}) {
-            if (this.isAdvancedTimes) {
-                //String requestId, Map<String, Long> times, String recurringType, List<String> recurringDays, Long recurringEndDate
-                let time = times['0'];
-                let recurringType = this.repeatingOptionChosen;
-                let recurringDays = this.chosenDays;
-                let recurringEndDate = new Date(this.repeatingEndDate).getTime();
-                createWorkOrders({
-                    requestId,
-                    times: time,
-                    recurringType,
-                    recurringDays,
-                    recurringEndDate
-                });
-            } else {
-                createAndUpdateWorkOrders({ requestId, times });
-            }
-        }
+
+        this.hideFormAndShowSuccess();
+        this.uploadFiles();
+        this.createWorkOrders();
 
         window.scrollTo(0, 0);
     }
-
-    handleFileUpload() {
-        if (this.hasFiles) {
-            this.template.querySelector('c-upload-files').handleFileUpload(this.recordId);
+    hideFormAndShowSuccess() {
+        this.template.querySelector('.submitted-true').classList.remove('hidden');
+        this.template.querySelector('.h2-successMessage').focus();
+        this.template.querySelector('.submitted-false').classList.add('hidden');
+    }
+    uploadFiles() {
+        this.template.querySelector('c-hot_request-form_request').handleFileUpload(this.recordId);
+    }
+    createWorkOrders() {
+        let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
+        if (timeInput.times !== {}) {
+            if (timeInput.isAdvancedTimes) {
+                createWorkOrders({
+                    requestId: this.recordId,
+                    times: timeInput.times['0'],
+                    recurringType: timeInput.repeatingOptionChosen,
+                    recurringDays: timeInput.chosenDays,
+                    recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
+                });
+            } else {
+                createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times });
+            }
         }
     }
 
-    hasFiles = false;
-    checkFileDataLength(event) {
-        this.hasFiles = event.detail > 0;
+    throwInputValidationError(element, errorText) {
+        element.setCustomValidity(errorText);
+        if (errorText !== '') {
+            element.focus();
+        }
+        element.reportValidity();
     }
 
     previousPage = 'home';
@@ -238,8 +232,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                     this.value = 'no';
                 }
                 this.isEditMode = parsed_params.edit != null;
-                this.showNextButton = !(parsed_params.edit != null || parsed_params.copy != null);
-                if (!this.showNextButton) {
+                this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
+                if (this.requestTypeChosen) {
                     this.requestForm = true;
                     if (this.fieldValues.Type__c !== 'Me' && this.fieldValues.Type__c != null) {
                         this.ordererForm = true;

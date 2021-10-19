@@ -315,4 +315,15 @@ export default class Hot_recurringTimeInput extends LightningElement {
         }
         return times;
     }
+
+    @api
+    getTimeInput() {
+        let timeInputs = {};
+        timeInputs.times = this.timesListToObject(this.times);
+        timeInputs.repeatingOptionChosen = this.repeatingOptionChosen;
+        timeInputs.chosenDays = this.chosenDays;
+        timeInputs.repeatingEndDate = this.repeatingEndDate;
+        timeInputs.isAdvancedTimes = this.isAdvancedTimes;
+        return timeInputs;
+    }
 }

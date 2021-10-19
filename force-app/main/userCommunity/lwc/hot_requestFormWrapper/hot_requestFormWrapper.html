@@ -20,10 +20,10 @@
                 record-id={recordId}
             >
                 <c-hot_request-form_type
-                    if:true={showNextButton}
+                    if:false={requestTypeChosen}
                     onrequestformtyperesult={handleRequestType}
                 ></c-hot_request-form_type>
-                <div if:false={showNextButton} class="actual-form">
+                <div if:true={requestTypeChosen} class="actual-form">
                     <c-hot_request-form_user
                         class="subform"
                         if:true={requestTypeResult.userForm}

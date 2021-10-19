@@ -8,7 +8,6 @@ export default class Hot_requestForm_request extends LightningElement {
     // upload files
 
     @api fieldValues = {
-        Name: '',
         Subject__c: '',
         StartTime__c: '',
         EndTime__c: '',
@@ -17,18 +16,12 @@ export default class Hot_requestForm_request extends LightningElement {
         MeetingPostalCode__c: '',
         Description__C: '',
         IsFileConsent__c: false,
-        IsOtherEconomicProvicer__c: false,
-        IsOrdererWantStatusUpdateOnSMS__c: false,
         OrganizationNumber__c: '',
-        InvoiceReference__c: '',
-        AdditionalInvoiceText__c: '',
         UserName__c: '',
         UserPersonNumber__c: '',
-        Orderer__c: '',
         OrdererEmail__c: '',
         OrdererPhone__c: '',
         Source__c: 'Community',
-        Type__c: '',
         EventType__c: ''
     };
     @api
@@ -36,6 +29,21 @@ export default class Hot_requestForm_request extends LightningElement {
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             this.fieldValues[element.name] = element.value;
         });
+    }
+
+    @api
+    getTimeInput() {
+        return this.template.querySelector('c-hot_recurring-time-input').getTimeInput();
+    }
+    @api
+    handleFileUpload(recordId) {
+        if (this.hasFiles) {
+            this.template.querySelector('c-upload-files').handleFileUpload(recordId);
+        }
+    }
+    hasFiles = false;
+    checkFileDataLength(event) {
+        this.hasFiles = event.detail > 0;
     }
 
     checkPostalCode(event) {

@@ -13,7 +13,7 @@
             type="text"
             name="UserName__c"
             required
-            value={UserName__c}
+            value={fieldValues.UserName__c}
         >
         </lightning-input>
         <br />
@@ -23,7 +23,7 @@
             type="text"
             max-length="11"
             name="UserPersonNumber__c"
-            value={UserPersonNumber__c}
+            value={fieldValues.UserPersonNumber__c}
             required
             onblur={checkPersonNumber}
         >

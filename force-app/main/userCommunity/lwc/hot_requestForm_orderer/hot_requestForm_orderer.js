@@ -26,10 +26,13 @@ export default class Hot_requestForm_orderer extends LightningElement {
         this.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 
-    @api fieldValues;
+    @api fieldValues = {
+        OrdererEmail__c: '',
+        OrdererPhone__c: ''
+    };
+
     handleSubmit() {
         this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
         this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
-        this.fieldValues.Orderer__c = this.personAccount.Id;
     }
 }

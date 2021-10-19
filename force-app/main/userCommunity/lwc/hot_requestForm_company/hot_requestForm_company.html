@@ -7,7 +7,7 @@
             label="Organisasjonsnummer"
             max-length="11"
             type="text"
-            value={OrganizationNumber__c}
+            value={fieldValues.OrganizationNumber__c}
             onblur={checkOrganizationNumber}
             required
         >
@@ -17,7 +17,7 @@
             class="tolk-skjema-input"
             name="InvoiceReference__c"
             label="Deres fakturareferanse"
-            value={InvoiceReference__c}
+            value={fieldValues.InvoiceReference__c}
         >
         </lightning-input>
         <br />
@@ -25,7 +25,7 @@
             class="tolk-skjema-input"
             name="AdditionalInvoiceText__c"
             label="Tilleggsinformajon"
-            value={AdditionalInvoiceText__c}
+            value={fieldValues.AdditionalInvoiceText__c}
         >
         </lightning-input>
     </section>
