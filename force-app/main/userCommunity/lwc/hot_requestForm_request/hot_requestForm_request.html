@@ -9,8 +9,10 @@
             value={fieldValues.Subject__c}
             title="Hva trenger du tolk til?"
             required
+            field-level-help="Beskriv hva du trenger tolk til så nøyaktig som mulig, f.eks. legetime, foreldremøte, forelesning, speidersamling, teaterforestilling osv."
         >
         </lightning-input>
+
         <br />
         <c-hot_recurring-time-input></c-hot_recurring-time-input>
         <br />
@@ -103,6 +105,7 @@
             name="Description__c"
             label="Tilleggsopplysninger"
             value={fieldValues.Description__c}
+            field-level-help="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende.)"
         ></lightning-textarea>
         <div style="margin-left: none">
             <c-upload-files
