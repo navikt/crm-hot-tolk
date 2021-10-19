@@ -20,20 +20,21 @@ export default class Hot_requestForm_orderer extends LightningElement {
         }
     }
 
-    IsOrdererWantStatusUpdateOnSMS__c = false;
-
     handleSMSCheckbox(event) {
-        this.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
+        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 
     @api fieldValues = {
         OrdererEmail__c: '',
-        OrdererPhone__c: ''
+        OrdererPhone__c: '',
+        IsOrdererWantStatusUpdateOnSMS__c: false
     };
 
-    handleSubmit() {
-        this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
-        this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
+    @api
+    setFieldValues() {
+        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
+            this.fieldValues[element.name] = element.value;
+        });
     }
 
     @api

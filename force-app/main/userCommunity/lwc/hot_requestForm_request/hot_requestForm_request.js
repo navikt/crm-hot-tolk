@@ -21,6 +21,15 @@ export default class Hot_requestForm_request extends LightningElement {
         this.setDependentFields();
     }
 
+    setDependentFields() {
+        this.fieldValues.IsFileConsent__c = this.fileConsent;
+        if (this.sameLocation) {
+            this.fieldValues.InterpretationStreet__c = this.fieldValues.MeetingStreet__c;
+            this.fieldValues.InterpretationPostalCode__c = this.fieldValues.MeetingPostalCode__c;
+            this.fieldValues.InterpretationPostalCity__c = this.fieldValues.MeetingPostalCity__c;
+        }
+    }
+
     @api
     getTimeInput() {
         return this.template.querySelector('c-hot_recurring-time-input').getTimeInput();
@@ -47,6 +56,15 @@ export default class Hot_requestForm_request extends LightningElement {
         this.validateCheckbox();
         return false;
     }
+    validateCheckbox() {
+        if (this.hasFiles) {
+            this.template.querySelector('c-upload-files').validateCheckbox();
+        }
+    }
+    fileConsent = false;
+    getFileConsent(event) {
+        this.fileConsent = event.detail;
+    }
     checkPostalCode(event) {
         //check postal code ExpReg
     }
@@ -61,25 +79,5 @@ export default class Hot_requestForm_request extends LightningElement {
     }
     toggled() {
         this.sameLocation = !this.sameLocation;
-    }
-
-    fileConsent = false;
-    getFileConsent(event) {
-        this.fileConsent = event.detail;
-    }
-
-    validateCheckbox() {
-        if (this.hasFiles) {
-            this.template.querySelector('c-upload-files').validateCheckbox();
-        }
-    }
-
-    setDependentFields() {
-        this.fieldValues.IsFileConsent__c = this.fileConsent;
-        if (this.sameLocation) {
-            this.fieldValues.InterpretationStreet__c = this.fieldValues.MeetingStreet__c;
-            this.fieldValues.InterpretationPostalCode__c = this.fieldValues.MeetingPostalCode__c;
-            this.fieldValues.InterpretationPostalCity__c = this.fieldValues.MeetingPostalCity__c;
-        }
     }
 }

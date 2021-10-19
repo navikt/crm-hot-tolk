@@ -12,5 +12,12 @@ export default class Hot_requestForm_company extends LightningElement {
     }
 
     @api
+    setFieldValues() {
+        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
+            this.fieldValues[element.name] = element.value;
+        });
+    }
+
+    @api
     validateFields() {}
 }
