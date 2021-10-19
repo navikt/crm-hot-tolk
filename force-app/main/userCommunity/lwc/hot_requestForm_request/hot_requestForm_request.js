@@ -1,12 +1,7 @@
 import { LightningElement, track, api } from 'lwc';
+import { validate, require } from 'c/validationController';
 
 export default class Hot_requestForm_request extends LightningElement {
-    //TODO
-    //api fieldValues
-    // api validation
-    // set field Values (api)
-    // upload files
-
     @api fieldValues = {
         Subject__c: '',
         StartTime__c: '',
@@ -43,6 +38,13 @@ export default class Hot_requestForm_request extends LightningElement {
 
     @api
     validateFields() {
+        console.log('request validateFields');
+        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
+            if (element.required) {
+                validate(element, [require]);
+            }
+        });
+        this.validateCheckbox();
         return false;
     }
     checkPostalCode(event) {
@@ -61,17 +63,19 @@ export default class Hot_requestForm_request extends LightningElement {
         this.sameLocation = !this.sameLocation;
     }
 
-    checkboxValue = false;
-    getCheckboxValue(event) {
-        this.checkboxValue = event.detail;
+    fileConsent = false;
+    getFileConsent(event) {
+        this.fileConsent = event.detail;
     }
 
     validateCheckbox() {
-        this.template.querySelector('c-upload-files').validateCheckbox();
+        if (this.hasFiles) {
+            this.template.querySelector('c-upload-files').validateCheckbox();
+        }
     }
 
     setDependentFields() {
-        this.fieldValues.IsFileConsent__c = this.checkboxValue;
+        this.fieldValues.IsFileConsent__c = this.fileConsent;
         if (this.sameLocation) {
             this.fieldValues.InterpretationStreet__c = this.fieldValues.MeetingStreet__c;
             this.fieldValues.InterpretationPostalCode__c = this.fieldValues.MeetingPostalCode__c;

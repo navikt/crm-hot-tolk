@@ -1,5 +1,11 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
+import { validate } from 'c/validationController';
+import {
+    recurringTypeValidations,
+    recurringDaysValidations,
+    recurringEndDateValidations
+} from './hot_recurringTimeInput_validationRules';
 
 export default class Hot_recurringTimeInput extends LightningElement {
     @track isOnlyOneTime = true;
@@ -326,4 +332,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
         timeInputs.isAdvancedTimes = this.isAdvancedTimes;
         return timeInputs;
     }
+
+    @api
+    validateFields() {}
 }

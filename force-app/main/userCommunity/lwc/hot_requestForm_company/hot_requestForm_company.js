@@ -10,4 +10,7 @@ export default class Hot_requestForm_company extends LightningElement {
     checkOrganizationNumber(event) {
         //Return if wrong format? ExpReg
     }
+
+    @api
+    validateFields() {}
 }

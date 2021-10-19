@@ -23,4 +23,7 @@ export default class Hot_requestForm_user extends LightningElement {
         }
         inputComponent.reportValidity();
     }
+
+    @api
+    validateFields() {}
 }

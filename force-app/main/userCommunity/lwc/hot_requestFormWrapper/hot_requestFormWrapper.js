@@ -56,19 +56,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             subForm.validateFields();
         });
 
-        //Removeable
-        let checkboxValid = true;
-        if (this.hasFiles) {
-            this.validateCheckbox();
-            checkboxValid = this.checkboxValue;
-        }
-        let datetimeValid = this.handleDatetimeValidation().length === 0;
-        let advancedValid = true;
-
-        if (this.isAdvancedTimes) {
-            advancedValid = this.handleAdvancedTimeValidations();
-        }
-        return datetimeValid && this.handlePersonNumberValidation() && advancedValid && checkboxValid;
+        return false;
     }
 
     handlePersonNumberValidation() {

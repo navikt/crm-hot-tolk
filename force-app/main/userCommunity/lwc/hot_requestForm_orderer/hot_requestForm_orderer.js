@@ -35,4 +35,7 @@ export default class Hot_requestForm_orderer extends LightningElement {
         this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
         this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
     }
+
+    @api
+    validateFields() {}
 }
