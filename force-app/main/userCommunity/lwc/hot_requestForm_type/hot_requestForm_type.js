@@ -78,7 +78,7 @@ export default class Hot_requestForm_type extends LightningElement {
         requestForm: false
     };
     sendResult() {
-        const selectedEvent = new CustomEvent('requestFormTypeResult', {
+        const selectedEvent = new CustomEvent('requestformtyperesult', {
             detail: this.result
         });
         this.dispatchEvent(selectedEvent);
@@ -86,7 +86,7 @@ export default class Hot_requestForm_type extends LightningElement {
 
     typeOfEventElement;
     renderedCallback() {
-        this.typeOfEventElement = this.template.querySelector('.skjema').querySelector('.type-arrangement');
+        this.typeOfEventElement = this.template.querySelector('.type-arrangement');
     }
 
     validateEventType() {

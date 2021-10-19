@@ -23,6 +23,23 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     @track error;
     wiredRequestsResult;
 
+    @track personAccount = { Id: '', Name: '' };
+    @track ordererDetails = { OrdererEmail__c: '', OrdererPhone__c: '' };
+
+    @wire(getPersonAccount)
+    wiredGetPersonAccount(result) {
+        if (result.data) {
+            this.personAccount.Id = result.data.AccountId;
+            this.personAccount.Name = result.data.Account.CRM_Person__r.CRM_FullName__c;
+        }
+    }
+    @wire(getOrdererDetails)
+    wiredGetOrdererDetails(result) {
+        if (result.data) {
+            this.ordererDetails = result.data;
+        }
+    }
+
     @wire(getRequestList)
     wiredRequest(result) {
         this.wiredRequestsResult = result;
@@ -57,23 +74,15 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             { label: 'Nei', value: 'no' }
         ];
     }
-    @track personAccount = { Id: '', Name: '' };
-    @track ordererDetails = { OrdererEmail__c: '', OrdererPhone__c: '' };
 
-    @wire(getPersonAccount)
-    wiredGetPersonAccount(result) {
-        if (result.data) {
-            this.personAccount.Id = result.data.AccountId;
-            this.personAccount.Name = result.data.Account.CRM_Person__r.CRM_FullName__c;
-        }
+    handleRequestType(event) {
+        console.log(event.detail);
+        console.log(JSON.stringify(event.detail));
+        this.requestTypeResult = event.detail;
+        this.showNextButton = false;
+        this.requestForm = event.detail.requestForm;
     }
-    @wire(getOrdererDetails)
-    wiredGetOrdererDetails(result) {
-        if (result.data) {
-            this.ordererDetails = result.data;
-        }
-    }
-
+    @track requestTypeResult;
     @track ordererForm = false;
     @track userForm = false;
     @track companyForm = false;
