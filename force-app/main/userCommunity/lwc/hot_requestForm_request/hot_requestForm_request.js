@@ -1,7 +1,13 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, api } from 'lwc';
 
 export default class Hot_requestForm_request extends LightningElement {
-    @track fieldValues = {
+    //TODO
+    //api fieldValues
+    // api validation
+    // set field Values (api)
+    // upload files
+
+    @api fieldValues = {
         Name: '',
         Subject__c: '',
         StartTime__c: '',
@@ -25,6 +31,12 @@ export default class Hot_requestForm_request extends LightningElement {
         Type__c: '',
         EventType__c: ''
     };
+    @api
+    setFieldValues() {
+        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
+            this.fieldValues[element.name] = element.value;
+        });
+    }
 
     checkPostalCode(event) {
         //check postal code ExpReg
@@ -40,5 +52,23 @@ export default class Hot_requestForm_request extends LightningElement {
     }
     toggled() {
         this.sameLocation = !this.sameLocation;
+    }
+
+    checkboxValue = false;
+    getCheckboxValue(event) {
+        this.checkboxValue = event.detail;
+    }
+
+    validateCheckbox() {
+        this.template.querySelector('c-upload-files').validateCheckbox();
+    }
+
+    setFieldValuesOLD() {
+        this.fieldValues.IsFileConsent__c = this.checkboxValue;
+        if (this.sameLocation) {
+            this.fieldValues.InterpretationStreet__c = this.fieldValues.MeetingStreet__c;
+            this.fieldValues.InterpretationPostalCode__c = this.fieldValues.MeetingPostalCode__c;
+            this.fieldValues.InterpretationPostalCity__c = this.fieldValues.MeetingPostalCity__c;
+        }
     }
 }

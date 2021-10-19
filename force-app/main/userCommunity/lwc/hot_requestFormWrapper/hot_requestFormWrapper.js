@@ -2,17 +2,9 @@ import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
-import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
-import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
-import { validate } from 'c/validationController';
-import {
-    recurringTypeValidations,
-    recurringDaysValidations,
-    recurringEndDateValidations
-} from './hot_createRequestForm_validationRules';
 
 export default class Hot_requestFormWrapper extends NavigationMixin(LightningElement) {
     @track submitted = false; // if:false={submitted}
@@ -22,6 +14,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     @track error;
     wiredRequestsResult;
 
+    //TODO: Create js helper file to handle overlap
     @wire(getRequestList)
     wiredRequest(result) {
         this.wiredRequestsResult = result;
@@ -56,36 +49,11 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.showNextButton = false;
     }
 
-    @track isPersonNumberValid = true;
-    checkPersonNumber() {
-        let inputComponent = this.template.querySelector('.skjema').querySelector('.personNumber');
-        this.fieldValues.UserPersonNumber__c = inputComponent.value;
-        let regExp = RegExp('[0-7][0-9][0-1][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]');
-        this.isPersonNumberValid = regExp.test(inputComponent.value);
-    }
-    reportValidityPersonNumberField() {
-        let inputComponent = this.template.querySelector('.skjema').querySelector('.personNumber');
-        if (!this.isPersonNumberValid) {
-            inputComponent.setCustomValidity('Fødselsnummeret er ikke gyldig');
-            inputComponent.focus();
-        } else {
-            inputComponent.setCustomValidity('');
-        }
-        inputComponent.reportValidity();
-    }
-
     @track spin = false;
 
-    validateCheckbox() {
-        this.template.querySelector('c-upload-files').validateCheckbox();
-    }
-
-    checkboxValue = false;
-    getCheckboxValue(event) {
-        this.checkboxValue = event.detail;
-    }
-
+    //TODO: Fix validation
     handleValidation() {
+        console.log('handleValidation');
         let checkboxValid = true;
         if (this.hasFiles) {
             this.validateCheckbox();
@@ -107,63 +75,58 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         return this.isPersonNumberValid;
     }
 
-    async handleSubmit(event) {
-        this.spin = true;
+    handleSubmit(event) {
+        console.log('handleSubmit');
         event.preventDefault();
-        const fields = event.detail.fields;
+        this.spin = true;
+        let isValid = true;
+        this.getFieldValuesFromSubForms();
+        //isValid = this.handleValidation();
+        if (isValid) {
+            //} && this.promptOverlap()) {
+            this.submitForm();
+        } else {
+            this.spin = false;
+        }
+    }
 
-        if (fields) {
-            this.setFieldValues(fields);
-            let isValid = this.handleValidation();
-            if (isValid) {
-                if (!this.isAdvancedTimes) {
-                    let accountId = this.personAccount.Id;
-                    let times = this.timesListToObject(this.times);
-                    let duplicateRequests = [];
-                    if (this.fieldValues.Type__c === 'Me') {
-                        duplicateRequests = await checkDuplicates({
-                            accountId: accountId,
-                            times: times
-                        });
-                    }
-                    if (duplicateRequests.length === 0) {
-                        this.submit();
-                    } else {
-                        let warningMessage = 'Du har allerede bestillinger i dette tidsrommet:';
-                        for (let request of duplicateRequests) {
-                            warningMessage += '\nEmne: ' + request.Subject__c;
-                            warningMessage += '\nPeriode: ' + request.SeriesPeriod__c;
-                        }
-                        if (confirm(warningMessage)) {
-                            this.submit();
-                        } else {
-                            this.spin = false;
-                        }
-                    }
-                } else {
-                    this.submit();
+    async promptOverlap() {
+        if (!this.isAdvancedTimes && this.fieldValues.Type__c === 'Me') {
+            let accountId = this.personAccount.Id;
+            let times = this.timesListToObject(this.times);
+            duplicateRequests = [];
+            let duplicateRequests = await checkDuplicates({
+                accountId: accountId,
+                times: times
+            });
+            if (duplicateRequests.length > 0) {
+                let warningMessage = 'Du har allerede bestillinger i dette tidsrommet:';
+                for (let request of duplicateRequests) {
+                    warningMessage += '\nEmne: ' + request.Subject__c;
+                    warningMessage += '\nPeriode: ' + request.SeriesPeriod__c;
                 }
-            } else {
-                this.spin = false;
+                return confirm(warningMessage);
             }
         }
-    }
-    submit() {
-        this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
+        return true;
     }
 
+    @track fieldValues = {};
+    submitForm() {
+        console.log('submitForm');
+        this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
+    }
+
+    getFieldValuesFromSubForms() {
+        this.template.querySelectorAll('.subform').forEach((subForm) => {
+            subForm.setFieldValues();
+            this.setFieldValues(subForm.fieldValues);
+        });
+    }
     setFieldValues(fields) {
-        this.fieldValues.IsFileConsent__c = this.checkboxValue;
-        this.fieldValues.OrdererEmail__c = fields.OrdererEmail__c;
-        this.fieldValues.OrdererPhone__c = fields.OrdererPhone__c;
-        this.fieldValues.Orderer__c = this.personAccount.Id;
-        for (const k in fields) {
+        for (let k in fields) {
+            console.log(k + ': ' + fields[k]);
             this.fieldValues[k] = fields[k];
-        }
-        if (this.sameLocation) {
-            this.fieldValues.InterpretationStreet__c = fields.MeetingStreet__c;
-            this.fieldValues.InterpretationPostalCode__c = fields.MeetingPostalCode__c;
-            this.fieldValues.InterpretationPostalCity__c = fields.MeetingPostalCity__c;
         }
     }
 
@@ -175,12 +138,14 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         element.reportValidity();
     }
 
-    handleError() {
+    handleError(error) {
+        console.log(JSON.stringify(error));
         this.spin = false;
     }
 
     @track isEditMode = false;
     handleSuccess(event) {
+        console.log('handle Success');
         this.spin = false;
         let x = this.template.querySelector('.submitted-true');
         x.classList.remove('hidden');
