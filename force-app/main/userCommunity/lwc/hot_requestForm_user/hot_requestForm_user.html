@@ -7,13 +7,15 @@
             >
             </lightning-helptext>
         </h2>
-        <lightning-input-field
+        <lightning-input
             class="tolk-skjema-input"
-            field-name="UserName__c"
+            label="Tolkbrukers navn"
+            type="text"
+            name="UserName__c"
             required
-            value={fieldValues.UserName__c}
+            value={UserName__c}
         >
-        </lightning-input-field>
+        </lightning-input>
         <br />
         <lightning-input
             class="tolk-skjema-input personNumber"
@@ -21,7 +23,7 @@
             type="text"
             max-length="11"
             name="UserPersonNumber__c"
-            value={fieldValues.UserPersonNumber__c}
+            value={UserPersonNumber__c}
             required
             onblur={checkPersonNumber}
         >

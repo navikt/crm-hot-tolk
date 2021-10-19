@@ -1,8 +1,7 @@
-section.sub-form:last-child {
+section {
     margin-bottom: 4rem;
 }
 
-/* 
 .sub-form > form {
     padding: 0 1rem;
 }
@@ -10,4 +9,8 @@ section.sub-form:last-child {
 .sub-form > form > slot {
     display: flex;
     flex-direction: row;
-} */
+}
+
+section {
+    padding: 4rem 2rem 1rem 2rem;
+}

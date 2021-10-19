@@ -63,12 +63,8 @@ div.skjema {
     }
 }
 
-lightning-record-edit-form {
-    margin-bottom: 4rem;
-}
-
-section.sub-form:last-child {
-    margin-bottom: 4rem;
+lightning-record-edit-form section {
+    padding: 4rem 2rem 1rem 2rem;
 }
 
 .filter-list-checkbox {
@@ -258,4 +254,7 @@ section.sub-form:last-child {
 
 .navds-button--secondary:hover {
     opacity: 0.7;
+}
+section {
+    padding: 4rem 2rem 1rem 2rem;
 }

@@ -1,6 +1,6 @@
 <template>
     <section class="bestiller-info-skjema sub-form">
-        <p if:true={showInformationSharingText} class="typo-normal">
+        <p class="typo-normal">
             Navn på bestiller/virksomhet (ikke kontaktinformasjon) og bestillingens øvrige informasjon om behov for
             tolk, vil være tilgjengelig for tolkebruker
         </p>
@@ -20,21 +20,25 @@
         >
         </lightning-input>
         <br />
-        <lightning-input-field
-            field-name="OrdererEmail__c"
+        <lightning-input
+            name="OrdererEmail__c"
+            label="Bestillers e-post"
+            type="email"
             class="tolk-skjema-input"
             value={ordererDetails.OrdererEmail__c}
             required
         >
-        </lightning-input-field>
+        </lightning-input>
         <br />
-        <lightning-input-field
-            field-name="OrdererPhone__c"
+        <lightning-input
+            name="OrdererPhone__c"
+            label="Bestillers telefon"
+            type="tel"
             class="tolk-skjema-input"
             value={ordererDetails.OrdererPhone__c}
             required
         >
-        </lightning-input-field>
+        </lightning-input>
         <br />
         <c-checkbox
             label="Ønsker SMS-varsel ved statusendring på bestillingen"

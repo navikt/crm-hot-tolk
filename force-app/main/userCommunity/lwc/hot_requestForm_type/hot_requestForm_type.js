@@ -4,7 +4,6 @@ export default class Hot_requestForm_type extends LightningElement {
     @track currentRequestType = 'Me';
     @track publicEventForm = false;
     @track eventType = null;
-    @track showInformationSharingText = true;
 
     get requestTypes() {
         return [

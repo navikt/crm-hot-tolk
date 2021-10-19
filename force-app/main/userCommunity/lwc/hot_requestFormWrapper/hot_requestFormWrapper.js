@@ -66,29 +66,13 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.requests = tempRequests;
     }
 
-    @track sameLocation = true;
-    value = 'yes';
-    get options() {
-        return [
-            { label: 'Ja', value: 'yes' },
-            { label: 'Nei', value: 'no' }
-        ];
-    }
-
+    @track requestTypeResult;
+    @track showNextButton = true;
     handleRequestType(event) {
-        console.log(event.detail);
         console.log(JSON.stringify(event.detail));
         this.requestTypeResult = event.detail;
         this.showNextButton = false;
-        this.requestForm = event.detail.requestForm;
     }
-    @track requestTypeResult;
-    @track ordererForm = false;
-    @track userForm = false;
-    @track companyForm = false;
-    @track requestForm = false;
-
-    @track showNextButton = true;
 
     @track fieldValues = {
         Name: '',
@@ -457,12 +441,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
     submit() {
         this.template.querySelector('.skjema').querySelector('lightning-record-edit-form').submit(this.fieldValues);
-        window.scrollBy(0, 100);
-        window.scrollBy(0, -100);
-    }
-
-    handleSMSCheckbox(event) {
-        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 
     setFieldValues(fields) {
@@ -597,10 +575,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     hasFiles = false;
     checkFileDataLength(event) {
         this.hasFiles = event.detail > 0;
-    }
-
-    toggled() {
-        this.sameLocation = !this.sameLocation;
     }
 
     previousPage = 'home';

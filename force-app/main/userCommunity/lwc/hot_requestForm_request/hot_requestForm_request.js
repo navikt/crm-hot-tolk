@@ -25,4 +25,20 @@ export default class Hot_requestForm_request extends LightningElement {
         Type__c: '',
         EventType__c: ''
     };
+
+    checkPostalCode(event) {
+        //check postal code ExpReg
+    }
+
+    @track sameLocation = true;
+    value = 'yes';
+    get options() {
+        return [
+            { label: 'Ja', value: 'yes' },
+            { label: 'Nei', value: 'no' }
+        ];
+    }
+    toggled() {
+        this.sameLocation = !this.sameLocation;
+    }
 }

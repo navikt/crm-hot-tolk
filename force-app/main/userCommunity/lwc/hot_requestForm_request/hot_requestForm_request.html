@@ -1,14 +1,16 @@
 <template>
     <section class="bestilling-info-skjema">
         <h2 style="font-size: 1.25rem">Informasjon om behov for tolk</h2>
-        <lightning-input-field
+        <lightning-input
             class="tolk-skjema-input"
-            field-name="Subject__c"
+            name="Subject__c"
+            label="Tema"
+            type="text"
             value={fieldValues.Subject__c}
             title="Hva trenger du tolk til?"
             required
         >
-        </lightning-input-field>
+        </lightning-input>
         <br />
 
         <div style="margin-bottom: 0.5rem">
@@ -122,31 +124,39 @@
         </div>
 
         <br />
-        <lightning-input-field
+        <lightning-input
             class="tolk-skjema-input adressefelt-hjelp"
-            field-name="MeetingStreet__c"
+            name="MeetingStreet__c"
+            label="Oppmøteadresse"
+            type="text"
             value={fieldValues.MeetingStreet__c}
             required
         >
-        </lightning-input-field>
+        </lightning-input>
         <div class="slds-grid slds-gutters">
             <div class="slds-col slds-size_2-of-5">
-                <lightning-input-field
+                <lightning-input
                     class="tolk-skjema-input postnummer"
                     title="Postnummer"
-                    field-name="MeetingPostalCode__c"
+                    name="MeetingPostalCode__c"
+                    label="Postnummer"
+                    type="text"
+                    max-length="4"
                     value={fieldValues.MeetingPostalCode__c}
+                    onblur={checkPostalCode}
                 >
-                </lightning-input-field>
+                </lightning-input>
             </div>
             <div class="slds-col slds-size_3-of-5">
-                <lightning-input-field
+                <lightning-input
                     class="tolk-skjema-input"
                     title="Poststed"
-                    field-name="MeetingPostalCity__c"
+                    name="MeetingPostalCity__c"
+                    label="Poststed"
+                    type="text"
                     value={fieldValues.MeetingPostalCity__c}
                 >
-                </lightning-input-field>
+                </lightning-input>
             </div>
         </div>
         <br />
@@ -162,42 +172,48 @@
         ></lightning-radio-group>
 
         <div if:false={sameLocation}>
-            <lightning-input-field
+            <lightning-input
                 class="tolk-skjema-input adressefelt-hjelp"
                 title="Tolkeaddresse"
-                field-name="InterpretationStreet__c"
+                name="InterpretationStreet__c"
+                label="Tolkeadresse"
+                type="text"
                 value={fieldValues.InterpretationStreet__c}
             >
-            </lightning-input-field>
+            </lightning-input>
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_2-of-5">
-                    <lightning-input-field
+                    <lightning-input
                         class="tolk-skjema-input postnummer"
                         title="Postnummer"
-                        field-name="InterpretationPostalCode__c"
+                        name="InterpretationPostalCode__c"
+                        label="Postnummer"
+                        type="text"
+                        max-length="4"
                         value={fieldValues.InterpretationPostalCode__c}
                     >
-                    </lightning-input-field>
+                    </lightning-input>
                 </div>
                 <div class="slds-col slds-size_3-of-5">
-                    <lightning-input-field
+                    <lightning-input
                         class="tolk-skjema-input"
                         title="Poststed"
-                        field-name="InterpretationPostalCity__c"
+                        name="InterpretationPostalCity__c"
+                        label="Poststed"
+                        type="text"
                         value={fieldValues.InterpretationPostalCity__c}
                     >
-                    </lightning-input-field>
+                    </lightning-input>
                 </div>
             </div>
         </div>
         <br />
-        <lightning-input-field
+        <lightning-textarea
             class="tolk-skjema-input ikke-sensitiv-fritekst"
-            title="Tilleggsopplysninger"
-            field-name="Description__c"
+            name="Description__c"
+            label="Tilleggsopplysninger"
             value={fieldValues.Description__c}
-        >
-        </lightning-input-field>
+        ></lightning-textarea>
         <div style="margin-left: none">
             <c-upload-files
                 record-id={recordId}
