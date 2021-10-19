@@ -1,4 +1,6 @@
 import { LightningElement, track, api } from 'lwc';
+import { organizationNumberValidationRules } from './hot_validationRules';
+import { validate } from 'c/validationController';
 
 export default class Hot_requestForm_company extends LightningElement {
     @api fieldValues = {
@@ -6,10 +8,6 @@ export default class Hot_requestForm_company extends LightningElement {
         InvoiceReference__c: '',
         AdditionalInvoiceText__c: ''
     };
-
-    checkOrganizationNumber(event) {
-        //Return if wrong format? ExpReg
-    }
 
     @api
     setFieldValues() {
@@ -19,5 +17,8 @@ export default class Hot_requestForm_company extends LightningElement {
     }
 
     @api
-    validateFields() {}
+    validateFields() {
+        console.log('validateFields');
+        validate(this.template.querySelector('[data-id="orgnumber"]'), organizationNumberValidationRules);
+    }
 }

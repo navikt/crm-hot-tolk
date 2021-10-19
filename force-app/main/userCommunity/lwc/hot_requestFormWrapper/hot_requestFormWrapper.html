@@ -24,14 +24,14 @@
                     onrequestformtyperesult={handleRequestType}
                 ></c-hot_request-form_type>
                 <div if:true={requestTypeChosen} class="actual-form">
-                    <c-hot_request-form_user
-                        class="subform"
-                        if:true={requestTypeResult.userForm}
-                    ></c-hot_request-form_user>
                     <c-hot_request-form_orderer
                         class="subform"
                         if:true={requestTypeResult.ordererForm}
                     ></c-hot_request-form_orderer>
+                    <c-hot_request-form_user
+                        class="subform"
+                        if:true={requestTypeResult.userForm}
+                    ></c-hot_request-form_user>
                     <c-hot_request-form_company
                         class="subform"
                         if:true={requestTypeResult.companyForm}

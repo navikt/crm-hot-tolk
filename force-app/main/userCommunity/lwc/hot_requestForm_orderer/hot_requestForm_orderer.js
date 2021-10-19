@@ -1,6 +1,7 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
+import { validate, require } from 'c/validationController';
 
 export default class Hot_requestForm_orderer extends LightningElement {
     @track personAccount = { Id: '', Name: '' };
@@ -38,5 +39,14 @@ export default class Hot_requestForm_orderer extends LightningElement {
     }
 
     @api
-    validateFields() {}
+    validateFields() {
+        console.log('validateFields');
+        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
+            console.log(element.name);
+            if (element.required) {
+                console.log(element.required);
+                validate(element, [require]);
+            }
+        });
+    }
 }
