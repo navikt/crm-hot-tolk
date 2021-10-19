@@ -47,7 +47,6 @@ export default class Hot_requestForm_request extends LightningElement {
 
     @api
     validateFields() {
-        console.log('request validateFields');
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {
                 validate(element, [require]);

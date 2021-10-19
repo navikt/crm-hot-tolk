@@ -1,7 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
-import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
@@ -10,28 +9,9 @@ import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 export default class Hot_requestFormWrapper extends NavigationMixin(LightningElement) {
     @track submitted = false; // if:false={submitted}
     @track recordId = null;
-    @track requests;
     @track spin = false;
     @track requestTypeChosen = false;
 
-    //TODO: Create js helper file to handle overlap
-    //TODO: Vurdere hvordan dette kan gjøres bedre.
-    @wire(getRequestList)
-    wiredRequest(result) {
-        if (result.data) {
-            let tempRequests = [];
-            for (let i = 0; i < result.data.length; i++) {
-                if (
-                    result.data[i].ExternalRequestStatus__c !== 'Avlyst' &&
-                    result.data[i].ExternalRequestStatus__c !== 'Dekket' &&
-                    result.data[i].ExternalRequestStatus__c !== 'Udekket'
-                ) {
-                    tempRequests.push(result.data[i]);
-                }
-            }
-            this.requests = tempRequests;
-        }
-    }
     @track personAccount = { Id: '', Name: '' };
     @wire(getPersonAccount)
     wiredGetPersonAccount(result) {
@@ -55,15 +35,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelectorAll('.subform').forEach((subForm) => {
             subForm.validateFields();
         });
-
         return false;
-    }
-
-    handlePersonNumberValidation() {
-        if (!this.isPersonNumberValid) {
-            this.reportValidityPersonNumberField();
-        }
-        return this.isPersonNumberValid;
     }
 
     handleSubmit(event) {
@@ -74,8 +46,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
         isValid = this.handleValidation();
-        if (isValid) {
-            //} && this.promptOverlap()) {
+        if (isValid && this.promptOverlap()) {
             this.submitForm();
         } else {
             this.spin = false;
