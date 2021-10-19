@@ -53,7 +53,6 @@ export default class Hot_requestForm_request extends LightningElement {
             }
         });
         this.validateCheckbox();
-        return false;
     }
     validateCheckbox() {
         if (this.hasFiles) {

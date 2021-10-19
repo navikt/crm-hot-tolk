@@ -35,7 +35,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelectorAll('.subform').forEach((subForm) => {
             subForm.validateFields();
         });
-        return false;
     }
 
     handleSubmit(event) {
@@ -46,7 +45,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
         isValid = this.handleValidation();
-        if (isValid && this.promptOverlap()) {
+        if (isValid) {
+            // && this.promptOverlap()) {
             this.submitForm();
         } else {
             this.spin = false;
@@ -137,14 +137,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                 createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times });
             }
         }
-    }
-
-    throwInputValidationError(element, errorText) {
-        element.setCustomValidity(errorText);
-        if (errorText !== '') {
-            element.focus();
-        }
-        element.reportValidity();
     }
 
     previousPage = 'home';
