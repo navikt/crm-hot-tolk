@@ -11,6 +11,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     @track recordId = null;
     @track spin = false;
     @track requestTypeChosen = false;
+    @track fieldValues = {};
 
     @track personAccount = { Id: '', Name: '' };
     @wire(getPersonAccount)
@@ -28,13 +29,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
         this.fieldValues.EventType__c = this.requestTypeResult.eventType;
-    }
-
-    handleValidation() {
-        console.log('handleValidation');
-        this.template.querySelectorAll('.subform').forEach((subForm) => {
-            subForm.validateFields();
-        });
     }
 
     handleSubmit(event) {
@@ -59,6 +53,25 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    getFieldValuesFromSubForms() {
+        this.template.querySelectorAll('.subform').forEach((subForm) => {
+            subForm.setFieldValues();
+            this.setFieldValues(subForm.fieldValues);
+        });
+    }
+    setFieldValues(fields) {
+        for (let k in fields) {
+            this.fieldValues[k] = fields[k];
+        }
+    }
+
+    handleValidation() {
+        console.log('handleValidation');
+        this.template.querySelectorAll('.subform').forEach((subForm) => {
+            subForm.validateFields();
+        });
+    }
+
     async promptOverlap() {
         if (!this.isAdvancedTimes && this.fieldValues.Type__c === 'Me') {
             let accountId = this.personAccount.Id;
@@ -80,23 +93,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         return true;
     }
 
-    @track fieldValues = {};
     submitForm() {
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
     }
-
-    getFieldValuesFromSubForms() {
-        this.template.querySelectorAll('.subform').forEach((subForm) => {
-            subForm.setFieldValues();
-            this.setFieldValues(subForm.fieldValues);
-        });
-    }
-    setFieldValues(fields) {
-        for (let k in fields) {
-            this.fieldValues[k] = fields[k];
-        }
-    }
-
     handleError(error) {
         console.log(JSON.stringify(error));
         this.spin = false;
@@ -114,6 +113,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
         window.scrollTo(0, 0);
     }
+
     hideFormAndShowSuccess() {
         this.template.querySelector('.submitted-true').classList.remove('hidden');
         this.template.querySelector('.h2-successMessage').focus();

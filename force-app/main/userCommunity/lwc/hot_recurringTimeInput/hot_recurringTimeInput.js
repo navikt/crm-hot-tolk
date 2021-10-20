@@ -169,19 +169,19 @@ export default class Hot_recurringTimeInput extends LightningElement {
     @track isRepeating = false;
     @track showWeekDays = false;
     repeatingOptions = [
-        { label: 'Hver dag', value: 'Daily' },
-        { label: 'Hver uke', value: 'Weekly' },
-        { label: 'Hver 2. Uke', value: 'Biweekly' }
+        { label: 'Hver dag', name: 'Daily' },
+        { label: 'Hver uke', name: 'Weekly' },
+        { label: 'Hver 2. Uke', name: 'Biweekly' }
     ];
     repeatingOptionChosen = '';
     handleRepeatChoiceMade(event) {
-        this.repeatingOptionChosen = event.detail.value;
-        if (event.detail.value === 'Weekly' || event.detail.value === 'Biweekly') {
+        this.repeatingOptionChosen = event.detail.name;
+        if (event.detail.name === 'Weekly' || event.detail.name === 'Biweekly') {
             this.showWeekDays = true;
         } else {
             this.showWeekDays = false;
         }
-        if (event.detail.value !== 'Never') {
+        if (event.detail.name !== 'Never') {
             this.isRepeating = true;
         } else {
             this.isRepeating = false;

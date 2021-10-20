@@ -63,16 +63,17 @@
         </lightning-input>
 
         <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live>
-            <lightning-combobox
+            <c-picklist
                 name="Gjenta"
-                variant="label-hidden"
-                options={repeatingOptions}
+                choices={repeatingOptions}
                 value={repeatingOptionChosen}
-                onchange={handleRepeatChoiceMade}
+                onpicklistvaluechange={handleRepeatChoiceMade}
                 class="tolk-skjema-input third-width recurringType"
-                label="Gjenta"
+                master-label="Gjenta"
+                desktop-style="width: 30%"
+                mobile-style="width: 100%"
             >
-            </lightning-combobox>
+            </c-picklist>
             <div if:true={showWeekDays} aria-live>
                 <lightning-checkbox-group
                     label="Ukedager"
