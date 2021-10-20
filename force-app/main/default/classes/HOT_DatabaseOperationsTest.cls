@@ -220,7 +220,6 @@ public with sharing class HOT_DatabaseOperationsTest {
 
         Test.startTest();
         HOT_DatabaseOperations.deleteRecords(sObjects);
-        HOT_Request__c requestResult = [SELECT Subject__c FROM HOT_Request__c WHERE Subject__c = :subject];
         System.assert(request.IsDeleted, 'Expected to find no requests');
         Test.stopTest();
     }
