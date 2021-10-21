@@ -175,6 +175,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         insert request;
         Test.startTest();
         HOT_DatabaseOperations.deleteRecords(request);
+        request = [SELECT Id, IsDeleted FROM HOT_Request__c ALL ROWS];
         System.assert(request.IsDeleted, 'Expected to find no requests');
         Test.stopTest();
     }
@@ -191,18 +192,13 @@ public with sharing class HOT_DatabaseOperationsTest {
         insert request;
         delete request;
 
-        Boolean exceptionOccured = false;
-
         Test.startTest();
-        try {
-            HOT_DatabaseOperations.deleteRecords(request);
-        } catch (Exception e) {
-            exceptionOccured = true;
-        }
-
+        HOT_DatabaseOperations.deleteRecords(request);
         Test.stopTest();
 
-        System.assert(exceptionOccured, 'Expected to find no records and an error since no records exists.');
+        List<Application_Log__c> logs = [SELECT Id FROM Application_Log__c];
+
+        System.assert(logs.size() > 0, 'Expected to find no records and an error since no records exists.');
     }
 
     @isTest
