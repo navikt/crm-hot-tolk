@@ -212,10 +212,10 @@ public with sharing class HOT_DatabaseOperationsTest {
 
         insert request;
 
-        List<HOT_Request__c> sObjects = new List<HOT_Request__c>{ request };
+        List<HOT_Request__c> requests = new List<HOT_Request__c>{ request };
 
         Test.startTest();
-        HOT_DatabaseOperations.deleteRecords(request);
+        HOT_DatabaseOperations.deleteRecords(requests);
         request = [SELECT Id, IsDeleted FROM HOT_Request__c ALL ROWS];
         System.assert(request.IsDeleted, 'Expected to find no requests');
         Test.stopTest();
