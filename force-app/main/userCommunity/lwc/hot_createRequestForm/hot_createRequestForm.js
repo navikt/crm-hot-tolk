@@ -16,10 +16,6 @@ import {
 } from './hot_createRequestForm_validationRules';
 
 export default class RecordFormCreateExample extends NavigationMixin(LightningElement) {
-    @track checkboxTextPlural =
-        'Dokumentene som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedleggene vil bli delt med tolken(e) som blir tildelt oppdraget.';
-    @track checkboxTextSingle =
-        'Dokumentet som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedlegget vil bli delt med tolken(e) som blir tildelt oppdraget.';
     @track submitted = false; // if:false={submitted}
     @track recordId = null;
     @track allRequests;
