@@ -5,8 +5,16 @@ private class HOT_WageClaimHandlerTest {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user1', profile);
         insert user;
+
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
         resource.HOT_IsFreelanceInterpreter__c = true;
+        resource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert resource;
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -41,7 +49,6 @@ private class HOT_WageClaimHandlerTest {
     static void setFieldsBasedOnParentTest_onAfterInsert() {
         HOT_WageClaim__c parentWageClaim = [SELECT Id, WorkType__c FROM HOT_WageClaim__c LIMIT 1];
         ServiceResource resource = [SELECT Id FROM ServiceResource];
-
         HOT_WageClaim__c childWageClaim = HOT_TestDataFactory.createWageClaim(resource);
         childWageClaim.ParentWageClaim__c = parentWageClaim.Id;
 
@@ -55,6 +62,24 @@ private class HOT_WageClaimHandlerTest {
             parentWageClaim.WorkType__c,
             childWageClaim.WorkType__c,
             'Could not set fields on child wage claim based on parent wage claim'
+        );
+    }
+    @isTest
+    static void setServiceTerritoryBasedOnServiceResource_OnBeforeInsert() {
+        ServiceResource resource = [SELECT Id FROM ServiceResource];
+        HOT_WageClaim__c wageClaim = HOT_TestDataFactory.createWageClaim(resource);
+
+        Test.startTest();
+        insert wageClaim;
+        Test.stopTest();
+
+        wageClaim = [SELECT Id, ServiceTerritory__c FROM HOT_WageClaim__c LIMIT 1];
+        ServiceTerritory serviceTerritory = [SELECT Id FROM ServiceTerritory LIMIT 1];
+
+        System.assertEquals(
+            serviceTerritory.Id,
+            wageClaim.ServiceTerritory__c,
+            'Service Territory was not set correctly'
         );
     }
 }
