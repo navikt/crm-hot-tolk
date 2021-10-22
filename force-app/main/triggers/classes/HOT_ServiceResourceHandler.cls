@@ -60,7 +60,7 @@ public without sharing class HOT_ServiceResourceHandler {
 
         Datetime startDate = Datetime.valueOf('2018-01-01 00:00:00');
         if (addAllSkills) {
-            List<Skill> skills = [SELECT Id FROM Skill];
+            List<Skill> skills = HOT_Utility.getSkills();
             List<ServiceResourceSkill> serviceResourceSkills = new List<ServiceResourceSkill>();
             for (ServiceResource serviceResource : serviceResources) {
                 for (Skill skill : skills) {
