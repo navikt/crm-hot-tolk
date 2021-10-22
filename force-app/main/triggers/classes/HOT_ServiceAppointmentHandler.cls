@@ -477,7 +477,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.Status = 'None';
-            serviceAppointment.HOT_DispatcherNew__c = requests.get(serviceAppointment.HOT_Request__C).Dispatcher__c;
+            serviceAppointment.HOT_DispatcherNew__c = requests.get(serviceAppointment.HOT_Request__C)?.Dispatcher__c;
             if (serviceAppointment.HOT_Request__c != null) {
                 serviceAppointment.OwnerId = serviceAppointment.HOT_RequestOwnerId__c;
             }
