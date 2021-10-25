@@ -66,7 +66,7 @@ private class HOT_WageClaimHandlerTest {
     }
     @isTest
     static void setServiceTerritoryBasedOnServiceResource_OnBeforeInsert() {
-        ServiceResource resource = [SELECT Id FROM ServiceResource];
+        ServiceResource resource = [SELECT Id, HOT_ServiceTerritory__c FROM ServiceResource];
         HOT_WageClaim__c wageClaim = HOT_TestDataFactory.createWageClaim(resource);
 
         Test.startTest();
@@ -74,6 +74,7 @@ private class HOT_WageClaimHandlerTest {
         Test.stopTest();
 
         wageClaim = [SELECT Id, ServiceTerritory__c FROM HOT_WageClaim__c LIMIT 1];
+
 
         System.assertEquals(
             resource.HOT_ServiceTerritory__c,
