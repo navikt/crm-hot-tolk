@@ -217,6 +217,13 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
 
     @api
+    handleValidation() {
+        if (this.isAdvancedTimes) {
+            this.handleAdvancedTimeValidations();
+        } else {
+            this.handleDatetimeValidation();
+        }
+    }
     handleAdvancedTimeValidations() {
         let typeElement = this.template.querySelector('.recurringType');
         let recurringTypeValid = validate(typeElement, recurringTypeValidations).length === 0;

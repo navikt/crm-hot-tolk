@@ -53,6 +53,7 @@ export default class Hot_requestForm_request extends LightningElement {
             }
         });
         this.validateCheckbox();
+        this.template.querySelector('c-hot_recurring-time-input').handleValidation();
     }
     validateCheckbox() {
         if (this.hasFiles) {
