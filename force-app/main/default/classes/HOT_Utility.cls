@@ -123,4 +123,16 @@ public without sharing class HOT_Utility {
         }
         return minutes;
     }
+
+    public static List<Skill> getSkills() {
+        Map<String, String> skillMap = new Map<String, String>();
+        skillMap.put('Haptisk_Kommunikasjon', 'Haptisk Kommunikasjon');
+        skillMap.put('Skrivetolking', 'Skrivetolking');
+        skillMap.put('Taktilt_Tegnsprak', 'Taktilt Tegnspråk');
+        skillMap.put('Taletolking', 'Taletolking');
+        skillMap.put('Tegn_Som_Stotte_Til_Munnavlesning', 'Tegn Som Støtte Til Munnavlesning');
+        skillMap.put('Tegnsprak_I_Begrenset_Synsfelt', 'Tegnspråk I Begrenset Synsfelt');
+        skillMap.put('Tegnspraktolk', 'Tegnspråktolk');
+        return [SELECT Id, MasterLabel FROM Skill WHERE DeveloperName IN :skillMap.keySet()];
+    }
 }

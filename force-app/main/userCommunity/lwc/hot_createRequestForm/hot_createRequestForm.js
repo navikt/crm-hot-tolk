@@ -643,6 +643,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         this.recordId = event.detail.id;
         let requestId = event.detail.id;
         this.handleFileUpload();
+        this.deleteMarkedFiles();
         let times = this.timesListToObject(this.times);
         if (times !== {}) {
             if (this.isAdvancedTimes) {
@@ -670,6 +671,10 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         if (this.hasFiles) {
             this.template.querySelector('c-upload-files').handleFileUpload(this.recordId);
         }
+    }
+
+    deleteMarkedFiles() {
+        this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
     }
 
     hasFiles = false;

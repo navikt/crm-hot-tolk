@@ -465,8 +465,19 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
 
     private static void setOwnerAndStatus(List<ServiceAppointment> serviceAppointments) {
+        List<Id> requestIds = new List<Id>();
+
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            requestIds.add(ServiceAppointment.HOT_Request__c);
+        }
+
+        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
+            [SELECT Id, Dispatcher__C FROM HOT_Request__C WHERE Id IN :requestIds]
+        );
+
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.Status = 'None';
+            serviceAppointment.HOT_DispatcherNew__c = requests.get(serviceAppointment.HOT_Request__C)?.Dispatcher__c;
             if (serviceAppointment.HOT_Request__c != null) {
                 serviceAppointment.OwnerId = serviceAppointment.HOT_RequestOwnerId__c;
             }

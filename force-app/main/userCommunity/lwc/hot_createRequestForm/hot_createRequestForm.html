@@ -361,6 +361,9 @@
                                 onfiledatalength={checkFileDataLength}
                                 ongetcheckboxvalue={getCheckboxValue}
                                 desktop-style="margin-left: unset"
+                                checkbox-validation="true"
+                                checkbox-text-plural="Dokumentene som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedleggene vil bli delt med tolken(e) som blir tildelt oppdraget."
+                                checkbox-text-single="Dokumentet som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedlegget vil bli delt med tolken(e) som blir tildelt oppdraget."
                             ></c-upload-files>
                         </div>
 
@@ -368,6 +371,7 @@
                         <c-record-files-with-sharing
                             record-id={recordId}
                             is-get-all={isGetAll}
+                            is-delete-option="true"
                             title="Tidligere opplastede vedlegg"
                         ></c-record-files-with-sharing>
 
