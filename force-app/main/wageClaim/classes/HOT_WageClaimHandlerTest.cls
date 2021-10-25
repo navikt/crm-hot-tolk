@@ -74,10 +74,9 @@ private class HOT_WageClaimHandlerTest {
         Test.stopTest();
 
         wageClaim = [SELECT Id, ServiceTerritory__c FROM HOT_WageClaim__c LIMIT 1];
-        ServiceTerritory serviceTerritory = [SELECT Id FROM ServiceTerritory LIMIT 1];
 
         System.assertEquals(
-            serviceTerritory.Id,
+            resource.HOT_ServiceTerritory__c,
             wageClaim.ServiceTerritory__c,
             'Service Territory was not set correctly'
         );

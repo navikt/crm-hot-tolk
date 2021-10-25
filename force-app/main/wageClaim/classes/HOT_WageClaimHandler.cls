@@ -1,13 +1,13 @@
 public without sharing class HOT_WageClaimHandler extends MyTriggers {
     public override void onBeforeInsert() {
-        List<HOT_WageClaim__c> wageClaimsWithServiceResource = new List<HOT_WageClaim__c>();
+        Map<HOT_WageClaim__c, Id> wageClaimsWithServiceResource = new Map<HOT_WageClaim__c, Id>();
         for (HOT_WageClaim__c wageClaim : (List<HOT_WageClaim__c>) records) {
             if (wageClaim.ServiceResource__c != null) {
                 // Should never be null
-                wageClaimsWithServiceResource.add(wageClaim);
+                wageClaimsWithServiceResource.put(wageClaim, wageClaim.ServiceResource__c);
             }
         }
-        if (wageClaimsWithServiceResource.size() > 0) {
+        if (!wageClaimsWithServiceResource.isEmpty()) {
             setServiceTerritoryBasedOnServiceResource(wageClaimsWithServiceResource);
         }
     }
@@ -74,16 +74,18 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
         HOT_DatabaseOperations.updateRecords(wageClaims);
     }
 
-    private static void setServiceTerritoryBasedOnServiceResource(List<HOT_WageClaim__c> wageClaims) {
-        List<Id> serviceResourceIds = new List<Id>();
-        for (HOT_WageClaim__c wageClaim : wageClaims) {
-            serviceResourceIds.add(wageClaim.ServiceResource__c);
-        }
+    private static void setServiceTerritoryBasedOnServiceResource(
+        Map<HOT_WageClaim__c, Id> wageClaimWithServiceResourceMap
+    ) {
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
-            [SELECT Id, HOT_ServiceTerritory__c FROM ServiceResource WHERE Id IN :serviceResourceIds]
+            [
+                SELECT Id, HOT_ServiceTerritory__c
+                FROM ServiceResource
+                WHERE Id IN :wageClaimWithServiceResourceMap.values()
+            ]
         );
 
-        for (HOT_WageClaim__c wageClaim : wageClaims) {
+        for (HOT_WageClaim__c wageClaim : wageClaimWithServiceResourceMap.keySet()) {
             wageClaim.ServiceTerritory__c = serviceResources.get(wageClaim.ServiceResource__c).HOT_ServiceTerritory__c;
         }
     }
