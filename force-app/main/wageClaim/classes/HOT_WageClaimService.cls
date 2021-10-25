@@ -150,6 +150,7 @@ public without sharing class HOT_WageClaimService {
         Map<Id, List<HOT_WageClaim__c>> wageClaimsByServiceResourceId = getWageClaimsByServiceResourceId(wageClaims);
 
         List<HOT_WageClaim__c> newWageClaims = new List<HOT_WageClaim__c>();
+        Map<Id, HOT_WageClaim__c> updatedWageClaims = new Map<Id, HOT_WageClaim__c>();
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c) != null) {
                 for (
@@ -157,7 +158,10 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointment.HOT_ServiceResource__c
                     )
                 ) {
-                    HOT_WageClaim__c updatedWageClaim = new HOT_WageClaim__c(Id = wageClaim.Id);
+                    Boolean isWageClaimChanged = false;
+                    HOT_WageClaim__c updatedWageClaim = updatedWageClaims.get(wageClaim.Id) != null
+                        ? updatedWageClaims.get(wageClaim.Id)
+                        : new HOT_WageClaim__c(Id = wageClaim.Id);
                     Datetime serviceAppointmentStartTime = serviceAppointment.SchedStartTime;
                     Datetime serviceAppointmentEndTime = serviceAppointment.SchedEndTime;
                     //Completely covered
@@ -166,6 +170,7 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointmentEndTime >= wageClaim.EndTime__c
                     ) {
                         updatedWageClaim.Status__c = 'Covered';
+                        isWageClaimChanged = true;
                     }
                     //lower
                     if (
@@ -181,6 +186,7 @@ public without sharing class HOT_WageClaimService {
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
                         updatedWageClaim.EndTime__c = serviceAppointmentEndTime;
+                        isWageClaimChanged = true;
                     }
                     //upper
                     if (
@@ -196,13 +202,19 @@ public without sharing class HOT_WageClaimService {
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
                         updatedWageClaim.StartTime__c = serviceAppointmentStartTime;
+                        isWageClaimChanged = true;
                     }
-                    newWageClaims.add(updatedWageClaim);
+                    if (isWageClaimChanged) {
+                        updatedWageClaims.put(updatedWageClaim.Id, updatedWageClaim);
+                    }
                 }
             }
         }
+        List<HOT_WageClaim__c> wageClaimsToUpsert = new List<HOT_WageClaim__c>();
+        wageClaimsToUpsert.addAll(newWageClaims);
+        wageClaimsToUpsert.addAll(updatedWageClaims.values());
         try {
-            upsert newWageClaims;
+            upsert wageClaimsToUpsert;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);

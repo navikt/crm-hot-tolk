@@ -93,12 +93,11 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                 Integer numberOfDispatched = 0;
                 Integer numberOfInProgress = 0;
                 Integer numberOfCompleted = 0;
-                Integer numberOfPartiallyComplete = 0;
                 Integer numberOfCannotComplete = 0;
                 Integer numberOfCanceled = 0;
 
                 for (ServiceAppointment serviceAppointment : serviceAppointmentMaps.get(workOrderLineItem.Id)) {
-                    if (serviceAppointment.Status == 'None') {
+                    if (serviceAppointment.Status == 'None' || serviceAppointment.Status == 'Released to Freelance') {
                         numberOfNone++;
                     }
                     if (serviceAppointment.Status == 'Scheduled') {
@@ -112,9 +111,6 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                     }
                     if (serviceAppointment.Status == 'Completed') {
                         numberOfCompleted++;
-                    }
-                    if (serviceAppointment.Status == 'Partially Complete') {
-                        numberOfPartiallyComplete++;
                     }
                     if (serviceAppointment.Status == 'Cannot Complete') {
                         numberOfCannotComplete++;
@@ -130,30 +126,28 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                 System.debug('numberOfDispatched: ' + numberOfDispatched);
                 System.debug('numberOfInProgress: ' + numberOfInProgress);
                 System.debug('numberOfCompleted: ' + numberOfCompleted);
-                System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
                 System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
                 System.debug('numberOfCanceled: ' + numberOfCanceled);
 
-                if (numberOfScheduled > 0) {
+                if (numberOfScheduled > 0 || numberOfDispatched > 0) {
                     workOrderLineItem.Status = 'Scheduled';
                 }
-                if (numberOfDispatched > 0) {
+                if (numberOfNone == numberOfServiceAppointments) {
+                    workOrderLineItem.Status = 'New';
+                    continue;
+                }
+                if (
+                    numberOfDispatched > 0 &&
+                    numberOfDispatched + numberOfCannotComplete == numberOfServiceAppointments
+                ) {
                     workOrderLineItem.Status = 'Dispatched';
-                }
-                if (numberOfPartiallyComplete > 0) {
-                    workOrderLineItem.Status = 'Partially Complete';
-                }
-                if (numberOfCannotComplete > 0) {
-                    workOrderLineItem.Status = 'Partially Complete';
-                }
-                if (numberOfCompleted > 0) {
-                    workOrderLineItem.Status = 'Partially Complete';
+                    continue;
                 }
                 if (numberOfInProgress == numberOfServiceAppointments) {
                     workOrderLineItem.Status = 'In Progress';
                     continue;
                 }
-                if (numberOfCompleted == numberOfServiceAppointments) {
+                if (numberOfCompleted > 0 && numberOfDispatched + numberOfCompleted == numberOfServiceAppointments) {
                     workOrderLineItem.Status = 'Completed';
                     continue;
                 }
@@ -161,12 +155,16 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                     workOrderLineItem.Status = 'Cannot Complete';
                     continue;
                 }
-                if (numberOfCanceled == numberOfServiceAppointments) {
-                    workOrderLineItem.Status = 'Canceled';
+                if (
+                    numberOfCannotComplete > 0 &&
+                    numberOfCompleted > 0 &&
+                    numberOfCannotComplete + numberOfCompleted + numberOfDispatched == numberOfServiceAppointments
+                ) {
+                    workOrderLineItem.Status = 'Partially Complete';
                     continue;
                 }
-                if (numberOfNone == numberOfServiceAppointments) {
-                    workOrderLineItem.Status = 'New';
+                if (numberOfCanceled == numberOfServiceAppointments) {
+                    workOrderLineItem.Status = 'Canceled';
                     continue;
                 }
             }

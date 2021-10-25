@@ -46,20 +46,6 @@
     .right-content {
         width: 100%;
     }
-}
-
-div.liste.liste-max-width > div > lightning-radio-group {
-    width: 50%;
-}
-.filter-list-checkbox {
-    width: 50%;
-}
-
-@media (max-width: 576px) {
-    .right-content {
-        margin-bottom: 0;
-        width: 100%;
-    }
     .slds-button_brand,
     .slds-button--brand {
         width: 100%;
@@ -67,6 +53,12 @@ div.liste.liste-max-width > div > lightning-radio-group {
     .liste {
         padding: 1rem 1rem 1rem 1rem;
         margin: 1rem auto 1rem auto;
+    }
+    div.liste.liste-max-width > div > lightning-radio-group {
+        width: 50%;
+    }
+    .filter-list-checkbox {
+        width: 50%;
     }
 }
 

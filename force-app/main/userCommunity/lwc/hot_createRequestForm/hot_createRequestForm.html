@@ -1,16 +1,14 @@
 <template>
     <div class="brodsmulesti">
         <lightning-breadcrumbs class="skjema-max-width">
-            <lightning-breadcrumb label="Tolketjenesten" href="/s/" onclick={goToHome}> </lightning-breadcrumb>
-            <lightning-breadcrumb label="Ny bestilling" href="/s/ny-bestilling" onclick={goToNewRequest}>
-            </lightning-breadcrumb>
+            <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
+            <lightning-breadcrumb label="Ny bestilling" href="/s/ny-bestilling"> </lightning-breadcrumb>
         </lightning-breadcrumbs>
     </div>
 
     <div class="main-content submitted-false">
         <div class="skjema-ikon tolketjenesten">
-            <img if:false={isProd} class="skjema-ikon-img" src="/sfsites/c/resource/1585817547000/SkjemaIkon" alt="" />
-            <img if:true={isProd} class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon" alt="" />
+            <img class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon" alt="" />
         </div>
         <div class="skjema skjema-max-width">
             <lightning-record-edit-form
@@ -92,6 +90,11 @@
                             required
                         >
                         </lightning-input-field>
+                        <br />
+                        <c-checkbox
+                            label="Ønsker SMS-varsel ved statusendring på bestillingen"
+                            oncheckboxclick={handleSMSCheckbox}
+                        ></c-checkbox>
                     </section>
 
                     <section if:true={userForm} class="bruker-info-skjema sub-form">
@@ -166,7 +169,7 @@
                                     <div class="dynamic-time-inputs-with-line_button" key={it.value.id}>
                                         <div class="dynamic-time-inputs" aria-live>
                                             <lightning-input
-                                                label="Dato (dd:mm:åååå)"
+                                                label="Dato (dd.mm.åååå)"
                                                 type="date"
                                                 class="tolk-skjema-input date"
                                                 date-style="short"
@@ -352,78 +355,24 @@
                             value={fieldValues.Description__c}
                         >
                         </lightning-input-field>
-                        <div if:true={myRequest}>
-                            <div class="uploadFileElement">
-                                <div class="dropzone" ondrop={dropHandler} ondragover={dragOverHandler}>
-                                    <input
-                                        type="file"
-                                        onfocus={setButtonStyleOnFocus}
-                                        onblur={setButtonStyleOnFocus}
-                                        onchange={onFileUpload}
-                                        name="uploadFile"
-                                        accept={acceptedFileFormats}
-                                        data-id="file-input"
-                                        class="slds-assistive-text"
-                                        id="file-upload-input-01"
-                                        aria-labelledby="file-selector-primary-label file-selector-secondary-label"
-                                        multiple
-                                    />
-                                    <label for="file-upload-input-01" id="file-selector-secondary-label">
-                                        <span class="button button-standard">
-                                            <svg
-                                                style="margin: 0 5 0 0"
-                                                width="1em"
-                                                height="1em"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path
-                                                    fill-rule="evenodd"
-                                                    clip-rule="evenodd"
-                                                    d="M12 0l7 6.625h-5V16h-4V6.625H5L12 0zm9 18h2v2a4 4 0 01-4 4H5a4 4 0 01-4-4v-2h20z"
-                                                    fill="currentColor"
-                                                ></path>
-                                            </svg>
-                                            Last opp fil</span
-                                        >
-                                        <span class="dropzone-label">Eller slipp filen her</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="checkboxClass hidden">
-                                <c-checkbox
-                                    label={checkboxContent}
-                                    custom-validity="true"
-                                    oncheckboxclick={handleCheckboxValue}
-                                ></c-checkbox>
-                            </div>
-                            <div if:true={filesChanged} class="filesClass">
-                                <ul aria-label="Liste over filer">
-                                    <template for:each={fileData} for:item="file" for:index="index">
-                                        <li key={file.filename} class="fileAndButton">
-                                            <span key={file.filename} class="fileNameClass">{file.filename}</span>
-                                            <button
-                                                onfocus={onFileFocus}
-                                                aria-label={fileButtonLabel}
-                                                data-index={index}
-                                                key={file.filename}
-                                                type="button"
-                                                value={file.filename}
-                                                class="
-                                                    navds-button navds-button--secondary navds-button--s
-                                                    navds-body-short
-                                                    navds-body--s
-                                                "
-                                                onclick={onFileButtonClick}
-                                            >
-                                                Slett
-                                            </button>
-                                        </li>
-                                    </template>
-                                </ul>
-                            </div>
+                        <div style="margin-left: none">
+                            <c-upload-files
+                                record-id={recordId}
+                                onfiledatalength={checkFileDataLength}
+                                ongetcheckboxvalue={getCheckboxValue}
+                                desktop-style="margin-left: unset"
+                                checkbox-validation="true"
+                                checkbox-text-plural="Dokumentene som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedleggene vil bli delt med tolken(e) som blir tildelt oppdraget."
+                                checkbox-text-single="Dokumentet som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedlegget vil bli delt med tolken(e) som blir tildelt oppdraget."
+                            ></c-upload-files>
                         </div>
+
+                        <br />
+                        <c-record-files-with-sharing
+                            record-id={recordId}
+                            is-get-all={isGetAll}
+                            title="Tidligere opplastede vedlegg"
+                        ></c-record-files-with-sharing>
 
                         <lightning-messages aria-live="assertive"> </lightning-messages>
 
