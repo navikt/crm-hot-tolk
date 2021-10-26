@@ -22,6 +22,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithActualTimeSet = new List<ServiceAppointment>();
 
         Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
         Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
@@ -156,6 +157,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsToSetToDefault.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.ActualStartTime != triggerOldMap.get(serviceAppointment.Id).get('ActualStartTime') ||
+                serviceAppointment.ActualEndTime != triggerOldMap.get(serviceAppointment.Id).get('ActualEndTime')
+            ) {
+                serviceAppointmentsWithActualTimeSet.add(serviceAppointment);
+            }
             updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -205,6 +212,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (!resourceByAppointmentUpdateWageClaim.isEmpty()) {
             HOT_WageClaimService.updateWageClaimsFuture(resourceByAppointmentUpdateWageClaim.keySet());
+        }
+        if (serviceAppointmentsWithActualTimeSet.size() > 0) {
+            setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
         }
     }
 
@@ -836,5 +846,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
 
         HOT_ContentDocumentLinkService.setContentDocumentLinks(serviceAppointmentMap);
+    }
+
+    public static void setScheduledTimeBasedOnActualTime(List<ServiceAppointment> serviceAppointments) {
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (sa.ActualStartTime != null) {
+                sa.SchedStartTime = sa.ActualStartTime;
+            }
+            if (sa.ActualEndTime != null) {
+                sa.SchedEndTime = sa.ActualEndTime;
+            }
+        }
     }
 }
