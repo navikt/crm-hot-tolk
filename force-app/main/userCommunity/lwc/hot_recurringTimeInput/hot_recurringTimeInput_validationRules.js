@@ -24,7 +24,6 @@ function dateInPast(date) {
 }
 
 function startBeforeEnd(endDate, args) {
-    return '';
     let startDate = new Date(args[0]);
     endDate = new Date(endDate);
     return startDate.getTime() > endDate.getTime() ? 'Start tid må være før slutt tid.' : '';

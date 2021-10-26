@@ -24,7 +24,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track requestTypeResult;
     handleRequestType(event) {
-        console.log(JSON.stringify(event.detail));
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
@@ -109,7 +108,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
     handleError(error) {
-        console.log('handle Error');
         console.log(JSON.stringify(error));
         this.spin = false;
     }

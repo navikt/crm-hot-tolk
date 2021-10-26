@@ -49,7 +49,6 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     validateFields() {
         this.attemptedSubmit = true;
-        console.log('validate fields on request form');
         let hasErrors = false;
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {
@@ -58,7 +57,6 @@ export default class Hot_requestForm_request extends LightningElement {
         });
         hasErrors = hasErrors * this.validateCheckbox();
         hasErrors = hasErrors * this.template.querySelector('c-hot_recurring-time-input').validateFields();
-        console.log('validation on request ended');
         return hasErrors;
     }
     validateCheckbox() {

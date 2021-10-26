@@ -180,18 +180,15 @@ export default class Hot_recurringTimeInput extends LightningElement {
 
     @api
     getTimeInput() {
-        console.log('getTimeInput');
         let timeInputs = {};
         timeInputs.times = this.timesListToObject(this.times);
         timeInputs.repeatingOptionChosen = this.repeatingOptionChosen;
         timeInputs.chosenDays = this.chosenDays;
         timeInputs.repeatingEndDate = this.repeatingEndDate;
         timeInputs.isAdvancedTimes = this.isAdvancedTimes;
-        console.log('returning time outputs');
         return timeInputs;
     }
     timesListToObject(list) {
-        console.log('timesListToObject');
         let times = {};
         for (let dateTime of list) {
             dateTime = this.formatDateTime(dateTime);
@@ -204,7 +201,6 @@ export default class Hot_recurringTimeInput extends LightningElement {
                 isNew: dateTime.isNew
             };
         }
-        console.log('timesListToObject RETURNING');
         return times;
     }
     formatDateTime(dateTime) {
@@ -232,7 +228,6 @@ export default class Hot_recurringTimeInput extends LightningElement {
     @api
     validateFields() {
         this.attemptedSubmit = true;
-        console.log('validateFields');
         let hasErrors = this.validateSimpleTimes();
         if (this.isAdvancedTimes) {
             hasErrors = hasErrors * this.validateAdvancedTimes();
@@ -254,10 +249,9 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
     //TODO: Make this work
     validateAdvancedTimes() {
-        console.log('validateAdvancedTimes');
         let hasErrors = false;
-        let recurringTypeElement = this.template.querySelector('.recurringType');
-        hasErrors = hasErrors * validate(recurringTypeElement, recurringTypeValidations);
+        // let recurringTypeElement = this.template.querySelector('.recurringType');
+        // hasErrors = hasErrors * validate(recurringTypeElement, recurringTypeValidations);
         if (this.showWeekDays) {
             let recurringDaysElement = this.template.querySelector('.recurringDays');
             hasErrors =
