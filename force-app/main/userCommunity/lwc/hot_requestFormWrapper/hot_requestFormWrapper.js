@@ -30,23 +30,27 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.fieldValues.EventType__c = this.requestTypeResult.eventType;
     }
 
-    handleSubmit(event) {
+    async handleSubmit(event) {
         console.log('handleSubmit');
         event.preventDefault();
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
         let hasErrors = this.handleValidation();
-        //TODO: Activate prompt
-        //this.promptOverlap()
         //TODO: Should not validate before first attempt of submit
         //use attemptedSubmit with onblur functions. if we can get a map from element to validation rules, this will be nice.
         //TODO: Generalize validation and add tolk-skjema-input to all elements.
         // We can then fetch all elements with this class, reverse the list, and then have a map from element to validation rules.
         // this will ensure easy js code
         //example of map in validationRules.js: export function getValidationRules(element){ case element.name --> return list of validation rules}
-        if (hasErrors) {
-            this.submitForm();
+        if (!hasErrors) {
+            this.promptOverlap().then((overlapOk) => {
+                if (overlapOk) {
+                    this.submitForm();
+                } else {
+                    this.spin = false;
+                }
+            });
         } else {
             this.spin = false;
         }
@@ -80,13 +84,13 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     async promptOverlap() {
-        if (!this.isAdvancedTimes && this.fieldValues.Type__c === 'Me') {
-            let accountId = this.personAccount.Id;
-            let times = this.timesListToObject(this.times);
-            duplicateRequests = [];
+        console.log('promptOverlap');
+        let response = true;
+        let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
+        if (!timeInput.isAdvancedTimes && this.fieldValues.Type__c === 'Me') {
             let duplicateRequests = await checkDuplicates({
-                accountId: accountId,
-                times: times
+                accountId: this.personAccount.Id,
+                times: timeInput.times
             });
             if (duplicateRequests.length > 0) {
                 let warningMessage = 'Du har allerede bestillinger i dette tidsrommet:';
@@ -94,13 +98,14 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                     warningMessage += '\nEmne: ' + request.Subject__c;
                     warningMessage += '\nPeriode: ' + request.SeriesPeriod__c;
                 }
-                return confirm(warningMessage);
+                response = confirm(warningMessage);
             }
         }
-        return true;
+        return response;
     }
 
     submitForm() {
+        console.log('submitForm()');
         try {
             this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
         } catch (error) {
