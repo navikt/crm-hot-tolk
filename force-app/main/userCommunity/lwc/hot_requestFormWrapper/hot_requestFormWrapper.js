@@ -38,13 +38,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         let isValid = false;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
-        isValid = this.handleValidation();
-        if (isValid) {
-            // && this.promptOverlap()) {
-            this.submitForm();
-        } else {
-            this.spin = false;
-        }
+        this.handleValidation();
+        //this.promptOverlap()
+        this.submitForm();
     }
     setAccountLookupFieldsBasedOnRequestType() {
         this.fieldValues.Orderer__c = this.personAccount.Id;
@@ -70,6 +66,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelectorAll('.subform').forEach((subForm) => {
             subForm.validateFields();
         });
+        console.log('handleValidation ended');
     }
 
     async promptOverlap() {
@@ -94,9 +91,14 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     submitForm() {
-        this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
+        try {
+            this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
+        } catch (error) {
+            throw error;
+        }
     }
     handleError(error) {
+        console.log('handle Error');
         console.log(JSON.stringify(error));
         this.spin = false;
     }

@@ -47,13 +47,15 @@ export default class Hot_requestForm_request extends LightningElement {
 
     @api
     validateFields() {
+        console.log('validate fields on request form');
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {
                 validate(element, [require]);
             }
         });
         this.validateCheckbox();
-        this.template.querySelector('c-hot_recurring-time-input').handleValidation();
+        this.template.querySelector('c-hot_recurring-time-input').validateFields();
+        console.log('validation on request ended');
     }
     validateCheckbox() {
         if (this.hasFiles) {

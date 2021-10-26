@@ -66,12 +66,12 @@
             <c-picklist
                 name="Gjenta"
                 choices={repeatingOptions}
-                value={repeatingOptionChosen}
                 onpicklistvaluechange={handleRepeatChoiceMade}
-                class="tolk-skjema-input third-width recurringType"
+                class="tolk-skjema-input recurringType"
                 master-label="Gjenta"
                 desktop-style="width: 30%"
                 mobile-style="width: 100%"
+                value={repeatingOptionChosen}
             >
             </c-picklist>
             <div if:true={showWeekDays} aria-live>
