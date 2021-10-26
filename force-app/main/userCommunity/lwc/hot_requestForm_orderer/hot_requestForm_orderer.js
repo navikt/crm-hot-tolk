@@ -40,12 +40,14 @@ export default class Hot_requestForm_orderer extends LightningElement {
 
     @api
     validateFields() {
+        let hasErrors = false;
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             console.log(element.name);
             if (element.required) {
                 console.log(element.required);
-                validate(element, [require]);
+                hasErrors = hasErrors * validate(element, [require]);
             }
         });
+        return hasErrors;
     }
 }

@@ -48,19 +48,22 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     validateFields() {
         console.log('validate fields on request form');
+        let hasErrors = false;
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {
-                validate(element, [require]);
+                hasErrors = hasErrors * validate(element, [require]);
             }
         });
-        this.validateCheckbox();
-        this.template.querySelector('c-hot_recurring-time-input').validateFields();
+        hasErrors = hasErrors * this.validateCheckbox();
+        hasErrors = hasErrors * this.template.querySelector('c-hot_recurring-time-input').validateFields();
         console.log('validation on request ended');
+        return hasErrors;
     }
     validateCheckbox() {
         if (this.hasFiles) {
-            this.template.querySelector('c-upload-files').validateCheckbox();
+            return this.template.querySelector('c-upload-files').validateCheckbox();
         }
+        return false;
     }
     fileConsent = false;
     getFileConsent(event) {

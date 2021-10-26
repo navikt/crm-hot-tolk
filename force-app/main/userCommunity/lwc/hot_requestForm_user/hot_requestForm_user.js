@@ -17,10 +17,10 @@ export default class Hot_requestForm_user extends LightningElement {
 
     @api
     validateFields() {
-        validate(this.template.querySelector('[data-id="personnumber"]'), personNumberValidationRules);
+        let hasErrors = validate(this.template.querySelector('[data-id="personnumber"]'), personNumberValidationRules);
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {
-                validate(element, [require]);
+                hasErrors = hasErrors * validate(element, [require]);
             }
         });
     }

@@ -231,37 +231,46 @@ export default class Hot_recurringTimeInput extends LightningElement {
     @api
     validateFields() {
         console.log('validateFields');
-        this.validateSimpleTimes();
+        let hasErrors = this.validateSimpleTimes();
         if (this.isAdvancedTimes) {
-            this.validateAdvancedTimes();
+            hasErrors = hasErrors * this.validateAdvancedTimes();
         }
+        return hasErrors;
     }
     validateSimpleTimes() {
+        let hasErrors = false;
         this.template.querySelectorAll('.date').forEach((element) => {
-            validate(element, startDateValidations);
+            hasErrors = hasErrors * validate(element, startDateValidations);
         });
         this.template.querySelectorAll('.start-tid').forEach((element) => {
-            validate(element, startTimeValidations);
+            hasErrors = hasErrors * validate(element, startTimeValidations);
         });
         this.template.querySelectorAll('.slutt-tid').forEach((element) => {
-            validate(element, endTimeValidations);
+            hasErrors = hasErrors * validate(element, endTimeValidations);
         });
+        return hasErrors;
     }
+    //TODO: Make this work
     validateAdvancedTimes() {
         console.log('validateAdvancedTimes');
+        let hasErrors = false;
         let recurringTypeElement = this.template.querySelector('.recurringType');
-        validate(recurringTypeElement, recurringTypeValidations);
+        hasErrors = hasErrors * validate(recurringTypeElement, recurringTypeValidations);
         if (this.showWeekDays) {
             let recurringDaysElement = this.template.querySelector('.recurringDays');
-            validate(recurringDaysElement, recurringDaysValidations, this.repeatingOptionChosen);
+            hasErrors =
+                hasErrors * validate(recurringDaysElement, recurringDaysValidations, this.repeatingOptionChosen);
         }
         let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
-        validate(
-            recurringEndDateElement,
-            recurringEndDateValidations,
-            this.repeatingOptionChosen,
-            this.times[0].date,
-            this.chosenDays
-        );
+        hasErrors =
+            hasErrors *
+            validate(
+                recurringEndDateElement,
+                recurringEndDateValidations,
+                this.repeatingOptionChosen,
+                this.times[0].date,
+                this.chosenDays
+            );
+        return hasErrors;
     }
 }

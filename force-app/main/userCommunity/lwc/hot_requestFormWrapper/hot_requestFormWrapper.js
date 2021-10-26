@@ -35,12 +35,19 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         console.log('handleSubmit');
         event.preventDefault();
         this.spin = true;
-        let isValid = false;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
-        this.handleValidation();
+        let hasErrors = this.handleValidation();
+        //TODO: Activate prompt
         //this.promptOverlap()
-        this.submitForm();
+        //TODO: Stop form from sending in if not valid
+        if (hasErrors) {
+            this.submitForm();
+        } else {
+            this.spin = false;
+        }
+
+        //Legg til folk i slack kanal og still spørsmål? Eller send mail.
     }
     setAccountLookupFieldsBasedOnRequestType() {
         this.fieldValues.Orderer__c = this.personAccount.Id;
@@ -63,10 +70,11 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     handleValidation() {
         console.log('handleValidation');
+        let hasErrors = false;
         this.template.querySelectorAll('.subform').forEach((subForm) => {
-            subForm.validateFields();
+            hasErrors = hasErrors * subForm.validateFields();
         });
-        console.log('handleValidation ended');
+        return hasErrors;
     }
 
     async promptOverlap() {

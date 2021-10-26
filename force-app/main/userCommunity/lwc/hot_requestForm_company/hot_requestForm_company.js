@@ -18,6 +18,6 @@ export default class Hot_requestForm_company extends LightningElement {
 
     @api
     validateFields() {
-        validate(this.template.querySelector('[data-id="orgnumber"]'), organizationNumberValidationRules);
+        return validate(this.template.querySelector('[data-id="orgnumber"]'), organizationNumberValidationRules);
     }
 }
