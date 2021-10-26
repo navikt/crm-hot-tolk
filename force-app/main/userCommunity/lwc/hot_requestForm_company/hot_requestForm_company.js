@@ -16,8 +16,10 @@ export default class Hot_requestForm_company extends LightningElement {
         });
     }
 
+    attemptedSubmit = false;
     @api
     validateFields() {
+        this.attemptedSubmit = true;
         return validate(this.template.querySelector('[data-id="orgnumber"]'), organizationNumberValidationRules);
     }
 }

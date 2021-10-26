@@ -38,8 +38,10 @@ export default class Hot_requestForm_orderer extends LightningElement {
         });
     }
 
+    attemptedSubmit = false;
     @api
     validateFields() {
+        this.attemptedSubmit = true;
         let hasErrors = false;
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             console.log(element.name);

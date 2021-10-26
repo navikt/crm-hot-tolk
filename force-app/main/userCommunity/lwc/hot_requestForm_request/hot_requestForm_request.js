@@ -45,8 +45,10 @@ export default class Hot_requestForm_request extends LightningElement {
         this.hasFiles = event.detail > 0;
     }
 
+    attemptedSubmit = false;
     @api
     validateFields() {
+        this.attemptedSubmit = true;
         console.log('validate fields on request form');
         let hasErrors = false;
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {

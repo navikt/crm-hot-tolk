@@ -15,8 +15,10 @@ export default class Hot_requestForm_user extends LightningElement {
         });
     }
 
+    attemptedSubmit = false;
     @api
     validateFields() {
+        this.attemptedSubmit = true;
         let hasErrors = validate(this.template.querySelector('[data-id="personnumber"]'), personNumberValidationRules);
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {

@@ -40,14 +40,17 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         let hasErrors = this.handleValidation();
         //TODO: Activate prompt
         //this.promptOverlap()
-        //TODO: Stop form from sending in if not valid
+        //TODO: Should not validate before first attempt of submit
+        //use attemptedSubmit with onblur functions. if we can get a map from element to validation rules, this will be nice.
+        //TODO: Generalize validation and add tolk-skjema-input to all elements.
+        // We can then fetch all elements with this class, reverse the list, and then have a map from element to validation rules.
+        // this will ensure easy js code
+        //example of map in validationRules.js: export function getValidationRules(element){ case element.name --> return list of validation rules}
         if (hasErrors) {
             this.submitForm();
         } else {
             this.spin = false;
         }
-
-        //Legg til folk i slack kanal og still spørsmål? Eller send mail.
     }
     setAccountLookupFieldsBasedOnRequestType() {
         this.fieldValues.Orderer__c = this.personAccount.Id;
