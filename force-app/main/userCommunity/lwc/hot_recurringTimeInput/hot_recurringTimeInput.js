@@ -34,6 +34,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
             if (result.data.length === 0) {
                 this.times = [this.setTimesValue(null)];
             } else {
+                this.times = [];
                 for (let timeMap of result.data) {
                     //let temp = new Object(this.setTimesValue(timeMap));
                     this.times.push(new Object(this.setTimesValue(timeMap)));
@@ -41,6 +42,8 @@ export default class Hot_recurringTimeInput extends LightningElement {
                 this.validateSimpleTimes();
             }
             this.isOnlyOneTime = this.times.length === 1;
+        } else {
+            this.times = [this.setTimesValue(null)];
         }
     }
 
