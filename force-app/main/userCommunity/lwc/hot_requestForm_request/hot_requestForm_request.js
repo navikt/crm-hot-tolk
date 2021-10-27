@@ -2,23 +2,49 @@ import { LightningElement, track, api } from 'lwc';
 import { validate, require } from 'c/validationController';
 
 export default class Hot_requestForm_request extends LightningElement {
-    @api fieldValues = {
+    @track fieldValues = {
         Subject__c: '',
         StartTime__c: '',
         EndTime__c: '',
         MeetingStreet__c: '',
         MeetingPostalCity__c: '',
         MeetingPostalCode__c: '',
+        InterpretationStreet__c: '',
+        InterpretationPostalCode__c: '',
+        InterpretationPostalCity__c: '',
         Description__C: '',
         IsFileConsent__c: false,
         Source__c: 'Community'
     };
+
+    get fieldValues() {
+        return this.fieldValues;
+    }
+    set fieldValues(value) {
+        console.log('editMode');
+        for (let field in value) {
+            if (this.fieldValues[field] != null) {
+                this.fieldValues[field] = value[field];
+            }
+        }
+        console.log(JSON.stringify(this.fieldValues));
+    }
+
+    @api
+    editMode() {
+        console.log('editMode');
+    }
+
     @api
     setFieldValues() {
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             this.fieldValues[element.name] = element.value;
         });
         this.setDependentFields();
+    }
+    @api
+    getFieldValues() {
+        return this.fieldValues;
     }
 
     setDependentFields() {

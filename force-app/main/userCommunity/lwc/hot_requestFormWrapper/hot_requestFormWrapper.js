@@ -1,10 +1,10 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import { refreshApex } from '@salesforce/apex';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
+import { getParametersFromURL } from 'c/hot_URIDecoder';
 
 export default class Hot_requestFormWrapper extends NavigationMixin(LightningElement) {
     @track submitted = false; // if:false={submitted}
@@ -22,7 +22,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    @track requestTypeResult;
+    @track requestTypeResult = {};
     handleRequestType(event) {
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
@@ -65,7 +65,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     getFieldValuesFromSubForms() {
         this.template.querySelectorAll('.subform').forEach((subForm) => {
             subForm.setFieldValues();
-            this.setFieldValues(subForm.fieldValues);
+            this.setFieldValues(subForm.getFieldValues());
         });
     }
     setFieldValues(fields) {
@@ -158,76 +158,70 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     previousPage = 'home';
     isGetAll = false;
     connectedCallback() {
-        window.scrollTo(0, 0);
-        let testURL = window.location.href;
-        let params = testURL.split('?')[1];
-
-        function parse_query_string(query) {
-            let vars = query.split('&');
-            let query_string = {};
-            for (let i = 0; i < vars.length; i++) {
-                let pair = vars[i].split('=');
-                let key = decodeURIComponent(pair[0]);
-                let value = decodeURIComponent(pair[1]);
-                // If first entry with this name
-                if (typeof query_string[key] === 'undefined') {
-                    query_string[key] = decodeURIComponent(value);
-                    // If second entry with this name
-                } else if (typeof query_string[key] === 'string') {
-                    let arr = [query_string[key], decodeURIComponent(value)];
-                    query_string[key] = arr;
-                    // If third or later entry with this name
-                } else {
-                    query_string[key].push(decodeURIComponent(value));
-                }
-            }
-            return query_string;
-        }
-
-        if (params !== undefined) {
-            let parsed_params = parse_query_string(params);
+        console.log('connectedCallback');
+        let parsed_params = getParametersFromURL();
+        if (parsed_params != null) {
             if (parsed_params.fromList != null) {
                 this.previousPage = 'mine-bestillinger';
             }
 
             if (parsed_params.fieldValues != null) {
-                this.fieldValues = JSON.parse(parsed_params.fieldValues);
-                this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
-
-                delete this.fieldValues.Account__c;
-                delete this.fieldValues.Company__c;
-                delete this.fieldValues.StartTime__c;
-                delete this.fieldValues.EndTime__c;
-
-                this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
-                if (!this.sameLocation) {
-                    this.value = 'no';
-                }
-                this.isEditMode = parsed_params.edit != null;
-                this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
-                if (this.requestTypeChosen) {
-                    this.requestForm = true;
-                    if (this.fieldValues.Type__c !== 'Me' && this.fieldValues.Type__c != null) {
-                        this.ordererForm = true;
-                        this.userForm = this.fieldValues.Type__c !== 'PublicEvent';
-                        this.companyForm = this.fieldValues.Type__c !== 'User';
-                    }
-                }
-                if (!!parsed_params.copy) {
-                    delete this.fieldValues.Id;
-                } else {
-                    this.recordId = this.fieldValues.Id;
-                    let requestIds = [];
-                    requestIds.push(this.fieldValues.Id);
-                    this.requestIds = requestIds;
-                    refreshApex(this.wiredTimesValue);
-                }
-
-                if (this.fieldValues.Type__c === 'PublicEvent') {
-                    this.fieldValues.EventType__c =
-                        this.fieldValues.EventType__c === 'Annet' ? 'OtherEvent' : 'SportingEvent';
-                }
+                this.setFieldValuesFromURL(parsed_params);
             }
+        }
+    }
+    async handleEditModeRequestType(parsed_params) {
+        this.isEditMode = parsed_params.edit != null;
+        this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
+        if (this.requestTypeChosen) {
+            this.requestTypeResult.requestForm = true;
+            if (this.fieldValues.Type__c !== 'Me' && this.fieldValues.Type__c != null) {
+                this.requestTypeResult.ordererForm = true;
+                this.requestTypeResult.userForm = this.fieldValues.Type__c !== 'PublicEvent';
+                this.requestTypeResult.companyForm = this.fieldValues.Type__c !== 'User';
+            }
+        }
+    }
+    setFieldValuesInSubForm() {
+        this.template.querySelectorAll('.subform').forEach((subForm) => {
+            console.log('found');
+            subForm.fieldValues = this.fieldValues;
+        });
+    }
+
+    async setFieldValuesFromURL(parsed_params) {
+        this.fieldValues = JSON.parse(parsed_params.fieldValues);
+        await this.handleEditModeRequestType(parsed_params);
+
+        this.setFieldValuesInSubForm();
+
+        console.log('OK');
+        //request
+        this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
+        console.log('delete fieldValues');
+
+        delete this.fieldValues.Account__c;
+        delete this.fieldValues.Company__c;
+        delete this.fieldValues.StartTime__c;
+        delete this.fieldValues.EndTime__c;
+
+        console.log('delete fieldValues OK');
+        this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
+        if (!this.sameLocation) {
+            this.value = 'no';
+        }
+
+        if (!!parsed_params.copy) {
+            delete this.fieldValues.Id;
+        } else {
+            this.recordId = this.fieldValues.Id;
+            let requestIds = [];
+            requestIds.push(this.fieldValues.Id);
+            this.requestIds = requestIds;
+        }
+
+        if (this.fieldValues.Type__c === 'PublicEvent') {
+            this.fieldValues.EventType__c = this.fieldValues.EventType__c === 'Annet' ? 'OtherEvent' : 'SportingEvent';
         }
     }
 
