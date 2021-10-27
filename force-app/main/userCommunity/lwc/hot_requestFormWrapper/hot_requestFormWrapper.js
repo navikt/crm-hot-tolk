@@ -141,14 +141,21 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     createWorkOrders() {
         let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
         if (timeInput.times !== {}) {
+            console.log('timeInput.isAdvancedTimes: ' + timeInput.isAdvancedTimes);
+            console.log(JSON.stringify(timeInput.times));
             if (timeInput.isAdvancedTimes) {
-                createWorkOrders({
-                    requestId: this.recordId,
-                    times: timeInput.times['0'],
-                    recurringType: timeInput.repeatingOptionChosen,
-                    recurringDays: timeInput.chosenDays,
-                    recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
-                });
+                try {
+                    //TODO: Fix
+                    createWorkOrders({
+                        requestId: this.recordId,
+                        times: timeInput.times['0'],
+                        recurringType: timeInput.repeatingOptionChosen,
+                        recurringDays: timeInput.chosenDays,
+                        recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
+                    });
+                } catch (error) {
+                    console.log(JSON.stringify(error));
+                }
             } else {
                 createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times });
             }
