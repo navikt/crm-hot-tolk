@@ -18,6 +18,7 @@ export default class Hot_requestForm_request extends LightningElement {
     };
 
     @api requestIds;
+    @api recordId;
 
     @api parentFieldValues;
     connectedCallback() {
