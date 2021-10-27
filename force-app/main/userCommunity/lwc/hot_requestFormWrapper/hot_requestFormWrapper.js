@@ -170,7 +170,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         }
     }
-    async handleEditModeRequestType(parsed_params) {
+    handleEditModeRequestType(parsed_params) {
         this.isEditMode = parsed_params.edit != null;
         this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
         if (this.requestTypeChosen) {
@@ -182,36 +182,21 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         }
     }
-    setFieldValuesInSubForm() {
-        this.template.querySelectorAll('.subform').forEach((subForm) => {
-            console.log('found');
-            //subForm.setParentFieldValues(this.fieldValues);
-        });
-    }
 
-    async setFieldValuesFromURL(parsed_params) {
+    setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
-        await this.handleEditModeRequestType(parsed_params);
-
-        this.setFieldValuesInSubForm();
+        this.handleEditModeRequestType(parsed_params);
 
         console.log('OK');
         //request
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
-        console.log('delete fieldValues');
 
         delete this.fieldValues.Account__c;
         delete this.fieldValues.Company__c;
         delete this.fieldValues.StartTime__c;
         delete this.fieldValues.EndTime__c;
 
-        console.log('delete fieldValues OK');
-        this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
-        if (!this.sameLocation) {
-            this.value = 'no';
-        }
-
-        if (!!parsed_params.copy) {
+        if (parsed_params.copy != null) {
             delete this.fieldValues.Id;
         } else {
             this.recordId = this.fieldValues.Id;

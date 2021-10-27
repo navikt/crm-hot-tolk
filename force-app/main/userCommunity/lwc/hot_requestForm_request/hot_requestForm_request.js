@@ -24,6 +24,10 @@ export default class Hot_requestForm_request extends LightningElement {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
+        this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
+        if (!this.sameLocation) {
+            this.value = 'no';
+        }
     }
 
     @api
@@ -88,6 +92,7 @@ export default class Hot_requestForm_request extends LightningElement {
     }
     checkPostalCode(event) {
         //check postal code ExpReg
+        //TODO
     }
 
     @track sameLocation = true;
