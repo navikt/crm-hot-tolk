@@ -68,6 +68,7 @@ export default class Hot_requestForm_request extends LightningElement {
     hasFiles = false;
     checkFileDataLength(event) {
         this.hasFiles = event.detail > 0;
+        console.log(this.hasFiles);
     }
 
     attemptedSubmit = false;
@@ -81,6 +82,7 @@ export default class Hot_requestForm_request extends LightningElement {
             }
         });
         hasErrors = hasErrors * this.validateCheckbox();
+        console.log('has error after checkbox' + hasErrors);
         hasErrors = hasErrors * this.template.querySelector('c-hot_recurring-time-input').validateFields();
         return hasErrors;
     }
