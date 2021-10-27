@@ -78,7 +78,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         console.log('handleValidation');
         let hasErrors = false;
         this.template.querySelectorAll('.subform').forEach((subForm) => {
-            hasErrors = hasErrors * subForm.validateFields();
+            hasErrors = hasErrors + subForm.validateFields();
         });
         return hasErrors;
     }

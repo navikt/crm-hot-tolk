@@ -45,7 +45,7 @@ export default class Hot_requestForm_orderer extends LightningElement {
         let hasErrors = false;
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {
-                hasErrors = hasErrors * validate(element, [require]);
+                hasErrors = hasErrors + validate(element, [require]);
             }
         });
         return hasErrors;

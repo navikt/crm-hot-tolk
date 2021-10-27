@@ -78,12 +78,12 @@ export default class Hot_requestForm_request extends LightningElement {
         let hasErrors = false;
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {
-                hasErrors = hasErrors * validate(element, [require]);
+                hasErrors = hasErrors + validate(element, [require]);
             }
         });
-        hasErrors = hasErrors * this.validateCheckbox();
+        hasErrors = hasErrors + this.validateCheckbox();
         console.log('has error after checkbox' + hasErrors);
-        hasErrors = hasErrors * this.template.querySelector('c-hot_recurring-time-input').validateFields();
+        hasErrors = hasErrors + this.template.querySelector('c-hot_recurring-time-input').validateFields();
         return hasErrors;
     }
     validateCheckbox() {
