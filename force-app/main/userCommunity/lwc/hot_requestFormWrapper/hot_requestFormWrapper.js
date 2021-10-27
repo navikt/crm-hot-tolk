@@ -156,7 +156,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     previousPage = 'home';
-    isGetAll = false;
     connectedCallback() {
         console.log('connectedCallback');
         let parsed_params = getParametersFromURL();
@@ -182,13 +181,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         }
     }
+    isGetAll = false;
 
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
         this.handleEditModeRequestType(parsed_params);
 
-        console.log('OK');
-        //request
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
 
         delete this.fieldValues.Account__c;

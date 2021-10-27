@@ -20,10 +20,10 @@ export default class Hot_recurringTimeInput extends LightningElement {
 
     setTimesValue(timeObject) {
         return {
-            id: timeObject === null ? 0 : timeMap.id,
-            date: timeObject === null ? null : timeMap.date,
-            startTime: timeObject === null ? null : timeMap.startTime,
-            endTime: timeObject === null ? null : timeMap.endTime,
+            id: timeObject === null ? 0 : timeObject.id,
+            date: timeObject === null ? null : timeObject.date,
+            startTime: timeObject === null ? null : timeObject.startTime,
+            endTime: timeObject === null ? null : timeObject.endTime,
             isNew: timeObject === null ? 1 : 0
         };
     }
@@ -38,7 +38,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
                     //let temp = new Object(this.setTimesValue(timeMap));
                     this.times.push(new Object(this.setTimesValue(timeMap)));
                 }
-                this.validateExistingDateTimes();
+                this.validateSimpleTimes();
             }
             this.isOnlyOneTime = this.times.length === 1;
         }

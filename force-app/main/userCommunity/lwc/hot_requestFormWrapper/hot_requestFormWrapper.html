@@ -41,6 +41,8 @@
                     ></c-hot_request-form_company>
                     <c-hot_request-form_request
                         parent-field-values={fieldValues}
+                        is-get-all={isGetAll}
+                        request-ids={requestIds}
                         class="subform"
                         if:true={requestTypeResult.requestForm}
                     ></c-hot_request-form_request>

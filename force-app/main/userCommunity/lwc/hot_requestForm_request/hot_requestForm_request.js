@@ -17,6 +17,8 @@ export default class Hot_requestForm_request extends LightningElement {
         Source__c: 'Community'
     };
 
+    @api requestIds;
+
     @api parentFieldValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
@@ -29,6 +31,7 @@ export default class Hot_requestForm_request extends LightningElement {
             this.value = 'no';
         }
     }
+    @api isGetAll;
 
     @api
     setFieldValues() {
