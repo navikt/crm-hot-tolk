@@ -2,7 +2,7 @@ import { LightningElement, track, api } from 'lwc';
 import { validate, require } from 'c/validationController';
 
 export default class Hot_requestForm_request extends LightningElement {
-    @track fieldValues2 = {
+    @track fieldValues = {
         Subject__c: '',
         StartTime__c: '',
         EndTime__c: '',
@@ -17,19 +17,13 @@ export default class Hot_requestForm_request extends LightningElement {
         Source__c: 'Community'
     };
 
-    get fieldValues() {
-        return this.fieldValues2;
-    }
-
-    @api
-    editMode(parentFieldValues) {
-        console.log('editMode');
-        for (let field in parentFieldValues) {
-            if (this.fieldValues2[field] != null) {
-                this.fieldValues2[field] = parentFieldValues[field];
+    @api parentFieldValues;
+    connectedCallback() {
+        for (let field in this.parentFieldValues) {
+            if (this.fieldValues[field] != null) {
+                this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
-        console.log(JSON.stringify(this.fieldValues2));
     }
 
     @api

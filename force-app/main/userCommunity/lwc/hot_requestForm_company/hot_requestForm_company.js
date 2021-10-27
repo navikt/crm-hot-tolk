@@ -27,4 +27,13 @@ export default class Hot_requestForm_company extends LightningElement {
     getFieldValues() {
         return this.fieldValues;
     }
+
+    @api parentFieldValues;
+    connectedCallback() {
+        for (let field in this.parentFieldValues) {
+            if (this.fieldValues[field] != null) {
+                this.fieldValues[field] = this.parentFieldValues[field];
+            }
+        }
+    }
 }

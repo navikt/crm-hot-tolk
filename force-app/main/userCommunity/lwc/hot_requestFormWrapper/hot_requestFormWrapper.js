@@ -185,7 +185,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     setFieldValuesInSubForm() {
         this.template.querySelectorAll('.subform').forEach((subForm) => {
             console.log('found');
-            subForm.editMode(this.fieldValues);
+            //subForm.setParentFieldValues(this.fieldValues);
         });
     }
 
