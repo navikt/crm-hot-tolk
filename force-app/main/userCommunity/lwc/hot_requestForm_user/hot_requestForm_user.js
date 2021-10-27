@@ -3,7 +3,7 @@ import { personNumberValidationRules } from './hot_validationRules';
 import { validate, require } from 'c/validationController';
 
 export default class Hot_requestForm_user extends LightningElement {
-    @api fieldValues = {
+    @track fieldValues = {
         UserName__c: '',
         UserPersonNumber__c: ''
     };
@@ -25,5 +25,10 @@ export default class Hot_requestForm_user extends LightningElement {
                 hasErrors = hasErrors * validate(element, [require]);
             }
         });
+    }
+
+    @api
+    getFieldValues() {
+        return this.fieldValues;
     }
 }

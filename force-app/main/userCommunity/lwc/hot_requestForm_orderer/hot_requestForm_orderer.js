@@ -25,7 +25,7 @@ export default class Hot_requestForm_orderer extends LightningElement {
         this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 
-    @api fieldValues = {
+    @track fieldValues = {
         OrdererEmail__c: '',
         OrdererPhone__c: '',
         IsOrdererWantStatusUpdateOnSMS__c: false
@@ -49,5 +49,10 @@ export default class Hot_requestForm_orderer extends LightningElement {
             }
         });
         return hasErrors;
+    }
+
+    @api
+    getFieldValues() {
+        return this.fieldValues;
     }
 }
