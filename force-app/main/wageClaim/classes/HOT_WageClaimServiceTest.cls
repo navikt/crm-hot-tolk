@@ -449,4 +449,23 @@ private class HOT_WageClaimServiceTest {
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
         System.assertEquals(3, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
     }
+
+    @isTest
+    static void SAWithARTimesChanged() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, SchedStartTime, SchedEndTime, ActualStartTime, ActualEndTime
+            FROM ServiceAppointment
+            WHERE Id = :assignedResource.ServiceAppointmentId
+            LIMIT 1
+        ];
+        serviceAppointment.ActualStartTime = DateTime.now().addHours(1).addMinutes(30);
+        serviceAppointment.ActualEndTime = DateTime.now().addHours(1).addMinutes(30);
+        Test.startTest();
+        update serviceAppointment;
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id FROM HOT_WageClaim__c];
+        System.assertEquals(2, wageClaims.size(), 'Could not create WageClaim when actual time on SA was updated.');
+    }
 }

@@ -225,6 +225,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithChangedAddress = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsOwnerChangedWithAssignedResource = new List<ServiceAppointment>();
+        Map<Id, Id> serviceAppointmentsWithChangedScheduledTime = new Map<Id, Id>();
+        Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>();
+        Map<Id, ServiceAppointment> serviceAppointmentsNew = new Map<Id, ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -258,6 +261,21 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsWithChangedAddress.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.SchedStartTime != triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') ||
+                serviceAppointment.SchedEndTime != triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') &&
+                serviceAppointment.HOT_AssignedResourceId__c != null
+            ) {
+                serviceAppointmentsWithChangedScheduledTime.put(
+                    triggerOldMap.get(serviceAppointment.Id).Id,
+                    (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
+                );
+                serviceAppointments.put(
+                    triggerOldMap.get(serviceAppointment.Id).Id,
+                    (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id)
+                );
+                serviceAppointmentsNew.put(serviceAppointment.Id, serviceAppointment);
+            }
         }
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
@@ -283,6 +301,22 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 appointmentAndResourceByAssignment.get('appointment'),
                 appointmentAndResourceByAssignment.get('resource')
             );
+        }
+        if (!serviceAppointmentsWithChangedScheduledTime.isEmpty()) {
+            Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
+                [
+                    SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_AgreementFreelance__c
+                    FROM ServiceResource
+                    WHERE Id IN :serviceAppointmentsWithChangedScheduledTime.values()
+                ]
+            );
+            // Create wageclaims with old SA values
+            List<HOT_WageClaim__c> wageClaims = HOT_WageClaimService.createWageClaimsFromServiceAppointments(
+                serviceAppointments,
+                serviceAppointmentsWithChangedScheduledTime,
+                serviceResources
+            );
+            HOT_WageClaimService.updateWageClaims(serviceAppointmentsNew, false, wageClaims); // Run updatewageclaims with new SA values
         }
 
         HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(

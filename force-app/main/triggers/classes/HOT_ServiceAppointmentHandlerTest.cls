@@ -797,4 +797,33 @@ private class HOT_ServiceAppointmentHandlerTest {
             'ContentDocumentId fra request og serviceAppointment stemmer ikke overens.'
         );
     }
+
+    @isTest
+    public static void actualTimeChanged() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, ActualStartTime, ActualEndTime
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        serviceAppointment.ActualStartTime = DateTime.now();
+        serviceAppointment.ActualEndTime = DateTime.now();
+        Test.startTest();
+        update serviceAppointment;
+        Test.stopTest();
+        serviceAppointment = [
+            SELECT Id, SchedStartTime, SchedEndTime, ActualStartTime, ActualEndTime
+            FROM serviceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        System.assertEquals(
+            serviceAppointment.SchedStartTime,
+            serviceAppointment.ActualStartTime,
+            'Planlagt starttid ble ikke satt til faktisk starttid'
+        );
+        System.assertEquals(
+            serviceAppointment.SchedEndTime,
+            serviceAppointment.ActualEndTime,
+            'Planlagt sluttid ble ikke satt til faktisk sluttid'
+        );
+    }
 }
