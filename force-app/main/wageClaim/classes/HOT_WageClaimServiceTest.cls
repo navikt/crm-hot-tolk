@@ -466,7 +466,6 @@ private class HOT_WageClaimServiceTest {
         Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
-        System.assertEquals(2, wageClaims.size(), 'Could not create WageClaim when actual time on SA was updated.');
 
         Boolean isFirstWageClaimTimeCorrect, isSecondWageClaimTimeCorrect = false;
         for (HOT_WageClaim__c wageClaim : wageClaims) {
