@@ -804,4 +804,171 @@ private class HOT_FieldServiceStatusHandlerTest {
         request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Id = :request.Id];
         System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
     }
+
+    @isTest
+    private static void test_1dekket_1tildelt() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        WorkType workType2 = HOT_TestDataFactory.createWorkType();
+        insert workType2;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.InterpretationMethodSecondary__c = workType2.Id;
+        request.NumberOfInterpretersSecondary__c = 1;
+        request.NumberOfInterpreters__c = 1;
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        WorkOrder workOrder = [SELECT Id, Status FROM WorkOrder];
+        WorkOrderLineItem workOrderLineItem_1 = [SELECT Id, Status FROM WorkOrderLineItem][0];
+        WorkOrderLineItem workOrderLineItem_2 = [SELECT Id, Status FROM WorkOrderLineItem][1];
+        ServiceAppointment serviceAppointment_1 = [
+            SELECT Id, Status
+            FROM ServiceAppointment
+            WHERE ParentRecordId = :workOrderLineItem_1.Id
+        ][0];
+        ServiceAppointment serviceAppointment_2 = [
+            SELECT Id, Status
+            FROM ServiceAppointment
+            WHERE ParentRecordId = :workOrderLineItem_2.Id
+        ][0];
+
+        serviceAppointment_1.Status = 'Completed';
+        update serviceAppointment_1;
+        serviceAppointment_2.Status = 'Dispatched';
+        update serviceAppointment_2;
+
+        workOrderLineItem_1 = [SELECT Id, Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem_1.Id];
+        serviceAppointment_1 = [
+            SELECT Id, Status
+            FROM ServiceAppointment
+            WHERE ParentRecordId = :workOrderLineItem_1.Id
+        ][0];
+        System.assertEquals(
+            'Completed',
+            workOrderLineItem_1.Status,
+            'Status on the work order line item did not update to correct value'
+        );
+        workOrderLineItem_2 = [SELECT Id, Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem_2.Id];
+        System.assertEquals(
+            'Dispatched',
+            workOrderLineItem_2.Status,
+            'Status on the work order line item did not update to correct value'
+        );
+
+        workOrder = [SELECT Id, Status FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals('Completed', workOrder.Status, 'Status on the work order did not update to correct value');
+
+        request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+        System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
+    }
+
+    @isTest
+    private static void test_woli_1tildelt_1udekket() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        WorkType workType2 = HOT_TestDataFactory.createWorkType();
+        insert workType2;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.InterpretationMethodSecondary__c = workType2.Id;
+        request.NumberOfInterpretersSecondary__c = 1;
+        request.NumberOfInterpreters__c = 1;
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        WorkOrder workOrder = [SELECT Id, Status FROM WorkOrder];
+        WorkOrderLineItem workOrderLineItem_1 = [SELECT Id, Status FROM WorkOrderLineItem][0];
+        WorkOrderLineItem workOrderLineItem_2 = [SELECT Id, Status FROM WorkOrderLineItem][1];
+        ServiceAppointment serviceAppointment_1 = [
+            SELECT Id, Status
+            FROM ServiceAppointment
+            WHERE ParentRecordId = :workOrderLineItem_1.Id
+        ][0];
+        ServiceAppointment serviceAppointment_2 = [
+            SELECT Id, Status
+            FROM ServiceAppointment
+            WHERE ParentRecordId = :workOrderLineItem_2.Id
+        ][0];
+
+        serviceAppointment_1.Status = 'Dispatched';
+        update serviceAppointment_1;
+        serviceAppointment_2.Status = 'Cannot Complete';
+        update serviceAppointment_2;
+
+        workOrderLineItem_1 = [SELECT Id, Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem_1.Id];
+        System.assertEquals(
+            'Dispatched',
+            workOrderLineItem_1.Status,
+            'Status on the work order line item did not update to correct value'
+        );
+        workOrderLineItem_2 = [SELECT Id, Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem_2.Id];
+        System.assertEquals(
+            'Cannot Complete',
+            workOrderLineItem_2.Status,
+            'Status on the work order line item did not update to correct value'
+        );
+
+        workOrder = [SELECT Id, Status FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals('Dispatched', workOrder.Status, 'Status on the work order did not update to correct value');
+
+        request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+        System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
+    }
+
+    @isTest
+    private static void test_woli_1tildelt_1dekket() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        WorkType workType2 = HOT_TestDataFactory.createWorkType();
+        insert workType2;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.InterpretationMethodSecondary__c = workType2.Id;
+        request.NumberOfInterpretersSecondary__c = 1;
+        request.NumberOfInterpreters__c = 1;
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        WorkOrder workOrder = [SELECT Id, Status FROM WorkOrder];
+        WorkOrderLineItem workOrderLineItem_1 = [SELECT Id, Status FROM WorkOrderLineItem][0];
+        WorkOrderLineItem workOrderLineItem_2 = [SELECT Id, Status FROM WorkOrderLineItem][1];
+        ServiceAppointment serviceAppointment_1 = [
+            SELECT Id, Status
+            FROM ServiceAppointment
+            WHERE ParentRecordId = :workOrderLineItem_1.Id
+        ][0];
+        ServiceAppointment serviceAppointment_2 = [
+            SELECT Id, Status
+            FROM ServiceAppointment
+            WHERE ParentRecordId = :workOrderLineItem_2.Id
+        ][0];
+
+        serviceAppointment_1.Status = 'Dispatched';
+        update serviceAppointment_1;
+        serviceAppointment_2.Status = 'Completed';
+        update serviceAppointment_2;
+
+        workOrderLineItem_1 = [SELECT Id, Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem_1.Id];
+        System.assertEquals(
+            'Dispatched',
+            workOrderLineItem_1.Status,
+            'Status on the work order line item did not update to correct value'
+        );
+        workOrderLineItem_2 = [SELECT Id, Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem_2.Id];
+        System.assertEquals(
+            'Completed',
+            workOrderLineItem_2.Status,
+            'Status on the work order line item did not update to correct value'
+        );
+
+        workOrder = [SELECT Id, Status FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals('Completed', workOrder.Status, 'Status on the work order did not update to correct value');
+
+        request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+        System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
+    }
 }

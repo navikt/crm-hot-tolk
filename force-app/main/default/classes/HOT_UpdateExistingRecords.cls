@@ -2,17 +2,17 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
         return Database.getQueryLocator(
-            'SELECT Id, HOT_TermsOfAgreement__c, ServiceAppointment__r.HOT_TermsOfAgreement__c FROM HOT_InterestedResource__c WHERE HOT_TermsOfAgreement__c = null AND ServiceAppointment__r.HOT_TermsOfAgreement__c != null'
+            'SELECT HOT_Dispatcher__c, HOT_DispatcherNew__c, HOT_Request__r.Dispatcher__c FROM ServiceAppointment WHERE HOT_DispatcherNew__c = NULL AND HOT_Dispatcher__c != NULL'
         );
     }
 
-    public void execute(Database.BatchableContext bc, List<HOT_InterestedResource__c> irList) {
-        for (HOT_InterestedResource__c ir : irList) {
-            ir.HOT_TermsOfAgreement__c = ir.ServiceAppointment__r.HOT_TermsOfAgreement__c;
+    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
+        for (ServiceAppointment sa : records) {
+            sa.HOT_DispatcherNew__c = sa.HOT_Request__r.Dispatcher__c;
         }
 
         try {
-            update irList;
+            update records;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
