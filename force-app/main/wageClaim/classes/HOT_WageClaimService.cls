@@ -160,12 +160,12 @@ public without sharing class HOT_WageClaimService {
             ]
         );
         List<HOT_WageClaim__c> wageClaims = getWageClaimsFromServiceAppointments(serviceAppointments.values());
-        updateWageClaims(serviceAppointments, true, wageClaims);
+        updateWageClaims(serviceAppointments, wageClaims, true);
     }
     public static void updateWageClaims(
         Map<Id, ServiceAppointment> serviceAppointments,
-        Boolean isUpsert,
-        List<HOT_WageClaim__c> wageClaims
+        List<HOT_WageClaim__c> wageClaims,
+        Boolean isUpsert
     ) {
         Map<Id, List<HOT_WageClaim__c>> wageClaimsByServiceResourceId = getWageClaimsByServiceResourceId(wageClaims);
 
