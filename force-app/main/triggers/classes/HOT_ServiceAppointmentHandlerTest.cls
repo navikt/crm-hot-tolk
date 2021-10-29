@@ -806,7 +806,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             LIMIT 1
         ];
         serviceAppointment.ActualStartTime = DateTime.now();
-        serviceAppointment.ActualEndTime = DateTime.now();
+        serviceAppointment.ActualEndTime = DateTime.now().addHours(1);
         Test.startTest();
         update serviceAppointment;
         Test.stopTest();
