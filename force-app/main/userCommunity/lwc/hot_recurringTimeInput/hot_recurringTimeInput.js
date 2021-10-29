@@ -153,7 +153,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
         { label: 'Hver uke', name: 'Weekly' },
         { label: 'Hver 2. Uke', name: 'Biweekly' }
     ];
-    repeatingOptionChosen = null;
+    repeatingOptionChosen = 'Daily';
     @track isRepeating = true;
     @track showWeekDays = false;
     handleRepeatChoiceMade(event) {
