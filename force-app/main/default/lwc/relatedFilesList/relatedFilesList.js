@@ -9,7 +9,7 @@ export default class RelatedFilesList extends LightningElement {
         console.log('this.recordId: ' + this.recordId);
     }
     @track contentDocuments = [];
-    @wire(getContentDocuments, { recordId: '$recordId' })
+    @wire(getContentDocuments, { recordId: '$recordId', isGetAll: true })
     wiredGetContentDocuments(result) {
         console.log(JSON.stringify(result));
         if (result.data) {
