@@ -18,30 +18,28 @@ public without sharing class HOT_ContentDocumentLinkService {
                 contentDocumentLinks.add(contentDocumentLinkCopy);
             }
         }
-        try {
-            insert contentDocumentLinks;
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
+        HOT_DatabaseOperations.insertRecords(contentDocumentLinks);
     }
 
     @InvocableVariable
-    public Id contentDocumentId;
+    public Id recordId;
+    @InvocableVariable
+    public List<ContentDocument> contentDocuments;
 
     @InvocableMethod
-    public static void getContentDocumentLink(List<HOT_ContentDocumentLinkService> inputValues) {
+    public static void getContentDocumentLink(List<HOT_ContentDocumentLinkService> inputValue) {
         List<Id> contentDocumentIds = new List<Id>();
 
-        for (HOT_ContentDocumentLinkService inputvalue : inputValues) {
-            contentDocumentIds.add(inputvalue.contentDocumentId);
+        for (ContentDocument contentDocument : inputValue[0].contentDocuments) {
+            contentDocumentIds.add(contentDocument.Id);
         }
 
         List<ContentDocumentLink> contentDocumentLinks = [
-            SELECT ID
+            SELECT Id
             FROM ContentDocumentLink
-            WHERE ContentDocumentId IN :contentDocumentIds
+            WHERE ContentDocumentId IN :contentDocumentIds AND LinkedEntityId = :inputValue[0].recordId
         ];
+
+        HOT_DatabaseOperations.deleteRecords(contentDocumentLinks);
     }
 }

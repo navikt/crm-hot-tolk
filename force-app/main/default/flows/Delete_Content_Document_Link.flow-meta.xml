@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>Test</name>
-        <label>Test</label>
+        <name>DeleteContentDocument</name>
+        <label>DeleteContentDocument</label>
         <locationX>50</locationX>
         <locationY>398</locationY>
         <actionName>HOT_ContentDocumentLinkService</actionName>
         <actionType>apex</actionType>
-        <connector>
-            <targetReference>DeleteContentDocumentLinks</targetReference>
-        </connector>
+        <faultConnector>
+            <targetReference>FaultScreen_0</targetReference>
+        </faultConnector>
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
-            <name>contentDocumentId</name>
+            <name>contentDocuments</name>
+            <value>
+                <elementReference>RelatedFilesListComponent.selectedRows</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>recordId</name>
             <value>
                 <elementReference>recordId</elementReference>
             </value>
@@ -66,27 +72,17 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
-    <recordDeletes>
-        <name>DeleteContentDocumentLinks</name>
-        <label>DeleteContentDocumentLinks</label>
-        <locationX>50</locationX>
-        <locationY>518</locationY>
-        <faultConnector>
-            <targetReference>FaultScreen</targetReference>
-        </faultConnector>
-        <inputReference>RelatedFilesListComponent.selectedRows</inputReference>
-    </recordDeletes>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
-        <name>FaultScreen</name>
+        <name>FaultScreen_0</name>
         <label>FaultScreen</label>
         <locationX>314</locationX>
-        <locationY>638</locationY>
+        <locationY>518</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
-            <name>FaultText</name>
+            <name>FaultText_0</name>
             <fieldText
             >&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
@@ -119,7 +115,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Test</targetReference>
+            <targetReference>DeleteContentDocument</targetReference>
         </connector>
         <fields>
             <name>RelatedFilesListComponent</name>
@@ -149,21 +145,13 @@
             <targetReference>CheckPermission</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>error</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>filesToDelete</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-        <objectType>ContentDocument</objectType>
     </variables>
     <variables>
         <name>recordId</name>
