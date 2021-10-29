@@ -145,7 +145,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             console.log(JSON.stringify(timeInput.times));
             if (timeInput.isAdvancedTimes) {
                 try {
-                    //TODO: Fix
                     createWorkOrders({
                         requestId: this.recordId,
                         times: timeInput.times['0'],
