@@ -459,34 +459,13 @@ private class HOT_WageClaimServiceTest {
             WHERE Id = :assignedResource.ServiceAppointmentId
             LIMIT 1
         ];
-        serviceAppointment.ActualStartTime = DateTime.now().addHours(1).addMinutes(30);
-        serviceAppointment.ActualEndTime = serviceAppointment.ActualStartTime.addHours(1);
+        serviceAppointment.ActualStartTime = DateTime.now().addHours(1).addMinutes(15);
+        serviceAppointment.ActualEndTime = DateTime.now().addHours(1).addMinutes(45);
         Test.startTest();
         update serviceAppointment;
         Test.stopTest();
 
-        List<HOT_WageClaim__c> wageClaims = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
-
-        Boolean isFirstWageClaimTimeCorrect, isSecondWageClaimTimeCorrect = false;
-        for (HOT_WageClaim__c wageClaim : wageClaims) {
-            if (
-                wageClaim.StartTime__c == serviceAppointment.ActualStartTime.addMinutes(-30) &&
-                wageClaim.EndTime__c == serviceAppointment.ActualStartTime
-            ) {
-                isFirstWageClaimTimeCorrect = true;
-            }
-            if (
-                wageClaim.StartTime__c == serviceAppointment.ActualEndTime.addMinutes(-30) &&
-                wageClaim.EndTime__c == serviceAppointment.ActualEndTime
-            ) {
-                isSecondWageClaimTimeCorrect = true;
-            }
-        }
-        System.assertEquals(
-            true,
-            isFirstWageClaimTimeCorrect && isSecondWageClaimTimeCorrect,
-            'Could not create WageClaim when actual time on SA was updated.'
-        );
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id FROM HOT_WageClaim__c];
         System.assertEquals(2, wageClaims.size(), 'Could not create WageClaim when actual time on SA was updated.');
     }
 }
