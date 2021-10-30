@@ -619,14 +619,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         return ganttColorByStatus;
     }
 
-    public void derp() {
-        List<AssignedResource> assignedResources = [
-            SELECT Id
-            FROM AssignedResource
-            WHERE ServiceAppointment.Status = 'Cannot Complete' OR ServiceAppointment.Status = 'Canceled'
-        ];
-    }
-
     public static void setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
         List<Id> preferredResourceId = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
