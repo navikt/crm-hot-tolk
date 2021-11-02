@@ -38,7 +38,6 @@ function restrictTheNumberOfDays(recurringEndDate, args) {
         : '';
 }
 function chosenDaysWithinPeriod(recurringEndDate, args) {
-    console.log(args);
     let type = args[0];
     if (type === 'Daily') {
         return '';
