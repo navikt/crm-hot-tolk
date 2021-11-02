@@ -27,7 +27,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
-        this.fieldValues.EventType__c = this.requestTypeResult.eventType;
+        console.log(JSON.stringify(this.requestTypeResult));
+        //this.fieldValues.EventType__c = this.requestTypeResult.eventType;
     }
 
     async handleSubmit(event) {
@@ -182,13 +183,18 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.requestTypeResult.requestForm = true;
             if (this.fieldValues.Type__c !== 'Me' && this.fieldValues.Type__c != null) {
                 this.requestTypeResult.ordererForm = true;
-                this.requestTypeResult.userForm = this.fieldValues.Type__c !== 'PublicEvent';
+                this.requestTypeResult.userForm = this.fieldValues.Type__c !== 'Company';
                 this.requestTypeResult.companyForm = this.fieldValues.Type__c !== 'User';
             }
         }
     }
-    isGetAll = false;
 
+    handleUserCheckbox(event) {
+        this.requestTypeResult.userForm = event.detail;
+        console.log(this.requestTypeResult.userForm);
+    }
+
+    isGetAll = false;
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
         this.handleEditModeRequestType(parsed_params);
@@ -209,9 +215,10 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.requestIds = requestIds;
         }
 
-        if (this.fieldValues.Type__c === 'PublicEvent') {
+        /* if (this.fieldValues.Type__c === 'PublicEvent') {
             this.fieldValues.EventType__c = this.fieldValues.EventType__c === 'Annet' ? 'OtherEvent' : 'SportingEvent';
         }
+    */
     }
 
     goToMyRequests() {

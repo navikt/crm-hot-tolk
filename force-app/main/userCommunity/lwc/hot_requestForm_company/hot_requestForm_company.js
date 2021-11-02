@@ -6,8 +6,18 @@ export default class Hot_requestForm_company extends LightningElement {
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
-        AdditionalInvoiceText__c: ''
+        AdditionalInvoiceText__c: '',
+        CompanyPaymentChoice: ''
     };
+    choices = [
+        { name: 'Default', label: 'Velg et alternativ' }, // TODO: Figure out what to do here. Placeholder?
+        { name: 'NAV', label: 'NAV betaler' },
+        { name: 'Virksomhet', label: 'Virksomhet betaler' }
+    ];
+
+    handlePicklist(event) {
+        this.fieldValues.CompanyPaymentChoice = event.detail.name;
+    }
 
     @api
     setFieldValues() {
