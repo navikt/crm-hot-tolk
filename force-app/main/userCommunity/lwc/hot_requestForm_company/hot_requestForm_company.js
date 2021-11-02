@@ -15,11 +15,9 @@ export default class Hot_requestForm_company extends LightningElement {
         { name: 'Virksomhet', label: 'Virksomhet betaler' }
     ];
 
-    economicProvider;
     isCompanyEconomicProvider = false;
     handlePicklist(event) {
-        this.economicProvider = event.detail.name;
-        this.isCompanyEconomicProvider = this.economicProvider === 'Virksomhet';
+        this.isCompanyEconomicProvider = event.detail.name === 'Virksomhet';
     }
 
     @api
