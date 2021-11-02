@@ -136,9 +136,11 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelector('.h2-successMessage').focus();
         this.template.querySelector('.submitted-false').classList.add('hidden');
     }
+
     uploadFiles() {
         this.template.querySelector('c-hot_request-form_request').handleFileUpload(this.recordId);
     }
+
     createWorkOrders() {
         let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
         if (timeInput.times !== {}) {

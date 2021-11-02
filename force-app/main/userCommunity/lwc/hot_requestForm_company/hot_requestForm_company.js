@@ -3,11 +3,11 @@ import { organizationNumberValidationRules } from './hot_validationRules';
 import { validate } from 'c/validationController';
 
 export default class Hot_requestForm_company extends LightningElement {
+    //TODO: Why is not economic provider added as field here?
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
-        AdditionalInvoiceText__c: '',
-        CompanyPaymentChoice: ''
+        AdditionalInvoiceText__c: ''
     };
     choices = [
         { name: 'Default', label: 'Velg et alternativ' }, // TODO: Figure out what to do here. Placeholder?
@@ -15,8 +15,11 @@ export default class Hot_requestForm_company extends LightningElement {
         { name: 'Virksomhet', label: 'Virksomhet betaler' }
     ];
 
+    economicProvider;
+    isCompanyEconomicProvider = false;
     handlePicklist(event) {
-        this.fieldValues.CompanyPaymentChoice = event.detail.name;
+        this.economicProvider = event.detail.name;
+        this.isCompanyEconomicProvider = this.economicProvider === 'Virksomhet';
     }
 
     @api
