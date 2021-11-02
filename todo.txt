@@ -1,0 +1,9 @@
+- Skjema
+    - Mini-styling
+    - Funksjonalitet
+    - Validering
+    - Hjelpetekst
+    - Bytt ut lightning-komponenter (combobox --> picklist)
+    - Styling
+    - Mobil
+    - UU

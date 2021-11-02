@@ -1,0 +1,48 @@
+<template>
+    <section class="bestiller-info-skjema sub-form">
+        <p class="typo-normal">
+            Navn på bestiller/virksomhet (ikke kontaktinformasjon) og bestillingens øvrige informasjon om behov for
+            tolk, vil være tilgjengelig for tolkebruker
+        </p>
+        <h2 style="font-size: 1.25rem">
+            Kontaktinformasjon
+            <lightning-helptext
+                content="For å kunne kontakte deg ved behov for ytterligere opplysninger, vil dine kontaktopplysninger bli knyttet til denne tolkebestillingen."
+            >
+            </lightning-helptext>
+        </h2>
+        <lightning-input
+            label="Bestillers navn"
+            name="ordererName"
+            class="tolk-skjema-input"
+            value={personAccount.Name}
+            disabled
+        >
+        </lightning-input>
+        <br />
+        <lightning-input
+            name="OrdererEmail__c"
+            label="Bestillers e-post"
+            type="email"
+            class="tolk-skjema-input"
+            value={ordererDetails.OrdererEmail__c}
+            required
+        >
+        </lightning-input>
+        <br />
+        <lightning-input
+            name="OrdererPhone__c"
+            label="Bestillers telefon"
+            type="tel"
+            class="tolk-skjema-input"
+            value={ordererDetails.OrdererPhone__c}
+            required
+        >
+        </lightning-input>
+        <br />
+        <c-checkbox
+            label="Ønsker SMS-varsel ved statusendring på bestillingen"
+            oncheckboxclick={handleSMSCheckbox}
+        ></c-checkbox>
+    </section>
+</template>
