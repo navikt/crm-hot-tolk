@@ -1,0 +1,30 @@
+<template>
+    <section class="valg-av-bestillingstype__container sub-form">
+        <lightning-radio-group
+            name="radioGroup"
+            class="requestTypeChoice"
+            style="margin-bottom: 1rem"
+            label="Hvilken type bestilling ønsker du?"
+            options={requestTypes}
+            type="radio"
+            onchange={handleRequestTypeChange}
+            value={currentRequestType}
+        >
+        </lightning-radio-group>
+
+        <div if:true={publicEventForm} class="offentlig-arrangement-info-skjema" style="margin-bottom: 1rem">
+            <lightning-combobox
+                class="type-arrangement"
+                name="typeOfEvent"
+                label="Type arrangement"
+                options={eventTypes}
+                onchange={handleChoiceOfEvent}
+                required
+            >
+            </lightning-combobox>
+        </div>
+
+        <lightning-messages aria-live="assertive"> </lightning-messages>
+        <lightning-button variant="brand" onclick={onHandleNeste} label="Neste"> </lightning-button>
+    </section>
+</template>
