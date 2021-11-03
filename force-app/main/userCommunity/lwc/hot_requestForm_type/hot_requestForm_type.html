@@ -1,28 +1,13 @@
 <template>
     <section class="valg-av-bestillingstype__container sub-form">
-        <lightning-radio-group
-            name="radioGroup"
-            class="requestTypeChoice"
-            style="margin-bottom: 1rem"
-            label="Hvilken type bestilling ønsker du?"
-            options={requestTypes}
-            type="radio"
-            onchange={handleRequestTypeChange}
-            value={currentRequestType}
+        <c-radiobuttons
+            radiobuttons={radiobuttons}
+            error-text="Boks nr 3 må være valgt"
+            onradiobuttonsclick={handleRequestTypeChange}
+            header="Hvilken type bestilling ønsker du?"
+            group-name="testRadioGroup"
         >
-        </lightning-radio-group>
-
-        <!--<div if:true={publicEventForm} class="offentlig-arrangement-info-skjema" style="margin-bottom: 1rem">
-            <lightning-combobox
-                class="type-arrangement"
-                name="typeOfEvent"
-                label="Type arrangement"
-                options={eventTypes}
-                onchange={handleChoiceOfEvent}
-                required
-            >
-            </lightning-combobox>
-        </div>-->
+        </c-radiobuttons>
 
         <lightning-messages aria-live="assertive"> </lightning-messages>
         <lightning-button variant="brand" onclick={onHandleNeste} label="Neste"> </lightning-button>

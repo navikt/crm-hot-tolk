@@ -3,14 +3,13 @@ import { organizationNumberValidationRules } from './hot_validationRules';
 import { validate } from 'c/validationController';
 
 export default class Hot_requestForm_company extends LightningElement {
-    //TODO: Why is not economic provider added as field here?
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
-        AdditionalInvoiceText__c: ''
+        IsOtherEconomicProvicer__c: false
     };
     choices = [
-        { name: 'Default', label: 'Velg et alternativ' }, // TODO: Figure out what to do here. Placeholder?
+        { name: '', label: 'Velg et alternativ' }, // TODO: Figure out what to do here. Placeholder? Validate on submit (picklist is required)
         { name: 'NAV', label: 'NAV betaler' },
         { name: 'Virksomhet', label: 'Virksomhet betaler' }
     ];
@@ -18,6 +17,7 @@ export default class Hot_requestForm_company extends LightningElement {
     isCompanyEconomicProvider = false;
     handlePicklist(event) {
         this.isCompanyEconomicProvider = event.detail.name === 'Virksomhet';
+        this.fieldValues.IsOtherEconomicProvicer__c = this.isCompanyEconomicProvider;
     }
 
     @api

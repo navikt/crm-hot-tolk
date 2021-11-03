@@ -231,7 +231,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         });
     }
-    goToPrevousPage() {
+    goToPreviousPage() {
         window.scrollTo(0, 0);
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
