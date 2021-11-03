@@ -14,6 +14,11 @@
         <operation>equals</operation>
         <value>Open</value>
     </filters>
+    <filters>
+        <field>StartTime__c</field>
+        <operation>greaterThan</operation>
+        <value>TODAY</value>
+    </filters>
     <label>Ledig på lønn</label>
     <sharedTo>
         <group>HOT_group_47000_formidler</group>
