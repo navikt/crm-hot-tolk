@@ -449,4 +449,45 @@ private class HOT_WageClaimServiceTest {
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
         System.assertEquals(3, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
     }
+
+    @isTest
+    static void SAWithARTimesChanged() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, SchedStartTime, SchedEndTime, ActualStartTime, ActualEndTime
+            FROM ServiceAppointment
+            WHERE Id = :assignedResource.ServiceAppointmentId
+            LIMIT 1
+        ];
+        serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime.addMinutes(15);
+        serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
+        Test.startTest();
+        update serviceAppointment;
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
+
+        Boolean isWageClaimTimesCorrect, isWageClaimTimesCorrect2 = false;
+        for (HOT_WageClaim__c wageClaim : wageClaims) {
+            if (
+                wageClaim.StartTime__c == serviceAppointment.SchedStartTime &&
+                wageClaim.EndTime__c == serviceAppointment.ActualStartTime
+            ) {
+                isWageClaimTimesCorrect = true;
+            }
+            if (
+                wageClaim.StartTime__c == serviceAppointment.ActualEndTime &&
+                wageClaim.EndTime__c == serviceAppointment.SchedEndTime
+            ) {
+                isWageClaimTimesCorrect2 = true;
+            }
+        }
+
+        System.assertEquals(
+            true,
+            isWageClaimTimesCorrect && isWageClaimTimesCorrect2,
+            'WageClaim start and end times were not set correctly.'
+        );
+        System.assertEquals(2, wageClaims.size(), 'Could not create WageClaim when actual time on SA was updated.');
+    }
 }
