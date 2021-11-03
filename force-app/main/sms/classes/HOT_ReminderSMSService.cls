@@ -111,10 +111,17 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    private static String constructStatusChangedMessage(WorkOrder workOrder) {
+    private static String constructStatusChangedMessage(
+        WorkOrder workOrder,
+        List<ServiceAppointment> serviceAppointments
+    ) {
         String message = 'INFO\nStatus på din bestilling er: ';
         if (workOrder.Status == 'Dispatched') {
             message += 'Du har fått tolk';
+            message += 'Tolk er: ';
+            for (ServiceAppointment serviceAppointment : serviceAppointments) {
+                message += serviceAppointment.HOT_ServiceResource__r.Name + ', ';
+            }
         } else if (workOrder.Status == 'Cannot Complete') {
             message += 'Ikke ledig tolk';
         }
