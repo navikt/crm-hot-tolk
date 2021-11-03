@@ -371,21 +371,19 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
     handleAdvancedTimeValidations() {
         let typeElement = this.template.querySelector('.recurringType');
-        let recurringTypeValid = validate(typeElement, recurringTypeValidations).length === 0;
+        let recurringTypeValid = !validate(typeElement, recurringTypeValidations);
 
         let daysElement = this.template.querySelector('.recurringDays');
-        let recurringDaysValid =
-            validate(daysElement, recurringDaysValidations, this.repeatingOptionChosen).length === 0;
+        let recurringDaysValid = !validate(daysElement, recurringDaysValidations, this.repeatingOptionChosen);
 
         let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
-        let recurringEndDateValid =
-            validate(
-                recurringEndDateElement,
-                recurringEndDateValidations,
-                this.repeatingOptionChosen,
-                this.times[0].date,
-                this.chosenDays
-            ).length === 0;
+        let recurringEndDateValid = !validate(
+            recurringEndDateElement,
+            recurringEndDateValidations,
+            this.repeatingOptionChosen,
+            this.times[0].date,
+            this.chosenDays
+        );
 
         return recurringTypeValid && recurringDaysValid && recurringEndDateValid;
     }
