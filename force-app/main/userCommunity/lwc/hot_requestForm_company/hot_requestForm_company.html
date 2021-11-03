@@ -1,0 +1,34 @@
+<template>
+    <section class="virksomhet-info-skjema sub-form">
+        <h2 style="font-size: 1.25rem">Informasjon om virksomhet</h2>
+        <lightning-input
+            class="tolk-skjema-input"
+            name="OrganizationNumber__c"
+            data-id="orgnumber"
+            label="Organisasjonsnummer"
+            max-length="11"
+            type="text"
+            value={fieldValues.OrganizationNumber__c}
+            onblur={checkOrganizationNumber}
+            required
+        >
+        </lightning-input>
+        <br />
+        <lightning-input
+            class="tolk-skjema-input"
+            name="InvoiceReference__c"
+            label="Deres fakturareferanse"
+            value={fieldValues.InvoiceReference__c}
+            field-level-help="Oppgi referanse, slik økonomitjenesten hos dere krever"
+        >
+        </lightning-input>
+        <br />
+        <lightning-input
+            class="tolk-skjema-input"
+            name="AdditionalInvoiceText__c"
+            label="Tilleggsinformajon"
+            value={fieldValues.AdditionalInvoiceText__c}
+        >
+        </lightning-input>
+    </section>
+</template>
