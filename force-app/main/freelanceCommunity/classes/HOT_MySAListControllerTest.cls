@@ -19,8 +19,33 @@ private class HOT_MySAListControllerTest {
     }
     @isTest
     static void getMyServiceAppointmentsTest() {
-        List<ServiceAppointment> myServiceAppointments = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
-        System.assertEquals(1, myServiceAppointments.size(), 'Could not fetch my ServiceAppointments');
+        List<ServiceAppointment> myServiceAppointment = [SELECT Id, Status FROM ServiceAppointment];
+        System.assertEquals(1, myServiceAppointment.size(), 'Could not fetch my ServiceAppointment ');
+
+        for (ServiceAppointment sa : myServiceAppointment) {
+            sa.Status = 'Dispatched';
+        }
+        update myServiceAppointment;
+
+        myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+
+        System.assertEquals(
+            1,
+            myServiceAppointment.size(),
+            'Could not fetch my ServiceAppointment with status "Dispatched"'
+        );
+
+        myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+        for (ServiceAppointment sa : myServiceAppointment) {
+            sa.Status = 'Completed';
+        }
+        update myServiceAppointment;
+
+        System.assertEquals(
+            1,
+            myServiceAppointment.size(),
+            'Could not fetch my ServiceAppointment with status "Completed"'
+        );
     }
     @isTest
     static void getParentWorkOrderLineItemsTest() {
