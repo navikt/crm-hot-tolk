@@ -1,12 +1,6 @@
 <template>
     <div class="portal-hilsen">
         <h2 class="typo-undertittel">Hei {name}</h2>
-        <a
-            style="font-size: 16px"
-            target="_blank"
-            href="https://www.kunnskapsbanken.net/tolk/nar-du-trenger-tolk/soknad-og-bestilling/#brukerveiledning-TiND "
-            >Hvordan bestille tolk</a
-        >
     </div>
     <div if:true={isFrilans} class="informasjonstavle__body">
         <div class="informasjonstavle__content">
@@ -143,7 +137,11 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde" href="https://www.kunnskapsbanken.net/tolk/" target="_blank">
+                <a
+                    class="panelMedBilde"
+                    href="https://www.kunnskapsbanken.net/tolk/nar-du-trenger-tolk/soknad-og-bestilling/#brukerveiledning-TiND"
+                    target="_blank"
+                >
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -154,9 +152,9 @@
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
-                        <h2 class="typo-undertittel">Kunnskapsbanken</h2>
+                        <h2 class="typo-undertittel">Veiledning</h2>
                         <div>
-                            <p class="typo-normal">Her finner du fagstoff og artikler om tolking.</p>
+                            <p class="typo-normal">Her finner du informasjon og veiledning til bestillingsløsningen.</p>
                         </div>
                     </div>
                 </a>
