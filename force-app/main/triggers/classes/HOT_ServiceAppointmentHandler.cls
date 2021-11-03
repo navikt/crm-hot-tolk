@@ -271,7 +271,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.SchedStartTime != null &&
                 triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != null &&
                 serviceAppointment.SchedEndTime != null &&
-                triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != null
+                triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != null &&
+                (serviceAppointment.Status == 'Dispatched' || serviceAppointment.Status == 'Completed')
             ) {
                 serviceResourceByServiceAppointmentSchedTimeChanged.put(
                     triggerOldMap.get(serviceAppointment.Id).Id,
