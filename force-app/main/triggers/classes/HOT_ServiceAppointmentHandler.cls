@@ -265,8 +265,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointmentsWithChangedAddress.add(serviceAppointment);
             }
             if (
-                serviceAppointment.SchedStartTime != triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') ||
-                serviceAppointment.SchedEndTime != triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') &&
+                (serviceAppointment.SchedStartTime != triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') ||
+                serviceAppointment.SchedEndTime != triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime')) &&
                 serviceAppointment.HOT_AssignedResourceId__c != null &&
                 serviceAppointment.SchedStartTime != null &&
                 triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != null &&
