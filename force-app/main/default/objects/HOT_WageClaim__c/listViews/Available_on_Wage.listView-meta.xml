@@ -16,7 +16,7 @@
     </filters>
     <filters>
         <field>StartTime__c</field>
-        <operation>greaterThan</operation>
+        <operation>greaterOrEqual</operation>
         <value>TODAY</value>
     </filters>
     <label>Ledig på lønn</label>
