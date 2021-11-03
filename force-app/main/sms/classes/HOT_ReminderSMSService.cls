@@ -70,6 +70,11 @@ public without sharing class HOT_ReminderSMSService {
         return message;
     }
 
+    private static List<String> tolkNames(Id workOrderId) {
+        List<String> tolkNames = new List<String>();
+        List<ServiceAppointment> ServiceAppointments = serviceAppointmentsByWorkOrderId.get(workOrder.Id);
+    }
+
     public static void sendSMSToOtherOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
         List<SMS__c> smsList = new List<SMS__c>();
         for (WorkOrder workOrder : workOrderList) {
