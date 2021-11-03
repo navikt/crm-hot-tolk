@@ -27,7 +27,7 @@ public without sharing class HOT_ContentDocumentLinkService {
     public List<ContentDocument> contentDocuments;
 
     @InvocableMethod
-    public static void getContentDocumentLink(List<HOT_ContentDocumentLinkService> inputValue) {
+    public static void deleteContentDocumentLink(List<HOT_ContentDocumentLinkService> inputValue) {
         List<Id> contentDocumentIds = new List<Id>();
 
         for (ContentDocument contentDocument : inputValue[0].contentDocuments) {
