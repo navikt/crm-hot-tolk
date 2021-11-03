@@ -8,8 +8,9 @@
             group-name="testRadioGroup"
         >
         </c-radiobuttons>
+        <br />
 
         <lightning-messages aria-live="assertive"> </lightning-messages>
-        <lightning-button variant="brand" onclick={onHandleNeste} label="Neste"> </lightning-button>
+        <c-button button-label="Neste" button-styling="action" onbuttonclick={handleNextButtonClicked}></c-button>
     </section>
 </template>

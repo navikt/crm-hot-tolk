@@ -1,7 +1,7 @@
 import { LightningElement, track } from 'lwc';
 
 export default class Hot_requestForm_type extends LightningElement {
-    @track currentRequestType = 'Me';
+    @track currentRequestType;
     @track eventType = null;
 
     get requestTypes() {
@@ -28,7 +28,7 @@ export default class Hot_requestForm_type extends LightningElement {
         this.result.type = this.currentRequestType;
     }
 
-    onHandleNeste() {
+    handleNextButtonClicked() {
         switch (this.currentRequestType) {
             case 'Me':
                 this.result.requestForm = true;
