@@ -35,16 +35,43 @@ private class HOT_MySAListControllerTest {
             'Could not fetch my ServiceAppointment with status "Dispatched"'
         );
 
-        myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
         for (ServiceAppointment sa : myServiceAppointment) {
             sa.Status = 'Completed';
         }
         update myServiceAppointment;
 
+        myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+
         System.assertEquals(
             1,
             myServiceAppointment.size(),
             'Could not fetch my ServiceAppointment with status "Completed"'
+        );
+
+        for (ServiceAppointment sa : myServiceAppointment) {
+            sa.Status = 'Cancelled';
+        }
+        update myServiceAppointment;
+
+        myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+
+        System.assertEquals(
+            0,
+            myServiceAppointment.size(),
+            'Could not fetch my ServiceAppointment with status "Cancelled"'
+        );
+
+        for (ServiceAppointment sa : myServiceAppointment) {
+            sa.Status = 'Cannot Complete';
+        }
+        update myServiceAppointment;
+
+        myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+
+        System.assertEquals(
+            0,
+            myServiceAppointment.size(),
+            'Could not fetch my ServiceAppointment with status "Cannot Completed"'
         );
     }
     @isTest
