@@ -27,8 +27,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
-        console.log(JSON.stringify(this.requestTypeResult));
-        //this.fieldValues.EventType__c = this.requestTypeResult.eventType;
     }
 
     async handleSubmit(event) {
