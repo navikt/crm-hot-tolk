@@ -41,6 +41,7 @@ export default class Hot_requestForm_request extends LightningElement {
         });
         this.setDependentFields();
     }
+
     @api
     getFieldValues() {
         return this.fieldValues;

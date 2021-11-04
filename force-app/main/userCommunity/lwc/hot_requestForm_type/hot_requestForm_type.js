@@ -2,7 +2,6 @@ import { LightningElement, track } from 'lwc';
 
 export default class Hot_requestForm_type extends LightningElement {
     @track currentRequestType;
-    @track eventType = null;
 
     get requestTypes() {
         return [
@@ -21,7 +20,7 @@ export default class Hot_requestForm_type extends LightningElement {
     handleRequestTypeChange(event) {
         let radiobuttonValues = event.detail;
         radiobuttonValues.forEach((element) => {
-            if (element.checked === true) {
+            if (element.checked) {
                 this.currentRequestType = element.value;
             }
         });
