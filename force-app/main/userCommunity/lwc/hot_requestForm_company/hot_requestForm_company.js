@@ -6,18 +6,17 @@ export default class Hot_requestForm_company extends LightningElement {
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
-        IsOtherEconomicProvicer__c: false
+        IsOtherEconomicProvicer__c: false,
+        AdditionalInvoiceText__c: ''
     };
     choices = [
-        { name: '', label: 'Velg et alternativ' }, // TODO: Figure out what to do here. Placeholder? Validate on submit (picklist is required)
+        { name: '', label: 'Velg et alternativ' },
         { name: 'NAV', label: 'NAV betaler' },
         { name: 'Virksomhet', label: 'Virksomhet betaler' }
     ];
 
-    isCompanyEconomicProvider = false;
     handlePicklist(event) {
-        this.isCompanyEconomicProvider = event.detail.name === 'Virksomhet';
-        this.fieldValues.IsOtherEconomicProvicer__c = this.isCompanyEconomicProvider;
+        this.fieldValues.IsOtherEconomicProvicer__c = event.detail.name === 'Virksomhet';
     }
 
     @api
