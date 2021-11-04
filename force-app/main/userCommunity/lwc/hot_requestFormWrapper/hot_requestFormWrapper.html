@@ -24,14 +24,6 @@
                     onrequestformtyperesult={handleRequestType}
                 ></c-hot_request-form_type>
                 <div if:true={requestTypeChosen} class="actual-form">
-                    <c-hot_request-form_request
-                        parent-field-values={fieldValues}
-                        is-get-all={isGetAll}
-                        request-ids={requestIds}
-                        record-id={recordId}
-                        class="subform"
-                        if:true={requestTypeResult.requestForm}
-                    ></c-hot_request-form_request>
                     <c-hot_request-form_orderer
                         parent-field-values={fieldValues}
                         class="subform"
@@ -54,6 +46,14 @@
                         class="subform"
                         if:true={requestTypeResult.companyForm}
                     ></c-hot_request-form_company>
+                    <c-hot_request-form_request
+                        parent-field-values={fieldValues}
+                        is-get-all={isGetAll}
+                        request-ids={requestIds}
+                        record-id={recordId}
+                        class="subform"
+                        if:true={requestTypeResult.requestForm}
+                    ></c-hot_request-form_request>
 
                     <div class="button-container">
                         <div style="display: flex; justify-content: center">
