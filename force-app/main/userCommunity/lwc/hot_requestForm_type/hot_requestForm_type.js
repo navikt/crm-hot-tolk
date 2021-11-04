@@ -3,7 +3,7 @@ import { LightningElement, track } from 'lwc';
 export default class Hot_requestForm_type extends LightningElement {
     @track currentRequestType;
     @track radiobuttons = [
-        { label: 'For meg selv', value: 'Me' },
+        { label: 'For meg selv', value: 'Me', checked: true },
         { label: 'For en bruker', value: 'User' },
         { label: 'Til et arrangement/virksomhet/annet', value: 'Company' }
     ];
