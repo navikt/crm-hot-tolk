@@ -12,9 +12,9 @@ export default class Hot_requestForm_type extends LightningElement {
     }
 
     @track radiobuttons = [
-        { label: 'For meg selv', value: 'Me', disabled: false },
-        { label: 'For en bruker', value: 'User', disabled: false },
-        { label: 'Til et arrangement/virksomhet/annet', value: 'Company', disabled: false }
+        { label: 'For meg selv', value: 'Me' },
+        { label: 'For en bruker', value: 'User' },
+        { label: 'Til et arrangement/virksomhet/annet', value: 'Company' }
     ];
 
     handleRequestTypeChange(event) {
