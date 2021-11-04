@@ -1,7 +1,7 @@
 import { LightningElement, track } from 'lwc';
 
 export default class Hot_requestForm_type extends LightningElement {
-    @track currentRequestType;
+    @track currentRequestType = 'Me';
     @track radiobuttons = [
         { label: 'For meg selv', value: 'Me', checked: true },
         { label: 'For en bruker', value: 'User' },
@@ -35,7 +35,7 @@ export default class Hot_requestForm_type extends LightningElement {
                 break;
             default:
         }
-        if (this.currentRequestType !== undefined) {
+        if (this.currentRequestType !== undefined && this.currentRequestType !== '') {
             this.sendResult();
         }
     }
