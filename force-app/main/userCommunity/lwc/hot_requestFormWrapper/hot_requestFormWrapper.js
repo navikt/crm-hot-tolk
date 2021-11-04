@@ -191,7 +191,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     handleUserCheckbox(event) {
         this.requestTypeResult.userForm = event.detail;
-        console.log(this.requestTypeResult.userForm);
     }
 
     isGetAll = false;
@@ -215,6 +214,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.requestIds = requestIds;
         }
 
+        // TODO: Svenn Terje needs to conclude if we need this or not. Waiting for reply.
         /* if (this.fieldValues.Type__c === 'PublicEvent') {
             this.fieldValues.EventType__c = this.fieldValues.EventType__c === 'Annet' ? 'OtherEvent' : 'SportingEvent';
         }
