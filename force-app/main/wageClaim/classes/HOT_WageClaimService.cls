@@ -75,7 +75,6 @@ public without sharing class HOT_WageClaimService {
     }
 
     public static void createWageClaims(Map<Id, Id> resourceByAppointment) {
-        List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
                 SELECT
@@ -99,6 +98,26 @@ public without sharing class HOT_WageClaimService {
                 WHERE Id IN :resourceByAppointment.values()
             ]
         );
+        List<HOT_WageClaim__c> wageClaims = createWageClaimsFromServiceAppointments(
+            serviceAppointments,
+            resourceByAppointment,
+            serviceResources
+        );
+        try {
+            insert wageClaims;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    public static List<HOT_WageClaim__c> createWageClaimsFromServiceAppointments(
+        Map<Id, ServiceAppointment> serviceAppointments,
+        Map<Id, Id> resourceByAppointment,
+        Map<Id, ServiceResource> serviceResources
+    ) {
+        List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
         Date criticalDate = Date.today().addDays(14);
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (
@@ -121,13 +140,7 @@ public without sharing class HOT_WageClaimService {
                 wageClaims.add(wageClaim);
             }
         }
-        try {
-            insert wageClaims;
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
+        return wageClaims;
     }
 
     private static Boolean isAgreement(ServiceResource serviceResource, ServiceAppointment serviceAppointment) {
@@ -147,6 +160,13 @@ public without sharing class HOT_WageClaimService {
             ]
         );
         List<HOT_WageClaim__c> wageClaims = getWageClaimsFromServiceAppointments(serviceAppointments.values());
+        updateWageClaims(serviceAppointments, wageClaims, true);
+    }
+    public static void updateWageClaims(
+        Map<Id, ServiceAppointment> serviceAppointments,
+        List<HOT_WageClaim__c> wageClaims,
+        Boolean isUpsert
+    ) {
         Map<Id, List<HOT_WageClaim__c>> wageClaimsByServiceResourceId = getWageClaimsByServiceResourceId(wageClaims);
 
         List<HOT_WageClaim__c> newWageClaims = new List<HOT_WageClaim__c>();
@@ -178,7 +198,7 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointmentEndTime < wageClaim.EndTime__c
                     ) {
                         HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
-                            ParentWageClaim__c = wageClaim.Id,
+                            ParentWageClaim__c = isUpsert ? wageClaim.Id : null,
                             ServiceResource__c = wageClaim.ServiceResource__c,
                             StartTime__c = serviceAppointmentEndTime,
                             EndTime__c = wageClaim.EndTime__c
@@ -194,7 +214,7 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointmentStartTime > wageClaim.StartTime__c
                     ) {
                         HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
-                            ParentWageClaim__c = wageClaim.Id,
+                            ParentWageClaim__c = isUpsert ? wageClaim.Id : null,
                             ServiceResource__c = wageClaim.ServiceResource__c,
                             StartTime__c = wageClaim.StartTime__c,
                             EndTime__c = serviceAppointmentStartTime
@@ -212,7 +232,9 @@ public without sharing class HOT_WageClaimService {
         }
         List<HOT_WageClaim__c> wageClaimsToUpsert = new List<HOT_WageClaim__c>();
         wageClaimsToUpsert.addAll(newWageClaims);
-        wageClaimsToUpsert.addAll(updatedWageClaims.values());
+        if (isUpsert) {
+            wageClaimsToUpsert.addAll(updatedWageClaims.values());
+        }
         try {
             upsert wageClaimsToUpsert;
         } catch (Exception e) {
