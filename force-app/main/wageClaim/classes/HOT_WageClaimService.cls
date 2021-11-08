@@ -119,12 +119,12 @@ public without sharing class HOT_WageClaimService {
     ) {
         List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
         Date criticalDate = Date.today().addDays(14);
+
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (
                 serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)) != null &&
                 criticalDate >= serviceAppointment.SchedStartTime.date() &&
-                serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)).HOT_IsFreelanceInterpreter__c ==
-                true &&
+                serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)).HOT_IsFreelanceInterpreter__c &&
                 !isAgreement(serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)), serviceAppointment)
             ) {
                 HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
