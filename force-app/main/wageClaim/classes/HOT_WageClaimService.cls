@@ -201,7 +201,9 @@ public without sharing class HOT_WageClaimService {
                             ParentWageClaim__c = isUpsert ? wageClaim.Id : null,
                             ServiceResource__c = wageClaim.ServiceResource__c,
                             StartTime__c = serviceAppointmentEndTime,
-                            EndTime__c = wageClaim.EndTime__c
+                            EndTime__c = wageClaim.EndTime__c,
+                            ServiceAppointment__c = serviceAppointment.Id,
+                            WorkType__c = serviceAppointment.WorkTypeId
                         );
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
@@ -217,7 +219,9 @@ public without sharing class HOT_WageClaimService {
                             ParentWageClaim__c = isUpsert ? wageClaim.Id : null,
                             ServiceResource__c = wageClaim.ServiceResource__c,
                             StartTime__c = wageClaim.StartTime__c,
-                            EndTime__c = serviceAppointmentStartTime
+                            EndTime__c = serviceAppointmentStartTime,
+                            ServiceAppointment__c = serviceAppointment.Id,
+                            WorkType__c = serviceAppointment.WorkTypeId
                         );
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
