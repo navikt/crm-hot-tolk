@@ -113,4 +113,13 @@ export default class Hot_requestForm_request extends LightningElement {
     toggled() {
         this.sameLocation = !this.sameLocation;
     }
+
+    handleNextButtonClicked() {
+        if (!this.validateFields()) {
+            const selectedEvent = new CustomEvent('nextbuttonclicked', {
+                detail: 'requestformcomplete'
+            });
+            this.dispatchEvent(selectedEvent);
+        }
+    }
 }

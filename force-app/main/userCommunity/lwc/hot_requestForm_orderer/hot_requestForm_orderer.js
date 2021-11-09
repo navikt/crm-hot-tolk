@@ -64,4 +64,13 @@ export default class Hot_requestForm_orderer extends LightningElement {
             }
         }
     }
+
+    handleNextButtonClicked() {
+        if (!this.validateFields()) {
+            const selectedEvent = new CustomEvent('nextbuttonclicked', {
+                detail: 'ordererformcomplete'
+            });
+            this.dispatchEvent(selectedEvent);
+        }
+    }
 }

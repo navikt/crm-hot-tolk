@@ -24,9 +24,11 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track requestTypeResult = {};
     handleRequestType(event) {
+        console.log(JSON.stringify(this.requestTypeResult));
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
+        this.setCurrentForm();
     }
 
     async handleSubmit(event) {
@@ -176,6 +178,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         }
     }
+
+    // TODO: Figure out what to do here if we do step by step forms
     handleEditModeRequestType(parsed_params) {
         this.isEditMode = parsed_params.edit != null;
         this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
@@ -189,8 +193,13 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    //TODO: If checked -> show userForm only
+    showCheckBox = this.requestTypeResult.companyForm;
     handleUserCheckbox(event) {
-        this.requestTypeResult.userForm = event.detail;
+        //this.requestTypeResult.userForm = event.detail;
+        this.userForm = event.detail;
+        this.ordererForm = !event.detail;
+        this.showCheckBox = !this.userForm && this.ordererForm;
     }
 
     isGetAll = false;
@@ -231,5 +240,59 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                 pageName: this.previousPage
             }
         });
+    }
+
+    ordererFormComplete = false;
+    userFormComplete = false;
+    companyFormComplete = false;
+    requestFormComplete = false;
+    onNextButtonClicked(event) {
+        console.log('event detail: ' + JSON.stringify(event.detail));
+        switch (event.detail) {
+            case 'ordererformcomplete':
+                this.ordererFormComplete = true;
+                this.ordererForm = false;
+                break;
+            case 'userformcomplete':
+                this.userFormComplete = true;
+                this.userForm = false;
+                break;
+            case 'companyformcomplete':
+                this.companyFormComplete = true;
+                this.companyForm = false;
+                break;
+            case 'requestformcomplete':
+                this.requestFormComplete = true;
+                this.requestForm = false;
+                break;
+            default:
+        }
+        this.setCurrentForm();
+    }
+
+    ordererForm = false;
+    userForm = false;
+    companyForm = false;
+    requestForm = false;
+    setCurrentForm() {
+        if (this.fieldValues.Type__c === 'Me' && !this.requestFormComplete) {
+            this.requestForm = true;
+        } else if (this.fieldValues.Type__c === 'User') {
+            if (!this.userFormComplete) {
+                this.userForm = true;
+            } else if (!this.ordererFormComplete) {
+                this.ordererForm = true;
+            } else if (!this.requestFormComplete) {
+                this.requestForm = true;
+            }
+        } else if (this.fieldValues.Type__c === 'Company') {
+            if (!this.ordererFormComplete) {
+                this.ordererForm = true;
+            } else if (!this.companyFormComplete) {
+                this.companyForm = true;
+            } else if (!this.requestFormComplete) {
+                this.requestForm = true;
+            }
+        }
     }
 }

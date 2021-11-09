@@ -24,27 +24,30 @@
                     onrequestformtyperesult={handleRequestType}
                 ></c-hot_request-form_type>
                 <div if:true={requestTypeChosen} class="actual-form">
-                    <c-hot_request-form_orderer
-                        parent-field-values={fieldValues}
-                        class="subform"
-                        if:true={requestTypeResult.ordererForm}
-                    ></c-hot_request-form_orderer>
-                    <div style="padding-left: 2rem">
-                        <c-checkbox
-                            if:true={requestTypeResult.companyForm}
-                            label="Legge til bruker?"
-                            oncheckboxclick={handleUserCheckbox}
-                        ></c-checkbox>
+                    <div if:true={ordererForm}>
+                        <c-hot_request-form_orderer
+                            parent-field-values={fieldValues}
+                            class="subform"
+                            onnextbuttonclicked={onNextButtonClicked}
+                        ></c-hot_request-form_orderer>
+                        <div style="padding-left: 2rem">
+                            <c-checkbox
+                                if:true={showCheckBox}
+                                label="Legge til bruker?"
+                                oncheckboxclick={handleUserCheckbox}
+                            ></c-checkbox>
+                        </div>
                     </div>
+
                     <c-hot_request-form_user
                         parent-field-values={fieldValues}
                         class="subform"
-                        if:true={requestTypeResult.userForm}
+                        if:true={userForm}
                     ></c-hot_request-form_user>
                     <c-hot_request-form_company
                         parent-field-values={fieldValues}
                         class="subform"
-                        if:true={requestTypeResult.companyForm}
+                        if:true={companyForm}
                     ></c-hot_request-form_company>
                     <c-hot_request-form_request
                         parent-field-values={fieldValues}
@@ -52,7 +55,7 @@
                         request-ids={requestIds}
                         record-id={recordId}
                         class="subform"
-                        if:true={requestTypeResult.requestForm}
+                        if:true={requestForm}
                     ></c-hot_request-form_request>
 
                     <div class="button-container">

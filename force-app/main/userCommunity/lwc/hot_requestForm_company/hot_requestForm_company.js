@@ -46,4 +46,13 @@ export default class Hot_requestForm_company extends LightningElement {
             }
         }
     }
+
+    handleNextButtonClicked() {
+        if (!this.validateFields()) {
+            const selectedEvent = new CustomEvent('nextbuttonclicked', {
+                detail: 'companyformcomplete'
+            });
+            this.dispatchEvent(selectedEvent);
+        }
+    }
 }

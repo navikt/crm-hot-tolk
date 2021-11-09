@@ -40,4 +40,13 @@ export default class Hot_requestForm_user extends LightningElement {
             }
         }
     }
+
+    handleNextButtonClicked() {
+        if (!this.validateFields()) {
+            const selectedEvent = new CustomEvent('nextbuttonclicked', {
+                detail: 'userformcomplete'
+            });
+            this.dispatchEvent(selectedEvent);
+        }
+    }
 }
