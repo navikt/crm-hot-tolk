@@ -89,7 +89,7 @@ public without sharing class HOT_ReminderSMSService {
                     SMSService.createSMSRecord(
                         'HOT',
                         'Orderer On Status Update',
-                        workOrder.AccountId,
+                        workOrder.HOT_Request__r.Orderer__c,
                         workOrder.Id,
                         workOrder.HOT_Request__r.OrdererPhone__c,
                         constructStatusChangedMessage(workOrder)
