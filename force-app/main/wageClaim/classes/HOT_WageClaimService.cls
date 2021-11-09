@@ -171,6 +171,7 @@ public without sharing class HOT_WageClaimService {
 
         List<HOT_WageClaim__c> newWageClaims = new List<HOT_WageClaim__c>();
         Map<Id, HOT_WageClaim__c> updatedWageClaims = new Map<Id, HOT_WageClaim__c>();
+
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c) != null) {
                 for (
@@ -202,8 +203,8 @@ public without sharing class HOT_WageClaimService {
                             ServiceResource__c = wageClaim.ServiceResource__c,
                             StartTime__c = serviceAppointmentEndTime,
                             EndTime__c = wageClaim.EndTime__c,
-                            ServiceAppointment__c = serviceAppointment.Id,
-                            WorkType__c = serviceAppointment.WorkTypeId
+                            ServiceAppointment__c = wageClaim.ServiceAppointment__c,
+                            WorkType__c = wageClaim.WorkType__c
                         );
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
@@ -220,8 +221,8 @@ public without sharing class HOT_WageClaimService {
                             ServiceResource__c = wageClaim.ServiceResource__c,
                             StartTime__c = wageClaim.StartTime__c,
                             EndTime__c = serviceAppointmentStartTime,
-                            ServiceAppointment__c = serviceAppointment.Id,
-                            WorkType__c = serviceAppointment.WorkTypeId
+                            ServiceAppointment__c = wageClaim.ServiceAppointment__c,
+                            WorkType__c = wageClaim.WorkType__c
                         );
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
@@ -271,7 +272,7 @@ public without sharing class HOT_WageClaimService {
             serviceResourceByServiceAppointment.put(serviceAppointment.Id, serviceAppointment.HOT_ServiceResource__c);
         }
         List<HOT_WageClaim__c> wageClaims = [
-            SELECT Id, ServiceAppointment__c, ServiceResource__c, StartTime__c, EndTime__c
+            SELECT Id, ServiceAppointment__c, ServiceResource__c, StartTime__c, EndTime__c, WorkType__c
             FROM HOT_WageClaim__c
             WHERE
                 ServiceResource__c IN :serviceResourceByServiceAppointment.values()
