@@ -319,6 +319,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     WHERE Id IN :serviceResourceByServiceAppointmentSchedTimeChanged.values()
                 ]
             );
+
             Map<Id, ServiceAppointment> oldServiceAppointmentsWithRequestFields = new Map<Id, ServiceAppointment>(
                 [
                     SELECT
@@ -335,6 +336,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     WHERE Id IN :oldServiceAppointmentsSchedTimeChanged.keySet()
                 ]
             );
+
+            for (ServiceAppointment sa : oldServiceAppointmentsWithRequestFields.values()) {
+                sa.SchedStartTime = oldServiceAppointmentsSchedTimeChanged.get(sa.Id).SchedStartTime;
+                sa.SchedEndTime = oldServiceAppointmentsSchedTimeChanged.get(sa.Id).SchedEndTime;
+            }
+
             List<HOT_WageClaim__c> wageClaims = HOT_WageClaimService.createWageClaimsFromServiceAppointments(
                 oldServiceAppointmentsWithRequestFields,
                 serviceResourceByServiceAppointmentSchedTimeChanged,
