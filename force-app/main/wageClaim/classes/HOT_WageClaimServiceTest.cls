@@ -493,7 +493,12 @@ private class HOT_WageClaimServiceTest {
     @isTest
     static void SAWithARTimesChangedAndIsAgreement() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
+        update new ServiceResource(Id = assignedResource.ServiceResourceId, HOT_AgreementFreelance__c = true);
+
+        HOT_Request__c request = [SELECT Id, ServiceResourceWithAgreement1__c FROM HOT_Request__c];
+        request.ServiceResourceWithAgreement1__c = assignedResource.ServiceResourceId;
+        update request;
+
         ServiceAppointment serviceAppointment = [
             SELECT
                 Id,
@@ -501,22 +506,23 @@ private class HOT_WageClaimServiceTest {
                 SchedEndTime,
                 ActualStartTime,
                 ActualEndTime,
+                HOT_ServiceResource__c,
                 HOT_Request__r.ServiceResourceWithAgreement1__c
             FROM ServiceAppointment
             WHERE Id = :assignedResource.ServiceAppointmentId
             LIMIT 1
         ];
-        HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
-        request.ServiceResourceWithAgreement1__c = serviceResource.Id;
-        update request;
-
         serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime.addMinutes(15);
         serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
         Test.startTest();
         update serviceAppointment;
         Test.stopTest();
 
-        List<HOT_WageClaim__c> wageClaims = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
+        List<HOT_WageClaim__c> wageClaims = [
+            SELECT Id, StartTime__c, EndTime__c, ServiceResource__c
+            FROM HOT_WageClaim__c
+            WHERE ServiceResource__c = :serviceAppointment.HOT_ServiceResource__c
+        ];
         System.assertEquals(0, wageClaims.size(), 'Wage Claim was incorrectly created when SR is on agreement.');
     }
 }
