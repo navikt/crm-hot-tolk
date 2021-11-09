@@ -459,7 +459,6 @@ private class HOT_WageClaimServiceTest {
             WHERE Id = :assignedResource.ServiceAppointmentId
             LIMIT 1
         ];
-        System.debug('serviceAppointment: ' + serviceAppointment);
         serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime.addMinutes(15);
         serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
         Test.startTest();
@@ -467,7 +466,6 @@ private class HOT_WageClaimServiceTest {
         Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
-        System.debug('Wageclaims: ' + wageClaims);
         Boolean isWageClaimTimesCorrect, isWageClaimTimesCorrect2 = false;
         for (HOT_WageClaim__c wageClaim : wageClaims) {
             if (
