@@ -461,6 +461,7 @@ private class HOT_WageClaimServiceTest {
         ];
         serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime.addMinutes(15);
         serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
+        serviceAppointment.Status = 'Completed';
         Test.startTest();
         update serviceAppointment;
         Test.stopTest();
@@ -514,6 +515,7 @@ private class HOT_WageClaimServiceTest {
         ];
         serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime.addMinutes(15);
         serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
+        serviceAppointment.Status = 'Completed';
         Test.startTest();
         update serviceAppointment;
         Test.stopTest();
