@@ -16,14 +16,25 @@ private class HOT_FieldServiceStatusHandlerTest {
 
         request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
-        System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
+        System.assertEquals('Åpen', request.Status__c, 'Status on the request did not update to correct value');
 
+        workOrder1.Status = 'Canceled';
+        update workOrder1;
+
+        request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+        System.assertEquals('Åpen', request.Status__c, 'Status on the request did not update to correct value');
+
+        request.Status__c = 'Godkjent';
+        update request;
+        workOrder1.Status = 'New';
+        update workOrder1;
         workOrder2.Status = 'Dispatched';
         update workOrder2;
 
         request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
-        System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
+        System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
 
         workOrder1.Status = 'Dispatched';
         update workOrder1;
