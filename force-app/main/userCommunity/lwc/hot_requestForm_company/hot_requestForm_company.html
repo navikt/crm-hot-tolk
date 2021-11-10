@@ -20,6 +20,7 @@
             required="true"
             onpicklistvaluechange={handlePicklist}
             desktop-style="width: 50%;"
+            error-text="Du må velge et alternativ"
         ></c-picklist>
         <br />
         <div if:true={fieldValues.IsOtherEconomicProvicer__c}>
@@ -40,6 +41,14 @@
             >
             </lightning-input>
         </div>
-        <c-button button-label="Neste" button-styling="primary" onbuttonclick={handleNextButtonClicked}></c-button>
+
+        <c-checkbox label="Legge til bruker?" oncheckboxclick={handleUserCheckbox}></c-checkbox>
+        <br if:false={userCheckboxValue} />
+        <c-button
+            if:false={userCheckboxValue}
+            button-label="Neste"
+            button-styling="primary"
+            onbuttonclick={handleNextButtonClicked}
+        ></c-button>
     </section>
 </template>

@@ -1,4 +1,4 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
@@ -24,11 +24,26 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track requestTypeResult = {};
     handleRequestType(event) {
-        console.log(JSON.stringify(this.requestTypeResult));
         this.requestTypeResult = event.detail;
+        console.log(JSON.stringify(this.requestTypeResult));
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
-        this.setCurrentForm();
+        this.setInitialForm();
+    }
+
+    userCheckbox = false;
+    setInitialForm() {
+        this.requestTypeResult.requestForm = false;
+        this.requestTypeResult.userForm = false;
+        this.requestTypeResult.companyForm = false;
+        this.requestTypeResult.ordererForm = false;
+        if (this.fieldValues.Type__c === 'Me') {
+            this.requestTypeResult.requestForm = true;
+        } else if (this.fieldValues.Type__c === 'User') {
+            this.requestTypeResult.userForm = true;
+        } else {
+            this.requestTypeResult.ordererForm = true;
+        }
     }
 
     async handleSubmit(event) {
@@ -179,7 +194,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    // TODO: Figure out what to do here if we do step by step forms
+    // TODO: Figure out if step by step forms have any impact on this
     handleEditModeRequestType(parsed_params) {
         this.isEditMode = parsed_params.edit != null;
         this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
@@ -193,13 +208,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    //TODO: If checked -> show userForm only
-    showCheckBox = this.requestTypeResult.companyForm;
     handleUserCheckbox(event) {
-        //this.requestTypeResult.userForm = event.detail;
-        this.userForm = event.detail;
-        this.ordererForm = !event.detail;
-        this.showCheckBox = !this.userForm && this.ordererForm;
+        this.requestTypeResult.userForm = event.detail;
     }
 
     isGetAll = false;
@@ -250,48 +260,40 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         console.log('event detail: ' + JSON.stringify(event.detail));
         switch (event.detail) {
             case 'ordererformcomplete':
+                this.requestTypeResult.ordererForm = false;
                 this.ordererFormComplete = true;
-                this.ordererForm = false;
                 break;
             case 'userformcomplete':
+                this.requestTypeResult.userForm = false;
                 this.userFormComplete = true;
-                this.userForm = false;
                 break;
             case 'companyformcomplete':
+                this.requestTypeResult.companyForm = false;
                 this.companyFormComplete = true;
-                this.companyForm = false;
-                break;
-            case 'requestformcomplete':
-                this.requestFormComplete = true;
-                this.requestForm = false;
                 break;
             default:
         }
         this.setCurrentForm();
     }
 
-    ordererForm = false;
-    userForm = false;
-    companyForm = false;
-    requestForm = false;
     setCurrentForm() {
-        if (this.fieldValues.Type__c === 'Me' && !this.requestFormComplete) {
-            this.requestForm = true;
-        } else if (this.fieldValues.Type__c === 'User') {
+        console.log(JSON.stringify(this.requestTypeResult));
+        if (this.fieldValues.Type__c === 'User') {
             if (!this.userFormComplete) {
-                this.userForm = true;
+                this.requestTypeResult.userForm = true;
             } else if (!this.ordererFormComplete) {
-                this.ordererForm = true;
+                this.requestTypeResult.ordererForm = true;
             } else if (!this.requestFormComplete) {
-                this.requestForm = true;
+                this.requestTypeResult.requestForm = true;
             }
         } else if (this.fieldValues.Type__c === 'Company') {
             if (!this.ordererFormComplete) {
-                this.ordererForm = true;
+                this.requestTypeResult.ordererForm = true;
             } else if (!this.companyFormComplete) {
-                this.companyForm = true;
+                this.requestTypeResult.companyForm = true;
+                this.userCheckbox = true;
             } else if (!this.requestFormComplete) {
-                this.requestForm = true;
+                this.requestTypeResult.requestForm = true;
             }
         }
     }

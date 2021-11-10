@@ -18,6 +18,14 @@ export default class Hot_requestForm_company extends LightningElement {
     handlePicklist(event) {
         this.fieldValues.IsOtherEconomicProvicer__c = event.detail.name === 'Virksomhet';
     }
+    userCheckboxValue = false;
+    handleUserCheckbox(event) {
+        this.userCheckboxValue = event.detail;
+        const selectedEvent = new CustomEvent('usercheckboxclicked', {
+            detail: event.detail
+        });
+        this.dispatchEvent(selectedEvent);
+    }
 
     @api
     setFieldValues() {
@@ -30,7 +38,17 @@ export default class Hot_requestForm_company extends LightningElement {
     @api
     validateFields() {
         this.attemptedSubmit = true;
-        return validate(this.template.querySelector('[data-id="orgnumber"]'), organizationNumberValidationRules);
+        let hasErrors = validate(
+            this.template.querySelector('[data-id="orgnumber"]'),
+            organizationNumberValidationRules
+        );
+        let picklistValidation = this.template.querySelector('c-picklist').validationHandler();
+        console.log('picklistValidation: ', picklistValidation);
+        if (picklistValidation) {
+            console.log('picklist error');
+            hasErrors += 1;
+        }
+        return hasErrors;
     }
 
     @api
@@ -49,6 +67,7 @@ export default class Hot_requestForm_company extends LightningElement {
 
     handleNextButtonClicked() {
         if (!this.validateFields()) {
+            console.log('hallo');
             const selectedEvent = new CustomEvent('nextbuttonclicked', {
                 detail: 'companyformcomplete'
             });

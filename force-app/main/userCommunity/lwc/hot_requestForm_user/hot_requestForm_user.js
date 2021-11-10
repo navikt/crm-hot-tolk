@@ -25,6 +25,7 @@ export default class Hot_requestForm_user extends LightningElement {
                 hasErrors = hasErrors + validate(element, [require]);
             }
         });
+        return hasErrors;
     }
 
     @api
