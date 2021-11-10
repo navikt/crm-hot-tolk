@@ -45,7 +45,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
     private static void updateRequestStatus(List<HOT_Request__c> requests) {
         Map<String, String> statusMap = new Map<String, String>(); // Map<Work Order Status, Request Status>
         statusMap.put('New', 'Godkjent');
-        statusMap.put('Scheduled', 'Reservert');
+        statusMap.put('Scheduled', 'Godkjent');
         statusMap.put('Dispatched', 'Tildelt');
         statusMap.put('In Progress', 'Pågår');
         statusMap.put('Completed', 'Dekket');

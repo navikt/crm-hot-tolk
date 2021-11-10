@@ -644,6 +644,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         workOrder = [SELECT Id, Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals('Scheduled', workOrder.Status, 'Status on the work order did not update to correct value');
 
+        //TODO: FIks
         request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Id = :request.Id];
         System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
     }
@@ -812,6 +813,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         workOrder = [SELECT Id, Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals('Scheduled', workOrder.Status, 'Status on the work order did not update to correct value');
 
+        //TODO: FIks
         request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Id = :request.Id];
         System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
     }
