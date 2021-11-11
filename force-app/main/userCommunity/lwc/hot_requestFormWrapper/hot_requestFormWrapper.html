@@ -22,18 +22,21 @@
                 <c-hot_request-form_type
                     if:false={requestTypeChosen}
                     onrequestformtyperesult={handleRequestType}
+                    previous-page={previousPage}
                 ></c-hot_request-form_type>
                 <div if:true={requestTypeChosen} class="actual-form">
                     <c-hot_request-form_orderer
                         parent-field-values={fieldValues}
                         class="subform"
                         onnextbuttonclicked={onNextButtonClicked}
+                        onbackbuttonclicked={onBackButtonClicked}
                         if:true={requestTypeResult.ordererForm}
                     ></c-hot_request-form_orderer>
                     <c-hot_request-form_company
                         parent-field-values={fieldValues}
                         class="subform"
                         onnextbuttonclicked={onNextButtonClicked}
+                        onbackbuttonclicked={onBackButtonClicked}
                         onusercheckboxclicked={handleUserCheckbox}
                         if:true={requestTypeResult.companyForm}
                     ></c-hot_request-form_company>
@@ -42,6 +45,7 @@
                         class="subform"
                         if:true={requestTypeResult.userForm}
                         onnextbuttonclicked={onNextButtonClicked}
+                        onbackbuttonclicked={onBackButtonClicked}
                     ></c-hot_request-form_user>
                     <c-hot_request-form_request
                         parent-field-values={fieldValues}
@@ -50,6 +54,7 @@
                         record-id={recordId}
                         class="subform"
                         if:true={requestTypeResult.requestForm}
+                        onbackbuttonclicked={onBackButtonClicked}
                     ></c-hot_request-form_request>
 
                     <div class="button-container">

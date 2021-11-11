@@ -127,7 +127,13 @@
             is-delete-option="true"
             title="Tidligere opplastede vedlegg"
         ></c-record-files-with-sharing>
-
+        <c-button
+            button-label="Tilbake"
+            button-styling="secondary"
+            onbuttonclick={handleBackButtonClicked}
+            desktop-style="margin-right: 1em;"
+            mobile-style="margin-right: 1em;"
+        ></c-button>
         <lightning-messages aria-live="assertive"> </lightning-messages>
     </section>
 </template>

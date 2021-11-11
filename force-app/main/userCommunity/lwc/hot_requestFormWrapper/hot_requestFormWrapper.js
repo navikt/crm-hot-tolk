@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
@@ -28,22 +28,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         console.log(JSON.stringify(this.requestTypeResult));
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
-        this.setInitialForm();
-    }
-
-    userCheckbox = false;
-    setInitialForm() {
-        this.requestTypeResult.requestForm = false;
-        this.requestTypeResult.userForm = false;
-        this.requestTypeResult.companyForm = false;
-        this.requestTypeResult.ordererForm = false;
-        if (this.fieldValues.Type__c === 'Me') {
-            this.requestTypeResult.requestForm = true;
-        } else if (this.fieldValues.Type__c === 'User') {
-            this.requestTypeResult.userForm = true;
-        } else {
-            this.requestTypeResult.ordererForm = true;
-        }
+        this.setCurrentForm();
     }
 
     async handleSubmit(event) {
@@ -84,6 +69,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.setFieldValues(subForm.getFieldValues());
         });
     }
+    // TODO: Set field values so that they show when pressing back button
     setFieldValues(fields) {
         for (let k in fields) {
             this.fieldValues[k] = fields[k];
@@ -179,7 +165,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    previousPage = 'home';
+    @track previousPage = 'home';
     connectedCallback() {
         console.log('connectedCallback');
         let parsed_params = getParametersFromURL();
@@ -206,10 +192,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                 this.requestTypeResult.companyForm = this.fieldValues.Type__c !== 'User';
             }
         }
-    }
-
-    handleUserCheckbox(event) {
-        this.requestTypeResult.userForm = event.detail;
     }
 
     isGetAll = false;
@@ -252,49 +234,49 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         });
     }
 
-    ordererFormComplete = false;
-    userFormComplete = false;
-    companyFormComplete = false;
-    requestFormComplete = false;
     onNextButtonClicked(event) {
         console.log('event detail: ' + JSON.stringify(event.detail));
-        switch (event.detail) {
-            case 'ordererformcomplete':
-                this.requestTypeResult.ordererForm = false;
-                this.ordererFormComplete = true;
-                break;
-            case 'userformcomplete':
-                this.requestTypeResult.userForm = false;
-                this.userFormComplete = true;
-                break;
-            case 'companyformcomplete':
-                this.requestTypeResult.companyForm = false;
-                this.companyFormComplete = true;
-                break;
-            default:
-        }
-        this.setCurrentForm();
+        this.requestTypeResult[this.formArray.at(-1)] = false;
+        this.setCurrentForm(event.detail);
     }
 
-    setCurrentForm() {
-        console.log(JSON.stringify(this.requestTypeResult));
-        if (this.fieldValues.Type__c === 'User') {
-            if (!this.userFormComplete) {
-                this.requestTypeResult.userForm = true;
-            } else if (!this.ordererFormComplete) {
-                this.requestTypeResult.ordererForm = true;
-            } else if (!this.requestFormComplete) {
-                this.requestTypeResult.requestForm = true;
-            }
-        } else if (this.fieldValues.Type__c === 'Company') {
-            if (!this.ordererFormComplete) {
-                this.requestTypeResult.ordererForm = true;
-            } else if (!this.companyFormComplete) {
-                this.requestTypeResult.companyForm = true;
-                this.userCheckbox = true;
-            } else if (!this.requestFormComplete) {
-                this.requestTypeResult.requestForm = true;
-            }
+    onBackButtonClicked() {
+        //this.getFieldValuesFromSubForms();
+        if (this.formArray.length < 2) {
+            // Go back to type selection
+            this.formArray = [];
+            this.requestTypeChosen = false;
+            this.requestTypeResult = null;
+        } else {
+            this.requestTypeResult[this.formArray.at(-1)] = false;
+            this.requestTypeResult[this.formArray.at(-2)] = true;
+            this.formArray.pop();
         }
+    }
+
+    formArray = [];
+    setCurrentForm(form) {
+        //this.getFieldValuesFromSubForms();
+        if (this.formArray.length === 0 && this.fieldValues.Type__c !== 'Me') {
+            this.formArray.push('ordererForm');
+        }
+        if (form === 'userformcomplete') {
+            this.formArray.push('requestForm');
+        } else if (form === 'ordererformcomplete' && this.fieldValues.Type__c === 'User') {
+            this.formArray.push('userForm');
+        } else if (form === 'ordererformcomplete' && this.fieldValues.Type__c === 'Company') {
+            this.formArray.push('companyForm');
+        } else if (form === 'companyformcomplete') {
+            this.formArray.push('requestForm');
+            this.userCheckbox = true;
+        } else if (this.fieldValues.Type__c === 'Me') {
+            this.formArray.push('requestForm');
+        }
+        this.requestTypeResult[this.formArray.at(-1)] = true;
+    }
+
+    userCheckbox = false;
+    handleUserCheckbox(event) {
+        this.requestTypeResult.userForm = event.detail;
     }
 }

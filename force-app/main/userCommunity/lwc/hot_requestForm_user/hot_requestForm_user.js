@@ -50,4 +50,9 @@ export default class Hot_requestForm_user extends LightningElement {
             this.dispatchEvent(selectedEvent);
         }
     }
+
+    handleBackButtonClicked() {
+        const selectedEvent = new CustomEvent('backbuttonclicked');
+        this.dispatchEvent(selectedEvent);
+    }
 }
