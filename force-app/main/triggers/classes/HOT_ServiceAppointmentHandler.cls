@@ -272,7 +272,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != null &&
                 serviceAppointment.SchedEndTime != null &&
                 triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != null &&
-                (serviceAppointment.Status == 'Dispatched' || serviceAppointment.Status == 'Completed')
+                (serviceAppointment.Status == 'Dispatched' ||
+                serviceAppointment.Status == 'Completed')
             ) {
                 serviceResourceByServiceAppointmentSchedTimeChanged.put(
                     triggerOldMap.get(serviceAppointment.Id).Id,
@@ -318,8 +319,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     WHERE Id IN :serviceResourceByServiceAppointmentSchedTimeChanged.values()
                 ]
             );
+
+            Map<Id, ServiceAppointment> oldServiceAppointmentsWithRequestFields = getServiceAppointmnetsWithAgreementFieldsFromRequest(
+                oldServiceAppointmentsSchedTimeChanged
+            );
+            setScheduledTimesToOldValues(
+                oldServiceAppointmentsWithRequestFields,
+                oldServiceAppointmentsSchedTimeChanged
+            );
             List<HOT_WageClaim__c> wageClaims = HOT_WageClaimService.createWageClaimsFromServiceAppointments(
-                oldServiceAppointmentsSchedTimeChanged,
+                oldServiceAppointmentsWithRequestFields,
                 serviceResourceByServiceAppointmentSchedTimeChanged,
                 serviceResources
             );
@@ -330,6 +339,38 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             (List<ServiceAppointment>) records,
             triggerOldMap
         );
+    }
+
+    private static void setScheduledTimesToOldValues(
+        Map<Id, ServiceAppointment> serviceAppointments,
+        Map<Id, ServiceAppointment> oldServiceAppointments
+    ) {
+        for (ServiceAppointment sa : serviceAppointments.values()) {
+            sa.SchedStartTime = oldServiceAppointments.get(sa.Id).SchedStartTime;
+            sa.SchedEndTime = oldServiceAppointments.get(sa.Id).SchedEndTime;
+        }
+    }
+
+    private static Map<Id, ServiceAppointment> getServiceAppointmnetsWithAgreementFieldsFromRequest(
+        Map<Id, ServiceAppointment> serviceAppointments
+    ) {
+        Map<Id, ServiceAppointment> serviceAppointmentsWithRequestFields = new Map<Id, ServiceAppointment>(
+            [
+                SELECT
+                    Id,
+                    SchedStartTime,
+                    SchedEndTime,
+                    WorkTypeId,
+                    ServiceTerritoryId,
+                    Status,
+                    HOT_Request__r.ServiceResourceWithAgreement1__c,
+                    HOT_Request__r.ServiceResourceWithAgreement2__c,
+                    HOT_Request__r.ServiceResourceWithAgreement3__c
+                FROM ServiceAppointment
+                WHERE Id IN :serviceAppointments.keySet()
+            ]
+        );
+        return serviceAppointmentsWithRequestFields;
     }
 
     private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
