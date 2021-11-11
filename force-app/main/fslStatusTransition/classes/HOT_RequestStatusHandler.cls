@@ -133,7 +133,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                         request.Status__c = statusMap.get('Dispatched');
                         continue;
                     }
-                    if (numberOfInProgress > 0) {
+                    if (numberOfInProgress == numberOfWorkOrder) {
                         request.Status__c = statusMap.get('In Progress');
                         continue;
                     }
