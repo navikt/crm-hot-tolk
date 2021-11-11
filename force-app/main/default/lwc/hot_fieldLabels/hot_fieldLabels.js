@@ -134,7 +134,8 @@ export let myServiceAppointmentFieldLabels = {
     HOT_Escort__c: { label: 'Ledsaging', type: 'string' },
     HOT_DegreeOfHearingAndVisualImpairment__c: { label: 'Vedtak', type: 'string' },
     HOT_WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
-    HOT_TermsOfAgreement__c: { label: 'Avtalte betingelser', type: 'string' }
+    HOT_TermsOfAgreement__c: { label: 'Avtalte betingelser', type: 'string' },
+    Description: { label: 'Tilleggsopplysninger', type: 'string' }
 };
 
 export let workOrderFieldLabels = {
