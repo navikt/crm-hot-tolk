@@ -114,8 +114,6 @@ private class HOT_ReminderSMSServiceTest {
 
         HOT_DatabaseOperations.updateRecords(serviceAppointments);
 
-        List<ServiceAppointment> essa = [SELECT Id, HOT_ServiceResource__r.Name FROM ServiceAppointment];
-
         HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
 
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
