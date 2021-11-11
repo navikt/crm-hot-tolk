@@ -58,8 +58,14 @@ public without sharing class HOT_ReminderSMSService {
         for (WorkOrder workOrder : workOrders) {
             Id workOrderId = workOrder.Id;
             String tolkNames = 'Tolk er: ';
-            for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(workOrderId)) {
-                tolkNames += serviceAppointment.HOT_ServiceResource__r.Name + ', ';
+            List<ServiceAppointment> serviceAppointemts = serviceAppointmentsByWorkOrderId.get(workOrderId);
+            for (Integer i = 0; i < serviceAppointemts.size(); i++) {
+                tolkNames += serviceAppointemts[i].HOT_ServiceResource__r.Name;
+                if (i == serviceAppointemts.size() - 1) {
+                    tolkNames += '. ';
+                } else {
+                    tolkNames += ', ';
+                }
             }
             tolkNamesByWorkOrderIds.put(workOrderId, tolkNames);
         }
@@ -107,7 +113,7 @@ public without sharing class HOT_ReminderSMSService {
     private static String constructStatusChangedMessage(WorkOrder workOrder, String tolkNames) {
         String message = 'INFO\nStatus på din bestilling er: ';
         if (workOrder.Status == 'Dispatched') {
-            message += 'Du har fått tolk';
+            message += 'Du har fått tolk. ';
             message += tolkNames;
         } else if (workOrder.Status == 'Cannot Complete') {
             message += 'Ikke ledig tolk';

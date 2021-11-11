@@ -23,6 +23,12 @@ private class HOT_ReminderSMSServiceTest {
         workOrder.StartDate = workOrder.StartDate.addDays(-2);
         workOrder.EndDate = workOrder.EndDate.addDays(-2);
         update workOrder;
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResource.HOT_IsFreelanceInterpreter__c = true;
+        insert serviceResource;
     }
 
     @isTest
@@ -50,7 +56,7 @@ private class HOT_ReminderSMSServiceTest {
             FROM WorkOrder
         ];
         HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
-        List<SMS__c> smsList = [SELECT Id FROM SMS__c];
+        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
 
@@ -74,5 +80,48 @@ private class HOT_ReminderSMSServiceTest {
         HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
+
+    @isTest
+    static void sendSMSToOtherOrdererOnStatusUpdateTestTolkNames() {
+        List<WorkOrder> workOrders = [
+            SELECT
+                Id,
+                HOT_Request__r.Orderer__c,
+                HOT_Request__r.OrdererPhone__c,
+                StartDate,
+                EndDate,
+                Status,
+                HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
+            FROM WorkOrder
+        ];
+
+        List<ServiceResource> tolks = [SELECT Id, Name FROM ServiceResource];
+        ServiceResource tolk = tolks[0];
+        tolk.Name = 'TolkName';
+
+        HOT_DatabaseOperations.updateRecords(tolk);
+
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, HOT_ServiceResource__c, Status
+            FROM ServiceAppointment
+        ];
+
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.HOT_ServiceResource__c = tolk.Id;
+            serviceAppointment.Status = 'Dispatched';
+        }
+
+        HOT_DatabaseOperations.updateRecords(serviceAppointments);
+
+        List<ServiceAppointment> essa = [SELECT Id, HOT_ServiceResource__r.Name FROM ServiceAppointment];
+
+        HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
+
+        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
+
+        String message = smsList[0].Message__c;
+
+        System.assert(message.contains('TolkName'), 'Could not create sms-record');
     }
 }
