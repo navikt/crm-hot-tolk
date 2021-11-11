@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NumericPhone</fullName>
+    <active>true</active>
+    <errorConditionFormula>!ISBLANK(OrdererPhone__c)
+&amp;&amp;
+(
+(LEN(OrdererPhone__c) &lt; 8 || LEN(OrdererPhone__c) &gt; 14)
+||
+!ISNUMBER(OrdererPhone__c)
+||
+BEGINS(OrdererPhone__c, &apos;-&apos;)
+)</errorConditionFormula>
+    <errorDisplayField>OrdererPhone__c</errorDisplayField>
+    <errorMessage>Ugyldig telefonnummer</errorMessage>
+</ValidationRule>
