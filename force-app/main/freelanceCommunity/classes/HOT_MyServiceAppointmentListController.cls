@@ -38,6 +38,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
             SELECT
                 AppointmentNumber,
                 Subject,
+                Description,
                 toLabel(Status),
                 ParentRecordId,
                 HOT_AddressFormated__c,
