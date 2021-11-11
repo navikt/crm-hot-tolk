@@ -595,8 +595,6 @@ private class HOT_FieldServiceStatusHandlerTest {
         );
     }
 
-    //Vegard fikser
-    //Oppdrag
     @isTest
     private static void test_2tildelt_1oppdrag_none() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -644,9 +642,8 @@ private class HOT_FieldServiceStatusHandlerTest {
         workOrder = [SELECT Id, Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals('Scheduled', workOrder.Status, 'Status on the work order did not update to correct value');
 
-        //TODO: FIks
         request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Id = :request.Id];
-        System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
+        System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
     }
 
     @isTest
@@ -692,7 +689,6 @@ private class HOT_FieldServiceStatusHandlerTest {
         );
     }
 
-    //WOLI
     @isTest
     private static void test_1udekket_1tildelt() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -813,9 +809,8 @@ private class HOT_FieldServiceStatusHandlerTest {
         workOrder = [SELECT Id, Status FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals('Scheduled', workOrder.Status, 'Status on the work order did not update to correct value');
 
-        //TODO: FIks
         request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Id = :request.Id];
-        System.assertEquals('Reservert', request.Status__c, 'Status on the request did not update to correct value');
+        System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
     }
 
     @isTest
