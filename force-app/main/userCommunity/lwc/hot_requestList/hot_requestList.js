@@ -127,12 +127,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             if (row['Status__c'] === 'Åpen') {
                 actions.push({ label: 'Rediger', name: 'edit_order' });
             }
-            if (
-                row['Status__c'] === 'Åpen' ||
-                row['Status__c'] === 'Godkjent' ||
-                row['Status__c'] === 'Reservert' ||
-                row['Status__c'] === 'Tildelt'
-            ) {
+            if (row['Status__c'] === 'Åpen' || row['Status__c'] === 'Godkjent' || row['Status__c'] === 'Tildelt') {
                 actions.push({ label: 'Legg til filer', name: 'add_files' });
             }
             actions.push({ label: 'Kopier', name: 'clone_order' });
