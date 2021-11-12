@@ -60,6 +60,7 @@ export default class Hot_requestForm_request extends LightningElement {
     getTimeInput() {
         return this.template.querySelector('c-hot_recurring-time-input').getTimeInput();
     }
+
     @api
     handleFileUpload(recordId) {
         if (this.hasFiles) {

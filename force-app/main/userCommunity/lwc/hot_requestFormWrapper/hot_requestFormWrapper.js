@@ -236,6 +236,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     onNextButtonClicked(event) {
         console.log('event detail: ' + JSON.stringify(event.detail));
+        if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
+            this.requestTypeResult[this.formArray.at(-2)] = false;
+        }
         this.requestTypeResult[this.formArray.at(-1)] = false;
         this.setCurrentForm(event.detail);
     }
@@ -247,11 +250,20 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.formArray = [];
             this.requestTypeChosen = false;
             this.requestTypeResult = null;
+            //TODO: Set checkbox true to hide one set of back+next buttons and show userform on back
+        } else if (this.formArray.at(-2) === 'userForm' && this.formArray.at(-3) === 'companyForm') {
+            // User checkbox checked
+            this.requestTypeResult[this.formArray.at(-1)] = false;
+            //this.requestTypeResult[this.formArray.at(-2)] = true; // set userform true
+            this.requestTypeResult[this.formArray.at(-3)] = true; // Set companyform true
+            this.formArray.pop();
+            this.formArray.pop();
         } else {
             this.requestTypeResult[this.formArray.at(-1)] = false;
             this.requestTypeResult[this.formArray.at(-2)] = true;
             this.formArray.pop();
         }
+        console.log(this.formArray);
     }
 
     formArray = [];
@@ -268,15 +280,21 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.formArray.push('companyForm');
         } else if (form === 'companyformcomplete') {
             this.formArray.push('requestForm');
-            this.userCheckbox = true;
         } else if (this.fieldValues.Type__c === 'Me') {
             this.formArray.push('requestForm');
         }
         this.requestTypeResult[this.formArray.at(-1)] = true;
+        console.log(this.formArray);
     }
 
-    userCheckbox = false;
     handleUserCheckbox(event) {
-        this.requestTypeResult.userForm = event.detail;
+        if (event.detail) {
+            this.formArray.push('userForm');
+            this.requestTypeResult.userForm = true;
+        } else {
+            this.requestTypeResult[this.formArray.at(-1)] = false;
+            this.formArray.pop();
+        }
+        console.log(this.formArray);
     }
 }

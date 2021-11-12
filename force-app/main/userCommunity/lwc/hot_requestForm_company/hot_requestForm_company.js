@@ -42,10 +42,7 @@ export default class Hot_requestForm_company extends LightningElement {
             this.template.querySelector('[data-id="orgnumber"]'),
             organizationNumberValidationRules
         );
-        let picklistValidation = this.template.querySelector('c-picklist').validationHandler();
-        console.log('picklistValidation: ', picklistValidation);
-        if (picklistValidation) {
-            console.log('picklist error');
+        if (this.template.querySelector('c-picklist').validationHandler()) {
             hasErrors += 1;
         }
         return hasErrors;

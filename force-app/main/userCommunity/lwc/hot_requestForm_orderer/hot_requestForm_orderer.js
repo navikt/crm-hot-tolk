@@ -48,6 +48,9 @@ export default class Hot_requestForm_orderer extends LightningElement {
                 hasErrors = hasErrors + validate(element, [require]);
             }
         });
+        /*if (this.template.querySelector('c-input').validationHandler()) {
+            hasErrors += 1;
+        }*/
         return hasErrors;
     }
 

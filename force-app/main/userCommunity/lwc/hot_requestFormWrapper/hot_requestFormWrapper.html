@@ -62,7 +62,14 @@
                             <div if:true={spin} class="loader"></div>
                         </div>
                         <div if:false={spin}>
-                            <lightning-button
+                            <c-button
+                                if:true={requestTypeResult.requestForm}
+                                button-label="Send inn"
+                                name="Send inn bestilling"
+                                button-styling="primary"
+                                type="submit"
+                            ></c-button>
+                            <!--<lightning-button
                                 if:true={requestTypeResult.requestForm}
                                 title="Send inn bestilling"
                                 class="slds-m-left_x-small"
@@ -70,16 +77,14 @@
                                 variant="brand"
                                 label="SEND INN"
                             >
-                            </lightning-button>
+                            </lightning-button>-->
                             <br />
-                            <lightning-button
-                                title="Avbryt"
-                                variant="base"
-                                label="Avbryt"
-                                onclick={goToPreviousPage}
-                                class="slds-m-left_x-small back-button"
-                            >
-                            </lightning-button>
+                            <br />
+                            <c-button
+                                button-label="Avbryt"
+                                button-styling="tertiary"
+                                onbuttonclick={goToPreviousPage}
+                            ></c-button>
                         </div>
                     </div>
                 </div>
