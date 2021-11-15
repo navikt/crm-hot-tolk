@@ -82,12 +82,13 @@ public without sharing class HOT_ReminderSMSService {
         return message;
     }
 
-    public static void sendSMSToOtherOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
+    public static void sendSMSToOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
         Map<Id, String> tolkNames = tolkNamesByWorkOrderId(workOrderList);
         List<SMS__c> smsList = new List<SMS__c>();
+        String phoneNumber = getRecipient(workOrder);
         for (WorkOrder workOrder : workOrderList) {
             if (
-                workOrder.HOT_Request__r.OrdererPhone__c != null &&
+                phoneNumber != null &&
                 workOrder.StartDate > Datetime.now() &&
                 workOrder.HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c == true &&
                 (workOrder.Status == 'Dispatched' ||
@@ -108,6 +109,9 @@ public without sharing class HOT_ReminderSMSService {
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrderList);
+    }
+
+    private static String getRecipient(WorkOrder workOrder) {
     }
 
     private static String constructStatusChangedMessage(WorkOrder workOrder, String tolkNames) {
