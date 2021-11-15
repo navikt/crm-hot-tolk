@@ -29,6 +29,13 @@
                         class="subform"
                         if:true={requestTypeResult.ordererForm}
                     ></c-hot_request-form_orderer>
+                    <div style="padding-left: 2rem">
+                        <c-checkbox
+                            if:true={requestTypeResult.companyForm}
+                            label="Legge til bruker?"
+                            oncheckboxclick={handleUserCheckbox}
+                        ></c-checkbox>
+                    </div>
                     <c-hot_request-form_user
                         parent-field-values={fieldValues}
                         class="subform"
@@ -66,7 +73,7 @@
                                 title="Avbryt"
                                 variant="base"
                                 label="Avbryt"
-                                onclick={goToPrevousPage}
+                                onclick={goToPreviousPage}
                                 class="slds-m-left_x-small back-button"
                             >
                             </lightning-button>

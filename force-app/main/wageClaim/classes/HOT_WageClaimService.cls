@@ -119,12 +119,12 @@ public without sharing class HOT_WageClaimService {
     ) {
         List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
         Date criticalDate = Date.today().addDays(14);
+
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (
                 serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)) != null &&
                 criticalDate >= serviceAppointment.SchedStartTime.date() &&
-                serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)).HOT_IsFreelanceInterpreter__c ==
-                true &&
+                serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)).HOT_IsFreelanceInterpreter__c &&
                 !isAgreement(serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)), serviceAppointment)
             ) {
                 HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
@@ -171,6 +171,7 @@ public without sharing class HOT_WageClaimService {
 
         List<HOT_WageClaim__c> newWageClaims = new List<HOT_WageClaim__c>();
         Map<Id, HOT_WageClaim__c> updatedWageClaims = new Map<Id, HOT_WageClaim__c>();
+
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c) != null) {
                 for (
@@ -201,7 +202,9 @@ public without sharing class HOT_WageClaimService {
                             ParentWageClaim__c = isUpsert ? wageClaim.Id : null,
                             ServiceResource__c = wageClaim.ServiceResource__c,
                             StartTime__c = serviceAppointmentEndTime,
-                            EndTime__c = wageClaim.EndTime__c
+                            EndTime__c = wageClaim.EndTime__c,
+                            ServiceAppointment__c = wageClaim.ServiceAppointment__c,
+                            WorkType__c = wageClaim.WorkType__c
                         );
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
@@ -217,7 +220,9 @@ public without sharing class HOT_WageClaimService {
                             ParentWageClaim__c = isUpsert ? wageClaim.Id : null,
                             ServiceResource__c = wageClaim.ServiceResource__c,
                             StartTime__c = wageClaim.StartTime__c,
-                            EndTime__c = serviceAppointmentStartTime
+                            EndTime__c = serviceAppointmentStartTime,
+                            ServiceAppointment__c = wageClaim.ServiceAppointment__c,
+                            WorkType__c = wageClaim.WorkType__c
                         );
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
@@ -267,7 +272,7 @@ public without sharing class HOT_WageClaimService {
             serviceResourceByServiceAppointment.put(serviceAppointment.Id, serviceAppointment.HOT_ServiceResource__c);
         }
         List<HOT_WageClaim__c> wageClaims = [
-            SELECT Id, ServiceAppointment__c, ServiceResource__c, StartTime__c, EndTime__c
+            SELECT Id, ServiceAppointment__c, ServiceResource__c, StartTime__c, EndTime__c, WorkType__c
             FROM HOT_WageClaim__c
             WHERE
                 ServiceResource__c IN :serviceResourceByServiceAppointment.values()

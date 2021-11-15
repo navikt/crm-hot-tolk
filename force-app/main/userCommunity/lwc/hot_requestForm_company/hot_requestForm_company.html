@@ -14,21 +14,31 @@
         >
         </lightning-input>
         <br />
-        <lightning-input
-            class="tolk-skjema-input"
-            name="InvoiceReference__c"
-            label="Deres fakturareferanse"
-            value={fieldValues.InvoiceReference__c}
-            field-level-help="Oppgi referanse, slik økonomitjenesten hos dere krever"
-        >
-        </lightning-input>
+        <c-picklist
+            choices={choices}
+            master-label="Betalingsansvar"
+            required="true"
+            onpicklistvaluechange={handlePicklist}
+            desktop-style="width: 50%;"
+        ></c-picklist>
         <br />
-        <lightning-input
-            class="tolk-skjema-input"
-            name="AdditionalInvoiceText__c"
-            label="Tilleggsinformajon"
-            value={fieldValues.AdditionalInvoiceText__c}
-        >
-        </lightning-input>
+        <div if:true={fieldValues.IsOtherEconomicProvicer__c}>
+            <lightning-input
+                class="tolk-skjema-input"
+                name="InvoiceReference__c"
+                label="Deres fakturareferanse"
+                value={fieldValues.InvoiceReference__c}
+                field-level-help="Oppgi referanse, slik økonomitjenesten hos dere krever"
+            >
+            </lightning-input>
+            <br />
+            <lightning-input
+                class="tolk-skjema-input"
+                name="AdditionalInvoiceText__c"
+                label="Tilleggsinformajon"
+                value={fieldValues.AdditionalInvoiceText__c}
+            >
+            </lightning-input>
+        </div>
     </section>
 </template>
