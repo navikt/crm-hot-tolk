@@ -85,8 +85,8 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSToOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
         Map<Id, String> tolkNames = tolkNamesByWorkOrderId(workOrderList);
         List<SMS__c> smsList = new List<SMS__c>();
-        String phoneNumber = getRecipient(workOrder);
         for (WorkOrder workOrder : workOrderList) {
+            String phoneNumber = getRecipient(workOrder);
             if (
                 phoneNumber != null &&
                 workOrder.StartDate > Datetime.now() &&
@@ -112,6 +112,10 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     private static String getRecipient(WorkOrder workOrder) {
+        if (workOrder.HOT_Request__r.Type__c != 'Me') {
+            return workOrder?.HOT_Request__r?.OrdererPhone__c;
+        }
+        return workOrder?.Account?.CRM_Person__r?.INT_KrrMobilePhone__c;
     }
 
     private static String constructStatusChangedMessage(WorkOrder workOrder, String tolkNames) {

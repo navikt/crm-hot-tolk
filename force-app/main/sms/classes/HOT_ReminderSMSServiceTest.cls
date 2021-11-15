@@ -49,6 +49,7 @@ private class HOT_ReminderSMSServiceTest {
                 Id,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,
+                HOT_Request__r.Type__c,
                 StartDate,
                 EndDate,
                 Status,
@@ -67,6 +68,7 @@ private class HOT_ReminderSMSServiceTest {
                 Id,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,
+                HOT_Request__r.Type__c,
                 StartDate,
                 EndDate,
                 Status,
@@ -89,10 +91,12 @@ private class HOT_ReminderSMSServiceTest {
                 Id,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,
+                HOT_Request__r.Type__c,
                 StartDate,
                 EndDate,
                 Status,
-                HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
+                HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM WorkOrder
         ];
 
