@@ -1,4 +1,4 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
@@ -76,6 +76,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    // TODO: Fix validation when userform is within companyform
     handleValidation() {
         console.log('handleValidation');
         let hasErrors = false;
@@ -234,6 +235,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         });
     }
 
+    userCheckboxValue = false;
     onNextButtonClicked(event) {
         console.log('event detail: ' + JSON.stringify(event.detail));
         if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
@@ -243,29 +245,27 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.setCurrentForm(event.detail);
     }
 
-    setCheckboxValue() {
-        console.log('1');
-        this.template.querySelector('c-hot_request-form_company').setCheckboxValue();
-        console.log('2');
-    }
-
     onBackButtonClicked() {
         //this.getFieldValuesFromSubForms();
+        this.userCheckboxValue = false;
         if (this.formArray.length < 2) {
             // Go back to type selection
             this.formArray = [];
             this.requestTypeChosen = false;
             this.requestTypeResult = null;
-            //TODO: Set checkbox true to hide one set of back+next buttons and show userform on back
+        } else if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
+            this.requestTypeResult[this.formArray.at(-1)] = false;
+            this.requestTypeResult[this.formArray.at(-2)] = false;
+            this.requestTypeResult[this.formArray.at(-3)] = true;
+            this.formArray.pop();
+            this.formArray.pop();
         } else if (this.formArray.at(-2) === 'userForm' && this.formArray.at(-3) === 'companyForm') {
             // User checkbox checked
+            this.userCheckboxValue = true;
             this.requestTypeResult[this.formArray.at(-1)] = false;
-            //this.requestTypeResult[this.formArray.at(-2)] = true; // set userform true
+            this.requestTypeResult[this.formArray.at(-2)] = true; // set userform true
             this.requestTypeResult[this.formArray.at(-3)] = true; // Set companyform true
             this.formArray.pop();
-            this.formArray.pop();
-            console.log('ja');
-            this.setCheckboxValue();
         } else {
             this.requestTypeResult[this.formArray.at(-1)] = false;
             this.requestTypeResult[this.formArray.at(-2)] = true;
@@ -296,6 +296,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     handleUserCheckbox(event) {
+        this.userCheckboxValue = event.detail;
         if (event.detail) {
             this.formArray.push('userForm');
             this.requestTypeResult.userForm = true;

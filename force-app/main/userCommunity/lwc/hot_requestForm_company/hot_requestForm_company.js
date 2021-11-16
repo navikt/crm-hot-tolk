@@ -3,6 +3,7 @@ import { organizationNumberValidationRules } from './hot_validationRules';
 import { validate } from 'c/validationController';
 
 export default class Hot_requestForm_company extends LightningElement {
+    @api checkboxValue = false;
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
@@ -64,9 +65,13 @@ export default class Hot_requestForm_company extends LightningElement {
         }
     }
 
+    renderedCallback() {
+        this.template.querySelector('c-checkbox').setCheckboxValue(this.checkboxValue);
+        this.userCheckboxValue = this.checkboxValue;
+    }
+
     handleNextButtonClicked() {
         if (!this.validateFields()) {
-            console.log('hallo');
             const selectedEvent = new CustomEvent('nextbuttonclicked', {
                 detail: 'companyformcomplete'
             });
@@ -77,9 +82,5 @@ export default class Hot_requestForm_company extends LightningElement {
     handleBackButtonClicked() {
         const selectedEvent = new CustomEvent('backbuttonclicked');
         this.dispatchEvent(selectedEvent);
-    }
-
-    @api setCheckboxValue() {
-        console.log('hallo');
     }
 }

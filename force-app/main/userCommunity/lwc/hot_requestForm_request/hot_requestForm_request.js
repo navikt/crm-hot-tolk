@@ -12,7 +12,7 @@ export default class Hot_requestForm_request extends LightningElement {
         InterpretationStreet__c: '',
         InterpretationPostalCode__c: '',
         InterpretationPostalCity__c: '',
-        Description__C: '',
+        Description__c: '',
         IsFileConsent__c: false,
         Source__c: 'Community'
     };
@@ -107,7 +107,7 @@ export default class Hot_requestForm_request extends LightningElement {
     value = 'yes';
     get options() {
         return [
-            { label: 'Ja', value: 'yes' },
+            { label: 'Ja', value: 'yes', checked: true },
             { label: 'Nei', value: 'no' }
         ];
     }

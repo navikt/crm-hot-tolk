@@ -39,6 +39,7 @@
                         onbackbuttonclicked={onBackButtonClicked}
                         onusercheckboxclicked={handleUserCheckbox}
                         if:true={requestTypeResult.companyForm}
+                        checkbox-value={userCheckboxValue}
                     ></c-hot_request-form_company>
                     <c-hot_request-form_user
                         parent-field-values={fieldValues}
@@ -109,14 +110,4 @@
             </lightning-button>
         </div>
     </div>
-
-    <c-alertdialog
-        header="Noe gikk galt"
-        content={modalContent}
-        desktop-style="text-align: center;"
-        center-buttons="true"
-        onbuttonclick={handleClick}
-        no-cancel-button="true"
-    >
-    </c-alertdialog>
 </template>

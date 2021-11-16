@@ -1,6 +1,6 @@
 import { LightningElement, track, api } from 'lwc';
 import { personNumberValidationRules } from './hot_validationRules';
-import { validate, require } from 'c/validationController';
+import { validate } from 'c/validationController';
 
 export default class Hot_requestForm_user extends LightningElement {
     @track fieldValues = {
