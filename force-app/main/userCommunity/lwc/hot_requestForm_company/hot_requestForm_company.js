@@ -10,7 +10,6 @@ export default class Hot_requestForm_company extends LightningElement {
         AdditionalInvoiceText__c: ''
     };
     choices = [
-        { name: '', label: 'Velg et alternativ' },
         { name: 'NAV', label: 'NAV betaler' },
         { name: 'Virksomhet', label: 'Virksomhet betaler' }
     ];
@@ -45,6 +44,9 @@ export default class Hot_requestForm_company extends LightningElement {
         if (this.template.querySelector('c-picklist').validationHandler()) {
             hasErrors += 1;
         }
+        if (this.template.querySelector('c-checkbox').validationHandler()) {
+            hasErrors += 1;
+        }
         return hasErrors;
     }
 
@@ -75,5 +77,9 @@ export default class Hot_requestForm_company extends LightningElement {
     handleBackButtonClicked() {
         const selectedEvent = new CustomEvent('backbuttonclicked');
         this.dispatchEvent(selectedEvent);
+    }
+
+    @api setCheckboxValue() {
+        console.log('hallo');
     }
 }

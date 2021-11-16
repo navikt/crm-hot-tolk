@@ -243,6 +243,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.setCurrentForm(event.detail);
     }
 
+    setCheckboxValue() {
+        console.log('1');
+        this.template.querySelector('c-hot_request-form_company').setCheckboxValue();
+        console.log('2');
+    }
+
     onBackButtonClicked() {
         //this.getFieldValuesFromSubForms();
         if (this.formArray.length < 2) {
@@ -258,6 +264,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.requestTypeResult[this.formArray.at(-3)] = true; // Set companyform true
             this.formArray.pop();
             this.formArray.pop();
+            console.log('ja');
+            this.setCheckboxValue();
         } else {
             this.requestTypeResult[this.formArray.at(-1)] = false;
             this.requestTypeResult[this.formArray.at(-2)] = true;

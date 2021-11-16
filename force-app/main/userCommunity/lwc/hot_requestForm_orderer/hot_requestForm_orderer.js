@@ -19,6 +19,7 @@ export default class Hot_requestForm_orderer extends LightningElement {
         if (result.data) {
             this.ordererDetails = result.data;
         }
+        console.log(JSON.stringify(this.result));
     }
 
     handleSMSCheckbox(event) {
@@ -43,14 +44,16 @@ export default class Hot_requestForm_orderer extends LightningElement {
     validateFields() {
         this.attemptedSubmit = true;
         let hasErrors = false;
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
+        /*this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {
                 hasErrors = hasErrors + validate(element, [require]);
             }
+        });*/
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            if (element.validationHandler()) {
+                hasErrors += 1;
+            }
         });
-        /*if (this.template.querySelector('c-input').validationHandler()) {
-            hasErrors += 1;
-        }*/
         return hasErrors;
     }
 

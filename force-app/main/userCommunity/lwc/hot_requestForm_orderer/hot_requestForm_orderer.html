@@ -1,16 +1,20 @@
 <template>
     <section class="bestiller-info-skjema sub-form">
-        <p class="typo-normal">
+        <p class="helptext">
             Navn på bestiller/virksomhet (ikke kontaktinformasjon) og bestillingens øvrige informasjon om behov for
             tolk, vil være tilgjengelig for tolkebruker
         </p>
-        <h2 style="font-size: 1.25rem">
-            Kontaktinformasjon
-            <lightning-helptext
-                content="For å kunne kontakte deg ved behov for ytterligere opplysninger, vil dine kontaktopplysninger bli knyttet til denne tolkebestillingen."
-            >
-            </lightning-helptext>
-        </h2>
+        <br />
+        <div style="flex-direction: row; display: flex; align-items: center">
+            <div class="header">Kontaktinformasjon</div>
+            <c-helptext
+                text="For å kunne kontakte deg ved behov for ytterligere opplysninger, vil dine kontaktopplysninger bli knyttet til denne tolkebestillingen."
+                desktop-style="margin-left: 0.5rem"
+                mobile-style="margin-left: 0.5rem"
+            ></c-helptext>
+        </div>
+        <br />
+
         <c-input
             label="Bestillers navn"
             name="ordererName"
@@ -28,7 +32,7 @@
         >
         </lightning-input>-->
         <br />
-        <lightning-input
+        <!--<lightning-input
             name="OrdererEmail__c"
             label="Bestillers e-post"
             type="email"
@@ -36,9 +40,16 @@
             value={ordererDetails.OrdererEmail__c}
             required
         >
-        </lightning-input>
+        </lightning-input>-->
+        <c-input
+            label="Bestillers e-post"
+            name="OrdererEmail__c"
+            form="tolk-skjema-input"
+            value={ordererDetails.OrdererEmail__c}
+            error-text="Feltet må fylles ut."
+        ></c-input>
         <br />
-        <lightning-input
+        <!--<lightning-input
             name="OrdererPhone__c"
             label="Bestillers telefon"
             type="tel"
@@ -46,7 +57,14 @@
             value={ordererDetails.OrdererPhone__c}
             required
         >
-        </lightning-input>
+        </lightning-input>-->
+        <c-input
+            label="Bestillers telefon"
+            name="OrdererPhone__c"
+            form="tolk-skjema-input"
+            value={ordererDetails.OrdererPhone__c}
+            error-text="Feltet må fylles ut."
+        ></c-input>
         <c-checkbox
             label="Ønsker SMS-varsel ved statusendring på bestillingen"
             oncheckboxclick={handleSMSCheckbox}
