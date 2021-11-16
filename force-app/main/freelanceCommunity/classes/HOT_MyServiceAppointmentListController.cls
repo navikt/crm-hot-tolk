@@ -38,6 +38,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
             SELECT
                 AppointmentNumber,
                 Subject,
+                Description,
                 toLabel(Status),
                 ParentRecordId,
                 HOT_AddressFormated__c,
@@ -59,7 +60,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_AssignmentType__c,
                 HOT_FreelanceSubject__c
             FROM ServiceAppointment
-            WHERE Id IN :serviceAppointmentIds
+            WHERE Id IN :serviceAppointmentIds AND Status IN ('Dispatched', 'Completed')
             ORDER BY SchedStartTime ASC
         ];
         return serviceAppointments;

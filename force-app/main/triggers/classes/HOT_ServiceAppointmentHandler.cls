@@ -22,6 +22,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> annulServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithActualTimeSet = new List<ServiceAppointment>();
 
         Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
         Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
@@ -156,6 +157,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsToSetToDefault.add(serviceAppointment);
             }
+            if (
+                (serviceAppointment.ActualStartTime !=
+                triggerOldMap.get(serviceAppointment.Id).get('ActualStartTime') &&
+                serviceAppointment.ActualStartTime != serviceAppointment.SchedStartTime) ||
+                (serviceAppointment.ActualEndTime != triggerOldMap.get(serviceAppointment.Id).get('ActualEndTime') &&
+                serviceAppointment.ActualEndTime != serviceAppointment.SchedEndTime)
+            ) {
+                serviceAppointmentsWithActualTimeSet.add(serviceAppointment);
+            }
             updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
         }
@@ -206,6 +216,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (!resourceByAppointmentUpdateWageClaim.isEmpty()) {
             HOT_WageClaimService.updateWageClaimsFuture(resourceByAppointmentUpdateWageClaim.keySet());
         }
+        if (serviceAppointmentsWithActualTimeSet.size() > 0) {
+            setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
+        }
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -215,6 +228,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithChangedAddress = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsOwnerChangedWithAssignedResource = new List<ServiceAppointment>();
+        Map<Id, Id> serviceResourceByServiceAppointmentSchedTimeChanged = new Map<Id, Id>();
+        Map<Id, ServiceAppointment> oldServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
+        Map<Id, ServiceAppointment> newServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -248,6 +264,27 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsWithChangedAddress.add(serviceAppointment);
             }
+            if (
+                (serviceAppointment.SchedStartTime != triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') ||
+                serviceAppointment.SchedEndTime != triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime')) &&
+                serviceAppointment.HOT_AssignedResourceId__c != null &&
+                serviceAppointment.SchedStartTime != null &&
+                triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != null &&
+                serviceAppointment.SchedEndTime != null &&
+                triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != null &&
+                (serviceAppointment.Status == 'Dispatched' ||
+                serviceAppointment.Status == 'Completed')
+            ) {
+                serviceResourceByServiceAppointmentSchedTimeChanged.put(
+                    triggerOldMap.get(serviceAppointment.Id).Id,
+                    (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
+                );
+                oldServiceAppointmentsSchedTimeChanged.put(
+                    triggerOldMap.get(serviceAppointment.Id).Id,
+                    (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id)
+                );
+                newServiceAppointmentsSchedTimeChanged.put(serviceAppointment.Id, serviceAppointment);
+            }
         }
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
@@ -274,11 +311,66 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 appointmentAndResourceByAssignment.get('resource')
             );
         }
+        if (!serviceResourceByServiceAppointmentSchedTimeChanged.isEmpty()) {
+            Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
+                [
+                    SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_AgreementFreelance__c
+                    FROM ServiceResource
+                    WHERE Id IN :serviceResourceByServiceAppointmentSchedTimeChanged.values()
+                ]
+            );
+
+            Map<Id, ServiceAppointment> oldServiceAppointmentsWithRequestFields = getServiceAppointmnetsWithAgreementFieldsFromRequest(
+                oldServiceAppointmentsSchedTimeChanged
+            );
+            setScheduledTimesToOldValues(
+                oldServiceAppointmentsWithRequestFields,
+                oldServiceAppointmentsSchedTimeChanged
+            );
+            List<HOT_WageClaim__c> wageClaims = HOT_WageClaimService.createWageClaimsFromServiceAppointments(
+                oldServiceAppointmentsWithRequestFields,
+                serviceResourceByServiceAppointmentSchedTimeChanged,
+                serviceResources
+            );
+            HOT_WageClaimService.updateWageClaims(newServiceAppointmentsSchedTimeChanged, wageClaims, false);
+        }
 
         HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
             (List<ServiceAppointment>) records,
             triggerOldMap
         );
+    }
+
+    private static void setScheduledTimesToOldValues(
+        Map<Id, ServiceAppointment> serviceAppointments,
+        Map<Id, ServiceAppointment> oldServiceAppointments
+    ) {
+        for (ServiceAppointment sa : serviceAppointments.values()) {
+            sa.SchedStartTime = oldServiceAppointments.get(sa.Id).SchedStartTime;
+            sa.SchedEndTime = oldServiceAppointments.get(sa.Id).SchedEndTime;
+        }
+    }
+
+    private static Map<Id, ServiceAppointment> getServiceAppointmnetsWithAgreementFieldsFromRequest(
+        Map<Id, ServiceAppointment> serviceAppointments
+    ) {
+        Map<Id, ServiceAppointment> serviceAppointmentsWithRequestFields = new Map<Id, ServiceAppointment>(
+            [
+                SELECT
+                    Id,
+                    SchedStartTime,
+                    SchedEndTime,
+                    WorkTypeId,
+                    ServiceTerritoryId,
+                    Status,
+                    HOT_Request__r.ServiceResourceWithAgreement1__c,
+                    HOT_Request__r.ServiceResourceWithAgreement2__c,
+                    HOT_Request__r.ServiceResourceWithAgreement3__c
+                FROM ServiceAppointment
+                WHERE Id IN :serviceAppointments.keySet()
+            ]
+        );
+        return serviceAppointmentsWithRequestFields;
     }
 
     private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
@@ -836,5 +928,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
 
         HOT_ContentDocumentLinkService.setContentDocumentLinks(serviceAppointmentMap);
+    }
+
+    public static void setScheduledTimeBasedOnActualTime(List<ServiceAppointment> serviceAppointments) {
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (sa.ActualStartTime != null) {
+                sa.SchedStartTime = sa.ActualStartTime;
+            }
+            if (sa.ActualEndTime != null) {
+                sa.SchedEndTime = sa.ActualEndTime;
+            }
+        }
     }
 }

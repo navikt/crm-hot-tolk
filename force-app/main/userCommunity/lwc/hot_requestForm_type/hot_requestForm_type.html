@@ -1,0 +1,15 @@
+<template>
+    <section class="valg-av-bestillingstype__container sub-form">
+        <c-radiobuttons
+            radiobuttons={radiobuttons}
+            onradiobuttonsclick={handleRequestTypeChange}
+            header="Hvilken type bestilling ønsker du?"
+            group-name="testRadioGroup"
+        >
+        </c-radiobuttons>
+        <br />
+
+        <lightning-messages aria-live="assertive"> </lightning-messages>
+        <c-button button-label="Neste" button-styling="primary" onbuttonclick={handleNextButtonClicked}></c-button>
+    </section>
+</template>
