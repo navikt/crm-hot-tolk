@@ -146,7 +146,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' ' +
             serviceAppointment.Subject +
             ' den ' +
-            serviceAppointment.LastModifiedDate?.format('d.M.yyyy HH:mm')
+            Datetime.now().format('d.M.yyyy HH:mm')
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
