@@ -120,6 +120,10 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                 System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
                 System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
                 System.debug('numberOfCanceled: ' + numberOfCanceled);
+                if (numberOfCanceled == numberOfWorkOrder) {
+                    request.Status__c = statusMap.get('Canceled');
+                    continue;
+                }
                 if (request.Status__c != 'Åpen') {
                     if (numberOfNew > 0 || numberOfScheduled > 0) {
                         request.Status__c = statusMap.get('New');
@@ -141,23 +145,20 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                         request.Status__c = statusMap.get('Completed');
                         continue;
                     }
-                    if (numberOfCannotComplete == numberOfWorkOrder) {
+                    if (numberOfCannotComplete + numberOfCanceled == numberOfWorkOrder) {
                         request.Status__c = statusMap.get('Cannot Complete');
                         continue;
                     }
                     if (
                         numberOfCompleted > 0 && numberOfCannotComplete > 0 &&
-                        (numberOfCannotComplete + numberOfCompleted == numberOfWorkOrder) ||
+                        (numberOfCannotComplete + numberOfCompleted + numberOfCanceled == numberOfWorkOrder) ||
                         numberOfPartiallyComplete > 0 &&
-                        (numberOfPartiallyComplete + numberOfCannotComplete + numberOfCompleted == numberOfWorkOrder)
+                        (numberOfPartiallyComplete + numberOfCannotComplete + numberOfCompleted + numberOfCanceled ==
+                        numberOfWorkOrder)
                     ) {
                         request.Status__c = statusMap.get('Partially Complete');
                         continue;
                     }
-                }
-                if (numberOfCanceled == numberOfWorkOrder) {
-                    request.Status__c = statusMap.get('Canceled');
-                    continue;
                 }
             }
         }

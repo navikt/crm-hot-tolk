@@ -4,6 +4,8 @@
     <active>true</active>
     <errorConditionFormula>!ISBLANK(OrdererPhone__c)
 &amp;&amp;
+(ISCHANGED(OrdererPhone__c) || ISNEW())
+&amp;&amp;
 (
 (LEN(OrdererPhone__c) &lt; 8 || LEN(OrdererPhone__c) &gt; 14)
 ||
