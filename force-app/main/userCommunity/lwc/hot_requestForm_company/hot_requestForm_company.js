@@ -29,15 +29,25 @@ export default class Hot_requestForm_company extends LightningElement {
 
     @api
     setFieldValues() {
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            this.fieldValues[element.name] = element.value;
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            this.fieldValues[element.name] = element.getValue();
         });
     }
+    // TODO: Set picklist value on back button pressed
+    // Note: Proves to be hard as array in picklist is immutable at this stage. Probably same problem for radiobuttons and checkbox?
+    // Error: Invalid mutation: Cannot set "selected" on "[object Object]". "[object Object]" is read-only.
+    /*getPicklistValue() {
+        const selectedEvent = new CustomEvent('getpicklistvalue', {
+            detail: this.template.querySelector('c-picklist').getValue()
+        });
+        this.dispatchEvent(selectedEvent);
+    }*/
 
     attemptedSubmit = false;
     @api
     validateFields() {
         this.attemptedSubmit = true;
+        // TODO: Fix org number validation
         let hasErrors = validate(
             this.template.querySelector('[data-id="orgnumber"]'),
             organizationNumberValidationRules
@@ -45,17 +55,16 @@ export default class Hot_requestForm_company extends LightningElement {
         if (this.template.querySelector('c-picklist').validationHandler()) {
             hasErrors += 1;
         }
-        if (this.template.querySelector('c-checkbox').validationHandler()) {
-            hasErrors += 1;
-        }
         return hasErrors;
     }
 
     @api
     getFieldValues() {
+        //this.getPicklistValue();
         return this.fieldValues;
     }
 
+    @api picklistValuePreviouslySet;
     @api parentFieldValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
@@ -68,19 +77,8 @@ export default class Hot_requestForm_company extends LightningElement {
     renderedCallback() {
         this.template.querySelector('c-checkbox').setCheckboxValue(this.checkboxValue);
         this.userCheckboxValue = this.checkboxValue;
-    }
-
-    handleNextButtonClicked() {
-        if (!this.validateFields()) {
-            const selectedEvent = new CustomEvent('nextbuttonclicked', {
-                detail: 'companyformcomplete'
-            });
-            this.dispatchEvent(selectedEvent);
+        if (this.picklistValuePreviouslySet !== undefined) {
+            this.template.querySelector('c-picklist').setValue(this.picklistValuePreviouslySet.label);
         }
-    }
-
-    handleBackButtonClicked() {
-        const selectedEvent = new CustomEvent('backbuttonclicked');
-        this.dispatchEvent(selectedEvent);
     }
 }

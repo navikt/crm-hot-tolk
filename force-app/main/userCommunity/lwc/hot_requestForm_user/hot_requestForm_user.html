@@ -9,16 +9,6 @@
             ></c-helptext>
         </div>
         <br />
-
-        <!--<lightning-input
-            class="tolk-skjema-input"
-            label="Tolkbrukers navn"
-            type="text"
-            name="UserName__c"
-            required
-            value={fieldValues.UserName__c}
-        >
-        </lightning-input>-->
         <c-input
             label="Tolkbrukers navn"
             name="UserName__c"
@@ -27,17 +17,7 @@
             error-text="Feltet må fylles ut."
         ></c-input>
         <br />
-        <!--<lightning-input
-            class="tolk-skjema-input personNumber"
-            label="Tolkbrukers fødselsnummer"
-            type="text"
-            max-length="11"
-            name="UserPersonNumber__c"
-            value={fieldValues.UserPersonNumber__c}
-            required
-            data-id="personnumber"
-        >
-        </lightning-input>-->
+        <!-- TODO: Max length 11-->
         <c-input
             label="Tolkbrukers fødselsnummer"
             name="UserPersonNumber__c"
@@ -45,14 +25,5 @@
             value={fieldValues.UserPersonNumber__c}
             error-text="Feltet må fylles ut."
         ></c-input>
-        <br />
-        <c-button
-            button-label="Tilbake"
-            button-styling="secondary"
-            onbuttonclick={handleBackButtonClicked}
-            desktop-style="margin-right: 1em;"
-            mobile-style="margin-right: 1em;"
-        ></c-button>
-        <c-button button-label="Neste" button-styling="primary" onbuttonclick={handleNextButtonClicked}></c-button>
     </section>
 </template>

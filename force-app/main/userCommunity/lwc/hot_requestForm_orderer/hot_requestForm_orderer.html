@@ -14,7 +14,6 @@
             ></c-helptext>
         </div>
         <br />
-
         <c-input
             label="Bestillers navn"
             name="ordererName"
@@ -22,60 +21,30 @@
             value={personAccount.Name}
             disabled="true"
         ></c-input>
-
-        <!--<lightning-input
-            label="Bestillers navn"
-            name="ordererName"
-            class="tolk-skjema-input"
-            value={personAccount.Name}
-            disabled
-        >
-        </lightning-input>-->
         <br />
-        <!--<lightning-input
-            name="OrdererEmail__c"
-            label="Bestillers e-post"
-            type="email"
-            class="tolk-skjema-input"
-            value={ordererDetails.OrdererEmail__c}
-            required
-        >
-        </lightning-input>-->
+        <!-- TODO: Type email-->
         <c-input
             label="Bestillers e-post"
             name="OrdererEmail__c"
             form="tolk-skjema-input"
-            value={ordererDetails.OrdererEmail__c}
+            value={fieldValues.OrdererEmail__c}
             error-text="Feltet må fylles ut."
         ></c-input>
         <br />
-        <!--<lightning-input
-            name="OrdererPhone__c"
-            label="Bestillers telefon"
-            type="tel"
-            class="tolk-skjema-input"
-            value={ordererDetails.OrdererPhone__c}
-            required
-        >
-        </lightning-input>-->
+        <!-- TODO: Type tel -->
         <c-input
             label="Bestillers telefon"
             name="OrdererPhone__c"
             form="tolk-skjema-input"
-            value={ordererDetails.OrdererPhone__c}
+            value={fieldValues.OrdererPhone__c}
             error-text="Feltet må fylles ut."
         ></c-input>
         <c-checkbox
             label="Ønsker SMS-varsel ved statusendring på bestillingen"
             oncheckboxclick={handleSMSCheckbox}
+            name={IsOrdererWantStatusUpdateOnSMS__c}
+            form="tolk-skjema-input"
+            default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
         ></c-checkbox>
-        <c-button
-            button-label="Tilbake"
-            button-styling="secondary"
-            onbuttonclick={handleBackButtonClicked}
-            desktop-style="margin-right: 1em;"
-            mobile-style="margin-right: 1em;"
-        ></c-button>
-        <c-button button-label="Neste" button-styling="primary" onbuttonclick={handleNextButtonClicked}></c-button>
     </section>
 </template>

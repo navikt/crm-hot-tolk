@@ -24,6 +24,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track requestTypeResult = {};
     handleRequestType(event) {
+        this.fieldValues = {}; // Clear fieldValues when choosing type
         this.requestTypeResult = event.detail;
         console.log(JSON.stringify(this.requestTypeResult));
         this.requestTypeChosen = true;
@@ -38,12 +39,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
         let hasErrors = this.handleValidation();
-        //TODO: Should not validate before first attempt of submit
-        //use attemptedSubmit with onblur functions. if we can get a map from element to validation rules, this will be nice.
-        //TODO: Generalize validation and add tolk-skjema-input to all elements.
-        // We can then fetch all elements with this class, reverse the list, and then have a map from element to validation rules.
-        // this will ensure easy js code
-        //example of map in validationRules.js: export function getValidationRules(element){ case element.name --> return list of validation rules}
         if (!hasErrors) {
             this.promptOverlap().then((overlapOk) => {
                 if (overlapOk) {
@@ -64,19 +59,19 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     getFieldValuesFromSubForms() {
+        console.log('getFieldValuesFromSubForms');
         this.template.querySelectorAll('.subform').forEach((subForm) => {
             subForm.setFieldValues();
-            this.setFieldValues(subForm.getFieldValues());
+            this.setFieldValuesInWrapper(subForm.getFieldValues());
         });
     }
-    // TODO: Set field values so that they show when pressing back button
-    setFieldValues(fields) {
+
+    setFieldValuesInWrapper(fields) {
         for (let k in fields) {
             this.fieldValues[k] = fields[k];
         }
     }
 
-    // TODO: Fix validation when userform is within companyform
     handleValidation() {
         console.log('handleValidation');
         let hasErrors = false;
@@ -235,19 +230,74 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         });
     }
 
+    formArray = [];
+    isRequestForm = false;
+    setCurrentForm() {
+        const currentFormUserForm = this.template.querySelector('c-hot_request-form_user') !== null;
+        const currentFormOrdererForm = this.template.querySelector('c-hot_request-form_orderer') !== null;
+        const currentFormCompanyForm = this.template.querySelector('c-hot_request-form_company') !== null;
+
+        if (this.formArray.length === 0 && this.fieldValues.Type__c !== 'Me') {
+            this.formArray.push('ordererForm');
+        }
+        if (currentFormUserForm) {
+            this.formArray.push('requestForm');
+        } else if (currentFormOrdererForm && this.fieldValues.Type__c === 'User') {
+            this.formArray.push('userForm');
+        } else if (currentFormOrdererForm && this.fieldValues.Type__c === 'Company') {
+            this.formArray.push('companyForm');
+        } else if (currentFormCompanyForm) {
+            this.formArray.push('requestForm');
+        } else if (this.fieldValues.Type__c === 'Me') {
+            this.formArray.push('requestForm');
+        }
+        this.requestTypeResult[this.formArray.at(-1)] = true;
+        if (this.formArray.at(-1) === 'requestForm') {
+            this.isRequestForm = true;
+        }
+        console.log(this.formArray);
+    }
+
     userCheckboxValue = false;
-    onNextButtonClicked(event) {
-        console.log('event detail: ' + JSON.stringify(event.detail));
+    handleUserCheckbox(event) {
+        this.userCheckboxValue = event.detail;
+        if (event.detail) {
+            this.formArray.push('userForm');
+            this.requestTypeResult.userForm = true;
+        } else {
+            this.requestTypeResult[this.formArray.at(-1)] = false;
+            this.formArray.pop();
+        }
+        console.log(this.formArray);
+    }
+
+    /*picklistValueSetInCompanyform;
+    getPicklistValue(event) {
+        console.log('getPicklistValue');
+        console.log(JSON.stringify(event.detail));
+        if (this.formArray.at(-1) === 'companyForm') {
+            this.picklistValueSetInCompanyform = event.detail;
+        }
+    }*/
+
+    handleNextButtonClicked() {
+        this.getFieldValuesFromSubForms();
+        if (this.handleValidation()) {
+            return;
+        }
         if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
             this.requestTypeResult[this.formArray.at(-2)] = false;
         }
         this.requestTypeResult[this.formArray.at(-1)] = false;
-        this.setCurrentForm(event.detail);
+        this.setCurrentForm();
     }
 
-    onBackButtonClicked() {
-        //this.getFieldValuesFromSubForms();
+    handleBackButtonClicked() {
+        this.isRequestForm = false;
         this.userCheckboxValue = false;
+        if (this.formArray.at(-1) === 'requestForm') {
+            this.getFieldValuesFromSubForms();
+        }
         if (this.formArray.length < 2) {
             // Go back to type selection
             this.formArray = [];
@@ -263,45 +313,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             // User checkbox checked
             this.userCheckboxValue = true;
             this.requestTypeResult[this.formArray.at(-1)] = false;
-            this.requestTypeResult[this.formArray.at(-2)] = true; // set userform true
+            this.requestTypeResult[this.formArray.at(-2)] = true; // Set userform true
             this.requestTypeResult[this.formArray.at(-3)] = true; // Set companyform true
             this.formArray.pop();
         } else {
             this.requestTypeResult[this.formArray.at(-1)] = false;
             this.requestTypeResult[this.formArray.at(-2)] = true;
-            this.formArray.pop();
-        }
-        console.log(this.formArray);
-    }
-
-    formArray = [];
-    setCurrentForm(form) {
-        //this.getFieldValuesFromSubForms();
-        if (this.formArray.length === 0 && this.fieldValues.Type__c !== 'Me') {
-            this.formArray.push('ordererForm');
-        }
-        if (form === 'userformcomplete') {
-            this.formArray.push('requestForm');
-        } else if (form === 'ordererformcomplete' && this.fieldValues.Type__c === 'User') {
-            this.formArray.push('userForm');
-        } else if (form === 'ordererformcomplete' && this.fieldValues.Type__c === 'Company') {
-            this.formArray.push('companyForm');
-        } else if (form === 'companyformcomplete') {
-            this.formArray.push('requestForm');
-        } else if (this.fieldValues.Type__c === 'Me') {
-            this.formArray.push('requestForm');
-        }
-        this.requestTypeResult[this.formArray.at(-1)] = true;
-        console.log(this.formArray);
-    }
-
-    handleUserCheckbox(event) {
-        this.userCheckboxValue = event.detail;
-        if (event.detail) {
-            this.formArray.push('userForm');
-            this.requestTypeResult.userForm = true;
-        } else {
-            this.requestTypeResult[this.formArray.at(-1)] = false;
             this.formArray.pop();
         }
         console.log(this.formArray);

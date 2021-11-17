@@ -20,10 +20,6 @@ export default class Hot_requestForm_type extends NavigationMixin(LightningEleme
         this.result.type = this.currentRequestType;
     }
 
-    handleNextButtonClicked() {
-        this.sendResult();
-    }
-
     goToPreviousPage() {
         window.scrollTo(0, 0);
         this[NavigationMixin.Navigate]({

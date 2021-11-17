@@ -10,8 +10,8 @@ export default class Hot_requestForm_user extends LightningElement {
 
     @api
     setFieldValues() {
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            this.fieldValues[element.name] = element.value;
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            this.fieldValues[element.name] = element.getValue();
         });
     }
 
@@ -20,11 +20,6 @@ export default class Hot_requestForm_user extends LightningElement {
     validateFields() {
         this.attemptedSubmit = true;
         let hasErrors = validate(this.template.querySelector('[data-id="personnumber"]'), personNumberValidationRules);
-        /*this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            if (element.required) {
-                hasErrors = hasErrors + validate(element, [require]);
-            }
-        });*/
         this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {
                 hasErrors += 1;
@@ -45,19 +40,5 @@ export default class Hot_requestForm_user extends LightningElement {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
-    }
-
-    handleNextButtonClicked() {
-        if (!this.validateFields()) {
-            const selectedEvent = new CustomEvent('nextbuttonclicked', {
-                detail: 'userformcomplete'
-            });
-            this.dispatchEvent(selectedEvent);
-        }
-    }
-
-    handleBackButtonClicked() {
-        const selectedEvent = new CustomEvent('backbuttonclicked');
-        this.dispatchEvent(selectedEvent);
     }
 }

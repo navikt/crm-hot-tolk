@@ -19,7 +19,6 @@ export default class Hot_requestForm_orderer extends LightningElement {
         if (result.data) {
             this.ordererDetails = result.data;
         }
-        console.log(JSON.stringify(this.result));
     }
 
     handleSMSCheckbox(event) {
@@ -34,8 +33,11 @@ export default class Hot_requestForm_orderer extends LightningElement {
 
     @api
     setFieldValues() {
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            this.fieldValues[element.name] = element.value;
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            this.fieldValues[element.name] = element.getValue();
+        });
+        this.template.querySelectorAll('c-checkbox').forEach((element) => {
+            this.fieldValues[element.name] = element.getValue();
         });
     }
 
@@ -44,11 +46,6 @@ export default class Hot_requestForm_orderer extends LightningElement {
     validateFields() {
         this.attemptedSubmit = true;
         let hasErrors = false;
-        /*this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            if (element.required) {
-                hasErrors = hasErrors + validate(element, [require]);
-            }
-        });*/
         this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {
                 hasErrors += 1;
@@ -69,19 +66,5 @@ export default class Hot_requestForm_orderer extends LightningElement {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
-    }
-
-    handleNextButtonClicked() {
-        if (!this.validateFields()) {
-            const selectedEvent = new CustomEvent('nextbuttonclicked', {
-                detail: 'ordererformcomplete'
-            });
-            this.dispatchEvent(selectedEvent);
-        }
-    }
-
-    handleBackButtonClicked() {
-        const selectedEvent = new CustomEvent('backbuttonclicked');
-        this.dispatchEvent(selectedEvent);
     }
 }

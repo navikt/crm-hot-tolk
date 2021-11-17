@@ -156,22 +156,14 @@
             </div>
         </div>
         <br />
-        <!--<lightning-textarea
+        <lightning-textarea
             class="tolk-skjema-input ikke-sensitiv-fritekst"
             name="Description__c"
             label="Tilleggsopplysninger"
             value={fieldValues.Description__c}
             field-level-help="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende.)"
-        ></lightning-textarea>-->
-        <c-input
-            label="Tilleggsopplysninger"
-            name="Description__c"
-            form="tolk-skjema-input"
-            value={fieldValues.Description__c}
-            helptext-content="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende.)"
-        ></c-input>
+        ></lightning-textarea>
         <br />
-
         <div style="margin-left: none">
             <c-upload-files
                 record-id={recordId}
@@ -184,7 +176,6 @@
                 validation-message="For å legge til vedlegg må du gi samtykke til at formidler og tolk kan se vedleggene som lastes opp"
             ></c-upload-files>
         </div>
-
         <br />
         <c-record-files-with-sharing
             record-id={recordId}
@@ -192,13 +183,6 @@
             is-delete-option="true"
             title="Tidligere opplastede vedlegg"
         ></c-record-files-with-sharing>
-        <c-button
-            button-label="Tilbake"
-            button-styling="secondary"
-            onbuttonclick={handleBackButtonClicked}
-            desktop-style="margin-right: 1em;"
-            mobile-style="margin-right: 1em;"
-        ></c-button>
         <lightning-messages aria-live="assertive"> </lightning-messages>
     </section>
 </template>

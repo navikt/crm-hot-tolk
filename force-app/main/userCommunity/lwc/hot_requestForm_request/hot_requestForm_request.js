@@ -16,10 +16,9 @@ export default class Hot_requestForm_request extends LightningElement {
         IsFileConsent__c: false,
         Source__c: 'Community'
     };
-
+    @api isGetAll;
     @api requestIds;
     @api recordId;
-
     @api parentFieldValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
@@ -32,13 +31,15 @@ export default class Hot_requestForm_request extends LightningElement {
             this.value = 'no';
         }
     }
-    @api isGetAll;
 
     @api
     setFieldValues() {
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            this.fieldValues[element.name] = element.value;
+        console.log('setFieldValues request');
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            this.fieldValues[element.name] = element.getValue();
         });
+        console.log('hallo');
+        console.log(JSON.stringify(this.fieldValues));
         this.setDependentFields();
     }
 
@@ -83,8 +84,13 @@ export default class Hot_requestForm_request extends LightningElement {
                 hasErrors = hasErrors + validate(element, [require]);
             }
         });
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            if (element.validationHandler()) {
+                hasErrors += 1;
+            }
+        });
+        // TODO: Add textarea component validation here too
         hasErrors = hasErrors + this.validateCheckbox();
-        console.log('has error after checkbox' + hasErrors);
         hasErrors = hasErrors + this.template.querySelector('c-hot_recurring-time-input').validateFields();
         return hasErrors;
     }
@@ -113,19 +119,5 @@ export default class Hot_requestForm_request extends LightningElement {
     }
     toggled() {
         this.sameLocation = !this.sameLocation;
-    }
-
-    handleNextButtonClicked() {
-        if (!this.validateFields()) {
-            const selectedEvent = new CustomEvent('nextbuttonclicked', {
-                detail: 'requestformcomplete'
-            });
-            this.dispatchEvent(selectedEvent);
-        }
-    }
-
-    handleBackButtonClicked() {
-        const selectedEvent = new CustomEvent('backbuttonclicked');
-        this.dispatchEvent(selectedEvent);
     }
 }
