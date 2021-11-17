@@ -151,7 +151,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                     }
                     if (
                         numberOfCompleted > 0 && numberOfCannotComplete > 0 &&
-                        (numberOfCannotComplete + numberOfCompleted == numberOfWorkOrder) ||
+                        (numberOfCannotComplete + numberOfCompleted + numberOfCanceled == numberOfWorkOrder) ||
                         numberOfPartiallyComplete > 0 &&
                         (numberOfPartiallyComplete + numberOfCannotComplete + numberOfCompleted + numberOfCanceled ==
                         numberOfWorkOrder)
