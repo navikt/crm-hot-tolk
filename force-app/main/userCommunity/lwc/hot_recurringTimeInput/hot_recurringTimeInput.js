@@ -233,27 +233,27 @@ export default class Hot_recurringTimeInput extends LightningElement {
         this.attemptedSubmit = true;
         let hasErrors = this.validateSimpleTimes();
         if (this.isAdvancedTimes) {
-            hasErrors = hasErrors + this.validateAdvancedTimes();
+            hasErrors += this.validateAdvancedTimes();
         }
         return hasErrors;
     }
     validateSimpleTimes() {
         let hasErrors = false;
         this.template.querySelectorAll('.date').forEach((element) => {
-            hasErrors = hasErrors + validate(element, startDateValidations);
+            hasErrors += validate(element, startDateValidations);
         });
         this.template.querySelectorAll('.start-tid').forEach((element) => {
-            hasErrors = hasErrors + validate(element, startTimeValidations);
+            hasErrors += validate(element, startTimeValidations);
         });
         this.template.querySelectorAll('.slutt-tid').forEach((element) => {
-            hasErrors = hasErrors + validate(element, endTimeValidations);
+            hasErrors += validate(element, endTimeValidations);
         });
         return hasErrors;
     }
     validateAdvancedTimes() {
         let hasErrors = false;
         let recurringTypeElement = this.template.querySelector('.recurringType');
-        hasErrors = hasErrors + validate(recurringTypeElement.getElement(), recurringTypeValidations);
+        hasErrors += validate(recurringTypeElement.getElement(), recurringTypeValidations);
         if (this.showWeekDays) {
             let recurringDaysElement = this.template.querySelector('.recurringDays');
             hasErrors =

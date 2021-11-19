@@ -35,6 +35,8 @@
                         class="subform"
                         onusercheckboxclicked={handleUserCheckbox}
                         if:true={requestTypeResult.companyForm}
+                        picklist-value-previously-set={picklistValueSetInCompanyform}
+                        ongetpicklistvalue={setPicklistValue}
                         checkbox-value={userCheckboxValue}
                     ></c-hot_request-form_company>
                     <c-hot_request-form_user

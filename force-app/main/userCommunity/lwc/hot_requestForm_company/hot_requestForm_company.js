@@ -11,16 +11,19 @@ export default class Hot_requestForm_company extends LightningElement {
         AdditionalInvoiceText__c: ''
     };
     choices = [
+        { name: 'Placeholder', label: 'Velg et alternativ', selected: true },
         { name: 'NAV', label: 'NAV betaler' },
         { name: 'Virksomhet', label: 'Virksomhet betaler' }
     ];
 
+    currentPicklistName;
     handlePicklist(event) {
         this.fieldValues.IsOtherEconomicProvicer__c = event.detail.name === 'Virksomhet';
+        this.currentPicklistName = event.detail.name;
+        this.sendPicklistValue();
     }
-    userCheckboxValue = false;
+
     handleUserCheckbox(event) {
-        this.userCheckboxValue = event.detail;
         const selectedEvent = new CustomEvent('usercheckboxclicked', {
             detail: event.detail
         });
@@ -33,15 +36,25 @@ export default class Hot_requestForm_company extends LightningElement {
             this.fieldValues[element.name] = element.getValue();
         });
     }
-    // TODO: Set picklist value on back button pressed
-    // Note: Proves to be hard as array in picklist is immutable at this stage. Probably same problem for radiobuttons and checkbox?
-    // Error: Invalid mutation: Cannot set "selected" on "[object Object]". "[object Object]" is read-only.
-    /*getPicklistValue() {
+
+    sendPicklistValue() {
         const selectedEvent = new CustomEvent('getpicklistvalue', {
-            detail: this.template.querySelector('c-picklist').getValue()
+            detail: this.currentPicklistName
         });
         this.dispatchEvent(selectedEvent);
-    }*/
+    }
+
+    setPicklistValue() {
+        if (this.picklistValuePreviouslySet === undefined) {
+            return;
+        }
+        this.choices.forEach((element) => {
+            element.selected = false;
+            if (element.name === this.picklistValuePreviouslySet) {
+                element.selected = true;
+            }
+        });
+    }
 
     attemptedSubmit = false;
     @api
@@ -60,7 +73,6 @@ export default class Hot_requestForm_company extends LightningElement {
 
     @api
     getFieldValues() {
-        //this.getPicklistValue();
         return this.fieldValues;
     }
 
@@ -72,13 +84,6 @@ export default class Hot_requestForm_company extends LightningElement {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
-    }
-
-    renderedCallback() {
-        this.template.querySelector('c-checkbox').setCheckboxValue(this.checkboxValue);
-        this.userCheckboxValue = this.checkboxValue;
-        if (this.picklistValuePreviouslySet !== undefined) {
-            this.template.querySelector('c-picklist').setValue(this.picklistValuePreviouslySet.label);
-        }
+        this.setPicklistValue();
     }
 }

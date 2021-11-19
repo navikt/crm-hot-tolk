@@ -28,18 +28,16 @@ export default class Hot_requestForm_request extends LightningElement {
         }
         this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
         if (!this.sameLocation) {
-            this.value = 'no';
+            this.radiobuttonsOptions[1].checked = true;
         }
     }
 
     @api
     setFieldValues() {
-        console.log('setFieldValues request');
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
-        console.log('hallo');
-        console.log(JSON.stringify(this.fieldValues));
+        this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
         this.setDependentFields();
     }
 
@@ -71,7 +69,6 @@ export default class Hot_requestForm_request extends LightningElement {
     hasFiles = false;
     checkFileDataLength(event) {
         this.hasFiles = event.detail > 0;
-        console.log(this.hasFiles);
     }
 
     attemptedSubmit = false;
@@ -81,7 +78,7 @@ export default class Hot_requestForm_request extends LightningElement {
         let hasErrors = false;
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {
-                hasErrors = hasErrors + validate(element, [require]);
+                hasErrors += validate(element, [require]);
             }
         });
         this.template.querySelectorAll('c-input').forEach((element) => {
@@ -89,35 +86,35 @@ export default class Hot_requestForm_request extends LightningElement {
                 hasErrors += 1;
             }
         });
-        // TODO: Add textarea component validation here too
-        hasErrors = hasErrors + this.validateCheckbox();
-        hasErrors = hasErrors + this.template.querySelector('c-hot_recurring-time-input').validateFields();
+        hasErrors += this.validateTextArea();
+        hasErrors += this.validateCheckbox();
+        hasErrors += this.template.querySelector('c-hot_recurring-time-input').validateFields();
         return hasErrors;
     }
+
     validateCheckbox() {
         if (this.hasFiles) {
             return this.template.querySelector('c-upload-files').validateCheckbox();
         }
         return false;
     }
+
+    validateTextArea() {
+        return this.template.querySelector('c-textarea').validationHandler() ? 1 : 0;
+    }
+
     fileConsent = false;
     getFileConsent(event) {
         this.fileConsent = event.detail;
     }
-    checkPostalCode(event) {
-        //check postal code ExpReg
-        //TODO
-    }
 
     @track sameLocation = true;
-    value = 'yes';
-    get options() {
-        return [
-            { label: 'Ja', value: 'yes', checked: true },
-            { label: 'Nei', value: 'no' }
-        ];
-    }
-    toggled() {
+    radiobuttonsOptions = [
+        { label: 'Ja', value: 'yes', checked: true },
+        { label: 'Nei', value: 'no' }
+    ];
+
+    radiobuttonsToggled() {
         this.sameLocation = !this.sameLocation;
     }
 }

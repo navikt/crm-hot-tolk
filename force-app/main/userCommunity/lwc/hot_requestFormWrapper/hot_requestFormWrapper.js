@@ -24,9 +24,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track requestTypeResult = {};
     handleRequestType(event) {
-        this.fieldValues = {}; // Clear fieldValues when choosing type
         this.requestTypeResult = event.detail;
-        console.log(JSON.stringify(this.requestTypeResult));
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
         this.setCurrentForm();
@@ -53,6 +51,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
     setAccountLookupFieldsBasedOnRequestType() {
         this.fieldValues.Orderer__c = this.personAccount.Id;
+        this.fieldValues.OrdererName__c = this.personAccount.Name;
         if (this.requestTypeResult.type === 'Me') {
             this.fieldValues.Account__c = this.personAccount.Id;
         }
@@ -76,7 +75,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         console.log('handleValidation');
         let hasErrors = false;
         this.template.querySelectorAll('.subform').forEach((subForm) => {
-            hasErrors = hasErrors + subForm.validateFields();
+            hasErrors += subForm.validateFields();
         });
         return hasErrors;
     }
@@ -246,6 +245,10 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.formArray.push('userForm');
         } else if (currentFormOrdererForm && this.fieldValues.Type__c === 'Company') {
             this.formArray.push('companyForm');
+            if (this.userCheckboxValue) {
+                this.formArray.push('userForm');
+                this.requestTypeResult[this.formArray.at(-2)] = true;
+            }
         } else if (currentFormCompanyForm) {
             this.formArray.push('requestForm');
         } else if (this.fieldValues.Type__c === 'Me') {
@@ -255,7 +258,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         if (this.formArray.at(-1) === 'requestForm') {
             this.isRequestForm = true;
         }
-        console.log(this.formArray);
     }
 
     userCheckboxValue = false;
@@ -268,17 +270,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.requestTypeResult[this.formArray.at(-1)] = false;
             this.formArray.pop();
         }
-        console.log(this.formArray);
     }
 
-    /*picklistValueSetInCompanyform;
-    getPicklistValue(event) {
-        console.log('getPicklistValue');
-        console.log(JSON.stringify(event.detail));
-        if (this.formArray.at(-1) === 'companyForm') {
-            this.picklistValueSetInCompanyform = event.detail;
-        }
-    }*/
+    picklistValueSetInCompanyform;
+    setPicklistValue(event) {
+        this.picklistValueSetInCompanyform = event.detail;
+    }
 
     handleNextButtonClicked() {
         this.getFieldValuesFromSubForms();
@@ -294,14 +291,14 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     handleBackButtonClicked() {
         this.isRequestForm = false;
-        this.userCheckboxValue = false;
-        if (this.formArray.at(-1) === 'requestForm') {
-            this.getFieldValuesFromSubForms();
-        }
+        this.getFieldValuesFromSubForms();
+
         if (this.formArray.length < 2) {
             // Go back to type selection
             this.formArray = [];
+            this.fieldValues = {}; // Clear fieldValues when on type selection
             this.requestTypeChosen = false;
+            this.userCheckboxValue = false;
             this.requestTypeResult = null;
         } else if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
             this.requestTypeResult[this.formArray.at(-1)] = false;
@@ -321,6 +318,5 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.requestTypeResult[this.formArray.at(-2)] = true;
             this.formArray.pop();
         }
-        console.log(this.formArray);
     }
 }

@@ -13,11 +13,9 @@
         <c-picklist
             choices={choices}
             master-label="Betalingsansvar"
-            required="true"
             onpicklistvaluechange={handlePicklist}
             desktop-style="width: 50%;"
             error-text="Du må velge et alternativ"
-            placeholder-text="Velg et alternativ"
         ></c-picklist>
         <br />
         <div if:true={fieldValues.IsOtherEconomicProvicer__c}>
@@ -36,6 +34,10 @@
             ></c-input>
         </div>
 
-        <c-checkbox label="Legge til bruker?" oncheckboxclick={handleUserCheckbox}></c-checkbox>
+        <c-checkbox
+            label="Legge til bruker?"
+            oncheckboxclick={handleUserCheckbox}
+            default-value={checkboxValue}
+        ></c-checkbox>
     </section>
 </template>

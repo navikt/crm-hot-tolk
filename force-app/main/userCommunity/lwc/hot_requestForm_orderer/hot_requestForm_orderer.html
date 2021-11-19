@@ -22,22 +22,22 @@
             disabled="true"
         ></c-input>
         <br />
-        <!-- TODO: Type email-->
         <c-input
             label="Bestillers e-post"
             name="OrdererEmail__c"
             form="tolk-skjema-input"
             value={fieldValues.OrdererEmail__c}
             error-text="Feltet må fylles ut."
+            type="email"
         ></c-input>
         <br />
-        <!-- TODO: Type tel -->
         <c-input
             label="Bestillers telefon"
             name="OrdererPhone__c"
             form="tolk-skjema-input"
             value={fieldValues.OrdererPhone__c}
             error-text="Feltet må fylles ut."
+            type="tel"
         ></c-input>
         <c-checkbox
             label="Ønsker SMS-varsel ved statusendring på bestillingen"

@@ -2,17 +2,6 @@
     <section class="bestilling-info-skjema">
         <div class="header">Informasjon om behov for tolk</div>
         <br />
-        <!--<lightning-input
-            class="tolk-skjema-input"
-            name="Subject__c"
-            label="Tema"
-            type="text"
-            value={fieldValues.Subject__c}
-            title="Hva trenger du tolk til?"
-            required
-            field-level-help="Beskriv hva du trenger tolk til så nøyaktig som mulig, f.eks. legetime, foreldremøte, forelesning, speidersamling, teaterforestilling osv."
-        >
-        </lightning-input>-->
         <c-input
             label="Tema"
             name="Subject__c"
@@ -25,53 +14,26 @@
         <br />
         <c-hot_recurring-time-input request-ids={requestIds}></c-hot_recurring-time-input>
         <br />
-        <!--<lightning-input
-            class="tolk-skjema-input adressefelt-hjelp"
-            name="MeetingStreet__c"
-            label="Oppmøteadresse"
-            type="text"
-            value={fieldValues.MeetingStreet__c}
-            required
-        >
-        </lightning-input>-->
         <c-input
             label="Oppmøteadresse"
             name="MeetingStreet__c"
             form="tolk-skjema-input"
             value={fieldValues.MeetingStreet__c}
             error-text="Feltet må fylles ut."
+            error-size="30px"
         ></c-input>
         <br />
         <div class="slds-grid slds-gutters">
             <div class="slds-col slds-size_2-of-5">
-                <!--<lightning-input
-                    class="tolk-skjema-input postnummer"
-                    title="Postnummer"
-                    name="MeetingPostalCode__c"
-                    label="Postnummer"
-                    type="text"
-                    max-length="4"
-                    value={fieldValues.MeetingPostalCode__c}
-                    onblur={checkPostalCode}
-                >
-                </lightning-input>-->
                 <c-input
                     label="Postnummer"
                     name="MeetingPostalCode__c"
                     form="tolk-skjema-input"
                     value={fieldValues.MeetingPostalCode__c}
+                    max-length="4"
                 ></c-input>
             </div>
             <div class="slds-col slds-size_3-of-5">
-                <!--<lightning-input
-                    class="tolk-skjema-input"
-                    title="Poststed"
-                    name="MeetingPostalCity__c"
-                    label="Poststed"
-                    type="text"
-                    value={fieldValues.MeetingPostalCity__c}
-                >
-                </lightning-input>-->
                 <c-input
                     label="Poststed"
                     name="MeetingPostalCity__c"
@@ -81,19 +43,9 @@
             </div>
         </div>
         <br />
-
-        <!--<lightning-radio-group
-            class="nav-radio-button-group horizontal radio-button-group_yes-no"
-            name="radioGroup"
-            label="Er oppmøteadresse det samme som tolkeadresse?"
-            options={options}
-            value={value}
-            type="radio"
-            onchange={toggled}
-        ></lightning-radio-group>-->
         <c-radiobuttons
-            radiobuttons={options}
-            onradiobuttonsclick={toggled}
+            radiobuttons={radiobuttonsOptions}
+            onradiobuttonsclick={radiobuttonsToggled}
             header="Er oppmøteadresse det samme som tolkeadresse?"
             group-name="radioGroup"
             flex-direction="row"
@@ -101,15 +53,6 @@
         </c-radiobuttons>
 
         <div if:false={sameLocation}>
-            <!--<lightning-input
-                class="tolk-skjema-input adressefelt-hjelp"
-                title="Tolkeaddresse"
-                name="InterpretationStreet__c"
-                label="Tolkeadresse"
-                type="text"
-                value={fieldValues.InterpretationStreet__c}
-            >
-            </lightning-input>-->
             <c-input
                 label="Tolkeadresse"
                 name="InterpretationStreet__c"
@@ -119,33 +62,15 @@
             <br />
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_2-of-5">
-                    <!--<lightning-input
-                        class="tolk-skjema-input postnummer"
-                        title="Postnummer"
-                        name="InterpretationPostalCode__c"
-                        label="Postnummer"
-                        type="text"
-                        max-length="4"
-                        value={fieldValues.InterpretationPostalCode__c}
-                    >
-                    </lightning-input>-->
                     <c-input
                         label="Postnummer"
                         name="InterpretationPostalCode__c"
                         form="tolk-skjema-input"
                         value={fieldValues.InterpretationPostalCode__c}
+                        max-length="4"
                     ></c-input>
                 </div>
                 <div class="slds-col slds-size_3-of-5">
-                    <!--<lightning-input
-                        class="tolk-skjema-input"
-                        title="Poststed"
-                        name="InterpretationPostalCity__c"
-                        label="Poststed"
-                        type="text"
-                        value={fieldValues.InterpretationPostalCity__c}
-                    >
-                    </lightning-input>-->
                     <c-input
                         label="Poststed"
                         name="InterpretationPostalCity__c"
@@ -156,13 +81,12 @@
             </div>
         </div>
         <br />
-        <lightning-textarea
-            class="tolk-skjema-input ikke-sensitiv-fritekst"
+        <c-textarea
             name="Description__c"
             label="Tilleggsopplysninger"
             value={fieldValues.Description__c}
-            field-level-help="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende.)"
-        ></lightning-textarea>
+            helptext-content="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende)."
+        ></c-textarea>
         <br />
         <div style="margin-left: none">
             <c-upload-files
