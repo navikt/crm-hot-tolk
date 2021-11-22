@@ -138,7 +138,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
     //Advanced Time functions
     @track timesBackup;
     advancedTimes(event) {
-        this.isAdvancedTimes = event.detail.checked;
+        this.isAdvancedTimes = event.detail;
         if (this.isAdvancedTimes) {
             this.timesBackup = this.times;
             this.times = [this.times[0]];
@@ -160,6 +160,11 @@ export default class Hot_recurringTimeInput extends LightningElement {
         this.repeatingOptionChosen = event.detail.name;
         this.showWeekDays = event.detail.name !== 'Daily';
         this.isRepeating = true;
+        this.repeatingOptions.forEach((element) => {
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            }
+        });
     }
     chosenDays = [];
     get days() {

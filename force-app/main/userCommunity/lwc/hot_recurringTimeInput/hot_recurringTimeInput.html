@@ -52,7 +52,7 @@
             </template>
         </div>
 
-        <lightning-input
+        <!--<lightning-input
             if:false={isEditMode}
             type="checkbox"
             class="filter-list-checkbox"
@@ -60,7 +60,14 @@
             name="Gjentagende"
             onchange={advancedTimes}
         >
-        </lightning-input>
+        </lightning-input>-->
+
+        <c-checkbox
+            label="Gjentagende"
+            oncheckboxclick={advancedTimes}
+            class="filter-list-checkbox"
+            name="Gjentagende"
+        ></c-checkbox>
 
         <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live>
             <c-picklist
@@ -71,7 +78,6 @@
                 master-label="Gjenta"
                 desktop-style="width: 30%"
                 mobile-style="width: 100%"
-                value={repeatingOptionChosen}
             >
             </c-picklist>
             <div if:true={showWeekDays} aria-live>
