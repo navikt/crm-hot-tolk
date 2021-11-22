@@ -175,7 +175,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    // TODO: Figure out if step by step forms have any impact on this
     handleEditModeRequestType(parsed_params) {
         this.isEditMode = parsed_params.edit != null;
         this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
