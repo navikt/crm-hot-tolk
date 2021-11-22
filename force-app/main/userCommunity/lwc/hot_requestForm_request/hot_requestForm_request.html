@@ -10,81 +10,89 @@
             error-text="Feltet må fylles ut."
             helptext-content="Beskriv hva du trenger tolk til så nøyaktig som mulig, f.eks. legetime, foreldremøte, forelesning, speidersamling, teaterforestilling osv."
         ></c-input>
-
         <br />
         <c-hot_recurring-time-input request-ids={requestIds}></c-hot_recurring-time-input>
         <br />
-        <c-input
-            label="Oppmøteadresse"
-            name="MeetingStreet__c"
+        <c-checkbox
+            label="Digitalt oppmøte?"
+            oncheckboxclick={handleDigitalCheckbox}
+            name={IsOrdererWantStatusUpdateOnSMS__c}
             form="tolk-skjema-input"
-            value={fieldValues.MeetingStreet__c}
-            error-text="Feltet må fylles ut."
-            error-size="30px"
-        ></c-input>
+            default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
+        ></c-checkbox>
         <br />
-        <div class="slds-grid slds-gutters">
-            <div class="slds-col slds-size_2-of-5">
-                <c-input
-                    label="Postnummer"
-                    name="MeetingPostalCode__c"
-                    form="tolk-skjema-input"
-                    value={fieldValues.MeetingPostalCode__c}
-                    max-length="4"
-                ></c-input>
-            </div>
-            <div class="slds-col slds-size_3-of-5">
-                <c-input
-                    label="Poststed"
-                    name="MeetingPostalCity__c"
-                    form="tolk-skjema-input"
-                    value={fieldValues.MeetingPostalCity__c}
-                ></c-input>
-            </div>
-        </div>
-        <br />
-        <c-radiobuttons
-            radiobuttons={radiobuttonsOptions}
-            onradiobuttonsclick={radiobuttonsToggled}
-            header="Er oppmøteadresse det samme som tolkeadresse?"
-            group-name="radioGroup"
-            flex-direction="row"
-        >
-        </c-radiobuttons>
-
-        <div if:false={sameLocation}>
+        <div if:false={digitalMeeting}>
             <c-input
-                label="Tolkeadresse"
-                name="InterpretationStreet__c"
+                label="Oppmøteadresse"
+                name="MeetingStreet__c"
                 form="tolk-skjema-input"
-                value={fieldValues.InterpretationStreet__c}
+                value={fieldValues.MeetingStreet__c}
+                error-text="Feltet må fylles ut."
             ></c-input>
             <br />
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_2-of-5">
                     <c-input
                         label="Postnummer"
-                        name="InterpretationPostalCode__c"
+                        name="MeetingPostalCode__c"
                         form="tolk-skjema-input"
-                        value={fieldValues.InterpretationPostalCode__c}
+                        value={fieldValues.MeetingPostalCode__c}
                         max-length="4"
                     ></c-input>
                 </div>
                 <div class="slds-col slds-size_3-of-5">
                     <c-input
                         label="Poststed"
-                        name="InterpretationPostalCity__c"
+                        name="MeetingPostalCity__c"
                         form="tolk-skjema-input"
-                        value={fieldValues.InterpretationPostalCity__c}
+                        value={fieldValues.MeetingPostalCity__c}
                     ></c-input>
                 </div>
             </div>
+            <br />
+            <c-radiobuttons
+                radiobuttons={radiobuttonOptions}
+                onradiobuttonsclick={radiobuttonsToggled}
+                header="Er oppmøteadresse det samme som tolkeadresse?"
+                group-name="radioGroup"
+                flex-direction="row"
+            >
+            </c-radiobuttons>
+            <div if:false={sameLocation}>
+                <c-input
+                    label="Tolkeadresse"
+                    name="InterpretationStreet__c"
+                    form="tolk-skjema-input"
+                    value={fieldValues.InterpretationStreet__c}
+                ></c-input>
+                <br />
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-5">
+                        <c-input
+                            label="Postnummer"
+                            name="InterpretationPostalCode__c"
+                            form="tolk-skjema-input"
+                            value={fieldValues.InterpretationPostalCode__c}
+                            max-length="4"
+                        ></c-input>
+                    </div>
+                    <div class="slds-col slds-size_3-of-5">
+                        <c-input
+                            label="Poststed"
+                            name="InterpretationPostalCity__c"
+                            form="tolk-skjema-input"
+                            value={fieldValues.InterpretationPostalCity__c}
+                        ></c-input>
+                    </div>
+                </div>
+            </div>
+            <br />
         </div>
-        <br />
         <c-textarea
             name="Description__c"
             label="Tilleggsopplysninger"
             value={fieldValues.Description__c}
+            form="tolk-skjema-input"
             helptext-content="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende)."
         ></c-textarea>
         <br />

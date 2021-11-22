@@ -28,7 +28,7 @@ export default class Hot_requestForm_request extends LightningElement {
         }
         this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
         if (!this.sameLocation) {
-            this.radiobuttonsOptions[1].checked = true;
+            this.radiobuttonOptions[1].checked = true;
         }
     }
 
@@ -86,7 +86,6 @@ export default class Hot_requestForm_request extends LightningElement {
                 hasErrors += 1;
             }
         });
-        hasErrors += this.validateTextArea();
         hasErrors += this.validateCheckbox();
         hasErrors += this.template.querySelector('c-hot_recurring-time-input').validateFields();
         return hasErrors;
@@ -99,22 +98,23 @@ export default class Hot_requestForm_request extends LightningElement {
         return false;
     }
 
-    validateTextArea() {
-        return this.template.querySelector('c-textarea').validationHandler() ? 1 : 0;
-    }
-
     fileConsent = false;
     getFileConsent(event) {
         this.fileConsent = event.detail;
     }
 
     @track sameLocation = true;
-    radiobuttonsOptions = [
+    radiobuttonOptions = [
         { label: 'Ja', value: 'yes', checked: true },
         { label: 'Nei', value: 'no' }
     ];
 
     radiobuttonsToggled() {
         this.sameLocation = !this.sameLocation;
+    }
+
+    digitalMeeting = false;
+    handleDigitalCheckbox(event) {
+        this.digitalMeeting = event.detail;
     }
 }

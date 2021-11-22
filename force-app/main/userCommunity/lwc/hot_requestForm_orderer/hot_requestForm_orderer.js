@@ -42,8 +42,10 @@ export default class Hot_requestForm_orderer extends LightningElement {
     }
 
     attemptedSubmit = false;
+    ordererPhoneError = 'Feltet må fylles ut.';
     @api
     validateFields() {
+        this.ordererPhoneError = 'Feltet må fylles ut.';
         this.attemptedSubmit = true;
         let hasErrors = false;
         this.template.querySelectorAll('c-input').forEach((element) => {
@@ -51,6 +53,14 @@ export default class Hot_requestForm_orderer extends LightningElement {
                 hasErrors += 1;
             }
         });
+        if (
+            !this.template.querySelectorAll('c-input')[2].validatePhone() &&
+            this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c
+        ) {
+            this.ordererPhoneError =
+                'Bestillers telefon må være et mobilnummer hvis ønske om SMS-varsler ved statusendringer er huket av.';
+            hasErrors += 1;
+        }
         return hasErrors;
     }
 
