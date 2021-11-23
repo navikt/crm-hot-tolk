@@ -51,6 +51,9 @@
                         record-id={recordId}
                         class="subform"
                         if:true={requestTypeResult.requestForm}
+                        is-request-type-me={isTypeMe}
+                        digital-checkbox-value={digitalCheckboxValue}
+                        ondigitalcheckboxclicked={handleDigitalCheckbox}
                     ></c-hot_request-form_request>
                     <c-button
                         button-label="Tilbake"
@@ -61,7 +64,7 @@
                         style="padding-left: 2rem"
                     ></c-button>
                     <c-button
-                        if:false={isRequestForm}
+                        if:false={requestTypeResult.requestForm}
                         button-label="Neste"
                         button-styling="primary"
                         onbuttonclick={handleNextButtonClicked}

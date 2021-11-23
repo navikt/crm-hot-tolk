@@ -14,8 +14,11 @@ export default class Hot_requestForm_request extends LightningElement {
         InterpretationPostalCity__c: '',
         Description__c: '',
         IsFileConsent__c: false,
-        Source__c: 'Community'
+        Source__c: 'Community',
+        IsOrdererWantStatusUpdateOnSMS__c: true
     };
+    @api digitalCheckboxValue = false;
+    @api isRequestTypeMe;
     @api isGetAll;
     @api requestIds;
     @api recordId;
@@ -29,6 +32,9 @@ export default class Hot_requestForm_request extends LightningElement {
         this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
         if (!this.sameLocation) {
             this.radiobuttonOptions[1].checked = true;
+        }
+        if (this.digitalCheckboxValue) {
+            this.isDigitalMeeting = true;
         }
     }
 
@@ -71,10 +77,8 @@ export default class Hot_requestForm_request extends LightningElement {
         this.hasFiles = event.detail > 0;
     }
 
-    attemptedSubmit = false;
     @api
     validateFields() {
-        this.attemptedSubmit = true;
         let hasErrors = false;
         this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
             if (element.required) {
@@ -113,8 +117,16 @@ export default class Hot_requestForm_request extends LightningElement {
         this.sameLocation = !this.sameLocation;
     }
 
-    digitalMeeting = false;
+    isDigitalMeeting = false;
     handleDigitalCheckbox(event) {
-        this.digitalMeeting = event.detail;
+        this.isDigitalMeeting = event.detail;
+        const selectedEvent = new CustomEvent('digitalcheckboxclicked', {
+            detail: event.detail
+        });
+        this.dispatchEvent(selectedEvent);
+    }
+
+    handleSMSCheckbox(event) {
+        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 }

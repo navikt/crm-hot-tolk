@@ -15,10 +15,8 @@ export default class Hot_requestForm_user extends LightningElement {
         });
     }
 
-    attemptedSubmit = false;
     @api
     validateFields() {
-        this.attemptedSubmit = true;
         let hasErrors = validate(this.template.querySelector('[data-id="personnumber"]'), personNumberValidationRules);
         this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {

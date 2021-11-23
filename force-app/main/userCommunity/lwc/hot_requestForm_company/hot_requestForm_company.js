@@ -1,7 +1,4 @@
 import { LightningElement, track, api } from 'lwc';
-import { organizationNumberValidationRules } from './hot_validationRules';
-import { validate } from 'c/validationController';
-
 export default class Hot_requestForm_company extends LightningElement {
     @api checkboxValue = false;
     @track fieldValues = {
@@ -56,15 +53,12 @@ export default class Hot_requestForm_company extends LightningElement {
         });
     }
 
-    attemptedSubmit = false;
     @api
     validateFields() {
-        this.attemptedSubmit = true;
-        // TODO: Fix org number validation
-        let hasErrors = validate(
-            this.template.querySelector('[data-id="orgnumber"]'),
-            organizationNumberValidationRules
-        );
+        let hasErrors = 0;
+        if (this.template.querySelectorAll('c-input')[0].validateOrgNumber()) {
+            hasErrors += 1;
+        }
         if (this.template.querySelector('c-picklist').validationHandler()) {
             hasErrors += 1;
         }

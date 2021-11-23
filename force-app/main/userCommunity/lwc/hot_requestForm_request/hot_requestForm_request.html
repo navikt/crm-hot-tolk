@@ -16,12 +16,11 @@
         <c-checkbox
             label="Digitalt oppmøte?"
             oncheckboxclick={handleDigitalCheckbox}
-            name={IsOrdererWantStatusUpdateOnSMS__c}
             form="tolk-skjema-input"
-            default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
+            default-value={digitalCheckboxValue}
         ></c-checkbox>
         <br />
-        <div if:false={digitalMeeting}>
+        <div if:false={isDigitalMeeting}>
             <c-input
                 label="Oppmøteadresse"
                 name="MeetingStreet__c"
@@ -95,6 +94,15 @@
             form="tolk-skjema-input"
             helptext-content="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende)."
         ></c-textarea>
+        <br />
+        <c-checkbox
+            if:true={isRequestTypeMe}
+            label="Ønsker SMS-varsel ved statusendring på bestillingen"
+            oncheckboxclick={handleSMSCheckbox}
+            name={IsOrdererWantStatusUpdateOnSMS__c}
+            form="tolk-skjema-input"
+            default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
+        ></c-checkbox>
         <br />
         <div style="margin-left: none">
             <c-upload-files
