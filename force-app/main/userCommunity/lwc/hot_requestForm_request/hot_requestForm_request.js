@@ -80,11 +80,6 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     validateFields() {
         let hasErrors = false;
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            if (element.required) {
-                hasErrors += validate(element, [require]);
-            }
-        });
         this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {
                 hasErrors += 1;

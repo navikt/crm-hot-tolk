@@ -1,7 +1,4 @@
 import { LightningElement, track, api } from 'lwc';
-import { personNumberValidationRules } from './hot_validationRules';
-import { validate } from 'c/validationController';
-
 export default class Hot_requestForm_user extends LightningElement {
     @track fieldValues = {
         UserName__c: '',
@@ -15,9 +12,15 @@ export default class Hot_requestForm_user extends LightningElement {
         });
     }
 
+    personNumberErrorText = 'Feltet må fylles ut.';
     @api
     validateFields() {
-        let hasErrors = validate(this.template.querySelector('[data-id="personnumber"]'), personNumberValidationRules);
+        this.personNumberErrorText = 'Feltet må fylles ut.';
+        let hasErrors = 0;
+        if (this.template.querySelectorAll('c-input')[1].validatePersonNumber()) {
+            this.personNumberErrorText = 'Ikke gyldig personnummer.';
+            hasErrors += 1;
+        }
         this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {
                 hasErrors += 1;
