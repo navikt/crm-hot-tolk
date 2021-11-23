@@ -736,12 +736,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.CRM_Age__c</field>
+        <field>Person__c.CRM_AgeNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.CRM_AgeNumber__c</field>
+        <field>Person__c.CRM_Age__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -897,6 +897,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SMS__c.Domain__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SMS__c.HOT_Processed__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -996,6 +996,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SMS__c.HOT_Processed__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SMS__c.Message__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1043,11 +1048,6 @@
         <editable>true</editable>
         <field>ServiceAppointment.Address</field>
         <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.ApptBookingInfoUrl</field>
-        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -1108,11 +1108,6 @@
         <editable>true</editable>
         <field>ServiceAppointment.HOT_CanceledByInterpreter__c</field>
         <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_DatesOutOfSync__c</field>
-        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -1368,11 +1363,6 @@
         <editable>false</editable>
         <field>ServiceAppointment.HOT_WorkTypeName__c</field>
         <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.IsOffsiteAppointment</field>
-        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
