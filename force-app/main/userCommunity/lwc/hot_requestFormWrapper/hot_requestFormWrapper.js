@@ -279,31 +279,35 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     handleBackButtonClicked() {
         this.getFieldValuesFromSubForms();
-
         if (this.formArray.length < 2) {
-            // Go back to type selection
-            this.formArray = [];
-            this.fieldValues = {}; // Clear fieldValues when on type selection
-            this.requestTypeChosen = false;
-            this.userCheckboxValue = false;
-            this.requestTypeResult = null;
+            this.resetFormValuesOnTypeSelection();
         } else if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
+            // Back to ordererForm
             this.requestTypeResult[this.formArray.at(-1)] = false;
             this.requestTypeResult[this.formArray.at(-2)] = false;
             this.requestTypeResult[this.formArray.at(-3)] = true;
             this.formArray.pop();
             this.formArray.pop();
         } else if (this.formArray.at(-2) === 'userForm' && this.formArray.at(-3) === 'companyForm') {
-            // User checkbox checked
-            this.userCheckboxValue = true;
+            // Back to company+userform (checkbox checked)
             this.requestTypeResult[this.formArray.at(-1)] = false;
-            this.requestTypeResult[this.formArray.at(-2)] = true; // Set userform true
-            this.requestTypeResult[this.formArray.at(-3)] = true; // Set companyform true
+            this.requestTypeResult[this.formArray.at(-2)] = true;
+            this.requestTypeResult[this.formArray.at(-3)] = true;
             this.formArray.pop();
         } else {
             this.requestTypeResult[this.formArray.at(-1)] = false;
             this.requestTypeResult[this.formArray.at(-2)] = true;
             this.formArray.pop();
         }
+    }
+
+    resetFormValuesOnTypeSelection() {
+        this.formArray = [];
+        this.fieldValues = {};
+        this.requestTypeChosen = false;
+        this.userCheckboxValue = false;
+        this.digitalCheckboxValue = false;
+        this.picklistValueSetInCompanyform = null;
+        this.requestTypeResult = null;
     }
 }

@@ -55,7 +55,7 @@ export default class Hot_requestForm_orderer extends LightningElement {
             this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c
         ) {
             this.ordererPhoneError =
-                'Bestillers telefon må være et mobilnummer hvis ønske om SMS-varsel ved statusendring er huket av.';
+                'Bestillers telefon må være et gyldig mobilnummer hvis ønske om SMS-varsel ved statusendring er huket av.';
             hasErrors += 1;
         }
         return hasErrors;

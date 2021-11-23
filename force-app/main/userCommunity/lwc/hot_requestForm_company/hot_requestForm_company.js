@@ -42,7 +42,7 @@ export default class Hot_requestForm_company extends LightningElement {
     }
 
     setPicklistValue() {
-        if (this.picklistValuePreviouslySet === undefined) {
+        if (this.picklistValuePreviouslySet === undefined || this.picklistValuePreviouslySet === null) {
             return;
         }
         this.choices.forEach((element) => {
