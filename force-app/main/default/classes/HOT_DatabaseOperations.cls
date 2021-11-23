@@ -1,4 +1,4 @@
-public with sharing class HOT_DatabaseOperations {
+public inherited sharing class HOT_DatabaseOperations {
     private static final String INSERTOPERATOR = 'insert';
     private static final String UPDATEOPERATOR = 'update';
     private static final String UPSERTOPERATOR = 'upsert';
