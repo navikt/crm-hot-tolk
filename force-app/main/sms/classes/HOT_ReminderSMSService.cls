@@ -1,7 +1,7 @@
 public without sharing class HOT_ReminderSMSService {
     public static void reminderSMS(List<WorkOrder> workOrderList) {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(workOrderList);
-        Map<Id, String> tolkNames = tolkNamesByWorkOrderId(workOrderList);
+        Map<Id, String> interpreterNames = interpreterNamesByWorkOrderIds(workOrderList);
         List<SMS__c> smsList = new List<SMS__c>();
 
         for (WorkOrder workOrder : workOrders.values()) {
@@ -12,7 +12,7 @@ public without sharing class HOT_ReminderSMSService {
                     workOrder.AccountId,
                     workOrder.Id,
                     workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c,
-                    constructReminderMessage(workOrder, tolkNames.get(workOrder.Id))
+                    constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id))
                 )
             );
             workOrder.HOT_IsReminderSMSSendt__c = true;
@@ -21,7 +21,9 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.updateRecords(workOrders.values());
     }
 
-    private static Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId(List<WorkOrder> workOrders) {
+    private static Map<Id, List<ServiceAppointment>> dispatchedServiceAppointmentsByWorkOrderId(
+        List<WorkOrder> workOrders
+    ) {
         List<WorkOrderLineItem> workOrderLineItems = [
             SELECT
                 Id,
@@ -34,56 +36,52 @@ public without sharing class HOT_ReminderSMSService {
             FROM WorkOrderLineItem
             WHERE WorkOrderId IN :workOrders
         ];
-        Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = new Map<Id, List<ServiceAppointment>>();
+        Map<Id, List<ServiceAppointment>> dispatchedServiceAppointmentsByWorkOrderId = new Map<Id, List<ServiceAppointment>>();
 
         for (WorkOrderLineItem woli : workOrderLineItems) {
-            if (serviceAppointmentsByWorkOrderId.get(woli.WorkOrderId) == null) {
-                serviceAppointmentsByWorkOrderId.put(
+            if (dispatchedServiceAppointmentsByWorkOrderId.get(woli.WorkOrderId) == null) {
+                dispatchedServiceAppointmentsByWorkOrderId.put(
                     woli.WorkOrderId,
                     new List<ServiceAppointment>(woli.HOT_ServiceAppointments__r)
                 );
             } else {
-                serviceAppointmentsByWorkOrderId.get(woli.WorkOrderId).addAll(woli.HOT_ServiceAppointments__r);
+                dispatchedServiceAppointmentsByWorkOrderId.get(woli.WorkOrderId)
+                    .addAll(woli.HOT_ServiceAppointments__r);
             }
         }
-        return serviceAppointmentsByWorkOrderId;
+        return dispatchedServiceAppointmentsByWorkOrderId;
     }
 
-    private static Map<Id, String> tolkNamesByWorkOrderId(List<WorkOrder> workOrders) {
-        Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = serviceAppointmentsByWorkOrderId(
+    private static Map<Id, String> interpreterNamesByWorkOrderIds(List<WorkOrder> workOrders) {
+        Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = dispatchedServiceAppointmentsByWorkOrderId(
             workOrders
         );
-        Map<Id, String> tolkNamesByWorkOrderIds = new Map<Id, String>();
+        Map<Id, String> interpreterNamesByWorkOrderIds = new Map<Id, String>();
 
         for (WorkOrder workOrder : workOrders) {
-            Id workOrderId = workOrder.Id;
-            String tolkNames = 'Tolk er: ';
-            List<ServiceAppointment> serviceAppointemts = serviceAppointmentsByWorkOrderId.get(workOrderId);
+            String interpreterNames = '';
+            List<ServiceAppointment> serviceAppointemts = serviceAppointmentsByWorkOrderId.get(workOrder.Id);
             for (Integer i = 0; i < serviceAppointemts.size(); i++) {
-                tolkNames += serviceAppointemts[i].HOT_ServiceResource__r.Name;
-                if (i == serviceAppointemts.size() - 1) {
-                    tolkNames += '. ';
-                } else {
-                    tolkNames += ', ';
-                }
+                interpreterNames += serviceAppointemts[i].HOT_ServiceResource__r.Name + ', ';
             }
-            tolkNamesByWorkOrderIds.put(workOrderId, tolkNames);
+            interpreterNames.removeEnd(', ');
+            interpreterNames += '. ';
+            interpreterNamesByWorkOrderIds.put(workOrder.Id, interpreterNames);
         }
-        return tolkNamesByWorkOrderIds;
+        return interpreterNamesByWorkOrderIds;
     }
 
-    private static String constructReminderMessage(WorkOrder workOrder, String tolkNames) {
+    private static String constructReminderMessage(WorkOrder workOrder, String interpreterNames) {
         String message = 'PÅMINNELSE\nVi minner om tolkebestilling:\n';
         message += 'Dato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate) + '\n';
-        message += tolkNames;
-        message = message.removeEnd(', ');
+        message += interpreterNames;
         message += '\n\nGi beskjed dersom du har symptomer på Korona. For mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh NAV Tolketjeneste';
         return message;
     }
 
     public static void sendSMSToOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
-        Map<Id, String> tolkNames = tolkNamesByWorkOrderId(workOrderList);
+        Map<Id, String> interpreterNames = interpreterNamesByWorkOrderIds(workOrderList);
         List<SMS__c> smsList = new List<SMS__c>();
         for (WorkOrder workOrder : workOrderList) {
             String phoneNumber = getRecipient(workOrder);
@@ -101,7 +99,7 @@ public without sharing class HOT_ReminderSMSService {
                         workOrder.HOT_Request__r.Orderer__c,
                         workOrder.Id,
                         workOrder.HOT_Request__r.OrdererPhone__c,
-                        constructStatusChangedMessage(workOrder, tolkNames.get(workOrder.Id))
+                        constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id))
                     )
                 );
             }
@@ -118,11 +116,12 @@ public without sharing class HOT_ReminderSMSService {
         return workOrder?.Account?.CRM_Person__r?.INT_KrrMobilePhone__c;
     }
 
-    private static String constructStatusChangedMessage(WorkOrder workOrder, String tolkNames) {
+    private static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
         String message = 'INFO\nStatus på din bestilling er: ';
         if (workOrder.Status == 'Dispatched') {
             message += 'Du har fått tolk. ';
-            message += tolkNames;
+            message += 'Tolk er ';
+            message += interpreterNames;
         } else if (workOrder.Status == 'Cannot Complete') {
             message += 'Ikke ledig tolk';
         }
