@@ -51,24 +51,12 @@
                 </div>
             </template>
         </div>
-
-        <!--<lightning-input
-            if:false={isEditMode}
-            type="checkbox"
-            class="filter-list-checkbox"
-            label="Gjentagende"
-            name="Gjentagende"
-            onchange={advancedTimes}
-        >
-        </lightning-input>-->
-
         <c-checkbox
             label="Gjentagende"
             oncheckboxclick={advancedTimes}
             class="filter-list-checkbox"
             name="Gjentagende"
         ></c-checkbox>
-
         <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live>
             <c-picklist
                 name="Gjenta"
