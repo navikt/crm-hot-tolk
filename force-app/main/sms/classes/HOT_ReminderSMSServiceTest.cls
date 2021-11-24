@@ -121,7 +121,7 @@ private class HOT_ReminderSMSServiceTest {
 
         String message = [SELECT Id, Message__c FROM SMS__c LIMIT 1].Message__c;
 
-        System.assert(message.contains('TolkName'), 'Could not create sms-record');
+        System.assert(message.contains('InterpreterName'), 'Could not create sms-record');
     }
 
     @isTest
