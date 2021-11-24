@@ -99,6 +99,9 @@ public without sharing class HOT_Utility {
         if (requests.size() > 0) {
             ordererDetails.put('OrdererEmail__c', String.valueOf(requests[0].OrdererEmail__c));
             ordererDetails.put('OrdererPhone__c', String.valueOf(requests[0].OrdererPhone__c));
+        } else {
+            ordererDetails.put('OrdererEmail__c', '');
+            ordererDetails.put('OrdererPhone__c', '');
         }
 
         return ordererDetails;

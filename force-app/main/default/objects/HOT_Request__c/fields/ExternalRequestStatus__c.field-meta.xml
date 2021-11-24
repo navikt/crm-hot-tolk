@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>ExternalRequestStatus__c</fullName>
     <externalId>false</externalId>
@@ -7,7 +7,6 @@
 (CASE(TEXT(Status__c),
 &quot;Åpen&quot;, &quot;Åpen&quot;,
 &quot;Godkjent&quot;, &quot;Se tidsplan&quot;,
-&quot;Reservert&quot;, &quot;Se tidsplan&quot;,
 &quot;Tildelt&quot;, &quot;Se tidsplan&quot;,
 &quot;Delvis dekket&quot;, &quot;Se tidsplan&quot;,
 &quot;Pågår&quot;, &quot;Se tidsplan&quot;,
@@ -20,7 +19,6 @@
 (CASE(TEXT(Status__c),
 &quot;Åpen&quot;, &quot;Åpen&quot;,
 &quot;Godkjent&quot;, &quot;Under behandling&quot;,
-&quot;Reservert&quot;, &quot;Under behandling&quot;,
 &quot;Tildelt&quot;, &quot;Du har fått tolk&quot;,
 &quot;Delvis dekket&quot;, &quot;Ferdig&quot;,
 &quot;Pågår&quot;, &quot;Pågår&quot;,

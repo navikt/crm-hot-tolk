@@ -45,7 +45,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
     private static void updateRequestStatus(List<HOT_Request__c> requests) {
         Map<String, String> statusMap = new Map<String, String>(); // Map<Work Order Status, Request Status>
         statusMap.put('New', 'Godkjent');
-        statusMap.put('Scheduled', 'Reservert');
+        statusMap.put('Scheduled', 'Godkjent');
         statusMap.put('Dispatched', 'Tildelt');
         statusMap.put('In Progress', 'Pågår');
         statusMap.put('Completed', 'Dekket');
@@ -120,40 +120,45 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                 System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
                 System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
                 System.debug('numberOfCanceled: ' + numberOfCanceled);
-
-                if (numberOfScheduled > 0) {
-                    request.Status__c = statusMap.get('Scheduled');
-                }
-                if (numberOfDispatched == numberOfWorkOrder) {
-                    request.Status__c = statusMap.get('Dispatched');
-                    continue;
-                }
-                if (numberOfPartiallyComplete > 0) {
-                    request.Status__c = statusMap.get('Partially Complete');
-                }
-                if (
-                    numberOfCompleted > 0 &&
-                    numberOfCannotComplete > 0 &&
-                    (numberOfCannotComplete + numberOfCompleted == numberOfWorkOrder)
-                ) {
-                    request.Status__c = statusMap.get('Partially Complete');
-                    continue;
-                }
-                if (numberOfCompleted == numberOfWorkOrder) {
-                    request.Status__c = statusMap.get('Completed');
-                    continue;
-                }
-                if (numberOfCannotComplete == numberOfWorkOrder) {
-                    request.Status__c = statusMap.get('Cannot Complete');
-                    continue;
-                }
                 if (numberOfCanceled == numberOfWorkOrder) {
                     request.Status__c = statusMap.get('Canceled');
                     continue;
                 }
-                if (numberOfNew == numberOfWorkOrder) {
-                    request.Status__c = statusMap.get('New');
-                    continue;
+                if (request.Status__c != 'Åpen') {
+                    if (numberOfNew > 0 || numberOfScheduled > 0) {
+                        request.Status__c = statusMap.get('New');
+                        continue;
+                    }
+                    if (
+                        numberOfDispatched > 0 &&
+                        (numberOfDispatched + numberOfCanceled + numberOfCannotComplete + numberOfCompleted +
+                        numberOfPartiallyComplete == numberOfWorkOrder)
+                    ) {
+                        request.Status__c = statusMap.get('Dispatched');
+                        continue;
+                    }
+                    if (numberOfInProgress == numberOfWorkOrder) {
+                        request.Status__c = statusMap.get('In Progress');
+                        continue;
+                    }
+                    if (numberOfCompleted > 0 && (numberOfCompleted + numberOfCanceled == numberOfWorkOrder)) {
+                        request.Status__c = statusMap.get('Completed');
+                        continue;
+                    }
+                    if (numberOfCannotComplete + numberOfCanceled == numberOfWorkOrder) {
+                        request.Status__c = statusMap.get('Cannot Complete');
+                        continue;
+                    }
+                    if (
+                        numberOfCompleted > 0 && numberOfCannotComplete > 0 &&
+                        (numberOfCannotComplete + numberOfCompleted + numberOfCanceled == numberOfWorkOrder) ||
+                        numberOfPartiallyComplete > 0 &&
+                        (numberOfPartiallyComplete + numberOfCannotComplete + numberOfCompleted + numberOfCanceled ==
+                        numberOfWorkOrder)
+                    ) {
+                        request.Status__c = statusMap.get('Partially Complete');
+                        continue;
+                    }
                 }
             }
         }

@@ -19,8 +19,60 @@ private class HOT_MySAListControllerTest {
     }
     @isTest
     static void getMyServiceAppointmentsTest() {
-        List<ServiceAppointment> myServiceAppointments = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
-        System.assertEquals(1, myServiceAppointments.size(), 'Could not fetch my ServiceAppointments');
+        List<ServiceAppointment> myServiceAppointment = [SELECT Id, Status FROM ServiceAppointment];
+        System.assertEquals(1, myServiceAppointment.size(), 'Could not fetch my ServiceAppointment ');
+
+        for (ServiceAppointment sa : myServiceAppointment) {
+            sa.Status = 'Dispatched';
+        }
+        update myServiceAppointment;
+
+        myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+
+        System.assertEquals(
+            1,
+            myServiceAppointment.size(),
+            'Could not fetch my ServiceAppointment with status "Dispatched"'
+        );
+
+        for (ServiceAppointment sa : myServiceAppointment) {
+            sa.Status = 'Completed';
+        }
+        update myServiceAppointment;
+
+        myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+
+        System.assertEquals(
+            1,
+            myServiceAppointment.size(),
+            'Could not fetch my ServiceAppointment with status "Completed"'
+        );
+
+        for (ServiceAppointment sa : myServiceAppointment) {
+            sa.Status = 'Cancelled';
+        }
+        update myServiceAppointment;
+
+        myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+
+        System.assertEquals(
+            0,
+            myServiceAppointment.size(),
+            'Could not fetch my ServiceAppointment with status "Cancelled"'
+        );
+
+        for (ServiceAppointment sa : myServiceAppointment) {
+            sa.Status = 'Cannot Complete';
+        }
+        update myServiceAppointment;
+
+        myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+
+        System.assertEquals(
+            0,
+            myServiceAppointment.size(),
+            'Could not fetch my ServiceAppointment with status "Cannot Completed"'
+        );
     }
     @isTest
     static void getParentWorkOrderLineItemsTest() {

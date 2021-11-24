@@ -23,26 +23,21 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     @track requestTypeResult = {};
+    isTypeMe = false;
     handleRequestType(event) {
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
-        this.fieldValues.EventType__c = this.requestTypeResult.eventType;
+        this.isTypeMe = this.requestTypeResult.type === 'Me';
+        this.setCurrentForm();
     }
 
     async handleSubmit(event) {
-        console.log('handleSubmit');
         event.preventDefault();
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
         let hasErrors = this.handleValidation();
-        //TODO: Should not validate before first attempt of submit
-        //use attemptedSubmit with onblur functions. if we can get a map from element to validation rules, this will be nice.
-        //TODO: Generalize validation and add tolk-skjema-input to all elements.
-        // We can then fetch all elements with this class, reverse the list, and then have a map from element to validation rules.
-        // this will ensure easy js code
-        //example of map in validationRules.js: export function getValidationRules(element){ case element.name --> return list of validation rules}
         if (!hasErrors) {
             this.promptOverlap().then((overlapOk) => {
                 if (overlapOk) {
@@ -57,6 +52,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
     setAccountLookupFieldsBasedOnRequestType() {
         this.fieldValues.Orderer__c = this.personAccount.Id;
+        this.fieldValues.OrdererName__c = this.personAccount.Name;
         if (this.requestTypeResult.type === 'Me') {
             this.fieldValues.Account__c = this.personAccount.Id;
         }
@@ -65,26 +61,25 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     getFieldValuesFromSubForms() {
         this.template.querySelectorAll('.subform').forEach((subForm) => {
             subForm.setFieldValues();
-            this.setFieldValues(subForm.getFieldValues());
+            this.setFieldValuesInWrapper(subForm.getFieldValues());
         });
     }
-    setFieldValues(fields) {
+
+    setFieldValuesInWrapper(fields) {
         for (let k in fields) {
             this.fieldValues[k] = fields[k];
         }
     }
 
     handleValidation() {
-        console.log('handleValidation');
         let hasErrors = false;
         this.template.querySelectorAll('.subform').forEach((subForm) => {
-            hasErrors = hasErrors + subForm.validateFields();
+            hasErrors += subForm.validateFields();
         });
         return hasErrors;
     }
 
     async promptOverlap() {
-        console.log('promptOverlap');
         let response = true;
         let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
         if (!timeInput.isAdvancedTimes && this.fieldValues.Type__c === 'Me') {
@@ -105,21 +100,18 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     submitForm() {
-        console.log('submitForm()');
         try {
             this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
         } catch (error) {
             throw error;
         }
     }
-    handleError(error) {
-        console.log(JSON.stringify(error));
+    handleError() {
         this.spin = false;
     }
 
     @track isEditMode = false;
     handleSuccess(event) {
-        console.log('handle Success');
         this.spin = false;
         this.recordId = event.detail.id;
 
@@ -135,14 +127,14 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelector('.h2-successMessage').focus();
         this.template.querySelector('.submitted-false').classList.add('hidden');
     }
+
     uploadFiles() {
         this.template.querySelector('c-hot_request-form_request').handleFileUpload(this.recordId);
     }
+
     createWorkOrders() {
         let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
         if (timeInput.times !== {}) {
-            console.log('timeInput.isAdvancedTimes: ' + timeInput.isAdvancedTimes);
-            console.log(JSON.stringify(timeInput.times));
             if (timeInput.isAdvancedTimes) {
                 try {
                     createWorkOrders({
@@ -161,9 +153,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    previousPage = 'home';
+    @track previousPage = 'home';
     connectedCallback() {
-        console.log('connectedCallback');
         let parsed_params = getParametersFromURL();
         if (parsed_params != null) {
             if (parsed_params.fromList != null) {
@@ -175,6 +166,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         }
     }
+
     handleEditModeRequestType(parsed_params) {
         this.isEditMode = parsed_params.edit != null;
         this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
@@ -182,13 +174,13 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.requestTypeResult.requestForm = true;
             if (this.fieldValues.Type__c !== 'Me' && this.fieldValues.Type__c != null) {
                 this.requestTypeResult.ordererForm = true;
-                this.requestTypeResult.userForm = this.fieldValues.Type__c !== 'PublicEvent';
+                this.requestTypeResult.userForm = this.fieldValues.Type__c !== 'Company';
                 this.requestTypeResult.companyForm = this.fieldValues.Type__c !== 'User';
             }
         }
     }
-    isGetAll = false;
 
+    isGetAll = false;
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
         this.handleEditModeRequestType(parsed_params);
@@ -208,10 +200,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             requestIds.push(this.fieldValues.Id);
             this.requestIds = requestIds;
         }
-
-        if (this.fieldValues.Type__c === 'PublicEvent') {
-            this.fieldValues.EventType__c = this.fieldValues.EventType__c === 'Annet' ? 'OtherEvent' : 'SportingEvent';
-        }
     }
 
     goToMyRequests() {
@@ -222,7 +210,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         });
     }
-    goToPrevousPage() {
+    goToPreviousPage() {
         window.scrollTo(0, 0);
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
@@ -230,5 +218,96 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                 pageName: this.previousPage
             }
         });
+    }
+
+    formArray = [];
+    setCurrentForm() {
+        const currentFormUserForm = this.template.querySelector('c-hot_request-form_user') !== null;
+        const currentFormOrdererForm = this.template.querySelector('c-hot_request-form_orderer') !== null;
+        const currentFormCompanyForm = this.template.querySelector('c-hot_request-form_company') !== null;
+
+        if (this.formArray.length === 0 && this.fieldValues.Type__c !== 'Me') {
+            this.formArray.push('ordererForm');
+        }
+        if (currentFormUserForm || currentFormCompanyForm || this.fieldValues.Type__c === 'Me') {
+            this.formArray.push('requestForm');
+        } else if (currentFormOrdererForm && this.fieldValues.Type__c === 'User') {
+            this.formArray.push('userForm');
+        } else if (currentFormOrdererForm && this.fieldValues.Type__c === 'Company') {
+            this.formArray.push('companyForm');
+            if (this.userCheckboxValue) {
+                this.formArray.push('userForm');
+                this.requestTypeResult[this.formArray.at(-2)] = true;
+            }
+        }
+        this.requestTypeResult[this.formArray.at(-1)] = true;
+    }
+
+    userCheckboxValue = false;
+    handleUserCheckbox(event) {
+        this.userCheckboxValue = event.detail;
+        if (event.detail) {
+            this.formArray.push('userForm');
+            this.requestTypeResult.userForm = true;
+        } else {
+            this.requestTypeResult[this.formArray.at(-1)] = false;
+            this.formArray.pop();
+        }
+    }
+
+    digitalCheckboxValue = false;
+    handleDigitalCheckbox(event) {
+        this.digitalCheckboxValue = event.detail;
+    }
+
+    picklistValueSetInCompanyform;
+    setPicklistValue(event) {
+        this.picklistValueSetInCompanyform = event.detail;
+    }
+
+    handleNextButtonClicked() {
+        this.getFieldValuesFromSubForms();
+        if (this.handleValidation()) {
+            return;
+        }
+        if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
+            this.requestTypeResult[this.formArray.at(-2)] = false;
+        }
+        this.requestTypeResult[this.formArray.at(-1)] = false;
+        this.setCurrentForm();
+    }
+
+    handleBackButtonClicked() {
+        this.getFieldValuesFromSubForms();
+        if (this.formArray.length < 2) {
+            this.resetFormValuesOnTypeSelection();
+        } else if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
+            // Back to ordererForm
+            this.requestTypeResult[this.formArray.at(-1)] = false;
+            this.requestTypeResult[this.formArray.at(-2)] = false;
+            this.requestTypeResult[this.formArray.at(-3)] = true;
+            this.formArray.pop();
+            this.formArray.pop();
+        } else if (this.formArray.at(-2) === 'userForm' && this.formArray.at(-3) === 'companyForm') {
+            // Back to company+userform (checkbox checked)
+            this.requestTypeResult[this.formArray.at(-1)] = false;
+            this.requestTypeResult[this.formArray.at(-2)] = true;
+            this.requestTypeResult[this.formArray.at(-3)] = true;
+            this.formArray.pop();
+        } else {
+            this.requestTypeResult[this.formArray.at(-1)] = false;
+            this.requestTypeResult[this.formArray.at(-2)] = true;
+            this.formArray.pop();
+        }
+    }
+
+    resetFormValuesOnTypeSelection() {
+        this.formArray = [];
+        this.fieldValues = {};
+        this.requestTypeChosen = false;
+        this.userCheckboxValue = false;
+        this.digitalCheckboxValue = false;
+        this.picklistValueSetInCompanyform = null;
+        this.requestTypeResult = null;
     }
 }

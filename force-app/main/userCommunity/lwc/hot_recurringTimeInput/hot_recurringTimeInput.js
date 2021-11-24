@@ -138,7 +138,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
     //Advanced Time functions
     @track timesBackup;
     advancedTimes(event) {
-        this.isAdvancedTimes = event.detail.checked;
+        this.isAdvancedTimes = event.detail;
         if (this.isAdvancedTimes) {
             this.timesBackup = this.times;
             this.times = [this.times[0]];
@@ -160,6 +160,11 @@ export default class Hot_recurringTimeInput extends LightningElement {
         this.repeatingOptionChosen = event.detail.name;
         this.showWeekDays = event.detail.name !== 'Daily';
         this.isRepeating = true;
+        this.repeatingOptions.forEach((element) => {
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            }
+        });
     }
     chosenDays = [];
     get days() {
@@ -227,33 +232,31 @@ export default class Hot_recurringTimeInput extends LightningElement {
         return newDateTime;
     }
 
-    attemptedSubmit = false;
     @api
     validateFields() {
-        this.attemptedSubmit = true;
         let hasErrors = this.validateSimpleTimes();
         if (this.isAdvancedTimes) {
-            hasErrors = hasErrors + this.validateAdvancedTimes();
+            hasErrors += this.validateAdvancedTimes();
         }
         return hasErrors;
     }
     validateSimpleTimes() {
         let hasErrors = false;
         this.template.querySelectorAll('.date').forEach((element) => {
-            hasErrors = hasErrors + validate(element, startDateValidations);
+            hasErrors += validate(element, startDateValidations);
         });
         this.template.querySelectorAll('.start-tid').forEach((element) => {
-            hasErrors = hasErrors + validate(element, startTimeValidations);
+            hasErrors += validate(element, startTimeValidations);
         });
         this.template.querySelectorAll('.slutt-tid').forEach((element) => {
-            hasErrors = hasErrors + validate(element, endTimeValidations);
+            hasErrors += validate(element, endTimeValidations);
         });
         return hasErrors;
     }
     validateAdvancedTimes() {
         let hasErrors = false;
         let recurringTypeElement = this.template.querySelector('.recurringType');
-        hasErrors = hasErrors + validate(recurringTypeElement.getElement(), recurringTypeValidations);
+        hasErrors += validate(recurringTypeElement.getElement(), recurringTypeValidations);
         if (this.showWeekDays) {
             let recurringDaysElement = this.template.querySelector('.recurringDays');
             hasErrors =

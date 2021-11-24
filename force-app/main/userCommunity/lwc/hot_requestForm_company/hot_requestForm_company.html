@@ -1,34 +1,43 @@
 <template>
     <section class="virksomhet-info-skjema sub-form">
-        <h2 style="font-size: 1.25rem">Informasjon om virksomhet</h2>
-        <lightning-input
-            class="tolk-skjema-input"
-            name="OrganizationNumber__c"
-            data-id="orgnumber"
+        <h2 class="header">Informasjon om virksomhet</h2>
+        <br />
+        <c-input
             label="Organisasjonsnummer"
-            max-length="11"
-            type="text"
+            name="OrganizationNumber__c"
+            form="tolk-skjema-input"
             value={fieldValues.OrganizationNumber__c}
-            onblur={checkOrganizationNumber}
-            required
-        >
-        </lightning-input>
+            error-text="Ikke gyldig format for organisasjonsnummer."
+        ></c-input>
         <br />
-        <lightning-input
-            class="tolk-skjema-input"
-            name="InvoiceReference__c"
-            label="Deres fakturareferanse"
-            value={fieldValues.InvoiceReference__c}
-            field-level-help="Oppgi referanse, slik økonomitjenesten hos dere krever"
-        >
-        </lightning-input>
+        <c-picklist
+            choices={choices}
+            master-label="Betalingsansvar"
+            onpicklistvaluechange={handlePicklist}
+            desktop-style="width: 50%;"
+            error-text="Du må velge et alternativ"
+        ></c-picklist>
         <br />
-        <lightning-input
-            class="tolk-skjema-input"
-            name="AdditionalInvoiceText__c"
-            label="Tilleggsinformajon"
-            value={fieldValues.AdditionalInvoiceText__c}
-        >
-        </lightning-input>
+        <div if:true={fieldValues.IsOtherEconomicProvicer__c}>
+            <c-input
+                label="Deres fakturareferanse"
+                name="InvoiceReference__c"
+                form="tolk-skjema-input"
+                value={fieldValues.InvoiceReference__c}
+            ></c-input>
+            <br />
+            <c-input
+                label="Tilleggsinformajon"
+                name="AdditionalInvoiceText__c"
+                form="tolk-skjema-input"
+                value={fieldValues.AdditionalInvoiceText__c}
+            ></c-input>
+        </div>
+
+        <c-checkbox
+            label="Legge til bruker?"
+            oncheckboxclick={handleUserCheckbox}
+            default-value={checkboxValue}
+        ></c-checkbox>
     </section>
 </template>

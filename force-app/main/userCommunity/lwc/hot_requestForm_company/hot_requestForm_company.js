@@ -1,26 +1,68 @@
 import { LightningElement, track, api } from 'lwc';
-import { organizationNumberValidationRules } from './hot_validationRules';
-import { validate } from 'c/validationController';
-
 export default class Hot_requestForm_company extends LightningElement {
+    @api checkboxValue = false;
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
+        IsOtherEconomicProvicer__c: false,
         AdditionalInvoiceText__c: ''
     };
+    choices = [
+        { name: 'Placeholder', label: 'Velg et alternativ', selected: true },
+        { name: 'NAV', label: 'NAV betaler' },
+        { name: 'Virksomhet', label: 'Virksomhet betaler' }
+    ];
+
+    currentPicklistName;
+    handlePicklist(event) {
+        this.fieldValues.IsOtherEconomicProvicer__c = event.detail.name === 'Virksomhet';
+        this.currentPicklistName = event.detail.name;
+        this.sendPicklistValue();
+    }
+
+    handleUserCheckbox(event) {
+        const selectedEvent = new CustomEvent('usercheckboxclicked', {
+            detail: event.detail
+        });
+        this.dispatchEvent(selectedEvent);
+    }
 
     @api
     setFieldValues() {
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            this.fieldValues[element.name] = element.value;
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            this.fieldValues[element.name] = element.getValue();
         });
     }
 
-    attemptedSubmit = false;
+    sendPicklistValue() {
+        const selectedEvent = new CustomEvent('getpicklistvalue', {
+            detail: this.currentPicklistName
+        });
+        this.dispatchEvent(selectedEvent);
+    }
+
+    setPicklistValue() {
+        if (this.picklistValuePreviouslySet === undefined || this.picklistValuePreviouslySet === null) {
+            return;
+        }
+        this.choices.forEach((element) => {
+            element.selected = false;
+            if (element.name === this.picklistValuePreviouslySet) {
+                element.selected = true;
+            }
+        });
+    }
+
     @api
     validateFields() {
-        this.attemptedSubmit = true;
-        return validate(this.template.querySelector('[data-id="orgnumber"]'), organizationNumberValidationRules);
+        let hasErrors = 0;
+        if (this.template.querySelectorAll('c-input')[0].validateOrgNumber()) {
+            hasErrors += 1;
+        }
+        if (this.template.querySelector('c-picklist').validationHandler()) {
+            hasErrors += 1;
+        }
+        return hasErrors;
     }
 
     @api
@@ -28,6 +70,7 @@ export default class Hot_requestForm_company extends LightningElement {
         return this.fieldValues;
     }
 
+    @api picklistValuePreviouslySet;
     @api parentFieldValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
@@ -35,5 +78,6 @@ export default class Hot_requestForm_company extends LightningElement {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
+        this.setPicklistValue();
     }
 }
