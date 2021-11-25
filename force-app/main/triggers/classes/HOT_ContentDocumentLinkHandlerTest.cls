@@ -122,17 +122,8 @@ private class HOT_ContentDocumentLinkHandlerTest {
     }
 
     @isTest
-    public static void addContentDocumentLinkToAccountAsStandardUser() {
-        Person__c person = HOT_TestDataFactory.createPerson();
-        person.Name = '12015678999';
-        insert person;
-        Account personAccount = HOT_TestDataFactory.createAccount(true);
-        personAccount.INT_PersonIdent__c = '12015678999';
-        personAccount.CRM_Person__c = person.Id;
-        insert personAccount;
-
+    public static void addContentDocumentLinkToAccountNoAccountTest() {
         HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c LIMIT 1];
-        request.Account__c = personAccount.Id;
         update request;
 
         ContentVersion contentVersion = new ContentVersion(
@@ -150,37 +141,20 @@ private class HOT_ContentDocumentLinkHandlerTest {
             LinkedEntityId = request.Id
         );
 
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user1 = HOT_TestDataFactory.createUser('user1', profile);
-        insert user1;
-
         Test.startTest();
-        System.runAs(user1) {
-            insert contentDocumentLink;
-        }
+        insert contentDocumentLink;
         Test.stopTest();
 
-        ContentDocumentLink contentDocumentLinkRequest = [
-            SELECT ContentDocumentId
+        List<ContentDocumentLink> contentDocumentLinkRequest = [
+            SELECT Id
             FROM ContentDocumentLink
-            WHERE LinkedEntityId = :request.Id
-            LIMIT 1
+            WHERE ContentDocumentId = :contentDocument.Id
         ];
-
-        ContentDocumentLink contentDocumentLinkAccount = [
-            SELECT ContentDocumentId
-            FROM ContentDocumentLink
-            WHERE LinkedEntityId = :personAccount.Id
-            LIMIT 1
-        ];
-
-        Id requestContentDocumentid = contentDocumentLinkRequest.ContentDocumentId;
-        Id accountContentDocumentId = contentDocumentLinkAccount.ContentDocumentId;
 
         System.assertEquals(
-            requestContentDocumentId,
-            accountContentDocumentId,
-            'ContentDocumentId fra request og account stemmer ikke overens.'
+            contentDocumentLinkRequest.size(),
+            2,
+            'Det har blitt opprettet en ContentDocumetLink for mye.'
         );
     }
 }
