@@ -123,4 +123,13 @@ export default class Hot_requestForm_request extends LightningElement {
     handleSMSCheckbox(event) {
         this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
+
+    uploadFilesDropHandler(event) {
+        event.preventDefault();
+        this.template.querySelector('c-upload-files').dropHandler(event);
+    }
+
+    dragOverHandler(event) {
+        event.preventDefault();
+    }
 }

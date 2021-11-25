@@ -1,5 +1,5 @@
 <template>
-    <section class="bestilling-info-skjema">
+    <section class="bestilling-info-skjema" ondrop={uploadFilesDropHandler} ondragover={dragOverHandler}>
         <h2 class="header">Informasjon om behov for tolk</h2>
         <br />
         <c-input
