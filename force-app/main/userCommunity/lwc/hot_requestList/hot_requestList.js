@@ -26,7 +26,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         { name: 'Ikke ledig tolk', label: 'Ikke ledig tolk' },
         { name: 'Se tidsplan', label: 'Serieoppdrag' }, // "Se tidsplan"
         { name: 'Avlyst', label: 'Avlyst' },
-        { name: 'Gjennomført', label: 'Gjennomført' }
+        { name: 'Ferdig', label: 'Ferdig' }
     ];
 
     @track error;

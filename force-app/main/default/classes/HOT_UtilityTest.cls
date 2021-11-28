@@ -93,7 +93,7 @@ private class HOT_UtilityTest {
         Map<String, String> ordererDetails = HOT_Utility.getOrdererDetails();
         Test.stopTest();
 
-        System.assertEquals(null, ordererDetails.get('OrdererEmail__c'));
-        System.assertEquals(null, ordererDetails.get('OrdererPhone__c'));
+        System.assertEquals('', ordererDetails.get('OrdererEmail__c'));
+        System.assertEquals('', ordererDetails.get('OrdererPhone__c'));
     }
 }
