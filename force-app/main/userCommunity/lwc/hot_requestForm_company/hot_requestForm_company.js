@@ -1,6 +1,7 @@
 import { LightningElement, track, api } from 'lwc';
 export default class Hot_requestForm_company extends LightningElement {
     @api checkboxValue = false;
+    @api isEditMode = false;
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',

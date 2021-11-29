@@ -3,8 +3,6 @@ import { LightningElement, track, api } from 'lwc';
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
         Subject__c: '',
-        StartTime__c: '',
-        EndTime__c: '',
         MeetingStreet__c: '',
         MeetingPostalCity__c: '',
         MeetingPostalCode__c: '',
@@ -14,9 +12,9 @@ export default class Hot_requestForm_request extends LightningElement {
         Description__c: '',
         IsFileConsent__c: false,
         Source__c: 'Community',
-        IsOrdererWantStatusUpdateOnSMS__c: true
+        IsOrdererWantStatusUpdateOnSMS__c: true,
+        IsScreenInterpreter__c: false
     };
-    @api digitalCheckboxValue = false;
     @api isRequestTypeMe;
     @api isGetAll;
     @api requestIds;
@@ -31,9 +29,6 @@ export default class Hot_requestForm_request extends LightningElement {
         this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
         if (!this.sameLocation) {
             this.radiobuttonOptions[1].checked = true;
-        }
-        if (this.digitalCheckboxValue) {
-            this.isDigitalMeeting = true;
         }
     }
 
@@ -52,7 +47,6 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     setDependentFields() {
-        this.fieldValues.IsFileConsent__c = this.fileConsent;
         if (this.sameLocation) {
             this.fieldValues.InterpretationStreet__c = this.fieldValues.MeetingStreet__c;
             this.fieldValues.InterpretationPostalCode__c = this.fieldValues.MeetingPostalCode__c;
@@ -96,9 +90,8 @@ export default class Hot_requestForm_request extends LightningElement {
         return false;
     }
 
-    fileConsent = false;
     getFileConsent(event) {
-        this.fileConsent = event.detail;
+        this.fieldValues.IsFileConsent__c = event.detail;
     }
 
     @track sameLocation = true;
@@ -111,13 +104,8 @@ export default class Hot_requestForm_request extends LightningElement {
         this.sameLocation = !this.sameLocation;
     }
 
-    isDigitalMeeting = false;
     handleDigitalCheckbox(event) {
-        this.isDigitalMeeting = event.detail;
-        const selectedEvent = new CustomEvent('digitalcheckboxclicked', {
-            detail: event.detail
-        });
-        this.dispatchEvent(selectedEvent);
+        this.fieldValues.IsScreenInterpreter__c = event.detail;
     }
 
     handleSMSCheckbox(event) {

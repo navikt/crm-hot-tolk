@@ -174,6 +174,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     distributeRequests(data) {
         this.allMyRequests = [];
         this.allOrderedRequests = [];
+
         for (let request of data) {
             if (request.Account__c === this.userRecord.AccountId) {
                 this.allMyRequests.push(request);

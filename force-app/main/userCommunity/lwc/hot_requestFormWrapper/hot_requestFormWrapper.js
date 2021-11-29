@@ -80,6 +80,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     async promptOverlap() {
+        this.modalContent = '';
         let response = true;
         let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
         if (!timeInput.isAdvancedTimes && this.fieldValues.Type__c === 'Me') {
@@ -88,25 +89,41 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                 times: timeInput.times
             });
             if (duplicateRequests.length > 0) {
-                let warningMessage = 'Du har allerede bestillinger i dette tidsrommet:';
+                this.modalHeader = 'Du har allerede bestillinger i dette tidsrommet.';
+                this.noCancelButton = false;
                 for (let request of duplicateRequests) {
-                    warningMessage += '\nEmne: ' + request.Subject__c;
-                    warningMessage += '\nPeriode: ' + request.SeriesPeriod__c;
+                    this.modalContent += '\nEmne: ' + request.Subject__c;
+                    this.modalContent += '\nPeriode: ' + request.SeriesPeriod__c;
                 }
-                response = confirm(warningMessage);
+                this.template.querySelector('c-alertdialog').showModal();
+                response = false;
             }
         }
         return response;
     }
 
-    submitForm() {
-        try {
-            this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
-        } catch (error) {
-            throw error;
+    handleAlertDialogClick(event) {
+        if (event.detail === 'confirm' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
+            this.submitForm();
+            this.spin = true;
         }
     }
-    handleError() {
+
+    submitForm() {
+        this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
+    }
+
+    modalHeader = '';
+    modalContent = '';
+    noCancelButton = true;
+    handleError(event) {
+        if (event.detail.detail === 'Fant ingen virksomhet med dette organisasjonsnummeret.') {
+            this.noCancelButton = true;
+            this.modalHeader = 'Noe gikk galt';
+            this.modalContent =
+                'Fant ingen virksomhet med organisasjonsnummer ' + this.fieldValues.OrganizationNumber__c + '.';
+            this.template.querySelector('c-alertdialog').showModal();
+        }
         this.spin = false;
     }
 
@@ -168,23 +185,17 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     handleEditModeRequestType(parsed_params) {
+        this.isTypeMe = this.fieldValues.Type__c === 'Me';
         this.isEditMode = parsed_params.edit != null;
         this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
-        if (this.requestTypeChosen) {
-            this.requestTypeResult.requestForm = true;
-            if (this.fieldValues.Type__c !== 'Me' && this.fieldValues.Type__c != null) {
-                this.requestTypeResult.ordererForm = true;
-                this.requestTypeResult.userForm = this.fieldValues.Type__c !== 'Company';
-                this.requestTypeResult.companyForm = this.fieldValues.Type__c !== 'User';
-            }
-        }
     }
 
     isGetAll = false;
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
         this.handleEditModeRequestType(parsed_params);
-
+        this.picklistValueSetInCompanyform = this.fieldValues.IsOtherEconomicProvicer__c ? 'Virksomhet' : 'NAV';
+        this.userCheckboxValue = this.fieldValues.UserName__c ? true : false;
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
 
         delete this.fieldValues.Account__c;
@@ -200,6 +211,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             requestIds.push(this.fieldValues.Id);
             this.requestIds = requestIds;
         }
+        this.setCurrentForm();
     }
 
     goToMyRequests() {
@@ -255,11 +267,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    digitalCheckboxValue = false;
-    handleDigitalCheckbox(event) {
-        this.digitalCheckboxValue = event.detail;
-    }
-
     picklistValueSetInCompanyform;
     setPicklistValue(event) {
         this.picklistValueSetInCompanyform = event.detail;
@@ -281,6 +288,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.getFieldValuesFromSubForms();
         if (this.formArray.length < 2) {
             this.resetFormValuesOnTypeSelection();
+            if (this.isEditMode) {
+                this.goToPreviousPage();
+            }
         } else if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
             // Back to ordererForm
             this.requestTypeResult[this.formArray.at(-1)] = false;
@@ -306,7 +316,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.fieldValues = {};
         this.requestTypeChosen = false;
         this.userCheckboxValue = false;
-        this.digitalCheckboxValue = false;
         this.picklistValueSetInCompanyform = null;
         this.requestTypeResult = null;
     }

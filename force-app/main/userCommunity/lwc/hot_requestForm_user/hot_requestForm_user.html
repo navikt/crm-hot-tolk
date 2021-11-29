@@ -13,6 +13,7 @@
             form="tolk-skjema-input"
             value={fieldValues.UserName__c}
             error-text="Feltet må fylles ut."
+            disabled={isEditMode}
         ></c-input>
         <br />
         <c-input
@@ -22,6 +23,7 @@
             value={fieldValues.UserPersonNumber__c}
             error-text={personNumberErrorText}
             max-length="11"
+            disabled={isEditMode}
         ></c-input>
     </section>
 </template>
