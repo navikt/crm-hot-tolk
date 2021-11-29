@@ -1,5 +1,4 @@
 export function getParametersFromURL() {
-    console.log('getParametersFromURL');
     let testURL = window.location.href;
     let params = testURL.split('?')[1];
     let parsed_params = null;

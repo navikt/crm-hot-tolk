@@ -300,4 +300,34 @@ public class HOT_WorkOrderToRequestStatusTest {
             'Status on the request did not update to correct value'
         );
     }
+    
+    @isTest
+    private static void test_1Complete_1CannotComplete_1Canceled() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder1 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder1;
+        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder2;
+        WorkOrder workOrder3 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder3;
+        request.Status__c = 'Godkjent';
+        update request;
+        workOrder1.Status = 'Completed';
+        workOrder2.Status = 'Cannot Complete';
+        workOrder3.Status = 'Canceled';
+        update workOrder1;
+        update workOrder2;
+        update workOrder3;
+
+        request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+        System.assertEquals(
+            'Delvis dekket',
+            request.Status__c,
+            'Status on the request did not update to correct value'
+        );
+    }
 }

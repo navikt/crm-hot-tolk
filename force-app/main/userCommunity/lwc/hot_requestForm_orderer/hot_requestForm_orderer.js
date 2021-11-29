@@ -1,7 +1,6 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
-import { validate, require } from 'c/validationController';
 
 export default class Hot_requestForm_orderer extends LightningElement {
     @track personAccount = { Id: '', Name: '' };
@@ -33,21 +32,32 @@ export default class Hot_requestForm_orderer extends LightningElement {
 
     @api
     setFieldValues() {
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            this.fieldValues[element.name] = element.value;
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            this.fieldValues[element.name] = element.getValue();
+        });
+        this.template.querySelectorAll('c-checkbox').forEach((element) => {
+            this.fieldValues[element.name] = element.getValue();
         });
     }
 
-    attemptedSubmit = false;
+    ordererPhoneError = 'Feltet må fylles ut.';
     @api
     validateFields() {
-        this.attemptedSubmit = true;
+        this.ordererPhoneError = 'Feltet må fylles ut.';
         let hasErrors = false;
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            if (element.required) {
-                hasErrors = hasErrors + validate(element, [require]);
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            if (element.validationHandler()) {
+                hasErrors += 1;
             }
         });
+        if (
+            this.template.querySelectorAll('c-input')[2].validatePhone() &&
+            this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c
+        ) {
+            this.ordererPhoneError =
+                'Bestillers telefon må være et gyldig mobilnummer hvis ønske om SMS-varsel ved statusendring er huket av.';
+            hasErrors += 1;
+        }
         return hasErrors;
     }
 

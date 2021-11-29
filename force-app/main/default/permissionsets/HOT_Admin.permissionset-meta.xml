@@ -1006,6 +1006,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SMS__c.Sender__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SMS__c.Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1047,7 +1052,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.ApptBookingInfoUrl</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -1112,7 +1117,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_DatesOutOfSync__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -1370,9 +1375,9 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>ServiceAppointment.IsOffsiteAppointment</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -1407,6 +1412,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.WorkTypeId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.CRM_Domain__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

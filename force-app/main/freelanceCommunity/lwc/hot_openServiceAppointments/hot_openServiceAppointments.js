@@ -159,8 +159,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             } else if (
                 this.picklistValue === 'Fellesoppdrag' &&
-                this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c &&
-                isRegion
+                this.allServiceAppointments[i].HOT_Request__r.IsFellesOppdrag__c
             ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             } else if (

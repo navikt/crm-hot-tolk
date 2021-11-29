@@ -1,112 +1,110 @@
 <template>
     <section class="bestilling-info-skjema">
-        <h2 style="font-size: 1.25rem">Informasjon om behov for tolk</h2>
-        <lightning-input
-            class="tolk-skjema-input"
-            name="Subject__c"
-            label="Tema"
-            type="text"
-            value={fieldValues.Subject__c}
-            title="Hva trenger du tolk til?"
-            required
-            field-level-help="Beskriv hva du trenger tolk til så nøyaktig som mulig, f.eks. legetime, foreldremøte, forelesning, speidersamling, teaterforestilling osv."
-        >
-        </lightning-input>
-
+        <h2 class="header">Informasjon om behov for tolk</h2>
         <br />
+        <c-input
+            label="Tema"
+            name="Subject__c"
+            form="tolk-skjema-input"
+            value={fieldValues.Subject__c}
+            error-text="Feltet må fylles ut."
+            helptext-content="Beskriv hva du trenger tolk til så nøyaktig som mulig, f.eks. legetime, foreldremøte, forelesning, speidersamling, teaterforestilling osv."
+        ></c-input>
+        <br />
+        <!--TODO: Save values on this when clicking back / next-->
         <c-hot_recurring-time-input request-ids={requestIds}></c-hot_recurring-time-input>
         <br />
-        <lightning-input
-            class="tolk-skjema-input adressefelt-hjelp"
-            name="MeetingStreet__c"
-            label="Oppmøteadresse"
-            type="text"
-            value={fieldValues.MeetingStreet__c}
-            required
-        >
-        </lightning-input>
-        <div class="slds-grid slds-gutters">
-            <div class="slds-col slds-size_2-of-5">
-                <lightning-input
-                    class="tolk-skjema-input postnummer"
-                    title="Postnummer"
-                    name="MeetingPostalCode__c"
-                    label="Postnummer"
-                    type="text"
-                    max-length="4"
-                    value={fieldValues.MeetingPostalCode__c}
-                    onblur={checkPostalCode}
-                >
-                </lightning-input>
-            </div>
-            <div class="slds-col slds-size_3-of-5">
-                <lightning-input
-                    class="tolk-skjema-input"
-                    title="Poststed"
-                    name="MeetingPostalCity__c"
-                    label="Poststed"
-                    type="text"
-                    value={fieldValues.MeetingPostalCity__c}
-                >
-                </lightning-input>
-            </div>
-        </div>
+        <c-checkbox
+            label="Digitalt oppmøte?"
+            oncheckboxclick={handleDigitalCheckbox}
+            form="tolk-skjema-input"
+            default-value={digitalCheckboxValue}
+        ></c-checkbox>
         <br />
-
-        <lightning-radio-group
-            class="nav-radio-button-group horizontal radio-button-group_yes-no"
-            name="radioGroup"
-            label="Er oppmøteadresse det samme som tolkeadresse?"
-            options={options}
-            value={value}
-            type="radio"
-            onchange={toggled}
-        ></lightning-radio-group>
-
-        <div if:false={sameLocation}>
-            <lightning-input
-                class="tolk-skjema-input adressefelt-hjelp"
-                title="Tolkeaddresse"
-                name="InterpretationStreet__c"
-                label="Tolkeadresse"
-                type="text"
-                value={fieldValues.InterpretationStreet__c}
-            >
-            </lightning-input>
+        <div if:false={isDigitalMeeting}>
+            <c-input
+                label="Oppmøteadresse"
+                name="MeetingStreet__c"
+                form="tolk-skjema-input"
+                value={fieldValues.MeetingStreet__c}
+                error-text="Feltet må fylles ut."
+            ></c-input>
+            <br />
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_2-of-5">
-                    <lightning-input
-                        class="tolk-skjema-input postnummer"
-                        title="Postnummer"
-                        name="InterpretationPostalCode__c"
+                    <c-input
                         label="Postnummer"
-                        type="text"
+                        name="MeetingPostalCode__c"
+                        form="tolk-skjema-input"
+                        value={fieldValues.MeetingPostalCode__c}
                         max-length="4"
-                        value={fieldValues.InterpretationPostalCode__c}
-                    >
-                    </lightning-input>
+                    ></c-input>
                 </div>
                 <div class="slds-col slds-size_3-of-5">
-                    <lightning-input
-                        class="tolk-skjema-input"
-                        title="Poststed"
-                        name="InterpretationPostalCity__c"
+                    <c-input
                         label="Poststed"
-                        type="text"
-                        value={fieldValues.InterpretationPostalCity__c}
-                    >
-                    </lightning-input>
+                        name="MeetingPostalCity__c"
+                        form="tolk-skjema-input"
+                        value={fieldValues.MeetingPostalCity__c}
+                    ></c-input>
                 </div>
             </div>
+            <br />
+            <c-radiobuttons
+                radiobuttons={radiobuttonOptions}
+                onradiobuttonsclick={radiobuttonsToggled}
+                header="Er oppmøteadresse det samme som tolkeadresse?"
+                group-name="radioGroup"
+                flex-direction="row"
+            >
+            </c-radiobuttons>
+            <div if:false={sameLocation}>
+                <c-input
+                    label="Tolkeadresse"
+                    name="InterpretationStreet__c"
+                    form="tolk-skjema-input"
+                    value={fieldValues.InterpretationStreet__c}
+                ></c-input>
+                <br />
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-5">
+                        <c-input
+                            label="Postnummer"
+                            name="InterpretationPostalCode__c"
+                            form="tolk-skjema-input"
+                            value={fieldValues.InterpretationPostalCode__c}
+                            max-length="4"
+                        ></c-input>
+                    </div>
+                    <div class="slds-col slds-size_3-of-5">
+                        <c-input
+                            label="Poststed"
+                            name="InterpretationPostalCity__c"
+                            form="tolk-skjema-input"
+                            value={fieldValues.InterpretationPostalCity__c}
+                        ></c-input>
+                    </div>
+                </div>
+            </div>
+            <br />
         </div>
-        <br />
-        <lightning-textarea
-            class="tolk-skjema-input ikke-sensitiv-fritekst"
+        <c-textarea
             name="Description__c"
             label="Tilleggsopplysninger"
             value={fieldValues.Description__c}
-            field-level-help="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende.)"
-        ></lightning-textarea>
+            form="tolk-skjema-input"
+            helptext-content="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende)."
+        ></c-textarea>
+        <br />
+        <c-checkbox
+            if:true={isRequestTypeMe}
+            label="Ønsker SMS-varsel ved statusendring på bestillingen"
+            oncheckboxclick={handleSMSCheckbox}
+            name="IsOrdererWantStatusUpdateOnSMS__c"
+            form="tolk-skjema-input"
+            default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
+        ></c-checkbox>
+        <br />
         <div style="margin-left: none">
             <c-upload-files
                 record-id={recordId}
@@ -119,7 +117,6 @@
                 validation-message="For å legge til vedlegg må du gi samtykke til at formidler og tolk kan se vedleggene som lastes opp"
             ></c-upload-files>
         </div>
-
         <br />
         <c-record-files-with-sharing
             record-id={recordId}
@@ -127,7 +124,6 @@
             is-delete-option="true"
             title="Tidligere opplastede vedlegg"
         ></c-record-files-with-sharing>
-
         <lightning-messages aria-live="assertive"> </lightning-messages>
     </section>
 </template>
