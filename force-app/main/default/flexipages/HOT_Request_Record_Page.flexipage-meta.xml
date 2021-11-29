@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -251,6 +251,11 @@
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.UserPhone__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.UserName__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-c551420d-243a-4b91-b52d-849f48d2ca79</name>
