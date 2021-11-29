@@ -7,7 +7,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
         String query = 'SELECT ';
-        query += 'Id, HOT_Request__r.Orderer__c, HOT_Request__r.OrdererPhone__c, Status, StartDate, EndDate, HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c ';
+        query += 'Id, HOT_Request__r.Orderer__c, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Type__c, Status, StartDate, EndDate, HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c ';
         query += 'FROM WorkOrder ';
         query += 'WHERE HOT_SendSMSNotificationOnStatusChanged__c = TRUE ';
 
@@ -15,7 +15,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
     }
 
     public void execute(Database.BatchableContext bc, List<WorkOrder> records) {
-        HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(records);
+        HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(records);
     }
 
     public void finish(Database.BatchableContext bc) {
