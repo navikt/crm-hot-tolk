@@ -99,7 +99,7 @@ public without sharing class HOT_ReminderSMSService {
                         'Orderer On Status Update',
                         workOrder.HOT_Request__r.Orderer__c,
                         workOrder.Id,
-                        workOrder.HOT_Request__r.OrdererPhone__c,
+                        phoneNumber,
                         constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id))
                     )
                 );
@@ -112,9 +112,9 @@ public without sharing class HOT_ReminderSMSService {
 
     private static String getRecipient(WorkOrder workOrder) {
         if (workOrder.HOT_Request__r.Type__c != 'Me') {
-            return workOrder?.HOT_Request__r?.OrdererPhone__c;
+            return workOrder.HOT_Request__r.OrdererPhone__c;
         }
-        return workOrder?.Account?.CRM_Person__r?.INT_KrrMobilePhone__c;
+        return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
     }
 
     private static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
