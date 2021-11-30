@@ -64,7 +64,7 @@ public without sharing class HOT_ReminderSMSService {
             for (Integer i = 0; i < serviceAppointemts.size(); i++) {
                 interpreterNames += serviceAppointemts[i].HOT_ServiceResource__r.Name + ', ';
             }
-            interpreterNames.removeEnd(', ');
+            interpreterNames = interpreterNames.removeEnd(', ');
             interpreterNames += '. ';
             interpreterNamesByWorkOrderIds.put(workOrder.Id, interpreterNames);
         }

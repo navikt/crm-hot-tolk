@@ -15,7 +15,13 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
     }
 
     public void execute(Database.BatchableContext bc, List<WorkOrder> records) {
-        HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(records);
+        try {
+            HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(records);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
     }
 
     public void finish(Database.BatchableContext bc) {

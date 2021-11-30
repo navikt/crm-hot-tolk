@@ -25,7 +25,13 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
     }
 
     public void execute(Database.BatchableContext bc, List<WorkOrder> records) {
-        HOT_ReminderSMSService.reminderSMS(records);
+        try {
+            HOT_ReminderSMSService.reminderSMS(records);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
     }
 
     public void finish(Database.BatchableContext bc) {
