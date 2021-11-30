@@ -53,11 +53,9 @@ export default class Hot_recurringTimeInput extends LightningElement {
         this.times[index].date = event.detail.value;
 
         if (this.times[index].startTime === null || this.times[index].startTime === '') {
-            let tempTime = this.getNextHour();
-            tempTime = tempTime.substring(11, 16);
+            let tempTime = this.getNextHour().substring(11, 16);
             this.times[index].startTime = tempTime;
-            tempTime = this.addOneHour(tempTime);
-            this.times[index].endTime = tempTime;
+            this.times[index].endTime = this.addOneHour(tempTime);
             this.template.querySelectorAll('[data-id="starttime"]').forEach((element, i) => {
                 element.setValue(this.times[i].startTime);
             });
@@ -71,8 +69,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
         this.times[index].startTime = event.detail;
 
         if (event.detail >= this.times[index].endTime || this.times[index].endTime === null) {
-            let tempTime = this.addOneHour(event.detail);
-            this.times[index].endTime = tempTime;
+            this.times[index].endTime = this.addOneHour(event.detail);
             this.template.querySelectorAll('[data-id="endtime"]')[index].setValue(this.times[index].endTime);
         }
     }
