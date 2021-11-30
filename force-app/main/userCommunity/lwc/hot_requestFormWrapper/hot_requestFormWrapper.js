@@ -280,6 +280,10 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
             this.requestTypeResult[this.formArray.at(-2)] = false;
         }
+        if (this.formArray.at(-1) === 'companyForm' && !this.userCheckboxValue) {
+            this.fieldValues.UserName__c = '';
+            this.fieldValues.UserPersonNumber__c = '';
+        }
         this.requestTypeResult[this.formArray.at(-1)] = false;
         this.setCurrentForm();
     }

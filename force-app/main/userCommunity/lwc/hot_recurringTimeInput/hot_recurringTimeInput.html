@@ -3,7 +3,7 @@
         <div class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live>
             <template iterator:it={times}>
                 <div class="dynamic-time-inputs-with-line_button" key={it.value.id}>
-                    <div class="dynamic-time-inputs" aria-live>
+                    <div class="dynamic-time-inputs" aria-live style="align-items: center; padding-bottom: 1vw">
                         <lightning-input
                             label="Dato (dd.mm.åååå)"
                             type="date"
@@ -16,26 +16,26 @@
                         >
                         </lightning-input>
                         <div class="dynamic-time-inputs__times">
-                            <lightning-input
+                            <c-input
                                 label="Fra (tt:mm)"
                                 type="time"
-                                class="tolk-skjema-input start-tid"
-                                onchange={setStartTime}
-                                name={it.value.id}
                                 value={it.value.startTime}
-                                required
-                            >
-                            </lightning-input>
-                            <lightning-input
+                                error-text="Feltet må fylles ut."
+                                name={it.value.id}
+                                data-id="starttime"
+                                ongetvalueonchange={setStartTime}
+                                desktop-style="max-width: 10vw"
+                            ></c-input>
+                            <c-input
                                 label="Til (tt:mm)"
                                 type="time"
-                                class="tolk-skjema-input slutt-tid"
-                                onchange={setEndTime}
-                                name={it.value.id}
                                 value={it.value.endTime}
-                                required
-                            >
-                            </lightning-input>
+                                error-text="Feltet må fylles ut."
+                                name={it.value.id}
+                                data-id="endtime"
+                                ongetvalueonchange={setEndTime}
+                                desktop-style="max-width: 10vw"
+                            ></c-input>
                         </div>
                     </div>
                     <lightning-button

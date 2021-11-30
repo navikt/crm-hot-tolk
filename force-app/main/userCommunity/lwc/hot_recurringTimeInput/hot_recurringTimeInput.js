@@ -54,24 +54,31 @@ export default class Hot_recurringTimeInput extends LightningElement {
 
         if (this.times[index].startTime === null || this.times[index].startTime === '') {
             let tempTime = this.getNextHour();
-            this.times[index].startTime = tempTime.substring(11, 16);
-
+            tempTime = tempTime.substring(11, 16);
+            this.times[index].startTime = tempTime;
             tempTime = this.addOneHour(tempTime);
-            this.times[index].endTime = tempTime.substring(11, 16);
+            this.times[index].endTime = tempTime;
+            this.template.querySelectorAll('[data-id="starttime"]').forEach((element, i) => {
+                element.setValue(this.times[i].startTime);
+            });
+            this.template.querySelectorAll('[data-id="endtime"]').forEach((element, i) => {
+                element.setValue(this.times[i].endTime);
+            });
         }
     }
     setStartTime(event) {
         let index = this.getIndexById(event.target.name);
-        this.times[index].startTime = event.detail.value.substring(0, 5);
+        this.times[index].startTime = event.detail;
 
-        if (event.detail.value > this.times[index].endTime || this.times[index].endTime === null) {
-            let tempTime = this.addOneHour(event.detail.value);
-            this.times[index].endTime = tempTime.substring(0, 5);
+        if (event.detail >= this.times[index].endTime || this.times[index].endTime === null) {
+            let tempTime = this.addOneHour(event.detail);
+            this.times[index].endTime = tempTime;
+            this.template.querySelectorAll('[data-id="endtime"]')[index].setValue(this.times[index].endTime);
         }
     }
     setEndTime(event) {
         const index = this.getIndexById(event.target.name);
-        this.times[index].endTime = event.detail.value.substring(0, 5);
+        this.times[index].endTime = event.detail;
     }
 
     getNextHour() {
@@ -95,14 +102,14 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
     addOneHour(input) {
         input = input.split('');
-        let first = parseFloat(input[11]);
-        let second = parseFloat(input[12]);
+        let first = parseFloat(input[0]);
+        let second = parseFloat(input[1]);
         second = (second + 1) % 10;
         if (second === 0) {
             first = first + 1;
         }
-        input[11] = first.toString();
-        input[12] = second.toString();
+        input[0] = first.toString();
+        input[1] = second.toString();
         return input.join('');
     }
 

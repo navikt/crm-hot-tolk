@@ -106,6 +106,14 @@ export default class Hot_requestForm_request extends LightningElement {
 
     handleDigitalCheckbox(event) {
         this.fieldValues.IsScreenInterpreter__c = event.detail;
+        if (event.detail) {
+            this.fieldValues.MeetingStreet__c = '';
+            this.fieldValues.MeetingPostalCity__c = '';
+            this.fieldValues.MeetingPostalCode__c = '';
+            this.fieldValues.InterpretationStreet__c = '';
+            this.fieldValues.InterpretationPostalCode__c = '';
+            this.fieldValues.InterpretationPostalCity__c = '';
+        }
     }
 
     handleSMSCheckbox(event) {
