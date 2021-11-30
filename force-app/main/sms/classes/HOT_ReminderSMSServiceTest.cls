@@ -23,6 +23,12 @@ private class HOT_ReminderSMSServiceTest {
         workOrder.StartDate = workOrder.StartDate.addDays(-2);
         workOrder.EndDate = workOrder.EndDate.addDays(-2);
         update workOrder;
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResource.HOT_IsFreelanceInterpreter__c = true;
+        insert serviceResource;
     }
 
     @isTest
@@ -37,30 +43,32 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
-    static void sendSMSToOtherOrdererOnStatusUpdateTest() {
+    static void sendSMSToOrdererOnStatusUpdateTest() {
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,
+                HOT_Request__r.Type__c,
                 StartDate,
                 EndDate,
                 Status,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
         ];
-        HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
-        List<SMS__c> smsList = [SELECT Id FROM SMS__c];
+        HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
 
     @isTest
-    static void sendSMSToOtherOrdererOnStatusUpdateTest2() {
+    static void sendSMSToOrdererOnStatusUpdateTest2() {
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,
+                HOT_Request__r.Type__c,
                 StartDate,
                 EndDate,
                 Status,
@@ -71,8 +79,104 @@ private class HOT_ReminderSMSServiceTest {
             wo.Status = 'Cannot Complete';
         }
         update workOrders;
-        HOT_ReminderSMSService.sendSMSToOtherOrdererOnStatusUpdate(workOrders);
+        HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
+
+    @isTest
+    static void sendSMSToOrdererOnStatusUpdateTestInterpreterNames() {
+        List<WorkOrder> workOrders = [
+            SELECT
+                Id,
+                HOT_Request__r.Orderer__c,
+                HOT_Request__r.OrdererPhone__c,
+                HOT_Request__r.Type__c,
+                StartDate,
+                EndDate,
+                Status,
+                HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM WorkOrder
+        ];
+
+        ServiceResource interpreter = [SELECT Id, Name FROM ServiceResource LIMIT 1];
+        interpreter.Name = 'InterpreterName';
+
+        HOT_DatabaseOperations.updateRecords(interpreter);
+
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, HOT_ServiceResource__c, Status
+            FROM ServiceAppointment
+        ];
+
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.HOT_ServiceResource__c = interpreter.Id;
+            serviceAppointment.Status = 'Dispatched';
+        }
+
+        HOT_DatabaseOperations.updateRecords(serviceAppointments);
+
+        HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+
+        String message = [SELECT Id, Message__c FROM SMS__c LIMIT 1].Message__c;
+
+        System.assert(message.contains('InterpreterName'), 'Could not create sms-record');
+    }
+
+    @isTest
+    static void sendSMSToOrdererOnStatusUpdateSMSToAccountTest() {
+        HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c][0];
+        request.Type__c = 'Me';
+        update request;
+        List<WorkOrder> workOrders = [
+            SELECT
+                Id,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                HOT_Request__r.Orderer__c,
+                HOT_Request__r.Type__c,
+                HOT_Request__r.OrdererPhone__c,
+                StartDate,
+                EndDate,
+                Status,
+                HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
+            FROM WorkOrder
+        ];
+        for (WorkOrder wo : workOrders) {
+            wo.Status = 'Cannot Complete';
+        }
+        String personPhoneNumber = workOrders[0].Account.CRM_Person__r.INT_KrrMobilePhone__c;
+        update workOrders;
+        HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+        String smsPhoneNumber = [SELECT Id, Recipient__c FROM SMS__c LIMIT 1].Recipient__c;
+        System.assertEquals(personPhoneNumber, smsPhoneNumber, 'SMS was not sent to the user');
+    }
+
+    @isTest
+    static void sendSMSToOrdererOnStatusUpdateSMSToOtherOrdererTest() {
+        HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c][0];
+        update request;
+        List<WorkOrder> workOrders = [
+            SELECT
+                Id,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                HOT_Request__r.Orderer__c,
+                HOT_Request__r.Type__c,
+                HOT_Request__r.OrdererPhone__c,
+                StartDate,
+                EndDate,
+                Status,
+                HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
+            FROM WorkOrder
+        ];
+        for (WorkOrder wo : workOrders) {
+            wo.Status = 'Cannot Complete';
+        }
+        String orderPhoneNumber = workOrders[0].HOT_Request__r.OrdererPhone__c;
+        update workOrders;
+        HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+        String smsPhoneNumber = [SELECT Id, Recipient__c FROM SMS__c LIMIT 1].Recipient__c;
+
+        System.assertEquals(orderPhoneNumber, smsPhoneNumber, 'SMS was not sent to the user');
     }
 }
