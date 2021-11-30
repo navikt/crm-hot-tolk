@@ -7,7 +7,7 @@
             "path": "force-app",
             "default": true,
             "package": "crm-hot",
-            "versionNumber": "1.103.0.NEXT",
+            "versionNumber": "1.105.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
@@ -15,15 +15,15 @@
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.60.0.LATEST"
+                    "versionNumber": "0.65.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
-                    "versionNumber": "0.74.0.LATEST"
+                    "versionNumber": "0.80.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.34.0.LATEST"
+                    "versionNumber": "0.35.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
@@ -35,7 +35,7 @@
             "path": "force-app",
             "default": false,
             "package": "crm-hot-dev",
-            "versionNumber": "1.103.0.NEXT",
+            "versionNumber": "1.105.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
@@ -43,15 +43,15 @@
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.60.0.LATEST"
+                    "versionNumber": "0.65.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
-                    "versionNumber": "0.74.0.LATEST"
+                    "versionNumber": "0.80.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.34.0.LATEST"
+                    "versionNumber": "0.35.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",

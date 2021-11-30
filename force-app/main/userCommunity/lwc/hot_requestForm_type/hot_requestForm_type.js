@@ -1,6 +1,8 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, api } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class Hot_requestForm_type extends LightningElement {
+export default class Hot_requestForm_type extends NavigationMixin(LightningElement) {
+    @api previousPage = 'Home';
     @track currentRequestType = 'Me';
     @track radiobuttons = [
         { label: 'For meg selv', value: 'Me', checked: true },
@@ -18,26 +20,14 @@ export default class Hot_requestForm_type extends LightningElement {
         this.result.type = this.currentRequestType;
     }
 
-    handleNextButtonClicked() {
-        switch (this.currentRequestType) {
-            case 'Me':
-                this.result.requestForm = true;
-                break;
-            case 'User':
-                this.result.userForm = true;
-                this.result.ordererForm = true;
-                this.result.requestForm = true;
-                break;
-            case 'Company':
-                this.result.ordererForm = true;
-                this.result.companyForm = true;
-                this.result.requestForm = true;
-                break;
-            default:
-        }
-        if (this.currentRequestType !== undefined && this.currentRequestType !== '') {
-            this.sendResult();
-        }
+    goToPreviousPage() {
+        window.scrollTo(0, 0);
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: this.previousPage
+            }
+        });
     }
 
     @track result = {
@@ -47,6 +37,7 @@ export default class Hot_requestForm_type extends LightningElement {
         companyForm: false,
         requestForm: false
     };
+
     sendResult() {
         const selectedEvent = new CustomEvent('requestformtyperesult', {
             detail: this.result

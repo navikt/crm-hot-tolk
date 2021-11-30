@@ -1,5 +1,4 @@
 import { LightningElement, track, api } from 'lwc';
-import { validate, require } from 'c/validationController';
 
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
@@ -12,14 +11,16 @@ export default class Hot_requestForm_request extends LightningElement {
         InterpretationStreet__c: '',
         InterpretationPostalCode__c: '',
         InterpretationPostalCity__c: '',
-        Description__C: '',
+        Description__c: '',
         IsFileConsent__c: false,
-        Source__c: 'Community'
+        Source__c: 'Community',
+        IsOrdererWantStatusUpdateOnSMS__c: true
     };
-
+    @api digitalCheckboxValue = false;
+    @api isRequestTypeMe;
+    @api isGetAll;
     @api requestIds;
     @api recordId;
-
     @api parentFieldValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
@@ -29,16 +30,19 @@ export default class Hot_requestForm_request extends LightningElement {
         }
         this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
         if (!this.sameLocation) {
-            this.value = 'no';
+            this.radiobuttonOptions[1].checked = true;
+        }
+        if (this.digitalCheckboxValue) {
+            this.isDigitalMeeting = true;
         }
     }
-    @api isGetAll;
 
     @api
     setFieldValues() {
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            this.fieldValues[element.name] = element.value;
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            this.fieldValues[element.name] = element.getValue();
         });
+        this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
         this.setDependentFields();
     }
 
@@ -60,6 +64,7 @@ export default class Hot_requestForm_request extends LightningElement {
     getTimeInput() {
         return this.template.querySelector('c-hot_recurring-time-input').getTimeInput();
     }
+
     @api
     handleFileUpload(recordId) {
         if (this.hasFiles) {
@@ -69,48 +74,53 @@ export default class Hot_requestForm_request extends LightningElement {
     hasFiles = false;
     checkFileDataLength(event) {
         this.hasFiles = event.detail > 0;
-        console.log(this.hasFiles);
     }
 
-    attemptedSubmit = false;
     @api
     validateFields() {
-        this.attemptedSubmit = true;
         let hasErrors = false;
-        this.template.querySelectorAll('.tolk-skjema-input').forEach((element) => {
-            if (element.required) {
-                hasErrors = hasErrors + validate(element, [require]);
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            if (element.validationHandler()) {
+                hasErrors += 1;
             }
         });
-        hasErrors = hasErrors + this.validateCheckbox();
-        console.log('has error after checkbox' + hasErrors);
-        hasErrors = hasErrors + this.template.querySelector('c-hot_recurring-time-input').validateFields();
+        hasErrors += this.validateCheckbox();
+        hasErrors += this.template.querySelector('c-hot_recurring-time-input').validateFields();
         return hasErrors;
     }
+
     validateCheckbox() {
         if (this.hasFiles) {
             return this.template.querySelector('c-upload-files').validateCheckbox();
         }
         return false;
     }
+
     fileConsent = false;
     getFileConsent(event) {
         this.fileConsent = event.detail;
     }
-    checkPostalCode(event) {
-        //check postal code ExpReg
-        //TODO
-    }
 
     @track sameLocation = true;
-    value = 'yes';
-    get options() {
-        return [
-            { label: 'Ja', value: 'yes' },
-            { label: 'Nei', value: 'no' }
-        ];
-    }
-    toggled() {
+    radiobuttonOptions = [
+        { label: 'Ja', value: 'yes', checked: true },
+        { label: 'Nei', value: 'no' }
+    ];
+
+    radiobuttonsToggled() {
         this.sameLocation = !this.sameLocation;
+    }
+
+    isDigitalMeeting = false;
+    handleDigitalCheckbox(event) {
+        this.isDigitalMeeting = event.detail;
+        const selectedEvent = new CustomEvent('digitalcheckboxclicked', {
+            detail: event.detail
+        });
+        this.dispatchEvent(selectedEvent);
+    }
+
+    handleSMSCheckbox(event) {
+        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 }
