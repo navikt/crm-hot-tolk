@@ -124,7 +124,6 @@ private class HOT_ContentDocumentLinkHandlerTest {
     @isTest
     public static void addContentDocumentLinkToAccountNoAccountTest() {
         HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c LIMIT 1];
-        update request;
 
         ContentVersion contentVersion = new ContentVersion(
             Title = 'a picture',
@@ -153,7 +152,7 @@ private class HOT_ContentDocumentLinkHandlerTest {
 
         System.assertEquals(
             contentDocumentLinkRequest.size(),
-            2,
+            3,
             'Det har blitt opprettet en ContentDocumetLink for mye.'
         );
     }
