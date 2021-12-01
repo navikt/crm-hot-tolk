@@ -1,42 +1,15 @@
-.dynamic-time-inputs-with-line_button {
-    display: grid;
-    grid-template-columns: 95% 5%;
-}
-
-.dynamic-time-inputs {
-    display: grid;
-    grid-template-columns: 32% 64%;
-    grid-column-gap: 4%;
-}
-
-.remove-time__button {
+.listClass {
+    align-items: center;
+    padding-bottom: 1vw;
     display: flex;
-    justify-content: center;
-    bottom: -10%;
-    position: relative;
+    flex-direction: row;
 }
 
-.dynamic-time-inputs__times {
-    display: grid;
-    grid-template-columns: 47% 47%;
-    grid-column-gap: 6.25%;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-@media (max-width: 564px) {
-    .dynamic-time-inputs-with-line_button {
-        grid-template-columns: 85% 15%;
+@media only screen and (max-device-width: 480px) {
+    .listClass {
+        align-items: start;
+        padding-bottom: 1vw;
+        display: flex;
+        flex-direction: column;
     }
-    .dynamic-time-inputs {
-        grid-template-columns: none;
-        grid-template-rows: 50% 50%;
-    }
-    .remove-time__button {
-        bottom: 15%;
-    }
-}
-
-.tolk-skjema-input {
-    font-size: 1.125rem;
 }

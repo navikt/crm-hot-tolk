@@ -1,72 +1,70 @@
 <template>
     <div style="margin-bottom: 0.5rem">
-        <div class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live>
-            <template iterator:it={times}>
-                <div class="dynamic-time-inputs-with-line_button" key={it.value.id}>
-                    <div class="dynamic-time-inputs" aria-live style="align-items: center; padding-bottom: 1vw">
-                        <c-input
-                            label="Dato (dd.mm.åååå)"
-                            type="date"
-                            date-style="short"
-                            ongetvalueonchange={setDate}
-                            name={it.value.id}
-                            value={it.value.date}
-                            required
-                        ></c-input>
-                        <div class="dynamic-time-inputs__times">
-                            <c-input
-                                label="Fra (tt:mm)"
-                                type="time"
-                                value={it.value.startTime}
-                                error-text="Feltet må fylles ut."
-                                name={it.value.id}
-                                data-id="starttime"
-                                ongetvalueonchange={setStartTime}
-                                desktop-style="max-width: 10vw"
-                            ></c-input>
-                            <c-input
-                                label="Til (tt:mm)"
-                                type="time"
-                                value={it.value.endTime}
-                                error-text="Feltet må fylles ut."
-                                name={it.value.id}
-                                data-id="endtime"
-                                ongetvalueonchange={setEndTime}
-                                desktop-style="max-width: 10vw"
-                            ></c-input>
-                        </div>
-                    </div>
-                    <lightning-button
+        <template iterator:it={times}>
+            <div key={it.value.id} class="listClass">
+                <!--TODO: Make this the same width as sluttdato field-->
+                <c-input
+                    label="Dato (dd.mm.åååå)"
+                    type="date"
+                    date-style="short"
+                    ongetvalueonchange={setDate}
+                    name={it.value.id}
+                    value={it.value.date}
+                    error-text="Feltet må fylles ut."
+                    mobile-style="padding-bottom: 1vw"
+                ></c-input>
+                <c-input
+                    label="Fra (tt:mm)"
+                    type="time"
+                    value={it.value.startTime}
+                    error-text="Feltet må fylles ut."
+                    name={it.value.id}
+                    data-id="starttime"
+                    ongetvalueonchange={setStartTime}
+                    desktop-style="padding-left: 2vw"
+                    mobile-style="padding-bottom: 1vw"
+                ></c-input>
+                <c-input
+                    label="Til (tt:mm)"
+                    type="time"
+                    value={it.value.endTime}
+                    error-text="Feltet må fylles ut."
+                    name={it.value.id}
+                    data-id="endtime"
+                    ongetvalueonchange={setEndTime}
+                    desktop-style="padding-left: 1vw"
+                ></c-input>
+                <br if:false={isOnlyOneTime} />
+                <div style="padding-top: 4.5%; padding-left: 2vw">
+                    <c-button
                         if:false={isOnlyOneTime}
-                        variant="base"
-                        icon-name="utility:close"
-                        class="remove-time__button"
-                        onclick={removeTime}
-                        name={it.value.id}
+                        type="button"
+                        button-styling="danger"
+                        onbuttonclick={removeTime}
                         aria-label="Fjern tid"
+                        name={it.value.id}
+                        button-label="Slett"
                     >
-                    </lightning-button>
+                    </c-button>
                 </div>
-            </template>
-        </div>
-        <c-checkbox
-            label="Gjentagende"
-            oncheckboxclick={advancedTimes}
-            class="filter-list-checkbox"
-            name="Gjentagende"
-        ></c-checkbox>
+                <br if:false={isOnlyOneTime} />
+            </div>
+        </template>
+
+        <c-checkbox label="Gjentagende" oncheckboxclick={advancedTimes} name="Gjentagende"></c-checkbox>
         <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live>
             <c-picklist
                 name="Gjenta"
                 choices={repeatingOptions}
                 onpicklistvaluechange={handleRepeatChoiceMade}
-                class="tolk-skjema-input recurringType"
                 master-label="Gjenta"
                 desktop-style="width: 30%"
                 mobile-style="width: 100%"
             >
             </c-picklist>
+            <br />
             <div if:true={showWeekDays} aria-live>
+                <!--TODO: Replace this with LWC checkbox group component -->
                 <lightning-checkbox-group
                     label="Ukedager"
                     name="Days"
@@ -78,27 +76,26 @@
                 </lightning-checkbox-group>
             </div>
             <div aria-live if:true={isRepeating}>
-                <lightning-input
-                    label="Slutt dato"
+                <c-input
+                    label="Sluttdato"
                     type="date"
-                    name="recurring End Date"
-                    class="tolk-skjema-input third-width recurringEndDate"
                     date-style="short"
+                    ongetvalueonchange={setRepeatingEndDateDate}
+                    name="recurring End Date"
                     value={repeatingEndDate}
-                    onchange={setRepeatingEndDateDate}
-                    required
-                >
-                </lightning-input>
+                    error-text="Feltet må fylles ut."
+                    desktop-style="width: 30%"
+                ></c-input>
             </div>
         </div>
-
-        <lightning-button
+        <c-button
             if:false={isAdvancedTimes}
-            label="Legg til flere tider"
-            icon-name="utility:add"
-            class="add-times"
-            onclick={addTime}
+            type="button"
+            button-styling="secondary"
+            onbuttonclick={addTime}
+            aria-label="Legg til flere tider"
+            button-label="+ Legg til flere tider"
         >
-        </lightning-button>
+        </c-button>
     </div>
 </template>
