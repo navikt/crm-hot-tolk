@@ -1,12 +1,12 @@
 .dynamic-time-inputs-with-line_button {
     display: grid;
-    grid-template-columns: 80% 5%;
+    grid-template-columns: 95% 5%;
 }
 
 .dynamic-time-inputs {
     display: grid;
     grid-template-columns: 32% 64%;
-    grid-column-gap: 6.25%;
+    grid-column-gap: 4%;
 }
 
 .remove-time__button {
