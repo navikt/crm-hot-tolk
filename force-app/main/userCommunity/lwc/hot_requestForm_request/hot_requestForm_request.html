@@ -125,6 +125,43 @@
             is-delete-option="true"
             title="Tidligere opplastede vedlegg"
         ></c-record-files-with-sharing>
+        <c-button
+            button-label="Avansert seksjon"
+            button-styling="primary"
+            onbuttonclick={handleAdvancedButtonClicked}
+        ></c-button>
+        <div if:true={advancedSection}>
+            <br />
+            <c-input
+                label="Kontaktens telefon"
+                name="UserPhone__c"
+                form="tolk-skjema-input"
+                value={fieldValues.UserPhone__c}
+            ></c-input>
+            <br />
+            <c-input
+                label="Ønsket tolk"
+                name="PreferredInterpreter1__c"
+                form="tolk-skjema-input"
+                value={fieldValues.PreferredInterpreter1__c}
+            ></c-input>
+            <br />
+            <c-picklist
+                master-label="Oppdragstype"
+                name="fieldValues.AssignmentType__c"
+                form="tolk-skjema-input"
+                choices={assignmentChoices}
+                onpicklistvaluechange={handleAssignmentPicklist}
+            ></c-picklist>
+            <br />
+            <c-input
+                label="Tolkemetoder"
+                name="InterpretationMethod__c"
+                form="tolk-skjema-input"
+                value={fieldValues.InterpretationMethod__c}
+            ></c-input>
+        </div>
+
         <lightning-messages aria-live="assertive"> </lightning-messages>
     </section>
 </template>
