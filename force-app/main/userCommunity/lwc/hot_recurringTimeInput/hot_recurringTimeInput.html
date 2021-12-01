@@ -4,17 +4,15 @@
             <template iterator:it={times}>
                 <div class="dynamic-time-inputs-with-line_button" key={it.value.id}>
                     <div class="dynamic-time-inputs" aria-live style="align-items: center; padding-bottom: 1vw">
-                        <lightning-input
+                        <c-input
                             label="Dato (dd.mm.åååå)"
                             type="date"
-                            class="tolk-skjema-input date"
                             date-style="short"
-                            onchange={setDate}
+                            ongetvalueonchange={setDate}
                             name={it.value.id}
                             value={it.value.date}
                             required
-                        >
-                        </lightning-input>
+                        ></c-input>
                         <div class="dynamic-time-inputs__times">
                             <c-input
                                 label="Fra (tt:mm)"
