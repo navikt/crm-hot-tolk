@@ -60,12 +60,14 @@ public without sharing class HOT_ReminderSMSService {
 
         for (WorkOrder workOrder : workOrders) {
             String interpreterNames = '';
-            List<ServiceAppointment> serviceAppointemts = serviceAppointmentsByWorkOrderId.get(workOrder.Id);
-            for (Integer i = 0; i < serviceAppointemts.size(); i++) {
-                interpreterNames += serviceAppointemts[i].HOT_ServiceResource__r.Name + ', ';
+            List<ServiceAppointment> serviceAppointents = serviceAppointmentsByWorkOrderId.get(workOrder.Id);
+            if(serviceAppointents != null){
+                for (Integer i = 0; i < serviceAppointents.size(); i++) {
+                    interpreterNames += serviceAppointents[i].HOT_ServiceResource__r.Name + ', ';
+                }
+                interpreterNames = interpreterNames.removeEnd(', ');
+                interpreterNames += '. ';
             }
-            interpreterNames = interpreterNames.removeEnd(', ');
-            interpreterNames += '. ';
             interpreterNamesByWorkOrderIds.put(workOrder.Id, interpreterNames);
         }
         return interpreterNamesByWorkOrderIds;

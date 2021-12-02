@@ -120,4 +120,40 @@ private class HOT_ContentDocumentLinkHandlerTest {
             'ContentDocumentId fra request og account stemmer ikke overens.'
         );
     }
+
+    @isTest
+    public static void addContentDocumentLinkToAccountNoAccountTest() {
+        HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c LIMIT 1];
+
+        ContentVersion contentVersion = new ContentVersion(
+            Title = 'a picture',
+            PathOnClient = 'Pic.jpg',
+            VersionData = Blob.valueOf('Test Content'),
+            IsMajorVersion = true
+        );
+        insert contentVersion;
+
+        ContentDocument contentDocument = [SELECT Id FROM ContentDocument LIMIT 1];
+
+        ContentDocumentLink contentDocumentLink = new ContentDocumentLink(
+            ContentDocumentId = contentDocument.Id,
+            LinkedEntityId = request.Id
+        );
+
+        Test.startTest();
+        insert contentDocumentLink;
+        Test.stopTest();
+
+        List<ContentDocumentLink> contentDocumentLinkRequest = [
+            SELECT Id
+            FROM ContentDocumentLink
+            WHERE ContentDocumentId = :contentDocument.Id
+        ];
+
+        System.assertEquals(
+            contentDocumentLinkRequest.size(),
+            3,
+            'Det har blitt opprettet en ContentDocumetLink for mye.'
+        );
+    }
 }
