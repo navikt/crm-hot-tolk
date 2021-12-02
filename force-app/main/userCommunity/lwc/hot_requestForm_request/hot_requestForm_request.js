@@ -15,7 +15,7 @@ export default class Hot_requestForm_request extends LightningElement {
         IsOrdererWantStatusUpdateOnSMS__c: true,
         IsScreenInterpreter__c: false,
         UserPhone__c: '',
-        PreferredInterpreter1__c: '',
+        UserPreferredInterpreter__c: '',
         AssignmentType__c: '',
         InterpretationMethod__c: ''
     };
@@ -37,7 +37,7 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     assignmentChoices = [
-        { name: 'Placeholder', label: 'Velg et alternativ', selected: true },
+        { name: '', label: 'Velg et alternativ', selected: true },
         { name: 'Private', label: 'Dagligliv' },
         { name: 'Work', label: 'Arbeidsliv' },
         { name: 'Health Services', label: 'Helsetjenester' },
@@ -52,10 +52,13 @@ export default class Hot_requestForm_request extends LightningElement {
 
     @api
     setFieldValues() {
+        console.log(this.template.querySelectorAll('c-input').length);
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
-        this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
+        if (this.isOptionalFields) {
+            this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
+        }
         this.setDependentFields();
     }
 
@@ -119,34 +122,41 @@ export default class Hot_requestForm_request extends LightningElement {
     ];
 
     handleSameAddressRadiobuttons(event) {
+        this.sendEndOfFormValue(true);
         let result = event.detail;
-        console.log(JSON.stringify(result));
         if (result[0].checked) {
             this.sameLocation = true;
         } else {
             this.sameLocation = false;
         }
-        this.isAdvancedFields = true;
     }
 
+    sendEndOfFormValue(bool) {
+        const selectedEvent = new CustomEvent('isendofform', {
+            detail: bool
+        });
+        this.dispatchEvent(selectedEvent);
+    }
     isAddressFields = false;
-    isAdvancedFields = false;
-
-    setAdvancedFieldsValue() {}
+    isOptionalFields = false;
+    handleAdvancedCheckbox(event) {
+        this.isOptionalFields = event.detail;
+    }
 
     addressRadioButtons = [
         { label: 'Fysisk oppmøte', value: 'Fysisk' },
         { label: 'Digitalt møte', value: 'Digitalt' }
     ];
+
     handleDigitalRadiobuttons(event) {
+        this.sameLocation = true;
         let result = event.detail;
-        console.log(JSON.stringify(result));
         if (result[0].checked) {
             this.fieldValues.IsScreenInterpreter__c = false;
-            this.isAdvancedFields = false;
+            this.sendEndOfFormValue(false);
         } else {
+            this.sendEndOfFormValue(true);
             this.fieldValues.IsScreenInterpreter__c = true;
-            this.isAdvancedFields = true;
         }
         if (this.fieldValues.IsScreenInterpreter__c) {
             this.fieldValues.MeetingStreet__c = '';

@@ -630,6 +630,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.UserPreferredInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.Warning__c</field>
         <readable>true</readable>
@@ -736,12 +741,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.CRM_Age__c</field>
+        <field>Person__c.CRM_AgeNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.CRM_AgeNumber__c</field>
+        <field>Person__c.CRM_Age__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

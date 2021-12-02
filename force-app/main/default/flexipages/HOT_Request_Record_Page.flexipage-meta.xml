@@ -258,6 +258,11 @@
                 <fieldItem>Record.UserName__c</fieldItem>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.UserPreferredInterpreter__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-c551420d-243a-4b91-b52d-849f48d2ca79</name>
         <type>Facet</type>
     </flexiPageRegions>

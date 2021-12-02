@@ -274,6 +274,11 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.picklistValueSetInCompanyform = event.detail;
     }
 
+    isEndOfForm = false;
+    setEndOfFormValue(event) {
+        this.isEndOfForm = event.detail;
+    }
+
     handleNextButtonClicked() {
         this.getFieldValuesFromSubForms();
         if (this.handleValidation()) {
