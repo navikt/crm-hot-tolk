@@ -119,18 +119,20 @@
             <br />
             <c-picklist
                 master-label="Anledning"
-                name="fieldValues.AssignmentType__c"
+                name="AssignmentType__c"
                 form="tolk-skjema-input"
                 choices={assignmentChoices}
                 onpicklistvaluechange={handleAssignmentPicklist}
             ></c-picklist>
             <br />
-            <c-input
-                label="Tolkemetoder"
+            <c-picklist
+                master-label="Tolkemetode"
                 name="InterpretationMethod__c"
                 form="tolk-skjema-input"
-                value={fieldValues.InterpretationMethod__c}
-            ></c-input>
+                choices={interpretationChoices}
+                onpicklistvaluechange={handleInterpretationPicklist}
+                multiple="true"
+            ></c-picklist>
             <br />
             <c-textarea
                 name="Description__c"

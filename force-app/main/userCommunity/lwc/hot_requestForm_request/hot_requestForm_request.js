@@ -36,6 +36,26 @@ export default class Hot_requestForm_request extends LightningElement {
         }
     }
 
+    interpretationChoices = [
+        { name: '', label: 'Velg et alternativ', selected: true },
+        { name: 'BTV', label: 'Bildetolkvakt' },
+        { name: 'SK', label: 'Skrivetolking' },
+        { name: 'TS', label: 'Tegnspråk' },
+        { name: 'TSBS', label: 'Tegnspråk I Begrenset Synsfelt' },
+        { name: 'TSS', label: 'Tegn Som Støtte Til Munnavlesning' },
+        { name: 'TT', label: 'Taletolking' },
+        { name: 'TTS', label: 'Taktilt Tegnspråk' }
+    ];
+
+    // TODO: Prefill UserPhone__c field from Person__c object
+
+    handleInterpretationPicklist(event) {
+        // TODO: Create new field on Request, add values to the field and
+        // set lookup to InterpretationMethod__c based on first value in list
+        // Do this in requesthandler I guess
+        console.log('handleInterpretationPicklist: ', JSON.stringify(event.detail));
+    }
+
     assignmentChoices = [
         { name: '', label: 'Velg et alternativ', selected: true },
         { name: 'Private', label: 'Dagligliv' },
@@ -52,7 +72,6 @@ export default class Hot_requestForm_request extends LightningElement {
 
     @api
     setFieldValues() {
-        console.log(this.template.querySelectorAll('c-input').length);
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
