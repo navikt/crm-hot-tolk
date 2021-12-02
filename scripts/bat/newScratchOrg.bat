@@ -4,8 +4,8 @@ call sfdx force:org:create -f config\project-scratch-def.json --setalias %1 --du
 echo "Installerer crm-platform-base ver. 0.128"
 call sfdx force:package:install --package 04t2o000000yTxIAAU -r -k %3 --wait 10 --publishwait 10
 
-echo "Installerer crm-platform-integration ver. 0.65"
-call sfdx force:package:install --package 04t2o000000yU7SAAU -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-platform-integration ver. 0.66"
+call sfdx force:package:install --package 04t2o000000yUByAAM -r -k %3 --wait 10 --publishwait 10
 
 echo "Installerer crm-platform-access-control ver. 0.80"
 call sfdx force:package:install --package 04t2o000000yTjuAAE -r -k %3 --wait 10 --publishwait 10
