@@ -283,4 +283,12 @@ export default class Hot_recurringTimeInput extends LightningElement {
             );
         return hasErrors;
     }
+
+    get desktopstyle() {
+        let isDesktop = 'width: 100%;';
+        if (window.screen.width > 576) {
+            isDesktop = 'width: 30%;';
+        }
+        return isDesktop;
+    }
 }

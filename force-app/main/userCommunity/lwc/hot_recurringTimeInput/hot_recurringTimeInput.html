@@ -2,7 +2,6 @@
     <div style="margin-bottom: 0.5rem">
         <template iterator:it={times}>
             <div key={it.value.id} class="listClass">
-                <!--TODO: Make this the same width as sluttdato field-->
                 <c-input
                     label="Dato (dd.mm.åååå)"
                     type="date"
@@ -11,6 +10,7 @@
                     name={it.value.id}
                     value={it.value.date}
                     error-text="Feltet må fylles ut."
+                    style={desktopstyle}
                     mobile-style="padding-bottom: 1vw"
                 ></c-input>
                 <c-input
