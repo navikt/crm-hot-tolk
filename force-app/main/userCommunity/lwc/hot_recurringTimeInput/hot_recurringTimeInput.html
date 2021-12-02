@@ -64,16 +64,11 @@
             </c-picklist>
             <br />
             <div if:true={showWeekDays} aria-live>
-                <!--TODO: Replace this with LWC checkbox group component -->
-                <lightning-checkbox-group
-                    label="Ukedager"
-                    name="Days"
-                    options={days}
-                    value={chosenDays}
-                    class="recurringDays"
-                    onchange={handleDayChosen}
-                >
-                </lightning-checkbox-group>
+                <c-checkboxgroup
+                    checkboxes={days}
+                    oncheckboxgroupclick={handleDayChosen}
+                    header="Ukedager"
+                ></c-checkboxgroup>
             </div>
             <div aria-live if:true={isRepeating}>
                 <c-input

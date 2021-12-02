@@ -183,7 +183,12 @@ export default class Hot_recurringTimeInput extends LightningElement {
         ];
     }
     handleDayChosen(event) {
-        this.chosenDays = event.detail.value;
+        this.chosenDays = [];
+        event.detail.forEach((element) => {
+            if (element.checked) {
+                this.chosenDays.push(element.value);
+            }
+        });
     }
     @track repeatingEndDate;
     setRepeatingEndDateDate(event) {
