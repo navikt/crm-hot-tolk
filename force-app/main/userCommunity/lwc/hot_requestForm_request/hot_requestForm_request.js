@@ -28,7 +28,7 @@ export default class Hot_requestForm_request extends LightningElement {
         }
         this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
         if (!this.sameLocation) {
-            this.radiobuttonOptions[1].checked = true;
+            this.sameAddressRadioButtons[1].checked = true;
         }
     }
 
@@ -95,18 +95,42 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     @track sameLocation = true;
-    radiobuttonOptions = [
-        { label: 'Ja', value: 'yes', checked: true },
+    sameAddressRadioButtons = [
+        { label: 'Ja', value: 'yes' },
         { label: 'Nei', value: 'no' }
     ];
 
-    radiobuttonsToggled() {
-        this.sameLocation = !this.sameLocation;
+    handleSameAddressRadiobuttons(event) {
+        let result = event.detail;
+        console.log(JSON.stringify(result));
+        if (result[0].checked) {
+            this.sameLocation = true;
+        } else {
+            this.sameLocation = false;
+        }
+        this.isAdvancedFields = true;
     }
 
-    handleDigitalCheckbox(event) {
-        this.fieldValues.IsScreenInterpreter__c = event.detail;
-        if (event.detail) {
+    isAddressFields = false;
+    isAdvancedFields = false;
+
+    setAdvancedFieldsValue() {}
+
+    addressRadioButtons = [
+        { label: 'Fysisk oppmøte', value: 'Fysisk' },
+        { label: 'Digitalt møte', value: 'Digitalt' }
+    ];
+    handleDigitalRadiobuttons(event) {
+        let result = event.detail;
+        console.log(JSON.stringify(result));
+        if (result[0].checked) {
+            this.fieldValues.IsScreenInterpreter__c = false;
+            this.isAdvancedFields = false;
+        } else {
+            this.fieldValues.IsScreenInterpreter__c = true;
+            this.isAdvancedFields = true;
+        }
+        if (this.fieldValues.IsScreenInterpreter__c) {
             this.fieldValues.MeetingStreet__c = '';
             this.fieldValues.MeetingPostalCity__c = '';
             this.fieldValues.MeetingPostalCode__c = '';
@@ -114,6 +138,7 @@ export default class Hot_requestForm_request extends LightningElement {
             this.fieldValues.InterpretationPostalCode__c = '';
             this.fieldValues.InterpretationPostalCity__c = '';
         }
+        this.isAddressFields = true;
     }
 
     handleSMSCheckbox(event) {

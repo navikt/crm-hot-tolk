@@ -24,11 +24,13 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track requestTypeResult = {};
     isTypeMe = false;
+    showBackButton = false;
     handleRequestType(event) {
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
         this.isTypeMe = this.requestTypeResult.type === 'Me';
+        this.showBackButton = this.requestTypeChosen && !this.isTypeMe;
         this.setCurrentForm();
     }
 
@@ -295,6 +297,10 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             if (this.isEditMode) {
                 this.goToPreviousPage();
             }
+            if (!this.requestTypeChosen) {
+                this.previousPage = 'Home';
+                this.goToPreviousPage();
+            }
         } else if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
             // Back to ordererForm
             this.requestTypeResult[this.formArray.at(-1)] = false;
@@ -322,5 +328,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.userCheckboxValue = false;
         this.picklistValueSetInCompanyform = null;
         this.requestTypeResult = null;
+        this.showBackButton = false;
     }
 }

@@ -19,6 +19,13 @@
                 onsubmit={handleSubmit}
                 record-id={recordId}
             >
+                <br />
+                <c-button
+                    if:true={showBackButton}
+                    button-label="Tilbake"
+                    button-styling="tertiary"
+                    onbuttonclick={handleBackButtonClicked}
+                ></c-button>
                 <c-hot_request-form_type
                     if:false={requestTypeChosen}
                     onrequestformtyperesult={handleRequestType}
@@ -55,19 +62,13 @@
                         if:true={requestTypeResult.requestForm}
                         is-request-type-me={isTypeMe}
                     ></c-hot_request-form_request>
-                    <c-button
-                        button-label="Tilbake"
-                        button-styling="secondary"
-                        onbuttonclick={handleBackButtonClicked}
-                        desktop-style="margin-right: 1em;"
-                        mobile-style="margin-right: 1em;"
-                        style="padding-left: 2rem"
-                    ></c-button>
+
                     <c-button
                         if:false={requestTypeResult.requestForm}
                         button-label="Neste"
                         button-styling="primary"
                         onbuttonclick={handleNextButtonClicked}
+                        style="padding-left: 2rem"
                     ></c-button>
 
                     <div class="button-container">
