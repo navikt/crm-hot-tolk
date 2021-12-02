@@ -13,7 +13,11 @@ export default class Hot_requestForm_request extends LightningElement {
         IsFileConsent__c: false,
         Source__c: 'Community',
         IsOrdererWantStatusUpdateOnSMS__c: true,
-        IsScreenInterpreter__c: false
+        IsScreenInterpreter__c: false,
+        UserPhone__c: '',
+        PreferredInterpreter1__c: '',
+        AssignmentType__c: '',
+        InterpretationMethod__c: ''
     };
     @api isRequestTypeMe;
     @api isGetAll;
@@ -30,6 +34,20 @@ export default class Hot_requestForm_request extends LightningElement {
         if (!this.sameLocation) {
             this.sameAddressRadioButtons[1].checked = true;
         }
+    }
+
+    assignmentChoices = [
+        { name: 'Placeholder', label: 'Velg et alternativ', selected: true },
+        { name: 'Private', label: 'Dagligliv' },
+        { name: 'Work', label: 'Arbeidsliv' },
+        { name: 'Health Services', label: 'Helsetjenester' },
+        { name: 'Education', label: 'Utdanning' },
+        { name: 'Interpreter at Work', label: 'Tolk på arbeidsplass - TPA' },
+        { name: 'Image Interpreter', label: 'Bildetolkvakt' }
+    ];
+
+    handleAssignmentPicklist(event) {
+        this.fieldValues.AssignmentType__c = event.detail.name;
     }
 
     @api
@@ -139,6 +157,11 @@ export default class Hot_requestForm_request extends LightningElement {
             this.fieldValues.InterpretationPostalCity__c = '';
         }
         this.isAddressFields = true;
+    }
+
+    advancedSection = false;
+    handleAdvancedButtonClicked() {
+        this.advancedSection = !this.advancedSection;
     }
 
     handleSMSCheckbox(event) {
