@@ -17,7 +17,7 @@ export default class Hot_requestForm_request extends LightningElement {
         UserPhone__c: '',
         UserPreferredInterpreter__c: '',
         AssignmentType__c: '',
-        InterpretationMethod__c: ''
+        UserInterpretationMethods__c: []
     };
     @api isRequestTypeMe;
     @api isGetAll;
@@ -34,6 +34,17 @@ export default class Hot_requestForm_request extends LightningElement {
         if (!this.sameLocation) {
             this.sameAddressRadioButtons[1].checked = true;
         }
+
+        // TODO: Set values from sameaddress radiobuttons and option checkbox on back/next
+        if (this.addressRadiobuttonsFromWrapper.length > 0) {
+            if (this.addressRadiobuttonsFromWrapper[0].checked) {
+                this.addressRadioButtons[0].checked = true;
+                this.isAddressFields = true;
+            } else if (this.addressRadiobuttonsFromWrapper[1].checked) {
+                this.addressRadioButtons[1].checked = true;
+                this.sendEndOfFormValue(true);
+            }
+        }
     }
 
     interpretationChoices = [
@@ -47,13 +58,12 @@ export default class Hot_requestForm_request extends LightningElement {
         { name: 'TTS', label: 'Taktilt Tegnspråk' }
     ];
 
-    // TODO: Prefill UserPhone__c field from Person__c object
-
+    // TODO: See how it looks like when editing (also with existing files on request)
     handleInterpretationPicklist(event) {
-        // TODO: Create new field on Request, add values to the field and
-        // set lookup to InterpretationMethod__c based on first value in list
-        // Do this in requesthandler I guess
-        console.log('handleInterpretationPicklist: ', JSON.stringify(event.detail));
+        this.fieldValues.UserInterpretationMethods__c = [];
+        event.detail.forEach((element) => {
+            this.fieldValues.UserInterpretationMethods__c.push(element.label);
+        });
     }
 
     assignmentChoices = [
@@ -162,14 +172,23 @@ export default class Hot_requestForm_request extends LightningElement {
         this.isOptionalFields = event.detail;
     }
 
+    sendAddressRadioButtonValues(res) {
+        const selectedEvent = new CustomEvent('addressradiobuttonvalues', {
+            detail: res
+        });
+        this.dispatchEvent(selectedEvent);
+    }
+
     addressRadioButtons = [
         { label: 'Fysisk oppmøte', value: 'Fysisk' },
         { label: 'Digitalt møte', value: 'Digitalt' }
     ];
 
-    handleDigitalRadiobuttons(event) {
+    @api addressRadiobuttonsFromWrapper = [];
+    handleAddressRadioButtons(event) {
         this.sameLocation = true;
         let result = event.detail;
+        this.sendAddressRadioButtonValues(result);
         if (result[0].checked) {
             this.fieldValues.IsScreenInterpreter__c = false;
             this.sendEndOfFormValue(false);

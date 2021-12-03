@@ -19,6 +19,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         if (result.data) {
             this.personAccount.Id = result.data.AccountId;
             this.personAccount.Name = result.data.Account.CRM_Person__r.CRM_FullName__c;
+            this.fieldValues.UserPhone__c = result.data.Account.CRM_Person__r.INT_KrrMobilePhone__c;
         }
     }
 
@@ -104,6 +105,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         return response;
     }
 
+    addressRadioButtonValues = [];
+    setAddressRadioButtons(event) {
+        console.log(JSON.stringify(event.detail));
+        this.addressRadioButtonValues = event.detail;
+    }
+
     handleAlertDialogClick(event) {
         if (event.detail === 'confirm' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
             this.submitForm();
@@ -112,6 +119,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     submitForm() {
+        console.log(JSON.stringify(this.fieldValues));
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
     }
 
@@ -296,6 +304,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     handleBackButtonClicked() {
+        this.isEndOfForm = false;
         this.getFieldValuesFromSubForms();
         if (this.formArray.length < 2) {
             this.resetFormValuesOnTypeSelection();

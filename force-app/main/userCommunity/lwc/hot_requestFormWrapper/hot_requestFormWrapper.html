@@ -63,8 +63,9 @@
                         if:true={requestTypeResult.requestForm}
                         is-request-type-me={isTypeMe}
                         onisendofform={setEndOfFormValue}
+                        onaddressradiobuttonvalues={setAddressRadioButtons}
+                        address-radiobuttons-from-wrapper={addressRadioButtonValues}
                     ></c-hot_request-form_request>
-
                     <c-button
                         if:false={requestTypeResult.requestForm}
                         button-label="Neste"
@@ -77,22 +78,20 @@
                             <div if:true={spin} class="loader"></div>
                         </div>
                         <div if:false={spin}>
-                            <div if:true={isEndOfForm}>
-                                <c-button
-                                    if:true={requestTypeResult.requestForm}
-                                    button-label="Send inn"
-                                    name="Send inn bestilling"
-                                    button-styling="primary"
-                                    type="submit"
-                                    style="margin-right: 2em"
-                                ></c-button>
-                                <c-button
-                                    if:true={requestTypeResult.requestForm}
-                                    button-label="Avbryt"
-                                    button-styling="secondary"
-                                    onbuttonclick={goToPreviousPage}
-                                ></c-button>
-                            </div>
+                            <c-button
+                                if:true={isEndOfForm}
+                                button-label="Send inn"
+                                name="Send inn bestilling"
+                                button-styling="primary"
+                                type="submit"
+                                style="margin-right: 2em"
+                            ></c-button>
+                            <c-button
+                                if:true={isEndOfForm}
+                                button-label="Avbryt"
+                                button-styling="secondary"
+                                onbuttonclick={goToPreviousPage}
+                            ></c-button>
                         </div>
                     </div>
                 </div>

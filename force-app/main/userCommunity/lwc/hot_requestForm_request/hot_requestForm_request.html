@@ -11,12 +11,11 @@
             helptext-content="Beskriv så nøyaktig som mulig hva du trenger tolk til og hvor, f.eks. legetime ved xx-legesenter, foreldremøte ved xx-skole, forelesning ved xx-universitet, teaterforestilling ved xx-teater osv."
         ></c-input>
         <br />
-        <!--TODO: Save values on this when clicking back / next-->
         <c-hot_recurring-time-input request-ids={requestIds}></c-hot_recurring-time-input>
         <br />
         <c-radiobuttons
             radiobuttons={addressRadioButtons}
-            onradiobuttonsclick={handleDigitalRadiobuttons}
+            onradiobuttonsclick={handleAddressRadioButtons}
             header="Oppmøtebehov"
             group-name="radioGroup"
             flex-direction="row"
@@ -127,7 +126,7 @@
             <br />
             <c-picklist
                 master-label="Tolkemetode"
-                name="InterpretationMethod__c"
+                name="UserInterpretationMethods__c"
                 form="tolk-skjema-input"
                 choices={interpretationChoices}
                 onpicklistvaluechange={handleInterpretationPicklist}

@@ -221,6 +221,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
         return times;
     }
     formatDateTime(dateTime) {
+        console.log('dateTime: ', JSON.stringify(dateTime));
         const year = dateTime.date.substring(0, 4);
         const month = dateTime.date.substring(5, 7);
         const day = dateTime.date.substring(8, 10);
@@ -243,13 +244,24 @@ export default class Hot_recurringTimeInput extends LightningElement {
 
     @api
     validateFields() {
-        let hasErrors = this.validateSimpleTimes();
+        /*let hasErrors = this.validateSimpleTimes();
         if (this.isAdvancedTimes) {
             hasErrors += this.validateAdvancedTimes();
-        }
+        }*/
+        let hasErrors = this.validateTimesAndDate();
         return hasErrors;
     }
-    validateSimpleTimes() {
+
+    validateTimesAndDate() {
+        let hasErrors = false;
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            if (element.validationHandler()) {
+                hasErrors += 1;
+            }
+        });
+        return hasErrors;
+    }
+    /*validateSimpleTimes() {
         let hasErrors = false;
         this.template.querySelectorAll('.date').forEach((element) => {
             hasErrors += validate(element, startDateValidations);
@@ -282,7 +294,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
                 this.chosenDays
             );
         return hasErrors;
-    }
+    }*/
 
     get desktopstyle() {
         let isDesktop = 'width: 100%;';

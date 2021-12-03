@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UserInterpretationMethods__c</fullName>
+    <externalId>false</externalId>
+    <label>UserInterpretationMethods</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Bildetolkvakt</fullName>
+                <default>false</default>
+                <label>Bildetolkvakt</label>
+            </value>
+            <value>
+                <fullName>Skrivetolking</fullName>
+                <default>false</default>
+                <label>Skrivetolking</label>
+            </value>
+            <value>
+                <fullName>Tegnspråk</fullName>
+                <default>false</default>
+                <label>Tegnspråk</label>
+            </value>
+            <value>
+                <fullName>Tegnspråk I Begrenset Synsfelt</fullName>
+                <default>false</default>
+                <label>Tegnspråk I Begrenset Synsfelt</label>
+            </value>
+            <value>
+                <fullName>Tegn Som Støtte Til Munnavlesning</fullName>
+                <default>false</default>
+                <label>Tegn Som Støtte Til Munnavlesning</label>
+            </value>
+            <value>
+                <fullName>Taletolking</fullName>
+                <default>false</default>
+                <label>Taletolking</label>
+            </value>
+            <value>
+                <fullName>Taktilt Tegnspråk</fullName>
+                <default>false</default>
+                <label>Taktilt Tegnspråk</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>3</visibleLines>
+</CustomField>
