@@ -30,9 +30,9 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
     public static void createContentDocumentLinksToAccount(List<ContentDocumentLink> contentDocumentLinks) {
         Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByRequest(contentDocumentLinks);
         List<HOT_Request__c> requests = [
-            SELECT Id, Account__c, Orderer__c
+            SELECT Id, Account__c
             FROM HOT_Request__c
-            WHERE Id IN :linkedEntityMap.keySet()
+            WHERE Id IN :linkedEntityMap.keySet() AND Account__c != NULL
         ];
         List<ContentDocumentLink> contentDocumentLinksToAccount = new List<ContentDocumentLink>();
         for (HOT_Request__c request : requests) {
