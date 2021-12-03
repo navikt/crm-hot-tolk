@@ -34,21 +34,31 @@ export default class Hot_requestForm_request extends LightningElement {
         if (!this.sameLocation) {
             this.sameAddressRadioButtons[1].checked = true;
         }
-
-        // TODO: Set values from sameaddress radiobuttons and option checkbox on back/next
-        if (this.addressRadiobuttonsFromWrapper.length > 0) {
-            if (this.addressRadiobuttonsFromWrapper[0].checked) {
-                this.addressRadioButtons[0].checked = true;
+        if (this.physicalOrDigitalFromWrapper.length > 0) {
+            if (this.physicalOrDigitalFromWrapper[0].checked) {
+                this.physicalOrDigitalRadiobuttons[0].checked = true;
                 this.isAddressFields = true;
-            } else if (this.addressRadiobuttonsFromWrapper[1].checked) {
-                this.addressRadioButtons[1].checked = true;
+            } else {
+                this.physicalOrDigitalRadiobuttons[1].checked = true;
                 this.sendEndOfFormValue(true);
             }
         }
+        if (this.sameAddressFromWrapper.length > 0) {
+            if (this.sameAddressFromWrapper[0].checked) {
+                this.sameLocation = true;
+                this.sameAddressRadioButtons[0].checked = true;
+            } else {
+                this.sameLocation = false;
+                this.sameAddressRadioButtons[1].checked = true;
+            }
+            this.sendEndOfFormValue(true);
+        }
+        this.isOptionalFields = this.optionalCheckboxFromWrapper;
+        this.setAssignmentPicklistValue();
+        this.setInterprationValues();
     }
 
     interpretationChoices = [
-        { name: '', label: 'Velg et alternativ', selected: true },
         { name: 'BTV', label: 'Bildetolkvakt' },
         { name: 'SK', label: 'Skrivetolking' },
         { name: 'TS', label: 'Tegnspråk' },
@@ -58,11 +68,33 @@ export default class Hot_requestForm_request extends LightningElement {
         { name: 'TTS', label: 'Taktilt Tegnspråk' }
     ];
 
-    // TODO: See how it looks like when editing (also with existing files on request)
+    //TODO: See how it looks like when editing (also with existing files on request)
+    //TODO: Remove the arrow on multiple picklist
     handleInterpretationPicklist(event) {
         this.fieldValues.UserInterpretationMethods__c = [];
         event.detail.forEach((element) => {
             this.fieldValues.UserInterpretationMethods__c.push(element.label);
+        });
+        this.sendInterpretationValues();
+    }
+
+    sendInterpretationValues() {
+        const selectedEvent = new CustomEvent('interpretationpicklist', {
+            detail: this.fieldValues.UserInterpretationMethods__c
+        });
+        this.dispatchEvent(selectedEvent);
+    }
+
+    @api interpretationPicklistInWrapper;
+    setInterprationValues() {
+        if (this.interpretationPicklistInWrapper === null || this.interpretationPicklistInWrapper === undefined) {
+            return;
+        }
+        this.interpretationChoices.forEach((element) => {
+            element.selected = false;
+            if (this.interpretationPicklistInWrapper.includes(element.label)) {
+                element.selected = true;
+            }
         });
     }
 
@@ -78,6 +110,27 @@ export default class Hot_requestForm_request extends LightningElement {
 
     handleAssignmentPicklist(event) {
         this.fieldValues.AssignmentType__c = event.detail.name;
+        this.sendAssignmentPicklist();
+    }
+
+    sendAssignmentPicklist() {
+        const selectedEvent = new CustomEvent('assignmentpicklist', {
+            detail: this.fieldValues.AssignmentType__c
+        });
+        this.dispatchEvent(selectedEvent);
+    }
+
+    @api assignmentPicklistInWrapper;
+    setAssignmentPicklistValue() {
+        if (this.assignmentPicklistInWrapper === undefined || this.assignmentPicklistInWrapper === null) {
+            return;
+        }
+        this.assignmentChoices.forEach((element) => {
+            element.selected = false;
+            if (element.name === this.assignmentPicklistInWrapper) {
+                element.selected = true;
+            }
+        });
     }
 
     @api
@@ -143,16 +196,25 @@ export default class Hot_requestForm_request extends LightningElement {
     getFileConsent(event) {
         this.fieldValues.IsFileConsent__c = event.detail;
     }
-
-    @track sameLocation = true;
+    isAddressFields = false;
+    sameLocation = true;
     sameAddressRadioButtons = [
         { label: 'Ja', value: 'yes' },
         { label: 'Nei', value: 'no' }
     ];
 
+    @api sameAddressFromWrapper = [];
+    sendSameAddressRadioButtonValues(res) {
+        const selectedEvent = new CustomEvent('sameaddressradiobuttons', {
+            detail: res
+        });
+        this.dispatchEvent(selectedEvent);
+    }
+
     handleSameAddressRadiobuttons(event) {
-        this.sendEndOfFormValue(true);
         let result = event.detail;
+        this.sendEndOfFormValue(true);
+        this.sendSameAddressRadioButtonValues(result);
         if (result[0].checked) {
             this.sameLocation = true;
         } else {
@@ -166,29 +228,38 @@ export default class Hot_requestForm_request extends LightningElement {
         });
         this.dispatchEvent(selectedEvent);
     }
-    isAddressFields = false;
+
     isOptionalFields = false;
-    handleAdvancedCheckbox(event) {
+    handleOptionalCheckbox(event) {
         this.isOptionalFields = event.detail;
+        this.sendOptionalCheckbox();
     }
 
-    sendAddressRadioButtonValues(res) {
-        const selectedEvent = new CustomEvent('addressradiobuttonvalues', {
+    @api optionalCheckboxFromWrapper = false;
+    sendOptionalCheckbox() {
+        const selectedEvent = new CustomEvent('optionalcheckbox', {
+            detail: this.isOptionalFields
+        });
+        this.dispatchEvent(selectedEvent);
+    }
+
+    sendPhysicalOrDigital(res) {
+        const selectedEvent = new CustomEvent('physicalordigital', {
             detail: res
         });
         this.dispatchEvent(selectedEvent);
     }
 
-    addressRadioButtons = [
+    physicalOrDigitalRadiobuttons = [
         { label: 'Fysisk oppmøte', value: 'Fysisk' },
         { label: 'Digitalt møte', value: 'Digitalt' }
     ];
 
-    @api addressRadiobuttonsFromWrapper = [];
-    handleAddressRadioButtons(event) {
+    @api physicalOrDigitalFromWrapper = [];
+    handlePhysicalOrDigital(event) {
         this.sameLocation = true;
         let result = event.detail;
-        this.sendAddressRadioButtonValues(result);
+        this.sendPhysicalOrDigital(result);
         if (result[0].checked) {
             this.fieldValues.IsScreenInterpreter__c = false;
             this.sendEndOfFormValue(false);

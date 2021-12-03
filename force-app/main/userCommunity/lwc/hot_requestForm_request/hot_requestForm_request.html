@@ -14,8 +14,8 @@
         <c-hot_recurring-time-input request-ids={requestIds}></c-hot_recurring-time-input>
         <br />
         <c-radiobuttons
-            radiobuttons={addressRadioButtons}
-            onradiobuttonsclick={handleAddressRadioButtons}
+            radiobuttons={physicalOrDigitalRadiobuttons}
+            onradiobuttonsclick={handlePhysicalOrDigital}
             header="Oppmøtebehov"
             group-name="radioGroup"
             flex-direction="row"
@@ -94,8 +94,9 @@
         </div>
         <c-checkbox
             label="Vis valgfrie felter"
-            oncheckboxclick={handleAdvancedCheckbox}
+            oncheckboxclick={handleOptionalCheckbox}
             form="tolk-skjema-input"
+            default-value={isOptionalFields}
         ></c-checkbox>
         <div if:true={isOptionalFields}>
             <br />

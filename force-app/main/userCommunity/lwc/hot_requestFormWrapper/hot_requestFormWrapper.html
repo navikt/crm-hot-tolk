@@ -63,8 +63,16 @@
                         if:true={requestTypeResult.requestForm}
                         is-request-type-me={isTypeMe}
                         onisendofform={setEndOfFormValue}
-                        onaddressradiobuttonvalues={setAddressRadioButtons}
-                        address-radiobuttons-from-wrapper={addressRadioButtonValues}
+                        onphysicalordigital={setPhysicalOrDigital}
+                        physical-or-digital-from-wrapper={physicalOrDigital}
+                        onsameaddressradiobuttons={setSameAddressRadiobuttons}
+                        same-address-from-wrapper={sameAddressRadioButtons}
+                        onoptionalcheckbox={setOptionalCheckbox}
+                        optional-checkbox-from-wrapper={optionalCheckbox}
+                        onassignmentpicklist={setAssignmentPicklistValue}
+                        assignment-picklist-in-wrapper={assignmentPicklistValue}
+                        oninterpretationpicklist={setInterpretationPicklistValues}
+                        interpretation-picklist-in-wrapper={interpretationPicklistValues}
                     ></c-hot_request-form_request>
                     <c-button
                         if:false={requestTypeResult.requestForm}

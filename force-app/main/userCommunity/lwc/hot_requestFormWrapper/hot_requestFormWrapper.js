@@ -105,10 +105,29 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         return response;
     }
 
-    addressRadioButtonValues = [];
-    setAddressRadioButtons(event) {
-        console.log(JSON.stringify(event.detail));
-        this.addressRadioButtonValues = event.detail;
+    interpretationPicklistValues;
+    setInterpretationPicklistValues(event) {
+        this.interpretationPicklistValues = event.detail;
+    }
+
+    assignmentPicklistValue;
+    setAssignmentPicklistValue(event) {
+        this.assignmentPicklistValue = event.detail;
+    }
+
+    optionalCheckbox = false;
+    setOptionalCheckbox(event) {
+        this.optionalCheckbox = event.detail;
+    }
+
+    sameAddressRadioButtons = [];
+    setSameAddressRadiobuttons(event) {
+        this.sameAddressRadioButtons = event.detail;
+    }
+
+    physicalOrDigital = [];
+    setPhysicalOrDigital(event) {
+        this.physicalOrDigital = event.detail;
     }
 
     handleAlertDialogClick(event) {
@@ -119,7 +138,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     submitForm() {
-        console.log(JSON.stringify(this.fieldValues));
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
     }
 
