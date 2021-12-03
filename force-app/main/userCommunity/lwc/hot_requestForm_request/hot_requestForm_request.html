@@ -1,129 +1,175 @@
 <template>
-    <section class="bestilling-info-skjema">
+    <section class="bestilling-info-skjema" ondrop={uploadFilesDropHandler} ondragover={dragOverHandler}>
         <h2 class="header">Informasjon om behov for tolk</h2>
         <br />
         <c-input
-            label="Tema"
+            label="Tema og sted"
             name="Subject__c"
             form="tolk-skjema-input"
             value={fieldValues.Subject__c}
             error-text="Feltet må fylles ut."
-            helptext-content="Beskriv hva du trenger tolk til så nøyaktig som mulig, f.eks. legetime, foreldremøte, forelesning, speidersamling, teaterforestilling osv."
+            helptext-content="Beskriv så nøyaktig som mulig hva du trenger tolk til og hvor, f.eks. legetime ved xx-legesenter, foreldremøte ved xx-skole, forelesning ved xx-universitet, teaterforestilling ved xx-teater osv."
         ></c-input>
         <br />
-        <!--TODO: Save values on this when clicking back / next-->
         <c-hot_recurring-time-input request-ids={requestIds}></c-hot_recurring-time-input>
         <br />
-        <c-checkbox
-            label="Digitalt oppmøte?"
-            oncheckboxclick={handleDigitalCheckbox}
-            form="tolk-skjema-input"
-            default-value={digitalCheckboxValue}
-        ></c-checkbox>
+        <c-radiobuttons
+            radiobuttons={physicalOrDigitalRadiobuttons}
+            onradiobuttonsclick={handlePhysicalOrDigital}
+            header="Oppmøtebehov"
+            group-name="radioGroup"
+            flex-direction="row"
+        ></c-radiobuttons>
         <br />
-        <div if:false={isDigitalMeeting}>
-            <c-input
-                label="Oppmøteadresse"
-                name="MeetingStreet__c"
-                form="tolk-skjema-input"
-                value={fieldValues.MeetingStreet__c}
-                error-text="Feltet må fylles ut."
-            ></c-input>
-            <br />
-            <div class="slds-grid slds-gutters">
-                <div class="slds-col slds-size_2-of-5">
-                    <c-input
-                        label="Postnummer"
-                        name="MeetingPostalCode__c"
-                        form="tolk-skjema-input"
-                        value={fieldValues.MeetingPostalCode__c}
-                        max-length="4"
-                    ></c-input>
-                </div>
-                <div class="slds-col slds-size_3-of-5">
-                    <c-input
-                        label="Poststed"
-                        name="MeetingPostalCity__c"
-                        form="tolk-skjema-input"
-                        value={fieldValues.MeetingPostalCity__c}
-                    ></c-input>
-                </div>
-            </div>
-            <br />
-            <c-radiobuttons
-                radiobuttons={radiobuttonOptions}
-                onradiobuttonsclick={radiobuttonsToggled}
-                header="Er oppmøteadresse det samme som tolkeadresse?"
-                group-name="radioGroup"
-                flex-direction="row"
-            >
-            </c-radiobuttons>
-            <div if:false={sameLocation}>
+        <div if:true={isAddressFields}>
+            <div if:false={fieldValues.IsScreenInterpreter__c}>
                 <c-input
-                    label="Tolkeadresse"
-                    name="InterpretationStreet__c"
+                    label="Oppmøteadresse"
+                    name="MeetingStreet__c"
                     form="tolk-skjema-input"
-                    value={fieldValues.InterpretationStreet__c}
+                    value={fieldValues.MeetingStreet__c}
+                    error-text="Feltet må fylles ut."
                 ></c-input>
                 <br />
                 <div class="slds-grid slds-gutters">
                     <div class="slds-col slds-size_2-of-5">
                         <c-input
                             label="Postnummer"
-                            name="InterpretationPostalCode__c"
+                            name="MeetingPostalCode__c"
                             form="tolk-skjema-input"
-                            value={fieldValues.InterpretationPostalCode__c}
+                            value={fieldValues.MeetingPostalCode__c}
                             max-length="4"
                         ></c-input>
                     </div>
                     <div class="slds-col slds-size_3-of-5">
                         <c-input
                             label="Poststed"
-                            name="InterpretationPostalCity__c"
+                            name="MeetingPostalCity__c"
                             form="tolk-skjema-input"
-                            value={fieldValues.InterpretationPostalCity__c}
+                            value={fieldValues.MeetingPostalCity__c}
                         ></c-input>
                     </div>
                 </div>
+                <br />
+                <c-radiobuttons
+                    radiobuttons={sameAddressRadioButtons}
+                    onradiobuttonsclick={handleSameAddressRadiobuttons}
+                    header="Er oppmøteadresse det samme som tolkeadresse?"
+                    group-name="radioGroup2"
+                    flex-direction="row"
+                >
+                </c-radiobuttons>
+                <div if:false={sameLocation}>
+                    <c-input
+                        label="Tolkeadresse"
+                        name="InterpretationStreet__c"
+                        form="tolk-skjema-input"
+                        value={fieldValues.InterpretationStreet__c}
+                        error-text="Feltet må fylles ut."
+                    ></c-input>
+                    <br />
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-5">
+                            <c-input
+                                label="Postnummer"
+                                name="InterpretationPostalCode__c"
+                                form="tolk-skjema-input"
+                                value={fieldValues.InterpretationPostalCode__c}
+                                max-length="4"
+                            ></c-input>
+                        </div>
+                        <div class="slds-col slds-size_3-of-5">
+                            <c-input
+                                label="Poststed"
+                                name="InterpretationPostalCity__c"
+                                form="tolk-skjema-input"
+                                value={fieldValues.InterpretationPostalCity__c}
+                            ></c-input>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <br />
             </div>
-            <br />
         </div>
-        <c-textarea
-            name="Description__c"
-            label="Tilleggsopplysninger"
-            value={fieldValues.Description__c}
-            form="tolk-skjema-input"
-            helptext-content="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende)."
-        ></c-textarea>
-        <br />
         <c-checkbox
-            if:true={isRequestTypeMe}
-            label="Ønsker SMS-varsel ved statusendring på bestillingen"
-            oncheckboxclick={handleSMSCheckbox}
-            name="IsOrdererWantStatusUpdateOnSMS__c"
+            label="Vis valgfrie felter"
+            oncheckboxclick={handleOptionalCheckbox}
             form="tolk-skjema-input"
-            default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
+            default-value={isOptionalFields}
         ></c-checkbox>
-        <br />
-        <div style="margin-left: none">
+        <div if:true={isOptionalFields}>
+            <br />
+            <h2 class="header">Alternative valg</h2>
+            <br />
+            <c-input
+                label="Telefonnummer"
+                name="UserPhone__c"
+                form="tolk-skjema-input"
+                value={fieldValues.UserPhone__c}
+                type="tel"
+            ></c-input>
+            <br />
+            <c-input
+                label="Ønsket tolk"
+                name="UserPreferredInterpreter__c"
+                form="tolk-skjema-input"
+                value={fieldValues.UserPreferredInterpreter__c}
+            ></c-input>
+            <br />
+            <c-picklist
+                master-label="Anledning"
+                name="AssignmentType__c"
+                form="tolk-skjema-input"
+                choices={assignmentChoices}
+                onpicklistvaluechange={handleAssignmentPicklist}
+            ></c-picklist>
+            <br />
+            <c-picklist
+                master-label="Tolkemetode"
+                name="UserInterpretationMethods__c"
+                form="tolk-skjema-input"
+                choices={interpretationChoices}
+                onpicklistvaluechange={handleInterpretationPicklist}
+                multiple="true"
+            ></c-picklist>
+            <br />
+            <c-textarea
+                name="Description__c"
+                label="Mer informasjon om bestillingen (ingen sensitiv informasjon)"
+                value={fieldValues.Description__c}
+                form="tolk-skjema-input"
+                helptext-content="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende)."
+            ></c-textarea>
+            <br />
             <c-upload-files
                 record-id={recordId}
                 onfiledatalength={checkFileDataLength}
                 ongetcheckboxvalue={getFileConsent}
+                ongetfiledata={getFileData}
                 desktop-style="margin-left: unset"
                 checkbox-validation="true"
-                checkbox-text-plural="Dokumentene som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedleggene vil bli delt med tolken(e) som blir tildelt oppdraget."
-                checkbox-text-single="Dokumentet som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedlegget vil bli delt med tolken(e) som blir tildelt oppdraget."
+                checkbox-text-plural="Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at vedlegget vil bli delt med tolken(e) jeg får."
+                checkbox-text-single="Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at vedlegget vil bli delt med tolken(e) jeg får."
                 validation-message="For å legge til vedlegg må du gi samtykke til at formidler og tolk kan se vedleggene som lastes opp"
             ></c-upload-files>
+            <br />
+            <c-record-files-with-sharing
+                record-id={recordId}
+                is-get-all={isGetAll}
+                is-delete-option="true"
+                title="Tidligere opplastede vedlegg"
+            ></c-record-files-with-sharing>
+            <c-checkbox
+                if:true={isRequestTypeMe}
+                label="Ønsker SMS-varsel ved statusendring på bestillingen"
+                oncheckboxclick={handleSMSCheckbox}
+                name="IsOrdererWantStatusUpdateOnSMS__c"
+                form="tolk-skjema-input"
+                default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
+            ></c-checkbox>
         </div>
-        <br />
-        <c-record-files-with-sharing
-            record-id={recordId}
-            is-get-all={isGetAll}
-            is-delete-option="true"
-            title="Tidligere opplastede vedlegg"
-        ></c-record-files-with-sharing>
+
         <lightning-messages aria-live="assertive"> </lightning-messages>
     </section>
 </template>

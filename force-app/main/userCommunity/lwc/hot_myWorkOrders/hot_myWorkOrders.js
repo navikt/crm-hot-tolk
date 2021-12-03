@@ -201,16 +201,12 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
 
     cancelWorkOrder(row) {
         const { Id } = row;
-        console.log(JSON.stringify(this.workOrders));
         const index = this.findRowIndexById(Id);
-        console.log(index);
         if (index !== -1) {
-            console.log('index != -1');
             if (
                 this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Avlyst' &&
                 this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Dekket'
             ) {
-                console.log('confirm');
                 if (confirm('Er du sikker på at du vil avlyse?')) {
                     const fields = {};
                     fields[WORKORDER_ID.fieldApiName] = Id;

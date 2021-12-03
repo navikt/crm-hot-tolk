@@ -1,6 +1,7 @@
 import { LightningElement, track, api } from 'lwc';
 export default class Hot_requestForm_company extends LightningElement {
     @api checkboxValue = false;
+    @api isEditMode = false;
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
@@ -13,11 +14,13 @@ export default class Hot_requestForm_company extends LightningElement {
         { name: 'Virksomhet', label: 'Virksomhet betaler' }
     ];
 
-    currentPicklistName;
     handlePicklist(event) {
         this.fieldValues.IsOtherEconomicProvicer__c = event.detail.name === 'Virksomhet';
-        this.currentPicklistName = event.detail.name;
-        this.sendPicklistValue();
+        this.sendPicklistValue(event.detail.name);
+        if (event.detail.name === 'NAV') {
+            this.fieldValues.InvoiceReference__c = '';
+            this.fieldValues.AdditionalInvoiceText__c = '';
+        }
     }
 
     handleUserCheckbox(event) {
@@ -34,9 +37,9 @@ export default class Hot_requestForm_company extends LightningElement {
         });
     }
 
-    sendPicklistValue() {
+    sendPicklistValue(selectedPicklistName) {
         const selectedEvent = new CustomEvent('getpicklistvalue', {
-            detail: this.currentPicklistName
+            detail: selectedPicklistName
         });
         this.dispatchEvent(selectedEvent);
     }
