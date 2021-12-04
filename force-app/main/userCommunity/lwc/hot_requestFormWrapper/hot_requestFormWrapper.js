@@ -241,6 +241,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
         this.setCurrentForm();
     }
+    @track requestIds = [];
 
     goToMyRequests() {
         this[NavigationMixin.Navigate]({
