@@ -4,16 +4,11 @@ import getContentDocuments from '@salesforce/apex/RecordFilesControllerWithShari
 export default class RelatedFilesList extends LightningElement {
     @api selectedRows = [];
     @api recordId;
-
-    renderedCallback() {
-        console.log('this.recordId: ' + this.recordId);
-    }
     @track contentDocuments = [];
+
     @wire(getContentDocuments, { recordId: '$recordId', isGetAll: true })
     wiredGetContentDocuments(result) {
-        console.log(JSON.stringify(result));
         if (result.data) {
-            console.log(JSON.stringify(result.data));
             this.contentDocuments = result.data;
         }
     }

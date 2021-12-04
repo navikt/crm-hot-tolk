@@ -77,6 +77,8 @@ public without sharing class HOT_RequestListContoller {
                     InterpretationPostalCity__c,
                     IsSerieoppdrag__c,
                     IsScreenInterpreter__c,
+                    IsOtherEconomicProvicer__c,
+                    IsOrdererWantStatusUpdateOnSMS__c,
                     InvoiceReference__c,
                     Description__c,
                     Status__c,
@@ -95,6 +97,7 @@ public without sharing class HOT_RequestListContoller {
                     OrdererName__c,
                     Owner.Name,
                     UserName__c,
+                    UserPersonNumber__c,
                     Company__r.Name,
                     (SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
                     (
@@ -113,7 +116,6 @@ public without sharing class HOT_RequestListContoller {
             DateTime oneWeekAgo = DateTime.now().addDays(-7);
             DateTime sixMonthsAgo = DateTime.now().addMonths(-6);
             for (HOT_Request__c request : tempRequests) {
-                request.UserName__c = request.ActualUserName__c;
                 request.TempAccountId__c = user.AccountId;
                 if (request.NumberOfWorkOrders__c == 0 || request.NumberOfWorkOrders__c == null) {
                     request.NumberOfWorkOrders__c = 1;

@@ -61,7 +61,7 @@ public without sharing class HOT_Utility {
     @AuraEnabled(cacheable=true)
     public static User getPersonAccount() {
         User user = [
-            SELECT AccountId, Account.CRM_Person__r.CRM_FullName__c
+            SELECT AccountId, Account.CRM_Person__r.CRM_FullName__c, Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ];

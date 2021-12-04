@@ -27,17 +27,19 @@
             ></c-input>
             <br />
             <c-input
-                label="Tilleggsinformajon"
+                label="Tilleggsinformasjon"
                 name="AdditionalInvoiceText__c"
                 form="tolk-skjema-input"
                 value={fieldValues.AdditionalInvoiceText__c}
             ></c-input>
+            <br />
         </div>
 
         <c-checkbox
             label="Legge til bruker?"
             oncheckboxclick={handleUserCheckbox}
             default-value={checkboxValue}
+            disabled={isEditMode}
         ></c-checkbox>
     </section>
 </template>

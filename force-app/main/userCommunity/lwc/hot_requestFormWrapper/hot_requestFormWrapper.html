@@ -19,6 +19,14 @@
                 onsubmit={handleSubmit}
                 record-id={recordId}
             >
+                <br />
+                <c-button
+                    if:true={showBackButton}
+                    button-label="Tilbake"
+                    button-styling="tertiary"
+                    onbuttonclick={handleBackButtonClicked}
+                    style="padding-left: 2rem"
+                ></c-button>
                 <c-hot_request-form_type
                     if:false={requestTypeChosen}
                     onrequestformtyperesult={handleRequestType}
@@ -38,11 +46,13 @@
                         picklist-value-previously-set={picklistValueSetInCompanyform}
                         ongetpicklistvalue={setPicklistValue}
                         checkbox-value={userCheckboxValue}
+                        is-edit-mode={isEditMode}
                     ></c-hot_request-form_company>
                     <c-hot_request-form_user
                         parent-field-values={fieldValues}
                         class="subform"
                         if:true={requestTypeResult.userForm}
+                        is-edit-mode={isEditMode}
                     ></c-hot_request-form_user>
                     <c-hot_request-form_request
                         parent-field-values={fieldValues}
@@ -52,41 +62,42 @@
                         class="subform"
                         if:true={requestTypeResult.requestForm}
                         is-request-type-me={isTypeMe}
-                        digital-checkbox-value={digitalCheckboxValue}
-                        ondigitalcheckboxclicked={handleDigitalCheckbox}
+                        onisendofform={setEndOfFormValue}
+                        onphysicalordigital={setPhysicalOrDigital}
+                        physical-or-digital-from-wrapper={physicalOrDigital}
+                        onsameaddressradiobuttons={setSameAddressRadiobuttons}
+                        same-address-from-wrapper={sameAddressRadioButtons}
+                        onoptionalcheckbox={setOptionalCheckbox}
+                        optional-checkbox-from-wrapper={optionalCheckbox}
+                        onassignmentpicklist={setAssignmentPicklistValue}
+                        assignment-picklist-in-wrapper={assignmentPicklistValue}
+                        oninterpretationpicklist={setInterpretationPicklistValues}
+                        interpretation-picklist-in-wrapper={interpretationPicklistValues}
                     ></c-hot_request-form_request>
-                    <c-button
-                        button-label="Tilbake"
-                        button-styling="secondary"
-                        onbuttonclick={handleBackButtonClicked}
-                        desktop-style="margin-right: 1em;"
-                        mobile-style="margin-right: 1em;"
-                        style="padding-left: 2rem"
-                    ></c-button>
                     <c-button
                         if:false={requestTypeResult.requestForm}
                         button-label="Neste"
                         button-styling="primary"
                         onbuttonclick={handleNextButtonClicked}
+                        style="padding-left: 2rem"
                     ></c-button>
-
                     <div class="button-container">
                         <div style="display: flex; justify-content: center">
                             <div if:true={spin} class="loader"></div>
                         </div>
                         <div if:false={spin}>
                             <c-button
-                                if:true={requestTypeResult.requestForm}
+                                if:true={isEndOfForm}
                                 button-label="Send inn"
                                 name="Send inn bestilling"
                                 button-styling="primary"
                                 type="submit"
+                                style="margin-right: 2em"
                             ></c-button>
-                            <br />
-                            <br />
                             <c-button
+                                if:true={isEndOfForm}
                                 button-label="Avbryt"
-                                button-styling="tertiary"
+                                button-styling="secondary"
                                 onbuttonclick={goToPreviousPage}
                             ></c-button>
                         </div>
@@ -113,4 +124,14 @@
             </lightning-button>
         </div>
     </div>
+    <c-alertdialog
+        header={modalHeader}
+        content={modalContent}
+        desktop-style="text-align: center; white-space: pre-line;"
+        mobile-style="text-align: center; white-space: pre-line;"
+        center-buttons="true"
+        no-cancel-button={noCancelButton}
+        onbuttonclick={handleAlertDialogClick}
+    >
+    </c-alertdialog>
 </template>

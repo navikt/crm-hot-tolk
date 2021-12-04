@@ -53,25 +53,29 @@ export default class Hot_recurringTimeInput extends LightningElement {
         this.times[index].date = event.detail.value;
 
         if (this.times[index].startTime === null || this.times[index].startTime === '') {
-            let tempTime = this.getNextHour();
-            this.times[index].startTime = tempTime.substring(11, 16);
-
-            tempTime = this.addOneHour(tempTime);
-            this.times[index].endTime = tempTime.substring(11, 16);
+            let tempTime = this.getNextHour().substring(11, 16);
+            this.times[index].startTime = tempTime;
+            this.times[index].endTime = this.addOneHour(tempTime);
+            this.template.querySelectorAll('[data-id="starttime"]').forEach((element, i) => {
+                element.setValue(this.times[i].startTime);
+            });
+            this.template.querySelectorAll('[data-id="endtime"]').forEach((element, i) => {
+                element.setValue(this.times[i].endTime);
+            });
         }
     }
     setStartTime(event) {
         let index = this.getIndexById(event.target.name);
-        this.times[index].startTime = event.detail.value.substring(0, 5);
+        this.times[index].startTime = event.detail;
 
-        if (event.detail.value > this.times[index].endTime || this.times[index].endTime === null) {
-            let tempTime = this.addOneHour(event.detail.value);
-            this.times[index].endTime = tempTime.substring(0, 5);
+        if (event.detail >= this.times[index].endTime || this.times[index].endTime === null) {
+            this.times[index].endTime = this.addOneHour(event.detail);
+            this.template.querySelectorAll('[data-id="endtime"]')[index].setValue(this.times[index].endTime);
         }
     }
     setEndTime(event) {
         const index = this.getIndexById(event.target.name);
-        this.times[index].endTime = event.detail.value.substring(0, 5);
+        this.times[index].endTime = event.detail;
     }
 
     getNextHour() {
@@ -95,14 +99,14 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
     addOneHour(input) {
         input = input.split('');
-        let first = parseFloat(input[11]);
-        let second = parseFloat(input[12]);
+        let first = parseFloat(input[0]);
+        let second = parseFloat(input[1]);
         second = (second + 1) % 10;
         if (second === 0) {
             first = first + 1;
         }
-        input[11] = first.toString();
-        input[12] = second.toString();
+        input[0] = first.toString();
+        input[1] = second.toString();
         return input.join('');
     }
 
@@ -179,7 +183,12 @@ export default class Hot_recurringTimeInput extends LightningElement {
         ];
     }
     handleDayChosen(event) {
-        this.chosenDays = event.detail.value;
+        this.chosenDays = [];
+        event.detail.forEach((element) => {
+            if (element.checked) {
+                this.chosenDays.push(element.value);
+            }
+        });
     }
     @track repeatingEndDate;
     setRepeatingEndDateDate(event) {
@@ -212,6 +221,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
         return times;
     }
     formatDateTime(dateTime) {
+        console.log('dateTime: ', JSON.stringify(dateTime));
         const year = dateTime.date.substring(0, 4);
         const month = dateTime.date.substring(5, 7);
         const day = dateTime.date.substring(8, 10);
@@ -234,13 +244,24 @@ export default class Hot_recurringTimeInput extends LightningElement {
 
     @api
     validateFields() {
-        let hasErrors = this.validateSimpleTimes();
+        /*let hasErrors = this.validateSimpleTimes();
         if (this.isAdvancedTimes) {
             hasErrors += this.validateAdvancedTimes();
-        }
+        }*/
+        let hasErrors = this.validateTimesAndDate();
         return hasErrors;
     }
-    validateSimpleTimes() {
+
+    validateTimesAndDate() {
+        let hasErrors = false;
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            if (element.validationHandler()) {
+                hasErrors += 1;
+            }
+        });
+        return hasErrors;
+    }
+    /*validateSimpleTimes() {
         let hasErrors = false;
         this.template.querySelectorAll('.date').forEach((element) => {
             hasErrors += validate(element, startDateValidations);
@@ -273,5 +294,13 @@ export default class Hot_recurringTimeInput extends LightningElement {
                 this.chosenDays
             );
         return hasErrors;
+    }*/
+
+    get desktopstyle() {
+        let isDesktop = 'width: 100%;';
+        if (window.screen.width > 576) {
+            isDesktop = 'width: 30%;';
+        }
+        return isDesktop;
     }
 }
