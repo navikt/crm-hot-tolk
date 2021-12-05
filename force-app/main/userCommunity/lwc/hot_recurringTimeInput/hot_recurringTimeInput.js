@@ -11,6 +11,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
     @track times = [];
     @track isOnlyOneTime = true;
     @track isAdvancedTimes;
+    uniqueIdCounter = 0;
 
     @api initialTimes = [];
 
@@ -106,6 +107,148 @@ export default class Hot_recurringTimeInput extends LightningElement {
         return dateTime;
     }
 
+    removeTime(event) {
+        if (this.times.length > 1) {
+            const index = this.getTimesIndex(event.target.name);
+            if (index !== -1) {
+                this.times.splice(index, 1);
+            }
+        }
+        this.updateIsOnlyOneTime();
+    }
+    addTime() {
+        this.uniqueIdCounter += 1;
+        let newTime = this.setTimesValue(null);
+        newTime.id = this.uniqueIdCounter;
+        this.times.push(newTime);
+        this.updateIsOnlyOneTime();
+    }
+    updateIsOnlyOneTime() {
+        this.isOnlyOneTime = this.times.length === 1;
+    }
+
+    @track timesBackup;
+    advancedTimes(event) {
+        this.isAdvancedTimes = event.detail;
+        if (this.isAdvancedTimes) {
+            this.timesBackup = this.times;
+            this.times = [this.times[0]];
+        } else {
+            this.times = this.timesBackup;
+        }
+        this.updateIsOnlyOneTime();
+    }
+
+    repeatingOptions = [
+        { label: 'Hver dag', name: 'Daily' },
+        { label: 'Hver uke', name: 'Weekly' },
+        { label: 'Hver 2. Uke', name: 'Biweekly' }
+    ];
+    repeatingOptionChosen = 'Daily';
+    @track isRepeating = true;
+    @track showWeekDays = false;
+    handleRepeatChoiceMade(event) {
+        this.repeatingOptionChosen = event.detail.name;
+        this.showWeekDays = event.detail.name !== 'Daily';
+        this.isRepeating = true;
+        this.repeatingOptions.forEach((element) => {
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            }
+        });
+    }
+
+    chosenDays = [];
+    get days() {
+        return [
+            { label: 'Mandag', value: 'monday' },
+            { label: 'Tirsdag', value: 'tuesday' },
+            { label: 'Onsdag', value: 'wednesday' },
+            { label: 'Torsdag', value: 'thursday' },
+            { label: 'Fredag', value: 'friday' },
+            { label: 'Lørdag', value: 'saturday' },
+            { label: 'Søndag', value: 'sunday' }
+        ];
+    }
+    handleDayChosen(event) {
+        this.chosenDays = [];
+        event.detail.forEach((element) => {
+            if (element.checked) {
+                this.chosenDays.push(element.value);
+            }
+        });
+    }
+    @track repeatingEndDate;
+    setRepeatingEndDateDate(event) {
+        this.repeatingEndDate = event.detail.value;
+    }
+
+    @api
+    getTimeInput() {
+        let timeInputs = {};
+        timeInputs.times = this.times;
+        timeInputs.repeatingOptionChosen = this.repeatingOptionChosen;
+        timeInputs.chosenDays = this.chosenDays;
+        timeInputs.repeatingEndDate = this.repeatingEndDate;
+        timeInputs.isAdvancedTimes = this.isAdvancedTimes;
+        return timeInputs;
+    }
+
+    @api
+    validateFields() {
+        /*let hasErrors = this.validateSimpleTimes();
+        if (this.isAdvancedTimes) {
+            hasErrors += this.validateAdvancedTimes();
+        }*/
+        let hasErrors = this.validateTimesAndDate();
+        return hasErrors;
+    }
+
+    validateTimesAndDate() {
+        let hasErrors = false;
+        this.template.querySelectorAll('c-input').forEach((element) => {
+            if (element.validationHandler()) {
+                hasErrors += 1;
+            }
+        });
+        return hasErrors;
+    }
+    validateSimpleTimes() {
+        let hasErrors = false;
+        this.template.querySelectorAll('.date').forEach((element) => {
+            hasErrors += validate(element, startDateValidations);
+        });
+        this.template.querySelectorAll('.start-tid').forEach((element) => {
+            hasErrors += validate(element, startTimeValidations);
+        });
+        this.template.querySelectorAll('.slutt-tid').forEach((element) => {
+            hasErrors += validate(element, endTimeValidations);
+        });
+        return hasErrors;
+    }
+    validateAdvancedTimes() {
+        let hasErrors = false;
+        let recurringTypeElement = this.template.querySelector('.recurringType');
+        hasErrors += validate(recurringTypeElement.getElement(), recurringTypeValidations);
+        if (this.showWeekDays) {
+            let recurringDaysElement = this.template.querySelector('.recurringDays');
+            hasErrors =
+                hasErrors + validate(recurringDaysElement, recurringDaysValidations, this.repeatingOptionChosen);
+        }
+        let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
+        hasErrors =
+            hasErrors +
+            validate(
+                recurringEndDateElement,
+                recurringEndDateValidations,
+                this.repeatingOptionChosen,
+                this.times[0].date,
+                this.chosenDays
+            );
+        return hasErrors;
+    }
+
+    // -----------------------------------------
     get desktopstyle() {
         let isDesktop = 'width: 100%;';
         if (window.screen.width > 576) {
