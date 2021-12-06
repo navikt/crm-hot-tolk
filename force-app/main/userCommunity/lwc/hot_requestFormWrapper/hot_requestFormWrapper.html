@@ -19,14 +19,6 @@
                 onsubmit={handleSubmit}
                 record-id={recordId}
             >
-                <br />
-                <c-button
-                    if:true={showBackButton}
-                    button-label="Tilbake"
-                    button-styling="tertiary"
-                    onbuttonclick={handleBackButtonClicked}
-                    style="padding-left: 2rem"
-                ></c-button>
                 <c-hot_request-form_type
                     if:false={requestTypeChosen}
                     onrequestformtyperesult={handleRequestType}
@@ -56,49 +48,52 @@
                     ></c-hot_request-form_user>
                     <c-hot_request-form_request
                         parent-field-values={fieldValues}
+                        parent-request-component-values={requestComponentValues}
                         is-get-all={isGetAll}
                         request-ids={requestIds}
                         record-id={recordId}
                         class="subform"
                         if:true={requestTypeResult.requestForm}
                         is-request-type-me={isTypeMe}
-                        onisendofform={setEndOfFormValue}
-                        onphysicalordigital={setPhysicalOrDigital}
-                        physical-or-digital-from-wrapper={physicalOrDigital}
-                        onsameaddressradiobuttons={setSameAddressRadiobuttons}
-                        same-address-from-wrapper={sameAddressRadioButtons}
-                        onoptionalcheckbox={setOptionalCheckbox}
-                        optional-checkbox-from-wrapper={optionalCheckbox}
-                        onassignmentpicklist={setAssignmentPicklistValue}
-                        assignment-picklist-in-wrapper={assignmentPicklistValue}
-                        oninterpretationpicklist={setInterpretationPicklistValues}
-                        interpretation-picklist-in-wrapper={interpretationPicklistValues}
                     ></c-hot_request-form_request>
-                    <c-button
-                        if:false={requestTypeResult.requestForm}
-                        button-label="Neste"
-                        button-styling="primary"
-                        onbuttonclick={handleNextButtonClicked}
-                        style="padding-left: 2rem"
-                    ></c-button>
                     <div class="button-container">
-                        <div style="display: flex; justify-content: center">
-                            <div if:true={spin} class="loader"></div>
-                        </div>
-                        <div if:false={spin}>
+                        <div if:true={spin} class="loader" style="display: flex; justify-content: center"></div>
+                        <div if:false={spin} style="display: flex; justify-content: center; flex-direction: column">
                             <c-button
-                                if:true={isEndOfForm}
+                                if:true={requestTypeResult.requestForm}
                                 button-label="Send inn"
                                 name="Send inn bestilling"
                                 button-styling="primary"
                                 type="submit"
-                                style="margin-right: 2em"
+                                style="padding-bottom: 1em"
+                                desktop-style="width: 8vw; justify-content: center"
+                                mobile-style="width: 8vw; justify-content: center"
                             ></c-button>
                             <c-button
-                                if:true={isEndOfForm}
-                                button-label="Avbryt"
+                                if:false={requestTypeResult.requestForm}
+                                button-label="Neste"
+                                button-styling="primary"
+                                onbuttonclick={handleNextButtonClicked}
+                                style="padding-bottom: 1em"
+                                desktop-style="width: 8vw; justify-content: center"
+                                mobile-style="width: 8vw; justify-content: center"
+                            ></c-button>
+                            <c-button
+                                if:true={requestTypeChosen}
+                                button-label="Forrige"
                                 button-styling="secondary"
+                                onbuttonclick={handleBackButtonClicked}
+                                style="padding-bottom: 1em"
+                                desktop-style="width: 8vw; justify-content: center"
+                                mobile-style="width: 8vw; justify-content: center"
+                            ></c-button>
+                            <c-button
+                                if:true={requestTypeResult.requestForm}
+                                button-label="Avbryt"
+                                button-styling="tertiary"
                                 onbuttonclick={goToPreviousPage}
+                                desktop-style="width: 8vw; justify-content: center"
+                                mobile-style="width: 8vw; justify-content: center"
                             ></c-button>
                         </div>
                     </div>

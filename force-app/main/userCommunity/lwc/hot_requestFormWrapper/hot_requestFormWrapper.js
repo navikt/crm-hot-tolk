@@ -12,7 +12,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     @track spin = false;
     @track requestTypeChosen = false;
     @track fieldValues = {};
-
+    @track requestComponentValues = {};
     @track personAccount = { Id: '', Name: '' };
     @wire(getPersonAccount)
     wiredGetPersonAccount(result) {
@@ -25,13 +25,11 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track requestTypeResult = {};
     isTypeMe = false;
-    showBackButton = false;
     handleRequestType(event) {
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
         this.isTypeMe = this.requestTypeResult.type === 'Me';
-        this.showBackButton = this.requestTypeChosen && !this.isTypeMe;
         this.setCurrentForm();
     }
 
@@ -74,6 +72,22 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    setRequestComponentValuesInWrapper(fields) {
+        console.log('setRequestComponentValuesInWrapper');
+        console.log('fields: ', JSON.stringify(fields));
+        for (let k in fields) {
+            this.requestComponentValues[k] = fields[k];
+        }
+        console.log(JSON.stringify('requestComponentValues: ', this.requestComponentValues));
+    }
+
+    getRequestComponentFieldValues() {
+        let reqForm = this.template.querySelector('c-hot_request-form_request');
+        if (reqForm !== null) {
+            this.setRequestComponentValuesInWrapper(reqForm.getComponentValues());
+        }
+    }
+
     handleValidation() {
         let hasErrors = false;
         this.template.querySelectorAll('.subform').forEach((subForm) => {
@@ -103,31 +117,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         }
         return response;
-    }
-
-    interpretationPicklistValues;
-    setInterpretationPicklistValues(event) {
-        this.interpretationPicklistValues = event.detail;
-    }
-
-    assignmentPicklistValue;
-    setAssignmentPicklistValue(event) {
-        this.assignmentPicklistValue = event.detail;
-    }
-
-    optionalCheckbox = false;
-    setOptionalCheckbox(event) {
-        this.optionalCheckbox = event.detail;
-    }
-
-    sameAddressRadioButtons = [];
-    setSameAddressRadiobuttons(event) {
-        this.sameAddressRadioButtons = event.detail;
-    }
-
-    physicalOrDigital = [];
-    setPhysicalOrDigital(event) {
-        this.physicalOrDigital = event.detail;
     }
 
     handleAlertDialogClick(event) {
@@ -301,11 +290,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.picklistValueSetInCompanyform = event.detail;
     }
 
-    isEndOfForm = false;
-    setEndOfFormValue(event) {
-        this.isEndOfForm = event.detail;
-    }
-
     handleNextButtonClicked() {
         this.getFieldValuesFromSubForms();
         if (this.handleValidation()) {
@@ -323,15 +307,16 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     handleBackButtonClicked() {
-        this.isEndOfForm = false;
+        console.log('this.requestTypeChosen: ', this.requestTypeChosen);
         this.getFieldValuesFromSubForms();
+        this.getRequestComponentFieldValues();
+        if (!this.requestTypeChosen) {
+            this.previousPage = 'home';
+            this.goToPreviousPage();
+        }
         if (this.formArray.length < 2) {
             this.resetFormValuesOnTypeSelection();
             if (this.isEditMode) {
-                this.goToPreviousPage();
-            }
-            if (!this.requestTypeChosen) {
-                this.previousPage = 'Home';
                 this.goToPreviousPage();
             }
         } else if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
@@ -361,6 +346,5 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.userCheckboxValue = false;
         this.picklistValueSetInCompanyform = null;
         this.requestTypeResult = null;
-        this.showBackButton = false;
     }
 }

@@ -24,113 +24,81 @@ export default class Hot_requestForm_request extends LightningElement {
     @api requestIds;
     @api recordId;
     @api parentFieldValues;
+    @api parentRequestComponentValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
-        this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
-        if (!this.sameLocation) {
-            this.sameAddressRadioButtons[1].checked = true;
-        }
-        if (this.physicalOrDigitalFromWrapper.length > 0) {
-            if (this.physicalOrDigitalFromWrapper[0].checked) {
-                this.physicalOrDigitalRadiobuttons[0].checked = true;
-                this.isAddressFields = true;
-            } else {
-                this.physicalOrDigitalRadiobuttons[1].checked = true;
-                this.sendEndOfFormValue(true);
+        console.log('CONNECTED');
+        console.log('parentRequestComponentValues: ', JSON.stringify(this.parentRequestComponentValues));
+        for (let field in this.parentRequestComponentValues) {
+            if (this.componentValues[field] != null) {
+                this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
         }
-        if (this.sameAddressFromWrapper.length > 0) {
-            if (this.sameAddressFromWrapper[0].checked) {
-                this.sameLocation = true;
-                this.sameAddressRadioButtons[0].checked = true;
-            } else {
-                this.sameLocation = false;
-                this.sameAddressRadioButtons[1].checked = true;
-            }
-            this.sendEndOfFormValue(true);
-        }
-        this.isOptionalFields = this.optionalCheckboxFromWrapper;
-        this.setAssignmentPicklistValue();
-        this.setInterprationValues();
+        this.sameLocation = this.componentValues.sameAddressRadioButtons[0].checked;
+        this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
     }
 
-    interpretationChoices = [
-        { name: 'BTV', label: 'Bildetolkvakt' },
-        { name: 'SK', label: 'Skrivetolking' },
-        { name: 'TS', label: 'Tegnspråk' },
-        { name: 'TSBS', label: 'Tegnspråk I Begrenset Synsfelt' },
-        { name: 'TSS', label: 'Tegn Som Støtte Til Munnavlesning' },
-        { name: 'TT', label: 'Taletolking' },
-        { name: 'TTS', label: 'Taktilt Tegnspråk' }
-    ];
+    @track componentValues = {
+        physicalOrDigitalRadiobuttons: [
+            { label: 'Fysisk oppmøte', value: 'Fysisk', checked: true },
+            { label: 'Digitalt møte', value: 'Digitalt' }
+        ],
+        sameAddressRadioButtons: [
+            { label: 'Ja', value: 'yes', checked: true },
+            { label: 'Nei', value: 'no' }
+        ],
+        assignmentChoices: [
+            { name: '', label: 'Velg et alternativ', selected: true },
+            { name: 'Private', label: 'Dagligliv' },
+            { name: 'Work', label: 'Arbeidsliv' },
+            { name: 'Health Services', label: 'Helsetjenester' },
+            { name: 'Education', label: 'Utdanning' },
+            { name: 'Interpreter at Work', label: 'TPA - Tolk på arbeidsplass' }
+        ],
+        interpretationChoices: [
+            { name: '', label: 'Velg et alternativ', selected: true },
+            { name: 'SK', label: 'Skrivetolking' },
+            { name: 'TS', label: 'Tegnspråk' },
+            { name: 'TSBS', label: 'Tegnspråk i begrenset synsfelt' },
+            { name: 'TSS', label: 'Tegn som støtte til munnavlesning' },
+            { name: 'TT', label: 'Taletolking' },
+            { name: 'TTS', label: 'Taktilt tegnspråk' }
+        ],
+        isOptionalFields: false
+    };
 
     //TODO: See how it looks like when editing (also with existing files on request)
-    //TODO: Remove the arrow on multiple picklist
+    //TODO: Change to single picklist in Salesforce
     handleInterpretationPicklist(event) {
-        this.fieldValues.UserInterpretationMethods__c = [];
-        event.detail.forEach((element) => {
-            this.fieldValues.UserInterpretationMethods__c.push(element.label);
-        });
-        this.sendInterpretationValues();
-    }
-
-    sendInterpretationValues() {
-        const selectedEvent = new CustomEvent('interpretationpicklist', {
-            detail: this.fieldValues.UserInterpretationMethods__c
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    @api interpretationPicklistInWrapper;
-    setInterprationValues() {
-        if (this.interpretationPicklistInWrapper === null || this.interpretationPicklistInWrapper === undefined) {
-            return;
-        }
-        this.interpretationChoices.forEach((element) => {
-            element.selected = false;
-            if (this.interpretationPicklistInWrapper.includes(element.label)) {
+        console.log('event.detail: ', event.detail);
+        this.componentValues.interpretationChoices.forEach((element) => {
+            if (element.name === event.detail.name) {
                 element.selected = true;
+            } else {
+                element.selected = false;
             }
         });
+        this.fieldValues.UserInterpretationMethods__c = event.detail.name;
+        console.log('UserInterpretationMethods__c: ', this.fieldValues.UserInterpretationMethods__c);
+        console.log('hallo');
     }
-
-    assignmentChoices = [
-        { name: '', label: 'Velg et alternativ', selected: true },
-        { name: 'Private', label: 'Dagligliv' },
-        { name: 'Work', label: 'Arbeidsliv' },
-        { name: 'Health Services', label: 'Helsetjenester' },
-        { name: 'Education', label: 'Utdanning' },
-        { name: 'Interpreter at Work', label: 'Tolk på arbeidsplass - TPA' },
-        { name: 'Image Interpreter', label: 'Bildetolkvakt' }
-    ];
 
     handleAssignmentPicklist(event) {
-        this.fieldValues.AssignmentType__c = event.detail.name;
-        this.sendAssignmentPicklist();
-    }
-
-    sendAssignmentPicklist() {
-        const selectedEvent = new CustomEvent('assignmentpicklist', {
-            detail: this.fieldValues.AssignmentType__c
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    @api assignmentPicklistInWrapper;
-    setAssignmentPicklistValue() {
-        if (this.assignmentPicklistInWrapper === undefined || this.assignmentPicklistInWrapper === null) {
-            return;
-        }
-        this.assignmentChoices.forEach((element) => {
-            element.selected = false;
-            if (element.name === this.assignmentPicklistInWrapper) {
+        console.log('event.detail: ', event.detail);
+        this.componentValues.assignmentChoices.forEach((element) => {
+            if (element.name === event.detail.name) {
                 element.selected = true;
+            } else {
+                element.selected = false;
             }
         });
+        this.fieldValues.AssignmentType__c = event.detail.name;
+        console.log('AssignmentType__c: ', this.fieldValues.AssignmentType__c);
+        console.log('hallo');
     }
 
     @api
@@ -138,7 +106,7 @@ export default class Hot_requestForm_request extends LightningElement {
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
-        if (this.isOptionalFields) {
+        if (this.componentValues.isOptionalFields) {
             this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
         }
         this.setDependentFields();
@@ -147,6 +115,10 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     getFieldValues() {
         return this.fieldValues;
+    }
+
+    @api getComponentValues() {
+        return this.componentValues;
     }
 
     setDependentFields() {
@@ -196,77 +168,30 @@ export default class Hot_requestForm_request extends LightningElement {
     getFileConsent(event) {
         this.fieldValues.IsFileConsent__c = event.detail;
     }
-    isAddressFields = false;
+
     sameLocation = true;
-    sameAddressRadioButtons = [
-        { label: 'Ja', value: 'yes' },
-        { label: 'Nei', value: 'no' }
-    ];
-
-    @api sameAddressFromWrapper = [];
-    sendSameAddressRadioButtonValues(res) {
-        const selectedEvent = new CustomEvent('sameaddressradiobuttons', {
-            detail: res
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
     handleSameAddressRadiobuttons(event) {
-        let result = event.detail;
-        this.sendEndOfFormValue(true);
-        this.sendSameAddressRadioButtonValues(result);
-        if (result[0].checked) {
+        this.componentValues.sameAddressRadioButtons = event.detail;
+        if (event.detail[0].checked) {
             this.sameLocation = true;
         } else {
             this.sameLocation = false;
         }
     }
 
-    sendEndOfFormValue(bool) {
-        const selectedEvent = new CustomEvent('isendofform', {
-            detail: bool
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    isOptionalFields = false;
     handleOptionalCheckbox(event) {
-        this.isOptionalFields = event.detail;
-        this.sendOptionalCheckbox();
+        console.log(event.detail);
+        this.componentValues.isOptionalFields = event.detail;
+        console.log('this.componentValues.isOptionalFields: ', this.componentValues.isOptionalFields);
     }
 
-    @api optionalCheckboxFromWrapper = false;
-    sendOptionalCheckbox() {
-        const selectedEvent = new CustomEvent('optionalcheckbox', {
-            detail: this.isOptionalFields
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    sendPhysicalOrDigital(res) {
-        const selectedEvent = new CustomEvent('physicalordigital', {
-            detail: res
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    physicalOrDigitalRadiobuttons = [
-        { label: 'Fysisk oppmøte', value: 'Fysisk' },
-        { label: 'Digitalt møte', value: 'Digitalt' }
-    ];
-
-    @api physicalOrDigitalFromWrapper = [];
     handlePhysicalOrDigital(event) {
-        this.sameLocation = true;
-        let result = event.detail;
-        this.sendPhysicalOrDigital(result);
-        if (result[0].checked) {
-            this.fieldValues.IsScreenInterpreter__c = false;
-            this.sendEndOfFormValue(false);
-        } else {
-            this.sendEndOfFormValue(true);
-            this.fieldValues.IsScreenInterpreter__c = true;
-        }
+        this.componentValues.physicalOrDigitalRadiobuttons = event.detail;
+        this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
+        this.resetPhysicalFields();
+    }
+
+    resetPhysicalFields() {
         if (this.fieldValues.IsScreenInterpreter__c) {
             this.fieldValues.MeetingStreet__c = '';
             this.fieldValues.MeetingPostalCity__c = '';
@@ -274,13 +199,10 @@ export default class Hot_requestForm_request extends LightningElement {
             this.fieldValues.InterpretationStreet__c = '';
             this.fieldValues.InterpretationPostalCode__c = '';
             this.fieldValues.InterpretationPostalCity__c = '';
+            this.componentValues.sameAddressRadioButtons[0].checked = true;
+            this.componentValues.sameAddressRadioButtons[1].checked = false;
+            this.sameLocation = true;
         }
-        this.isAddressFields = true;
-    }
-
-    advancedSection = false;
-    handleAdvancedButtonClicked() {
-        this.advancedSection = !this.advancedSection;
     }
 
     handleSMSCheckbox(event) {
