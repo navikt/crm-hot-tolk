@@ -73,12 +73,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     setRequestComponentValuesInWrapper(fields) {
-        console.log('setRequestComponentValuesInWrapper');
-        console.log('fields: ', JSON.stringify(fields));
         for (let k in fields) {
             this.requestComponentValues[k] = fields[k];
         }
-        console.log(JSON.stringify('requestComponentValues: ', this.requestComponentValues));
     }
 
     getRequestComponentFieldValues() {
@@ -307,7 +304,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     handleBackButtonClicked() {
-        console.log('this.requestTypeChosen: ', this.requestTypeChosen);
         this.getFieldValuesFromSubForms();
         this.getRequestComponentFieldValues();
         if (!this.requestTypeChosen) {

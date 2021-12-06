@@ -17,7 +17,7 @@ export default class Hot_requestForm_request extends LightningElement {
         UserPhone__c: '',
         UserPreferredInterpreter__c: '',
         AssignmentType__c: '',
-        UserInterpretationMethods__c: []
+        UserInterpretationMethod__c: ''
     };
     @api isRequestTypeMe;
     @api isGetAll;
@@ -31,8 +31,6 @@ export default class Hot_requestForm_request extends LightningElement {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
-        console.log('CONNECTED');
-        console.log('parentRequestComponentValues: ', JSON.stringify(this.parentRequestComponentValues));
         for (let field in this.parentRequestComponentValues) {
             if (this.componentValues[field] != null) {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
@@ -72,9 +70,7 @@ export default class Hot_requestForm_request extends LightningElement {
     };
 
     //TODO: See how it looks like when editing (also with existing files on request)
-    //TODO: Change to single picklist in Salesforce
     handleInterpretationPicklist(event) {
-        console.log('event.detail: ', event.detail);
         this.componentValues.interpretationChoices.forEach((element) => {
             if (element.name === event.detail.name) {
                 element.selected = true;
@@ -82,13 +78,10 @@ export default class Hot_requestForm_request extends LightningElement {
                 element.selected = false;
             }
         });
-        this.fieldValues.UserInterpretationMethods__c = event.detail.name;
-        console.log('UserInterpretationMethods__c: ', this.fieldValues.UserInterpretationMethods__c);
-        console.log('hallo');
+        this.fieldValues.UserInterpretationMethod__c = event.detail.name;
     }
 
     handleAssignmentPicklist(event) {
-        console.log('event.detail: ', event.detail);
         this.componentValues.assignmentChoices.forEach((element) => {
             if (element.name === event.detail.name) {
                 element.selected = true;
@@ -97,8 +90,6 @@ export default class Hot_requestForm_request extends LightningElement {
             }
         });
         this.fieldValues.AssignmentType__c = event.detail.name;
-        console.log('AssignmentType__c: ', this.fieldValues.AssignmentType__c);
-        console.log('hallo');
     }
 
     @api
@@ -180,9 +171,7 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     handleOptionalCheckbox(event) {
-        console.log(event.detail);
         this.componentValues.isOptionalFields = event.detail;
-        console.log('this.componentValues.isOptionalFields: ', this.componentValues.isOptionalFields);
     }
 
     handlePhysicalOrDigital(event) {

@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>UserInterpretationMethods__c</fullName>
+    <fullName>UserInterpretationMethod__c</fullName>
     <externalId>false</externalId>
-    <label>UserInterpretationMethods</label>
+    <label>UserInterpretationMethod</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
-    <type>MultiselectPicklist</type>
+    <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
-            <value>
-                <fullName>Bildetolkvakt</fullName>
-                <default>false</default>
-                <label>Bildetolkvakt</label>
-            </value>
             <value>
                 <fullName>Skrivetolking</fullName>
                 <default>false</default>
@@ -27,14 +22,14 @@
                 <label>Tegnspråk</label>
             </value>
             <value>
-                <fullName>Tegnspråk I Begrenset Synsfelt</fullName>
+                <fullName>Tegnspråk i begrenset synsfelt</fullName>
                 <default>false</default>
-                <label>Tegnspråk I Begrenset Synsfelt</label>
+                <label>Tegnspråk i begrenset synsfelt</label>
             </value>
             <value>
-                <fullName>Tegn Som Støtte Til Munnavlesning</fullName>
+                <fullName>Tegn som støtte til munnavlesning</fullName>
                 <default>false</default>
-                <label>Tegn Som Støtte Til Munnavlesning</label>
+                <label>Tegn som støtte til munnavlesning</label>
             </value>
             <value>
                 <fullName>Taletolking</fullName>
@@ -42,11 +37,10 @@
                 <label>Taletolking</label>
             </value>
             <value>
-                <fullName>Taktilt Tegnspråk</fullName>
+                <fullName>Taktilt tegnspråk</fullName>
                 <default>false</default>
-                <label>Taktilt Tegnspråk</label>
+                <label>Taktilt tegnspråk</label>
             </value>
         </valueSetDefinition>
     </valueSet>
-    <visibleLines>3</visibleLines>
 </CustomField>
