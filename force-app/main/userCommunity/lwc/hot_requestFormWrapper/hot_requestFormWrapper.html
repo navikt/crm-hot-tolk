@@ -79,7 +79,7 @@
                                 mobile-style="width: 8vw; justify-content: center"
                             ></c-button>
                             <c-button
-                                if:true={requestTypeChosen}
+                                if:false={isEditModeAndTypeMe}
                                 button-label="Forrige"
                                 button-styling="secondary"
                                 onbuttonclick={handleBackButtonClicked}

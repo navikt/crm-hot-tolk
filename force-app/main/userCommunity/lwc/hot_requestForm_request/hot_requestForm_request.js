@@ -69,29 +69,6 @@ export default class Hot_requestForm_request extends LightningElement {
         isOptionalFields: false
     };
 
-    //TODO: See how it looks like when editing (also with existing files on request)
-    handleInterpretationPicklist(event) {
-        this.componentValues.interpretationChoices.forEach((element) => {
-            if (element.name === event.detail.name) {
-                element.selected = true;
-            } else {
-                element.selected = false;
-            }
-        });
-        this.fieldValues.UserInterpretationMethod__c = event.detail.name;
-    }
-
-    handleAssignmentPicklist(event) {
-        this.componentValues.assignmentChoices.forEach((element) => {
-            if (element.name === event.detail.name) {
-                element.selected = true;
-            } else {
-                element.selected = false;
-            }
-        });
-        this.fieldValues.AssignmentType__c = event.detail.name;
-    }
-
     @api
     setFieldValues() {
         this.template.querySelectorAll('c-input').forEach((element) => {
@@ -123,17 +100,6 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     getTimeInput() {
         return this.template.querySelector('c-hot_recurring-time-input').getTimeInput();
-    }
-
-    @api
-    handleFileUpload(recordId) {
-        if (this.hasFiles) {
-            this.template.querySelector('c-upload-files').handleFileUpload(recordId);
-        }
-    }
-    hasFiles = false;
-    checkFileDataLength(event) {
-        this.hasFiles = event.detail > 0;
     }
 
     @api
@@ -194,6 +160,28 @@ export default class Hot_requestForm_request extends LightningElement {
         }
     }
 
+    handleInterpretationPicklist(event) {
+        this.componentValues.interpretationChoices.forEach((element) => {
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            } else {
+                element.selected = false;
+            }
+        });
+        this.fieldValues.UserInterpretationMethod__c = event.detail.name;
+    }
+
+    handleAssignmentPicklist(event) {
+        this.componentValues.assignmentChoices.forEach((element) => {
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            } else {
+                element.selected = false;
+            }
+        });
+        this.fieldValues.AssignmentType__c = event.detail.name;
+    }
+
     handleSMSCheckbox(event) {
         this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
@@ -205,5 +193,16 @@ export default class Hot_requestForm_request extends LightningElement {
 
     dragOverHandler(event) {
         event.preventDefault();
+    }
+
+    @api
+    handleFileUpload(recordId) {
+        if (this.hasFiles) {
+            this.template.querySelector('c-upload-files').handleFileUpload(recordId);
+        }
+    }
+    hasFiles = false;
+    checkFileDataLength(event) {
+        this.hasFiles = event.detail > 0;
     }
 }

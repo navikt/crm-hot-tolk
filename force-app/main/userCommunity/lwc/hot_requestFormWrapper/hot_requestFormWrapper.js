@@ -35,6 +35,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     async handleSubmit(event) {
         event.preventDefault();
+        console.log(JSON.stringify(this.fieldValues));
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
@@ -76,6 +77,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         for (let k in fields) {
             this.requestComponentValues[k] = fields[k];
         }
+        console.log(JSON.stringify(this.requestComponentValues));
     }
 
     getRequestComponentFieldValues() {
@@ -198,9 +200,11 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    isEditModeAndTypeMe = false;
     handleEditModeRequestType(parsed_params) {
         this.isTypeMe = this.fieldValues.Type__c === 'Me';
         this.isEditMode = parsed_params.edit != null;
+        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditMode;
         this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
     }
 
