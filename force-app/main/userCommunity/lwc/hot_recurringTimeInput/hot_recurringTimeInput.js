@@ -1,10 +1,11 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
 import {
-    startDateValidations,
-    endTimeValidations,
-    recurringDaysValidations,
-    recurringEndDateValidations
+    dateInPast,
+    startBeforeEnd,
+    startDateBeforeRecurringEndDate,
+    restrictTheNumberOfDays,
+    chosenDaysWithinPeriod
 } from './hot_recurringTimeInput_validationRules';
 
 export default class Hot_recurringTimeInput extends LightningElement {
@@ -19,12 +20,12 @@ export default class Hot_recurringTimeInput extends LightningElement {
         return {
             id: timeObject === null ? 0 : timeObject.id,
             date: timeObject === null ? null : timeObject.date,
-            startTime: timeObject === null ? null : timeObject.startTime,
-            endTime: timeObject === null ? null : timeObject.endTime,
+            startTimeString: timeObject === null ? null : timeObject.startTimeString,
+            endTimeString: timeObject === null ? null : timeObject.endTimeString,
             isNew: timeObject === null ? 1 : 0,
             dateMilliseconds: timeObject === null ? null : timeObject.dateMilliseconds,
-            startDateMilliseconds: timeObject === null ? null : timeObject.startDateMilliseconds,
-            endDateMilliseconds: timeObject === null ? null : timeObject.endDateMilliseconds
+            startTime: timeObject === null ? null : timeObject.startTime,
+            endDateMilliseconds: timeObject === null ? null : timeObject.endTime
         };
     }
 
@@ -47,8 +48,8 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
     handleStartTimeChange(event) {
         const index = this.getTimesIndex(event.target.name);
-        this.times[index].startTime = event.detail;
-        this.times[index].startDateMilliseconds = this.timeStringToDateTime(
+        this.times[index].startTimeString = event.detail;
+        this.times[index].startTime = this.timeStringToDateTime(
             this.times[index].dateMilliseconds,
             event.detail
         ).getTime();
@@ -56,36 +57,30 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
     handleEndTimeChange(event) {
         const index = this.getTimesIndex(event.target.name);
-        this.times[index].endTime = event.detail;
-        this.times[index].endDateMilliseconds = this.timeStringToDateTime(
-            this.times[index].dateMilliseconds,
-            event.detail
-        );
+        this.times[index].endTimeString = event.detail;
+        this.times[index].endTime = this.timeStringToDateTime(this.times[index].dateMilliseconds, event.detail);
     }
     setStartTime(index) {
-        if (this.times[index].startTime === null) {
+        if (this.times[index].startTimeString === null) {
             let dateTime = new Date();
             let timeString = this.dateTimeToTimeString(dateTime);
             let combinedDateTime = this.combineDateTimes(this.times[index].dateMilliseconds, dateTime);
-            this.times[index].startTime = timeString;
-            this.times[index].startDateMilliseconds = combinedDateTime.getTime();
-            let times = this.template.querySelectorAll('[data-id="startTime"]');
-            times[index].setValue(this.times[index].startTime);
+            this.times[index].startTimeString = timeString;
+            this.times[index].startTime = combinedDateTime.getTime();
+            let startTimeElements = this.template.querySelectorAll('[data-id="startTime"]');
+            startTimeElements[index].setValue(this.times[index].startTimeString);
             this.setEndTimeBasedOnStartTime(index);
         }
     }
     setEndTimeBasedOnStartTime(index) {
-        if (
-            this.times[index].endTime === null ||
-            this.times[index].startDateMilliseconds > this.times[index].endDateMilliseconds
-        ) {
-            let dateTime = new Date(this.times[index].startDateMilliseconds);
+        if (this.times[index].endTimeString === null || this.times[index].startTime > this.times[index].endTime) {
+            let dateTime = new Date(this.times[index].startTime);
             dateTime.setHours(dateTime.getHours() + 1);
             let timeString = this.dateTimeToTimeString(dateTime);
-            this.times[index].endTime = timeString;
-            this.times[index].endDateMilliseconds = dateTime.getTime();
-            let times = this.template.querySelectorAll('[data-id="endTime"]');
-            times[index].setValue(this.times[index].endTime);
+            this.times[index].endTimeString = timeString;
+            this.times[index].endTime = dateTime.getTime();
+            let endTimeElements = this.template.querySelectorAll('[data-id="endTime"]');
+            endTimeElements[index].setValue(this.times[index].endTimeString);
         }
     }
     dateTimeToTimeString(dateTime) {
@@ -140,7 +135,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
 
     repeatingOptions = [
-        { label: 'Hver dag', name: 'Daily' },
+        { label: 'Hver dag', name: 'Daily', selected: true },
         { label: 'Hver uke', name: 'Weekly' },
         { label: 'Hver 2. Uke', name: 'Biweekly' }
     ];
@@ -154,6 +149,8 @@ export default class Hot_recurringTimeInput extends LightningElement {
         this.repeatingOptions.forEach((element) => {
             if (element.name === event.detail.name) {
                 element.selected = true;
+            } else {
+                element.selected = false;
             }
         });
     }
@@ -186,7 +183,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
     @api
     getTimeInput() {
         let timeInputs = {};
-        timeInputs.times = this.times;
+        timeInputs.times = this.timesListToObject(this.times);
         timeInputs.repeatingOptionChosen = this.repeatingOptionChosen;
         timeInputs.chosenDays = this.chosenDays;
         timeInputs.repeatingEndDate = this.repeatingEndDate;
@@ -196,11 +193,11 @@ export default class Hot_recurringTimeInput extends LightningElement {
 
     @api
     validateFields() {
-        /*let hasErrors = this.validateSimpleTimes();
+        let hasErrors = this.validateTimesAndDate();
+        hasErrors += this.validateSimpleTimes();
         if (this.isAdvancedTimes) {
             hasErrors += this.validateAdvancedTimes();
-        }*/
-        let hasErrors = this.validateTimesAndDate();
+        }
         return hasErrors;
     }
 
@@ -215,36 +212,52 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
     validateSimpleTimes() {
         let hasErrors = false;
-        this.template.querySelectorAll('.date').forEach((element) => {
-            hasErrors += validate(element, startDateValidations);
+        this.template.querySelectorAll('[data-id="date"]').forEach((element, index) => {
+            let errorMessage = dateInPast(this.times[index].dateMilliseconds);
+            element.sendErrorMessage(errorMessage);
+            if (errorMessage !== '') {
+                hasErrors += 1;
+            }
         });
-        this.template.querySelectorAll('.start-tid').forEach((element) => {
-            hasErrors += validate(element, startTimeValidations);
-        });
-        this.template.querySelectorAll('.slutt-tid').forEach((element) => {
-            hasErrors += validate(element, endTimeValidations);
+        this.template.querySelectorAll('[data-id="endTime"]').forEach((element, index) => {
+            let errorMessage = startBeforeEnd(this.times[index].endTime, this.times[index].startTime);
+            element.sendErrorMessage(errorMessage);
+            if (errorMessage !== '') {
+                hasErrors += 1;
+            }
         });
         return hasErrors;
     }
     validateAdvancedTimes() {
         let hasErrors = false;
-        let recurringTypeElement = this.template.querySelector('.recurringType');
-        hasErrors += validate(recurringTypeElement.getElement(), recurringTypeValidations);
+        hasErrors += this.template.querySelector('[data-id="recurringType"]').validationHandler();
+
         if (this.showWeekDays) {
-            let recurringDaysElement = this.template.querySelector('.recurringDays');
-            hasErrors =
-                hasErrors + validate(recurringDaysElement, recurringDaysValidations, this.repeatingOptionChosen);
+            hasErrors += this.template.querySelector('[data-id="recurringDays"]').validationHandler();
         }
-        let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
-        hasErrors =
-            hasErrors +
-            validate(
-                recurringEndDateElement,
-                recurringEndDateValidations,
-                this.repeatingOptionChosen,
-                this.times[0].date,
-                this.chosenDays
-            );
+
+        let recurringEndDateElement = this.template.querySelector('[data-id="recurringEndDate"]');
+
+        let errorMessage = startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime);
+        recurringEndDateElement.sendErrorMessage(errorMessage);
+        if (errorMessage !== '') {
+            hasErrors += 1;
+        }
+        errorMessage = restrictTheNumberOfDays(this.repeatingEndDate, this.times[0].startTime);
+        recurringEndDateElement.sendErrorMessage(errorMessage);
+        if (errorMessage !== '') {
+            hasErrors += 1;
+        }
+        errorMessage = chosenDaysWithinPeriod(
+            this.repeatingOptionChosen,
+            this.chosenDays,
+            this.repeatingOptionChosen,
+            this.chosenDays
+        );
+        recurringEndDateElement.sendErrorMessage(errorMessage);
+        if (errorMessage !== '') {
+            hasErrors += 1;
+        }
         return hasErrors;
     }
 
@@ -276,5 +289,17 @@ export default class Hot_recurringTimeInput extends LightningElement {
         } else {
             this.times = [this.setTimesValue(null)];
         }
+    }
+
+    timesListToObject(list) {
+        let times = {};
+        for (let dateTime of list) {
+            times[dateTime.id.toString()] = {
+                startTime: dateTime.startTime,
+                endTime: dateTime.endTime,
+                isNew: dateTime.isNew
+            };
+        }
+        return times;
     }
 }

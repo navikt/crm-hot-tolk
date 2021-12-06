@@ -17,7 +17,7 @@
                     label="Fra (tt:mm)"
                     data-id="startTime"
                     type="time"
-                    value={it.value.startTime}
+                    value={it.value.startTimeString}
                     error-text="Feltet må fylles ut."
                     name={it.value.id}
                     ongetvalueonchange={handleStartTimeChange}
@@ -28,7 +28,7 @@
                     label="Til (tt:mm)"
                     data-id="endTime"
                     type="time"
-                    value={it.value.endTime}
+                    value={it.value.endTimeString}
                     error-text="Feltet må fylles ut."
                     name={it.value.id}
                     ongetvalueonchange={handleEndTimeChange}
@@ -70,6 +70,7 @@
                     checkboxes={days}
                     oncheckboxgroupclick={handleDayChosen}
                     header="Ukedager"
+                    error-text="Du må velge minst én dag tolkebehovet gjentas."
                 ></c-checkboxgroup>
             </div>
             <div aria-live if:true={isRepeating}>
