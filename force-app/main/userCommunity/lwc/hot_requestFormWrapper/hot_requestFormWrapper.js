@@ -76,7 +76,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         for (let k in fields) {
             this.requestComponentValues[k] = fields[k];
         }
-        console.log(JSON.stringify(this.requestComponentValues));
     }
 
     getRequestComponentFieldValues() {
