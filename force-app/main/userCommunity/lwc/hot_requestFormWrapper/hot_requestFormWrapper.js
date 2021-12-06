@@ -35,7 +35,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     async handleSubmit(event) {
         event.preventDefault();
-        console.log(JSON.stringify(this.fieldValues));
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
