@@ -34,6 +34,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     async handleSubmit(event) {
+        console.log('handleSubmit');
         event.preventDefault();
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
@@ -98,6 +99,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     async promptOverlap() {
+        console.log('promptOverlap');
         this.modalContent = '';
         let response = true;
         let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
@@ -106,6 +108,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                 accountId: this.personAccount.Id,
                 times: timeInput.times
             });
+            console.log('duplicateRequests: ', duplicateRequests);
             if (duplicateRequests.length > 0) {
                 this.modalHeader = 'Du har allerede bestillinger i dette tidsrommet.';
                 this.noCancelButton = false;
@@ -128,6 +131,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     submitForm() {
+        console.log(JSON.stringify(this.fieldValues));
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
     }
 
