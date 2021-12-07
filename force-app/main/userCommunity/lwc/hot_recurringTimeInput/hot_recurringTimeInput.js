@@ -193,11 +193,11 @@ export default class Hot_recurringTimeInput extends LightningElement {
 
     @api
     validateFields() {
-        let hasErrors = this.validateTimesAndDate();
-        hasErrors += this.validateSimpleTimes();
+        let hasErrors = 0;
         if (this.isAdvancedTimes) {
             hasErrors += this.validateAdvancedTimes();
         }
+        hasErrors += this.validateTimesAndDate();
         return hasErrors;
     }
 
