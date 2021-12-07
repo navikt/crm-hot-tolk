@@ -1,6 +1,7 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
 import {
+    requireInput,
     dateInPast,
     startBeforeEnd,
     startDateBeforeRecurringEndDate,
@@ -176,8 +177,10 @@ export default class Hot_recurringTimeInput extends LightningElement {
         });
     }
     @track repeatingEndDate;
+    @track repeatingEndDateString;
     setRepeatingEndDateDate(event) {
-        this.repeatingEndDate = event.detail.value;
+        this.repeatingEndDateString = event.detail;
+        this.repeatingEndDate = new Date(event.detail).getTime();
     }
 
     @api
@@ -194,17 +197,20 @@ export default class Hot_recurringTimeInput extends LightningElement {
     @api
     validateFields() {
         let hasErrors = 0;
-        if (this.isAdvancedTimes) {
+        hasErrors += this.validateTimesAndDate();
+        hasErrors += this.validateSimpleTimes();
+        if (this.isAdvancedTimes && hasErrors === 0) {
             hasErrors += this.validateAdvancedTimes();
         }
-        hasErrors += this.validateTimesAndDate();
         return hasErrors;
     }
 
     validateTimesAndDate() {
         let hasErrors = false;
         this.template.querySelectorAll('c-input').forEach((element) => {
-            if (element.validationHandler()) {
+            let errorMessage = requireInput(element.getValue(), element.label);
+            element.sendErrorMessage(errorMessage);
+            if (errorMessage !== '') {
                 hasErrors += 1;
             }
         });
@@ -237,16 +243,16 @@ export default class Hot_recurringTimeInput extends LightningElement {
         }
 
         let recurringEndDateElement = this.template.querySelector('[data-id="recurringEndDate"]');
-
+        let recurringEndDateErrorMessage = '';
         let errorMessage = startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime);
-        recurringEndDateElement.sendErrorMessage(errorMessage);
         if (errorMessage !== '') {
             hasErrors += 1;
+            recurringEndDateErrorMessage = errorMessage;
         }
         errorMessage = restrictTheNumberOfDays(this.repeatingEndDate, this.times[0].startTime);
-        recurringEndDateElement.sendErrorMessage(errorMessage);
         if (errorMessage !== '') {
             hasErrors += 1;
+            recurringEndDateErrorMessage = errorMessage;
         }
         errorMessage = chosenDaysWithinPeriod(
             this.repeatingOptionChosen,
@@ -254,10 +260,12 @@ export default class Hot_recurringTimeInput extends LightningElement {
             this.repeatingOptionChosen,
             this.chosenDays
         );
-        recurringEndDateElement.sendErrorMessage(errorMessage);
         if (errorMessage !== '') {
             hasErrors += 1;
+            recurringEndDateErrorMessage = errorMessage;
         }
+        console.log('recurringEndDateErrorMessage: ', recurringEndDateErrorMessage);
+        recurringEndDateElement.sendErrorMessage(recurringEndDateErrorMessage);
         return hasErrors;
     }
 

@@ -3,7 +3,7 @@
         <template iterator:it={times}>
             <div key={it.value.id} class="listClass">
                 <c-input
-                    label="Dato (dd.mm.åååå)"
+                    label="Dato"
                     data-id="date"
                     type="date"
                     ongetvalueonchange={handleDateChange}
@@ -14,7 +14,7 @@
                     mobile-style="padding-bottom: 1vw"
                 ></c-input>
                 <c-input
-                    label="Fra (tt:mm)"
+                    label="Fra"
                     data-id="startTime"
                     type="time"
                     value={it.value.startTimeString}
@@ -25,7 +25,7 @@
                     mobile-style="padding-bottom: 1vw"
                 ></c-input>
                 <c-input
-                    label="Til (tt:mm)"
+                    label="Til"
                     data-id="endTime"
                     type="time"
                     value={it.value.endTimeString}
@@ -80,7 +80,7 @@
                     type="date"
                     ongetvalueonchange={setRepeatingEndDateDate}
                     name="recurring End Date"
-                    value={repeatingEndDate}
+                    value={repeatingEndDateString}
                     error-text="Feltet må fylles ut."
                     desktop-style="width: 30%"
                 ></c-input>
