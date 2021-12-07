@@ -113,7 +113,15 @@
             >
             </lightning-icon>
             <br />
-            <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1">Bestilling mottatt</h2>
+            <h2
+                class="typo-undertittel h2-successMessage"
+                id="successMessage"
+                tabindex="-1"
+                role="alert"
+                aria-live="assertive"
+            >
+                Bestilling mottatt
+            </h2>
             <br />
             <lightning-button title="Gå til mine bestillinger" variant="brand" label="OK" onclick={goToMyRequests}>
             </lightning-button>
