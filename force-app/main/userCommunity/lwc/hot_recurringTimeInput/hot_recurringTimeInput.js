@@ -4,6 +4,7 @@ import {
     requireInput,
     dateInPast,
     startBeforeEnd,
+    requireRecurringDays,
     startDateBeforeRecurringEndDate,
     restrictTheNumberOfDays,
     chosenDaysWithinPeriod
@@ -197,75 +198,98 @@ export default class Hot_recurringTimeInput extends LightningElement {
     @api
     validateFields() {
         let hasErrors = 0;
-        hasErrors += this.validateTimesAndDate();
         hasErrors += this.validateSimpleTimes();
-        if (this.isAdvancedTimes && hasErrors === 0) {
+        if (this.isAdvancedTimes) {
             hasErrors += this.validateAdvancedTimes();
         }
         return hasErrors;
     }
 
-    validateTimesAndDate() {
+    validateSimpleTimes() {
+        let hasErrors = this.validateDate();
+        hasErrors += this.validateStartTime();
+        hasErrors += this.validateEndTime();
+        return hasErrors;
+    }
+    validateDate() {
         let hasErrors = false;
-        this.template.querySelectorAll('c-input').forEach((element) => {
-            let errorMessage = requireInput(element.getValue(), element.label);
-            element.sendErrorMessage(errorMessage);
-            if (errorMessage !== '') {
-                hasErrors += 1;
+        this.template.querySelectorAll('[data-id="date"]').forEach((element, index) => {
+            let errorMessage = requireInput(element.value, 'dato');
+            if (errorMessage === '') {
+                errorMessage = dateInPast(this.times[index].dateMilliseconds);
             }
+            element.sendErrorMessage(errorMessage);
+            hasErrors += errorMessage !== '';
         });
         return hasErrors;
     }
-    validateSimpleTimes() {
+    validateStartTime() {
         let hasErrors = false;
-        this.template.querySelectorAll('[data-id="date"]').forEach((element, index) => {
-            let errorMessage = dateInPast(this.times[index].dateMilliseconds);
+        this.template.querySelectorAll('[data-id="startTime"]').forEach((element) => {
+            let errorMessage = requireInput(element.getValue(), 'start tid');
             element.sendErrorMessage(errorMessage);
-            if (errorMessage !== '') {
-                hasErrors += 1;
-            }
+            hasErrors += errorMessage !== '';
         });
+        return hasErrors;
+    }
+    validateEndTime() {
+        let hasErrors = false;
         this.template.querySelectorAll('[data-id="endTime"]').forEach((element, index) => {
-            let errorMessage = startBeforeEnd(this.times[index].endTime, this.times[index].startTime);
-            element.sendErrorMessage(errorMessage);
-            if (errorMessage !== '') {
-                hasErrors += 1;
+            let errorMessage = requireInput(element.getValue(), 'slutt tid');
+            if (errorMessage === '') {
+                errorMessage = startBeforeEnd(this.times[index].endTime, this.times[index].startTime);
             }
+            element.sendErrorMessage(errorMessage);
+            hasErrors += errorMessage !== '';
         });
         return hasErrors;
     }
     validateAdvancedTimes() {
         let hasErrors = false;
-        hasErrors += this.template.querySelector('[data-id="recurringType"]').validationHandler();
-
+        hasErrors += this.validateRecurringType();
         if (this.showWeekDays) {
-            hasErrors += this.template.querySelector('[data-id="recurringDays"]').validationHandler();
+            hasErrors += this.validateRecurringDays();
+        }
+        hasErrors += this.validateRecurringEndDate();
+        return hasErrors;
+    }
+    validateRecurringType() {
+        let hasErrors = false;
+        //Default value is set, so no need to validate this field.
+        return hasErrors;
+    }
+    validateRecurringDays() {
+        let hasErrors = false;
+        if (this.showWeekDays) {
+            let element = this.template.querySelector('[data-id="recurringDays"]');
+            let errorMessage = requireRecurringDays(element.getValue());
+            console.log(errorMessage);
+            element.sendErrorMessage(errorMessage);
+            hasErrors += errorMessage !== '';
+        }
+        return hasErrors;
+    }
+
+    validateRecurringEndDate() {
+        let hasErrors = false;
+        let recurringEndDateElement = this.template.querySelector('[data-id="recurringEndDate"]');
+        let errorMessage = requireInput(recurringEndDateElement.getValue(), 'sluttdato');
+        if (errorMessage === '') {
+            errorMessage = startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime);
+        }
+        if (errorMessage === '') {
+            errorMessage = restrictTheNumberOfDays(this.repeatingEndDate, this.times[0].startTime);
+        }
+        if (errorMessage === '') {
+            errorMessage = chosenDaysWithinPeriod(
+                this.repeatingOptionChosen,
+                this.chosenDays,
+                this.repeatingOptionChosen,
+                this.chosenDays
+            );
         }
 
-        let recurringEndDateElement = this.template.querySelector('[data-id="recurringEndDate"]');
-        let recurringEndDateErrorMessage = '';
-        let errorMessage = startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime);
-        if (errorMessage !== '') {
-            hasErrors += 1;
-            recurringEndDateErrorMessage = errorMessage;
-        }
-        errorMessage = restrictTheNumberOfDays(this.repeatingEndDate, this.times[0].startTime);
-        if (errorMessage !== '') {
-            hasErrors += 1;
-            recurringEndDateErrorMessage = errorMessage;
-        }
-        errorMessage = chosenDaysWithinPeriod(
-            this.repeatingOptionChosen,
-            this.chosenDays,
-            this.repeatingOptionChosen,
-            this.chosenDays
-        );
-        if (errorMessage !== '') {
-            hasErrors += 1;
-            recurringEndDateErrorMessage = errorMessage;
-        }
-        console.log('recurringEndDateErrorMessage: ', recurringEndDateErrorMessage);
-        recurringEndDateElement.sendErrorMessage(recurringEndDateErrorMessage);
+        recurringEndDateElement.sendErrorMessage(errorMessage);
         return hasErrors;
     }
 

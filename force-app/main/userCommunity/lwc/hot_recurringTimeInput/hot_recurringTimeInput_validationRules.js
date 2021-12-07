@@ -1,7 +1,7 @@
 let nowDate = new Date();
 
 export function requireInput(input, label) {
-    return input === '' || input === undefined ? 'Varsel ' + label + ' må fylles ut.' : '';
+    return input === '' || input === undefined || input === null ? label + ' må fylles ut.' : '';
 }
 export function dateInPast(date) {
     date = new Date(date);
@@ -13,6 +13,15 @@ export function startBeforeEnd(endDate, startDate) {
     startDate = new Date(startDate);
     endDate = new Date(endDate);
     return startDate.getTime() > endDate.getTime() ? 'Start tid må være før slutt tid.' : '';
+}
+
+export function requireRecurringDays(input) {
+    for (let element of input) {
+        if (element.checked) {
+            return '';
+        }
+    }
+    return 'Ukedag for gjentagelse må fylles ut.';
 }
 
 export function startDateBeforeRecurringEndDate(recurringEndDate, startDate) {
