@@ -32,12 +32,10 @@
                     ></c-hot_request-form_orderer>
                     <c-hot_request-form_company
                         parent-field-values={fieldValues}
+                        parent-company-component-values={componentValues}
                         class="subform"
                         onusercheckboxclicked={handleUserCheckbox}
                         if:true={requestTypeResult.companyForm}
-                        picklist-value-previously-set={picklistValueSetInCompanyform}
-                        ongetpicklistvalue={setPicklistValue}
-                        checkbox-value={userCheckboxValue}
                         is-edit-mode={isEditMode}
                     ></c-hot_request-form_company>
                     <c-hot_request-form_user
@@ -48,7 +46,7 @@
                     ></c-hot_request-form_user>
                     <c-hot_request-form_request
                         parent-field-values={fieldValues}
-                        parent-request-component-values={requestComponentValues}
+                        parent-request-component-values={componentValues}
                         is-get-all={isGetAll}
                         request-ids={requestIds}
                         record-id={recordId}

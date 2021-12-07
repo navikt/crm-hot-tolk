@@ -12,7 +12,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     @track spin = false;
     @track requestTypeChosen = false;
     @track fieldValues = {};
-    @track requestComponentValues = {};
+    @track componentValues = {};
     @track personAccount = { Id: '', Name: '' };
     @wire(getPersonAccount)
     wiredGetPersonAccount(result) {
@@ -72,16 +72,20 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    setRequestComponentValuesInWrapper(fields) {
+    setComponentValuesInWrapper(fields) {
         for (let k in fields) {
-            this.requestComponentValues[k] = fields[k];
+            this.componentValues[k] = fields[k];
         }
     }
 
-    getRequestComponentFieldValues() {
+    getComponentValues() {
         let reqForm = this.template.querySelector('c-hot_request-form_request');
         if (reqForm !== null) {
-            this.setRequestComponentValuesInWrapper(reqForm.getComponentValues());
+            this.setComponentValuesInWrapper(reqForm.getComponentValues());
+        }
+        let companyForm = this.template.querySelector('c-hot_request-form_company');
+        if (companyForm !== null) {
+            this.setComponentValuesInWrapper(companyForm.getComponentValues());
         }
     }
 
@@ -291,6 +295,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     handleNextButtonClicked() {
         this.getFieldValuesFromSubForms();
+        this.getComponentValues();
         if (this.handleValidation()) {
             return;
         }
@@ -307,7 +312,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     handleBackButtonClicked() {
         this.getFieldValuesFromSubForms();
-        this.getRequestComponentFieldValues();
+        this.getComponentValues();
         if (!this.requestTypeChosen) {
             this.previousPage = 'home';
             this.goToPreviousPage();
@@ -340,6 +345,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     resetFormValuesOnTypeSelection() {
         this.formArray = [];
         this.fieldValues = {};
+        this.componentValues = {};
         this.requestTypeChosen = false;
         this.userCheckboxValue = false;
         this.picklistValueSetInCompanyform = null;

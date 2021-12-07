@@ -11,7 +11,7 @@
         ></c-input>
         <br />
         <c-picklist
-            choices={choices}
+            choices={componentValues.choices}
             master-label="Betalingsansvar"
             onpicklistvaluechange={handlePicklist}
             desktop-style="width: 50%;"
@@ -38,7 +38,7 @@
         <c-checkbox
             label="Legge til bruker?"
             oncheckboxclick={handleUserCheckbox}
-            default-value={checkboxValue}
+            default-value={componentValues.checkboxValue}
             disabled={isEditMode}
         ></c-checkbox>
     </section>

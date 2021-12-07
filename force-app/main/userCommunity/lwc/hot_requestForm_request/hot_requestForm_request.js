@@ -161,25 +161,25 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     handleInterpretationPicklist(event) {
-        this.componentValues.interpretationChoices.forEach((element) => {
-            if (element.name === event.detail.name) {
-                element.selected = true;
-            } else {
-                element.selected = false;
-            }
-        });
-        this.fieldValues.UserInterpretationMethod__c = event.detail.name;
+        this.setElementSelected(
+            this.componentValues.interpretationChoices,
+            this.fieldValues.UserInterpretationMethod__c,
+            event
+        );
     }
 
     handleAssignmentPicklist(event) {
-        this.componentValues.assignmentChoices.forEach((element) => {
+        this.setElementSelected(this.componentValues.assignmentChoices, this.fieldValues.AssignmentType__c, event);
+    }
+
+    setElementSelected(array, field, event) {
+        array.forEach((element) => {
+            element.selected = false;
             if (element.name === event.detail.name) {
                 element.selected = true;
-            } else {
-                element.selected = false;
             }
         });
-        this.fieldValues.AssignmentType__c = event.detail.name;
+        field = event.detail.name;
     }
 
     handleSMSCheckbox(event) {
