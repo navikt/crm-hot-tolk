@@ -161,15 +161,11 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     handleInterpretationPicklist(event) {
-        this.setElementSelected(
-            this.componentValues.interpretationChoices,
-            this.fieldValues.UserInterpretationMethod__c,
-            event
-        );
+        this.setElementSelected(this.componentValues.interpretationChoices, 'UserInterpretationMethod__c', event);
     }
 
     handleAssignmentPicklist(event) {
-        this.setElementSelected(this.componentValues.assignmentChoices, this.fieldValues.AssignmentType__c, event);
+        this.setElementSelected(this.componentValues.assignmentChoices, 'AssignmentType__c', event);
     }
 
     setElementSelected(array, field, event) {
@@ -179,7 +175,7 @@ export default class Hot_requestForm_request extends LightningElement {
                 element.selected = true;
             }
         });
-        field = event.detail.name;
+        this.fieldValues[field] = event.detail.name;
     }
 
     handleSMSCheckbox(event) {
