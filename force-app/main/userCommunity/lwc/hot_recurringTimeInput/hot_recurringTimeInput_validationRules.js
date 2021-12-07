@@ -21,11 +21,13 @@ export function requireRecurringDays(input) {
             return '';
         }
     }
-    return 'Ukedag for gjentagelse må fylles ut.';
+    return 'Du må velge minst én dag tolkebehovet gjentas.';
 }
 
 export function startDateBeforeRecurringEndDate(recurringEndDate, startDate) {
-    return new Date(startDate).getTime() > new Date(recurringEndDate) ? 'Slutt dato må være etter start dato' : '';
+    return new Date(startDate).getTime() > new Date(recurringEndDate).getTime()
+        ? 'Slutt dato må være etter start dato'
+        : '';
 }
 export function restrictTheNumberOfDays(recurringEndDate, startDate) {
     return new Date(recurringEndDate) - new Date(startDate).getTime() > 199 * 24 * 3600000 && startDate != null

@@ -263,7 +263,6 @@ export default class Hot_recurringTimeInput extends LightningElement {
         if (this.showWeekDays) {
             let element = this.template.querySelector('[data-id="recurringDays"]');
             let errorMessage = requireRecurringDays(element.getValue());
-            console.log(errorMessage);
             element.sendErrorMessage(errorMessage);
             hasErrors += errorMessage !== '';
         }
