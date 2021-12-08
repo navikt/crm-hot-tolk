@@ -135,13 +135,15 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     modalContent = '';
     noCancelButton = true;
     handleError(event) {
+        this.modalHeader = 'Noe gikk galt';
+        this.noCancelButton = true;
         if (event.detail.detail === 'Fant ingen virksomhet med dette organisasjonsnummeret.') {
-            this.noCancelButton = true;
-            this.modalHeader = 'Noe gikk galt';
             this.modalContent =
                 'Fant ingen virksomhet med organisasjonsnummer ' + this.fieldValues.OrganizationNumber__c + '.';
-            this.template.querySelector('c-alertdialog').showModal();
+        } else {
+            this.modalContent = event.detail.detail;
         }
+        this.template.querySelector('c-alertdialog').showModal();
         this.spin = false;
     }
 
