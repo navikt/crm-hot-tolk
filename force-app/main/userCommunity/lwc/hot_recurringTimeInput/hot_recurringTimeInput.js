@@ -89,10 +89,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
         }
     }
     dateTimeToTimeString(dateTime) {
-        console.log('dateTimeToTimeString');
-        console.log('dateTime', dateTime);
         let hours = dateTime.getHours();
-        console.log('hours', hours);
         return (hours < 10 ? '0' + hours.toString() : hours.toString()) + ':00';
     }
     timeStringToDateTime(dateTime, timeString) {
@@ -321,7 +318,6 @@ export default class Hot_recurringTimeInput extends LightningElement {
                 this.times = [];
                 for (let timeMap of result.data) {
                     //let temp = new Object(this.setTimesValue(timeMap));
-                    console.log(JSON.stringify(timeMap));
                     this.times.push(new Object(this.setTimesValue(timeMap)));
                     this.times[this.times.length - 1].startTimeString = this.dateTimeToTimeString(
                         new Date(Number(timeMap.startTime))
@@ -329,7 +325,6 @@ export default class Hot_recurringTimeInput extends LightningElement {
                     this.times[this.times.length - 1].endTimeString = this.dateTimeToTimeString(
                         new Date(Number(timeMap.endTime))
                     );
-                    console.log(JSON.stringify(this.times[this.times.length - 1]));
                 }
                 this.validateSimpleTimes();
             }
