@@ -27,7 +27,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
             isNew: timeObject === null ? 1 : 0,
             dateMilliseconds: timeObject === null ? null : timeObject.dateMilliseconds,
             startTime: timeObject === null ? null : timeObject.startTime,
-            endDateMilliseconds: timeObject === null ? null : timeObject.endTime
+            endTime: timeObject === null ? null : timeObject.endTime
         };
     }
 
@@ -60,7 +60,10 @@ export default class Hot_recurringTimeInput extends LightningElement {
     handleEndTimeChange(event) {
         const index = this.getTimesIndex(event.target.name);
         this.times[index].endTimeString = event.detail;
-        this.times[index].endTime = this.timeStringToDateTime(this.times[index].dateMilliseconds, event.detail);
+        this.times[index].endTime = this.timeStringToDateTime(
+            this.times[index].dateMilliseconds,
+            event.detail
+        ).getTime();
     }
     setStartTime(index) {
         if (this.times[index].startTimeString === null) {
@@ -186,14 +189,12 @@ export default class Hot_recurringTimeInput extends LightningElement {
 
     @api
     getTimeInput() {
-        console.log('getTimeInput');
         let timeInputs = {};
         timeInputs.times = this.timesListToObject(this.times);
         timeInputs.repeatingOptionChosen = this.repeatingOptionChosen;
         timeInputs.chosenDays = this.chosenDays;
         timeInputs.repeatingEndDate = this.repeatingEndDate;
         timeInputs.isAdvancedTimes = this.isAdvancedTimes;
-        console.log('timeInputs: ', JSON.stringify(timeInputs));
         return timeInputs;
     }
 
