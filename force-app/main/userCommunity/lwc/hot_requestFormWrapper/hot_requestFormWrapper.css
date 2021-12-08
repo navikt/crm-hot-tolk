@@ -23,6 +23,12 @@
     margin-top: 0.6rem;
 }
 
+.brodsmulesti {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
 .skjema-ikon {
     width: 4rem;
     height: 4rem;

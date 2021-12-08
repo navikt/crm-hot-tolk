@@ -17,128 +17,64 @@ export default class Hot_requestForm_request extends LightningElement {
         UserPhone__c: '',
         UserPreferredInterpreter__c: '',
         AssignmentType__c: '',
-        UserInterpretationMethods__c: []
+        UserInterpretationMethod__c: ''
     };
     @api isRequestTypeMe;
     @api isGetAll;
     @api requestIds;
     @api recordId;
     @api parentFieldValues;
+    @api parentRequestComponentValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
-        this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
-        if (!this.sameLocation) {
-            this.sameAddressRadioButtons[1].checked = true;
-        }
-        if (this.physicalOrDigitalFromWrapper.length > 0) {
-            if (this.physicalOrDigitalFromWrapper[0].checked) {
-                this.physicalOrDigitalRadiobuttons[0].checked = true;
-                this.isAddressFields = true;
-            } else {
-                this.physicalOrDigitalRadiobuttons[1].checked = true;
-                this.sendEndOfFormValue(true);
+        for (let field in this.parentRequestComponentValues) {
+            if (this.componentValues[field] != null) {
+                this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
         }
-        if (this.sameAddressFromWrapper.length > 0) {
-            if (this.sameAddressFromWrapper[0].checked) {
-                this.sameLocation = true;
-                this.sameAddressRadioButtons[0].checked = true;
-            } else {
-                this.sameLocation = false;
-                this.sameAddressRadioButtons[1].checked = true;
-            }
-            this.sendEndOfFormValue(true);
-        }
-        this.isOptionalFields = this.optionalCheckboxFromWrapper;
-        this.setAssignmentPicklistValue();
-        this.setInterprationValues();
+        this.sameLocation = this.componentValues.sameAddressRadioButtons[0].checked;
+        this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
     }
 
-    interpretationChoices = [
-        { name: 'BTV', label: 'Bildetolkvakt' },
-        { name: 'SK', label: 'Skrivetolking' },
-        { name: 'TS', label: 'Tegnspråk' },
-        { name: 'TSBS', label: 'Tegnspråk I Begrenset Synsfelt' },
-        { name: 'TSS', label: 'Tegn Som Støtte Til Munnavlesning' },
-        { name: 'TT', label: 'Taletolking' },
-        { name: 'TTS', label: 'Taktilt Tegnspråk' }
-    ];
-
-    //TODO: See how it looks like when editing (also with existing files on request)
-    //TODO: Remove the arrow on multiple picklist
-    handleInterpretationPicklist(event) {
-        this.fieldValues.UserInterpretationMethods__c = [];
-        event.detail.forEach((element) => {
-            this.fieldValues.UserInterpretationMethods__c.push(element.label);
-        });
-        this.sendInterpretationValues();
-    }
-
-    sendInterpretationValues() {
-        const selectedEvent = new CustomEvent('interpretationpicklist', {
-            detail: this.fieldValues.UserInterpretationMethods__c
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    @api interpretationPicklistInWrapper;
-    setInterprationValues() {
-        if (this.interpretationPicklistInWrapper === null || this.interpretationPicklistInWrapper === undefined) {
-            return;
-        }
-        this.interpretationChoices.forEach((element) => {
-            element.selected = false;
-            if (this.interpretationPicklistInWrapper.includes(element.label)) {
-                element.selected = true;
-            }
-        });
-    }
-
-    assignmentChoices = [
-        { name: '', label: 'Velg et alternativ', selected: true },
-        { name: 'Private', label: 'Dagligliv' },
-        { name: 'Work', label: 'Arbeidsliv' },
-        { name: 'Health Services', label: 'Helsetjenester' },
-        { name: 'Education', label: 'Utdanning' },
-        { name: 'Interpreter at Work', label: 'Tolk på arbeidsplass - TPA' },
-        { name: 'Image Interpreter', label: 'Bildetolkvakt' }
-    ];
-
-    handleAssignmentPicklist(event) {
-        this.fieldValues.AssignmentType__c = event.detail.name;
-        this.sendAssignmentPicklist();
-    }
-
-    sendAssignmentPicklist() {
-        const selectedEvent = new CustomEvent('assignmentpicklist', {
-            detail: this.fieldValues.AssignmentType__c
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    @api assignmentPicklistInWrapper;
-    setAssignmentPicklistValue() {
-        if (this.assignmentPicklistInWrapper === undefined || this.assignmentPicklistInWrapper === null) {
-            return;
-        }
-        this.assignmentChoices.forEach((element) => {
-            element.selected = false;
-            if (element.name === this.assignmentPicklistInWrapper) {
-                element.selected = true;
-            }
-        });
-    }
+    @track componentValues = {
+        physicalOrDigitalRadiobuttons: [
+            { label: 'Fysisk oppmøte', value: 'Fysisk', checked: true },
+            { label: 'Digitalt møte', value: 'Digitalt' }
+        ],
+        sameAddressRadioButtons: [
+            { label: 'Ja', value: 'yes', checked: true },
+            { label: 'Nei', value: 'no' }
+        ],
+        assignmentChoices: [
+            { name: '', label: 'Velg et alternativ', selected: true },
+            { name: 'Private', label: 'Dagligliv' },
+            { name: 'Work', label: 'Arbeidsliv' },
+            { name: 'Health Services', label: 'Helsetjenester' },
+            { name: 'Education', label: 'Utdanning' },
+            { name: 'Interpreter at Work', label: 'TPA - Tolk på arbeidsplass' }
+        ],
+        interpretationChoices: [
+            { name: '', label: 'Velg et alternativ', selected: true },
+            { name: 'SK', label: 'Skrivetolking' },
+            { name: 'TS', label: 'Tegnspråk' },
+            { name: 'TSBS', label: 'Tegnspråk i begrenset synsfelt' },
+            { name: 'TSS', label: 'Tegn som støtte til munnavlesning' },
+            { name: 'TT', label: 'Taletolking' },
+            { name: 'TTS', label: 'Taktilt tegnspråk' }
+        ],
+        isOptionalFields: false
+    };
 
     @api
     setFieldValues() {
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
-        if (this.isOptionalFields) {
+        if (this.componentValues.isOptionalFields) {
             this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
         }
         this.setDependentFields();
@@ -147,6 +83,10 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     getFieldValues() {
         return this.fieldValues;
+    }
+
+    @api getComponentValues() {
+        return this.componentValues;
     }
 
     setDependentFields() {
@@ -160,17 +100,6 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     getTimeInput() {
         return this.template.querySelector('c-hot_recurring-time-input').getTimeInput();
-    }
-
-    @api
-    handleFileUpload(recordId) {
-        if (this.hasFiles) {
-            this.template.querySelector('c-upload-files').handleFileUpload(recordId);
-        }
-    }
-    hasFiles = false;
-    checkFileDataLength(event) {
-        this.hasFiles = event.detail > 0;
     }
 
     @api
@@ -196,77 +125,28 @@ export default class Hot_requestForm_request extends LightningElement {
     getFileConsent(event) {
         this.fieldValues.IsFileConsent__c = event.detail;
     }
-    isAddressFields = false;
+
     sameLocation = true;
-    sameAddressRadioButtons = [
-        { label: 'Ja', value: 'yes' },
-        { label: 'Nei', value: 'no' }
-    ];
-
-    @api sameAddressFromWrapper = [];
-    sendSameAddressRadioButtonValues(res) {
-        const selectedEvent = new CustomEvent('sameaddressradiobuttons', {
-            detail: res
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
     handleSameAddressRadiobuttons(event) {
-        let result = event.detail;
-        this.sendEndOfFormValue(true);
-        this.sendSameAddressRadioButtonValues(result);
-        if (result[0].checked) {
+        this.componentValues.sameAddressRadioButtons = event.detail;
+        if (event.detail[0].checked) {
             this.sameLocation = true;
         } else {
             this.sameLocation = false;
         }
     }
 
-    sendEndOfFormValue(bool) {
-        const selectedEvent = new CustomEvent('isendofform', {
-            detail: bool
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    isOptionalFields = false;
     handleOptionalCheckbox(event) {
-        this.isOptionalFields = event.detail;
-        this.sendOptionalCheckbox();
+        this.componentValues.isOptionalFields = event.detail;
     }
 
-    @api optionalCheckboxFromWrapper = false;
-    sendOptionalCheckbox() {
-        const selectedEvent = new CustomEvent('optionalcheckbox', {
-            detail: this.isOptionalFields
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    sendPhysicalOrDigital(res) {
-        const selectedEvent = new CustomEvent('physicalordigital', {
-            detail: res
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    physicalOrDigitalRadiobuttons = [
-        { label: 'Fysisk oppmøte', value: 'Fysisk' },
-        { label: 'Digitalt møte', value: 'Digitalt' }
-    ];
-
-    @api physicalOrDigitalFromWrapper = [];
     handlePhysicalOrDigital(event) {
-        this.sameLocation = true;
-        let result = event.detail;
-        this.sendPhysicalOrDigital(result);
-        if (result[0].checked) {
-            this.fieldValues.IsScreenInterpreter__c = false;
-            this.sendEndOfFormValue(false);
-        } else {
-            this.sendEndOfFormValue(true);
-            this.fieldValues.IsScreenInterpreter__c = true;
-        }
+        this.componentValues.physicalOrDigitalRadiobuttons = event.detail;
+        this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
+        this.resetPhysicalFields();
+    }
+
+    resetPhysicalFields() {
         if (this.fieldValues.IsScreenInterpreter__c) {
             this.fieldValues.MeetingStreet__c = '';
             this.fieldValues.MeetingPostalCity__c = '';
@@ -274,13 +154,28 @@ export default class Hot_requestForm_request extends LightningElement {
             this.fieldValues.InterpretationStreet__c = '';
             this.fieldValues.InterpretationPostalCode__c = '';
             this.fieldValues.InterpretationPostalCity__c = '';
+            this.componentValues.sameAddressRadioButtons[0].checked = true;
+            this.componentValues.sameAddressRadioButtons[1].checked = false;
+            this.sameLocation = true;
         }
-        this.isAddressFields = true;
     }
 
-    advancedSection = false;
-    handleAdvancedButtonClicked() {
-        this.advancedSection = !this.advancedSection;
+    handleInterpretationPicklist(event) {
+        this.setElementSelected(this.componentValues.interpretationChoices, 'UserInterpretationMethod__c', event);
+    }
+
+    handleAssignmentPicklist(event) {
+        this.setElementSelected(this.componentValues.assignmentChoices, 'AssignmentType__c', event);
+    }
+
+    setElementSelected(array, field, event) {
+        array.forEach((element) => {
+            element.selected = false;
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            }
+        });
+        this.fieldValues[field] = event.detail.name;
     }
 
     handleSMSCheckbox(event) {
@@ -294,5 +189,16 @@ export default class Hot_requestForm_request extends LightningElement {
 
     dragOverHandler(event) {
         event.preventDefault();
+    }
+
+    @api
+    handleFileUpload(recordId) {
+        if (this.hasFiles) {
+            this.template.querySelector('c-upload-files').handleFileUpload(recordId);
+        }
+    }
+    hasFiles = false;
+    checkFileDataLength(event) {
+        this.hasFiles = event.detail > 0;
     }
 }

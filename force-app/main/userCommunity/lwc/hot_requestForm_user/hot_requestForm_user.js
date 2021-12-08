@@ -13,10 +13,10 @@ export default class Hot_requestForm_user extends LightningElement {
         });
     }
 
-    personNumberErrorText = 'Feltet må fylles ut.';
+    personNumberErrorText = 'Personnummer må fylles ut.';
     @api
     validateFields() {
-        this.personNumberErrorText = 'Feltet må fylles ut.';
+        this.personNumberErrorText = 'Personnummer må fylles ut.';
         let hasErrors = 0;
         this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {

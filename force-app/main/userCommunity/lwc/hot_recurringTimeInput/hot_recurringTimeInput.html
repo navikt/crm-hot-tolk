@@ -3,9 +3,10 @@
         <template iterator:it={times}>
             <div key={it.value.id} class="listClass">
                 <c-input
-                    label="Dato (dd.mm.åååå)"
+                    label="Dato"
+                    data-id="date"
                     type="date"
-                    ongetvalueonchange={setDate}
+                    ongetvalueonchange={handleDateChange}
                     name={it.value.id}
                     value={it.value.date}
                     error-text="Feltet må fylles ut."
@@ -13,24 +14,24 @@
                     mobile-style="padding-bottom: 1vw"
                 ></c-input>
                 <c-input
-                    label="Fra (tt:mm)"
+                    label="Starttid"
+                    data-id="startTime"
                     type="time"
-                    value={it.value.startTime}
+                    value={it.value.startTimeString}
                     error-text="Feltet må fylles ut."
                     name={it.value.id}
-                    data-id="starttime"
-                    ongetvalueonchange={setStartTime}
+                    ongetvalueonchange={handleStartTimeChange}
                     desktop-style="padding-left: 2vw"
                     mobile-style="padding-bottom: 1vw"
                 ></c-input>
                 <c-input
-                    label="Til (tt:mm)"
+                    label="Sluttid"
+                    data-id="endTime"
                     type="time"
-                    value={it.value.endTime}
+                    value={it.value.endTimeString}
                     error-text="Feltet må fylles ut."
                     name={it.value.id}
-                    data-id="endtime"
-                    ongetvalueonchange={setEndTime}
+                    ongetvalueonchange={handleEndTimeChange}
                     desktop-style="padding-left: 1vw"
                 ></c-input>
                 <br if:false={isOnlyOneTime} />
@@ -59,23 +60,27 @@
                 master-label="Gjenta"
                 desktop-style="width: 30%"
                 mobile-style="width: 100%"
+                data-id="recurringType"
             >
             </c-picklist>
             <br />
             <div if:true={showWeekDays} aria-live>
                 <c-checkboxgroup
+                    data-id="recurringDays"
                     checkboxes={days}
                     oncheckboxgroupclick={handleDayChosen}
                     header="Ukedager"
+                    error-text="Du må velge minst én dag tolkebehovet gjentas."
                 ></c-checkboxgroup>
             </div>
             <div aria-live if:true={isRepeating}>
                 <c-input
                     label="Sluttdato"
+                    data-id="recurringEndDate"
                     type="date"
                     ongetvalueonchange={setRepeatingEndDateDate}
                     name="recurring End Date"
-                    value={repeatingEndDate}
+                    value={repeatingEndDateString}
                     error-text="Feltet må fylles ut."
                     desktop-style="width: 30%"
                 ></c-input>
