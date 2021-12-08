@@ -276,11 +276,14 @@ export default class Hot_recurringTimeInput extends LightningElement {
         let hasErrors = false;
         let recurringEndDateElement = this.template.querySelector('[data-id="recurringEndDate"]');
         let errorMessage = requireInput(recurringEndDateElement.getValue(), 'Sluttdato');
+        hasErrors += errorMessage !== '';
         if (errorMessage === '') {
             errorMessage = startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime);
+            hasErrors += errorMessage !== '';
         }
         if (errorMessage === '') {
             errorMessage = restrictTheNumberOfDays(this.repeatingEndDate, this.times[0].startTime);
+            hasErrors += errorMessage !== '';
         }
         if (errorMessage === '') {
             errorMessage = chosenDaysWithinPeriod(
@@ -289,8 +292,8 @@ export default class Hot_recurringTimeInput extends LightningElement {
                 this.repeatingOptionChosen,
                 this.chosenDays
             );
+            hasErrors += errorMessage !== '';
         }
-
         recurringEndDateElement.sendErrorMessage(errorMessage);
         return hasErrors;
     }
