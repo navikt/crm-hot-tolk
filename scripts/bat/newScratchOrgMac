@@ -6,8 +6,8 @@ sfdx force:org:create -f config/project-scratch-def.json --setalias $1 --duratio
 # Installer crm-platform-base ver. 0.128
 sfdx force:package:install --package 04t2o000000yTxIAAU -r -k $3 --wait 10 --publishwait 10
 
-# Installer crm-platform-integration ver. 0.66
-sfdx force:package:install --package 04t2o000000yUByAAM -r -k $3 --wait 10 --publishwait 10
+# Installer crm-platform-integration ver. 0.67
+sfdx force:package:install --package 04t7U000000Tn4QQAS -r -k $3 --wait 10 --publishwait 10
 
 # Installer crm-platform-access-control ver. 0.80
 sfdx force:package:install --package 04t2o000000yTjuAAE -r -k $3 --wait 10 --publishwait 10
