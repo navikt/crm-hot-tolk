@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Available_on_Wage</fullName>
     <columns>NAME</columns>
@@ -8,6 +8,7 @@
     <columns>ServiceTerritory__c</columns>
     <columns>WorkType__c</columns>
     <columns>AssignmentType__c</columns>
+    <columns>HOT_DurationLongerThanOneHour__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>Status__c</field>
