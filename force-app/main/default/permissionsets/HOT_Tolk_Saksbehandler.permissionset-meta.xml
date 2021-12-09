@@ -397,6 +397,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_WageClaim__c.HOT_DurationLongerThanOneHour__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_WageClaim__c.Information__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -553,11 +558,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_DurationLongerThanOneHour__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -665,6 +665,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_WageClaim__c.HOT_DurationLongerThanOneHour__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_WageClaim__c.Information__c</field>
         <readable>true</readable>
@@ -1057,11 +1062,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_DoNotCreateHAR__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_DurationLongerThanOneHour__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
