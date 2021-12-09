@@ -362,9 +362,9 @@
                                 ongetcheckboxvalue={getCheckboxValue}
                                 desktop-style="margin-left: unset"
                                 checkbox-validation="true"
-                                checkbox-text-plural="Dokumentene som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedleggene vil bli delt med tolken(e) som blir tildelt oppdraget."
-                                checkbox-text-single="Dokumentet som er lagt ved gir bakgrunnsinformasjon om mitt innmeldte behov for tolk. Informasjonen er nødvendig for at behovet skal bli forsvarlig dekket. Jeg er klar over at vedlegget vil bli delt med tolken(e) som blir tildelt oppdraget."
-                                validation-message="For å legge til vedlegg må du gi samtykke til at formidler og tolk kan se vedleggene som lastes opp"
+                                checkbox-text-plural="Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får."
+                                checkbox-text-single="Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får."
+                                validation-message="For å legge til dokumenter må du gi samtykke til at formidler og tolk kan se dokumentene som lastes opp"
                             ></c-upload-files>
                         </div>
                         <br />
@@ -430,7 +430,6 @@
         content={modalContent}
         desktop-style="text-align: center;"
         center-buttons="true"
-        onbuttonclick={handleClick}
         no-cancel-button="true"
     >
     </c-alertdialog>

@@ -14,3 +14,9 @@ section {
 section {
     padding: 4rem 2rem 1rem 2rem;
 }
+
+.button-container {
+    max-width: 792px;
+    flex-direction: column;
+    display: flex;
+}

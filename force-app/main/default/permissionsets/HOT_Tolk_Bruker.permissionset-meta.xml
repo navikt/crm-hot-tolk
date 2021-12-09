@@ -86,7 +86,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>HOT_Request__c.EconomicProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -153,6 +153,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsOtherEconomicProvicer__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsScreenInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -237,6 +242,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.UserInterpretationMethod__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.UserName__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -248,6 +258,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.UserPhone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.UserPreferredInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

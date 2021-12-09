@@ -77,6 +77,8 @@ public without sharing class HOT_RequestListContoller {
                     InterpretationPostalCity__c,
                     IsSerieoppdrag__c,
                     IsScreenInterpreter__c,
+                    IsOtherEconomicProvicer__c,
+                    IsOrdererWantStatusUpdateOnSMS__c,
                     InvoiceReference__c,
                     Description__c,
                     Status__c,
@@ -95,6 +97,7 @@ public without sharing class HOT_RequestListContoller {
                     OrdererName__c,
                     Owner.Name,
                     UserName__c,
+                    UserPersonNumber__c,
                     Company__r.Name,
                     (SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
                     (
@@ -113,7 +116,6 @@ public without sharing class HOT_RequestListContoller {
             DateTime oneWeekAgo = DateTime.now().addDays(-7);
             DateTime sixMonthsAgo = DateTime.now().addMonths(-6);
             for (HOT_Request__c request : tempRequests) {
-                request.UserName__c = request.ActualUserName__c;
                 request.TempAccountId__c = user.AccountId;
                 if (request.NumberOfWorkOrders__c == 0 || request.NumberOfWorkOrders__c == null) {
                     request.NumberOfWorkOrders__c = 1;
@@ -167,6 +169,28 @@ public without sharing class HOT_RequestListContoller {
             timeMap.put('date', Datetime.newInstance(tempDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd'));
             timeMap.put('startTime', String.valueOf(workOrder.StartDate.time()).removeEnd('Z'));
             timeMap.put('endTime', String.valueOf(workOrder.EndDate.time()).removeEnd('Z'));
+            timeMap.put('status', workOrder.Status);
+            times.add(timeMap);
+        }
+        return times;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Map<String, String>> getTimesNew(List<String> requestIds) {
+        List<Map<String, String>> times = new List<Map<String, String>>();
+        List<WorkOrder> workOrders = [
+            SELECT Id, StartDate, EndDate, Status
+            FROM WorkOrder
+            WHERE HOT_Request__r.Id IN :requestIds AND Status != 'Annul' AND Status != 'Canceled'
+            ORDER BY StartDate ASC
+        ];
+        for (WorkOrder workOrder : workOrders) {
+            Map<String, String> timeMap = new Map<String, String>();
+            timeMap.put('id', (String) workOrder.Id);
+            Date tempDate = workOrder.StartDate.date();
+            timeMap.put('date', Datetime.newInstance(tempDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd'));
+            timeMap.put('startTime', String.valueOf(workOrder.StartDate.getTime()));
+            timeMap.put('endTime', String.valueOf(workOrder.EndDate.getTime()));
             timeMap.put('status', workOrder.Status);
             times.add(timeMap);
         }

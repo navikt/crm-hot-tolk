@@ -23,6 +23,12 @@
     margin-top: 0.6rem;
 }
 
+.brodsmulesti {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
 .skjema-ikon {
     width: 4rem;
     height: 4rem;
@@ -92,6 +98,9 @@ section.sub-form:last-child {
     text-align: center;
     max-width: 792px;
     padding: 1rem 2rem 1rem 2rem;
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
 }
 
 .back-button {

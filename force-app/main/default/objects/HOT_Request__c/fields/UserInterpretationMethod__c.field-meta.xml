@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UserInterpretationMethod__c</fullName>
+    <externalId>false</externalId>
+    <label>UserInterpretationMethod</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>SK</fullName>
+                <default>false</default>
+                <label>Skrivetolking</label>
+            </value>
+            <value>
+                <fullName>TS</fullName>
+                <default>false</default>
+                <label>Tegnspråk</label>
+            </value>
+            <value>
+                <fullName>TSBS</fullName>
+                <default>false</default>
+                <label>Tegnspråk i begrenset synsfelt</label>
+            </value>
+            <value>
+                <fullName>TSS</fullName>
+                <default>false</default>
+                <label>Tegn som støtte til munnavlesning</label>
+            </value>
+            <value>
+                <fullName>TT</fullName>
+                <default>false</default>
+                <label>Taletolking</label>
+            </value>
+            <value>
+                <fullName>TTS</fullName>
+                <default>false</default>
+                <label>Taktilt tegnspråk</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

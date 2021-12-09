@@ -7,7 +7,7 @@ export default class Hot_requestForm_type extends NavigationMixin(LightningEleme
     @track radiobuttons = [
         { label: 'For meg selv', value: 'Me', checked: true },
         { label: 'For en bruker', value: 'User' },
-        { label: 'Til et arrangement/virksomhet/annet', value: 'Company' }
+        { label: 'Til en virksomhet/arrangement/annet', value: 'Company' }
     ];
 
     handleRequestTypeChange(event) {

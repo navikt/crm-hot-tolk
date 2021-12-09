@@ -3,8 +3,6 @@ import { LightningElement, track, api } from 'lwc';
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
         Subject__c: '',
-        StartTime__c: '',
-        EndTime__c: '',
         MeetingStreet__c: '',
         MeetingPostalCity__c: '',
         MeetingPostalCode__c: '',
@@ -14,35 +12,71 @@ export default class Hot_requestForm_request extends LightningElement {
         Description__c: '',
         IsFileConsent__c: false,
         Source__c: 'Community',
-        IsOrdererWantStatusUpdateOnSMS__c: true
+        IsOrdererWantStatusUpdateOnSMS__c: true,
+        IsScreenInterpreter__c: false,
+        UserPhone__c: '',
+        UserPreferredInterpreter__c: '',
+        AssignmentType__c: '',
+        UserInterpretationMethod__c: ''
     };
-    @api digitalCheckboxValue = false;
     @api isRequestTypeMe;
     @api isGetAll;
     @api requestIds;
     @api recordId;
     @api parentFieldValues;
+    @api parentRequestComponentValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
-        this.sameLocation = this.fieldValues.MeetingStreet__c === this.fieldValues.InterpretationStreet__c;
-        if (!this.sameLocation) {
-            this.radiobuttonOptions[1].checked = true;
+        for (let field in this.parentRequestComponentValues) {
+            if (this.componentValues[field] != null) {
+                this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
+            }
         }
-        if (this.digitalCheckboxValue) {
-            this.isDigitalMeeting = true;
-        }
+        this.sameLocation = this.componentValues.sameAddressRadioButtons[0].checked;
+        this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
     }
+
+    @track componentValues = {
+        physicalOrDigitalRadiobuttons: [
+            { label: 'Fysisk oppmøte', value: 'Fysisk', checked: true },
+            { label: 'Digitalt møte', value: 'Digitalt' }
+        ],
+        sameAddressRadioButtons: [
+            { label: 'Ja', value: 'yes', checked: true },
+            { label: 'Nei', value: 'no' }
+        ],
+        assignmentChoices: [
+            { name: '', label: 'Velg et alternativ', selected: true },
+            { name: 'Private', label: 'Dagligliv' },
+            { name: 'Work', label: 'Arbeidsliv' },
+            { name: 'Health Services', label: 'Helsetjenester' },
+            { name: 'Education', label: 'Utdanning' },
+            { name: 'Interpreter at Work', label: 'TPA - Tolk på arbeidsplass' }
+        ],
+        interpretationChoices: [
+            { name: '', label: 'Velg et alternativ', selected: true },
+            { name: 'SK', label: 'Skrivetolking' },
+            { name: 'TS', label: 'Tegnspråk' },
+            { name: 'TSBS', label: 'Tegnspråk i begrenset synsfelt' },
+            { name: 'TSS', label: 'Tegn som støtte til munnavlesning' },
+            { name: 'TT', label: 'Taletolking' },
+            { name: 'TTS', label: 'Taktilt tegnspråk' }
+        ],
+        isOptionalFields: false
+    };
 
     @api
     setFieldValues() {
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
-        this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
+        if (this.componentValues.isOptionalFields) {
+            this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
+        }
         this.setDependentFields();
     }
 
@@ -51,8 +85,11 @@ export default class Hot_requestForm_request extends LightningElement {
         return this.fieldValues;
     }
 
+    @api getComponentValues() {
+        return this.componentValues;
+    }
+
     setDependentFields() {
-        this.fieldValues.IsFileConsent__c = this.fileConsent;
         if (this.sameLocation) {
             this.fieldValues.InterpretationStreet__c = this.fieldValues.MeetingStreet__c;
             this.fieldValues.InterpretationPostalCode__c = this.fieldValues.MeetingPostalCode__c;
@@ -63,17 +100,6 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     getTimeInput() {
         return this.template.querySelector('c-hot_recurring-time-input').getTimeInput();
-    }
-
-    @api
-    handleFileUpload(recordId) {
-        if (this.hasFiles) {
-            this.template.querySelector('c-upload-files').handleFileUpload(recordId);
-        }
-    }
-    hasFiles = false;
-    checkFileDataLength(event) {
-        this.hasFiles = event.detail > 0;
     }
 
     @api
@@ -96,31 +122,83 @@ export default class Hot_requestForm_request extends LightningElement {
         return false;
     }
 
-    fileConsent = false;
     getFileConsent(event) {
-        this.fileConsent = event.detail;
+        this.fieldValues.IsFileConsent__c = event.detail;
     }
 
-    @track sameLocation = true;
-    radiobuttonOptions = [
-        { label: 'Ja', value: 'yes', checked: true },
-        { label: 'Nei', value: 'no' }
-    ];
-
-    radiobuttonsToggled() {
-        this.sameLocation = !this.sameLocation;
+    sameLocation = true;
+    handleSameAddressRadiobuttons(event) {
+        this.componentValues.sameAddressRadioButtons = event.detail;
+        if (event.detail[0].checked) {
+            this.sameLocation = true;
+        } else {
+            this.sameLocation = false;
+        }
     }
 
-    isDigitalMeeting = false;
-    handleDigitalCheckbox(event) {
-        this.isDigitalMeeting = event.detail;
-        const selectedEvent = new CustomEvent('digitalcheckboxclicked', {
-            detail: event.detail
+    handleOptionalCheckbox(event) {
+        this.componentValues.isOptionalFields = event.detail;
+    }
+
+    handlePhysicalOrDigital(event) {
+        this.componentValues.physicalOrDigitalRadiobuttons = event.detail;
+        this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
+        this.resetPhysicalFields();
+    }
+
+    resetPhysicalFields() {
+        if (this.fieldValues.IsScreenInterpreter__c) {
+            this.fieldValues.MeetingStreet__c = '';
+            this.fieldValues.MeetingPostalCity__c = '';
+            this.fieldValues.MeetingPostalCode__c = '';
+            this.fieldValues.InterpretationStreet__c = '';
+            this.fieldValues.InterpretationPostalCode__c = '';
+            this.fieldValues.InterpretationPostalCity__c = '';
+            this.componentValues.sameAddressRadioButtons[0].checked = true;
+            this.componentValues.sameAddressRadioButtons[1].checked = false;
+            this.sameLocation = true;
+        }
+    }
+
+    handleInterpretationPicklist(event) {
+        this.setElementSelected(this.componentValues.interpretationChoices, 'UserInterpretationMethod__c', event);
+    }
+
+    handleAssignmentPicklist(event) {
+        this.setElementSelected(this.componentValues.assignmentChoices, 'AssignmentType__c', event);
+    }
+
+    setElementSelected(array, field, event) {
+        array.forEach((element) => {
+            element.selected = false;
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            }
         });
-        this.dispatchEvent(selectedEvent);
+        this.fieldValues[field] = event.detail.name;
     }
 
     handleSMSCheckbox(event) {
         this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
+    }
+
+    uploadFilesDropHandler(event) {
+        event.preventDefault();
+        this.template.querySelector('c-upload-files').dropHandler(event);
+    }
+
+    dragOverHandler(event) {
+        event.preventDefault();
+    }
+
+    @api
+    handleFileUpload(recordId) {
+        if (this.hasFiles) {
+            this.template.querySelector('c-upload-files').handleFileUpload(recordId);
+        }
+    }
+    hasFiles = false;
+    checkFileDataLength(event) {
+        this.hasFiles = event.detail > 0;
     }
 }
