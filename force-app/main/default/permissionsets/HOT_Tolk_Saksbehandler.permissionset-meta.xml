@@ -392,6 +392,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_WageClaim__c.DurationLongerThanOneHour__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_WageClaim__c.EndTime__c</field>
         <readable>true</readable>
     </fieldPermissions>
