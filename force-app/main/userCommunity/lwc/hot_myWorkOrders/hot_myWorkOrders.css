@@ -1,0 +1,39 @@
+.liste-max-width {
+    max-width: 1480px;
+    width: 100%;
+    padding: 0 3.25rem;
+}
+
+.liste {
+    padding: 3.25rem 3.25rem 3.25rem 3.25rem;
+    background-color: #fff !important;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    margin: 1rem auto 1rem auto;
+    border-radius: 0.5rem;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.comments-dialog-container {
+    all: unset;
+    background-color: #fff;
+    display: block;
+    padding: 5rem;
+    border-radius: 4px;
+    position: relative;
+    flex-grow: 0;
+    overflow-x: auto;
+    max-height: 100%;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    z-index: 1010;
+    max-width: 432px;
+    max-height: 75%;
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}

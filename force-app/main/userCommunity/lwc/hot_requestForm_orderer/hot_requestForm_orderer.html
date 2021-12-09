@@ -1,0 +1,48 @@
+<template>
+    <section class="bestiller-info-skjema sub-form">
+        <p class="helptext">
+            Navn på bestiller/virksomhet (ikke kontaktinformasjon) og bestillingens øvrige informasjon om behov for
+            tolk, vil være tilgjengelig for tolkebruker
+        </p>
+        <br />
+        <div style="flex-direction: row; display: flex; align-items: center">
+            <h2 class="header" style="padding-right: 5px">Kontaktinformasjon</h2>
+            <c-helptext
+                text="For å kunne kontakte deg ved behov for ytterligere opplysninger, vil dine kontaktopplysninger bli knyttet til denne tolkebestillingen."
+            ></c-helptext>
+        </div>
+        <br />
+        <c-input
+            label="Bestillers navn"
+            name="ordererName"
+            form="tolk-skjema-input"
+            value={personAccount.Name}
+            disabled="true"
+        ></c-input>
+        <br />
+        <c-input
+            label="Bestillers e-post"
+            name="OrdererEmail__c"
+            form="tolk-skjema-input"
+            value={fieldValues.OrdererEmail__c}
+            error-text="Feltet må fylles ut."
+            type="email"
+        ></c-input>
+        <br />
+        <c-input
+            label="Bestillers telefon"
+            name="OrdererPhone__c"
+            form="tolk-skjema-input"
+            value={fieldValues.OrdererPhone__c}
+            error-text={ordererPhoneError}
+            type="tel"
+        ></c-input>
+        <c-checkbox
+            label="Ønsker SMS-varsel ved statusendring på bestillingen"
+            oncheckboxclick={handleSMSCheckbox}
+            name="IsOrdererWantStatusUpdateOnSMS__c"
+            form="tolk-skjema-input"
+            default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
+        ></c-checkbox>
+    </section>
+</template>

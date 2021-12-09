@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RequireCompanyOnTPA</fullName>
+    <active>true</active>
+    <errorConditionFormula>ISPICKVAL(AssignmentType__c, &quot;Interpreter at Work&quot;)
+&amp;&amp;
+ISBLANK(Company__c)</errorConditionFormula>
+    <errorDisplayField>Company__c</errorDisplayField>
+    <errorMessage
+    >Når du har valgt &quot;Tolk på arbeidsplass - TPA&quot; som oppdragstype må du fylle ut feltet Virksomhet.</errorMessage>
+</ValidationRule>

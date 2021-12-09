@@ -6,6 +6,6 @@
     <externalId>false</externalId>
     <label>Update Status?</label>
     <trackFeedHistory>false</trackFeedHistory>
-    <trackHistory>true</trackHistory>
+    <trackHistory>false</trackHistory>
     <type>Checkbox</type>
 </CustomField>

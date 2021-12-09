@@ -3,7 +3,7 @@
     <customValue>
         <fullName>Private</fullName>
         <default>false</default>
-        <label>Privatliv</label>
+        <label>Dagligliv</label>
     </customValue>
     <customValue>
         <fullName>Work</fullName>
@@ -40,8 +40,8 @@
     <customValue>
         <fullName>Image Interpreter</fullName>
         <default>false</default>
-        <isActive>false</isActive>
-        <label>Bildetolk</label>
+        <isActive>true</isActive>
+        <label>Bildetolkvakt</label>
     </customValue>
     <masterLabel>Assignment Type</masterLabel>
     <sorted>false</sorted>

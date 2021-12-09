@@ -22,6 +22,8 @@
     <referrerPolicyOriginWhenCrossOrigin>true</referrerPolicyOriginWhenCrossOrigin>
     <requireHttps>true</requireHttps>
     <selfRegPage>CommunitiesSelfReg</selfRegPage>
+    <siteAdmin>user.user@nav.no</siteAdmin>
+    <siteGuestRecordDefaultOwner>frode.hoen@nav.no</siteGuestRecordDefaultOwner>
     <siteType>ChatterNetwork</siteType>
     <subdomain>navdialog</subdomain>
     <urlPathPrefix>tolketjenesten</urlPathPrefix>

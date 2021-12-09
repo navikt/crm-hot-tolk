@@ -1,0 +1,27 @@
+<template>
+    <section class="bruker-info-skjema sub-form">
+        <div style="flex-direction: row; display: flex; align-items: center">
+            <h2 class="header" style="padding-right: 5px">Informasjon om tolkebruker</h2>
+            <c-helptext
+                text="Oppgi hvem som trenger tolk fra tolketjenesten for døve, døvblinde og hørselshemmede."
+            ></c-helptext>
+        </div>
+        <br />
+        <c-input
+            label="Tolkbrukers navn"
+            name="UserName__c"
+            form="tolk-skjema-input"
+            value={fieldValues.UserName__c}
+            error-text="Feltet må fylles ut."
+        ></c-input>
+        <br />
+        <c-input
+            label="Tolkbrukers fødselsnummer"
+            name="UserPersonNumber__c"
+            form="tolk-skjema-input"
+            value={fieldValues.UserPersonNumber__c}
+            error-text={personNumberErrorText}
+            max-length="11"
+        ></c-input>
+    </section>
+</template>

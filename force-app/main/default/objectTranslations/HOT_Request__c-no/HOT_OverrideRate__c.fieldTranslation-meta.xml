@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Overstyr sats</label>
+    <name>HOT_OverrideRate__c</name>
+    <picklistValues>
+        <masterLabel>Annen sats</masterLabel>
+        <translation><!-- Annen sats --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Domstol-sats</masterLabel>
+        <translation><!-- Domstol-sats --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Ordinær sats</masterLabel>
+        <translation><!-- Ordinær sats --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UDI-sats</masterLabel>
+        <translation><!-- UDI-sats --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UNE-sats</masterLabel>
+        <translation><!-- UNE-sats --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

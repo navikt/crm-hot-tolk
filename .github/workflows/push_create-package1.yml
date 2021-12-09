@@ -257,7 +257,7 @@ jobs:
       - name: Set release fields
         id: release-fields
         run: |
-          versionNumber=$(cat sfdx-project.json | jq '.packageDirectories[0].versionNumber' -r | sed 's/.\{5\}$//')
+          versionNumber=$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')
           betaVersionNumber=${{ needs.create-package.outputs.betaVersionNumber }}
 
           echo "::set-output name=tagName::v$(echo $versionNumber)-beta$(echo $betaVersionNumber)"

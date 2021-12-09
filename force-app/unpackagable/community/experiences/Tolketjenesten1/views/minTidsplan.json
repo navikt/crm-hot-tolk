@@ -13,8 +13,8 @@
           "UUID" : "3eb0c55a-3520-49a1-b4b4-110c54ae41c6",
           "columns" : [ {
             "UUID" : "8536a65b-31ad-4aa0-bdbe-56a03c1ee2c1",
-            "columnName" : "Column 1",
             "columnKey" : "1",
+            "columnName" : "Column 1",
             "columnWidth" : "12",
             "seedComponents" : [ ]
           } ]
@@ -73,9 +73,9 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
-        "title" : "Min Tidsplan"
+        "title" : "Min tidsplan"
       },
       "componentName" : "forceCommunity:seoAssistant",
       "id" : "2a195f7b-6639-448c-8b8a-888545d99f01",

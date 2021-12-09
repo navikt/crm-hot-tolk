@@ -1,0 +1,10 @@
+<template>
+    <ul class="list-column-2">
+        <template iterator:it={record}>
+            <li key={it.value.id} if:true={it.value.value}>
+                <div class="listelement__header"><p class="typo-element">{it.value.label}</p></div>
+                <p class="typo-normal content">{it.value.value}</p>
+            </li>
+        </template>
+    </ul>
+</template>

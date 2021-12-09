@@ -28,8 +28,8 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
         "title" : "Finnes ikke (404)"
       },
       "componentName" : "forceCommunity:seoAssistant",

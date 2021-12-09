@@ -1,23 +1,28 @@
-:: Opprett en scratch org
+echo "Oppretter scratch org"
 call sfdx force:org:create -f config\project-scratch-def.json --setalias %1 --durationdays %2 --setdefaultusername --json --loglevel fatal  --wait 10
 
-:: Installer crm-platform-base ver. 0.51
-call sfdx force:package:install --package 04t2o000000yQhkAAE -r -k navcrm --wait 10 --publishwait 10
+echo "Installerer crm-platform-base ver. 0.128"
+call sfdx force:package:install --package 04t2o000000yTxIAAU -r -k %3 --wait 10 --publishwait 10
 
-:: Installer crm-platform-access-control ver. 0.50
-call sfdx force:package:install --package 04t2o000000yQtHAAU -r -k navcrm --wait 10 --publishwait 10
+echo "Installerer crm-platform-integration ver. 0.65"
+call sfdx force:package:install --package 04t2o000000yU7SAAU -r -k %3 --wait 10 --publishwait 10
 
-:: Installer crm-community-base ver. 0.14
-call sfdx force:package:install --package 04t2o000000yQbIAAU -r -k navcrm --wait 10 --publishwait 10
+echo "Installerer crm-platform-access-control ver. 0.80"
+call sfdx force:package:install --package 04t2o000000yTjuAAE -r -k %3 --wait 10 --publishwait 10
 
-:: Dytt kildekoden til scratch org'en
+echo "Installerer crm-community-base ver. 0.35"
+call sfdx force:package:install --package 04t2o000000yU44AAE -r -k %3 --wait 10 --publishwait 10
+
+echo "Installerer crm-platform-reporting ver. 0.25"
+call sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k %3 --wait 10 --publishwait 10
+
+echo "Dytter kildekoden til scratch org'en"
 call sfdx force:source:push
 
-:: Tildel tilatelsessett til brukeren
+echo "Tildeler tilatelsessett til brukeren"
 call sfdx force:user:permset:assign --permsetname HOT_admin
 
-:: Opprett testdata
+echo "Oppretter testdata"
 call sfdx force:apex:execute -f scripts/apex/createTestData.apex
 
-:: Hent kildekoden til scratch org'en (for å nullstille)
-call sfdx force:source:pull
+echo "Ferdig"

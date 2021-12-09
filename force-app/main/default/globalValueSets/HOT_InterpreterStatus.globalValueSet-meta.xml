@@ -11,11 +11,6 @@
         <label>Godkjent</label>
     </customValue>
     <customValue>
-        <fullName>Reservert</fullName>
-        <default>false</default>
-        <label>Reservert</label>
-    </customValue>
-    <customValue>
         <fullName>Tildelt</fullName>
         <default>false</default>
         <label>Tildelt</label>

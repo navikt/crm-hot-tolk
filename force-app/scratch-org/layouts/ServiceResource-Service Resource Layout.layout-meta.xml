@@ -38,6 +38,14 @@
                 <behavior>Edit</behavior>
                 <field>HOT_Skilled__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_AgreementFreelance__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_InterpreterSpace__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -70,6 +78,10 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>HOT_Address__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>HOT_Email__c</field>
             </layoutItems>
             <layoutItems>
@@ -78,6 +90,10 @@
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_AddressOverride__c</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>HOT_EmailOverride__c</field>
@@ -124,11 +140,15 @@
     </layoutSections>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>ServiceAppointment.std21</fields>
+        <fields>ServiceAppointment.std22</fields>
         <relatedList>HOT_InterestedResource__c.ServiceResource__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
         <fields>ServiceAppointment__c</fields>
+        <fields>SchedStartTime__c</fields>
+        <fields>SchedEndTime__c</fields>
         <fields>Status__c</fields>
         <fields>StatusComment__c</fields>
         <relatedList>HOT_HistoricallyAssignedResource__c.ServiceResource__c</relatedList>
@@ -136,6 +156,16 @@
     <relatedLists>
         <fields>ServiceAppointment</fields>
         <relatedList>ServiceAppointments</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>ServiceAppointment__c</fields>
+        <fields>StartTime__c</fields>
+        <fields>EndTime__c</fields>
+        <fields>Status__c</fields>
+        <fields>AssignmentType__c</fields>
+        <fields>WorkType__c</fields>
+        <relatedList>HOT_WageClaim__c.ServiceResource__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>SkillMasterLabel</fields>
@@ -227,7 +257,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1j000001Vj26</masterLabel>
+        <masterLabel>00h0E000002J2xC</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

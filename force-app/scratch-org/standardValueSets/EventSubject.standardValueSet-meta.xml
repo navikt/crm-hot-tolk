@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Møte</fullName>
+        <default>false</default>
+        <label>Møte</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Ferie</fullName>
+        <default>false</default>
+        <label>Ferie</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Opplæring</fullName>
+        <default>false</default>
+        <label>Opplæring</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Medisinsk</fullName>
+        <default>false</default>
+        <label>Medisinsk</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Absence</fullName>
+        <default>false</default>
+        <label>Absence</label>
+    </standardValue>
+</StandardValueSet>

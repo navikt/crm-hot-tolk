@@ -1,0 +1,89 @@
+<template>
+    <div class="main-content">
+        <div class="action-container">
+            <div class="left-content">
+                <c-picklist
+                    master-label="Filtrer på status"
+                    choices={choices}
+                    onpicklistvaluechange={handlePicklist}
+                ></c-picklist>
+            </div>
+            <div class="right-content">
+                <lightning-button
+                    title="Meld interesse"
+                    variant="brand"
+                    label="Tilbaketrekk interesse"
+                    onclick={retractInterest}
+                >
+                </lightning-button>
+            </div>
+        </div>
+        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
+            <c-picklist
+                master-label="Sorter etter"
+                choices={sortingOptions}
+                onpicklistvaluechange={onHandleSort}
+            ></c-picklist>
+        </div>
+
+        <lightning-datatable
+            key-field="Id"
+            data={interestedResourcesFiltered}
+            columns={columns}
+            default-sort-direction={defaultSortDirection}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={onHandleSort}
+            onrowaction={handleRowAction}
+            onrowselection={getSelectedName}
+        >
+        </lightning-datatable>
+    </div>
+
+    <div
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+        tabindex="-1"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            role="dialog"
+            aria-labelledby="details-header-id"
+        >
+            <section>
+                <h2 id="details-header-id" class="typo-undertittel">Detaljer</h2>
+                <c-hot_record-details record={interestedResourceDetails}></c-hot_record-details>
+                <section>
+                    <div style="padding: 1rem">
+                        <br />
+                        <div>
+                            <h2 class="typo-undertittel ikke-sensitive-opplysninger__label">Dialog med formidler</h2>
+                            <template iterator:it={prevComments}>
+                                <p class="typo-normal" key={it.value}>{it.value}</p>
+                                <p style="color: transparent" key={it.value}>.</p>
+                            </template>
+                        </div>
+                        <lightning-textarea
+                            label="Legg til ny kommentar"
+                            style="margin-bottom: 1rem"
+                            class="newComment"
+                            name="newComment"
+                        >
+                        </lightning-textarea>
+                        <lightning-button
+                            onclick={sendComment}
+                            class="slds-m-left_x-small"
+                            variant="brand"
+                            type="submit"
+                            label="Send inn"
+                        >
+                        </lightning-button>
+                    </div>
+                </section>
+            </section>
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
+                <span class="text-hide">Lukk</span>
+            </button>
+        </div>
+    </div>
+</template>

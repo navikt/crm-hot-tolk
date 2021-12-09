@@ -38,8 +38,14 @@
             <section>Comments</section>
         </sections>
         <sections>
-            <label><!-- Custom Links --></label>
+            <label>
+                <!-- Custom Links -->
+            </label>
             <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label>Oppdragsinformasjon</label>
+            <section>Service Appointment Information</section>
         </sections>
     </layouts>
     <nameFieldLabel>Interessert ressurs</nameFieldLabel>
@@ -48,7 +54,7 @@
         <name>AddComment</name>
     </quickActions>
     <quickActions>
-        <label>Tildel oppdraget til ressursen</label>
+        <label>Reserver oppdraget til ressursen</label>
         <name>AssignResource</name>
     </quickActions>
 </CustomObjectTranslation>

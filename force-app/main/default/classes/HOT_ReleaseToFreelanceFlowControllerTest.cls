@@ -1,26 +1,23 @@
 @isTest
-private class HOT_ReleaseToFreelanceFlowControllerTest{
+private class HOT_ReleaseToFreelanceFlowControllerTest {
+    @testSetup
+    static void setup() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+    }
 
-	@testSetup static void setup(){
+    @isTest
+    static void testMethod1() {
+        Worktype workType = [SELECT Id FROM WorkType];
+        String workTypeId = (String) workType.Id;
 
-		WorkType workType = HOT_TestDataFactory.createWorkType();
-		insert workType;
-		
-	}
+        Test.setCurrentPage(Page.HOT_ReleaseToFreelance);
+        ApexPages.currentPage().getParameters().put('Id', workTypeId);
 
-	@isTest static void testMethod1() {
+        String output = HOT_ReleaseToFreelanceFlowController.getRecordId();
+        workType = [SELECT Id FROM WorkType];
+        workTypeId = (String) workType.Id;
 
-		Worktype workType = [SELECT Id FROM WorkType];
-		String workTypeId = (String)workType.Id;
-
-		Test.setCurrentPage(Page.HOT_ReleaseToFreelance);
-		ApexPages.currentPage().getParameters().put('Id',workTypeId);
-
-		String output = HOT_ReleaseToFreelanceFlowController.getRecordId();
-		workType = [SELECT Id FROM WorkType];
-		workTypeId = (String)workType.Id;
-
-		System.assertEquals(workTypeId, output);
-	}
-
+        System.assertEquals(workTypeId, output);
+    }
 }

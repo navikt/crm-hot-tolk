@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Audience xmlns="http://soap.sforce.com/2006/04/metadata">
     <audienceName>Tolkbruker</audienceName>
     <container>Tolketjenesten</container>
@@ -11,7 +11,15 @@
             <operator>Equal</operator>
             <type>Profile</type>
         </criterion>
+        <criterion>
+            <criteriaNumber>2</criteriaNumber>
+            <criterionValue>
+                <profile>nav bruker plus</profile>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>Profile</type>
+        </criterion>
     </criteria>
-    <formulaFilterType>AllCriteriaMatch</formulaFilterType>
+    <formulaFilterType>AnyCriterionMatches</formulaFilterType>
     <isDefaultAudience>false</isDefaultAudience>
 </Audience>

@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_ExternalWorkOrderStatus__c</fullName>
     <externalId>false</externalId>
     <formula>CASE(TEXT(Status),
-&quot;New&quot;, CASE(TEXT(HOT_Request__r.Status__c), &quot;Åpen&quot;, &quot;Åpen&quot;, &quot;Godkjent&quot;, &quot;Under behandling&quot;, &quot;Ukjent&quot;),
+&quot;New&quot;, IF(TEXT(HOT_Request__r.Status__c) = &quot;Åpen&quot;, &quot;Åpen&quot;, &quot;Under behandling&quot;),
 &quot;Scheduled&quot;, &quot;Under behandling&quot;,
 &quot;Dispatched&quot;, &quot;Du har fått tolk&quot;,
 &quot;Partially Complete&quot;, &quot;Ferdig&quot;,

@@ -1,0 +1,62 @@
+.main-content {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.action-container {
+    margin-bottom: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.left-content {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.right-content {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+@media (max-width: 576px) {
+    .action-container {
+        margin-bottom: 1rem;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column-reverse;
+    }
+    .left-content {
+        width: 100%;
+        margin: 1rem 0;
+    }
+    .right-content {
+        width: unset;
+    }
+    .slds-button_brand,
+    .slds-button--brand {
+        width: 100%;
+    }
+    .liste {
+        padding: 1rem 1rem 1rem 1rem;
+        margin: 1rem auto 1rem auto;
+    }
+    div.liste.liste-max-width > div > lightning-radio-group {
+        width: 50%;
+    }
+
+    .filter-list-checkbox {
+        width: 50%;
+    }
+}

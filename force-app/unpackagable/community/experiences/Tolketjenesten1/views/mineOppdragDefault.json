@@ -13,8 +13,8 @@
           "UUID" : "1537cb88-a2ab-4830-9110-d6816d4944dd",
           "columns" : [ {
             "UUID" : "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
-            "columnName" : "Column 1",
             "columnKey" : "1",
+            "columnName" : "Column 1",
             "columnWidth" : "12",
             "seedComponents" : [ ]
           } ]
@@ -50,9 +50,9 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
-        "title" : "Mine Oppdrag"
+        "title" : "Mine oppdrag"
       },
       "componentName" : "forceCommunity:seoAssistant",
       "id" : "a26ac4bd-7c1c-47f1-ba95-8c069a2a1bdd",

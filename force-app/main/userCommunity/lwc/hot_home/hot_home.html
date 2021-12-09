@@ -1,0 +1,164 @@
+<template>
+    <div class="portal-hilsen">
+        <h2 class="typo-undertittel">Hei {name}</h2>
+    </div>
+    <div if:true={isFrilans} class="informasjonstavle__body">
+        <div class="informasjonstavle__content">
+            <div class="informasjonstavle__bildepaneler-single">
+                <a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag">
+                    <div class="panelMedBilde__imageOnPanel-single">
+                        <div class="panelMedBilde__svgContainer-single">
+                            <img
+                                style="height: 60%"
+                                src="/s/sfsites/c/resource/1590665878000/OppdragIkon"
+                                alt="Til mine oppdrag"
+                            />
+                        </div>
+                    </div>
+                    <div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
+                        <h2 class="typo-undertittel">Oppdrag</h2>
+                        <div>
+                            <p class="typo-normal">
+                                <span>
+                                    Se oversikt over dine oppdrag, og åpne oppdrag som du kan melde interesse om.</span
+                                >
+                            </p>
+                        </div>
+                    </div>
+                    <div class="panelMedBilde__imageOnPanel-single">
+                        <div class="panelMedBilde__svgContainer-single">
+                            <img src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
+                        </div>
+                    </div>
+                </a>
+                <a class="panelMedBilde panelMedBilde-single" href="/s/frilanstolk-min-side">
+                    <div class="panelMedBilde__imageOnPanel-single">
+                        <div class="panelMedBilde__svgContainer-single">
+                            <lightning-icon
+                                icon-name="utility:user"
+                                alternative-text="Til frilanstolk min side"
+                                style="height: 60%"
+                                title="Min side frilanstolk"
+                            ></lightning-icon>
+                        </div>
+                    </div>
+                    <div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
+                        <h2 class="typo-undertittel">Frilanstolk min side</h2>
+                        <div>
+                            <p class="typo-normal">
+                                <span> Se og rediger kontaktinformasjon og kvalifikasjoner.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="panelMedBilde__imageOnPanel-single">
+                        <div class="panelMedBilde__svgContainer-single">
+                            <img src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="informasjonstavle__body">
+        <div class="informasjonstavle__content">
+            <div class="informasjonstavle__bildepaneler">
+                <a class="panelMedBilde" href="/s/ny-bestilling">
+                    <div class="tolketjenesten panelMedBilde__imageOnPanel">
+                        <div class="panelMedBilde__svgContainer">
+                            <img
+                                class="illustrasjon"
+                                src="/s/sfsites/c/resource/1584959871000/BestilleTolk"
+                                alt="Til ny bestilling"
+                            />
+                        </div>
+                    </div>
+                    <div class="panel panelMedBilde__panelOnPanel">
+                        <h2 class="typo-undertittel">Bestille tolk</h2>
+                        <div>
+                            <p class="typo-normal">
+                                Her kan du bestille tolketjenester for døve, døvblinde og hørselshemmede.
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <a class="panelMedBilde" href="/s/mine-bestillinger">
+                    <div class="tolketjenesten panelMedBilde__imageOnPanel">
+                        <div class="panelMedBilde__svgContainer">
+                            <img
+                                class="illustrasjon"
+                                src="/s/sfsites/c/resource/1584959850000/MineBestillinger"
+                                alt="Til mine bestillinger"
+                            />
+                        </div>
+                    </div>
+                    <div class="panel panelMedBilde__panelOnPanel">
+                        <h2 class="typo-undertittel">Mine bestillinger</h2>
+                        <div>
+                            <p class="typo-normal">
+                                Her finner du oversikt over alle bestillinger du har sendt inn, og status på disse.
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <a class="panelMedBilde" href="/s/min-tidsplan">
+                    <div class="tolketjenesten panelMedBilde__imageOnPanel">
+                        <div class="panelMedBilde__svgContainer">
+                            <img
+                                class="illustrasjon"
+                                src="/s/sfsites/c/resource/1607003312000/MinTidsplan"
+                                alt="Til min tidsplan"
+                            />
+                        </div>
+                    </div>
+                    <div class="panel panelMedBilde__panelOnPanel">
+                        <h2 class="typo-undertittel">Min tidsplan</h2>
+                        <div>
+                            <p class="typo-normal">Her finner du oversikt over dine framtidige avtaler.</p>
+                        </div>
+                    </div>
+                </a>
+                <a class="panelMedBilde" href="/s/min-side">
+                    <div class="tolketjenesten panelMedBilde__imageOnPanel">
+                        <div class="panelMedBilde__svgContainer">
+                            <img
+                                class="illustrasjon"
+                                src="/s/sfsites/c/resource/1602568081000/MinSide"
+                                alt="Til min side"
+                            />
+                        </div>
+                    </div>
+                    <div class="panel panelMedBilde__panelOnPanel">
+                        <h2 class="typo-undertittel">Min side</h2>
+                        <div>
+                            <p class="typo-normal">
+                                Her finner du oversikt over informasjon Tolketjenesten har om deg.
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <a
+                    class="panelMedBilde"
+                    href="https://www.kunnskapsbanken.net/tolk/nar-du-trenger-tolk/soknad-og-bestilling/#brukerveiledning-TiND"
+                    target="_blank"
+                >
+                    <div class="tolketjenesten panelMedBilde__imageOnPanel">
+                        <div class="panelMedBilde__svgContainer">
+                            <img
+                                class="illustrasjon"
+                                src="/s/sfsites/c/resource/1584957822000/Kunnskapsbanken"
+                                alt="Veiledning"
+                            />
+                        </div>
+                    </div>
+                    <div class="panel panelMedBilde__panelOnPanel">
+                        <h2 class="typo-undertittel">Veiledning</h2>
+                        <div>
+                            <p class="typo-normal">Her finner du informasjon og veiledning til bestillingsløsningen.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</template>

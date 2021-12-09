@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <processMetadataValues>
@@ -46,7 +46,8 @@
         <inputParameters>
             <name>body</name>
             <value>
-                <stringValue>Det har blitt opprettet en Forespørsel i HOT Tolk Amin køen i produksjon. Se detaljer her: {!myVariable_current.Name}.</stringValue>
+                <stringValue
+                >Det har blitt opprettet en Forespørsel i HOT Tolk Amin køen i produksjon. Se detaljer her: {!myVariable_current.Name}.</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -83,7 +84,7 @@
             <processMetadataValues>
                 <name>objectType</name>
                 <value>
-                    <stringValue/>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>

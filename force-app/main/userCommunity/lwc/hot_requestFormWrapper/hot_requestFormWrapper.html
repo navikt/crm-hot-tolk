@@ -1,0 +1,116 @@
+<template>
+    <div class="brodsmulesti">
+        <lightning-breadcrumbs class="skjema-max-width">
+            <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
+            <lightning-breadcrumb label="Ny bestilling" href="/s/ny-bestilling"> </lightning-breadcrumb>
+        </lightning-breadcrumbs>
+    </div>
+
+    <div class="main-content submitted-false">
+        <div class="skjema-ikon tolketjenesten">
+            <img class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon" alt="" />
+        </div>
+        <div class="skjema skjema-max-width">
+            <lightning-record-edit-form
+                object-api-name="HOT_Request__c"
+                density="comfy"
+                onsuccess={handleSuccess}
+                onerror={handleError}
+                onsubmit={handleSubmit}
+                record-id={recordId}
+            >
+                <c-hot_request-form_type
+                    if:false={requestTypeChosen}
+                    onrequestformtyperesult={handleRequestType}
+                    previous-page={previousPage}
+                ></c-hot_request-form_type>
+                <div if:true={requestTypeChosen} class="actual-form">
+                    <c-hot_request-form_orderer
+                        parent-field-values={fieldValues}
+                        class="subform"
+                        if:true={requestTypeResult.ordererForm}
+                    ></c-hot_request-form_orderer>
+                    <c-hot_request-form_company
+                        parent-field-values={fieldValues}
+                        class="subform"
+                        onusercheckboxclicked={handleUserCheckbox}
+                        if:true={requestTypeResult.companyForm}
+                        picklist-value-previously-set={picklistValueSetInCompanyform}
+                        ongetpicklistvalue={setPicklistValue}
+                        checkbox-value={userCheckboxValue}
+                    ></c-hot_request-form_company>
+                    <c-hot_request-form_user
+                        parent-field-values={fieldValues}
+                        class="subform"
+                        if:true={requestTypeResult.userForm}
+                    ></c-hot_request-form_user>
+                    <c-hot_request-form_request
+                        parent-field-values={fieldValues}
+                        is-get-all={isGetAll}
+                        request-ids={requestIds}
+                        record-id={recordId}
+                        class="subform"
+                        if:true={requestTypeResult.requestForm}
+                        is-request-type-me={isTypeMe}
+                        digital-checkbox-value={digitalCheckboxValue}
+                        ondigitalcheckboxclicked={handleDigitalCheckbox}
+                    ></c-hot_request-form_request>
+                    <c-button
+                        button-label="Tilbake"
+                        button-styling="secondary"
+                        onbuttonclick={handleBackButtonClicked}
+                        desktop-style="margin-right: 1em;"
+                        mobile-style="margin-right: 1em;"
+                        style="padding-left: 2rem"
+                    ></c-button>
+                    <c-button
+                        if:false={requestTypeResult.requestForm}
+                        button-label="Neste"
+                        button-styling="primary"
+                        onbuttonclick={handleNextButtonClicked}
+                    ></c-button>
+
+                    <div class="button-container">
+                        <div style="display: flex; justify-content: center">
+                            <div if:true={spin} class="loader"></div>
+                        </div>
+                        <div if:false={spin}>
+                            <c-button
+                                if:true={requestTypeResult.requestForm}
+                                button-label="Send inn"
+                                name="Send inn bestilling"
+                                button-styling="primary"
+                                type="submit"
+                            ></c-button>
+                            <br />
+                            <br />
+                            <c-button
+                                button-label="Avbryt"
+                                button-styling="tertiary"
+                                onbuttonclick={goToPreviousPage}
+                            ></c-button>
+                        </div>
+                    </div>
+                </div>
+            </lightning-record-edit-form>
+        </div>
+    </div>
+
+    <div class="main-content hidden submitted-true">
+        <div class="main-content dialog-boks skjema-max-width">
+            <lightning-icon
+                icon-name="utility:success"
+                alternative-text="Suksess"
+                title="Suksess"
+                variant="success"
+                size="large"
+            >
+            </lightning-icon>
+            <br />
+            <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1">Bestilling mottatt</h2>
+            <br />
+            <lightning-button title="Gå til mine bestillinger" variant="brand" label="OK" onclick={goToMyRequests}>
+            </lightning-button>
+        </div>
+    </div>
+</template>

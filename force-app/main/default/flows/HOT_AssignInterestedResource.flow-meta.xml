@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignments>
         <name>AssignResource</name>
@@ -81,7 +81,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_message</name>
-            <fieldText>&lt;p&gt;Du kan kun tildele én ressurs per oppdrag, og ressursen kan ikke ha overlappende oppdrag.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Du kan kun tildele én ressurs per oppdrag, og ressursen kan ikke ha overlappende oppdrag.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>

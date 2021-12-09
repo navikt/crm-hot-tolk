@@ -13,8 +13,8 @@
           "UUID" : "33a95c1d-7f7d-4292-9d64-6bec8becea96",
           "columns" : [ {
             "UUID" : "d2905d05-cbfa-4719-bd9f-2517e917c196",
-            "columnName" : "Column 1",
             "columnKey" : "1",
+            "columnName" : "Column 1",
             "columnWidth" : "12",
             "seedComponents" : [ ]
           } ]
@@ -71,9 +71,9 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
-        "title" : "Ny Bestilling"
+        "title" : "Ny bestilling"
       },
       "componentName" : "forceCommunity:seoAssistant",
       "id" : "fef4d541-5631-4fad-b1a6-ddb316342681",

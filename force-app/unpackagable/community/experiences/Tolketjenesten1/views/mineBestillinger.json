@@ -13,8 +13,8 @@
           "UUID" : "c7eb756b-b2cc-46c2-a5c9-fa00a042cfd4",
           "columns" : [ {
             "UUID" : "577fdae1-a460-4937-ad6b-5373c0406320",
-            "columnName" : "Column 1",
             "columnKey" : "1",
+            "columnName" : "Column 1",
             "columnWidth" : "12",
             "seedComponents" : [ ]
           } ]
@@ -71,9 +71,9 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
-        "title" : "Mine Bestillinger"
+        "title" : "Mine bestillinger"
       },
       "componentName" : "forceCommunity:seoAssistant",
       "id" : "066446a0-b94a-42ec-b399-38629106b740",

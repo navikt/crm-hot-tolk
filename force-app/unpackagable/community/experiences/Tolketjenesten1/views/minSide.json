@@ -13,8 +13,8 @@
           "UUID" : "f2f3994a-0b3a-4628-8ea9-c01090adaf4f",
           "columns" : [ {
             "UUID" : "592e0624-2da9-4ec7-852a-6d4c7b6f4098",
-            "columnName" : "Column 1",
             "columnKey" : "1",
+            "columnName" : "Column 1",
             "columnWidth" : "12",
             "seedComponents" : [ ]
           } ]
@@ -73,9 +73,9 @@
   }, {
     "components" : [ {
       "componentAttributes" : {
+        "customHeadTags" : "",
         "description" : "",
-        "metaTags" : "",
-        "title" : "Min Side"
+        "title" : "Min side"
       },
       "componentName" : "forceCommunity:seoAssistant",
       "id" : "1927cd34-9d8f-4481-919b-b86b5196f783",
