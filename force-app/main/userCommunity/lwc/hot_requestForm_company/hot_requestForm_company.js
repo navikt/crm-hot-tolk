@@ -1,6 +1,5 @@
 import { LightningElement, track, api } from 'lwc';
 export default class Hot_requestForm_company extends LightningElement {
-    @api checkboxValue = false;
     @api isEditMode = false;
     @track fieldValues = {
         OrganizationNumber__c: '',
@@ -8,15 +7,28 @@ export default class Hot_requestForm_company extends LightningElement {
         IsOtherEconomicProvicer__c: false,
         AdditionalInvoiceText__c: ''
     };
-    choices = [
-        { name: 'Placeholder', label: 'Velg et alternativ', selected: true },
-        { name: 'NAV', label: 'NAV betaler' },
-        { name: 'Virksomhet', label: 'Virksomhet betaler' }
-    ];
+    @api parentCompanyComponentValues;
+    @track componentValues = {
+        choices: [
+            { name: 'Placeholder', label: 'Velg et alternativ', selected: true },
+            { name: 'NAV', label: 'NAV betaler' },
+            { name: 'Virksomhet', label: 'Virksomhet betaler' }
+        ],
+        checkboxValue: false
+    };
+
+    @api getComponentValues() {
+        return this.componentValues;
+    }
 
     handlePicklist(event) {
+        this.componentValues.choices.forEach((element) => {
+            element.selected = false;
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            }
+        });
         this.fieldValues.IsOtherEconomicProvicer__c = event.detail.name === 'Virksomhet';
-        this.sendPicklistValue(event.detail.name);
         if (event.detail.name === 'NAV') {
             this.fieldValues.InvoiceReference__c = '';
             this.fieldValues.AdditionalInvoiceText__c = '';
@@ -28,31 +40,13 @@ export default class Hot_requestForm_company extends LightningElement {
             detail: event.detail
         });
         this.dispatchEvent(selectedEvent);
+        this.componentValues.checkboxValue = event.detail;
     }
 
     @api
     setFieldValues() {
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
-        });
-    }
-
-    sendPicklistValue(selectedPicklistName) {
-        const selectedEvent = new CustomEvent('getpicklistvalue', {
-            detail: selectedPicklistName
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    setPicklistValue() {
-        if (this.picklistValuePreviouslySet === undefined || this.picklistValuePreviouslySet === null) {
-            return;
-        }
-        this.choices.forEach((element) => {
-            element.selected = false;
-            if (element.name === this.picklistValuePreviouslySet) {
-                element.selected = true;
-            }
         });
     }
 
@@ -73,7 +67,6 @@ export default class Hot_requestForm_company extends LightningElement {
         return this.fieldValues;
     }
 
-    @api picklistValuePreviouslySet;
     @api parentFieldValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
@@ -81,6 +74,10 @@ export default class Hot_requestForm_company extends LightningElement {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
-        this.setPicklistValue();
+        for (let field in this.parentCompanyComponentValues) {
+            if (this.componentValues[field] != null) {
+                this.componentValues[field] = JSON.parse(JSON.stringify(this.parentCompanyComponentValues[field]));
+            }
+        }
     }
 }
