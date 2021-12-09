@@ -128,6 +128,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     submitForm() {
+        console.log(JSON.stringify(this.fieldValues));
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
     }
 
