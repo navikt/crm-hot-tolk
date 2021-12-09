@@ -1,11 +1,20 @@
 <template>
     <div class="brodsmulesti">
-        <lightning-breadcrumbs aria-label="Brødsmulesti" class="skjema-max-width">
+        <lightning-breadcrumbs class="skjema-max-width">
             <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
             <lightning-breadcrumb label="Ny bestilling" href="/s/ny-bestilling"> </lightning-breadcrumb>
         </lightning-breadcrumbs>
     </div>
-
+    <c-alertdialog
+        header={modalHeader}
+        content={modalContent}
+        desktop-style="text-align: center; white-space: pre-line;"
+        mobile-style="text-align: center; white-space: pre-line;"
+        center-buttons="true"
+        no-cancel-button={noCancelButton}
+        onbuttonclick={handleAlertDialogClick}
+    >
+    </c-alertdialog>
     <div class="main-content submitted-false">
         <div class="skjema-ikon tolketjenesten">
             <img class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon" alt="" />
@@ -125,14 +134,4 @@
             </lightning-button>
         </div>
     </div>
-    <c-alertdialog
-        header={modalHeader}
-        content={modalContent}
-        desktop-style="text-align: center; white-space: pre-line;"
-        mobile-style="text-align: center; white-space: pre-line;"
-        center-buttons="true"
-        no-cancel-button={noCancelButton}
-        onbuttonclick={handleAlertDialogClick}
-    >
-    </c-alertdialog>
 </template>

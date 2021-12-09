@@ -12,32 +12,32 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Skrivetolking</fullName>
+                <fullName>SK</fullName>
                 <default>false</default>
                 <label>Skrivetolking</label>
             </value>
             <value>
-                <fullName>Tegnspråk</fullName>
+                <fullName>TS</fullName>
                 <default>false</default>
                 <label>Tegnspråk</label>
             </value>
             <value>
-                <fullName>Tegnspråk i begrenset synsfelt</fullName>
+                <fullName>TSBS</fullName>
                 <default>false</default>
                 <label>Tegnspråk i begrenset synsfelt</label>
             </value>
             <value>
-                <fullName>Tegn som støtte til munnavlesning</fullName>
+                <fullName>TSS</fullName>
                 <default>false</default>
                 <label>Tegn som støtte til munnavlesning</label>
             </value>
             <value>
-                <fullName>Taletolking</fullName>
+                <fullName>TT</fullName>
                 <default>false</default>
                 <label>Taletolking</label>
             </value>
             <value>
-                <fullName>Taktilt tegnspråk</fullName>
+                <fullName>TTS</fullName>
                 <default>false</default>
                 <label>Taktilt tegnspråk</label>
             </value>
