@@ -10,7 +10,7 @@
                     name={it.value.id}
                     value={it.value.date}
                     error-text="Feltet må fylles ut."
-                    style={desktopstyle}
+                    style={dateTimeDesktopStyle}
                     mobile-style="padding-bottom: 1vw"
                 ></c-input>
                 <c-input
@@ -23,6 +23,7 @@
                     ongetvalueonchange={handleStartTimeChange}
                     desktop-style="padding-left: 1vw"
                     mobile-style="padding-bottom: 1vw"
+                    style={dateTimeDesktopStyle}
                 ></c-input>
                 <c-input
                     label="Sluttid"
@@ -33,9 +34,10 @@
                     name={it.value.id}
                     ongetvalueonchange={handleEndTimeChange}
                     desktop-style="padding-left: 1vw"
+                    style={dateTimeDesktopStyle}
                 ></c-input>
                 <br if:false={isOnlyOneTime} />
-                <div style="padding-top: 4.5%; padding-left: 2vw">
+                <div style="padding-top: 4.5%; padding-left: 1vw">
                     <c-button
                         if:false={isOnlyOneTime}
                         type="button"
