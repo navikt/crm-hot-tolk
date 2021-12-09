@@ -265,7 +265,7 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.UserInterpretationMethods__c</fieldItem>
+                <fieldItem>Record.UserInterpretationMethod__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-c551420d-243a-4b91-b52d-849f48d2ca79</name>

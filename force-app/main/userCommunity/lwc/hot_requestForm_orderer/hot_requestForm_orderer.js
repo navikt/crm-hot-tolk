@@ -40,10 +40,10 @@ export default class Hot_requestForm_orderer extends LightningElement {
         });
     }
 
-    ordererPhoneError = 'Feltet må fylles ut.';
+    ordererPhoneError = 'Bestillers telefon må fylles ut.';
     @api
     validateFields() {
-        this.ordererPhoneError = 'Feltet må fylles ut.';
+        this.ordererPhoneError = 'Bestillers telefon må fylles ut.';
         let hasErrors = false;
         this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {

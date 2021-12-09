@@ -1,127 +1,115 @@
 import { LightningElement, track, wire, api } from 'lwc';
-import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
-import { validate } from 'c/validationController';
+import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimesNew';
 import {
-    startDateValidations,
-    startTimeValidations,
-    endTimeValidations,
-    recurringTypeValidations,
-    recurringDaysValidations,
-    recurringEndDateValidations
+    requireInput,
+    dateInPast,
+    startBeforeEnd,
+    requireRecurringDays,
+    startDateBeforeRecurringEndDate,
+    restrictTheNumberOfDays,
+    chosenDaysWithinPeriod
 } from './hot_recurringTimeInput_validationRules';
 
 export default class Hot_recurringTimeInput extends LightningElement {
-    @api requestIds = [];
     @track times = [];
     @track isOnlyOneTime = true;
-    @api isEditMode = false;
     @track isAdvancedTimes;
     uniqueIdCounter = 0;
+
+    @api initialTimes = [];
 
     setTimesValue(timeObject) {
         return {
             id: timeObject === null ? 0 : timeObject.id,
             date: timeObject === null ? null : timeObject.date,
+            startTimeString: timeObject === null ? null : timeObject.startTimeString,
+            endTimeString: timeObject === null ? null : timeObject.endTimeString,
+            isNew: timeObject === null ? 1 : 0,
+            dateMilliseconds: timeObject === null ? null : timeObject.dateMilliseconds,
             startTime: timeObject === null ? null : timeObject.startTime,
-            endTime: timeObject === null ? null : timeObject.endTime,
-            isNew: timeObject === null ? 1 : 0
+            endTime: timeObject === null ? null : timeObject.endTime
         };
     }
 
-    @wire(getTimes, { requestIds: '$requestIds' })
-    wiredTimes(result) {
-        if (result.data) {
-            if (result.data.length === 0) {
-                this.times = [this.setTimesValue(null)];
-            } else {
-                this.times = [];
-                for (let timeMap of result.data) {
-                    //let temp = new Object(this.setTimesValue(timeMap));
-                    this.times.push(new Object(this.setTimesValue(timeMap)));
-                }
-                this.validateSimpleTimes();
-            }
-            this.isOnlyOneTime = this.times.length === 1;
-        } else {
-            this.times = [this.setTimesValue(null)];
-        }
-    }
-
-    // Auto fill methods
-    setDate(event) {
-        let index = this.getIndexById(event.target.name);
-        this.times[index].date = event.detail.value;
-
-        if (this.times[index].startTime === null || this.times[index].startTime === '') {
-            let tempTime = this.getNextHour().substring(11, 16);
-            this.times[index].startTime = tempTime;
-            this.times[index].endTime = this.addOneHour(tempTime);
-            this.template.querySelectorAll('[data-id="starttime"]').forEach((element, i) => {
-                element.setValue(this.times[i].startTime);
-            });
-            this.template.querySelectorAll('[data-id="endtime"]').forEach((element, i) => {
-                element.setValue(this.times[i].endTime);
-            });
-        }
-    }
-    setStartTime(event) {
-        let index = this.getIndexById(event.target.name);
-        this.times[index].startTime = event.detail;
-
-        if (event.detail >= this.times[index].endTime || this.times[index].endTime === null) {
-            this.times[index].endTime = this.addOneHour(event.detail);
-            this.template.querySelectorAll('[data-id="endtime"]')[index].setValue(this.times[index].endTime);
-        }
-    }
-    setEndTime(event) {
-        const index = this.getIndexById(event.target.name);
-        this.times[index].endTime = event.detail;
-    }
-
-    getNextHour() {
-        let now = new Date();
-        let tempTime = JSON.parse(JSON.stringify(now));
-        tempTime = tempTime.split('');
-        if (Math.abs(parseFloat(tempTime[14] + tempTime[15]) - now.getMinutes()) <= 1) {
-            tempTime[14] = '0';
-            tempTime[15] = '0';
-        }
-
-        let first = parseFloat(tempTime[11]);
-        let second = parseFloat(tempTime[12]);
-        second = (second + 2) % 10;
-        if (second === 0 || second === 1) {
-            first = first + 1;
-        }
-        tempTime[11] = first.toString();
-        tempTime[12] = second.toString();
-        return tempTime.join('');
-    }
-    addOneHour(input) {
-        input = input.split('');
-        let first = parseFloat(input[0]);
-        let second = parseFloat(input[1]);
-        second = (second + 1) % 10;
-        if (second === 0) {
-            first = first + 1;
-        }
-        input[0] = first.toString();
-        input[1] = second.toString();
-        return input.join('');
-    }
-
-    getIndexById(id) {
+    getTimesIndex(name) {
         let j = -1;
         for (let i = 0; i < this.times.length; i++) {
-            if (this.times[i].id === id) {
+            if (this.times[i].id === name) {
                 j = i;
+                break;
             }
         }
         return j;
     }
+
+    handleDateChange(event) {
+        const index = this.getTimesIndex(event.target.name);
+        this.times[index].date = event.detail;
+        this.times[index].dateMilliseconds = new Date(event.detail).getTime();
+        this.setStartTime(index);
+    }
+    handleStartTimeChange(event) {
+        const index = this.getTimesIndex(event.target.name);
+        this.times[index].startTimeString = event.detail;
+        this.times[index].startTime = this.timeStringToDateTime(
+            this.times[index].dateMilliseconds,
+            event.detail
+        ).getTime();
+        this.setEndTimeBasedOnStartTime(index);
+    }
+    handleEndTimeChange(event) {
+        const index = this.getTimesIndex(event.target.name);
+        this.times[index].endTimeString = event.detail;
+        this.times[index].endTime = this.timeStringToDateTime(
+            this.times[index].dateMilliseconds,
+            event.detail
+        ).getTime();
+    }
+    setStartTime(index) {
+        if (this.times[index].startTimeString === null) {
+            let dateTime = new Date();
+            let timeString = this.dateTimeToTimeString(dateTime);
+            let combinedDateTime = this.combineDateTimes(this.times[index].dateMilliseconds, dateTime);
+            this.times[index].startTimeString = timeString;
+            this.times[index].startTime = combinedDateTime.getTime();
+            let startTimeElements = this.template.querySelectorAll('[data-id="startTime"]');
+            startTimeElements[index].setValue(this.times[index].startTimeString);
+            this.setEndTimeBasedOnStartTime(index);
+        }
+    }
+    setEndTimeBasedOnStartTime(index) {
+        if (this.times[index].endTimeString === null || this.times[index].startTime > this.times[index].endTime) {
+            let dateTime = new Date(this.times[index].startTime);
+            dateTime.setHours(dateTime.getHours() + 1);
+            let timeString = this.dateTimeToTimeString(dateTime);
+            this.times[index].endTimeString = timeString;
+            this.times[index].endTime = dateTime.getTime();
+            let endTimeElements = this.template.querySelectorAll('[data-id="endTime"]');
+            endTimeElements[index].setValue(this.times[index].endTimeString);
+        }
+    }
+    dateTimeToTimeString(dateTime) {
+        let hours = dateTime.getHours();
+        return (hours < 10 ? '0' + hours.toString() : hours.toString()) + ':00';
+    }
+    timeStringToDateTime(dateTime, timeString) {
+        let hoursMinutes = timeString.split(':');
+        let hours = hoursMinutes[0].valueOf();
+        let minutes = hoursMinutes[1].valueOf();
+        dateTime = new Date(dateTime);
+        dateTime.setHours(hours);
+        dateTime.setMinutes(minutes);
+        return dateTime;
+    }
+    combineDateTimes(date, time) {
+        let dateTime = new Date(date);
+        dateTime.setHours(time.getHours());
+        return dateTime;
+    }
+
     removeTime(event) {
         if (this.times.length > 1) {
-            const index = this.getIndexById(event.target.name);
+            const index = this.getTimesIndex(event.target.name);
             if (index !== -1) {
                 this.times.splice(index, 1);
             }
@@ -139,7 +127,6 @@ export default class Hot_recurringTimeInput extends LightningElement {
         this.isOnlyOneTime = this.times.length === 1;
     }
 
-    //Advanced Time functions
     @track timesBackup;
     advancedTimes(event) {
         this.isAdvancedTimes = event.detail;
@@ -153,7 +140,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
 
     repeatingOptions = [
-        { label: 'Hver dag', name: 'Daily' },
+        { label: 'Hver dag', name: 'Daily', selected: true },
         { label: 'Hver uke', name: 'Weekly' },
         { label: 'Hver 2. Uke', name: 'Biweekly' }
     ];
@@ -167,9 +154,12 @@ export default class Hot_recurringTimeInput extends LightningElement {
         this.repeatingOptions.forEach((element) => {
             if (element.name === event.detail.name) {
                 element.selected = true;
+            } else {
+                element.selected = false;
             }
         });
     }
+
     chosenDays = [];
     get days() {
         return [
@@ -191,8 +181,10 @@ export default class Hot_recurringTimeInput extends LightningElement {
         });
     }
     @track repeatingEndDate;
+    @track repeatingEndDateString;
     setRepeatingEndDateDate(event) {
-        this.repeatingEndDate = event.detail.value;
+        this.repeatingEndDateString = event.detail;
+        this.repeatingEndDate = new Date(event.detail).getTime();
     }
 
     @api
@@ -205,102 +197,152 @@ export default class Hot_recurringTimeInput extends LightningElement {
         timeInputs.isAdvancedTimes = this.isAdvancedTimes;
         return timeInputs;
     }
-    timesListToObject(list) {
-        let times = {};
-        for (let dateTime of list) {
-            dateTime = this.formatDateTime(dateTime);
-            times[dateTime.id.toString()] = {
-                startTime: new Date(dateTime.date + ' ' + dateTime.startTime).getTime(),
-                endTime:
-                    dateTime.startTime < dateTime.endTime
-                        ? new Date(dateTime.date + ' ' + dateTime.endTime).getTime()
-                        : new Date(dateTime.date + ' ' + dateTime.endTime).getTime() + 24 * 60 * 60 * 1000,
-                isNew: dateTime.isNew
-            };
-        }
-        return times;
-    }
-    formatDateTime(dateTime) {
-        console.log('dateTime: ', JSON.stringify(dateTime));
-        const year = dateTime.date.substring(0, 4);
-        const month = dateTime.date.substring(5, 7);
-        const day = dateTime.date.substring(8, 10);
-
-        const startHour = dateTime.startTime.substring(0, 2);
-        const startMinute = dateTime.startTime.substring(3, 5);
-        const endHour = dateTime.endTime.substring(0, 2);
-        const endMinute = dateTime.endTime.substring(3, 5);
-
-        const newDateTime = {};
-        newDateTime.id = dateTime.id;
-        newDateTime.date = month + '/' + day + '/' + year;
-        newDateTime.startTime = startHour + ':' + startMinute;
-        newDateTime.endTime = endHour + ':' + endMinute;
-        newDateTime.isValid = dateTime.isValid;
-        newDateTime.isNew = dateTime.isNew;
-
-        return newDateTime;
-    }
 
     @api
     validateFields() {
-        /*let hasErrors = this.validateSimpleTimes();
+        let hasErrors = 0;
+        hasErrors += this.validateSimpleTimes();
         if (this.isAdvancedTimes) {
             hasErrors += this.validateAdvancedTimes();
-        }*/
-        let hasErrors = this.validateTimesAndDate();
+        }
         return hasErrors;
     }
 
-    validateTimesAndDate() {
+    validateSimpleTimes() {
+        let hasErrors = this.validateDate();
+        hasErrors += this.validateStartTime();
+        hasErrors += this.validateEndTime();
+        return hasErrors;
+    }
+    validateDate() {
         let hasErrors = false;
-        this.template.querySelectorAll('c-input').forEach((element) => {
-            if (element.validationHandler()) {
-                hasErrors += 1;
+        this.template.querySelectorAll('[data-id="date"]').forEach((element, index) => {
+            let errorMessage = requireInput(element.value, 'Dato');
+            if (errorMessage === '') {
+                errorMessage = dateInPast(this.times[index].dateMilliseconds);
             }
+            element.sendErrorMessage(errorMessage);
+            hasErrors += errorMessage !== '';
         });
         return hasErrors;
     }
-    /*validateSimpleTimes() {
+    validateStartTime() {
         let hasErrors = false;
-        this.template.querySelectorAll('.date').forEach((element) => {
-            hasErrors += validate(element, startDateValidations);
+        this.template.querySelectorAll('[data-id="startTime"]').forEach((element) => {
+            let errorMessage = requireInput(element.getValue(), 'Starttid');
+            element.sendErrorMessage(errorMessage);
+            hasErrors += errorMessage !== '';
         });
-        this.template.querySelectorAll('.start-tid').forEach((element) => {
-            hasErrors += validate(element, startTimeValidations);
-        });
-        this.template.querySelectorAll('.slutt-tid').forEach((element) => {
-            hasErrors += validate(element, endTimeValidations);
+        return hasErrors;
+    }
+    validateEndTime() {
+        let hasErrors = false;
+        this.template.querySelectorAll('[data-id="endTime"]').forEach((element, index) => {
+            let errorMessage = requireInput(element.getValue(), 'Sluttid');
+            if (errorMessage === '') {
+                errorMessage = startBeforeEnd(this.times[index].endTime, this.times[index].startTime);
+            }
+            element.sendErrorMessage(errorMessage);
+            hasErrors += errorMessage !== '';
         });
         return hasErrors;
     }
     validateAdvancedTimes() {
         let hasErrors = false;
-        let recurringTypeElement = this.template.querySelector('.recurringType');
-        hasErrors += validate(recurringTypeElement.getElement(), recurringTypeValidations);
+        hasErrors += this.validateRecurringType();
         if (this.showWeekDays) {
-            let recurringDaysElement = this.template.querySelector('.recurringDays');
-            hasErrors =
-                hasErrors + validate(recurringDaysElement, recurringDaysValidations, this.repeatingOptionChosen);
+            hasErrors += this.validateRecurringDays();
         }
-        let recurringEndDateElement = this.template.querySelector('.recurringEndDate');
-        hasErrors =
-            hasErrors +
-            validate(
-                recurringEndDateElement,
-                recurringEndDateValidations,
+        hasErrors += this.validateRecurringEndDate();
+        return hasErrors;
+    }
+    validateRecurringType() {
+        let hasErrors = false;
+        //Default value is set, so no need to validate this field.
+        return hasErrors;
+    }
+    validateRecurringDays() {
+        let hasErrors = false;
+        if (this.showWeekDays) {
+            let element = this.template.querySelector('[data-id="recurringDays"]');
+            let errorMessage = requireRecurringDays(element.getValue());
+            element.sendErrorMessage(errorMessage);
+            hasErrors += errorMessage !== '';
+        }
+        return hasErrors;
+    }
+
+    validateRecurringEndDate() {
+        let hasErrors = false;
+        let recurringEndDateElement = this.template.querySelector('[data-id="recurringEndDate"]');
+        let errorMessage = requireInput(recurringEndDateElement.getValue(), 'Sluttdato');
+        hasErrors += errorMessage !== '';
+        if (errorMessage === '') {
+            errorMessage = startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime);
+            hasErrors += errorMessage !== '';
+        }
+        if (errorMessage === '') {
+            errorMessage = restrictTheNumberOfDays(this.repeatingEndDate, this.times[0].startTime);
+            hasErrors += errorMessage !== '';
+        }
+        if (errorMessage === '') {
+            errorMessage = chosenDaysWithinPeriod(
                 this.repeatingOptionChosen,
-                this.times[0].date,
+                this.chosenDays,
+                this.repeatingOptionChosen,
                 this.chosenDays
             );
+            hasErrors += errorMessage !== '';
+        }
+        recurringEndDateElement.sendErrorMessage(errorMessage);
         return hasErrors;
-    }*/
+    }
 
+    // -----------------------------------------
     get desktopstyle() {
         let isDesktop = 'width: 100%;';
         if (window.screen.width > 576) {
             isDesktop = 'width: 30%;';
         }
         return isDesktop;
+    }
+
+    // Move up one level?
+    @api requestIds = [];
+    @wire(getTimes, { requestIds: '$requestIds' })
+    wiredTimes(result) {
+        if (result.data) {
+            if (result.data.length === 0) {
+                this.times = [this.setTimesValue(null)];
+            } else {
+                this.times = [];
+                for (let timeMap of result.data) {
+                    //let temp = new Object(this.setTimesValue(timeMap));
+                    this.times.push(new Object(this.setTimesValue(timeMap)));
+                    this.times[this.times.length - 1].startTimeString = this.dateTimeToTimeString(
+                        new Date(Number(timeMap.startTime))
+                    );
+                    this.times[this.times.length - 1].endTimeString = this.dateTimeToTimeString(
+                        new Date(Number(timeMap.endTime))
+                    );
+                }
+                this.validateSimpleTimes();
+            }
+            this.isOnlyOneTime = this.times.length === 1;
+        } else {
+            this.times = [this.setTimesValue(null)];
+        }
+    }
+
+    timesListToObject(list) {
+        let times = {};
+        for (let dateTime of list) {
+            times[dateTime.id.toString()] = {
+                startTime: dateTime.startTime,
+                endTime: dateTime.endTime,
+                isNew: dateTime.isNew
+            };
+        }
+        return times;
     }
 }
