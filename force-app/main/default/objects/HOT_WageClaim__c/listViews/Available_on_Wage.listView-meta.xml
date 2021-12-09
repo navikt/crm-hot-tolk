@@ -8,7 +8,6 @@
     <columns>ServiceTerritory__c</columns>
     <columns>WorkType__c</columns>
     <columns>AssignmentType__c</columns>
-    <columns>HOT_DurationLongerThanOneHour__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>Status__c</field>
@@ -19,6 +18,11 @@
         <field>StartTime__c</field>
         <operation>greaterOrEqual</operation>
         <value>TODAY</value>
+    </filters>
+    <filters>
+        <field>DurationLongerThanOneHour__c</field>
+        <operation>equals</operation>
+        <value>1</value>
     </filters>
     <label>Ledig på lønn</label>
     <sharedTo>
