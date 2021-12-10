@@ -5,7 +5,7 @@
             <c-list-filters header="Filtrer søket" choices={filterChoices}></c-list-filters>
         </div>
     </br>
-        <c-record-list columns={columns} onrowclick={goToRecordDetails}></c-record-list>
+        <c-table columns={columns} onrowclick={goToRecordDetails}></c-table>
     </div>
     <div if:true={isRequestDetails} class="mine-bestillinger-wrapper">
         <h2 style="text-align: center">Min bestilling</h2>

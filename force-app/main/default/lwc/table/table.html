@@ -1,0 +1,31 @@
+<template>
+    <table class="table-wrapper">
+        <thead>
+            <tr>
+                <template iterator:column={columns}>
+                    <th key={column.value.name} scope="col">{column.value.label}</th>
+                </template>
+            </tr>
+        </thead>
+        <tbody>
+            <template iterator:record={recordsToShow}>
+                <tr class="row" key={record.value.id} onclick={handleOnRowClick}>
+                    <template iterator:field={record.value.fields}>
+                        <template if:false={field.value.svg}>
+                            <th if:true={field.first} key={field.value.name} scope="col">{field.value.value}</th>
+                            <td if:false={field.first} key={field.value.name}>{field.value.value}</td>
+                        </template>
+                        <template if:true={field.value.svg}>
+                            <td key={field.value.name}>
+                                <c-icon icon="success"></c-icon>
+                            </td>
+                        </template>
+                    </template>
+                    <td style="width: 30px">
+                        <c-chevron key={record.value.id} direction="right"></c-chevron>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</template>

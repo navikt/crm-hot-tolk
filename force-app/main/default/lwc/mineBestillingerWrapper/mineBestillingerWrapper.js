@@ -26,15 +26,21 @@ export default class MineBestillingerWrapper extends LightningElement {
     @track columns = [
         {
             name: 'Name',
-            type: 'String'
+            label: 'Forespørsel',
+            type: 'String',
+            svg: false
         },
         {
             name: 'UserName__c',
-            type: 'String'
+            label: 'Bruker',
+            type: 'String',
+            svg: false
         },
         {
             name: 'Status__c',
-            type: 'String'
+            label: 'Status',
+            type: 'String',
+            svg: true
         }
     ];
 
@@ -45,7 +51,7 @@ export default class MineBestillingerWrapper extends LightningElement {
         this.wiredRequestsResult = result;
         if (result.data) {
             this.requests = [...result.data];
-            this.template.querySelector('c-record-list').showRecords(this.requests);
+            this.template.querySelector('c-table').showRecords(this.requests);
         }
     }
 
