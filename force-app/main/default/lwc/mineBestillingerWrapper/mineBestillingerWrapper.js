@@ -45,34 +45,8 @@ export default class MineBestillingerWrapper extends LightningElement {
 
     goToRecordDetails(result) {
         console.log('Navigating to: ' + result.detail);
+        let refresh =
+            window.location.protocol + '//' + window.location.host + window.location.pathname + '?Id=' + result.detail;
+        window.history.pushState({ path: refresh }, '', refresh);
     }
-
-    filterChoices = [
-        {
-            name: 'status',
-            label: 'Status',
-            type: 'checkbox',
-            choices: [
-                {
-                    name: 'choice 1',
-                    label: 'Choice one'
-                }
-            ]
-        },
-        {
-            name: 'datetime',
-            label: 'tidspunkt',
-            type: 'datetime',
-            choices: [
-                {
-                    name: 'startTime',
-                    label: 'Fra dato'
-                },
-                {
-                    name: 'endTime',
-                    label: 'Til dato'
-                }
-            ]
-        }
-    ];
 }
