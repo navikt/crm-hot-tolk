@@ -1,20 +1,26 @@
 import { LightningElement, track, wire } from 'lwc';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
+import { CurrentPageReference } from 'lightning/navigation';
 
 export default class MineBestillingerWrapper extends LightningElement {
-    @track records = [];
-    connectedCallback() {
-        let date = new Date();
-        date = date.toDateString();
-        this.records = [
-            {
-                Id: 0,
-                StartDate: date,
-                Status: 'S',
-                Subject: 'Superkult tema',
-                IsSeries: 'S'
-            }
-        ];
+    isRequestList = true;
+    isRequestDetails = false;
+    isWorkOrderDetails = false;
+    @track urlStateParameters;
+
+    @wire(CurrentPageReference)
+    getStateParameters(currentPageReference) {
+        if (currentPageReference) {
+            this.urlStateParameters = currentPageReference.state;
+            console.log(JSON.stringify(this.urlStateParameters));
+            console.log(JSON.stringify(this.urlStateParameters.id));
+            this.setParametersBasedOnUrl();
+        }
+    }
+    setParametersBasedOnUrl() {
+        this.isRequestList = this.urlStateParameters.id === undefined;
+        this.isRequestDetails = this.urlStateParameters.id !== undefined;
+        this.isWorkOrderDetails = false; //this.urlStateParameters.id;
     }
 
     @track columns = [
@@ -46,7 +52,9 @@ export default class MineBestillingerWrapper extends LightningElement {
     goToRecordDetails(result) {
         console.log('Navigating to: ' + result.detail);
         let refresh =
-            window.location.protocol + '//' + window.location.host + window.location.pathname + '?Id=' + result.detail;
+            window.location.protocol + '//' + window.location.host + window.location.pathname + '?id=' + result.detail;
         window.history.pushState({ path: refresh }, '', refresh);
+        this.isRequestList = false;
+        this.isRequestDetails = true;
     }
 }
