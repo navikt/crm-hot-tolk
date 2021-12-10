@@ -1,0 +1,10 @@
+<template>
+    <li class={classList} onclick={handleOnRowClick}>
+        <template iterator:it={record}>
+            <div key={it.value.name}>
+                <p>{it.value.value}</p>
+            </div>
+        </template>
+        <c-chevron direction="right"></c-chevron>
+    </li>
+</template>

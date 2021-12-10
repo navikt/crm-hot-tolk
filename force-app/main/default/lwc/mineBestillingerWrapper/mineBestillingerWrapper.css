@@ -1,0 +1,9 @@
+.mine-bestillinger-wrapper {
+    background-color: white;
+    padding: 1rem;
+}
+.filter-button {
+    position: absolute;
+    top: 12.5%;
+    right: 1rem;
+}

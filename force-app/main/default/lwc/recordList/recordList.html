@@ -1,0 +1,13 @@
+<template>
+    <ul class="list">
+        <template iterator:it={recordsToShow}>
+            <c-record-list-element
+                key={it.value.id}
+                record={it.value.record}
+                record-id={it.value.id}
+                onrowclick={handleOnRowClick}
+                is-last={it.last}
+            ></c-record-list-element>
+        </template>
+    </ul>
+</template>
