@@ -13,10 +13,9 @@ export default class Hot_requestForm_user extends LightningElement {
         });
     }
 
-    personNumberErrorText = 'Personnummer må fylles ut.';
+    personNumberErrorText = 'Ikke gyldig personnummer.';
     @api
     validateFields() {
-        this.personNumberErrorText = 'Personnummer må fylles ut.';
         let hasErrors = 0;
         this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {
@@ -24,7 +23,6 @@ export default class Hot_requestForm_user extends LightningElement {
             }
         });
         if (this.template.querySelectorAll('c-input')[1].validatePersonNumber()) {
-            this.personNumberErrorText = 'Ikke gyldig personnummer.';
             hasErrors += 1;
         }
         return hasErrors;

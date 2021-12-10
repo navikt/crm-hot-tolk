@@ -9,7 +9,7 @@
         header={modalHeader}
         content={modalContent}
         desktop-style="text-align: center; white-space: pre-line;"
-        mobile-style="text-align: center; white-space: pre-line;"
+        mobile-style="text-align: center; white-space: pre-line; max-width: 100%"
         center-buttons="true"
         no-cancel-button={noCancelButton}
         onbuttonclick={handleAlertDialogClick}
@@ -74,7 +74,7 @@
                                 type="submit"
                                 style="padding-bottom: 1em"
                                 desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 8vw; justify-content: center"
+                                mobile-style="width: 20vw; justify-content: center"
                             ></c-button>
                             <c-button
                                 if:false={requestTypeResult.requestForm}
@@ -83,7 +83,7 @@
                                 onbuttonclick={handleNextButtonClicked}
                                 style="padding-bottom: 1em"
                                 desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 8vw; justify-content: center"
+                                mobile-style="width: 20vw; justify-content: center"
                             ></c-button>
                             <c-button
                                 if:false={isEditModeAndTypeMe}
@@ -92,7 +92,7 @@
                                 onbuttonclick={handleBackButtonClicked}
                                 style="padding-bottom: 1em"
                                 desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 8vw; justify-content: center"
+                                mobile-style="width: 20vw; justify-content: center"
                             ></c-button>
                             <c-button
                                 if:true={requestTypeResult.requestForm}
@@ -100,7 +100,7 @@
                                 button-styling="tertiary"
                                 onbuttonclick={goToPreviousPage}
                                 desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 8vw; justify-content: center"
+                                mobile-style="width: 20vw; justify-content: center"
                             ></c-button>
                         </div>
                     </div>

@@ -66,15 +66,18 @@ export default class Hot_recurringTimeInput extends LightningElement {
         ).getTime();
     }
     setStartTime(index) {
+        let dateTime = new Date();
+        let timeString = this.dateTimeToTimeString(dateTime);
+        let combinedDateTime = this.combineDateTimes(this.times[index].dateMilliseconds, dateTime);
+        this.times[index].startTime = combinedDateTime.getTime();
+
         if (this.times[index].startTimeString === null) {
-            let dateTime = new Date();
-            let timeString = this.dateTimeToTimeString(dateTime);
-            let combinedDateTime = this.combineDateTimes(this.times[index].dateMilliseconds, dateTime);
             this.times[index].startTimeString = timeString;
-            this.times[index].startTime = combinedDateTime.getTime();
             let startTimeElements = this.template.querySelectorAll('[data-id="startTime"]');
             startTimeElements[index].setValue(this.times[index].startTimeString);
             this.setEndTimeBasedOnStartTime(index);
+        } else {
+            this.updateEndTimeBasedOnDate(index);
         }
     }
     setEndTimeBasedOnStartTime(index) {
@@ -88,6 +91,15 @@ export default class Hot_recurringTimeInput extends LightningElement {
             endTimeElements[index].setValue(this.times[index].endTimeString);
         }
     }
+
+    updateEndTimeBasedOnDate(index) {
+        let combinedDateTime = this.combineDateTimes(
+            this.times[index].dateMilliseconds,
+            new Date(this.times[index].endTime)
+        );
+        this.times[index].endTime = combinedDateTime.getTime();
+    }
+
     dateTimeToTimeString(dateTime) {
         let hours = dateTime.getHours();
         return (hours < 10 ? '0' + hours.toString() : hours.toString()) + ':00';
@@ -298,8 +310,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
         return hasErrors;
     }
 
-    // -----------------------------------------
-    get desktopstyle() {
+    get dateTimeDesktopStyle() {
         let isDesktop = 'width: 100%;';
         if (window.screen.width > 576) {
             isDesktop = 'width: 30%;';
