@@ -39,6 +39,7 @@
 }
 ul.list {
     width: 100%;
+    margin-bottom: 2rem;
 }
 .row-element {
     display: flex;

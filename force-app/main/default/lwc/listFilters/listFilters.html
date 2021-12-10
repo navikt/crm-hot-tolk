@@ -12,8 +12,8 @@
             <p>Filter</p>
         </div>
     </button>
-    <div if:true={isOpen} class="fullscreen-overlay" onclick={closeFilters}>
-        <div class="overlay-container" draggable="true" ondrag={handleDrag}>
+    <div if:true={isOpen} class="fullscreen-overlay">
+        <div class="overlay-container" draggable="true">
             <div class="overlay-content">
                 <div class="drag-rectangle"></div>
                 <h3 style="text-align: center; margin-bottom: 2rem">{header}</h3>
@@ -22,6 +22,14 @@
                     <li class="row-element">Tidspunkt</li>
                     <li class="row-element">Anledning</li>
                 </ul>
+                <c-button
+                    button-label="Vis treff"
+                    button-styling="primary"
+                    onbuttonclick={applyFilter}
+                    desktop-style="width: 8vw; justify-content: center"
+                    mobile-style="width: 20vw; justify-content: center"
+                    style="padding-bottom: 1em"
+                ></c-button>
             </div>
         </div>
     </div>

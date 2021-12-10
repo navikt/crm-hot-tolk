@@ -11,4 +11,8 @@ export default class ListFilters extends LightningElement {
     closeFilters() {
         this.isOpen = false;
     }
+    applyFilter() {
+        //Send filter config to wrapper.
+        this.closeFilters();
+    }
 }
