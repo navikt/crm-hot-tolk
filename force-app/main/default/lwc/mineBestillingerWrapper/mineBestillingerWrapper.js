@@ -49,23 +49,23 @@ export default class MineBestillingerWrapper extends LightningElement {
         this.wiredRequestsResult = result;
         if (result.data) {
             this.requests = [...result.data];
-            //this.template.querySelector('c-table').showRecords(this.requests);
         }
     }
 
     goToRecordDetails(result) {
         console.log('Navigating to: ' + result.detail);
-        /*
         let refresh =
             window.location.protocol + '//' + window.location.host + window.location.pathname + '?id=' + result.detail;
         window.history.pushState({ path: refresh }, '', refresh);
         this.isRequestList = false;
         this.isRequestDetails = true;
-        */
     }
 
-    gotoPreviousPage(event) {
-        event.preventDefault();
-        window.history.go(-1);
+    goBack(event) {
+        let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        window.history.pushState({ path: refresh }, '', refresh);
+        this.isRequestList = this.isRequestDetails;
+        this.isRequestDetails = this.isWorkOrderDetails;
+        this.isWorkOrderDetails = false;
     }
 }

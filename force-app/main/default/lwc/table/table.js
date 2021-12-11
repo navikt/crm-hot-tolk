@@ -25,10 +25,12 @@ export default class Table extends LightningElement {
     }
 
     handleOnRowClick(event) {
-        this.template.querySelectorAll('tr').forEach((element) => {
+        let rows = this.template.querySelectorAll('tr');
+        rows.forEach((element) => {
             console.log(element.id);
         });
-        const eventToSend = new CustomEvent('rowclick', { detail: 'does not work' });
+
+        const eventToSend = new CustomEvent('rowclick', { detail: rows[1].id.split('-')[0] });
         this.dispatchEvent(eventToSend);
     }
 }

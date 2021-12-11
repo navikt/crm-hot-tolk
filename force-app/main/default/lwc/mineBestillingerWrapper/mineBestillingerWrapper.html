@@ -1,7 +1,7 @@
 <template>
     <div if:true={isRequestList} class="mine-bestillinger-wrapper">
 
-        <a href="" onclick={gotoPreviousPage}>Tilbake</a>
+        <a href="/s/">Tilbake</a>
         <h2 style="text-align: center">Mine bestillinger</h2>
         <div class="filter-button">
             <c-list-filters header="Filtrer søket" choices={filterChoices}></c-list-filters>
@@ -10,7 +10,7 @@
         <c-table records={requests} columns={columns} onrowclick={goToRecordDetails}></c-table>
     </div>
     <div if:true={isRequestDetails} class="mine-bestillinger-wrapper">
-        <a href="" onclick={gotoPreviousPage}>Tilbake</a>
+        <button onclick={goBack}>Tilbake</button>
         <h2 style="text-align: center">Min bestilling</h2>
         <div>Detaljer</div>
         <p>felt 1</p>
@@ -32,7 +32,7 @@
         <c-record-list columns={columns} onrowclick={goToRecordDetails}></c-record-list>
     </div>
     <div if:true={isWorkOrderDetails} class="mine-bestillinger-wrapper">
-        <a href="" onclick={gotoPreviousPage}>Tilbake</a>
+        <button onclick={goBack}>Tilbake</button>
         <h2 style="text-align: center">Min arbeidsordre</h2>
         <div>Detaljer</div>
         <p>felt 1</p>
