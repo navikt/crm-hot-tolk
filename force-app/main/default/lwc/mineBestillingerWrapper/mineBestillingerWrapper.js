@@ -49,7 +49,7 @@ export default class MineBestillingerWrapper extends LightningElement {
         this.wiredRequestsResult = result;
         if (result.data) {
             this.requests = [...result.data];
-            this.template.querySelector('c-table').showRecords(this.requests);
+            //this.template.querySelector('c-table').showRecords(this.requests);
         }
     }
 

@@ -2,12 +2,11 @@ import { LightningElement, track, api } from 'lwc';
 
 export default class Table extends LightningElement {
     @api columns;
-    @track recordsToShow;
+    @api records;
 
-    @api
-    showRecords(records) {
-        let recordsToShow = [];
-        for (let record of records) {
+    get recordsToShow() {
+        let records = [];
+        for (let record of this.records) {
             let fields = [];
             for (let column of this.columns) {
                 let field = {
@@ -17,14 +16,12 @@ export default class Table extends LightningElement {
                 };
                 fields.push(field);
             }
-            recordsToShow.push({
+            records.push({
                 id: record.Id,
                 fields: fields
             });
         }
-        this.recordsToShow = recordsToShow;
-        console.log(JSON.stringify(this.recordsToShow));
-        console.log(JSON.stringify(this.columns));
+        return records;
     }
 
     handleOnRowClick(event) {
