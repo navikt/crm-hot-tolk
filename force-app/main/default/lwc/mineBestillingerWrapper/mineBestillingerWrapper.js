@@ -12,8 +12,6 @@ export default class MineBestillingerWrapper extends LightningElement {
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
             this.urlStateParameters = currentPageReference.state;
-            console.log(JSON.stringify(this.urlStateParameters));
-            console.log(JSON.stringify(this.urlStateParameters.id));
             this.setParametersBasedOnUrl();
         }
     }
@@ -57,10 +55,16 @@ export default class MineBestillingerWrapper extends LightningElement {
 
     goToRecordDetails(result) {
         console.log('Navigating to: ' + result.detail);
+        /*
         let refresh =
             window.location.protocol + '//' + window.location.host + window.location.pathname + '?id=' + result.detail;
         window.history.pushState({ path: refresh }, '', refresh);
         this.isRequestList = false;
         this.isRequestDetails = true;
+        */
+    }
+
+    gotoPreviousPage() {
+        window.history.go(-1);
     }
 }

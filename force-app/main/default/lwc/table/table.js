@@ -27,8 +27,11 @@ export default class Table extends LightningElement {
         console.log(JSON.stringify(this.columns));
     }
 
-    handleOnRowClick(result) {
-        const eventToSend = new CustomEvent('rowclick', { detail: result.detail });
+    handleOnRowClick(event) {
+        this.template.querySelectorAll('tr').forEach((element) => {
+            console.log(element.id);
+        });
+        const eventToSend = new CustomEvent('rowclick', { detail: 'does not work' });
         this.dispatchEvent(eventToSend);
     }
 }
