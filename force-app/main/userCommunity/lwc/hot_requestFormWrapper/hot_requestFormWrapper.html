@@ -73,8 +73,8 @@
                                 button-styling="primary"
                                 type="submit"
                                 style="padding-bottom: 1em"
-                                desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 20vw; justify-content: center"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
                             ></c-button>
                             <c-button
                                 if:false={requestTypeResult.requestForm}
@@ -82,8 +82,8 @@
                                 button-styling="primary"
                                 onbuttonclick={handleNextButtonClicked}
                                 style="padding-bottom: 1em"
-                                desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 20vw; justify-content: center"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
                             ></c-button>
                             <c-button
                                 if:false={isEditModeAndTypeMe}
@@ -91,16 +91,16 @@
                                 button-styling="secondary"
                                 onbuttonclick={handleBackButtonClicked}
                                 style="padding-bottom: 1em"
-                                desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 20vw; justify-content: center"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
                             ></c-button>
                             <c-button
                                 if:true={requestTypeResult.requestForm}
                                 button-label="Avbryt"
                                 button-styling="tertiary"
                                 onbuttonclick={goToPreviousPage}
-                                desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 20vw; justify-content: center"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
                             ></c-button>
                         </div>
                     </div>
