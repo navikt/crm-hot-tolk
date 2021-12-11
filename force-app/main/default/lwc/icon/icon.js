@@ -4,7 +4,9 @@ import IKONER from '@salesforce/resourceUrl/ikoner';
 export default class Icon extends LightningElement {
     @api icon;
     @api ariaLabel;
+    @api fill;
     get iconToShow() {
+        //let fill = this.fill !== undefined ? '_' + this.fill : '';
         return IKONER + '/' + this.icon + '.svg#' + this.icon;
     }
     get defaultStyle() {
