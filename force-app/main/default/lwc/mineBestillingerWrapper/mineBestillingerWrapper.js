@@ -64,7 +64,8 @@ export default class MineBestillingerWrapper extends LightningElement {
         */
     }
 
-    gotoPreviousPage() {
+    gotoPreviousPage(event) {
+        event.preventDefault();
         window.history.go(-1);
     }
 }
