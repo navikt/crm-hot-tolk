@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 import { updateRecord } from 'lightning/uiRecordApi';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
@@ -407,6 +407,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     showDetails(row) {
         this.record = row;
+        console.log(JSON.stringify(row));
         this.recordId = row.Id;
         this.isGetAllFiles = row.Account__c === this.userRecord.AccountId ? true : false;
         this.userForm =
