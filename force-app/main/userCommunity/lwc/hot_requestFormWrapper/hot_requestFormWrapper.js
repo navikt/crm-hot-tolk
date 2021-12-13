@@ -216,7 +216,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
         this.handleEditModeRequestType(parsed_params);
-        this.picklistValueSetInCompanyform = this.fieldValues.IsOtherEconomicProvicer__c ? 'Virksomhet' : 'NAV';
+        console.log(JSON.stringify(this.fieldValues));
+
         this.userCheckboxValue = this.fieldValues.UserName__c ? true : false;
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
 
@@ -290,11 +291,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    picklistValueSetInCompanyform;
-    setPicklistValue(event) {
-        this.picklistValueSetInCompanyform = event.detail;
-    }
-
     handleNextButtonClicked() {
         this.getFieldValuesFromSubForms();
         this.getComponentValues();
@@ -350,7 +346,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.componentValues = {};
         this.requestTypeChosen = false;
         this.userCheckboxValue = false;
-        this.picklistValueSetInCompanyform = null;
         this.requestTypeResult = null;
     }
 }

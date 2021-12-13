@@ -5,7 +5,8 @@ export default class Hot_requestForm_company extends LightningElement {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
         IsOtherEconomicProvicer__c: false,
-        AdditionalInvoiceText__c: ''
+        AdditionalInvoiceText__c: '',
+        UserName__c: ''
     };
     @api parentCompanyComponentValues;
     @track componentValues = {
@@ -16,6 +17,16 @@ export default class Hot_requestForm_company extends LightningElement {
         ],
         checkboxValue: false
     };
+
+    setComponentValuesOnEdit() {
+        this.componentValues.choices.forEach((element) => {
+            element.selected = false;
+        });
+        this.fieldValues.IsOtherEconomicProvicer__c
+            ? (this.componentValues.choices[2].selected = true)
+            : (this.componentValues.choices[1].selected = true);
+        this.componentValues.checkboxValue = this.fieldValues.UserName__c ? true : false;
+    }
 
     @api getComponentValues() {
         return this.componentValues;
@@ -64,6 +75,7 @@ export default class Hot_requestForm_company extends LightningElement {
 
     @api
     getFieldValues() {
+        delete this.fieldValues.UserName__c;
         return this.fieldValues;
     }
 
@@ -78,6 +90,9 @@ export default class Hot_requestForm_company extends LightningElement {
             if (this.componentValues[field] != null) {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentCompanyComponentValues[field]));
             }
+        }
+        if (this.isEditMode) {
+            this.setComponentValuesOnEdit();
         }
     }
 }

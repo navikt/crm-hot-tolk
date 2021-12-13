@@ -25,6 +25,8 @@ export default class Hot_requestForm_request extends LightningElement {
     @api recordId;
     @api parentFieldValues;
     @api parentRequestComponentValues;
+    @api isEditMode;
+
     connectedCallback() {
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
@@ -36,8 +38,35 @@ export default class Hot_requestForm_request extends LightningElement {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
         }
+        this.isEditMode
+            ? this.setComponentValuesOnEdit()
+            : (this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked);
         this.sameLocation = this.componentValues.sameAddressRadioButtons[0].checked;
-        this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
+    }
+
+    setComponentValuesOnEdit() {
+        this.componentValues.physicalOrDigitalRadiobuttons[0].checked = !this.fieldValues.IsScreenInterpreter__c;
+        this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
+        this.componentValues.sameAddressRadioButtons[1].checked =
+            this.fieldValues.InterpretationStreet__c !== undefined &&
+            this.fieldValues.InterpretationStreet__c !== null &&
+            this.fieldValues.InterpretationStreet__c !== '';
+        this.componentValues.isOptionalFields =
+            this.fieldValues.UserInterpretationMethod__c !== undefined ||
+            this.fieldValues.UserPreferredInterpreter__c !== undefined ||
+            this.fieldValues.AssignmentType__c !== undefined;
+        this.componentValues.assignmentChoices.forEach((element) => {
+            element.selected = false;
+            if (element.label === this.fieldValues.AssignmentType__c) {
+                element.selected = true;
+            }
+        });
+        this.componentValues.interpretationChoices.forEach((element) => {
+            element.selected = false;
+            if (element.label === this.fieldValues.UserInterpretationMethod__c) {
+                element.selected = true;
+            }
+        });
     }
 
     @track componentValues = {
