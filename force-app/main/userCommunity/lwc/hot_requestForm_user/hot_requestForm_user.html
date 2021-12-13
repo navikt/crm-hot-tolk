@@ -14,7 +14,7 @@
             form="tolk-skjema-input"
             value={fieldValues.UserName__c}
             error-text="Tolkbrukers navn må fylles ut."
-            disabled={isEditMode}
+            disabled={isCopyOrEditMode}
         ></c-input>
         <br />
         <c-input
@@ -24,7 +24,7 @@
             value={fieldValues.UserPersonNumber__c}
             error-text={personNumberErrorText}
             max-length="11"
-            disabled={isEditMode}
+            disabled={isCopyOrEditMode}
         ></c-input>
     </section>
 </template>

@@ -128,6 +128,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     submitForm() {
+        console.log(JSON.stringify(this.fieldValues));
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
     }
 
@@ -147,7 +148,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.spin = false;
     }
 
-    @track isEditMode = false;
     handleSuccess(event) {
         this.spin = false;
         this.recordId = event.detail.id;
@@ -204,6 +204,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    isCopyMode = false;
+    isEditMode = false;
     isEditModeAndTypeMe = false;
     handleEditModeRequestType(parsed_params) {
         this.isTypeMe = this.fieldValues.Type__c === 'Me';
@@ -215,9 +217,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     isGetAll = false;
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
+        console.log('fieldValues on edit: ', JSON.stringify(this.fieldValues));
         this.handleEditModeRequestType(parsed_params);
-        console.log(JSON.stringify(this.fieldValues));
-
         this.userCheckboxValue = this.fieldValues.UserName__c ? true : false;
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
 
@@ -227,6 +228,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         delete this.fieldValues.EndTime__c;
 
         if (parsed_params.copy != null) {
+            this.isCopyMode = true;
             delete this.fieldValues.Id;
         } else {
             this.recordId = this.fieldValues.Id;

@@ -1,6 +1,7 @@
 import { LightningElement, track, api } from 'lwc';
 export default class Hot_requestForm_company extends LightningElement {
     @api isEditMode = false;
+    @api isCopyMode = false;
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
@@ -79,6 +80,7 @@ export default class Hot_requestForm_company extends LightningElement {
         return this.fieldValues;
     }
 
+    isEditOrCopyMode = false;
     @api parentFieldValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
@@ -91,7 +93,8 @@ export default class Hot_requestForm_company extends LightningElement {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentCompanyComponentValues[field]));
             }
         }
-        if (this.isEditMode) {
+        if (this.isEditMode || this.isCopyMode) {
+            this.isEditOrCopyMode = true;
             this.setComponentValuesOnEdit();
         }
     }
