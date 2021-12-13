@@ -1,9 +1,9 @@
 import { LightningElement, track, wire } from 'lwc';
-import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
+import getMyWorkOrdersNew from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersNew';
 import { CurrentPageReference } from 'lightning/navigation';
 
 export default class MineBestillingerWrapper extends LightningElement {
-    isRequestList = true;
+    isList = true;
     isRequestDetails = false;
     isWorkOrderDetails = false;
     @track urlStateParameters;
@@ -16,7 +16,7 @@ export default class MineBestillingerWrapper extends LightningElement {
         }
     }
     setParametersBasedOnUrl() {
-        this.isRequestList = this.urlStateParameters.id === undefined;
+        this.isList = this.urlStateParameters.id === undefined;
         this.isRequestDetails = this.urlStateParameters.id !== undefined;
         this.isWorkOrderDetails = false; //this.urlStateParameters.id;
         this.record = this.getRecord(this.urlStateParameters.id);
@@ -24,60 +24,61 @@ export default class MineBestillingerWrapper extends LightningElement {
 
     @track record;
     getRecord(recordId) {
-        for (let request of this.requests) {
-            console.log(request);
-            if (recordId === request.Id) {
-                console.log(request);
-                return request;
+        for (let record of this.records) {
+            if (recordId === record.Id) {
+                return record;
             }
         }
-        return { MeetingSteet__c: '', Subject__c: '' };
+        return { Address: '', Subject: '' };
     }
 
     @track columns = [
         {
-            name: 'Name',
-            label: 'Forespørsel',
+            name: 'StartDate',
+            label: 'Start tid',
             type: 'String',
             svg: false
         },
         {
-            name: 'UserName__c',
-            label: 'Bruker',
-            type: 'String',
-            svg: false
-        },
-        {
-            name: 'Status__c',
+            name: 'Status',
             label: 'Status',
             type: 'String',
             svg: true
+        },
+        {
+            name: 'Subject',
+            label: 'Emne',
+            type: 'String',
+            svg: false
         }
     ];
 
-    @track requests = [];
-    wiredRequestsResult;
-    @wire(getRequestList)
-    wiredRequest(result) {
-        this.wiredRequestsResult = result;
+    @track records = [];
+    wiredMyWorkOrdersNewResult;
+    @wire(getMyWorkOrdersNew)
+    wiredMyWorkOrdersNew(result) {
+        this.wiredMyWorkOrdersNewResult = result;
         if (result.data) {
-            this.requests = [...result.data];
+            this.records = [...result.data];
+            this.record = this.getRecord(this.urlStateParameters.id);
         }
     }
 
     goToRecordDetails(result) {
-        console.log('Navigating to: ' + result.detail);
+        let record = result.detail;
+        let recordId = record.HOT_Request__r.IsSerieoppdrag__c ? record.HOT_Request__c : record.Id;
         let refresh =
-            window.location.protocol + '//' + window.location.host + window.location.pathname + '?id=' + result.detail;
+            window.location.protocol + '//' + window.location.host + window.location.pathname + '?id=' + recordId;
         window.history.pushState({ path: refresh }, '', refresh);
-        this.isRequestList = false;
-        this.isRequestDetails = true;
+        this.isList = false;
+        this.isRequestDetails = record.HOT_Request__r.IsSerieoppdrag__c;
+        this.isWorkOrderDetails = !record.HOT_Request__r.IsSerieoppdrag__c;
     }
 
     goBack(event) {
         let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
         window.history.pushState({ path: refresh }, '', refresh);
-        this.isRequestList = this.isRequestDetails;
+        this.isList = this.isRequestDetails;
         this.isRequestDetails = this.isWorkOrderDetails;
         this.isWorkOrderDetails = false;
     }

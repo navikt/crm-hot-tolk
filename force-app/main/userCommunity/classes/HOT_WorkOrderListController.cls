@@ -34,6 +34,36 @@ public without sharing class HOT_WorkOrderListController {
     }
 
     @AuraEnabled(cacheable=true)
+    public static List<WorkOrder> getMyWorkOrdersNew() {
+        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>();
+        Id userId = UserInfo.getUserId();
+        User user = [SELECT Id, AccountId, Name FROM User WHERE Id = :userId];
+        if (user.AccountId != null) {
+            workOrders = new Map<Id, WorkOrder>(
+                [
+                    SELECT
+                        Id,
+                        StartDate,
+                        EndDate,
+                        Subject,
+                        Address,
+                        Status,
+                        HOT_ExternalWorkOrderStatus__c,
+                        HOT_Interpreters__c,
+                        HOT_IsCancelable__c,
+                        HOT_Request__c,
+                        HOT_Request__r.IsSerieoppdrag__c
+                    FROM WorkOrder
+                    WHERE HOT_Request__r.Account__c = :user.AccountId
+                    ORDER BY StartDate
+                ]
+            );
+        }
+        workOrders = getAndSetInterpreters(workOrders);
+        return workOrders.values();
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<WorkOrder> getWorkOrdersFromRequest(String requestNumber) {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>();
         Id userId = UserInfo.getUserId();
