@@ -42,7 +42,7 @@ export let iconByValue = {
         fill: 'Green',
         ariaLabel: 'Du har fått tolk'
     },
-    CannotComplete: {
+    'Cannot Complete': {
         icon: 'ErrorFilled',
         fill: 'Red',
         ariaLabel: 'Ikke ledig tolk'
