@@ -1,6 +1,7 @@
 export let requestFieldLabels = {
     Name: { label: 'Bestillingsnummer', type: 'string' },
     ActualUserName__c: { label: 'Brukers navn', type: 'string' },
+    AssignmentType__c: { label: 'Anledning', type: 'string' },
     ExternalRequestStatus__c: { label: 'Status', type: 'string' },
     OrdererName__c: { label: 'Bestillers navn', type: 'string' },
     OrdererPhone__c: { label: 'Bestillers mobil', type: 'string' },
@@ -19,8 +20,10 @@ export let requestFieldLabels = {
     InterpretationPostalCity__c: { label: 'Poststed', type: 'string' },
     IsScreenInterpreter__c: {
         label: 'Skjermtolk',
-        type: 'Deler av bestillingen gjennomføres som Skjermtolking, Se tidsplan'
+        type: 'Deler av bestillingen gjennomføres som Skjermtolking - Se tidsplan'
     },
+    UserInterpretationMethod__c: { label: 'Tolkemetode', type: 'string' },
+    UserPreferredInterpreter__c: { label: 'Ønsket tolk', type: 'string' },
     getSubFields: function (section) {
         if (section === 'user') {
             return {
@@ -54,7 +57,10 @@ export let requestFieldLabels = {
                 InterpretationStreet__c: this.InterpretationStreet__c,
                 InterpretationPostalCode__c: this.InterpretationPostalCode__c,
                 InterpretationPostalCity__c: this.InterpretationPostalCity__c,
-                IsScreenInterpreter__c: this.IsScreenInterpreter__c
+                IsScreenInterpreter__c: this.IsScreenInterpreter__c,
+                UserPreferredInterpreter__c: this.UserPreferredInterpreter__c,
+                AssignmentType__c: this.AssignmentType__c,
+                UserInterpretationMethod__c: this.UserInterpretationMethod__c
             };
         }
         return null;

@@ -13,7 +13,7 @@ sfdx force:package:install --package 04t7U000000Tn4QQAS -r -k $3 --wait 10 --pub
 sfdx force:package:install --package 04t2o000000yTjuAAE -r -k $3 --wait 10 --publishwait 10
 
 # Installer crm-community-base ver. 0.40
-sfdx force:package:install --package 04t7U000000Tn5EQAS -r -k $3 --wait 10 --publishwait 10
+sfdx force:package:install --package 04t7U000000Tn7KQAS -r -k $3 --wait 10 --publishwait 10
 
 # Installer crm-platform-reporting ver. 0.25
 sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k $3 --wait 10 --publishwait 10
