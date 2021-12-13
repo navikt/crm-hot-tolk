@@ -9,7 +9,6 @@ export default class Table extends LightningElement {
     get recordsToShow() {
         let records = [];
         if (this.records !== undefined && this.records !== null) {
-            console.log(this.records);
             for (let record of this.records) {
                 let fields = [];
                 for (let column of this.columns) {
@@ -31,9 +30,6 @@ export default class Table extends LightningElement {
     }
 
     handleOnRowClick(event) {
-        console.log(event.currentTarget.dataset.id);
-        console.log(this.recordMap[event.currentTarget.dataset.id]);
-        console.log(this.recordMap);
         const eventToSend = new CustomEvent('rowclick', { detail: this.recordMap[event.currentTarget.dataset.id] });
         this.dispatchEvent(eventToSend);
     }

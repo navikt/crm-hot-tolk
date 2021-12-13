@@ -10,14 +10,8 @@
     </div>
     <div if:true={isRequestDetails} class="mine-bestillinger-wrapper">
         <button onclick={goBack}>Tilbake</button>
-        <h2 style="text-align: center">{record.Subject}</h2>
-        <p>Adresse: <span>{record.Address}</span></p>
-        
-        <c-button
-        button-label="Rediger"
-        button-styling="primary"
-        onbuttonclick={derp}
-        ></c-button>
+        <h2 style="text-align: center">{request.Subject__c}</h2>
+        <p>Adresse: <span>{request.MeetingStreet__c}</span></p>
     </br>
         <h2 style="text-align: center">Arbeidsordrer</h2>
         <div class="filter-button">
@@ -28,17 +22,8 @@
     </div>
     <div if:true={isWorkOrderDetails} class="mine-bestillinger-wrapper">
         <button onclick={goBack}>Tilbake</button>
-        <h2 style="text-align: center">Min arbeidsordre</h2>
-        <div>Detaljer</div>
-        <p>felt 1</p>
-        <p>felt 2</p>
-        <p>felt 3</p>
-        <p>felt 4</p>
+        <h2 style="text-align: center">{workOrder.Subject}</h2>
+        <p>Adresse: <span>{workOrder.HOT_AddressFormated__c}</span></p>
 
-        <c-button
-        button-label="Rediger"
-        button-styling="primary"
-        onbuttonclick={derp}
-        ></c-button>
     </div>
 </template>

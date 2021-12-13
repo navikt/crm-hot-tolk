@@ -46,13 +46,15 @@ public without sharing class HOT_WorkOrderListController {
                         StartDate,
                         EndDate,
                         Subject,
-                        Address,
+                        HOT_AddressFormated__c,
                         Status,
                         HOT_ExternalWorkOrderStatus__c,
                         HOT_Interpreters__c,
                         HOT_IsCancelable__c,
                         HOT_Request__c,
-                        HOT_Request__r.IsSerieoppdrag__c
+                        HOT_Request__r.IsSerieoppdrag__c,
+                        HOT_Request__r.MeetingStreet__c,
+                        HOT_Request__r.Subject__c
                     FROM WorkOrder
                     WHERE HOT_Request__r.Account__c = :user.AccountId
                     ORDER BY StartDate
