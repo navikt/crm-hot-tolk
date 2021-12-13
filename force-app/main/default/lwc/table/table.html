@@ -9,7 +9,7 @@
         </thead>
         <tbody>
             <template iterator:record={recordsToShow}>
-                <tr class="row" key={record.value.id} id={record.value.id} onclick={handleOnRowClick}>
+                <tr class="row" key={record.value.id} data-id={record.value.id} onclick={handleOnRowClick}>
                     <template iterator:field={record.value.fields}>
                         <template if:false={field.value.svg}>
                             <th if:true={field.first} key={field.value.name} scope="col">{field.value.value}</th>

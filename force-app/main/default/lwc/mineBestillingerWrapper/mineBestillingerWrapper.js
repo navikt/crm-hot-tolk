@@ -19,6 +19,19 @@ export default class MineBestillingerWrapper extends LightningElement {
         this.isRequestList = this.urlStateParameters.id === undefined;
         this.isRequestDetails = this.urlStateParameters.id !== undefined;
         this.isWorkOrderDetails = false; //this.urlStateParameters.id;
+        this.record = this.getRecord(this.urlStateParameters.id);
+    }
+
+    @track record;
+    getRecord(recordId) {
+        for (let request of this.requests) {
+            console.log(request);
+            if (recordId === request.Id) {
+                console.log(request);
+                return request;
+            }
+        }
+        return { MeetingSteet__c: '', Subject__c: '' };
     }
 
     @track columns = [
