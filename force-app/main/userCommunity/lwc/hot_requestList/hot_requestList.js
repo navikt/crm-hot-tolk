@@ -407,7 +407,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     showDetails(row) {
         this.record = row;
-        console.log(JSON.stringify(row));
         this.recordId = row.Id;
         this.isGetAllFiles = row.Account__c === this.userRecord.AccountId ? true : false;
         this.userForm =
