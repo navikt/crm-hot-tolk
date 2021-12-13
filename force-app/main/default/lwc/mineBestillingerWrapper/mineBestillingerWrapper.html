@@ -6,7 +6,7 @@
             <c-list-filters header="Filtrer søket" choices={filterChoices}></c-list-filters>
         </div>
     </br>
-        <c-table records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
+        <c-table records={records} columns={columns} onrowclick={goToRecordDetails} icon-by-value={iconByValue}></c-table>
     </div>
     <div if:true={isRequestDetails} class="mine-bestillinger-wrapper">
         <button onclick={goBack}>Tilbake</button>
@@ -18,7 +18,7 @@
             <c-list-filters header="Filtrer søket" choices={filterChoices}></c-list-filters>
         </div>
     </br>
-        <c-table records={workOrders} columns={workOrderColumns} onrowclick={goToRecordDetails}></c-table>
+        <c-table records={workOrders} columns={workOrderColumns} onrowclick={goToRecordDetails} icon-by-value={iconByValue}></c-table>
     </div>
     <div if:true={isWorkOrderDetails} class="mine-bestillinger-wrapper">
         <button onclick={goBack}>Tilbake</button>

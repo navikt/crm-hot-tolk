@@ -1,7 +1,7 @@
 import { LightningElement, track, wire } from 'lwc';
 import getMyWorkOrdersNew from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersNew';
 import { CurrentPageReference } from 'lightning/navigation';
-import { columns, workOrderColumns } from './columns';
+import { columns, workOrderColumns, iconByValue } from './columns';
 export default class MineBestillingerWrapper extends LightningElement {
     isList = true;
     isRequestDetails = false;
@@ -10,6 +10,7 @@ export default class MineBestillingerWrapper extends LightningElement {
 
     @track columns = columns;
     @track workOrderColumns = workOrderColumns;
+    @track iconByValue = iconByValue;
 
     @track records = [];
     wiredMyWorkOrdersNewResult;

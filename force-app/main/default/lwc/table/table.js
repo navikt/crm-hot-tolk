@@ -3,6 +3,7 @@ import { LightningElement, api } from 'lwc';
 export default class Table extends LightningElement {
     @api columns;
     @api records;
+    @api iconByValue;
 
     recordMap = {};
 
@@ -14,9 +15,11 @@ export default class Table extends LightningElement {
                 for (let column of this.columns) {
                     let field = {
                         name: column.name,
-                        value: record[column.name],
-                        svg: column.svg
+                        value: record[column.name]
                     };
+                    if (column.svg !== undefined && this.iconByValue[record[column.name]] !== undefined) {
+                        field.svg = this.iconByValue[record[column.name]];
+                    }
                     fields.push(field);
                 }
                 records.push({

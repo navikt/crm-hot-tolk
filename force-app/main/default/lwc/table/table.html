@@ -17,7 +17,11 @@
                         </template>
                         <template if:true={field.value.svg}>
                             <td key={field.value.name}>
-                                <c-icon icon="success"></c-icon>
+                                <c-icon
+                                    icon={field.value.svg.icon}
+                                    fill={field.value.svg.fill}
+                                    aria-label={field.value.svg.ariaLabel}
+                                ></c-icon>
                             </td>
                         </template>
                     </template>
