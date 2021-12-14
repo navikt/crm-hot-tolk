@@ -128,7 +128,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     submitForm() {
-        console.log(JSON.stringify(this.fieldValues));
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
     }
 
@@ -217,7 +216,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     isGetAll = false;
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
-        console.log('fieldValues on edit: ', JSON.stringify(this.fieldValues));
         this.handleEditModeRequestType(parsed_params);
         this.userCheckboxValue = this.fieldValues.UserName__c ? true : false;
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;

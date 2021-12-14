@@ -52,8 +52,7 @@ export default class Hot_requestForm_request extends LightningElement {
                 'UserInterpretationMethod__c',
                 'label'
             );
-            console.log(this.fieldValues.UserInterpretationMethod__c);
-            this.setComponentValuesOnEdit();
+            this.setComponentValuesOnEditAndCopy();
         } else {
             this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
         }
@@ -80,7 +79,7 @@ export default class Hot_requestForm_request extends LightningElement {
         });
     }
 
-    setComponentValuesOnEdit() {
+    setComponentValuesOnEditAndCopy() {
         this.componentValues.physicalOrDigitalRadiobuttons[0].checked = !this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.sameAddressRadioButtons[1].checked =
@@ -108,7 +107,7 @@ export default class Hot_requestForm_request extends LightningElement {
             { name: 'Work', label: 'Arbeidsliv' },
             { name: 'Health Services', label: 'Helsetjenester' },
             { name: 'Education', label: 'Utdanning' },
-            { name: 'Interpreter at Work', label: 'TPA - Tolk på arbeidsplass' }
+            { name: 'Interpreter at Work', label: 'Tolk på arbeidsplass - TPA' }
         ],
         interpretationChoices: [
             { name: '', label: 'Velg et alternativ', selected: true },
@@ -221,7 +220,6 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     handleInterpretationPicklist(event) {
-        console.log(event.detail.name);
         this.setFieldAndElementSelected(
             this.componentValues.interpretationChoices,
             event.detail.name,
@@ -230,7 +228,6 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     handleAssignmentPicklist(event) {
-        console.log(event.detail.name);
         this.setFieldAndElementSelected(this.componentValues.assignmentChoices, event.detail.name, 'AssignmentType__c');
     }
 

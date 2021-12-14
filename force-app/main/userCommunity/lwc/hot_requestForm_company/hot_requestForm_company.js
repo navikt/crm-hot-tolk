@@ -19,7 +19,7 @@ export default class Hot_requestForm_company extends LightningElement {
         checkboxValue: false
     };
 
-    setComponentValuesOnEdit() {
+    setComponentValuesOnEditAndCopy() {
         this.componentValues.choices.forEach((element) => {
             element.selected = false;
         });
@@ -95,7 +95,7 @@ export default class Hot_requestForm_company extends LightningElement {
         }
         if (this.isEditMode || this.isCopyMode) {
             this.isEditOrCopyMode = true;
-            this.setComponentValuesOnEdit();
+            this.setComponentValuesOnEditAndCopy();
         }
     }
 }
