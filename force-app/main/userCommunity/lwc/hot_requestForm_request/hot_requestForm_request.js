@@ -25,8 +25,7 @@ export default class Hot_requestForm_request extends LightningElement {
     @api recordId;
     @api parentFieldValues;
     @api parentRequestComponentValues;
-    @api isEditMode = false;
-    @api isCopyMode = false;
+    @api isEditOrCopyMode = false;
 
     connectedCallback() {
         for (let field in this.parentFieldValues) {
@@ -39,7 +38,7 @@ export default class Hot_requestForm_request extends LightningElement {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
         }
-        if (this.isEditMode || this.isCopyMode) {
+        if (this.isEditOrCopyMode) {
             this.setFieldAndElementSelected(
                 this.componentValues.assignmentChoices,
                 this.fieldValues.AssignmentType__c,

@@ -203,13 +203,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    isCopyMode = false;
-    isEditMode = false;
+    isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
     handleEditModeRequestType(parsed_params) {
         this.isTypeMe = this.fieldValues.Type__c === 'Me';
-        this.isEditMode = parsed_params.edit != null;
-        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditMode;
+        this.isEditOrCopyMode = parsed_params.edit != null;
+        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditOrCopyMode;
         this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
     }
 
@@ -226,7 +225,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         delete this.fieldValues.EndTime__c;
 
         if (parsed_params.copy != null) {
-            this.isCopyMode = true;
             delete this.fieldValues.Id;
         } else {
             this.recordId = this.fieldValues.Id;
@@ -317,7 +315,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
         if (this.formArray.length < 2) {
             this.resetFormValuesOnTypeSelection();
-            if (this.isEditMode) {
+            if (this.isEditOrCopyMode) {
                 this.goToPreviousPage();
             }
         } else if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
