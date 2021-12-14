@@ -22,9 +22,15 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
         }
     }
 
+    accountLink;
     connectedCallback() {
         window.scrollTo(0, 1);
         window.scrollTo(0, 0);
+
+        let baseURLArray = window.location.pathname.split('/');
+        baseURLArray.pop();
+        let baseURL = baseURLArray.join('/');
+        this.accountLink = baseURL + '/ny-bestilling';
     }
 
     @track isFrilans = false;
