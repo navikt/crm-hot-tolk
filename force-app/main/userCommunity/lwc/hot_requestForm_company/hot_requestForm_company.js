@@ -24,7 +24,7 @@ export default class Hot_requestForm_company extends LightningElement {
         });
         this.componentValues.choices[1].selected = !this.fieldValues.IsOtherEconomicProvicer__c;
         this.componentValues.choices[2].selected = this.fieldValues.IsOtherEconomicProvicer__c;
-        this.componentValues.checkboxValue = this.fieldValues.UserName__c ? true : false;
+        this.componentValues.checkboxValue = this.fieldValues.UserName__c !== '';
     }
 
     @api getComponentValues() {
