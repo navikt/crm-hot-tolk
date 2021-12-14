@@ -38,6 +38,7 @@ export default class Hot_requestForm_request extends LightningElement {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
         }
+        console.log(JSON.stringify(this.fieldValues));
         if (this.isEditOrCopyMode) {
             this.setFieldAndElementSelected(
                 this.componentValues.assignmentChoices,
@@ -87,9 +88,9 @@ export default class Hot_requestForm_request extends LightningElement {
         this.componentValues.sameAddressRadioButtons[0].checked =
             !this.componentValues.sameAddressRadioButtons[1].checked;
         this.componentValues.isOptionalFields =
-            this.fieldValues.UserInterpretationMethod__c !== undefined ||
-            this.fieldValues.UserPreferredInterpreter__c !== undefined ||
-            this.fieldValues.AssignmentType__c !== undefined;
+            this.fieldValues.UserInterpretationMethod__c !== '' ||
+            this.fieldValues.UserPreferredInterpreter__c !== '' ||
+            this.fieldValues.AssignmentType__c !== '';
     }
 
     @track componentValues = {
