@@ -70,7 +70,9 @@ export default class Hot_requestForm_request extends LightningElement {
                     element.selected = true;
                 }
             } else {
-                if (element.name === value) {
+                if (value === '') {
+                    this.fieldValues[field] = null;
+                } else if (element.name === value) {
                     this.fieldValues[field] = element.name;
                     element.selected = true;
                 }
