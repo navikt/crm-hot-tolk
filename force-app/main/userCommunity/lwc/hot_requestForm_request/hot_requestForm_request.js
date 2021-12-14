@@ -52,9 +52,8 @@ export default class Hot_requestForm_request extends LightningElement {
                 'label'
             );
             this.setComponentValuesOnEditAndCopy();
-        } else {
-            this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
         }
+        this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
         this.sameLocation = this.componentValues.sameAddressRadioButtons[0].checked;
         if (this.sameLocation) {
             this.resetInterpretationFields();
