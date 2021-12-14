@@ -56,7 +56,7 @@ export default class Hot_requestForm_request extends LightningElement {
         this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
         this.sameLocation = this.componentValues.sameAddressRadioButtons[0].checked;
         if (this.sameLocation) {
-            this.resetInterpretationFields();
+            this.clearInterpretationFields();
         }
     }
 
@@ -183,7 +183,7 @@ export default class Hot_requestForm_request extends LightningElement {
         this.componentValues.sameAddressRadioButtons = event.detail;
         if (event.detail[0].checked) {
             this.sameLocation = true;
-            this.resetInterpretationFields();
+            this.clearInterpretationFields();
         } else {
             this.sameLocation = false;
         }
@@ -196,10 +196,10 @@ export default class Hot_requestForm_request extends LightningElement {
     handlePhysicalOrDigital(event) {
         this.componentValues.physicalOrDigitalRadiobuttons = event.detail;
         this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
-        this.resetPhysicalFields();
+        this.clearPhysicalAddressFields();
     }
 
-    resetPhysicalFields() {
+    clearPhysicalAddressFields() {
         if (this.fieldValues.IsScreenInterpreter__c) {
             this.fieldValues.MeetingStreet__c = '';
             this.fieldValues.MeetingPostalCity__c = '';
@@ -213,7 +213,7 @@ export default class Hot_requestForm_request extends LightningElement {
         }
     }
 
-    resetInterpretationFields() {
+    clearInterpretationFields() {
         this.fieldValues.InterpretationStreet__c = '';
         this.fieldValues.InterpretationPostalCode__c = '';
         this.fieldValues.InterpretationPostalCity__c = '';
