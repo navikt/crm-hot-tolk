@@ -22,9 +22,8 @@ export default class Hot_requestForm_company extends LightningElement {
         this.componentValues.choices.forEach((element) => {
             element.selected = false;
         });
-        this.fieldValues.IsOtherEconomicProvicer__c
-            ? (this.componentValues.choices[2].selected = true)
-            : (this.componentValues.choices[1].selected = true);
+        this.componentValues.choices[1].selected = !this.fieldValues.IsOtherEconomicProvicer__c;
+        this.componentValues.choices[2].selected = this.fieldValues.IsOtherEconomicProvicer__c;
         this.componentValues.checkboxValue = this.fieldValues.UserName__c ? true : false;
     }
 
