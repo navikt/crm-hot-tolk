@@ -5,7 +5,7 @@
     <div if:true={isFrilans} class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler-single">
-                <a class="panelMedBilde panelMedBilde-single" href="/s/mine-oppdrag">
+                <a class="panelMedBilde panelMedBilde-single" href={pageLinks.myServiceAppointments}>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
                             <img
@@ -31,7 +31,7 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde panelMedBilde-single" href="/s/frilanstolk-min-side">
+                <a class="panelMedBilde panelMedBilde-single" href={pageLinks.freelanceMyPage}>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
                             <lightning-icon
@@ -63,7 +63,7 @@
     <div class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler">
-                <a class="panelMedBilde" href="/s/ny-bestilling">
+                <a class="panelMedBilde" href={pageLinks.newRequest}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -82,7 +82,7 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde" href="/s/mine-bestillinger">
+                <a class="panelMedBilde" href={pageLinks.myRequests}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde" href="/s/min-tidsplan">
+                <a class="panelMedBilde" href={pageLinks.mySchedule}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
@@ -118,7 +118,7 @@
                         </div>
                     </div>
                 </a>
-                <a class="panelMedBilde" href="/s/min-side">
+                <a class="panelMedBilde" href={pageLinks.myPage}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
                             <img
