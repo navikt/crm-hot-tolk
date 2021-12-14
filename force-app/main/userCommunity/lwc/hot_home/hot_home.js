@@ -18,27 +18,20 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
         }
     }
 
+    @track pageLinks = {};
     connectedCallback() {
         window.scrollTo(0, 0);
         let baseURLArray = window.location.pathname.split('/');
         baseURLArray.pop();
         let baseURL = baseURLArray.join('/');
-        this.setLinkURLs(baseURL);
-    }
-
-    newRequest;
-    myRequests;
-    mySchedule;
-    myPage;
-    myServiceAppointments;
-    freelanceMyPage;
-    setLinkURLs(baseURL) {
-        this.newRequest = baseURL + '/ny-bestilling';
-        this.myRequests = baseURL + '/mine-bestillinger';
-        this.mySchedule = baseURL + '/min-tidsplan';
-        this.myPage = baseURL + '/min-side';
-        this.myServiceAppointments = baseURL + '/mine-oppdrag';
-        this.freelanceMyPage = baseURL + '/frilanstolk-min-side';
+        this.pageLinks = {
+            newRequest: baseURL + '/ny-bestilling',
+            myRequests: baseURL + '/mine-bestillinger',
+            mySchedule: baseURL + '/min-tidsplan',
+            myPage: baseURL + '/min-side',
+            myServiceAppointments: baseURL + '/mine-oppdrag',
+            freelanceMyPage: baseURL + '/frilanstolk-min-side'
+        };
     }
 
     @track isFrilans = false;
