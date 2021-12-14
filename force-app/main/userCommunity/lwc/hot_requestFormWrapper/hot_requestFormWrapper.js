@@ -206,10 +206,10 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
     handleEditModeRequestType(parsed_params) {
+        this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
+        this.requestTypeChosen = this.isEditOrCopyMode;
         this.isTypeMe = this.fieldValues.Type__c === 'Me';
-        this.isEditOrCopyMode = parsed_params.edit != null;
         this.isEditModeAndTypeMe = this.isTypeMe && this.isEditOrCopyMode;
-        this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
     }
 
     isGetAll = false;
