@@ -150,11 +150,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     handleSuccess(event) {
         this.spin = false;
         this.recordId = event.detail.id;
-
         this.hideFormAndShowSuccess();
         this.uploadFiles();
         this.createWorkOrders();
-
         window.scrollTo(0, 0);
     }
 

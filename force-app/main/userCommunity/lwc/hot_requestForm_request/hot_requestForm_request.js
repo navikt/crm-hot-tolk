@@ -38,7 +38,6 @@ export default class Hot_requestForm_request extends LightningElement {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
         }
-        console.log(JSON.stringify(this.fieldValues));
         if (this.isEditOrCopyMode) {
             this.setFieldAndElementSelected(
                 this.componentValues.assignmentChoices,
