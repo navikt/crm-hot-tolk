@@ -6,7 +6,7 @@ export default class Hot_requestForm_company extends LightningElement {
         InvoiceReference__c: '',
         IsOtherEconomicProvicer__c: false,
         AdditionalInvoiceText__c: '',
-        UserName__c: ''
+        UserName__c: '' // Get UserName from Wrapper on edit/copy. Deleted in getFieldValues() and handled in requestForm_user afterwards.
     };
     @api parentCompanyComponentValues;
     @track componentValues = {
