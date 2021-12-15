@@ -8,19 +8,17 @@ export default class Hot_requestForm_user extends LightningElement {
     };
 
     isBirthdate = true;
-    @track componentValues = {
-        birthdateAndPhoneRadiobuttons: [
-            { label: 'Tolkbrukers fødselsnummer', value: 'birthdate', checked: true },
-            { label: 'Tolkbrukers telefonnummer', value: 'phone' }
-        ]
-    };
+    birthdateAndPhoneRadiobuttons = [
+        { label: 'Tolkbrukers fødselsnummer', value: 'birthdate', checked: true },
+        { label: 'Tolkbrukers telefonnummer', value: 'phone' }
+    ];
 
     handleBirthdateOrPhone(event) {
-        if (this.componentValues.birthdateAndPhoneRadiobuttons !== event.detail) {
+        if (this.birthdateAndPhoneRadiobuttons !== event.detail) {
             this.resetRadiobuttonFieldValues();
         }
-        this.componentValues.birthdateAndPhoneRadiobuttons = event.detail;
-        this.isBirthdate = this.componentValues.birthdateAndPhoneRadiobuttons[0].checked;
+        this.birthdateAndPhoneRadiobuttons = event.detail;
+        this.isBirthdate = this.birthdateAndPhoneRadiobuttons[0].checked;
     }
 
     resetRadiobuttonFieldValues() {
@@ -29,17 +27,17 @@ export default class Hot_requestForm_user extends LightningElement {
     }
 
     setRadiobuttonsOnConnected() {
-        this.componentValues.birthdateAndPhoneRadiobuttons[0].checked = false;
-        this.componentValues.birthdateAndPhoneRadiobuttons[1].checked = false;
+        this.birthdateAndPhoneRadiobuttons[0].checked = false;
+        this.birthdateAndPhoneRadiobuttons[1].checked = false;
         if (this.fieldValues.UserPhone__c !== '') {
-            this.componentValues.birthdateAndPhoneRadiobuttons[1].checked = true;
+            this.birthdateAndPhoneRadiobuttons[1].checked = true;
         } else {
-            this.componentValues.birthdateAndPhoneRadiobuttons[0].checked = true;
+            this.birthdateAndPhoneRadiobuttons[0].checked = true;
         }
-        this.isBirthdate = this.componentValues.birthdateAndPhoneRadiobuttons[0].checked;
+        this.isBirthdate = this.birthdateAndPhoneRadiobuttons[0].checked;
         if (this.isEditOrCopyMode) {
-            this.componentValues.birthdateAndPhoneRadiobuttons[0].disabled = true;
-            this.componentValues.birthdateAndPhoneRadiobuttons[1].disabled = true;
+            this.birthdateAndPhoneRadiobuttons[0].disabled = true;
+            this.birthdateAndPhoneRadiobuttons[1].disabled = true;
         }
     }
 
