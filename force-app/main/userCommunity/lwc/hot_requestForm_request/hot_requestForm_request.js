@@ -14,7 +14,6 @@ export default class Hot_requestForm_request extends LightningElement {
         Source__c: 'Community',
         IsOrdererWantStatusUpdateOnSMS__c: true,
         IsScreenInterpreter__c: false,
-        UserPhone__c: '',
         UserPreferredInterpreter__c: '',
         AssignmentType__c: '',
         UserInterpretationMethod__c: ''
