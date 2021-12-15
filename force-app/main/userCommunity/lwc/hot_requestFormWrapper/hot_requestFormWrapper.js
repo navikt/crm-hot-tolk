@@ -147,15 +147,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.spin = false;
     }
 
-    @track isEditMode = false;
     handleSuccess(event) {
         this.spin = false;
         this.recordId = event.detail.id;
-
         this.hideFormAndShowSuccess();
         this.uploadFiles();
         this.createWorkOrders();
-
         window.scrollTo(0, 0);
     }
 
@@ -204,19 +201,19 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
     handleEditModeRequestType(parsed_params) {
+        this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
+        this.requestTypeChosen = this.isEditOrCopyMode;
         this.isTypeMe = this.fieldValues.Type__c === 'Me';
-        this.isEditMode = parsed_params.edit != null;
-        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditMode;
-        this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
+        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditOrCopyMode;
     }
 
     isGetAll = false;
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
         this.handleEditModeRequestType(parsed_params);
-        this.picklistValueSetInCompanyform = this.fieldValues.IsOtherEconomicProvicer__c ? 'Virksomhet' : 'NAV';
         this.userCheckboxValue = this.fieldValues.UserName__c ? true : false;
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
 
@@ -290,11 +287,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
-    picklistValueSetInCompanyform;
-    setPicklistValue(event) {
-        this.picklistValueSetInCompanyform = event.detail;
-    }
-
     handleNextButtonClicked() {
         this.getFieldValuesFromSubForms();
         this.getComponentValues();
@@ -324,7 +316,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
         if (this.formArray.length < 2) {
             this.resetFormValuesOnTypeSelection();
-            if (this.isEditMode) {
+            if (this.isEditOrCopyMode) {
                 this.goToPreviousPage();
             }
         } else if (
@@ -359,7 +351,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.componentValues = {};
         this.requestTypeChosen = false;
         this.userCheckboxValue = false;
-        this.picklistValueSetInCompanyform = null;
         this.requestTypeResult = null;
     }
 }

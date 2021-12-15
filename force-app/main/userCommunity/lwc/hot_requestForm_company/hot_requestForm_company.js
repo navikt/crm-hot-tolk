@@ -1,11 +1,12 @@
 import { LightningElement, track, api } from 'lwc';
 export default class Hot_requestForm_company extends LightningElement {
-    @api isEditMode = false;
+    @api isEditOrCopyMode = false;
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
         IsOtherEconomicProvicer__c: false,
-        AdditionalInvoiceText__c: ''
+        AdditionalInvoiceText__c: '',
+        UserName__c: '' // Get UserName from Wrapper on edit/copy. Deleted in getFieldValues() and handled in requestForm_user afterwards.
     };
     @api parentCompanyComponentValues;
     @track componentValues = {
@@ -16,6 +17,15 @@ export default class Hot_requestForm_company extends LightningElement {
         ],
         checkboxValue: false
     };
+
+    setComponentValuesOnEditAndCopy() {
+        this.componentValues.choices.forEach((element) => {
+            element.selected = false;
+        });
+        this.componentValues.choices[1].selected = !this.fieldValues.IsOtherEconomicProvicer__c;
+        this.componentValues.choices[2].selected = this.fieldValues.IsOtherEconomicProvicer__c;
+        this.componentValues.checkboxValue = this.fieldValues.UserName__c !== '';
+    }
 
     @api getComponentValues() {
         return this.componentValues;
@@ -64,9 +74,11 @@ export default class Hot_requestForm_company extends LightningElement {
 
     @api
     getFieldValues() {
+        delete this.fieldValues.UserName__c;
         return this.fieldValues;
     }
 
+    isEditOrCopyMode = false;
     @api parentFieldValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
@@ -78,6 +90,9 @@ export default class Hot_requestForm_company extends LightningElement {
             if (this.componentValues[field] != null) {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentCompanyComponentValues[field]));
             }
+        }
+        if (this.isEditOrCopyMode) {
+            this.setComponentValuesOnEditAndCopy();
         }
     }
 }
