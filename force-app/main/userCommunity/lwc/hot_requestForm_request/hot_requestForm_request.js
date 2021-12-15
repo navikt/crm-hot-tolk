@@ -126,9 +126,7 @@ export default class Hot_requestForm_request extends LightningElement {
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
-        if (this.componentValues.isOptionalFields) {
-            this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
-        }
+        this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
         this.setDependentFields();
     }
 
