@@ -19,7 +19,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         if (result.data) {
             this.personAccount.Id = result.data.AccountId;
             this.personAccount.Name = result.data.Account.CRM_Person__r.CRM_FullName__c;
-            this.fieldValues.UserPhone__c = result.data.Account.CRM_Person__r.INT_KrrMobilePhone__c;
         }
     }
 
