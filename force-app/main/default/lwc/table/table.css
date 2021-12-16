@@ -5,3 +5,9 @@ tr.row {
 tr.row:last-child {
     border-bottom: 1px solid #000000;
 }
+@media (max-width: 576px) {
+    .mobile-header-hidden {
+        position: absolute;
+        left: -10000px;
+    }
+}

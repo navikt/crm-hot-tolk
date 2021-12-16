@@ -4,8 +4,13 @@ export default class Table extends LightningElement {
     @api columns;
     @api records;
     @api iconByValue;
+    @api hideMobileHeader;
 
     recordMap = {};
+
+    get mobileTheadClass() {
+        return this.hideMobileHeader.valueOf() ? 'mobile-header-hidden' : '';
+    }
 
     get recordsToShow() {
         let records = [];
@@ -14,9 +19,9 @@ export default class Table extends LightningElement {
                 let fields = [];
                 for (let column of this.columns) {
                     let field = {
-                        name: column.name,
-                        value: record[column.name]
+                        name: column.name
                     };
+                    field.value = this.getValue(record, column);
                     if (column.svg !== undefined && this.iconByValue[record[column.name]] !== undefined) {
                         field.svg = this.iconByValue[record[column.name]];
                     }
@@ -30,6 +35,16 @@ export default class Table extends LightningElement {
             }
         }
         return records;
+    }
+
+    getValue(record, column) {
+        let value = record[column.name];
+        if (column.type === 'Datetime') {
+            value = new Date(value);
+            value = value.toLocaleString();
+            value = value.substring(0, value.length - 3);
+        }
+        return value;
     }
 
     handleOnRowClick(event) {

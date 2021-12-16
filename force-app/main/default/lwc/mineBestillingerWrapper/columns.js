@@ -2,12 +2,12 @@ export let workOrderColumns = [
     {
         name: 'StartDate',
         label: 'Start tid',
-        type: 'String'
+        type: 'Datetime'
     },
     {
         name: 'EndDate',
         label: 'Slutt tid',
-        type: 'String'
+        type: 'Datetime'
     },
     {
         name: 'Status',
@@ -21,7 +21,7 @@ export let columns = [
     {
         name: 'StartDate',
         label: 'Start tid',
-        type: 'String'
+        type: 'Datetime'
     },
     {
         name: 'Status',
