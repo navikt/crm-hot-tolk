@@ -19,6 +19,9 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                 if (!String.isBlank(request.Account__c)) {
                     idents.add(request.Account__c);
                 }
+                if (!String.isBlank(request.UserPhone__c)) {
+                    idents.add(request.UserPhone__c);
+                }
             }
         }
         if (accountConnectedRequests.size() > 0) {
@@ -65,13 +68,20 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
     public void routeAccountConnectedRequests(List<HOT_Request__c> accountConnectedRequests, List<String> idents) {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         List<Account> accounts = [
-            SELECT Id, Name, INT_PersonIdent__c, CRM_Person__c, INT_OrganizationNumber__c
+            SELECT
+                Id,
+                Name,
+                INT_PersonIdent__c,
+                CRM_Person__c,
+                INT_OrganizationNumber__c,
+                CRM_Person__r.INT_KrrMobilePhone__c
             FROM Account
             WHERE INT_PersonIdent__c IN :idents OR INT_OrganizationNumber__c IN :idents OR Id IN :idents
         ];
 
         Map<String, Account> personIdentToAccount = new Map<String, Account>();
         Map<String, Account> orgNumberToAccount = new Map<String, Account>();
+        Map<String, Account> phoneNumberToAccount = new Map<String, Account>();
         Map<Id, Account> idToAccount = new Map<Id, Account>();
 
         for (Account account : accounts) {
@@ -80,6 +90,9 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             }
             if (account.INT_OrganizationNumber__c != null) {
                 orgNumberToAccount.put(account.INT_OrganizationNumber__c, account);
+            }
+            if (account.CRM_Person__r.INT_KrrMobilePhone__c != null) {
+                phoneNumberToAccount.put(account.CRM_Person__r.INT_KrrMobilePhone__c, account);
             }
             idToAccount.put(account.Id, account);
         }
@@ -93,12 +106,16 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                 ) {
                     request.Account__c = personIdentToAccount.get(request.UserPersonNumber__c).Id;
                     request.Person__c = personIdentToAccount.get(request.UserPersonNumber__c).CRM_Person__c;
+                } else if (request.UserPhone__c != null && phoneNumberToAccount.get(request.UserPhone__c) != null) {
+                    request.Account__c = phoneNumberToAccount.get(request.UserPhone__c).Id;
+                    request.Person__c = phoneNumberToAccount.get(request.UserPhone__c).CRM_Person__c;
                 } else if (request.Type__c == 'Me') {
                     //Checks if user is putting in request for interpreter for itself
                     //Sets account and Person Fields if it should be connected to THIS.User
                     request.Account__c = currentUser.AccountId;
                     request.Person__c = currentUser.Account.CRM_Person__c;
                 }
+
                 //Sets Company-lookup if orgNumber is filled in
                 if (
                     request.OrganizationNumber__c != null &&
