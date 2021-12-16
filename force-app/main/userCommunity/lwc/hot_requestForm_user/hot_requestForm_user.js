@@ -27,13 +27,8 @@ export default class Hot_requestForm_user extends LightningElement {
     }
 
     setRadiobuttonsOnConnected() {
-        this.birthdateAndPhoneRadiobuttons[0].checked = false;
-        this.birthdateAndPhoneRadiobuttons[1].checked = false;
-        if (this.fieldValues.UserPhone__c !== '') {
-            this.birthdateAndPhoneRadiobuttons[1].checked = true;
-        } else {
-            this.birthdateAndPhoneRadiobuttons[0].checked = true;
-        }
+        this.birthdateAndPhoneRadiobuttons[1].checked = this.fieldValues.UserPhone__c !== '';
+        this.birthdateAndPhoneRadiobuttons[0].checked = !this.birthdateAndPhoneRadiobuttons[1].checked;
         this.isBirthdate = this.birthdateAndPhoneRadiobuttons[0].checked;
         if (this.isEditOrCopyMode) {
             this.birthdateAndPhoneRadiobuttons[0].disabled = true;
