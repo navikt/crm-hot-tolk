@@ -76,7 +76,11 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                 INT_OrganizationNumber__c,
                 CRM_Person__r.INT_KrrMobilePhone__c
             FROM Account
-            WHERE INT_PersonIdent__c IN :idents OR INT_OrganizationNumber__c IN :idents OR Id IN :idents
+            WHERE
+                INT_PersonIdent__c IN :idents
+                OR INT_OrganizationNumber__c IN :idents
+                OR CRM_Person__r.INT_KrrMobilePhone__c IN :idents
+                OR Id IN :idents
         ];
 
         Map<String, Account> personIdentToAccount = new Map<String, Account>();
@@ -98,6 +102,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         }
 
         for (HOT_Request__c request : accountConnectedRequests) {
+            System.debug(request.UserPhone__c);
             if (request.Account__c == null && currentUser.AccountId != null) {
                 //Sets account and Person fields if UserPersonNumber__c is filled out in form
                 if (
@@ -115,7 +120,6 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                     request.Account__c = currentUser.AccountId;
                     request.Person__c = currentUser.Account.CRM_Person__c;
                 }
-
                 //Sets Company-lookup if orgNumber is filled in
                 if (
                     request.OrganizationNumber__c != null &&
