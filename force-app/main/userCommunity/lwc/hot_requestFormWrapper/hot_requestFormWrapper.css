@@ -55,7 +55,7 @@
 }
 
 div.skjema {
-    margin-bottom: 2rem;
+    margin-bottom: 3.5rem;
     margin-top: -2rem;
     border-radius: 0.5rem;
     padding: 0 2rem;
@@ -97,7 +97,7 @@ section.sub-form:last-child {
 .button-container {
     text-align: center;
     max-width: 792px;
-    padding: 1rem 2rem 1rem 2rem;
+    padding: 1rem 2rem 2rem 2rem;
     flex-direction: row;
     display: flex;
     justify-content: center;
