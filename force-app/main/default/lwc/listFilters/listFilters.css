@@ -10,7 +10,7 @@
     top: 0;
     left: 0;
     z-index: 2000;
-    background-color: #f2f2f2;
+    background-color: rgba(242, 242, 242, 0.7);
 }
 .overlay-container {
     width: 100%;
@@ -46,9 +46,35 @@ ul.list {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    height: 81px;
+    height: 46px;
     border-top: 1px solid #000000;
+    padding: 0 0.5rem;
 }
 .row-element:last-child {
     border-bottom: 1px solid #000000;
+}
+.filter-label {
+    font-weight: 600;
+}
+.expanded-filter {
+    width: 100%;
+    padding: 0 0.5rem;
+}
+.checkbox-row {
+    border-bottom: 1px solid #b6b6b6;
+}
+.checkbox-row:last-child {
+    border-bottom: 0;
+}
+.active-filter-container {
+    height: 32px;
+    background-color: #6a6a6a;
+    padding: 0 0.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.active-filter-text {
+    color: white;
+    margin-right: 1rem;
 }

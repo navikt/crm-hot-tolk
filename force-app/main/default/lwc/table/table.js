@@ -9,7 +9,7 @@ export default class Table extends LightningElement {
     recordMap = {};
 
     get mobileTheadClass() {
-        return this.hideMobileHeader.valueOf() ? 'mobile-header-hidden' : '';
+        return this.hideMobileHeader?.valueOf() ? 'mobile-header-hidden' : '';
     }
 
     get recordsToShow() {

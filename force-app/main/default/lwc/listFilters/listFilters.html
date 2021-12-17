@@ -18,18 +18,51 @@
                 <div class="drag-rectangle"></div>
                 <h3 style="text-align: center; margin-bottom: 2rem">{header}</h3>
                 <ul class="list">
-                    <li class="row-element">Status</li>
-                    <li class="row-element">Tidspunkt</li>
-                    <li class="row-element">Anledning</li>
+                    <template iterator:it={filterArray}>
+                        <li data-id={it.value.name} key={it.value.name} class="row-element" onclick={handleRowClick}>
+                            <p class="filter-label">{it.value.label}</p>
+                            <template iterator:element={it.value.value}>
+                                <div
+                                    if:true={element.value.isActive}
+                                    key={element.value.name}
+                                    class="active-filter-container"
+                                >
+                                    <p class="active-filter-text">{element.value.label}</p>
+                                    <c-icon
+                                        data-filter={it.value.name}
+                                        data-id={element.value.name}
+                                        onclick={removeFilter}
+                                        icon="ErrorFilled"
+                                    ></c-icon>
+                                </div>
+                            </template>
+                            <c-icon if:false={it.value.isOpen} icon="Expand"></c-icon>
+                            <c-icon if:true={it.value.isOpen} icon="Collapse"></c-icon>
+                        </li>
+                        <div if:true={it.value.isOpen} key={it.value.name} class="expanded-filter">
+                            <c-checkboxgroup
+                                if:true={it.value.isCheckboxgroup}
+                                checkboxes={it.value.value}
+                                oncheckboxgroupclick={handleCheckboxChange}
+                                data-id={it.value.name}
+                            ></c-checkboxgroup>
+                            <fieldset if:true={it.value.isDateInterval}>
+                                <template iterator:date={it.value.value}>
+                                    <c-input
+                                        key={date.value.name}
+                                        label={date.value.label}
+                                        data-id={date.value.name}
+                                        type="date"
+                                        ongetvalueonchange={handleDateChange}
+                                        name={date.value.name}
+                                        value={date.value.value}
+                                    ></c-input>
+                                </template>
+                            </fieldset>
+                        </div>
+                    </template>
                 </ul>
-                <c-button
-                    button-label="Vis treff"
-                    button-styling="primary"
-                    onbuttonclick={applyFilter}
-                    desktop-style="width: 8vw; justify-content: center"
-                    mobile-style="width: 20vw; justify-content: center"
-                    style="padding-bottom: 1em"
-                ></c-button>
+                <c-button button-label="Vis treff" button-styling="primary" onbuttonclick={applyFilter}></c-button>
             </div>
         </div>
     </div>

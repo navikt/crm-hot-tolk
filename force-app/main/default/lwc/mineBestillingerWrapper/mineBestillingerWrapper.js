@@ -2,7 +2,16 @@ import { LightningElement, track, wire } from 'lwc';
 import getMyWorkOrdersNew from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersNew';
 import { CurrentPageReference } from 'lightning/navigation';
 import { columns, workOrderColumns, iconByValue } from './columns';
+import { defaultFilters } from './filters';
 export default class MineBestillingerWrapper extends LightningElement {
+    @track filters = [];
+    connectedCallback() {
+        try {
+            this.filters = defaultFilters();
+        } catch (error) {
+            console.log(error);
+        }
+    }
     isList = true;
     isRequestDetails = false;
     isWorkOrderDetails = false;
@@ -95,5 +104,9 @@ export default class MineBestillingerWrapper extends LightningElement {
             refresh += '?id=' + this.urlStateParameters.id + '&level=' + this.urlStateParameters.level;
         }
         window.history.pushState({ path: refresh }, '', refresh);
+    }
+    applyfilter(event) {
+        let filters = event.detail;
+        console.log('handling filters...');
     }
 }

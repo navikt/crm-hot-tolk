@@ -3,22 +3,22 @@
         <a href="/s/">Tilbake</a>
         <h2 style="text-align: center">Mine bestillinger</h2>
         <div class="filter-button">
-            <c-list-filters header="Filtrer søket" choices={filterChoices}></c-list-filters>
+            <c-list-filters header="Filtrer søket" filters={filters}></c-list-filters>
         </div>
     </br>
-        <c-table hide-mobile-header=true records={records} columns={columns} onrowclick={goToRecordDetails} icon-by-value={iconByValue}></c-table>
+        <c-table hide-mobile-header=true records={records} columns={columns} onrowclick={goToRecordDetails} icon-by-value={iconByValue} onapplyfilter={applyfilter}></c-table>
     </div>
     <div if:true={isRequestDetails} class="mine-bestillinger-wrapper">
         <button onclick={goBack}>Tilbake</button>
-        <h2 style="text-align: center">{request.Subject__c}</h2>
+        <h2 style="text-align: center">Serie: <span>{request.Subject__c}</span></h2>
         <p>Adresse: <span>{request.MeetingStreet__c}</span></p>
     </br>
         <h2 style="text-align: center">Arbeidsordrer</h2>
         <div class="filter-button">
-            <c-list-filters header="Filtrer søket" choices={filterChoices}></c-list-filters>
+            <c-list-filters header="Filtrer søket" filters={filters}></c-list-filters>
         </div>
     </br>
-        <c-table records={workOrders} columns={workOrderColumns} onrowclick={goToRecordDetails} icon-by-value={iconByValue}></c-table>
+        <c-table records={workOrders} columns={workOrderColumns} onrowclick={goToRecordDetails} icon-by-value={iconByValue} onapplyfilter={applyfilter}></c-table>
     </div>
     <div if:true={isWorkOrderDetails} class="mine-bestillinger-wrapper">
         <button onclick={goBack}>Tilbake</button>
