@@ -1,6 +1,6 @@
 <template>
     <div class="brodsmulesti">
-        <lightning-breadcrumbs class="skjema-max-width">
+        <lightning-breadcrumbs class="skjema-max-width" style="font-size: 1.125rem">
             <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
             <lightning-breadcrumb label="Ny bestilling" href="/s/ny-bestilling"> </lightning-breadcrumb>
         </lightning-breadcrumbs>
@@ -45,13 +45,13 @@
                         class="subform"
                         onusercheckboxclicked={handleUserCheckbox}
                         if:true={requestTypeResult.companyForm}
-                        is-edit-mode={isEditMode}
+                        is-edit-or-copy-mode={isEditOrCopyMode}
                     ></c-hot_request-form_company>
                     <c-hot_request-form_user
                         parent-field-values={fieldValues}
                         class="subform"
                         if:true={requestTypeResult.userForm}
-                        is-edit-mode={isEditMode}
+                        is-edit-or-copy-mode={isEditOrCopyMode}
                     ></c-hot_request-form_user>
                     <c-hot_request-form_request
                         parent-field-values={fieldValues}
@@ -62,6 +62,7 @@
                         class="subform"
                         if:true={requestTypeResult.requestForm}
                         is-request-type-me={isTypeMe}
+                        is-edit-or-copy-mode={isEditOrCopyMode}
                     ></c-hot_request-form_request>
                     <div class="button-container">
                         <div if:true={spin} class="loader" style="display: flex; justify-content: center"></div>
@@ -73,8 +74,8 @@
                                 button-styling="primary"
                                 type="submit"
                                 style="padding-bottom: 1em"
-                                desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 20vw; justify-content: center"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
                             ></c-button>
                             <c-button
                                 if:false={requestTypeResult.requestForm}
@@ -82,8 +83,8 @@
                                 button-styling="primary"
                                 onbuttonclick={handleNextButtonClicked}
                                 style="padding-bottom: 1em"
-                                desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 20vw; justify-content: center"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
                             ></c-button>
                             <c-button
                                 if:false={isEditModeAndTypeMe}
@@ -91,16 +92,16 @@
                                 button-styling="secondary"
                                 onbuttonclick={handleBackButtonClicked}
                                 style="padding-bottom: 1em"
-                                desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 20vw; justify-content: center"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
                             ></c-button>
                             <c-button
                                 if:true={requestTypeResult.requestForm}
                                 button-label="Avbryt"
                                 button-styling="tertiary"
                                 onbuttonclick={goToPreviousPage}
-                                desktop-style="width: 8vw; justify-content: center"
-                                mobile-style="width: 20vw; justify-content: center"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
                             ></c-button>
                         </div>
                     </div>
@@ -120,13 +121,7 @@
             >
             </lightning-icon>
             <br />
-            <h2
-                class="typo-undertittel h2-successMessage"
-                id="successMessage"
-                tabindex="-1"
-                role="alert"
-                aria-live="assertive"
-            >
+            <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1" role="alert">
                 Bestilling mottatt
             </h2>
             <br />

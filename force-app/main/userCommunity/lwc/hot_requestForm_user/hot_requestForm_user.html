@@ -1,9 +1,10 @@
 <template>
     <section class="bruker-info-skjema sub-form">
-        <div style="flex-direction: row; display: flex; align-items: center">
-            <h2 class="header" style="padding-right: 5px">Informasjon om tolkebruker</h2>
+        <div style="flex-direction: row; display: flex">
+            <h2 class="header">Informasjon om tolkebruker</h2>
             <c-helptext
                 text="Oppgi hvem som trenger tolk fra tolketjenesten for døve, døvblinde og hørselshemmede."
+                hover-text="Hjelpeknapp for informasjon om tolkebruker."
             ></c-helptext>
         </div>
         <br />
@@ -13,7 +14,7 @@
             form="tolk-skjema-input"
             value={fieldValues.UserName__c}
             error-text="Tolkbrukers navn må fylles ut."
-            disabled={isEditMode}
+            disabled={isEditOrCopyMode}
         ></c-input>
         <br />
         <c-input
@@ -23,7 +24,7 @@
             value={fieldValues.UserPersonNumber__c}
             error-text={personNumberErrorText}
             max-length="11"
-            disabled={isEditMode}
+            disabled={isEditOrCopyMode}
         ></c-input>
     </section>
 </template>

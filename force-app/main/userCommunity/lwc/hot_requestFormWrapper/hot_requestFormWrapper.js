@@ -19,7 +19,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         if (result.data) {
             this.personAccount.Id = result.data.AccountId;
             this.personAccount.Name = result.data.Account.CRM_Person__r.CRM_FullName__c;
-            this.fieldValues.UserPhone__c = result.data.Account.CRM_Person__r.INT_KrrMobilePhone__c;
         }
     }
 
@@ -147,15 +146,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.spin = false;
     }
 
-    @track isEditMode = false;
     handleSuccess(event) {
         this.spin = false;
         this.recordId = event.detail.id;
-
         this.hideFormAndShowSuccess();
         this.uploadFiles();
         this.createWorkOrders();
-
         window.scrollTo(0, 0);
     }
 
@@ -204,19 +200,19 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
     handleEditModeRequestType(parsed_params) {
+        this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
+        this.requestTypeChosen = this.isEditOrCopyMode;
         this.isTypeMe = this.fieldValues.Type__c === 'Me';
-        this.isEditMode = parsed_params.edit != null;
-        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditMode;
-        this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
+        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditOrCopyMode;
     }
 
     isGetAll = false;
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
         this.handleEditModeRequestType(parsed_params);
-        this.picklistValueSetInCompanyform = this.fieldValues.IsOtherEconomicProvicer__c ? 'Virksomhet' : 'NAV';
         this.userCheckboxValue = this.fieldValues.UserName__c ? true : false;
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
 
@@ -272,27 +268,22 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.formArray.push('companyForm');
             if (this.userCheckboxValue) {
                 this.formArray.push('userForm');
-                this.requestTypeResult[this.formArray.at(-2)] = true;
+                this.requestTypeResult[this.formArray[this.formArray.length - 2]] = true;
             }
         }
-        this.requestTypeResult[this.formArray.at(-1)] = true;
+        this.requestTypeResult[this.formArray[this.formArray.length - 1]] = true;
     }
 
-    userCheckboxValue = false;
+    userCheckboxValue = true;
     handleUserCheckbox(event) {
         this.userCheckboxValue = event.detail;
         if (event.detail) {
             this.formArray.push('userForm');
             this.requestTypeResult.userForm = true;
         } else {
-            this.requestTypeResult[this.formArray.at(-1)] = false;
+            this.requestTypeResult[this.formArray[this.formArray.length - 1]] = false;
             this.formArray.pop();
         }
-    }
-
-    picklistValueSetInCompanyform;
-    setPicklistValue(event) {
-        this.picklistValueSetInCompanyform = event.detail;
     }
 
     handleNextButtonClicked() {
@@ -301,14 +292,17 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         if (this.handleValidation()) {
             return;
         }
-        if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
-            this.requestTypeResult[this.formArray.at(-2)] = false;
+        if (
+            this.formArray[this.formArray.length - 1] === 'userForm' &&
+            this.formArray[this.formArray.length - 2] === 'companyForm'
+        ) {
+            this.requestTypeResult[this.formArray[this.formArray.length - 2]] = false;
         }
-        if (this.formArray.at(-1) === 'companyForm' && !this.userCheckboxValue) {
+        if (this.formArray[this.formArray.length - 1] === 'companyForm' && !this.userCheckboxValue) {
             this.fieldValues.UserName__c = '';
             this.fieldValues.UserPersonNumber__c = '';
         }
-        this.requestTypeResult[this.formArray.at(-1)] = false;
+        this.requestTypeResult[this.formArray[this.formArray.length - 1]] = false;
         this.setCurrentForm();
     }
 
@@ -321,25 +315,31 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
         if (this.formArray.length < 2) {
             this.resetFormValuesOnTypeSelection();
-            if (this.isEditMode) {
+            if (this.isEditOrCopyMode) {
                 this.goToPreviousPage();
             }
-        } else if (this.formArray.at(-1) === 'userForm' && this.formArray.at(-2) === 'companyForm') {
+        } else if (
+            this.formArray[this.formArray.length - 1] === 'userForm' &&
+            this.formArray[this.formArray.length - 2] === 'companyForm'
+        ) {
             // Back to ordererForm
-            this.requestTypeResult[this.formArray.at(-1)] = false;
-            this.requestTypeResult[this.formArray.at(-2)] = false;
-            this.requestTypeResult[this.formArray.at(-3)] = true;
+            this.requestTypeResult[this.formArray[this.formArray.length - 1]] = false;
+            this.requestTypeResult[this.formArray[this.formArray.length - 2]] = false;
+            this.requestTypeResult[this.formArray[this.formArray.length - 3]] = true;
             this.formArray.pop();
             this.formArray.pop();
-        } else if (this.formArray.at(-2) === 'userForm' && this.formArray.at(-3) === 'companyForm') {
+        } else if (
+            this.formArray[this.formArray.length - 2] === 'userForm' &&
+            this.formArray[this.formArray.length - 3] === 'companyForm'
+        ) {
             // Back to company+userform (checkbox checked)
-            this.requestTypeResult[this.formArray.at(-1)] = false;
-            this.requestTypeResult[this.formArray.at(-2)] = true;
-            this.requestTypeResult[this.formArray.at(-3)] = true;
+            this.requestTypeResult[this.formArray[this.formArray.length - 1]] = false;
+            this.requestTypeResult[this.formArray[this.formArray.length - 2]] = true;
+            this.requestTypeResult[this.formArray[this.formArray.length - 3]] = true;
             this.formArray.pop();
         } else {
-            this.requestTypeResult[this.formArray.at(-1)] = false;
-            this.requestTypeResult[this.formArray.at(-2)] = true;
+            this.requestTypeResult[this.formArray[this.formArray.length - 1]] = false;
+            this.requestTypeResult[this.formArray[this.formArray.length - 2]] = true;
             this.formArray.pop();
         }
     }
@@ -349,8 +349,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.fieldValues = {};
         this.componentValues = {};
         this.requestTypeChosen = false;
-        this.userCheckboxValue = false;
-        this.picklistValueSetInCompanyform = null;
+        this.userCheckboxValue = true;
         this.requestTypeResult = null;
     }
 }

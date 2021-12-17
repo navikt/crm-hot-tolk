@@ -96,8 +96,11 @@ public without sharing class HOT_RequestListContoller {
                     OrdererEmail__c,
                     OrdererName__c,
                     Owner.Name,
+                    toLabel(AssignmentType__c),
                     UserName__c,
                     UserPersonNumber__c,
+                    UserPreferredInterpreter__c,
+                    toLabel(UserInterpretationMethod__c),
                     Company__r.Name,
                     (SELECT ServiceAppointment.HOT_ServiceResource__r.Name FROM HOT_Request__c.ServiceAppointments__r),
                     (

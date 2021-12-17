@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 import { updateRecord } from 'lightning/uiRecordApi';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
@@ -450,7 +450,9 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     }
 
     handleFileUpload() {
-        this.template.querySelector('c-upload-files').handleFileUpload(this.recordId);
+        if (this.hasFiles) {
+            this.template.querySelector('c-upload-files').handleFileUpload(this.recordId);
+        }
     }
 
     clearFileData() {
@@ -503,7 +505,6 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         let file = this.fileLength > 1 ? 'Filene' : 'Filen';
         this.content = file + ' ble lagt til i bestillingen.';
         this.validateCheckbox();
-
         // Show spinner
         if (this.checkboxValue) {
             this.template.querySelector('.loader').classList.remove('hidden');
@@ -524,6 +525,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
     showUploadFilesComponent = false;
     isAddFiles = false;
     addFiles(row) {
+        this.checkboxValue = false;
         this.isAddFiles = true;
         this.showUploadFilesComponent = true;
         this.recordId = row.Id;
