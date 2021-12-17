@@ -18,12 +18,14 @@ export default class MineBestillingerWrapper extends LightningElement {
     @track iconByValue = iconByValue;
 
     @track records = [];
+    @track allRecords = [];
     wiredMyWorkOrdersNewResult;
     @wire(getMyWorkOrdersNew)
     wiredMyWorkOrdersNew(result) {
         this.wiredMyWorkOrdersNewResult = result;
         if (result.data) {
             this.records = [...result.data];
+            this.allRecords = [...result.data];
             this.refresh();
         }
     }
@@ -88,6 +90,7 @@ export default class MineBestillingerWrapper extends LightningElement {
         this.getRecords();
         this.updateURL();
         this.updateView();
+        this.applyFilter({ detail: this.filters });
     }
     updateView() {
         this.isList = this.urlStateParameters.id === undefined;
@@ -102,6 +105,18 @@ export default class MineBestillingerWrapper extends LightningElement {
         window.history.pushState({ path: refresh }, '', refresh);
     }
     applyFilter(event) {
-        let filters = event.detail;
+        this.filters = event.detail;
+
+        let filteredRecords = [];
+        for (let record of this.allRecords) {
+            let includeRecord = true;
+            for (let filter of this.filters) {
+                includeRecord *= filter.compare(record);
+            }
+            if (includeRecord) {
+                filteredRecords.push(record);
+            }
+        }
+        this.records = filteredRecords;
     }
 }

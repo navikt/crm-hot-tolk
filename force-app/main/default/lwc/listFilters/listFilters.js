@@ -38,13 +38,10 @@ export default class ListFilters extends LightningElement {
         this.filterArray[filterindex].isOpen = !this.filterArray[filterindex].isOpen;
     }
     handleCheckboxChange(event) {
-        console.log(JSON.stringify(event.detail));
         let filterindex = event.currentTarget.dataset.filterindex;
-        console.log(JSON.stringify(event.currentTarget.dataset));
         event.detail.forEach((element, index) => {
             this.filterArray[filterindex].value[index].value = element.value;
         });
-        console.log(JSON.stringify(this.filterArray[filterindex].value));
     }
     handleDateChange(event) {
         let filterindex = event.currentTarget.dataset.filterindex;
