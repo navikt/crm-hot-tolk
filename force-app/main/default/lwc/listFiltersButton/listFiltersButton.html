@@ -1,16 +1,7 @@
 <template>
     <button class="open-filter-button" onclick={openFilters}>
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M14 3.49935H0V1.16602H14V3.49935ZM10.5 8.16601H3.5L3.5 5.83268L10.5 5.83268V8.16601ZM5.83333 12.8327H8.16667V10.4993H5.83333V12.8327Z"
-                fill="#262626"
-            ></path>
-        </svg>
-        <div style="margin-left: 0.5rem">
-            <p>Filter</p>
-        </div>
+        <c-icon icon="FilterFilled"></c-icon>
+        <p style="margin-left: 0.5rem">Filter</p>
     </button>
     <c-list-filters header={header} filters={filters} onapplyfilter={applyFilter}></c-list-filters>
 </template>

@@ -2,4 +2,7 @@
     display: inline-flex;
     justify-content: space-between;
     padding: 0.5rem;
+    background-color: #ffffff;
+    border: 1px solid #929292;
+    border-radius: 3px;
 }
