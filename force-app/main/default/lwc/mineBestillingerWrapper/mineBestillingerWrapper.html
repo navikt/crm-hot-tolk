@@ -1,29 +1,35 @@
 <template>
     <div if:true={isList} class="mine-bestillinger-wrapper">
-        <a class="back-link" href="/s/"><c-icon icon="Back"></c-icon> <p style="margin-left: 0.25rem;">Tilbake</p></a>
-        <h2 style="text-align: center">Mine bestillinger</h2>
-        <div class="filter-button">
+        <div class="navigation-container">
+            <a class="back-link" href="/s/"><c-icon icon="Back"></c-icon> <p style="margin-left: 0.25rem;">Tilbake</p></a>
+            <h2 class="header">Mine bestillinger</h2>
             <c-list-filters-button header="Filtrer søket" filters={filters} onapplyfilter={applyFilter}></c-list-filters-button>
         </div>
     </br>
         <c-table hide-mobile-header=true records={records} columns={columns} onrowclick={goToRecordDetails} icon-by-value={iconByValue}></c-table>
     </div>
     <div if:true={isRequestDetails} class="mine-bestillinger-wrapper">
-        <a class="back-link" onclick={goBack}><c-icon icon="Back"></c-icon> <p style="margin-left: 0.25rem;">Tilbake</p></a>
-        <h2 style="text-align: center">Serie: <span>{request.Subject__c}</span></h2>
-        <p>Adresse: <span>{request.MeetingStreet__c}</span></p>
-    </br>
-        <h2 style="text-align: center">Arbeidsordrer</h2>
-        <div class="filter-button">
+        <div class="navigation-container">
+            <a class="back-link" onclick={goBack}><c-icon icon="Back"></c-icon> <p style="margin-left: 0.25rem;">Tilbake</p></a>
+            <h2 class="header">Serie: <span>{request.Subject__c}</span></h2>
             <c-list-filters-button header="Filtrer søket" filters={filters} onapplyfilter={applyFilter}></c-list-filters-button>
         </div>
-    </br>
-        <c-table records={workOrders} columns={workOrderColumns} onrowclick={goToRecordDetails} icon-by-value={iconByValue}></c-table>
+        <div class="record-details-container">
+            <p>Adresse: <span>{request.MeetingStreet__c}</span></p>
+        </div>
+        <div class="record-details-container">
+            <h2 class="header">Arbeidsordrer</h2>
+            <c-table records={workOrders} columns={workOrderColumns} onrowclick={goToRecordDetails} icon-by-value={iconByValue}></c-table>
+        </div>
     </div>
     <div if:true={isWorkOrderDetails} class="mine-bestillinger-wrapper">
-        <a class="back-link" onclick={goBack}><c-icon icon="Back"></c-icon> <p style="margin-left: 0.25rem;">Tilbake</p></a>
-        <h2 style="text-align: center">{workOrder.Subject}</h2>
-        <p>Adresse: <span>{workOrder.HOT_AddressFormated__c}</span></p>
-
+        <div class="navigation-container">
+            <a class="back-link" onclick={goBack}><c-icon icon="Back"></c-icon> <p style="margin-left: 0.25rem;">Tilbake</p></a>
+            <h2 style="text-align: center">{workOrder.Subject}</h2>
+            <c-list-filters-button style="visibility: hidden;" aria-hidden="true" header="Filtrer søket" filters={filters} onapplyfilter={applyFilter}></c-list-filters-button>
+        </div>
+        <div class="record-details-container">
+            <p>Adresse: <span>{workOrder.HOT_AddressFormated__c}</span></p>
+        </div>
     </div>
 </template>
