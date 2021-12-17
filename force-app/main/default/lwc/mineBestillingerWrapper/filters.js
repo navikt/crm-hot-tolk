@@ -41,13 +41,5 @@ export let filterArray = [
 export function defaultFilters() {
     let nowDate = new Date();
     filterArray[1].value[0].value = nowDate.toISOString().split('T')[0];
-    console.log(JSON.stringify(filterArray));
-    filterArray.forEach((filter) => {
-        filter.value.forEach((choice) => {
-            if (choice.value !== undefined) {
-                choice.isActive = true;
-            }
-        });
-    });
     return filterArray;
 }

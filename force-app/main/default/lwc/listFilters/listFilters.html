@@ -10,7 +10,7 @@
                             <p class="filter-label">{it.value.label}</p>
                             <template iterator:element={it.value.value}>
                                 <div
-                                    if:true={element.value.isActive}
+                                    if:true={element.value.value}
                                     key={element.value.name}
                                     class="active-filter-container"
                                 >
@@ -20,6 +20,8 @@
                                         data-id={element.value.name}
                                         onclick={removeFilter}
                                         icon="ErrorFilled"
+                                        data-filterindex={it.value.filterindex}
+                                        data-valueindex={element.value.valueindex}
                                     ></c-icon>
                                 </div>
                             </template>
