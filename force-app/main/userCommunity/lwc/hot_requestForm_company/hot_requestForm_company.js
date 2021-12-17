@@ -15,7 +15,7 @@ export default class Hot_requestForm_company extends LightningElement {
             { name: 'NAV', label: 'NAV betaler' },
             { name: 'Virksomhet', label: 'Virksomhet betaler' }
         ],
-        checkboxValue: false
+        checkboxValue: true
     };
 
     setComponentValuesOnEditAndCopy() {
