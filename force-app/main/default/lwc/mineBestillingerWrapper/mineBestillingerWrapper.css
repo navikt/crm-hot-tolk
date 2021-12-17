@@ -7,3 +7,8 @@
     top: 12.5%;
     right: 1rem;
 }
+.back-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
