@@ -20,20 +20,20 @@ export let filterArray = [
         name: 'timeInterval',
         label: 'Tidspunkt',
         isDateInterval: true,
-        compare: between,
+        compare: dateBetween,
         value: [
             {
-                name: 'startDate',
+                name: 'StartDate',
                 label: 'Start dato'
             },
             {
-                name: 'endDate',
+                name: 'EndDate',
                 label: 'Slutt dato'
             }
         ]
     },
     {
-        name: 'setting',
+        name: 'AssignmentType__c',
         label: 'Anledning',
         isCheckboxgroup: true,
         compare: equals,
@@ -56,6 +56,26 @@ function equals(record) {
     return true;
 }
 
-function between(record) {
+function dateBetween(record) {
+    let startVal = this.value[0];
+    let endVal = this.value[1];
+    if (startVal.value !== undefined && startVal.value !== false) {
+        let recordStartDate = new Date(record[startVal.name]);
+        let startDate = new Date(startVal.value);
+        startDate.setHours(0);
+        startDate.setMinutes(0);
+        if (recordStartDate < startDate) {
+            return false;
+        }
+    }
+    if (endVal.value !== undefined && endVal.value !== false) {
+        let recordEndDate = new Date(record[endVal.name]);
+        recordEndDate.setHours(0);
+        recordEndDate.setMinutes(0);
+        let endDate = new Date(endVal.value);
+        if (recordEndDate > endDate) {
+            return false;
+        }
+    }
     return true;
 }
