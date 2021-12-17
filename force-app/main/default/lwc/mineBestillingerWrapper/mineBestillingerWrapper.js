@@ -6,11 +6,7 @@ import { defaultFilters } from './filters';
 export default class MineBestillingerWrapper extends LightningElement {
     @track filters = [];
     connectedCallback() {
-        try {
-            this.filters = defaultFilters();
-        } catch (error) {
-            console.log(error);
-        }
+        this.filters = defaultFilters();
     }
     isList = true;
     isRequestDetails = false;
@@ -105,8 +101,7 @@ export default class MineBestillingerWrapper extends LightningElement {
         }
         window.history.pushState({ path: refresh }, '', refresh);
     }
-    applyfilter(event) {
+    applyFilter(event) {
         let filters = event.detail;
-        console.log('handling filters...');
     }
 }

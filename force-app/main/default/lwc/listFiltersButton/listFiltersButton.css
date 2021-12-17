@@ -1,0 +1,5 @@
+.open-filter-button {
+    display: inline-flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+}

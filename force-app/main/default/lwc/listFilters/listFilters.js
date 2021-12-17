@@ -5,31 +5,28 @@ export default class ListFilters extends LightningElement {
     @api activeFilters;
     @api filters;
     @track filterArray = [];
-    @track filterMap = {};
 
     connectedCallback() {
         this.filters.forEach((element) => {
             this.filterArray.push({ ...element });
-            this.filterMap[element.name] = { ...element };
         });
     }
 
     isOpen = false;
+    @api
     openFilters() {
-        console.log(JSON.stringify(this.filters));
         this.isOpen = true;
     }
     closeFilters() {
         this.isOpen = false;
     }
     applyFilter() {
-        this.closeFilters();
         const eventToSend = new CustomEvent('applyfilter', { detail: this.filterArray });
         this.dispatchEvent(eventToSend);
+        this.closeFilters();
     }
     handleRowClick(event) {
         let chosenFilter = event.currentTarget.dataset.id;
-        console.log(chosenFilter);
         this.template.querySelectorAll('li.row-element').forEach((element, index) => {
             if (element.dataset.id === chosenFilter) {
                 this.filterArray[index].isOpen = !this.filterArray[index].isOpen;
@@ -37,19 +34,19 @@ export default class ListFilters extends LightningElement {
         });
     }
     handleCheckboxChange(event) {
-        let filter = event.currentTarget.dataset.id;
-        let checkboxes = event.detail;
-        console.log(checkboxes);
-        console.log(filter);
+        // update filters
     }
     handleDateChange(event) {
-        let date = event.detail;
-        console.log(date);
+        //update filters
     }
 
-    addFilter(filter) {}
+    addFilter(filter) {
+        //Add filter
+    }
     removeFilter(event) {
-        let filter = event.currentTarget.dataset.filter;
-        let filterName = event.currentTarget.dataset.id;
+        event.stopPropagation();
+        let filterName = event.currentTarget.dataset.filter;
+        let filterToRemove = event.currentTarget.dataset.id;
+        // remove filter
     }
 }
