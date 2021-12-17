@@ -8,13 +8,11 @@ export default class ListFilters extends LightningElement {
 
     connectedCallback() {
         let arr = [];
-        this.filters.forEach((element, filterindex) => {
+        this.filters.forEach((element) => {
             let temp = { ...element };
-            temp.filterindex = filterindex;
             temp.value = [];
-            element.value.forEach((val, valueindex) => {
+            element.value.forEach((val) => {
                 let value = { ...val };
-                value.valueindex = valueindex;
                 temp.value.push(value);
             });
             arr.push(temp);
@@ -36,28 +34,29 @@ export default class ListFilters extends LightningElement {
         this.closeFilters();
     }
     handleRowClick(event) {
-        let chosenFilter = event.currentTarget.dataset.id;
-        this.template.querySelectorAll('li.row-element').forEach((element, index) => {
-            if (element.dataset.id === chosenFilter) {
-                this.filterArray[index].isOpen = !this.filterArray[index].isOpen;
-            }
-        });
+        let filterindex = event.currentTarget.dataset.filterindex;
+        this.filterArray[filterindex].isOpen = !this.filterArray[filterindex].isOpen;
     }
     handleCheckboxChange(event) {
-        // update filters
+        console.log(JSON.stringify(event.detail));
+        let filterindex = event.currentTarget.dataset.filterindex;
+        console.log(JSON.stringify(event.currentTarget.dataset));
+        event.detail.forEach((element, index) => {
+            this.filterArray[filterindex].value[index].value = element.value;
+        });
+        console.log(JSON.stringify(this.filterArray[filterindex].value));
     }
     handleDateChange(event) {
-        //update filters
+        let filterindex = event.currentTarget.dataset.filterindex;
+        let valueindex = event.currentTarget.dataset.valueindex;
+        this.filterArray[filterindex].value[valueindex].value = event.detail;
     }
 
-    addFilter(filter) {
-        //Add filter
-    }
     removeFilter(event) {
         event.stopPropagation();
+        console.log(JSON.stringify(event.currentTarget.dataset));
         let filterindex = event.currentTarget.dataset.filterindex;
         let valueindex = event.currentTarget.dataset.valueindex;
         this.filterArray[filterindex].value[valueindex].value = false;
-        // remove filter
     }
 }
