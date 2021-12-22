@@ -25,6 +25,8 @@ export default class Hot_requestForm_request extends LightningElement {
     @api recordId;
     @api parentFieldValues;
     @api parentRequestComponentValues;
+    @api isEditOrCopyMode = false;
+
     connectedCallback() {
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
@@ -36,8 +38,58 @@ export default class Hot_requestForm_request extends LightningElement {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
         }
-        this.sameLocation = this.componentValues.sameAddressRadioButtons[0].checked;
+        if (this.isEditOrCopyMode) {
+            this.setFieldAndElementSelected(
+                this.componentValues.assignmentChoices,
+                this.fieldValues.AssignmentType__c,
+                'AssignmentType__c',
+                'label'
+            );
+            this.setFieldAndElementSelected(
+                this.componentValues.interpretationChoices,
+                this.fieldValues.UserInterpretationMethod__c,
+                'UserInterpretationMethod__c',
+                'label'
+            );
+            this.setComponentValuesOnEditAndCopy();
+        }
         this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
+        this.sameLocation = this.componentValues.sameAddressRadioButtons[0].checked;
+        if (this.sameLocation) {
+            this.clearInterpretationFields();
+        }
+    }
+
+    setFieldAndElementSelected(arr, value, field, attributeToCheck) {
+        arr.forEach((element) => {
+            element.selected = false;
+            if (attributeToCheck === 'label') {
+                if (element.label === value) {
+                    this.fieldValues[field] = element.name;
+                    element.selected = true;
+                }
+            } else {
+                if (value === '') {
+                    this.fieldValues[field] = null;
+                } else if (element.name === value) {
+                    this.fieldValues[field] = element.name;
+                    element.selected = true;
+                }
+            }
+        });
+    }
+
+    setComponentValuesOnEditAndCopy() {
+        this.componentValues.physicalOrDigitalRadiobuttons[0].checked = !this.fieldValues.IsScreenInterpreter__c;
+        this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
+        this.componentValues.sameAddressRadioButtons[1].checked =
+            this.fieldValues.InterpretationStreet__c !== this.fieldValues.MeetingStreet__c;
+        this.componentValues.sameAddressRadioButtons[0].checked =
+            !this.componentValues.sameAddressRadioButtons[1].checked;
+        this.componentValues.isOptionalFields =
+            this.fieldValues.UserInterpretationMethod__c !== '' ||
+            this.fieldValues.UserPreferredInterpreter__c !== '' ||
+            this.fieldValues.AssignmentType__c !== '';
     }
 
     @track componentValues = {
@@ -55,7 +107,7 @@ export default class Hot_requestForm_request extends LightningElement {
             { name: 'Work', label: 'Arbeidsliv' },
             { name: 'Health Services', label: 'Helsetjenester' },
             { name: 'Education', label: 'Utdanning' },
-            { name: 'Interpreter at Work', label: 'TPA - Tolk på arbeidsplass' }
+            { name: 'Interpreter at Work', label: 'Tolk på arbeidsplass - TPA' }
         ],
         interpretationChoices: [
             { name: '', label: 'Velg et alternativ', selected: true },
@@ -74,9 +126,7 @@ export default class Hot_requestForm_request extends LightningElement {
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
-        if (this.componentValues.isOptionalFields) {
-            this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
-        }
+        this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
         this.setDependentFields();
     }
 
@@ -131,6 +181,7 @@ export default class Hot_requestForm_request extends LightningElement {
         this.componentValues.sameAddressRadioButtons = event.detail;
         if (event.detail[0].checked) {
             this.sameLocation = true;
+            this.clearInterpretationFields();
         } else {
             this.sameLocation = false;
         }
@@ -143,10 +194,10 @@ export default class Hot_requestForm_request extends LightningElement {
     handlePhysicalOrDigital(event) {
         this.componentValues.physicalOrDigitalRadiobuttons = event.detail;
         this.fieldValues.IsScreenInterpreter__c = this.componentValues.physicalOrDigitalRadiobuttons[1].checked;
-        this.resetPhysicalFields();
+        this.clearPhysicalAddressFields();
     }
 
-    resetPhysicalFields() {
+    clearPhysicalAddressFields() {
         if (this.fieldValues.IsScreenInterpreter__c) {
             this.fieldValues.MeetingStreet__c = '';
             this.fieldValues.MeetingPostalCity__c = '';
@@ -160,22 +211,22 @@ export default class Hot_requestForm_request extends LightningElement {
         }
     }
 
+    clearInterpretationFields() {
+        this.fieldValues.InterpretationStreet__c = '';
+        this.fieldValues.InterpretationPostalCode__c = '';
+        this.fieldValues.InterpretationPostalCity__c = '';
+    }
+
     handleInterpretationPicklist(event) {
-        this.setElementSelected(this.componentValues.interpretationChoices, 'UserInterpretationMethod__c', event);
+        this.setFieldAndElementSelected(
+            this.componentValues.interpretationChoices,
+            event.detail.name,
+            'UserInterpretationMethod__c'
+        );
     }
 
     handleAssignmentPicklist(event) {
-        this.setElementSelected(this.componentValues.assignmentChoices, 'AssignmentType__c', event);
-    }
-
-    setElementSelected(array, field, event) {
-        array.forEach((element) => {
-            element.selected = false;
-            if (element.name === event.detail.name) {
-                element.selected = true;
-            }
-        });
-        this.fieldValues[field] = event.detail.name;
+        this.setFieldAndElementSelected(this.componentValues.assignmentChoices, event.detail.name, 'AssignmentType__c');
     }
 
     handleSMSCheckbox(event) {

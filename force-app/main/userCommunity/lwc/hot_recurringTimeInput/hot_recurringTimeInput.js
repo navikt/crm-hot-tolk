@@ -16,8 +16,6 @@ export default class Hot_recurringTimeInput extends LightningElement {
     @track isAdvancedTimes;
     uniqueIdCounter = 0;
 
-    @api initialTimes = [];
-
     setTimesValue(timeObject) {
         return {
             id: timeObject === null ? 0 : timeObject.id,

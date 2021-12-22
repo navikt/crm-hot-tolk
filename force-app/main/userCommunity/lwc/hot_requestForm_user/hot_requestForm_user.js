@@ -1,6 +1,6 @@
 import { LightningElement, track, api } from 'lwc';
 export default class Hot_requestForm_user extends LightningElement {
-    @api isEditMode = false;
+    @api isEditOrCopyMode = false;
     @track fieldValues = {
         UserName__c: '',
         UserPersonNumber__c: ''

@@ -19,7 +19,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         if (result.data) {
             this.personAccount.Id = result.data.AccountId;
             this.personAccount.Name = result.data.Account.CRM_Person__r.CRM_FullName__c;
-            this.fieldValues.UserPhone__c = result.data.Account.CRM_Person__r.INT_KrrMobilePhone__c;
         }
     }
 
@@ -147,15 +146,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.spin = false;
     }
 
-    @track isEditMode = false;
     handleSuccess(event) {
         this.spin = false;
         this.recordId = event.detail.id;
-
         this.hideFormAndShowSuccess();
         this.uploadFiles();
         this.createWorkOrders();
-
         window.scrollTo(0, 0);
     }
 
@@ -204,19 +200,19 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
     handleEditModeRequestType(parsed_params) {
+        this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
+        this.requestTypeChosen = this.isEditOrCopyMode;
         this.isTypeMe = this.fieldValues.Type__c === 'Me';
-        this.isEditMode = parsed_params.edit != null;
-        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditMode;
-        this.requestTypeChosen = parsed_params.edit != null || parsed_params.copy != null;
+        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditOrCopyMode;
     }
 
     isGetAll = false;
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
         this.handleEditModeRequestType(parsed_params);
-        this.picklistValueSetInCompanyform = this.fieldValues.IsOtherEconomicProvicer__c ? 'Virksomhet' : 'NAV';
         this.userCheckboxValue = this.fieldValues.UserName__c ? true : false;
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
 
@@ -278,7 +274,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.requestTypeResult[this.formArray[this.formArray.length - 1]] = true;
     }
 
-    userCheckboxValue = false;
+    userCheckboxValue = true;
     handleUserCheckbox(event) {
         this.userCheckboxValue = event.detail;
         if (event.detail) {
@@ -288,11 +284,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.requestTypeResult[this.formArray[this.formArray.length - 1]] = false;
             this.formArray.pop();
         }
-    }
-
-    picklistValueSetInCompanyform;
-    setPicklistValue(event) {
-        this.picklistValueSetInCompanyform = event.detail;
     }
 
     handleNextButtonClicked() {
@@ -324,7 +315,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
         if (this.formArray.length < 2) {
             this.resetFormValuesOnTypeSelection();
-            if (this.isEditMode) {
+            if (this.isEditOrCopyMode) {
                 this.goToPreviousPage();
             }
         } else if (
@@ -358,8 +349,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.fieldValues = {};
         this.componentValues = {};
         this.requestTypeChosen = false;
-        this.userCheckboxValue = false;
-        this.picklistValueSetInCompanyform = null;
+        this.userCheckboxValue = true;
         this.requestTypeResult = null;
     }
 }
