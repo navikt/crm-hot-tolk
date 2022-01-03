@@ -274,7 +274,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.requestTypeResult[this.formArray[this.formArray.length - 1]] = true;
     }
 
-    userCheckboxValue = false;
+    userCheckboxValue = true;
     handleUserCheckbox(event) {
         this.userCheckboxValue = event.detail;
         if (event.detail) {
@@ -349,7 +349,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.fieldValues = {};
         this.componentValues = {};
         this.requestTypeChosen = false;
-        this.userCheckboxValue = false;
+        this.userCheckboxValue = true;
         this.requestTypeResult = null;
     }
 }

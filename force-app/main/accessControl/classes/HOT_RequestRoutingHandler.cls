@@ -11,10 +11,10 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             } else {
                 accountConnectedRequests.add(request);
                 if (!String.isBlank(request.UserPersonNumber__c)) {
-                    idents.add(request.UserPersonNumber__c);
+                    idents.add(request.UserPersonNumber__c.replaceAll(' ', ''));
                 }
                 if (!String.isBlank(request.OrganizationNumber__c)) {
-                    idents.add(request.OrganizationNumber__c);
+                    idents.add(request.OrganizationNumber__c.replaceAll(' ', ''));
                 }
                 if (!String.isBlank(request.Account__c)) {
                     idents.add(request.Account__c);
