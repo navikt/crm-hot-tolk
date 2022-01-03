@@ -128,7 +128,6 @@ private class HOT_RequestRoutingHandlerTest {
         person.Name = 'test';
         person.INT_KrrMobilePhone__c = '12345678';
         insert person;
-        Account personAccount = [SELECT Id FROM Account WHERE CRM_Person__c = :person.Id LIMIT 1];
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

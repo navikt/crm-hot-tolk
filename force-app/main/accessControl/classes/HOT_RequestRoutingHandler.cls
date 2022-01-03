@@ -102,7 +102,6 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         }
 
         for (HOT_Request__c request : accountConnectedRequests) {
-            System.debug(request.UserPhone__c);
             if (request.Account__c == null && currentUser.AccountId != null) {
                 //Sets account and Person fields if UserPersonNumber__c is filled out in form
                 if (
