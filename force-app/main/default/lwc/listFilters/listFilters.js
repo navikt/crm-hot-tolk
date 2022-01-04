@@ -57,6 +57,6 @@ export default class ListFilters extends LightningElement {
         let filterindex = event.currentTarget.dataset.filterindex;
         let valueindex = event.currentTarget.dataset.valueindex;
         this.filterArray[filterindex].value[valueindex].value = false;
-        this.filterArray[filterindex].value[valueindex].checked = false;
+        //TODO Call checkbox component to set checked false;
     }
 }
