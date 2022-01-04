@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>DeleteStatusCommentOnHAR</label>
+    <label>IsDeleteStatusCommentOnHAR</label>
     <protected>false</protected>
     <values>
         <field>Childs_to_Delete__c</field>
@@ -32,7 +32,7 @@
     </values>
     <values>
         <field>Policy_Condition_Field__c</field>
-        <value xsi:type="xsd:string">DeleteStatusComment__c</value>
+        <value xsi:type="xsd:string">IsDeleteStatusComment__c</value>
     </values>
     <values>
         <field>Policy_Object__c</field>
@@ -40,7 +40,7 @@
     </values>
     <values>
         <field>Policy_Success_Field__c</field>
-        <value xsi:type="xsd:string">StatusCommentOnHARDeleted</value>
+        <value xsi:type="xsd:string">IsStatusCommentOnHARDeleted</value>
     </values>
     <values>
         <field>Policy_Type__c</field>

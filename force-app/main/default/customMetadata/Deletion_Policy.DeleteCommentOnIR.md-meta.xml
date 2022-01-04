@@ -32,7 +32,7 @@
     </values>
     <values>
         <field>Policy_Condition_Field__c</field>
-        <value xsi:type="xsd:string">DeleteComment__c</value>
+        <value xsi:type="xsd:string">IsDeleteComment__c</value>
     </values>
     <values>
         <field>Policy_Object__c</field>
@@ -40,7 +40,7 @@
     </values>
     <values>
         <field>Policy_Success_Field__c</field>
-        <value xsi:type="xsd:string">CommentOnIRDeleted</value>
+        <value xsi:type="xsd:string">IsCommentOnIRDeleted</value>
     </values>
     <values>
         <field>Policy_Type__c</field>
