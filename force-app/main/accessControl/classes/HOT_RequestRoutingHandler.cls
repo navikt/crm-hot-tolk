@@ -95,7 +95,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             if (account.INT_OrganizationNumber__c != null) {
                 orgNumberToAccount.put(account.INT_OrganizationNumber__c, account);
             }
-            if (account.CRM_Person__r.INT_KrrMobilePhone__c != null) {
+            if (account.CRM_Person__r?.INT_KrrMobilePhone__c != null) {
                 phoneNumberToAccount.put(account.CRM_Person__r.INT_KrrMobilePhone__c, account);
             }
             idToAccount.put(account.Id, account);
