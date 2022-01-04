@@ -8,7 +8,7 @@ export let filterArray = [
             {
                 name: 'New',
                 label: 'Ikke påbegynt',
-                value: true
+                checked: true
             },
             {
                 name: 'Canceled',

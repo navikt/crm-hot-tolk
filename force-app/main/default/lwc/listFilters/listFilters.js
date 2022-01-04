@@ -38,9 +38,11 @@ export default class ListFilters extends LightningElement {
         this.filterArray[filterindex].isOpen = !this.filterArray[filterindex].isOpen;
     }
     handleCheckboxChange(event) {
+        console.log(JSON.stringify(event.detail));
         let filterindex = event.currentTarget.dataset.filterindex;
         event.detail.forEach((element, index) => {
-            this.filterArray[filterindex].value[index].value = element.value;
+            this.filterArray[filterindex].value[index].value = element.checked;
+            this.filterArray[filterindex].value[index].checked = element.checked;
         });
     }
     handleDateChange(event) {
@@ -55,5 +57,6 @@ export default class ListFilters extends LightningElement {
         let filterindex = event.currentTarget.dataset.filterindex;
         let valueindex = event.currentTarget.dataset.valueindex;
         this.filterArray[filterindex].value[valueindex].value = false;
+        this.filterArray[filterindex].value[valueindex].checked = false;
     }
 }
