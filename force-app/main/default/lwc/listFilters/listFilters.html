@@ -1,3 +1,6 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
 <template>
     <div if:true={isOpen} class="fullscreen-overlay">
         <div class="overlay-container" draggable="true">
@@ -21,7 +24,7 @@
                                         key={element.value.name}
                                         class="active-filter-container"
                                     >
-                                        <p class="active-filter-text">{element.value.label}</p>
+                                        <p class="active-filter-text">{element.value.label}: {element.value.value}</p>
                                         <c-icon
                                             data-filter={it.value.name}
                                             data-id={element.value.name}
@@ -56,6 +59,8 @@
                                         value={date.value.value}
                                         data-filterindex={it.index}
                                         data-valueindex={date.index}
+                                        desktop-style="max-width: 30%; padding-bottom: 1rem;"
+                                        mobile-style="padding-bottom: 1rem;"
                                     ></c-input>
                                 </template>
                             </fieldset>

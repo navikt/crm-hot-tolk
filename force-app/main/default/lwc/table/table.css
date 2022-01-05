@@ -1,6 +1,7 @@
 tr.row {
     height: 81px;
     border-top: 1px solid #000000;
+    transition: transform 0.1s;
 }
 tr.row:last-child {
     border-bottom: 1px solid #000000;
@@ -10,4 +11,9 @@ tr.row:last-child {
         position: absolute;
         left: -10000px;
     }
+}
+
+tr.row:hover {
+    cursor: pointer;
+    transform: scale(1.01);
 }

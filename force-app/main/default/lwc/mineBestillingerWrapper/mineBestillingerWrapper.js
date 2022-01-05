@@ -46,6 +46,7 @@ export default class MineBestillingerWrapper extends LightningElement {
             if (recordId === record.Id) {
                 this.workOrder = record;
                 this.request = record.HOT_Request__r;
+                console.log('Request: ', this.request);
             }
         }
         if (this.request.Id !== undefined) {
@@ -105,6 +106,7 @@ export default class MineBestillingerWrapper extends LightningElement {
         window.history.pushState({ path: refresh }, '', refresh);
     }
     applyFilter(event) {
+        //console.log('Filters: ', JSON.stringify(event.detail));
         this.filters = event.detail;
 
         let filteredRecords = [];

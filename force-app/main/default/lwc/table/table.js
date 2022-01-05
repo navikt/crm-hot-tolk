@@ -12,6 +12,13 @@ export default class Table extends LightningElement {
         return this.hideMobileHeader?.valueOf() ? 'mobile-header-hidden' : '';
     }
 
+    get iconPadding() {
+        if (window.screen.width > 576) {
+            return 'padding-left: 10px;';
+        }
+        return 'padding-left: 10px; padding-right: 30px;';
+    }
+
     get recordsToShow() {
         let records = [];
         if (this.records !== undefined && this.records !== null) {
