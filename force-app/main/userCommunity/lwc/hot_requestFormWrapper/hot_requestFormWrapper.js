@@ -22,6 +22,17 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    breadcrumbs = [
+        {
+            label: 'Tolketjenesten',
+            href: ''
+        },
+        {
+            label: 'Ny bestilling',
+            href: 'ny-bestilling'
+        }
+    ];
+
     @track requestTypeResult = {};
     isTypeMe = false;
     handleRequestType(event) {
