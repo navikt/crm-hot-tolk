@@ -44,15 +44,34 @@ export default class MineBestillingerWrapper extends LightningElement {
         let recordId = this.urlStateParameters.id;
         for (let record of this.records) {
             if (recordId === record.Id) {
+                console.log('WorkOrder: ', this.workOrder);
                 this.workOrder = record;
+                this.workOrderStartDate = this.formatDate(this.workOrder.StartDate, true);
+                this.workOrderEndDate = this.formatDate(this.workOrder.EndDate, true);
                 this.request = record.HOT_Request__r;
                 console.log('Request: ', this.request);
+                this.requestSeriesStartDate = this.formatDate(this.request.SeriesStartDate__c, false);
+                this.requestSeriesEndDate = this.formatDate(this.request.SeriesEndDate__c, false);
             }
         }
         if (this.request.Id !== undefined) {
             this.getWorkOrders();
         }
     }
+
+    workOrderStartDate = '';
+    workOrderEndDate = '';
+    requestSeriesStartDate = '';
+    requestSeriesEndDate = '';
+    formatDate(dateInput, isWorkOrder) {
+        let value = new Date(dateInput);
+        value = value.toLocaleString();
+        if (isWorkOrder) {
+            return value.substring(0, value.length - 3);
+        }
+        return value.substring(0, value.length - 10);
+    }
+
     getWorkOrders() {
         let workOrders = [];
         for (let record of this.records) {
@@ -88,6 +107,7 @@ export default class MineBestillingerWrapper extends LightningElement {
     }
 
     refresh() {
+        console.log('Refresh');
         this.getRecords();
         this.updateURL();
         this.updateView();

@@ -16,8 +16,8 @@
         </div>
         <div class="record-details-container">
             <p>Adresse: <span>{request.MeetingStreet__c}</span></p>
-            <p>Serie start: <span>{request.SeriesStartDate__c}</span></p>
-            <p>Serie slutt: <span>{request.SeriesEndDate__c}</span></p>
+            <p>Serie start: <span>{requestSeriesStartDate}</span></p>
+            <p>Serie slutt: <span>{requestSeriesEndDate}</span></p>
         </div>
         <div class="record-details-container">
             <h2 class="header">Arbeidsordrer</h2><br/>
@@ -32,8 +32,8 @@
         </div>
         <div class="record-details-container">
             <p>Adresse: <span>{workOrder.HOT_AddressFormated__c}</span></p>
-            <p>Startdato: <span>{workOrder.StartDate}</span></p>
-            <p>Sluttdato: <span>{workOrder.EndDate}</span></p>
+            <p>Startdato: <span>{workOrderStartDate}</span></p>
+            <p>Sluttdato: <span>{workOrderEndDate}</span></p>
             <p>Status: <span>{workOrder.Status}</span></p>
             <p if:true={workOrder.HOT_Interpreters__c}>Tolker: <span>{workOrder.HOT_Interpreters__c}</span></p>
         </div>
