@@ -140,29 +140,6 @@ private class HOT_RequestRoutingHandlerTest {
 
         personRequest = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'Person Test'];
 
-        //TODO: Oppdatere asserts til å sjekke id på bruker eller virksomhet, men må da kunne kjøre testen som en Community-bruker, noe som vi ikke har fått til enda
         System.assertEquals(null, personRequest.Account__c, 'Could not set Account__c field');
-    }
-
-    @IsTest
-    private static void testCompanyRequest() {
-        Account acc = HOT_TestDataFactory.createAccount(false);
-        acc.INT_OrganizationNumber__c = '987654321';
-        insert acc;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c businessRequest = HOT_TestDataFactory.createRequest('Person Test', workType);
-        businessRequest.Company__c = acc.Id;
-        businessRequest.OrganizationNumber__c = acc.INT_OrganizationNumber__c;
-
-        Test.startTest();
-        insert businessRequest;
-        Test.stopTest();
-
-        businessRequest = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'Person Test'];
-
-        //TODO: Oppdatere asserts til å sjekke id på bruker eller virksomhet, men må da kunne kjøre testen som en Community-bruker, noe som vi ikke har fått til enda
-        System.assertEquals(null, businessRequest.Account__c, 'Could not set Account__c field');
     }
 }
