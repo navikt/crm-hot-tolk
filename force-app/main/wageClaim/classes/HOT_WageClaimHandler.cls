@@ -59,6 +59,7 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
                 ServiceTerritory__c,
                 WorkType__c,
                 ParentWageClaim__r.AssignmentType__c,
+                ParentWageClaim__r.IsAutomaticallyCreated__c,
                 ParentWageClaim__r.ServiceAppointment__c,
                 ParentWageClaim__r.ServiceResource__c,
                 ParentWageClaim__r.ServiceTerritory__c,
@@ -67,6 +68,7 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
             WHERE Id IN :wageClaimIds
         ];
         for (HOT_WageClaim__c wageClaim : wageClaims) {
+            wageClaim.IsAutomaticallyCreated__c = wageClaim.ParentWageClaim__r.IsAutomaticallyCreated__c;
             wageClaim.ServiceAppointment__c = wageClaim.ParentWageClaim__r.ServiceAppointment__c;
             wageClaim.ServiceTerritory__c = wageClaim.ParentWageClaim__r.ServiceTerritory__c;
             wageClaim.WorkType__c = wageClaim.ParentWageClaim__r.WorkType__c;
