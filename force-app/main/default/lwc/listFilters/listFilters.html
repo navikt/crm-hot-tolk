@@ -2,8 +2,8 @@
 <!-- sldsValidatorIgnore -->
 <!-- sldsValidatorIgnore -->
 <template>
-    <div if:true={isOpen} class="fullscreen-overlay">
-        <div class="overlay-container" draggable="true">
+    <div if:true={isOpen} class="fullscreen-overlay" onclick={overlayClick}>
+        <div class="overlay-container" draggable="true" onclick={overlayContainerClick}>
             <div class="overlay-content">
                 <div class="drag-rectangle"></div>
                 <h3 style="text-align: center; margin-bottom: 2rem">{header}</h3>
@@ -24,7 +24,12 @@
                                         key={element.value.name}
                                         class="active-filter-container"
                                     >
-                                        <p class="active-filter-text">{element.value.label}: {element.value.value}</p>
+                                        <p if:true={it.value.isDateInterval} class="active-filter-text">
+                                            {element.value.labelprefix}{element.value.localTimeValue}
+                                        </p>
+                                        <p if:false={it.value.isDateInterval} class="active-filter-text">
+                                            {element.value.label}
+                                        </p>
                                         <c-icon
                                             data-filter={it.value.name}
                                             data-id={element.value.name}

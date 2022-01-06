@@ -6,7 +6,7 @@
             <c-list-filters-button header="Filtrer søket" filters={filters} onapplyfilter={applyFilter}></c-list-filters-button>
         </div>
     </br>
-        <c-table hide-mobile-header=true records={records} columns={columns} onrowclick={goToRecordDetails} icon-by-value={iconByValue}></c-table>
+        <c-table records={records} columns={columns} onrowclick={goToRecordDetails} icon-by-value={iconByValue}></c-table>
     </div>
     <div if:true={isRequestDetails} class="mine-bestillinger-wrapper">
         <div class="navigation-container">

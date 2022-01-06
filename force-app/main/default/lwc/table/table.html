@@ -1,6 +1,6 @@
 <template>
     <table class="table-wrapper">
-        <thead class={mobileTheadClass}>
+        <thead class="mobile-header-hidden">
             <tr>
                 <template iterator:column={columns}>
                     <th key={column.value.name} scope="col">{column.value.label}</th>
@@ -26,7 +26,7 @@
                             </td>
                         </template>
                     </template>
-                    <td style="width: 30px">
+                    <td style="width: 5%; text-align: right">
                         <c-icon key={record.value.id} icon="Next"></c-icon>
                     </td>
                 </tr>

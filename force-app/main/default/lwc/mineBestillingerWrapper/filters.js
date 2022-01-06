@@ -24,11 +24,13 @@ export let filterArray = [
         value: [
             {
                 name: 'StartDate',
-                label: 'Start dato'
+                label: 'Start dato',
+                labelprefix: 'Fra: '
             },
             {
                 name: 'EndDate',
-                label: 'Slutt dato'
+                label: 'Slutt dato',
+                labelprefix: 'Til: '
             }
         ]
     },
@@ -42,8 +44,10 @@ export let filterArray = [
 ];
 
 export function defaultFilters() {
-    let nowDate = new Date();
-    filterArray[1].value[0].value = nowDate.toISOString().split('T')[0];
+    filterArray[1].value[0].value = new Date().toISOString().split('T')[0];
+    let localTimeValue = filterArray[1].value[0].localTimeValue;
+    localTimeValue = new Date().toLocaleString();
+    filterArray[1].value[0].localTimeValue = localTimeValue.substring(0, localTimeValue.length - 10);
     return filterArray;
 }
 

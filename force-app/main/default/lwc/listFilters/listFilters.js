@@ -18,7 +18,6 @@ export default class ListFilters extends LightningElement {
             arr.push(temp);
         });
         this.filterArray = arr;
-        console.log('filterArray: ', JSON.stringify(this.filterArray));
     }
 
     isOpen = false;
@@ -27,6 +26,7 @@ export default class ListFilters extends LightningElement {
         this.isOpen = true;
     }
     closeFilters() {
+        console.log('closefilters');
         this.isOpen = false;
     }
     applyFilter() {
@@ -40,7 +40,6 @@ export default class ListFilters extends LightningElement {
     }
 
     handleCheckboxChange(event) {
-        console.log(JSON.stringify(event.detail));
         let filterindex = event.currentTarget.dataset.filterindex;
         event.detail.forEach((element, index) => {
             this.filterArray[filterindex].value[index].value = element.checked;
@@ -48,14 +47,13 @@ export default class ListFilters extends LightningElement {
         });
     }
 
-    startDateToShow = '';
-    endDateToShow = '';
     handleDateChange(event) {
-        console.log(JSON.stringify(event));
-        this.startDateToShow = this.template.querySelectorAll('c-input')[0].getValue();
-        this.endDateToShow = this.template.querySelectorAll('c-input')[1].getValue();
         let filterindex = event.currentTarget.dataset.filterindex;
         let valueindex = event.currentTarget.dataset.valueindex;
+        let localTimeValue = this.template.querySelectorAll('c-input')[valueindex].getValue();
+        localTimeValue = new Date(localTimeValue).toLocaleString();
+        localTimeValue = localTimeValue.substring(0, localTimeValue.length - 10);
+        this.filterArray[filterindex].value[valueindex].localTimeValue = localTimeValue;
         this.filterArray[filterindex].value[valueindex].value = event.detail;
     }
 
@@ -65,6 +63,13 @@ export default class ListFilters extends LightningElement {
         let filterindex = event.currentTarget.dataset.filterindex;
         let valueindex = event.currentTarget.dataset.valueindex;
         this.filterArray[filterindex].value[valueindex].value = false;
-        //TODO Call checkbox component to set checked false;
+    }
+
+    overlayContainerClick(event) {
+        event.stopPropagation();
+    }
+
+    overlayClick() {
+        this.closeFilters();
     }
 }

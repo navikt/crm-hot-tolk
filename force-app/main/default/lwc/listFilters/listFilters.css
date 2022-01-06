@@ -79,3 +79,7 @@ ul.list {
     color: white;
     margin-right: 1rem;
 }
+
+.hidden {
+    visibility: hidden;
+}

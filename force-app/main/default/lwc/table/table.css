@@ -17,3 +17,7 @@ tr.row:hover {
     cursor: pointer;
     transform: scale(1.01);
 }
+
+th {
+    width: 20%;
+}

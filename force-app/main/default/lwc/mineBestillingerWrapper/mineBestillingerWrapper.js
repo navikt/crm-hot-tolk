@@ -1,19 +1,23 @@
 import { LightningElement, track, wire } from 'lwc';
 import getMyWorkOrdersNew from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersNew';
 import { CurrentPageReference } from 'lightning/navigation';
-import { columns, workOrderColumns, iconByValue } from './columns';
+import { columns, mobileColumns, workOrderColumns, iconByValue } from './columns';
 import { defaultFilters } from './filters';
 export default class MineBestillingerWrapper extends LightningElement {
     @track filters = [];
     connectedCallback() {
         this.filters = defaultFilters();
+        if (window.screen.width > 576) {
+            this.columns = columns;
+        } else {
+            this.columns = mobileColumns;
+        }
     }
     isList = true;
     isRequestDetails = false;
     isWorkOrderDetails = false;
     @track urlStateParameters;
-
-    @track columns = columns;
+    @track columns;
     @track workOrderColumns = workOrderColumns;
     @track iconByValue = iconByValue;
 
@@ -44,12 +48,12 @@ export default class MineBestillingerWrapper extends LightningElement {
         let recordId = this.urlStateParameters.id;
         for (let record of this.records) {
             if (recordId === record.Id) {
-                console.log('WorkOrder: ', this.workOrder);
+                console.log('WorkOrder: ', JSON.stringify(this.workOrder));
                 this.workOrder = record;
                 this.workOrderStartDate = this.formatDate(this.workOrder.StartDate, true);
                 this.workOrderEndDate = this.formatDate(this.workOrder.EndDate, true);
                 this.request = record.HOT_Request__r;
-                console.log('Request: ', this.request);
+                console.log('Request: ', JSON.stringify(this.request));
                 this.requestSeriesStartDate = this.formatDate(this.request.SeriesStartDate__c, false);
                 this.requestSeriesEndDate = this.formatDate(this.request.SeriesEndDate__c, false);
             }
@@ -126,7 +130,6 @@ export default class MineBestillingerWrapper extends LightningElement {
         window.history.pushState({ path: refresh }, '', refresh);
     }
     applyFilter(event) {
-        //console.log('Filters: ', JSON.stringify(event.detail));
         this.filters = event.detail;
 
         let filteredRecords = [];

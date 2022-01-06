@@ -7,20 +7,16 @@ export default class Table extends LightningElement {
     @api hideMobileHeader;
 
     recordMap = {};
-
-    get mobileTheadClass() {
-        return this.hideMobileHeader?.valueOf() ? 'mobile-header-hidden' : '';
-    }
-
     get iconPadding() {
         if (window.screen.width > 576) {
             return 'padding-left: 10px;';
         }
-        return 'padding-left: 10px; padding-right: 30px;';
+        return 'padding-left: 30px;';
     }
 
     get recordsToShow() {
         let records = [];
+        console.log('this.records: ', JSON.stringify(this.records));
         if (this.records !== undefined && this.records !== null) {
             for (let record of this.records) {
                 let fields = [];
