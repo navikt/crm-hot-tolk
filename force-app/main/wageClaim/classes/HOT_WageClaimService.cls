@@ -204,7 +204,8 @@ public without sharing class HOT_WageClaimService {
                             StartTime__c = serviceAppointmentEndTime,
                             EndTime__c = wageClaim.EndTime__c,
                             ServiceAppointment__c = wageClaim.ServiceAppointment__c,
-                            WorkType__c = wageClaim.WorkType__c
+                            WorkType__c = wageClaim.WorkType__c,
+                            IsAutomaticallyCreated__c = true
                         );
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
@@ -222,7 +223,8 @@ public without sharing class HOT_WageClaimService {
                             StartTime__c = wageClaim.StartTime__c,
                             EndTime__c = serviceAppointmentStartTime,
                             ServiceAppointment__c = wageClaim.ServiceAppointment__c,
-                            WorkType__c = wageClaim.WorkType__c
+                            WorkType__c = wageClaim.WorkType__c,
+                            IsAutomaticallyCreated__c = true
                         );
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';

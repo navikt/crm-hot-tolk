@@ -121,4 +121,25 @@ private class HOT_RequestRoutingHandlerTest {
         System.assertEquals(null, personRequest.Account__c, 'Could not set Account__c field');
         System.assertEquals(null, businessRequest.Company__c, 'Could not set Company__c field');
     }
+
+    @IsTest
+    private static void testRequestWithUserPhone() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = 'test';
+        person.INT_KrrMobilePhone__c = '12345678';
+        insert person;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c personRequest = HOT_TestDataFactory.createRequest('Person Test', workType);
+        personRequest.UserPhone__c = '12345678';
+
+        Test.startTest();
+        insert personRequest;
+        Test.stopTest();
+
+        personRequest = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'Person Test'];
+
+        System.assertEquals(null, personRequest.Account__c, 'Could not set Account__c field');
+    }
 }

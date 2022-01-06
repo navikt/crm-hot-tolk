@@ -17,14 +17,38 @@
             disabled={isEditOrCopyMode}
         ></c-input>
         <br />
+        <c-radiobuttons
+            radiobuttons={birthdateAndPhoneRadiobuttons}
+            onradiobuttonsclick={handleBirthdateOrPhone}
+            header="Fyll inn tolkbrukers fødselsnummer eller telefonnummer"
+            group-name="radioGroup"
+            flex-direction="row"
+        ></c-radiobuttons>
+        <br />
         <c-input
+            if:true={isBirthdate}
             label="Tolkbrukers fødselsnummer"
             name="UserPersonNumber__c"
             form="tolk-skjema-input"
             value={fieldValues.UserPersonNumber__c}
-            error-text={personNumberErrorText}
+            error-text="Ikke gyldig fødselsnummer."
             max-length="11"
             disabled={isEditOrCopyMode}
+            desktop-style="width: 50%"
+            mobile-style="width: 100%"
+        ></c-input>
+        <c-input
+            if:false={isBirthdate}
+            label="Tolkbrukers telefonnummer"
+            name="UserPhone__c"
+            form="tolk-skjema-input"
+            value={fieldValues.UserPhone__c}
+            type="tel"
+            error-text="Telefonnummer må fylles ut."
+            max-length="8"
+            disabled={isEditOrCopyMode}
+            desktop-style="width: 50%"
+            mobile-style="width: 100%"
         ></c-input>
     </section>
 </template>

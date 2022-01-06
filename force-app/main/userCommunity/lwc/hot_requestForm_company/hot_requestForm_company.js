@@ -78,7 +78,6 @@ export default class Hot_requestForm_company extends LightningElement {
         return this.fieldValues;
     }
 
-    isEditOrCopyMode = false;
     @api parentFieldValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
