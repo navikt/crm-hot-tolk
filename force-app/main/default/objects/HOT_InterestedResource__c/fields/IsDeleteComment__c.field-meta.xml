@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsDeleteComment__c</fullName>
     <externalId>false</externalId>
-    <formula>ISPICKVAL(ServiceAppointment__r.Status, &quot;Completed&quot;)</formula>
+    <formula>TODAY() &gt;= (DATEVALUE(ServiceAppointment__r.EarliestStartTime) + 365)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>IsDeleteComment</label>
     <trackHistory>false</trackHistory>
