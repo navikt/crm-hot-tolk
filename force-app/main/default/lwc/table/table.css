@@ -6,10 +6,18 @@ tr.row {
 tr.row:last-child {
     border-bottom: 1px solid #000000;
 }
+
+.iconPadding {
+    padding-left: 10px;
+}
+
 @media (max-width: 576px) {
     .mobile-header-hidden {
         position: absolute;
         left: -10000px;
+    }
+    .iconPadding {
+        padding-left: 30px;
     }
 }
 
