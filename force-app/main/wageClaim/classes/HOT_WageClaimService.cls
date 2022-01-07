@@ -197,24 +197,19 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointmentStartTime >= updatedWageClaim.StartTime__c &&
                         serviceAppointmentEndTime <= updatedWageClaim.EndTime__c
                     ) {
-                        HOT_WageClaim__c lowerWageClaim = new HOT_WageClaim__c(
-                            ParentWageClaim__c = isUpsert ? updatedWageClaim.Id : null,
-                            ServiceResource__c = updatedWageClaim.ServiceResource__c,
-                            StartTime__c = updatedWageClaim.StartTime__c,
-                            EndTime__c = serviceAppointmentStartTime,
-                            ServiceAppointment__c = updatedWageClaim.ServiceAppointment__c,
-                            WorkType__c = updatedWageClaim.WorkType__c,
-                            IsAutomaticallyCreated__c = true
+                        HOT_WageClaim__c lowerWageClaim = createWageClaim(
+                            updatedWageClaim,
+                            updatedWageClaim.StartTime__c,
+                            serviceAppointmentStartTime,
+                            isUpsert
                         );
-                        HOT_WageClaim__c upperWageClaim = new HOT_WageClaim__c(
-                            ParentWageClaim__c = isUpsert ? updatedWageClaim.Id : null,
-                            ServiceResource__c = updatedWageClaim.ServiceResource__c,
-                            StartTime__c = serviceAppointmentEndTime,
-                            EndTime__c = updatedWageClaim.EndTime__c,
-                            ServiceAppointment__c = updatedWageClaim.ServiceAppointment__c,
-                            WorkType__c = updatedWageClaim.WorkType__c,
-                            IsAutomaticallyCreated__c = true
+                        HOT_WageClaim__c upperWageClaim = createWageClaim(
+                            updatedWageClaim,
+                            serviceAppointmentEndTime,
+                            updatedWageClaim.EndTime__c,
+                            isUpsert
                         );
+
                         newWageClaims.add(lowerWageClaim);
                         newWageClaims.add(upperWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
@@ -227,14 +222,11 @@ public without sharing class HOT_WageClaimService {
                             serviceAppointmentEndTime < updatedWageClaim.EndTime__c
                         ) {
                             //lower
-                            HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
-                                ParentWageClaim__c = isUpsert ? updatedWageClaim.Id : null,
-                                ServiceResource__c = updatedWageClaim.ServiceResource__c,
-                                StartTime__c = serviceAppointmentEndTime,
-                                EndTime__c = updatedWageClaim.EndTime__c,
-                                ServiceAppointment__c = updatedWageClaim.ServiceAppointment__c,
-                                WorkType__c = updatedWageClaim.WorkType__c,
-                                IsAutomaticallyCreated__c = true
+                            HOT_WageClaim__c newWageClaim = createWageClaim(
+                                updatedWageClaim,
+                                serviceAppointmentEndTime,
+                                updatedWageClaim.EndTime__c,
+                                isUpsert
                             );
                             newWageClaims.add(newWageClaim);
                             updatedWageClaim.Status__c = 'Covered';
@@ -246,14 +238,11 @@ public without sharing class HOT_WageClaimService {
                             serviceAppointmentStartTime > updatedWageClaim.StartTime__c
                         ) {
                             //upper
-                            HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
-                                ParentWageClaim__c = isUpsert ? updatedWageClaim.Id : null,
-                                ServiceResource__c = updatedWageClaim.ServiceResource__c,
-                                StartTime__c = updatedWageClaim.StartTime__c,
-                                EndTime__c = serviceAppointmentStartTime,
-                                ServiceAppointment__c = updatedWageClaim.ServiceAppointment__c,
-                                WorkType__c = updatedWageClaim.WorkType__c,
-                                IsAutomaticallyCreated__c = true
+                            HOT_WageClaim__c newWageClaim = createWageClaim(
+                                updatedWageClaim,
+                                updatedWageClaim.StartTime__c,
+                                serviceAppointmentStartTime,
+                                isUpsert
                             );
                             newWageClaims.add(newWageClaim);
                             updatedWageClaim.Status__c = 'Covered';
@@ -279,6 +268,24 @@ public without sharing class HOT_WageClaimService {
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
         }
+    }
+
+    private static HOT_WageClaim__c createWageClaim(
+        HOT_WageClaim__c parentWageClaim,
+        Datetime startTime,
+        Datetime endTime,
+        Boolean isUpsert
+    ) {
+        HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
+            ParentWageClaim__c = isUpsert ? parentWageClaim.Id : null,
+            ServiceResource__c = parentWageClaim.ServiceResource__c,
+            ServiceAppointment__c = parentWageClaim.ServiceAppointment__c,
+            WorkType__c = parentWageClaim.WorkType__c,
+            IsAutomaticallyCreated__c = true,
+            StartTime__c = startTime,
+            EndTime__c = endTime
+        );
+        return newWageClaim;
     }
 
     private static Map<Id, List<HOT_WageClaim__c>> getWageClaimsByServiceResourceId(List<HOT_WageClaim__c> wageClaims) {
