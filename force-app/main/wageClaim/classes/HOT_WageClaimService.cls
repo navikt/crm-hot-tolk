@@ -180,56 +180,86 @@ public without sharing class HOT_WageClaimService {
                     )
                 ) {
                     Boolean isWageClaimChanged = false;
-                    HOT_WageClaim__c updatedWageClaim = updatedWageClaims.get(wageClaim.Id) != null
-                        ? updatedWageClaims.get(wageClaim.Id)
-                        : new HOT_WageClaim__c(Id = wageClaim.Id);
+                    //HOT_WageClaim__c updatedWageClaim = updatedWageClaims.get(wageClaim.Id) != null ? updatedWageClaims.get(wageClaim.Id) : new HOT_WageClaim__c(Id = wageClaim.Id);
+                    HOT_WageClaim__c updatedWageClaim = wageClaim;
+
                     Datetime serviceAppointmentStartTime = serviceAppointment.SchedStartTime;
                     Datetime serviceAppointmentEndTime = serviceAppointment.SchedEndTime;
                     //Completely covered
                     if (
-                        serviceAppointmentStartTime <= wageClaim.StartTime__c &&
-                        serviceAppointmentEndTime >= wageClaim.EndTime__c
+                        serviceAppointmentStartTime <= updatedWageClaim.StartTime__c &&
+                        serviceAppointmentEndTime >= updatedWageClaim.EndTime__c
                     ) {
                         updatedWageClaim.Status__c = 'Covered';
                         isWageClaimChanged = true;
-                    }
-                    //lower
-                    if (
-                        serviceAppointmentEndTime > wageClaim.StartTime__c &&
-                        serviceAppointmentEndTime < wageClaim.EndTime__c
+                    } else if (
+                        // Encapsulated
+                        serviceAppointmentStartTime >= updatedWageClaim.StartTime__c &&
+                        serviceAppointmentEndTime <= updatedWageClaim.EndTime__c
                     ) {
-                        HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
-                            ParentWageClaim__c = isUpsert ? wageClaim.Id : null,
-                            ServiceResource__c = wageClaim.ServiceResource__c,
-                            StartTime__c = serviceAppointmentEndTime,
-                            EndTime__c = wageClaim.EndTime__c,
-                            ServiceAppointment__c = wageClaim.ServiceAppointment__c,
-                            WorkType__c = wageClaim.WorkType__c,
-                            IsAutomaticallyCreated__c = true
-                        );
-                        newWageClaims.add(newWageClaim);
-                        updatedWageClaim.Status__c = 'Covered';
-                        updatedWageClaim.EndTime__c = serviceAppointmentEndTime;
-                        isWageClaimChanged = true;
-                    }
-                    //upper
-                    if (
-                        serviceAppointmentStartTime < wageClaim.EndTime__c &&
-                        serviceAppointmentStartTime > wageClaim.StartTime__c
-                    ) {
-                        HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
-                            ParentWageClaim__c = isUpsert ? wageClaim.Id : null,
-                            ServiceResource__c = wageClaim.ServiceResource__c,
-                            StartTime__c = wageClaim.StartTime__c,
+                        HOT_WageClaim__c lowerWageClaim = new HOT_WageClaim__c(
+                            ParentWageClaim__c = isUpsert ? updatedWageClaim.Id : null,
+                            ServiceResource__c = updatedWageClaim.ServiceResource__c,
+                            StartTime__c = updatedWageClaim.StartTime__c,
                             EndTime__c = serviceAppointmentStartTime,
-                            ServiceAppointment__c = wageClaim.ServiceAppointment__c,
-                            WorkType__c = wageClaim.WorkType__c,
+                            ServiceAppointment__c = updatedWageClaim.ServiceAppointment__c,
+                            WorkType__c = updatedWageClaim.WorkType__c,
                             IsAutomaticallyCreated__c = true
                         );
-                        newWageClaims.add(newWageClaim);
+                        HOT_WageClaim__c upperWageClaim = new HOT_WageClaim__c(
+                            ParentWageClaim__c = isUpsert ? updatedWageClaim.Id : null,
+                            ServiceResource__c = updatedWageClaim.ServiceResource__c,
+                            StartTime__c = serviceAppointmentEndTime,
+                            EndTime__c = updatedWageClaim.EndTime__c,
+                            ServiceAppointment__c = updatedWageClaim.ServiceAppointment__c,
+                            WorkType__c = updatedWageClaim.WorkType__c,
+                            IsAutomaticallyCreated__c = true
+                        );
+                        newWageClaims.add(lowerWageClaim);
+                        newWageClaims.add(upperWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
                         updatedWageClaim.StartTime__c = serviceAppointmentStartTime;
+                        updatedWageClaim.EndTime__c = serviceAppointmentEndTime;
                         isWageClaimChanged = true;
+                    } else {
+                        if (
+                            serviceAppointmentEndTime > updatedWageClaim.StartTime__c &&
+                            serviceAppointmentEndTime < updatedWageClaim.EndTime__c
+                        ) {
+                            //lower
+                            HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
+                                ParentWageClaim__c = isUpsert ? updatedWageClaim.Id : null,
+                                ServiceResource__c = updatedWageClaim.ServiceResource__c,
+                                StartTime__c = serviceAppointmentEndTime,
+                                EndTime__c = updatedWageClaim.EndTime__c,
+                                ServiceAppointment__c = updatedWageClaim.ServiceAppointment__c,
+                                WorkType__c = updatedWageClaim.WorkType__c,
+                                IsAutomaticallyCreated__c = true
+                            );
+                            newWageClaims.add(newWageClaim);
+                            updatedWageClaim.Status__c = 'Covered';
+                            updatedWageClaim.EndTime__c = serviceAppointmentEndTime;
+                            isWageClaimChanged = true;
+                        }
+                        if (
+                            serviceAppointmentStartTime < updatedWageClaim.EndTime__c &&
+                            serviceAppointmentStartTime > updatedWageClaim.StartTime__c
+                        ) {
+                            //upper
+                            HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
+                                ParentWageClaim__c = isUpsert ? updatedWageClaim.Id : null,
+                                ServiceResource__c = updatedWageClaim.ServiceResource__c,
+                                StartTime__c = updatedWageClaim.StartTime__c,
+                                EndTime__c = serviceAppointmentStartTime,
+                                ServiceAppointment__c = updatedWageClaim.ServiceAppointment__c,
+                                WorkType__c = updatedWageClaim.WorkType__c,
+                                IsAutomaticallyCreated__c = true
+                            );
+                            newWageClaims.add(newWageClaim);
+                            updatedWageClaim.Status__c = 'Covered';
+                            updatedWageClaim.StartTime__c = serviceAppointmentStartTime;
+                            isWageClaimChanged = true;
+                        }
                     }
                     if (isWageClaimChanged) {
                         updatedWageClaims.put(updatedWageClaim.Id, updatedWageClaim);
