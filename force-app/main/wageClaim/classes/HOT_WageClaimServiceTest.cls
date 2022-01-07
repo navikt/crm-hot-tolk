@@ -415,42 +415,6 @@ private class HOT_WageClaimServiceTest {
     }
 
     @isTest
-    static void updateWageClaimsFutureTest_MultipleSA() {
-        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
-        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
-
-        HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
-        wageClaim.EndTime__c = wageClaim.EndTime__c.addHours(2);
-        update wageClaim;
-
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, Status, ParentRecordId
-            FROM ServiceAppointment
-            WHERE Id = :assignedResource.ServiceAppointmentId
-        ];
-        ServiceAppointment newServiceAppointment = serviceAppointment.clone(false, true, false, false);
-        newServiceAppointment.SchedStartTime = wageClaim.EndTime__c.addHours(-1);
-        newServiceAppointment.SchedEndTime = wageClaim.EndTime__c;
-        newServiceAppointment.EarliestStartTime = newServiceAppointment.SchedStartTime;
-        newServiceAppointment.DueDate = newServiceAppointment.SchedEndTime;
-        insert newServiceAppointment;
-
-        Test.startTest();
-        insert new AssignedResource(
-            ServiceAppointmentId = newServiceAppointment.Id,
-            ServiceResourceId = assignedResource.ServiceResourceId
-        );
-
-        serviceAppointment.Status = 'Dispatched';
-        newServiceAppointment.Status = 'Dispatched';
-        update new List<ServiceAppointment>{ serviceAppointment, newServiceAppointment };
-        Test.stopTest();
-
-        List<HOT_WageClaim__c> wageClaims = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
-        System.assertEquals(3, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
-    }
-
-    @isTest
     static void SAWithARTimesChanged() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         ServiceAppointment serviceAppointment = [
@@ -526,5 +490,147 @@ private class HOT_WageClaimServiceTest {
             WHERE ServiceResource__c = :serviceAppointment.HOT_ServiceResource__c
         ];
         System.assertEquals(0, wageClaims.size(), 'Wage Claim was incorrectly created when SR is on agreement.');
+    }
+
+    // Multiple SA Assigned at the same time
+
+    @isTest
+    static void updateWageClaimsFutureTest_ConnectedSA() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
+        wageClaim.EndTime__c = wageClaim.EndTime__c.addHours(2);
+        update wageClaim;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, Status, ParentRecordId, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            WHERE Id = :assignedResource.ServiceAppointmentId
+        ];
+        ServiceAppointment newServiceAppointment = serviceAppointment.clone(false, true, false, false);
+        newServiceAppointment.SchedStartTime = serviceAppointment.SchedEndTime;
+        newServiceAppointment.SchedEndTime = wageClaim.EndTime__c;
+        newServiceAppointment.EarliestStartTime = newServiceAppointment.SchedStartTime;
+        newServiceAppointment.DueDate = newServiceAppointment.SchedEndTime;
+        insert newServiceAppointment;
+
+        Test.startTest();
+        insert new AssignedResource(
+            ServiceAppointmentId = newServiceAppointment.Id,
+            ServiceResourceId = assignedResource.ServiceResourceId
+        );
+
+        serviceAppointment.Status = 'Dispatched';
+        newServiceAppointment.Status = 'Dispatched';
+        update new List<ServiceAppointment>{ serviceAppointment, newServiceAppointment };
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
+        System.assertEquals(3, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
+    }
+
+    @isTest
+    static void updateWageClaimsFutureTest_SpaceBetweenSA() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
+        wageClaim.EndTime__c = wageClaim.EndTime__c.addHours(4);
+        update wageClaim;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, Status, ParentRecordId, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            WHERE Id = :assignedResource.ServiceAppointmentId
+        ];
+        ServiceAppointment newServiceAppointment = serviceAppointment.clone(false, true, false, false);
+        newServiceAppointment.SchedStartTime = serviceAppointment.SchedEndTime.addHours(1);
+        newServiceAppointment.SchedEndTime = wageClaim.EndTime__c;
+        newServiceAppointment.EarliestStartTime = newServiceAppointment.SchedStartTime;
+        newServiceAppointment.DueDate = newServiceAppointment.SchedEndTime;
+        insert newServiceAppointment;
+
+        Test.startTest();
+        insert new AssignedResource(
+            ServiceAppointmentId = newServiceAppointment.Id,
+            ServiceResourceId = assignedResource.ServiceResourceId
+        );
+
+        serviceAppointment.Status = 'Dispatched';
+        newServiceAppointment.Status = 'Dispatched';
+        update new List<ServiceAppointment>{ serviceAppointment, newServiceAppointment };
+        Test.stopTest();
+
+        HOT_WageClaim__c updatedWageClaim = [
+            SELECT Id, Status__c, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE Status__c = 'Covered'
+        ];
+        System.assertEquals(
+            true,
+            updatedWageClaim.StartTime__c < updatedWageClaim.EndTime__c,
+            'Wage Claim was not updated correctly when multiple SA updates at the same time'
+        );
+    }
+
+    @isTest
+    static void updateWageClaimsFutureTest_SpaceAroundSA() {
+        AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
+        update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
+
+        HOT_WageClaim__c wageClaim = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c LIMIT 1];
+        wageClaim.EndTime__c = wageClaim.EndTime__c.addHours(6);
+        update wageClaim;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, Status, ParentRecordId, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            WHERE Id = :assignedResource.ServiceAppointmentId
+        ];
+        ServiceAppointment newServiceAppointment = serviceAppointment.clone(false, true, false, false);
+        newServiceAppointment.SchedStartTime = serviceAppointment.SchedEndTime.addHours(2);
+        newServiceAppointment.SchedEndTime = wageClaim.EndTime__c.addHours(-1);
+        newServiceAppointment.EarliestStartTime = newServiceAppointment.SchedStartTime;
+        newServiceAppointment.DueDate = newServiceAppointment.SchedEndTime;
+        insert newServiceAppointment;
+
+        Test.startTest();
+        serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addHours(1);
+        serviceAppointment.EarliestStartTime = serviceAppointment.SchedStartTime;
+        serviceAppointment.DueDate = serviceAppointment.SchedEndTime;
+
+        insert new AssignedResource(
+            ServiceAppointmentId = newServiceAppointment.Id,
+            ServiceResourceId = assignedResource.ServiceResourceId
+        );
+        System.assertEquals(
+            1,
+            [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c].size(),
+            'Could not update '
+        );
+
+        serviceAppointment.Status = 'Dispatched';
+        newServiceAppointment.Status = 'Dispatched';
+        update new List<ServiceAppointment>{ serviceAppointment, newServiceAppointment };
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaims = [
+            SELECT Id, Status__c, StartTime__c, EndTime__c, ParentWageClaim__c
+            FROM HOT_WageClaim__c
+        ];
+        for (HOT_WageClaim__c wc : wageClaims) {
+            System.debug(wc);
+            System.debug('Start Time: ' + wc.StartTime__c);
+            System.debug('End Time: ' + wc.EndTime__c);
+        }
+        System.assertEquals(5, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
+        wageClaims = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c WHERE Status__c = 'Covered'];
+        System.assertEquals(
+            true,
+            wageClaims[0].StartTime__c < wageClaims[0].EndTime__c,
+            'Wage Claim times were set wrong'
+        );
+        System.assertEquals(2, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
     }
 }
