@@ -4,6 +4,8 @@ export default class ListFiltersButton extends LightningElement {
     @api header;
     @api activeFilters;
     @api filters;
+
+    // TODO: If desktop -> show filters above table instead of popup
     openFilters() {
         this.template.querySelector('c-list-filters').openFilters();
     }

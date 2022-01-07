@@ -44,12 +44,14 @@ export default class MineBestillingerWrapper extends LightningElement {
     @track request = { MeetingStreet__c: '', Subject__c: '' };
     @track workOrder = { HOT_AddressFormated__c: '', Subject: '' };
     @track workOrders = [];
+    interpreter = 'Tolk';
     getRecords() {
         let recordId = this.urlStateParameters.id;
         for (let record of this.records) {
             if (recordId === record.Id) {
                 console.log('WorkOrder: ', JSON.stringify(this.workOrder));
                 this.workOrder = record;
+                this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
                 this.workOrderStartDate = this.formatDate(this.workOrder.StartDate, true);
                 this.workOrderEndDate = this.formatDate(this.workOrder.EndDate, true);
                 this.request = record.HOT_Request__r;

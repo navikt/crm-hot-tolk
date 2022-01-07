@@ -43,6 +43,7 @@ public without sharing class HOT_WorkOrderListController {
                 [
                     SELECT
                         Id,
+                        HOT_RequestName__c,
                         StartDate,
                         EndDate,
                         Subject,
@@ -56,7 +57,8 @@ public without sharing class HOT_WorkOrderListController {
                         HOT_Request__r.MeetingStreet__c,
                         HOT_Request__r.Subject__c,
                         HOT_Request__r.SeriesStartDate__c,
-                        HOT_Request__r.SeriesEndDate__c
+                        HOT_Request__r.SeriesEndDate__c,
+                        HOT_Request__r.Status__c
                     FROM WorkOrder
                     WHERE HOT_Request__r.Account__c = :user.AccountId
                     ORDER BY StartDate

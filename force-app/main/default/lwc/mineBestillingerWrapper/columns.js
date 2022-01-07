@@ -14,6 +14,16 @@ export let workOrderColumns = [
         label: 'Status',
         type: 'String',
         svg: true
+    },
+    {
+        name: 'Subject',
+        label: 'Emne',
+        type: 'String'
+    },
+    {
+        name: 'HOT_AddressFormated__c',
+        label: 'Adresse',
+        type: 'String'
     }
 ];
 

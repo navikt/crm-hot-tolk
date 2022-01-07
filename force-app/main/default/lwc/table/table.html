@@ -16,7 +16,7 @@
                             <td if:false={field.first} key={field.value.name}>{field.value.value}</td>
                         </template>
                         <template if:true={field.value.svg}>
-                            <td key={field.value.name}>
+                            <td key={field.value.name} style="width: 5%">
                                 <c-icon
                                     icon={field.value.svg.icon}
                                     fill={field.value.svg.fill}

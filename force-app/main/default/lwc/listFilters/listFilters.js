@@ -26,7 +26,6 @@ export default class ListFilters extends LightningElement {
         this.isOpen = true;
     }
     closeFilters() {
-        console.log('closefilters');
         this.isOpen = false;
     }
     applyFilter() {
