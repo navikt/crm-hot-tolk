@@ -9,25 +9,25 @@
         </div>
         <br />
         <c-input
-            label="Tolkbrukers navn"
+            label="Tolkebrukers navn"
             name="UserName__c"
             form="tolk-skjema-input"
             value={fieldValues.UserName__c}
-            error-text="Tolkbrukers navn må fylles ut."
+            error-text="Tolkebrukers navn må fylles ut."
             disabled={isEditOrCopyMode}
         ></c-input>
         <br />
         <c-radiobuttons
             radiobuttons={birthdateAndPhoneRadiobuttons}
             onradiobuttonsclick={handleBirthdateOrPhone}
-            header="Fyll inn tolkbrukers fødselsnummer eller telefonnummer"
+            header="Fyll inn tolkebrukers fødselsnummer eller telefonnummer"
             group-name="radioGroup"
             flex-direction="row"
         ></c-radiobuttons>
         <br />
         <c-input
             if:true={isBirthdate}
-            label="Tolkbrukers fødselsnummer"
+            label="Tolkebrukers fødselsnummer"
             name="UserPersonNumber__c"
             form="tolk-skjema-input"
             value={fieldValues.UserPersonNumber__c}
@@ -39,7 +39,7 @@
         ></c-input>
         <c-input
             if:false={isBirthdate}
-            label="Tolkbrukers telefonnummer"
+            label="Tolkebrukers telefonnummer"
             name="UserPhone__c"
             form="tolk-skjema-input"
             value={fieldValues.UserPhone__c}
