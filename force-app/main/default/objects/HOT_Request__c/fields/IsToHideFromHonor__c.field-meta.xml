@@ -2,8 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsToHideFromHonor__c</fullName>
     <externalId>false</externalId>
-    <formula
-    >TODAY()&gt;= Date(Year(DateValue(StartTime__c) + 3), Month(DateValue(StartTime__c)+3), Day(DateValue(StartTime__c)))</formula>
+    <formula>TODAY()&gt;= Date(Year(SeriesEndDate__c) + 3, Month(SeriesEndDate__c)+3, Day(SeriesEndDate__c))</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>IsToHideFromHonor</label>
     <trackHistory>false</trackHistory>
