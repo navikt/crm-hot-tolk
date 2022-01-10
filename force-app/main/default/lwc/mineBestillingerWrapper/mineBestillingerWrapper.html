@@ -40,7 +40,22 @@
                 <p>Adresse: <span>{request.MeetingStreet__c}</span></p>
             </div>
             <c-button
-                button-label="Endre serie"
+                button-label={editButtonLabel}
+                button-styling="primary"
+                style="padding-right: 1vw"
+                desktop-style="width: 8rem; justify-content: center"
+                mobile-style="width: 8rem; justify-content: center"
+                onbuttonclick={editOrder}
+            ></c-button>
+            <c-button
+                button-label={copyButtonLabel}
+                button-styling="secondary"
+                style="padding-right: 1vw"
+                desktop-style="width: 8rem; justify-content: center"
+                mobile-style="width: 8rem; justify-content: center"
+            ></c-button>
+            <c-button
+                button-label={cancelButtonLabel}
                 button-styling="secondary"
                 desktop-style="width: 8rem; justify-content: center"
                 mobile-style="width: 8rem; justify-content: center"
@@ -86,7 +101,8 @@
             </div>
             <div class="buttonRow">
                 <c-button
-                    button-label="Rediger"
+                    if:false={isSeries}
+                    button-label={editButtonLabel}
                     button-styling="primary"
                     style="padding-right: 1vw"
                     desktop-style="width: 8rem; justify-content: center"
@@ -94,14 +110,15 @@
                     onbuttonclick={editOrder}
                 ></c-button>
                 <c-button
-                    button-label="Kopier"
+                    if:false={isSeries}
+                    button-label={copyButtonLabel}
                     button-styling="secondary"
                     style="padding-right: 1vw"
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"
                 ></c-button>
                 <c-button
-                    button-label="Avlys"
+                    button-label={cancelButtonLabel}
                     button-styling="secondary"
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"

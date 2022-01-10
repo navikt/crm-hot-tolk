@@ -88,16 +88,32 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.workOrders = workOrders;
     }
 
+    isSeries = false;
     goToRecordDetails(result) {
         let record = result.detail;
         let recordId = record.Id;
         let level = record.HOT_Request__r.IsSerieoppdrag__c ? 'R' : 'WO';
+        this.isSeries = record.HOT_Request__r.IsSerieoppdrag__c ? true : false;
+        console.log('isSeries: ', this.isSeries);
         if (this.urlStateParameters.level === 'R') {
             level = 'WO';
         }
         this.urlStateParameters.id = recordId;
         this.urlStateParameters.level = level;
+        this.setButtonLabels(this.urlStateParameters.level);
         this.refresh();
+    }
+
+    setButtonLabels(level) {
+        if (this.isSeries && level === 'R') {
+            this.editButtonLabel = 'Rediger serie';
+            this.copyButtonLabel = 'Kopier serie';
+            this.cancelButtonLabel = 'Avlys serie';
+        } else {
+            this.editButtonLabel = 'Rediger';
+            this.copyButtonLabel = 'Kopier';
+            this.cancelButtonLabel = 'Avlys';
+        }
     }
 
     goBack() {
@@ -123,6 +139,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isList = this.urlStateParameters.id === undefined;
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
+        this.setButtonLabels(this.urlStateParameters.level);
     }
     updateURL() {
         let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
@@ -148,7 +165,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     isNavigatingAway = false;
+    editButtonLabel = 'Rediger';
+    copyButtonLabel = 'Kopier';
+    cancelButtonLabel = 'Avlys';
     editOrder() {
+        console.log('this.urlStateParameters.level: ', this.urlStateParameters.level);
         this.isNavigatingAway = true;
         console.log(JSON.stringify(this.request));
         this[NavigationMixin.Navigate]({
@@ -157,10 +178,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 pageName: 'ny-bestilling'
             },
             state: {
-                //fieldValues: JSON.stringify(this.request),
-                //fromList: true,
-                //edit: true,
-                johnny: 'haha'
+                fieldValues: JSON.stringify(this.request),
+                fromList: true,
+                edit: true
             }
         });
     }
