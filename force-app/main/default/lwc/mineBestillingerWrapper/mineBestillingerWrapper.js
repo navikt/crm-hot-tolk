@@ -35,7 +35,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
-        if (currentPageReference) {
+        if (currentPageReference && this.isNavigatingAway === false) {
             this.urlStateParameters = { ...currentPageReference.state };
             this.refresh();
         }
@@ -147,7 +147,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.records = filteredRecords;
     }
 
+    isNavigatingAway = false;
     editOrder() {
+        this.isNavigatingAway = true;
         console.log(JSON.stringify(this.request));
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
