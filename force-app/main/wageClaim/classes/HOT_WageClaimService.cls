@@ -167,9 +167,6 @@ public without sharing class HOT_WageClaimService {
         List<HOT_WageClaim__c> wageClaims,
         Boolean isUpsert
     ) {
-        System.debug('WageClaimService: Method entry - updateWageClaims');
-        System.debug('WageClaimService: wageClaim set size: ' + wageClaims.size());
-        System.debug('WageClaimService: SA: ' + serviceAppointments.values());
         Map<Id, List<HOT_WageClaim__c>> wageClaimsByServiceResourceId = getWageClaimsByServiceResourceId(wageClaims);
 
         List<HOT_WageClaim__c> newWageClaims = new List<HOT_WageClaim__c>();
@@ -191,9 +188,6 @@ public without sharing class HOT_WageClaimService {
                     Datetime serviceAppointmentStartTime = serviceAppointment.SchedStartTime;
                     Datetime serviceAppointmentEndTime = serviceAppointment.SchedEndTime;
                     //Completely covered
-                    System.debug('WageClaimService: WC: ' + updatedWageClaim);
-                    System.debug('WageClaimService: SA: ' + serviceAppointment);
-                    System.debug(
                         'WageClaimService: ' +
                         serviceAppointmentStartTime.format() +
                         ' - ' +
@@ -203,7 +197,6 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointmentStartTime <= updatedWageClaim.StartTime__c &&
                         serviceAppointmentEndTime >= updatedWageClaim.EndTime__c
                     ) {
-                        System.debug('WageClaimService: Completely Covered');
                         updatedWageClaim.Status__c = 'Covered';
                         isWageClaimChanged = true;
                     }
@@ -211,7 +204,6 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointmentEndTime > updatedWageClaim.StartTime__c &&
                         serviceAppointmentEndTime < updatedWageClaim.EndTime__c
                     ) {
-                        System.debug('WageClaimService: LOWER');
                         //lower
                         HOT_WageClaim__c newWageClaim = createWageClaim(
                             updatedWageClaim,
@@ -228,7 +220,6 @@ public without sharing class HOT_WageClaimService {
                         serviceAppointmentStartTime < updatedWageClaim.EndTime__c &&
                         serviceAppointmentStartTime > updatedWageClaim.StartTime__c
                     ) {
-                        System.debug('WageClaimService: UPPER');
                         //upper
                         HOT_WageClaim__c newWageClaim = createWageClaim(
                             updatedWageClaim,
@@ -243,10 +234,6 @@ public without sharing class HOT_WageClaimService {
                     }
 
                     if (isWageClaimChanged) {
-                        System.debug('WageClaimService: Wage Claim was updated');
-                        System.debug('WageClaimService: updatedWageClaim: ' + updatedWageClaim);
-                        System.debug('WageClaimService: newWageClaims size: ' + newWageClaims.size());
-                        System.debug('WageClaimService: newWageClaims: ' + newWageClaims);
                         updatedWageClaims.put(updatedWageClaim.Id, updatedWageClaim);
                     }
                 }
