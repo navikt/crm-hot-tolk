@@ -188,11 +188,6 @@ public without sharing class HOT_WageClaimService {
                     Datetime serviceAppointmentStartTime = serviceAppointment.SchedStartTime;
                     Datetime serviceAppointmentEndTime = serviceAppointment.SchedEndTime;
                     //Completely covered
-                        'WageClaimService: ' +
-                        serviceAppointmentStartTime.format() +
-                        ' - ' +
-                        serviceAppointmentEndTime.format()
-                    );
                     if (
                         serviceAppointmentStartTime <= updatedWageClaim.StartTime__c &&
                         serviceAppointmentEndTime >= updatedWageClaim.EndTime__c
