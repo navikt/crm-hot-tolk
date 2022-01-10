@@ -180,57 +180,54 @@ public without sharing class HOT_WageClaimService {
                     )
                 ) {
                     Boolean isWageClaimChanged = false;
-                    HOT_WageClaim__c updatedWageClaim = updatedWageClaims.get(wageClaim.Id) != null
-                        ? updatedWageClaims.get(wageClaim.Id)
-                        : new HOT_WageClaim__c(Id = wageClaim.Id);
+                    HOT_WageClaim__c updatedWageClaim = wageClaim;
+                    if (updatedWageClaim?.Status__c == 'Covered') {
+                        continue;
+                    }
+
                     Datetime serviceAppointmentStartTime = serviceAppointment.SchedStartTime;
                     Datetime serviceAppointmentEndTime = serviceAppointment.SchedEndTime;
                     //Completely covered
                     if (
-                        serviceAppointmentStartTime <= wageClaim.StartTime__c &&
-                        serviceAppointmentEndTime >= wageClaim.EndTime__c
+                        serviceAppointmentStartTime <= updatedWageClaim.StartTime__c &&
+                        serviceAppointmentEndTime >= updatedWageClaim.EndTime__c
                     ) {
                         updatedWageClaim.Status__c = 'Covered';
                         isWageClaimChanged = true;
                     }
-                    //lower
                     if (
-                        serviceAppointmentEndTime > wageClaim.StartTime__c &&
-                        serviceAppointmentEndTime < wageClaim.EndTime__c
+                        serviceAppointmentEndTime > updatedWageClaim.StartTime__c &&
+                        serviceAppointmentEndTime < updatedWageClaim.EndTime__c
                     ) {
-                        HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
-                            ParentWageClaim__c = isUpsert ? wageClaim.Id : null,
-                            ServiceResource__c = wageClaim.ServiceResource__c,
-                            StartTime__c = serviceAppointmentEndTime,
-                            EndTime__c = wageClaim.EndTime__c,
-                            ServiceAppointment__c = wageClaim.ServiceAppointment__c,
-                            WorkType__c = wageClaim.WorkType__c,
-                            IsAutomaticallyCreated__c = true
+                        //lower
+                        HOT_WageClaim__c newWageClaim = createWageClaim(
+                            updatedWageClaim,
+                            serviceAppointmentEndTime,
+                            updatedWageClaim.EndTime__c,
+                            isUpsert
                         );
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
                         updatedWageClaim.EndTime__c = serviceAppointmentEndTime;
                         isWageClaimChanged = true;
                     }
-                    //upper
                     if (
-                        serviceAppointmentStartTime < wageClaim.EndTime__c &&
-                        serviceAppointmentStartTime > wageClaim.StartTime__c
+                        serviceAppointmentStartTime < updatedWageClaim.EndTime__c &&
+                        serviceAppointmentStartTime > updatedWageClaim.StartTime__c
                     ) {
-                        HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
-                            ParentWageClaim__c = isUpsert ? wageClaim.Id : null,
-                            ServiceResource__c = wageClaim.ServiceResource__c,
-                            StartTime__c = wageClaim.StartTime__c,
-                            EndTime__c = serviceAppointmentStartTime,
-                            ServiceAppointment__c = wageClaim.ServiceAppointment__c,
-                            WorkType__c = wageClaim.WorkType__c,
-                            IsAutomaticallyCreated__c = true
+                        //upper
+                        HOT_WageClaim__c newWageClaim = createWageClaim(
+                            updatedWageClaim,
+                            updatedWageClaim.StartTime__c,
+                            serviceAppointmentStartTime,
+                            isUpsert
                         );
                         newWageClaims.add(newWageClaim);
                         updatedWageClaim.Status__c = 'Covered';
                         updatedWageClaim.StartTime__c = serviceAppointmentStartTime;
                         isWageClaimChanged = true;
                     }
+
                     if (isWageClaimChanged) {
                         updatedWageClaims.put(updatedWageClaim.Id, updatedWageClaim);
                     }
@@ -249,6 +246,28 @@ public without sharing class HOT_WageClaimService {
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
         }
+        if (newWageClaims.size() > 0) {
+            updateWageClaims(serviceAppointments, newWageClaims, isUpsert);
+        }
+    }
+
+    private static HOT_WageClaim__c createWageClaim(
+        HOT_WageClaim__c parentWageClaim,
+        Datetime startTime,
+        Datetime endTime,
+        Boolean isUpsert
+    ) {
+        HOT_WageClaim__c newWageClaim = new HOT_WageClaim__c(
+            Status__c = 'Open',
+            ParentWageClaim__c = isUpsert ? parentWageClaim.Id : null,
+            ServiceResource__c = parentWageClaim.ServiceResource__c,
+            ServiceAppointment__c = parentWageClaim.ServiceAppointment__c,
+            WorkType__c = parentWageClaim.WorkType__c,
+            IsAutomaticallyCreated__c = true,
+            StartTime__c = startTime,
+            EndTime__c = endTime
+        );
+        return newWageClaim;
     }
 
     private static Map<Id, List<HOT_WageClaim__c>> getWageClaimsByServiceResourceId(List<HOT_WageClaim__c> wageClaims) {
@@ -274,7 +293,7 @@ public without sharing class HOT_WageClaimService {
             serviceResourceByServiceAppointment.put(serviceAppointment.Id, serviceAppointment.HOT_ServiceResource__c);
         }
         List<HOT_WageClaim__c> wageClaims = [
-            SELECT Id, ServiceAppointment__c, ServiceResource__c, StartTime__c, EndTime__c, WorkType__c
+            SELECT Id, ServiceAppointment__c, ServiceResource__c, StartTime__c, EndTime__c, WorkType__c, Status__c
             FROM HOT_WageClaim__c
             WHERE
                 ServiceResource__c IN :serviceResourceByServiceAppointment.values()
