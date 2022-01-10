@@ -58,7 +58,7 @@ export default class ListFilters extends LightningElement {
 
     removeFilter(event) {
         event.stopPropagation();
-        console.log(JSON.stringify(event.currentTarget.dataset));
+        //console.log(JSON.stringify(event.currentTarget.dataset));
         let filterindex = event.currentTarget.dataset.filterindex;
         let valueindex = event.currentTarget.dataset.valueindex;
         this.filterArray[filterindex].value[valueindex].value = false;

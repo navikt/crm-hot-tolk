@@ -188,7 +188,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track previousPage = 'home';
     connectedCallback() {
+        console.log('connectedCallback');
         let parsed_params = getParametersFromURL();
+        console.log(parsed_params);
         if (parsed_params != null) {
             if (parsed_params.fromList != null) {
                 this.previousPage = 'mine-bestillinger';

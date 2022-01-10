@@ -1,9 +1,9 @@
 import { LightningElement, track, wire } from 'lwc';
 import getMyWorkOrdersNew from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersNew';
-import { CurrentPageReference } from 'lightning/navigation';
+import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, iconByValue } from './columns';
 import { defaultFilters } from './filters';
-export default class MineBestillingerWrapper extends LightningElement {
+export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @track filters = [];
     connectedCallback() {
         this.filters = defaultFilters();
@@ -49,13 +49,13 @@ export default class MineBestillingerWrapper extends LightningElement {
         let recordId = this.urlStateParameters.id;
         for (let record of this.records) {
             if (recordId === record.Id) {
-                console.log('WorkOrder: ', JSON.stringify(this.workOrder));
+                //console.log('WorkOrder: ', JSON.stringify(this.workOrder));
                 this.workOrder = record;
                 this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
                 this.workOrderStartDate = this.formatDate(this.workOrder.StartDate, true);
                 this.workOrderEndDate = this.formatDate(this.workOrder.EndDate, true);
                 this.request = record.HOT_Request__r;
-                console.log('Request: ', JSON.stringify(this.request));
+                //console.log('Request: ', JSON.stringify(this.request));
                 this.requestSeriesStartDate = this.formatDate(this.request.SeriesStartDate__c, false);
                 this.requestSeriesEndDate = this.formatDate(this.request.SeriesEndDate__c, false);
             }
@@ -146,4 +146,48 @@ export default class MineBestillingerWrapper extends LightningElement {
         }
         this.records = filteredRecords;
     }
+
+    editOrder() {
+        console.log(JSON.stringify(this.request));
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'ny-bestilling'
+            },
+            state: {
+                //fieldValues: JSON.stringify(this.request),
+                //fromList: true,
+                //edit: true,
+                johnny: 'haha'
+            }
+        });
+    }
+
+    /*
+    editOrder(row) {
+        const { Id } = row;
+        const index = this.findRowIndexById(Id);
+        if (index !== -1) {
+            if (row.Orderer__c === this.userRecord.AccountId) {
+                this.isGetAllFiles = true;
+                if (this.requests[index].ExternalRequestStatus__c.includes('Åpen')) {
+                    //Here we should get the entire record from salesforce, to get entire interpretation address.
+                    let clone = this.requests[index];
+                    this[NavigationMixin.Navigate]({
+                        type: 'comm__namedPage',
+                        attributes: {
+                            pageName: 'ny-bestilling'
+                        },
+                        state: {
+                            fieldValues: JSON.stringify(clone),
+                            fromList: true,
+                            edit: true
+                        }
+                    });
+                }
+            } else {
+                alert('Denne bestillingen er bestilt av noen andre, og du har ikke rettigheter til å endre den.');
+            }
+        }
+    } */
 }
