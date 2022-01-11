@@ -82,7 +82,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             ) {
                 notifyDispatcherRequests.add(request);
             }
-            // Filter for isHidden
+
             if (!request.IsHideSubject__c) {
                 copySubjectAndDescription.add(request);
             }
