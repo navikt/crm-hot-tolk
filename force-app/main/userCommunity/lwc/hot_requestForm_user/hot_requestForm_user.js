@@ -9,8 +9,8 @@ export default class Hot_requestForm_user extends LightningElement {
 
     isBirthdate = true;
     birthdateAndPhoneRadiobuttons = [
-        { label: 'Tolkbrukers fødselsnummer', value: 'birthdate', checked: true },
-        { label: 'Tolkbrukers telefonnummer', value: 'phone' }
+        { label: 'Tolkebrukers fødselsnummer', value: 'birthdate', checked: true },
+        { label: 'Tolkebrukers telefonnummer', value: 'phone' }
     ];
 
     handleBirthdateOrPhone(event) {
