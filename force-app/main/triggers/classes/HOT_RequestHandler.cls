@@ -23,6 +23,16 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (imageInterpreterRequests.size() > 0) {
             setImageInterpreterFields(imageInterpreterRequests);
         }
+
+        List<HOT_Request__c> copySubjectAndDescription = new List<HOT_Request__c>();
+        for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+            if (!request.IsHideSubject__c) {
+                copySubjectAndDescription.add(request);
+            }
+        }
+        if (copySubjectAndDescription.size() > 0) {
+            copySubjectAndDescription(copySubjectAndDescription);
+        }
     }
 
     public override void onAfterInsert() {
@@ -54,6 +64,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
+        List<HOT_Request__c> copySubjectAndDescription = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
@@ -71,6 +82,10 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             ) {
                 notifyDispatcherRequests.add(request);
             }
+            // Filter for isHidden
+            if (!request.IsHideSubject__c) {
+                copySubjectAndDescription.add(request);
+            }
         }
         if (ownerChangedRequests.size() > 0) {
             setServiceTerritory(ownerChangedRequests);
@@ -81,6 +96,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (notifyDispatcherRequests.size() > 0) {
             HOT_RequestNotification.notifyDispatchers_requestChanged(notifyDispatcherRequests, triggerOldMap);
             resetNotifyDispatcher(notifyDispatcherRequests);
+        }
+        if (copySubjectAndDescription.size() > 0) {
+            copySubjectAndDescription(copySubjectAndDescription);
         }
     }
 
@@ -314,6 +332,13 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (imageInterpretationMethod != null) {
                 request.InterpretationMethod__c = imageInterpretationMethod.Id;
             }
+        }
+    }
+
+    public static void copySubjectAndDescription(List<HOT_Request__c> requests) {
+        for (HOT_Request__c request : requests) {
+            request.HOT_UserSubject__c = request.Subject__c;
+            request.HOT_UserDescription__c = request.Description__c;
         }
     }
 }
