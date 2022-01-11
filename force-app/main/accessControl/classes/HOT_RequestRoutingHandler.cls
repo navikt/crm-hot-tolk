@@ -76,11 +76,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                 INT_OrganizationNumber__c,
                 CRM_Person__r.INT_KrrMobilePhone__c
             FROM Account
-            WHERE
-                INT_PersonIdent__c IN :idents
-                OR INT_OrganizationNumber__c IN :idents
-                OR CRM_Person__r.INT_KrrMobilePhone__c IN :idents
-                OR Id IN :idents
+            WHERE INT_PersonIdent__c IN :idents OR INT_OrganizationNumber__c IN :idents OR Id IN :idents
         ];
 
         Map<String, Account> personIdentToAccount = new Map<String, Account>();
