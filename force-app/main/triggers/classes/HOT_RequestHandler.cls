@@ -86,15 +86,39 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_Request__c> godkjentRequests = new List<HOT_Request__c>();
+        List<Hot_Request__c> requestsWithNewSubject = new List<Hot_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Godkjent requests
             if (triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' && request.Status__c == 'Godkjent') {
                 godkjentRequests.add(request);
             }
+            if (triggerOldMap.get(request.Id).get('Subject__c') !== request.Subject__c) {
+                requestsWithNewSubject.add(request);
+            }
         }
         if (godkjentRequests.size() > 0) {
             createWOLI_SA(godkjentRequests);
+        }
+        if (requestsWithNewSubject.size() > 0) {
+            updateWorkOrderSubject(requestsWithNewSubject);
+        }
+    }
+
+    private static void updateWorkOrderSubject(List<HOT_Request__c> requestsWithNewSubject) {
+        List<WorkOrder> workOrders = [
+            SELECT Id, Subject, HOT_Request__r.Subject__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :requestsWithNewSubject
+        ];
+
+        if (workOrders.size() > 0) {
+            for (WorkOrder wo : workOrders) {
+                if (wo.HOT_Request__r.Subject__c != null) {
+                    wo.Subject = wo.HOT_Request__r.Subject__c;
+                }
+            }
+            update workOrders;
         }
     }
 

@@ -37,30 +37,48 @@
             </div>
             <div class="record-details-container">
                 <p>Gjelder fra: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
-                <p>Adresse: <span>{request.MeetingStreet__c}</span></p>
+                <p>Adresse: <span>{requestAddressToShow}</span></p>
             </div>
-            <c-button
-                button-label={editButtonLabel}
-                button-styling="primary"
-                style="padding-right: 1vw"
-                desktop-style="width: 8rem; justify-content: center"
-                mobile-style="width: 8rem; justify-content: center"
-                onbuttonclick={editOrder}
-            ></c-button>
-            <c-button
-                button-label={copyButtonLabel}
-                button-styling="secondary"
-                style="padding-right: 1vw"
-                desktop-style="width: 8rem; justify-content: center"
-                mobile-style="width: 8rem; justify-content: center"
-            ></c-button>
-            <c-button
-                button-label={cancelButtonLabel}
-                button-styling="secondary"
-                desktop-style="width: 8rem; justify-content: center"
-                mobile-style="width: 8rem; justify-content: center"
-            ></c-button>
             <br />
+            <div class="buttonRow">
+                <c-button
+                    button-label={editButtonLabel}
+                    button-styling="primary"
+                    style="padding-right: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={editOrder}
+                    disabled={isRequestEditButtonDisabled}
+                ></c-button>
+                <c-button
+                    button-label={copyButtonLabel}
+                    button-styling="secondary"
+                    style="padding-right: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={cloneOrder}
+                ></c-button>
+                <c-button
+                    button-label={cancelButtonLabel}
+                    button-styling="secondary"
+                    style="padding-right: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={cancelOrder}
+                    disabled={isRequestCancelButtonDisabled}
+                ></c-button>
+                <c-button
+                    button-label="Legg til filer"
+                    button-styling="primary"
+                    style="padding-right: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={addFiles}
+                    disabled={isRequestAddFilesButtonDisabled}
+                ></c-button>
+            </div>
+            <br />
+
             <div class="record-details-container">
                 <c-table
                     records={workOrders}
@@ -89,7 +107,7 @@
                 <p>Starttid: <span>{workOrderStartDate}</span></p>
                 <p>Sluttid: <span>{workOrderEndDate}</span></p>
                 <br />
-                <p>Adresse: <span>{workOrder.HOT_AddressFormated__c}</span></p>
+                <p>Adresse: <span>{workOrderAddressToShow}</span></p>
                 <br />
                 <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
                 <br />
@@ -99,27 +117,107 @@
                     {interpreter}: <span>{workOrder.HOT_Interpreters__c}</span>
                 </p>
             </div>
+            <c-record-files-with-sharing
+                record-id={request.Id}
+                is-get-all={isGetAllFiles}
+                is-delete-option="true"
+                title="Tidligere opplastede vedlegg"
+            ></c-record-files-with-sharing>
+            <br />
             <div class="buttonRow">
                 <c-button
-                    if:false={isSeries}
                     button-label={editButtonLabel}
                     button-styling="primary"
                     style="padding-right: 1vw"
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={editOrder}
+                    disabled={isWOEditButtonDisabled}
                 ></c-button>
                 <c-button
-                    if:false={isSeries}
                     button-label={copyButtonLabel}
                     button-styling="secondary"
                     style="padding-right: 1vw"
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={cloneOrder}
                 ></c-button>
                 <c-button
                     button-label={cancelButtonLabel}
                     button-styling="secondary"
+                    style="padding-right: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={cancelOrder}
+                    disabled={isWOCancelButtonDisabled}
+                ></c-button>
+                <c-button
+                    button-label="Legg til filer"
+                    button-styling="primary"
+                    style="padding-right: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={addFiles}
+                    disabled={isWOAddFilesButtonDisabled}
+                ></c-button>
+            </div>
+        </div>
+    </div>
+    <c-alertdialog
+        header={modalHeader}
+        content={modalContent}
+        desktop-style="text-align: center; white-space: pre-line; width: 50%"
+        mobile-style="text-align: center; white-space: pre-line; width: 100%"
+        center-buttons="true"
+        no-cancel-button={noCancelButton}
+        onbuttonclick={handleAlertDialogClick}
+        disabled={buttonDisabled}
+    >
+    </c-alertdialog>
+
+    <div
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
+        style="z-index: 9999; background-color: rgba(38, 38, 38, 0.7)"
+        tabindex="-1"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open comments-dialog-container"
+            role="dialog"
+            aria-labelledby="details-header-id"
+        >
+            <div class="loader hidden"></div>
+            <div if:true={showUploadFilesComponent}>
+                <h2 style="font-size: 1.25rem; text-align: center">Legg til filer i bestillingen</h2>
+                <br />
+                <c-upload-files
+                    record-id={recordId}
+                    onfiledatalength={checkFileDataLength}
+                    onuploadcomplete={onUploadComplete}
+                    onuploaderror={onUploadError}
+                    ongetcheckboxvalue={getCheckboxValue}
+                    checkbox-validation="true"
+                    checkbox-text-plural="Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får."
+                    checkbox-text-single="Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får."
+                    validation-message="For å legge til dokumenter må du gi samtykke til at formidler og tolk kan se dokumentene som lastes opp"
+                ></c-upload-files>
+            </div>
+            <br />
+            <br />
+            <div style="text-align: center" aria-live="polite">
+                <c-button
+                    if:true={hasFiles}
+                    button-styling="primary"
+                    button-label="Lagre"
+                    onbuttonclick={uploadFilesOnSave}
+                    style="padding-right: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                ></c-button>
+                <c-button
+                    if:true={showCancelUploadButton}
+                    button-styling="secondary"
+                    button-label="Avbryt"
+                    onbuttonclick={cancelUploadFiles}
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"
                 ></c-button>

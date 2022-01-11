@@ -219,9 +219,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.handleEditModeRequestType(parsed_params);
         this.userCheckboxValue = this.fieldValues.UserName__c ? true : false;
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
-        console.log('setFieldValuesFromURL');
-        console.log('fieldValues.fieldValues: ', JSON.stringify(this.fieldValues));
-        console.log('this.fieldValues.Type__c: ', this.fieldValues.Type__c);
 
         delete this.fieldValues.Account__c;
         delete this.fieldValues.Company__c;
@@ -242,17 +239,14 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     // TODO: Errors here due to some ID missing(?) when editing
     goToMyRequests() {
-        console.log('goToMyRequests');
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
                 pageName: 'mine-bestillinger'
             }
         });
-        console.log('wot');
     }
     goToPreviousPage() {
-        console.log('this.previousPage: ', this.previousPage);
         window.scrollTo(0, 0);
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
