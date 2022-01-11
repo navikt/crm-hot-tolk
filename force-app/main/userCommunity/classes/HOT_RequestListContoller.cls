@@ -98,6 +98,7 @@ public without sharing class HOT_RequestListContoller {
                     Owner.Name,
                     toLabel(AssignmentType__c),
                     UserName__c,
+                    UserPhone__c,
                     UserPersonNumber__c,
                     UserPreferredInterpreter__c,
                     toLabel(UserInterpretationMethod__c),
