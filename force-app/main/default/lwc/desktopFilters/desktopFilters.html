@@ -1,0 +1,24 @@
+<template>
+    <div class="filter-container">
+        <template iterator:it={filterArray}>
+            <fieldset if:true={it.value.isDateInterval} key={it.value.name}>
+                <template iterator:date={it.value.value}>
+                    <c-input
+                        style="padding-right: 1vw"
+                        key={date.value.name}
+                        label={date.value.label}
+                        data-id={date.value.name}
+                        type="date"
+                        ongetvalueonchange={handleDateChange}
+                        name={date.value.name}
+                        value={date.value.value}
+                        data-filterindex={it.index}
+                        data-valueindex={date.index}
+                    ></c-input>
+                </template>
+            </fieldset>
+        </template>
+        <c-input label="Status" style="padding-right: 1vw"></c-input>
+        <c-input label="Anledning"></c-input>
+    </div>
+</template>

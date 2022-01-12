@@ -7,12 +7,27 @@ export let filterArray = [
         value: [
             {
                 name: 'New',
-                label: 'Ikke påbegynt',
-                checked: true
+                label: 'Ikke påbegynt'
             },
             {
                 name: 'Canceled',
                 label: 'Avlyst'
+            },
+            {
+                name: 'Dispatched',
+                label: 'Du har fått tolk'
+            },
+            {
+                name: 'In Progress',
+                label: 'Pågår'
+            },
+            {
+                name: 'Cannot Complete',
+                label: 'Ikke ledig tolk'
+            },
+            {
+                name: 'Completed',
+                label: 'Ferdig'
             }
         ]
     },
@@ -39,7 +54,28 @@ export let filterArray = [
         label: 'Anledning',
         isCheckboxgroup: true,
         compare: equals,
-        value: []
+        value: [
+            {
+                name: 'Private',
+                label: 'Dagligliv'
+            },
+            {
+                name: 'Work',
+                label: 'Arbeidsliv'
+            },
+            {
+                name: 'Health Services',
+                label: 'Helsetjenester'
+            },
+            {
+                name: 'Education',
+                label: 'Utdanning'
+            },
+            {
+                name: 'Interpreter at Work',
+                label: 'Tolk på arbeidsplass - TPA'
+            }
+        ]
     }
 ];
 
@@ -52,7 +88,12 @@ export function defaultFilters() {
 }
 
 function equals(record) {
+    console.log('record: ', JSON.stringify(record));
     for (let val of this.value) {
+        console.log('val.value: ', val.value);
+        console.log('val.name: ', val.name);
+        console.log('this.name: ', this.name);
+        console.log('record[this.name]: ', record[this.name]);
         if (val.value === true && record[this.name] !== val.name) {
             return false;
         }

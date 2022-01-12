@@ -5,11 +5,16 @@ export default class ListFiltersButton extends LightningElement {
     @api activeFilters;
     @api filters;
 
-    // TODO: If desktop -> show filters above table instead of popup
     openFilters() {
-        this.template.querySelector('c-list-filters').openFilters();
+        if (window.screen.width > 576) {
+            const eventToSend = new CustomEvent('opendesktopfilters', { detail: 'opendesktopfilters' });
+            this.dispatchEvent(eventToSend);
+        } else {
+            this.template.querySelector('c-list-filters').openFilters();
+        }
     }
     applyFilter(event) {
+        console.log('listfiltersbutton applyfilter');
         const eventToSend = new CustomEvent('applyfilter', { detail: event.detail });
         this.dispatchEvent(eventToSend);
     }

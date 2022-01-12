@@ -191,6 +191,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         window.history.pushState({ path: refresh }, '', refresh);
     }
     applyFilter(event) {
+        console.log('wrapper applyFilter');
+        console.log('wrapper event.detail: ', JSON.stringify(event.detail));
         this.filters = event.detail;
         let filteredRecords = [];
         for (let record of this.allRecords) {
@@ -211,6 +213,12 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         if (data) {
             this.userRecord.AccountId = data.AccountId;
         }
+    }
+
+    desktopFiltersOpen = false;
+    setDesktopFiltersOpen() {
+        console.log('desktopFiltersOpen');
+        this.desktopFiltersOpen = !this.desktopFiltersOpen;
     }
 
     isGetAllFiles = false;
