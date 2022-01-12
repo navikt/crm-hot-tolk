@@ -350,14 +350,16 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     public static void updateSubjectAndDescription(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
         for (HOT_Request__c request : requests) {
-            if (
-                request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c') ||
-                request.Description__c != triggerOldMap.get(request.Id).get('Description__c')
-            ) {
+            if (request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c')) {
                 request.HOT_UserSubject__c = request.Subject__c;
+            }
+            if (request.Description__c != triggerOldMap.get(request.Id).get('Description__c')) {
                 request.HOT_UserDescription__c = request.Description__c;
-            } else {
+            }
+            if (request.HOT_UserSubject__c != triggerOldMap.get(request.Id).get('HOT_UserSubject__c')) {
                 request.Subject__c = request.HOT_UserSubject__c;
+            }
+            if (request.HOT_UserDescription__c != triggerOldMap.get(request.Id).get('HOT_UserDescription__c')) {
                 request.Description__c = request.HOT_UserDescription__c;
             }
         }
