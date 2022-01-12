@@ -64,7 +64,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
-        List<HOT_Request__c> copySubjectAndDescription = new List<HOT_Request__c>();
+        List<HOT_Request__c> updateSubjectAndDescription = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
@@ -89,7 +89,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 request.UserSubject__c != triggerOldMap.get(request.Id).get('UserSubject__c') ||
                 request.UserDescription__c != triggerOldMap.get(request.Id).get('UserDescription__c')
             ) {
-                copySubjectAndDescription.add(request);
+                updateSubjectAndDescription.add(request);
             }
         }
         if (ownerChangedRequests.size() > 0) {
@@ -102,8 +102,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             HOT_RequestNotification.notifyDispatchers_requestChanged(notifyDispatcherRequests, triggerOldMap);
             resetNotifyDispatcher(notifyDispatcherRequests);
         }
-        if (copySubjectAndDescription.size() > 0) {
-            copySubjectAndDescription(copySubjectAndDescription, triggerOldMap);
+        if (updateSubjectAndDescription.size() > 0) {
+            updateSubjectAndDescription(updateSubjectAndDescription, triggerOldMap);
         }
     }
 
@@ -345,9 +345,13 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (
                 request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c') ||
                 request.Description__c != triggerOldMap.get(request.Id).get('Description__c')
-            )
+            ) {
                 request.HOT_UserSubject__c = request.Subject__c;
-            request.HOT_UserDescription__c = request.Description__c;
+                request.HOT_UserDescription__c = request.Description__c;
+            } else {
+                request.Subject__c = request.HOT_UserSubject__c;
+                request.Description__c = request.HOT_UserDescription__c;
+            }
         }
     }
 }
