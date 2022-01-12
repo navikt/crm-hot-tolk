@@ -172,8 +172,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
             if (
                 !serviceAppointment.IsHideSubject__c &&
-                (serviceAppointment.Subject__c != triggerOldMap.get(serviceAppointment.Id).get('Subject__c') ||
-                serviceAppointment.Description__c != triggerOldMap.get(serviceAppointment.Id).get('Description__c') ||
+                (serviceAppointment.Subject != triggerOldMap.get(serviceAppointment.Id).get('Subject') ||
+                serviceAppointment.Description != triggerOldMap.get(serviceAppointment.Id).get('Description') ||
                 serviceAppointment.HOT_UserSubject__c !=
                 triggerOldMap.get(serviceAppointment.Id).get('HOT_UserSubject__c') ||
                 serviceAppointment.HOT_UserDescription__c !=
@@ -958,8 +958,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
     public static void copySubjectAndDescription(List<ServiceAppointment> serviceAppointments) {
         for (ServiceAppointment sa : serviceAppointments) {
-            sa.HOT_UserSubject__c = sa.Subject__c;
-            sa.HOT_UserDescription__c = sa.Description__c;
+            sa.HOT_UserSubject__c = sa.Subject;
+            sa.HOT_UserDescription__c = sa.Description;
         }
     }
 
@@ -968,17 +968,17 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, sObject> triggerOldMap
     ) {
         for (ServiceAppointment sa : serviceAppointments) {
-            if (sa.Subject__c != triggerOldMap.get(sa.Id).get('Subject__c')) {
-                sa.HOT_UserSubject__c = sa.Subject__c;
+            if (sa.Subject != triggerOldMap.get(sa.Id).get('Subject')) {
+                sa.HOT_UserSubject__c = sa.Subject;
             }
-            if (sa.Description__c != triggerOldMap.get(sa.Id).get('Description__c')) {
-                sa.HOT_UserDescription__c = sa.Description__c;
+            if (sa.Description != triggerOldMap.get(sa.Id).get('Description')) {
+                sa.HOT_UserDescription__c = sa.Description;
             }
             if (sa.HOT_UserSubject__c != triggerOldMap.get(sa.Id).get('HOT_UserSubject__c')) {
-                sa.Subject__c = sa.HOT_UserSubject__c;
+                sa.Subject = sa.HOT_UserSubject__c;
             }
             if (sa.HOT_UserDescription__c != triggerOldMap.get(sa.Id).get('HOT_UserDescription__c')) {
-                sa.Description__c = sa.HOT_UserDescription__c;
+                sa.Description = sa.HOT_UserDescription__c;
             }
         }
     }
