@@ -84,10 +84,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
             //Oppdatert (bruker)tema eller (bruker)tilleggsbeskrivelse på request
             if (
-                !request.IsHideSubject__c && request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c') ||
+                !request.IsHideSubject__c &&
+                (request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c') ||
                 request.Description__c != triggerOldMap.get(request.Id).get('Description__c') ||
                 request.HOT_UserSubject__c != triggerOldMap.get(request.Id).get('HOT_UserSubject__c') ||
-                request.HOT_UserDescription__c != triggerOldMap.get(request.Id).get('HOT_UserDescription__c')
+                request.HOT_UserDescription__c != triggerOldMap.get(request.Id).get('HOT_UserDescription__c'))
             ) {
                 updateSubjectAndDescription.add(request);
             }
