@@ -340,7 +340,14 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
 
-    public static void copySubjectAndDescription(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
+    public static void copySubjectAndDescription(List<HOT_Request__c> requests) {
+        for (HOT_Request__c request : requests) {
+            request.HOT_UserSubject__c = request.Subject__c;
+            request.HOT_UserDescription__c = request.Description__c;
+        }
+    }
+
+    public static void updateSubjectAndDescription(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
         for (HOT_Request__c request : requests) {
             if (
                 request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c') ||
