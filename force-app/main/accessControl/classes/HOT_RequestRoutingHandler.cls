@@ -68,18 +68,12 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
     public void routeAccountConnectedRequests(List<HOT_Request__c> accountConnectedRequests, List<String> idents) {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         List<Account> accounts = [
-            SELECT
-                Id,
-                Name,
-                INT_PersonIdent__c,
-                CRM_Person__c,
-                INT_OrganizationNumber__c,
-                CRM_Person__r.INT_KrrMobilePhone__c
+            SELECT Id, Name, INT_PersonIdent__c, CRM_Person__c, INT_OrganizationNumber__c, INT_KrrMobilePhone__c
             FROM Account
             WHERE
                 INT_PersonIdent__c IN :idents
                 OR INT_OrganizationNumber__c IN :idents
-                OR CRM_Person__r.INT_KrrMobilePhone__c IN :idents
+                OR INT_KrrMobilePhone__c IN :idents
                 OR Id IN :idents
         ];
 
@@ -95,8 +89,8 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             if (account.INT_OrganizationNumber__c != null) {
                 orgNumberToAccount.put(account.INT_OrganizationNumber__c, account);
             }
-            if (account.CRM_Person__r?.INT_KrrMobilePhone__c != null) {
-                phoneNumberToAccount.put(account.CRM_Person__r.INT_KrrMobilePhone__c, account);
+            if (account.INT_KrrMobilePhone__c != null) {
+                phoneNumberToAccount.put(account.INT_KrrMobilePhone__c, account);
             }
             idToAccount.put(account.Id, account);
         }
