@@ -82,10 +82,12 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             ) {
                 notifyDispatcherRequests.add(request);
             }
-            //Oppdatert tema eller tilleggsbeskrivelse på request
+            //Oppdatert (bruker)tema eller (bruker)tilleggsbeskrivelse på request
             if (
                 !request.IsHideSubject__c && request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c') ||
-                request.Description__c != triggerOldMap.get(request.Id).get('Description__c')
+                request.Description__c != triggerOldMap.get(request.Id).get('Description__c') ||
+                request.UserSubject__c != triggerOldMap.get(request.Id).get('UserSubject__c') ||
+                request.UserDescription__c != triggerOldMap.get(request.Id).get('UserDescription__c')
             ) {
                 copySubjectAndDescription.add(request);
             }
@@ -340,7 +342,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     public static void copySubjectAndDescription(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
         for (HOT_Request__c request : requests) {
-            request.HOT_UserSubject__c = request.Subject__c;
+            if (
+                request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c') ||
+                request.Description__c != triggerOldMap.get(request.Id).get('Description__c')
+            )
+                request.HOT_UserSubject__c = request.Subject__c;
             request.HOT_UserDescription__c = request.Description__c;
         }
     }
