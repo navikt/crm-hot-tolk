@@ -1746,6 +1746,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>WorkOrder.IsHideSubject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>WorkOrder.LineItemCount</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1856,6 +1861,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>WorkOrder.HOT_UserDescription__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_UserSubject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>WorkOrder.WorkTypeId</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1922,6 +1937,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrderLineItem.IsGeneratedFromMaintenancePlan</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrderLineItem.IsHideSubject__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2037,6 +2057,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrderLineItem.UnitPrice</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrderLineItem.HOT_UserDescription__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrderLineItem.HOT_UserSubject__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
