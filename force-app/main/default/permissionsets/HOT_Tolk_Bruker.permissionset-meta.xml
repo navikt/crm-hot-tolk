@@ -107,12 +107,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.HOT_UserDescription__c</field>
+        <field>HOT_Request__c.UserDescription__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.HOT_UserSubject__c</field>
+        <field>HOT_Request__c.UserSubject__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
