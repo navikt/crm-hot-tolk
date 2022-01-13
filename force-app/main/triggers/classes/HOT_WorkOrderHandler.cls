@@ -1,12 +1,12 @@
 public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     public override void onBeforeInsert() {
         setDefaultFields((List<WorkOrder>) records);
-        copySubjectAndDescription((List<WorkOrder>) records);
+        setUserTextFields((List<WorkOrder>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrder> avlystWorkOrder = new List<WorkOrder>();
-        List<WorkOrder> updateSubjectAndDescription = new List<WorkOrder>();
+        List<WorkOrder> updateUserTextFieldsWorkOrder = new List<WorkOrder>();
 
         for (WorkOrder workorder : (List<WorkOrder>) records) {
             if (workorder.Status != triggerOldMap.get(workorder.Id).get('Status') && workorder.Status == 'Canceled') {
@@ -14,13 +14,13 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             }
 
             if (
-                !workorder.IsHideSubject__c &&
+                !workorder.IsHideTextFields__c &&
                 (workorder.Subject != triggerOldMap.get(workorder.Id).get('Subject') ||
                 workorder.Description != triggerOldMap.get(workorder.Id).get('Description') ||
                 workorder.HOT_UserSubject__c != triggerOldMap.get(workorder.Id).get('HOT_UserSubject__c') ||
                 workorder.HOT_UserDescription__c != triggerOldMap.get(workorder.Id).get('HOT_UserDescription__c'))
             ) {
-                updateSubjectAndDescription.add(workorder);
+                updateUserTextFieldsWorkOrder.add(workorder);
             }
         }
 
@@ -28,8 +28,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             setCancelDate(avlystWorkOrder);
         }
 
-        if (updateSubjectAndDescription.size() > 0) {
-            updateSubjectAndDescription(updateSubjectAndDescription, triggerOldMap);
+        if (updateUserTextFieldsWorkOrder.size() > 0) {
+            updateUserTextFields(updateUserTextFieldsWorkOrder, triggerOldMap);
         }
     }
 
@@ -376,14 +376,19 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         return workOrders;
     }
 
-    public static void copySubjectAndDescription(List<workOrder> workOrders) {
+    public static void setUserTextFields(List<workOrder> workOrders) {
         for (WorkOrder workOrder : workOrders) {
-            workOrder.HOT_UserSubject__c = workOrder.Subject;
-            workOrder.HOT_UserDescription__c = workOrder.Description;
+            if (workOrder.Subject != null) {
+                workOrder.HOT_UserSubject__c = workOrder.Subject;
+                workOrder.HOT_UserDescription__c = workOrder.Description;
+            } else {
+                workOrder.Subject = workOrder.HOT_UserSubject__c;
+                workOrder.Description = workOrder.HOT_UserDescription__c;
+            }
         }
     }
 
-    public static void updateSubjectAndDescription(List<workOrder> workOrders, Map<Id, sObject> triggerOldMap) {
+    public static void updateUserTextFields(List<workOrder> workOrders, Map<Id, sObject> triggerOldMap) {
         for (WorkOrder workOrder : workOrders) {
             if (workOrder.Subject != triggerOldMap.get(workOrder.Id).get('Subject')) {
                 workOrder.HOT_UserSubject__c = workOrder.Subject;

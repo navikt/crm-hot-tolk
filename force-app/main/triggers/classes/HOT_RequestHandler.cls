@@ -15,23 +15,20 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         );
         setSourceFieldOnClone((List<HOT_Request__c>) records);
         List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
+        List<HOT_Request__c> userTextFieldsRequests = new List<HOT_Request__c>();
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             if (request.Type__c == 'ImageInterpreter') {
                 imageInterpreterRequests.add(request);
+            }
+            if (!request.IsHideTextFields__c) {
+                userTextFieldsRequests.add(request);
             }
         }
         if (imageInterpreterRequests.size() > 0) {
             setImageInterpreterFields(imageInterpreterRequests);
         }
-
-        List<HOT_Request__c> copySubjectAndDescription = new List<HOT_Request__c>();
-        for (HOT_Request__c request : (List<HOT_Request__c>) records) {
-            if (!request.IsHideSubject__c) {
-                copySubjectAndDescription.add(request);
-            }
-        }
-        if (copySubjectAndDescription.size() > 0) {
-            copySubjectAndDescription(copySubjectAndDescription);
+        if (userTextFieldsRequests.size() > 0) {
+            setUserTextFields(userTextFieldsRequests);
         }
     }
 
@@ -64,7 +61,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
-        List<HOT_Request__c> updateSubjectAndDescription = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsToUpdateTextFields = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
@@ -84,13 +81,13 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
             //Oppdatert (bruker)tema eller (bruker)tilleggsbeskrivelse på request
             if (
-                !request.IsHideSubject__c &&
+                !request.IsHideTextFields__c &&
                 (request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c') ||
                 request.Description__c != triggerOldMap.get(request.Id).get('Description__c') ||
-                request.HOT_UserSubject__c != triggerOldMap.get(request.Id).get('HOT_UserSubject__c') ||
-                request.HOT_UserDescription__c != triggerOldMap.get(request.Id).get('HOT_UserDescription__c'))
+                request.UserSubject__c != triggerOldMap.get(request.Id).get('UserSubject__c') ||
+                request.UserDescription__c != triggerOldMap.get(request.Id).get('UserDescription__c'))
             ) {
-                updateSubjectAndDescription.add(request);
+                requestsToUpdateTextFields.add(request);
             }
         }
         if (ownerChangedRequests.size() > 0) {
@@ -103,8 +100,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             HOT_RequestNotification.notifyDispatchers_requestChanged(notifyDispatcherRequests, triggerOldMap);
             resetNotifyDispatcher(notifyDispatcherRequests);
         }
-        if (updateSubjectAndDescription.size() > 0) {
-            updateSubjectAndDescription(updateSubjectAndDescription, triggerOldMap);
+        if (requestsToUpdateTextFields.size() > 0) {
+            requestsToUpdateTextFields(requestsToUpdateTextFields, triggerOldMap);
         }
     }
 
@@ -341,26 +338,31 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
 
-    public static void copySubjectAndDescription(List<HOT_Request__c> requests) {
+    public static void setUserTextFields(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
-            request.HOT_UserSubject__c = request.Subject__c;
-            request.HOT_UserDescription__c = request.Description__c;
+            if (request.Subject__c != null) {
+                request.UserSubject__c = request.Subject__c;
+                request.UserDescription__c = request.Description__c;
+            } else {
+                request.Subject__c = request.UserSubject__c;
+                request.Description__c = request.UserDescription__c;
+            }
         }
     }
 
-    public static void updateSubjectAndDescription(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
+    public static void requestsToUpdateTextFields(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
         for (HOT_Request__c request : requests) {
             if (request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c')) {
-                request.HOT_UserSubject__c = request.Subject__c;
+                request.UserSubject__c = request.Subject__c;
             }
             if (request.Description__c != triggerOldMap.get(request.Id).get('Description__c')) {
-                request.HOT_UserDescription__c = request.Description__c;
+                request.UserDescription__c = request.Description__c;
             }
-            if (request.HOT_UserSubject__c != triggerOldMap.get(request.Id).get('HOT_UserSubject__c')) {
-                request.Subject__c = request.HOT_UserSubject__c;
+            if (request.UserSubject__c != triggerOldMap.get(request.Id).get('UserSubject__c')) {
+                request.Subject__c = request.UserSubject__c;
             }
-            if (request.HOT_UserDescription__c != triggerOldMap.get(request.Id).get('HOT_UserDescription__c')) {
-                request.Description__c = request.HOT_UserDescription__c;
+            if (request.UserDescription__c != triggerOldMap.get(request.Id).get('UserDescription__c')) {
+                request.Description__c = request.UserDescription__c;
             }
         }
     }

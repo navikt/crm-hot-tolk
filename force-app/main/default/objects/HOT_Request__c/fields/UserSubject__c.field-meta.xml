@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>IsMessageToDispatcherAnonymized__c</fullName>
-    <defaultValue>false</defaultValue>
+    <fullName>UserSubject__c</fullName>
     <externalId>false</externalId>
-    <label>IsMessageToDispatcherAnonymized</label>
+    <label>User Subject</label>
+    <length>255</length>
+    <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
-    <type>Checkbox</type>
+    <type>Text</type>
+    <unique>false</unique>
 </CustomField>
