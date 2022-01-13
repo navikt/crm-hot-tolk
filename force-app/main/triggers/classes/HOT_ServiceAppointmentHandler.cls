@@ -23,7 +23,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithActualTimeSet = new List<ServiceAppointment>();
-        List<ServiceAppointment> updateSubjectAndDescription = new List<ServiceAppointment>();
 
         Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
         Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
@@ -169,18 +168,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
             updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
-
-            if (
-                !serviceAppointment.IsHideSubject__c &&
-                (serviceAppointment.Subject != triggerOldMap.get(serviceAppointment.Id).get('Subject') ||
-                serviceAppointment.Description != triggerOldMap.get(serviceAppointment.Id).get('Description') ||
-                serviceAppointment.HOT_UserSubject__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_UserSubject__c') ||
-                serviceAppointment.HOT_UserDescription__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_UserDescription__c'))
-            ) {
-                updateSubjectAndDescription.add(serviceAppointment);
-            }
         }
         if (!updatedServiceAppointments.isEmpty()) {
             setFieldsByPreferredResource(updatedServiceAppointments);
@@ -231,9 +218,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsWithActualTimeSet.size() > 0) {
             setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
-        }
-        if (updateSubjectAndDescription.size() > 0) {
-            updateSubjectAndDescription(updateSubjectAndDescription, triggerOldMap);
         }
     }
 
@@ -953,32 +937,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
             if (sa.ActualEndTime != null) {
                 sa.SchedEndTime = sa.ActualEndTime;
-            }
-        }
-    }
-    public static void copySubjectAndDescription(List<ServiceAppointment> serviceAppointments) {
-        for (ServiceAppointment sa : serviceAppointments) {
-            sa.HOT_UserSubject__c = sa.Subject;
-            sa.HOT_UserDescription__c = sa.Description;
-        }
-    }
-
-    public static void updateSubjectAndDescription(
-        List<ServiceAppointment> serviceAppointments,
-        Map<Id, sObject> triggerOldMap
-    ) {
-        for (ServiceAppointment sa : serviceAppointments) {
-            if (sa.Subject != triggerOldMap.get(sa.Id).get('Subject')) {
-                sa.HOT_UserSubject__c = sa.Subject;
-            }
-            if (sa.Description != triggerOldMap.get(sa.Id).get('Description')) {
-                sa.HOT_UserDescription__c = sa.Description;
-            }
-            if (sa.HOT_UserSubject__c != triggerOldMap.get(sa.Id).get('HOT_UserSubject__c')) {
-                sa.Subject = sa.HOT_UserSubject__c;
-            }
-            if (sa.HOT_UserDescription__c != triggerOldMap.get(sa.Id).get('HOT_UserDescription__c')) {
-                sa.Description = sa.HOT_UserDescription__c;
             }
         }
     }
