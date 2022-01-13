@@ -1,7 +1,7 @@
 public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     public override void onBeforeInsert() {
         setDefaultFields((List<WorkOrder>) records);
-        //copySubjectAndDescription((List<WorkOrder>) records);
+        copySubjectAndDescription((List<WorkOrder>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -190,11 +190,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 }
                 if (workOrder.Subject == null && requests.get(workOrder.HOT_Request__c).Subject__c != null) {
                     workOrder.Subject = requests.get(workOrder.HOT_Request__c).Subject__c;
-                    workOrder.HOT_UserSubject__c = workOrder.Subject;
                 }
                 if (workOrder.Description == null && requests.get(workOrder.HOT_Request__c).Description__c != null) {
                     workOrder.Description = requests.get(workOrder.HOT_Request__c).Description__c;
-                    workOrder.HOT_UserDescription__c = workOrder.Description;
                 }
                 if (workOrder.AccountId == null && requests.get(workOrder.HOT_Request__c).Account__c != null) {
                     workOrder.AccountId = requests.get(workOrder.HOT_Request__c).Account__c;
