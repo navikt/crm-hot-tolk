@@ -115,7 +115,7 @@
                 <p>Starttid: <span>{workOrderStartDate}</span></p>
                 <p>Sluttid: <span>{workOrderEndDate}</span></p>
                 <br />
-                <p>Adresse: <span>{workOrderAddressToShow}</span></p>
+                <p>Adresse: <span>{workOrder.HOT_AddressFormated__c}</span></p>
                 <br />
                 <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
                 <br />
@@ -128,7 +128,7 @@
             <c-record-files-with-sharing
                 record-id={request.Id}
                 is-get-all={isGetAllFiles}
-                is-delete-option="true"
+                is-delete-option="false"
                 title="Tidligere opplastede vedlegg"
             ></c-record-files-with-sharing>
             <br />

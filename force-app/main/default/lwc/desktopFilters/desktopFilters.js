@@ -35,4 +35,12 @@ export default class DesktopFilters extends LightningElement {
         this.filterArray[filterindex].value[valueindex].value = event.detail;
         this.applyFilter();
     }
+
+    handlePicklistChange(event) {
+        console.log('handlePicklistChange: ', JSON.stringify(event.detail));
+        let filterindex = event.currentTarget.dataset.filterindex;
+        console.log('filterindex: ', filterindex);
+        let valueindex = this.filterArray[filterindex].value.indexOf(event.detail.name);
+        this.filterArray[filterindex].value[valueindex].value = this.applyFilter();
+    }
 }

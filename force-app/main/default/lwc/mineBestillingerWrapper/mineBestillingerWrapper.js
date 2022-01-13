@@ -1,7 +1,7 @@
 import { LightningElement, track, wire } from 'lwc';
-import getMyWorkOrdersNew from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersNew';
+import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
-import { columns, mobileColumns, workOrderColumns, iconByValue } from './columns';
+import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters } from './filters';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
@@ -15,12 +15,12 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track filters = [];
     connectedCallback() {
         this.filters = defaultFilters();
-
-        // TODO: Replace address with IsScreenInterpreter__c if true in columns
         if (window.screen.width > 576) {
             this.columns = columns;
+            this.workOrderColumns = workOrderColumns;
         } else {
             this.columns = mobileColumns;
+            this.workOrderColumns = workOrderMobileColumns;
         }
         this.refresh();
     }
@@ -29,13 +29,13 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     isWorkOrderDetails = false;
     @track urlStateParameters = { level: '', id: '' };
     @track columns;
-    @track workOrderColumns = workOrderColumns;
+    @track workOrderColumns;
     @track iconByValue = iconByValue;
 
     @track records = [];
     @track allRecords = [];
     wiredMyWorkOrdersNewResult;
-    @wire(getMyWorkOrdersNew)
+    @wire(getMyWorkOrdersAndRelatedRequest)
     wiredMyWorkOrdersNew(result) {
         this.wiredMyWorkOrdersNewResult = result;
         if (result.data) {
@@ -144,12 +144,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     requestAddressToShow;
-    workOrderAddressToShow;
     setAddressFormat() {
-        this.requestAddressToShow = this.request.IsScreenInterpreter__c ? 'Digitalt' : this.request.MeetingStreet__c;
-        this.workOrderAddressToShow = this.request.IsScreenInterpreter__c
-            ? 'Digitalt'
-            : this.workOrder.HOT_AddressFormated__c;
+        this.requestAddressToShow = this.request.IsScreenInterpreter__c
+            ? 'Digitalt oppmøte'
+            : this.request.MeetingStreet__c;
     }
 
     goBack() {

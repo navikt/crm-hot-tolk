@@ -18,7 +18,17 @@
                 </template>
             </fieldset>
         </template>
-        <c-input label="Status" style="padding-right: 1vw"></c-input>
-        <c-input label="Anledning"></c-input>
+        <template iterator:it={filterArray}>
+            <c-picklist
+                if:false={it.value.isDateInterval}
+                style="padding-right: 1vw; width: 209px"
+                master-label={it.value.label}
+                choices={it.value.value}
+                key={it.value.name}
+                onpicklistvaluechange={handlePicklistChange}
+                data-id={it.value.name}
+                data-filterindex={it.index}
+            ></c-picklist>
+        </template>
     </div>
 </template>

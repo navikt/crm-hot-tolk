@@ -50,7 +50,7 @@ export let filterArray = [
         ]
     },
     {
-        name: 'AssignmentType__c',
+        name: 'HOT_AssignmentType__c',
         label: 'Anledning',
         isCheckboxgroup: true,
         compare: equals,
