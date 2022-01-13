@@ -1,11 +1,12 @@
 public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     public override void onBeforeInsert() {
         setDefaultFields((List<WorkOrder>) records);
+        //copySubjectAndDescription((List<WorkOrder>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrder> avlystWorkOrder = new List<WorkOrder>();
-        List<HOT_Request__c> updateSubjectAndDescription = new List<HOT_Request__c>();
+        List<WorkOrder> updateSubjectAndDescription = new List<WorkOrder>();
 
         for (WorkOrder workorder : (List<WorkOrder>) records) {
             if (workorder.Status != triggerOldMap.get(workorder.Id).get('Status') && workorder.Status == 'Canceled') {
@@ -14,8 +15,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
             if (
                 !workorder.IsHideSubject__c &&
-                (workorder.Subject__c != triggerOldMap.get(workorder.Id).get('Subject__c') ||
-                workorder.Description__c != triggerOldMap.get(workorder.Id).get('Description__c') ||
+                (workorder.Subject != triggerOldMap.get(workorder.Id).get('Subject') ||
+                workorder.Description != triggerOldMap.get(workorder.Id).get('Description') ||
                 workorder.HOT_UserSubject__c != triggerOldMap.get(workorder.Id).get('HOT_UserSubject__c') ||
                 workorder.HOT_UserDescription__c != triggerOldMap.get(workorder.Id).get('HOT_UserDescription__c'))
             ) {
@@ -189,11 +190,11 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 }
                 if (workOrder.Subject == null && requests.get(workOrder.HOT_Request__c).Subject__c != null) {
                     workOrder.Subject = requests.get(workOrder.HOT_Request__c).Subject__c;
-                    workOrder.HOT_UserSubject__c = requests.get(workOrder.HOT_Request__c).Subject__c;
+                    workOrder.HOT_UserSubject__c = workOrder.Subject;
                 }
                 if (workOrder.Description == null && requests.get(workOrder.HOT_Request__c).Description__c != null) {
                     workOrder.Description = requests.get(workOrder.HOT_Request__c).Description__c;
-                    workOrder.HOT_UserDescription__c = requests.get(workOrder.HOT_Request__c).Description__c;
+                    workOrder.HOT_UserDescription__c = workOrder.Description;
                 }
                 if (workOrder.AccountId == null && requests.get(workOrder.HOT_Request__c).Account__c != null) {
                     workOrder.AccountId = requests.get(workOrder.HOT_Request__c).Account__c;
