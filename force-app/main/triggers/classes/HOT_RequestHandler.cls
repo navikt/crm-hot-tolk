@@ -21,14 +21,14 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 imageInterpreterRequests.add(request);
             }
             if (!request.IsHideTextFields__c) {
-                userTextFieldsRequests.add(request);
+                requestsToCopyTextFields.add(request);
             }
         }
         if (imageInterpreterRequests.size() > 0) {
             setImageInterpreterFields(imageInterpreterRequests);
         }
-        if (userTextFieldsRequests.size() > 0) {
-            setUserTextFields(userTextFieldsRequests);
+        if (requestsToCopyTextFields.size() > 0) {
+            setRequestsToCopyTextFields(requestsToCopyTextFields);
         }
     }
 
@@ -338,7 +338,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
 
-    public static void setUserTextFields(List<HOT_Request__c> requests) {
+    public static void setRequestsToCopyTextFields(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
             if (request.Subject__c != null) {
                 request.UserSubject__c = request.Subject__c;
