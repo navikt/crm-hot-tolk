@@ -15,7 +15,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         );
         setSourceFieldOnClone((List<HOT_Request__c>) records);
         List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
-        List<HOT_Request__c> userTextFieldsRequests = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsToCopyTextFields = new List<HOT_Request__c>();
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             if (request.Type__c == 'ImageInterpreter') {
                 imageInterpreterRequests.add(request);
@@ -101,7 +101,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             resetNotifyDispatcher(notifyDispatcherRequests);
         }
         if (requestsToUpdateTextFields.size() > 0) {
-            requestsToUpdateTextFields(requestsToUpdateTextFields, triggerOldMap);
+            setRequestsToUpdateTextFields(requestsToUpdateTextFields, triggerOldMap);
         }
     }
 
@@ -350,7 +350,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
 
-    public static void requestsToUpdateTextFields(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
+    public static void setRequestsToUpdateTextFields(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
         for (HOT_Request__c request : requests) {
             if (request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c')) {
                 request.UserSubject__c = request.Subject__c;
