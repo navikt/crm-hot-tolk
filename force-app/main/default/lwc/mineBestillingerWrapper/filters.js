@@ -6,6 +6,10 @@ export let filterArray = [
         compare: equals,
         value: [
             {
+                name: 'All records',
+                label: ''
+            },
+            {
                 name: 'New',
                 label: 'Ikke påbegynt'
             },
@@ -56,6 +60,10 @@ export let filterArray = [
         compare: equals,
         value: [
             {
+                name: 'All records',
+                label: ''
+            },
+            {
                 name: 'Private',
                 label: 'Dagligliv'
             },
@@ -88,13 +96,18 @@ export function defaultFilters() {
 }
 
 function equals(record) {
-    console.log('record: ', JSON.stringify(record));
     for (let val of this.value) {
-        console.log('val.value: ', val.value);
-        console.log('val.name: ', val.name);
-        console.log('this.name: ', this.name);
-        console.log('record[this.name]: ', record[this.name]);
-        if (val.value === true && record[this.name] !== val.name) {
+        if (val.value && val.name === 'All records') {
+            return true;
+        }
+        if (val.value) {
+            console.log('------------------------');
+            console.log('val.value: ', val.value);
+            console.log('val.name: ', val.name);
+            console.log('record[this.name]: ', record[this.name]);
+        }
+
+        if (val.value && record[this.name] !== val.name) {
             return false;
         }
     }

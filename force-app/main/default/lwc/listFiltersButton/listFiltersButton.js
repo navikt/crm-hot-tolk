@@ -14,7 +14,6 @@ export default class ListFiltersButton extends LightningElement {
         }
     }
     applyFilter(event) {
-        console.log('listfiltersbutton applyfilter');
         const eventToSend = new CustomEvent('applyfilter', { detail: event.detail });
         this.dispatchEvent(eventToSend);
     }
