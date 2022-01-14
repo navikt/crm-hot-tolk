@@ -100,6 +100,11 @@ export let iconByValue = {
         fill: 'Green',
         ariaLabel: 'Du har fått tolk'
     },
+    Completed: {
+        icon: 'SuccessFilled',
+        fill: 'Green',
+        ariaLabel: 'Ferdig'
+    },
     'Cannot Complete': {
         icon: 'ErrorFilled',
         fill: 'Red',
