@@ -117,6 +117,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goToRecordDetails(result) {
+        window.scrollTo(0, 0);
         let record = result.detail;
         let recordId = record.Id;
         let level = record.HOT_Request__r.IsSerieoppdrag__c ? 'R' : 'WO';
