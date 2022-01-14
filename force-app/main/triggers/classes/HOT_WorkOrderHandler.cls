@@ -14,7 +14,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             }
 
             if (
-                !workorder.IsHideTextFields__c &&
+                !workorder.HOT_IsHideTextFields__c &&
                 (workorder.Subject != triggerOldMap.get(workorder.Id).get('Subject') ||
                 workorder.Description != triggerOldMap.get(workorder.Id).get('Description') ||
                 workorder.HOT_UserSubject__c != triggerOldMap.get(workorder.Id).get('HOT_UserSubject__c') ||

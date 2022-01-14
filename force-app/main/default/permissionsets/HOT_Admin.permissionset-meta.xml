@@ -1251,6 +1251,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsHideTextFields__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_IsImageInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1746,7 +1751,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>WorkOrder.IsHideTextFields__c</field>
+        <field>WorkOrder.HOT_IsHideTextFields__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1941,7 +1946,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>WorkOrderLineItem.IsHideTextFields__c</field>
+        <field>WorkOrderLineItem.HOT_IsHideTextFields__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
