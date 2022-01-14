@@ -3,7 +3,7 @@
         <thead class="mobile-header-hidden">
             <tr>
                 <template iterator:column={columns}>
-                    <th key={column.value.name} scope="col">{column.value.label}</th>
+                    <th tabindex={column.index} key={column.value.name} scope="col">{column.value.label}</th>
                 </template>
             </tr>
         </thead>
@@ -12,23 +12,34 @@
                 <tr class="row" key={record.value.id} data-id={record.value.id} onclick={handleOnRowClick}>
                     <template iterator:field={record.value.fields}>
                         <template if:false={field.value.svg}>
-                            <th if:true={field.first} key={field.value.name} scope="col" class="first-column">
+                            <!--<th
+                                tabindex={field.index}
+                                if:true={field.first}
+                                key={field.value.name}
+                                scope="col"
+                                class="first-column"
+                            >
                                 {field.value.value}
-                            </th>
-                            <td if:false={field.first} key={field.value.name}>{field.value.value}</td>
+                            </th>-->
+                            <td tabindex={field.index} key={field.value.name}>{field.value.value}</td>
                         </template>
                         <template if:true={field.value.svg}>
-                            <td key={field.value.name} class="icon">
-                                <c-icon
-                                    icon={field.value.svg.icon}
-                                    fill={field.value.svg.fill}
-                                    aria-label={field.value.svg.ariaLabel}
-                                    class="iconPadding"
-                                ></c-icon>
+                            <td key={field.value.name} class="icon" tabindex={field.index}>
+                                <div class="tooltip">
+                                    <c-icon
+                                        icon={field.value.svg.icon}
+                                        fill={field.value.svg.fill}
+                                        aria-label={field.value.svg.ariaLabel}
+                                        class="iconPadding"
+                                    ></c-icon>
+                                    <span if:true={field.value.svg.ariaLabel} class="tooltiptext"
+                                        >{field.value.svg.ariaLabel}</span
+                                    >
+                                </div>
                             </td>
                         </template>
                     </template>
-                    <td class="arrow">
+                    <td class="arrow" aria-hidden="true">
                         <c-icon key={record.value.id} icon="Next"></c-icon>
                     </td>
                 </tr>

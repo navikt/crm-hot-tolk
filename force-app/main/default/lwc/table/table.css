@@ -46,3 +46,28 @@ tr.row:hover {
     width: 5%;
     text-align: right;
 }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    bottom: 100%;
+    left: 50%;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    margin-left: -55px;
+    margin-bottom: 5px;
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}

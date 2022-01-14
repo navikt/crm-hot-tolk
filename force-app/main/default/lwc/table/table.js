@@ -9,7 +9,7 @@ export default class Table extends LightningElement {
     recordMap = {};
     get recordsToShow() {
         let records = [];
-        //console.log('this.records: ', JSON.stringify(this.records));
+        console.log('this.records: ', JSON.stringify(this.records));
         if (this.records !== undefined && this.records !== null) {
             for (let record of this.records) {
                 let fields = [];
@@ -30,6 +30,7 @@ export default class Table extends LightningElement {
                 this.recordMap[record.Id] = record;
             }
         }
+        console.log('recordsToShow: ', records);
         return records;
     }
 
