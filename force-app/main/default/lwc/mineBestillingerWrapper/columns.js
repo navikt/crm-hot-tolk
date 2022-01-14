@@ -1,12 +1,7 @@
 export let workOrderColumns = [
     {
-        name: 'StartDate',
-        label: 'Start tid',
-        type: 'Datetime'
-    },
-    {
-        name: 'EndDate',
-        label: 'Slutt tid',
+        name: 'StartAndEndDate',
+        label: 'Tid',
         type: 'Datetime'
     },
     {
@@ -29,13 +24,8 @@ export let workOrderColumns = [
 
 export let workOrderMobileColumns = [
     {
-        name: 'StartDate',
-        label: 'Start tid',
-        type: 'Datetime'
-    },
-    {
-        name: 'EndDate',
-        label: 'Slutt tid',
+        name: 'StartAndEndDate',
+        label: 'Tid',
         type: 'Datetime'
     },
     {
@@ -53,8 +43,8 @@ export let workOrderMobileColumns = [
 
 export let columns = [
     {
-        name: 'StartDate',
-        label: 'Start tid',
+        name: 'StartAndEndDate',
+        label: 'Tid',
         type: 'Datetime'
     },
     {
@@ -77,8 +67,8 @@ export let columns = [
 
 export let mobileColumns = [
     {
-        name: 'StartDate',
-        label: 'Start tid',
+        name: 'StartAndEndDate',
+        label: 'Tid',
         type: 'Datetime'
     },
     {

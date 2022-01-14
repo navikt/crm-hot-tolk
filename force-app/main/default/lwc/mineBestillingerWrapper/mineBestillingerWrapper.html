@@ -41,8 +41,16 @@
                     header="Filtrer søket"
                     filters={filters}
                     onapplyfilter={applyFilter}
+                    onopendesktopfilters={setDesktopFiltersOpen}
                 ></c-list-filters-button>
             </div>
+            <br if:true={desktopFiltersOpen} />
+            <br if:true={desktopFiltersOpen} />
+            <c-desktop-filters
+                if:true={desktopFiltersOpen}
+                filters={filters}
+                onapplyfilter={applyFilter}
+            ></c-desktop-filters>
             <div class="record-details-container">
                 <p>Gjelder fra: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
                 <p>Adresse: <span>{requestAddressToShow}</span></p>

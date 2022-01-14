@@ -9,7 +9,6 @@ export default class Table extends LightningElement {
     recordMap = {};
     get recordsToShow() {
         let records = [];
-        console.log('this.records: ', JSON.stringify(this.records));
         if (this.records !== undefined && this.records !== null) {
             for (let record of this.records) {
                 let fields = [];
@@ -30,17 +29,28 @@ export default class Table extends LightningElement {
                 this.recordMap[record.Id] = record;
             }
         }
-        console.log('recordsToShow: ', records);
         return records;
     }
 
     getValue(record, column) {
-        let value = record[column.name];
-        if (column.type === 'Datetime') {
-            value = new Date(value);
-            value = value.toLocaleString();
-            value = value.substring(0, value.length - 3);
+        if (column.name === 'StartAndEndDate') {
+            let startDate = this.setDateFormat(record.StartDate);
+            let endDate = this.setDateFormat(record.EndDate);
+            let startDateSplit = startDate.split(',');
+            let endDateSplit = endDate.split(',');
+            if (startDateSplit[0] === endDateSplit[0]) {
+                return startDate + ' - ' + endDateSplit[1];
+            }
+            return startDate + ' - ' + endDate;
         }
+        let value = record[column.name];
+        return value;
+    }
+
+    setDateFormat(value) {
+        value = new Date(value);
+        value = value.toLocaleString();
+        value = value.substring(0, value.length - 3);
         return value;
     }
 
