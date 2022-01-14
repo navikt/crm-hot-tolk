@@ -7,14 +7,6 @@
     padding: 2rem;
 }
 
-@media (max-width: 576px) {
-    .mine-bestillinger-wrapper {
-        padding: 1rem;
-    }
-    .comments-dialog-container {
-        width: 100%;
-    }
-}
 .back-link {
     display: flex;
     flex-direction: row;
@@ -56,6 +48,7 @@ span {
 .buttonRow {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .hidden {
@@ -98,5 +91,14 @@ span {
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 576px) {
+    .mine-bestillinger-wrapper {
+        padding: 1rem;
+    }
+    .comments-dialog-container {
+        width: 100%;
     }
 }
