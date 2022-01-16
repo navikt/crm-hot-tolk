@@ -58,7 +58,8 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_HapticCommunication__c,
                 HOT_Escort__c,
                 HOT_AssignmentType__c,
-                HOT_FreelanceSubject__c
+                HOT_FreelanceSubject__c,
+                HOT_IsFortyfiveDaysOld__c
             FROM ServiceAppointment
             WHERE Id IN :serviceAppointmentIds AND Status IN ('Dispatched', 'Completed')
             ORDER BY SchedStartTime ASC
