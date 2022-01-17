@@ -12,7 +12,7 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
             req.UserDescription__c = req.Description__c;
             for (WorkOrder wo : req.Work_Orders__r) {
                 wo.HOT_UserSubject__c = wo.Subject;
-                wo.UserDescription__c = wo.Description;
+                wo.HOT_UserDescription__c = wo.Description;
             }
         }
 
