@@ -4,14 +4,10 @@ export default class ListFiltersButton extends LightningElement {
     @api header;
     @api activeFilters;
     @api filters;
+    @api handleFiltersOutside;
 
     openFilters() {
-        if (window.screen.width > 576) {
-            const eventToSend = new CustomEvent('opendesktopfilters', { detail: 'opendesktopfilters' });
-            this.dispatchEvent(eventToSend);
-        } else {
-            this.template.querySelector('c-list-filters').openFilters();
-        }
+        this.template.querySelector('c-list-filters').openFilters();
     }
     applyFilter(event) {
         const eventToSend = new CustomEvent('applyfilter', { detail: event.detail });
