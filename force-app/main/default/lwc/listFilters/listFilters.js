@@ -27,10 +27,7 @@ export default class ListFilters extends LightningElement {
     isOpen = false;
     @api
     openFilters() {
-        this.isOpen = true;
-    }
-    closeFilters() {
-        this.isOpen = false;
+        this.isOpen = !this.isOpen;
     }
     applyFilter() {
         const eventToSend = new CustomEvent('applyfilter', { detail: this.filterArray });
@@ -76,5 +73,8 @@ export default class ListFilters extends LightningElement {
 
     overlayClick() {
         this.closeFilters();
+    }
+    closeFilters() {
+        this.isOpen = false;
     }
 }

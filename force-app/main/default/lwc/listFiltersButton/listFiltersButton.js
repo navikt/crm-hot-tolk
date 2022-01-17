@@ -22,8 +22,7 @@ export default class ListFiltersButton extends LightningElement {
                 document.documentElement.style.setProperty('--filterButtonColor', '#262626');
                 document.documentElement.style.setProperty('--filterButtonBackgroundColor', '#EFEFEF');
             }
-            const eventToSend = new CustomEvent('opendesktopfilters', { detail: 'opendesktopfilters' });
-            this.dispatchEvent(eventToSend);
+            this.template.querySelector('c-list-filters').openFilters();
         } else {
             this.template.querySelector('c-list-filters').openFilters();
         }

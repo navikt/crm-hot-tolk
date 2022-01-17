@@ -213,12 +213,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
     }
 
-    desktopFiltersOpen = false;
-    setDesktopFiltersOpen() {
-        console.log('desktopFiltersOpen');
-        this.desktopFiltersOpen = !this.desktopFiltersOpen;
-    }
-
     isGetAllFiles = false;
     isNavigatingAway = false;
     editOrder() {

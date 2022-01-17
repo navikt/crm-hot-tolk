@@ -6,7 +6,7 @@
         <div class="overlay-container" draggable="true" onclick={overlayContainerClick}>
             <div class="overlay-content">
                 <div class="drag-rectangle"></div>
-                <h3 style="text-align: center; margin-bottom: 2rem">{header}</h3>
+                <h3 class="header">{header}</h3>
                 <ul class="list">
                     <template iterator:it={filterArray}>
                         <li
@@ -41,8 +41,8 @@
                                     </div>
                                 </template>
                             </div>
-                            <c-icon if:false={it.value.isOpen} icon="Expand"></c-icon>
-                            <c-icon if:true={it.value.isOpen} icon="Collapse"></c-icon>
+                            <c-icon class="expander-icon" if:false={it.value.isOpen} icon="Expand"></c-icon>
+                            <c-icon class="expander-icon" if:true={it.value.isOpen} icon="Collapse"></c-icon>
                         </li>
                         <div if:true={it.value.isOpen} key={it.value.name} class="expanded-filter">
                             <c-checkboxgroup
@@ -64,7 +64,7 @@
                                         value={date.value.value}
                                         data-filterindex={it.index}
                                         data-valueindex={date.index}
-                                        desktop-style="max-width: 30%; padding-bottom: 1rem;"
+                                        desktop-style="padding-bottom: 1rem;"
                                         mobile-style="padding-bottom: 1rem;"
                                     ></c-input>
                                 </template>
