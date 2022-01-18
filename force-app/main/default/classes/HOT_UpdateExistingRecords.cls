@@ -7,14 +7,18 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     }
 
     public void execute(Database.BatchableContext bc, List<HOT_Request__c> records) {
+        List<WorkOrder> workOrderList = new List<WorkOrder>();
         for (HOT_Request__c req : records) {
             req.UserSubject__c = req.Subject__c;
             req.UserDescription__c = req.Description__c;
             for (WorkOrder wo : req.Work_Orders__r) {
                 wo.HOT_UserSubject__c = wo.Subject;
                 wo.HOT_UserDescription__c = wo.Description;
+                workOrderList.add(wo);
             }
         }
+        update records;
+        update workOrderList;
 
         try {
             update records;
