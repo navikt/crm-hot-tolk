@@ -1,17 +1,17 @@
 {
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "51.0",
+    "sourceApiVersion": "52.0",
     "packageDirectories": [
         {
             "path": "force-app",
             "default": true,
             "package": "crm-hot",
-            "versionNumber": "1.112.0.NEXT",
+            "versionNumber": "1.117.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.128.0.LATEST"
+                    "versionNumber": "0.140.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
@@ -23,7 +23,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.41.0.LATEST"
+                    "versionNumber": "0.42.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
@@ -35,11 +35,11 @@
             "path": "force-app",
             "default": false,
             "package": "crm-hot-dev",
-            "versionNumber": "1.112.0.NEXT",
+            "versionNumber": "1.117.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.128.0.LATEST"
+                    "versionNumber": "0.140.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
@@ -51,7 +51,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.41.0.LATEST"
+                    "versionNumber": "0.42.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",

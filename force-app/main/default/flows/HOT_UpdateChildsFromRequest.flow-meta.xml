@@ -356,7 +356,7 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
-                    <isRequired>true</isRequired>
+                    <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.IsScreenInterpreter__c</objectFieldReference>
                 </fields>
                 <inputParameters>
