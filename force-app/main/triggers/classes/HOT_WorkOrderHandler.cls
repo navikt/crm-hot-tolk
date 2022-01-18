@@ -1,19 +1,35 @@
 public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     public override void onBeforeInsert() {
         setDefaultFields((List<WorkOrder>) records);
+        setWorkOrdersToCopyTextFields((List<WorkOrder>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrder> avlystWorkOrder = new List<WorkOrder>();
+        List<WorkOrder> setWorkOrdersToUpdateTextFields = new List<WorkOrder>();
 
         for (WorkOrder workorder : (List<WorkOrder>) records) {
             if (workorder.Status != triggerOldMap.get(workorder.Id).get('Status') && workorder.Status == 'Canceled') {
                 avlystWorkOrder.add(workorder);
             }
+
+            if (
+                !workorder.HOT_IsHideTextFields__c &&
+                (workorder.Subject != triggerOldMap.get(workorder.Id).get('Subject') ||
+                workorder.Description != triggerOldMap.get(workorder.Id).get('Description') ||
+                workorder.HOT_UserSubject__c != triggerOldMap.get(workorder.Id).get('HOT_UserSubject__c') ||
+                workorder.HOT_UserDescription__c != triggerOldMap.get(workorder.Id).get('HOT_UserDescription__c'))
+            ) {
+                setWorkOrdersToUpdateTextFields.add(workorder);
+            }
         }
 
         if (avlystWorkOrder.size() > 0) {
             setCancelDate(avlystWorkOrder);
+        }
+
+        if (setWorkOrdersToUpdateTextFields.size() > 0) {
+            setWorkOrdersToUpdateTextFields(setWorkOrdersToUpdateTextFields, triggerOldMap);
         }
     }
 
@@ -358,5 +374,34 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             workOrder.HOT_IsNotifyDispatcher__c = false;
         }
         return workOrders;
+    }
+
+    public static void setWorkOrdersToCopyTextFields(List<workOrder> workOrders) {
+        for (WorkOrder workOrder : workOrders) {
+            if (workOrder.Subject != null) {
+                workOrder.HOT_UserSubject__c = workOrder.Subject;
+                workOrder.HOT_UserDescription__c = workOrder.Description;
+            } else {
+                workOrder.Subject = workOrder.HOT_UserSubject__c;
+                workOrder.Description = workOrder.HOT_UserDescription__c;
+            }
+        }
+    }
+
+    public static void setWorkOrdersToUpdateTextFields(List<workOrder> workOrders, Map<Id, sObject> triggerOldMap) {
+        for (WorkOrder workOrder : workOrders) {
+            if (workOrder.Subject != triggerOldMap.get(workOrder.Id).get('Subject')) {
+                workOrder.HOT_UserSubject__c = workOrder.Subject;
+            }
+            if (workOrder.Description != triggerOldMap.get(workOrder.Id).get('Description')) {
+                workOrder.HOT_UserDescription__c = workOrder.Description;
+            }
+            if (workOrder.HOT_UserSubject__c != triggerOldMap.get(workOrder.Id).get('HOT_UserSubject__c')) {
+                workOrder.Subject = workOrder.HOT_UserSubject__c;
+            }
+            if (workOrder.HOT_UserDescription__c != triggerOldMap.get(workOrder.Id).get('HOT_UserDescription__c')) {
+                workOrder.Description = workOrder.HOT_UserDescription__c;
+            }
+        }
     }
 }

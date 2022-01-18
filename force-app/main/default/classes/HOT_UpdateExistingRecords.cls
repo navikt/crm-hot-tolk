@@ -2,14 +2,23 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
         return Database.getQueryLocator(
-            'SELECT HOT_Dispatcher__c, HOT_DispatcherNew__c, HOT_Request__r.Dispatcher__c FROM ServiceAppointment WHERE HOT_DispatcherNew__c = NULL AND HOT_Dispatcher__c != NULL'
+            'SELECT Subject__c, UserSubject__c,Description__c, UserDescription__c, (SELECT Subject, HOT_UserSubject__c, Description, HOT_UserDescription__c FROM HOT_Request__c.Work_Orders__r WHERE Subject != NULL AND HOT_UserSubject__c = NULL) FROM HOT_Request__c WHERE Subject__c != NULL AND UserSubject__c = NULL'
         );
     }
 
-    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
-        for (ServiceAppointment sa : records) {
-            sa.HOT_DispatcherNew__c = sa.HOT_Request__r.Dispatcher__c;
+    public void execute(Database.BatchableContext bc, List<HOT_Request__c> records) {
+        List<WorkOrder> workOrderList = new List<WorkOrder>();
+        for (HOT_Request__c req : records) {
+            req.UserSubject__c = req.Subject__c;
+            req.UserDescription__c = req.Description__c;
+            for (WorkOrder wo : req.Work_Orders__r) {
+                wo.HOT_UserSubject__c = wo.Subject;
+                wo.HOT_UserDescription__c = wo.Description;
+                workOrderList.add(wo);
+            }
         }
+        update records;
+        update workOrderList;
 
         try {
             update records;
