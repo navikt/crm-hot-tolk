@@ -96,22 +96,16 @@ export function defaultFilters() {
 }
 
 function equals(record) {
+    let toInclude = true;
     for (let val of this.value) {
-        if (val.value && val.name === 'All records') {
-            return true;
-        }
         if (val.value) {
-            console.log('------------------------');
-            console.log('val.value: ', val.value);
-            console.log('val.name: ', val.name);
-            console.log('record[this.name]: ', record[this.name]);
-        }
-
-        if (val.value && record[this.name] !== val.name) {
-            return false;
+            if (record[this.name] === val.name) {
+                return true;
+            }
+            toInclude = false;
         }
     }
-    return true;
+    return toInclude;
 }
 
 function dateBetween(record) {

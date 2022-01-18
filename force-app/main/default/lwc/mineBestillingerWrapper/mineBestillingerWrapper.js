@@ -62,8 +62,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             if (recordId === record.Id) {
                 this.workOrder = record;
                 this.request = record.HOT_Request__r;
-                //console.log('WorkOrder: ', JSON.stringify(this.workOrder));
-                //console.log('Request: ', JSON.stringify(this.request));
             }
         }
         if (this.request.Id !== undefined) {
@@ -202,7 +200,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             }
         }
         this.records = filteredRecords;
-        console.log('amount of records after filter: ', filteredRecords.length);
     }
 
     @track userRecord = { AccountId: null };
@@ -217,8 +214,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     isNavigatingAway = false;
     editOrder() {
         this.isNavigatingAway = true;
-        console.log(JSON.stringify(this.request));
-        console.log('this.userRecord.AccountId: ', this.userRecord.AccountId);
         if (this.request.Orderer__c === this.userRecord.AccountId) {
             this.isGetAllFiles = true;
             if (this.request.Status__c.includes('Åpen')) {
@@ -243,7 +238,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     cloneOrder() {
         this.isNavigatingAway = true;
-        console.log(JSON.stringify(this.request));
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
@@ -258,11 +252,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     cancelOrder() {
-        console.log('this.request.ExternalRequestStatus__c: ', this.request.ExternalRequestStatus__c);
         let tempEndDate = this.isRequestDetails
             ? new Date(this.request.SeriesEndDate__c)
             : new Date(this.workOrder.EndDate);
-        console.log('tempEndDate: ', tempEndDate);
         if (
             this.request.ExternalRequestStatus__c !== 'Avlyst' &&
             this.request.ExternalRequestStatus__c !== 'Dekket' &&

@@ -13,7 +13,6 @@ export default class ListFilters extends LightningElement {
             temp.value = [];
             element.value.forEach((val) => {
                 let value = { ...val };
-                console.log('value: ', value);
                 if (value.name !== 'All records') {
                     temp.value.push(value);
                 }
@@ -21,7 +20,6 @@ export default class ListFilters extends LightningElement {
             arr.push(temp);
         });
         this.filterArray = arr;
-        console.log('connected this.filterArray: ', JSON.stringify(this.filterArray));
     }
 
     isOpen = false;
@@ -31,7 +29,6 @@ export default class ListFilters extends LightningElement {
     }
     applyFilter() {
         const eventToSend = new CustomEvent('applyfilter', { detail: this.filterArray });
-        console.log('this.filterArray: ', JSON.stringify(this.filterArray));
         this.dispatchEvent(eventToSend);
         this.closeFilters();
     }
@@ -60,11 +57,9 @@ export default class ListFilters extends LightningElement {
 
     removeFilter(event) {
         event.stopPropagation();
-        //console.log(JSON.stringify(event.currentTarget.dataset));
         let filterindex = event.currentTarget.dataset.filterindex;
         let valueindex = event.currentTarget.dataset.valueindex;
         this.filterArray[filterindex].value[valueindex].value = false;
-        console.log('removeFilter: ', JSON.stringify(this.filterArray));
     }
 
     overlayContainerClick(event) {
