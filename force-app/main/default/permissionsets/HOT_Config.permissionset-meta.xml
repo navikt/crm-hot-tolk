@@ -460,6 +460,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.IsDeleteTextFieldsOnRequest__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.IsFellesOppdrag__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -896,6 +901,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceTerritoryMember.EffectiveEndDate</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.IsDeleteTextFieldsOnWorkOrder__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
