@@ -769,6 +769,16 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsDeleteTextFieldsOnSA__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsHideTextFields__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_IsNotifyDispatcher__c</field>
         <readable>true</readable>
@@ -951,6 +961,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_UserSubject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrderLineItem.HOT_IsDeleteTextFieldsOnWOLI__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrderLineItem.HOT_IsHideTextFields__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
