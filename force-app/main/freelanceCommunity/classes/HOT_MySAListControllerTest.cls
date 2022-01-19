@@ -82,26 +82,35 @@ private class HOT_MySAListControllerTest {
 
     @isTest
     static void getMyServiceAppointmentsTestOldSA() {
-        ServiceAppointment myServiceAppointment = [SELECT Id, Status FROM ServiceAppointment LIMIT 1];
-
         WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_MySAListControllerTestnewSA', workType);
         insert request;
-        request.SeriesEndDate__c = System.today() + 25;
+        request.StartTime__c = System.today() + 24;
+        request.EndTime__c = System.today() + 25;
         request.Status__c = 'Godkjent';
         update request;
 
-        List<ServiceAppointment> myServiceAppointmentsbefore = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
-
-        System.assertEquals(1, myServiceAppointmentsbefore.size(), 'Expected one service appointment');
-
         HOT_Request__c request2 = HOT_TestDataFactory.createRequest('HOT_MySAListControllerTestOldSA', workType);
         insert request2;
-        request2.SeriesEndDate__c = System.today() - (365 * 3 + 7);
+        request2.StartTime__c = System.today() - (365 * 3 + 8);
+        request2.EndTime__c = System.today() - (365 * 3 + 7);
         request2.Status__c = 'Godkjent';
         update request2;
 
+        List<ServiceAppointment> allSAs = [
+            SELECT Id, Status, HOT_IsThreeYearsOld__c, SchedEndTime
+            FROM ServiceAppointment
+        ];
+
+        for (ServiceAppointment sa : allSAs) {
+            sa.Status = 'Dispatched';
+        }
+
+        update allSAs;
+
+        Test.startTest();
         List<ServiceAppointment> myServiceAppointmentsafter = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+        Test.stopTest();
 
         System.assertEquals(
             1,
