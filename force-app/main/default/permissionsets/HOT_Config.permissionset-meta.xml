@@ -460,7 +460,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.IsDeleteTextFieldsOnRequest__c</field>
+        <field>HOT_Request__c.IsDeleteTextFieldsOnR__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -905,7 +905,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>WorkOrder.HOT_IsDeleteTextFieldsOnWorkOrder__c</field>
+        <field>WorkOrder.HOT_IsDeleteTextFieldsOnWO__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
