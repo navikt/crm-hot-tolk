@@ -470,6 +470,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.IsHideRequest__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsHideTextFields__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.IsNotifyDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -481,6 +491,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsReminderSMS__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.IsTextFieldsAnonymized__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -541,6 +556,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.ServiceResourceWithAgreement3__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.UserDescription__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.UserSubject__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -874,6 +899,16 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_IsHideTextFields__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_IsHideWorkOrder__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_IsInvoiced__c</field>
         <readable>true</readable>
@@ -896,6 +931,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_SendSMSNotificationOnStatusChanged__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_UserDescription__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_UserSubject__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
