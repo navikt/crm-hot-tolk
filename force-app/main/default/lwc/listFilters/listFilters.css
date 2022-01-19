@@ -89,22 +89,32 @@ ul.list {
 
 @media (min-width: 576px) {
     .fullscreen-overlay {
-        all: unset;
-        width: 30%;
+        all: initial;
+        width: 20%;
         height: auto;
         position: absolute;
-        transform: translate(-104%, 42px);
+        transform: translate(-109%, 42px);
     }
     .overlay-container {
         width: 100%;
         height: auto;
         position: absolute;
-        padding: 0.5rem;
+        padding: 1rem;
         border: black 1px solid;
+        border-radius: 6px;
     }
     .drag-rectangle,
     .header {
         display: none;
+    }
+    .row-element {
+        border-top: 1px solid #000000;
+    }
+    .row-element:first-child {
+        border-top: 0;
+    }
+    .row-element:last-child {
+        border-bottom: 1px solid #000000;
     }
 }
 
