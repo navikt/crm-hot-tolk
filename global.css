@@ -182,6 +182,119 @@ lightning-radio-group > fieldset > div > span {
     margin-bottom: 0.25rem;
 }
 
+/* Override datatable */
+
+lightning-datatable {
+    width: 100%;
+}
+lightning-datatable > div.dt-outer-container > div > div > table {
+    width: 100% !important;
+}
+.slds-th__action {
+    height: 1rem;
+}
+
+@media (max-width: 576px) {
+    /* Force table to not be like tables anymore */
+    lightning-datatable table,
+    lightning-datatable thead,
+    lightning-datatable tbody,
+    lightning-datatable th,
+    lightning-datatable td,
+    lightning-datatable tr {
+        display: block;
+    }
+    /* Hide table headers (but not display: none;, for accessibility) */
+    lightning-datatable thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    lightning-datatable tr {
+        margin: 0 0 1rem 0;
+        border-radius: 4px;
+    }
+    lightning-datatable tr:nth-child(odd) {
+        background: #e9e7e7;
+    }
+    lightning-datatable td,
+    th {
+        /* Behave  like a "row" */
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        border-top: 0 transparent;
+        border-bottom: 1px solid rgb(212, 212, 212);
+    }
+    lightning-datatable td:last-child {
+        border-bottom: 0 transparent;
+    }
+    lightning-datatable > div > div > div {
+        width: 100% !important;
+    }
+    lightning-datatable > div > div > div > div > table {
+        width: 100% !important;
+    }
+    /*
+	.slds-table_bordered tbody td,
+	.slds-table_bordered tbody th,
+	.slds-table--bordered tbody td,
+	.slds-table--bordered tbody th {
+	  border-top: 0 transparent !important;
+	  border-bottom: 0 transparent !important;
+	}
+  
+	.slds-table_bordered,
+	.slds-table--bordered {
+	  border-top: 0 transparent !important;
+	  border-bottom: 0 transparent !important;
+	}
+	*/
+}
+
+@media (max-width: 576px) {
+    lightning-datatable th:nth-of-type(1):before {
+        content: var(--columnlabel_0);
+        font-weight: 600;
+    }
+    lightning-datatable td:nth-of-type(1):before {
+        content: var(--columnlabel_1);
+        font-weight: 600;
+    }
+    lightning-datatable td:nth-of-type(2):before {
+        content: var(--columnlabel_2);
+        font-weight: 600;
+    }
+    lightning-datatable td:nth-of-type(3):before {
+        content: var(--columnlabel_3);
+        font-weight: 600;
+    }
+    lightning-datatable td:nth-of-type(4):before {
+        content: var(--columnlabel_4);
+        font-weight: 600;
+    }
+    lightning-datatable td:nth-of-type(5):before {
+        content: var(--columnlabel_5);
+        font-weight: 600;
+    }
+    lightning-datatable td:nth-of-type(6):before {
+        content: var(--columnlabel_6);
+        font-weight: 600;
+    }
+    lightning-datatable td:nth-of-type(7):before {
+        content: var(--columnlabel_7);
+        font-weight: 600;
+    }
+    lightning-datatable td:nth-of-type(8):before {
+        content: var(--columnlabel_8);
+        font-weight: 600;
+    }
+    lightning-datatable td:nth-of-type(9):before {
+        content: var(--columnlabel_9);
+        font-weight: 600;
+    }
+}
+
 /*Override community styling */
 
 .forceCommunitySection .cb-section_column:only-child {
