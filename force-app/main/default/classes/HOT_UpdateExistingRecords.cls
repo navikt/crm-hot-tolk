@@ -22,6 +22,7 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
 
         try {
             update records;
+            update workOrderList;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
