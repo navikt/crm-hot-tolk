@@ -120,7 +120,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                 this.modalHeader = 'Du har allerede bestillinger i dette tidsrommet.';
                 this.noCancelButton = false;
                 for (let request of duplicateRequests) {
-                    this.modalContent += '\nEmne: ' + request.Subject__c;
+                    this.modalContent += '\nEmne: ' + request.UserSubject__c;
                     this.modalContent += '\nPeriode: ' + request.SeriesPeriod__c;
                 }
                 this.template.querySelector('c-alertdialog').showModal();
