@@ -101,7 +101,7 @@ export let iconByValue = {
         ariaLabel: 'Ikke ledig tolk'
     },
     Canceled: {
-        icon: 'Warning',
+        icon: 'Canceled',
         fill: '',
         ariaLabel: 'Avlyst'
     },
