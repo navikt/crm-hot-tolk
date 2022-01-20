@@ -79,4 +79,43 @@ private class HOT_MySAListControllerTest {
         List<WorkOrderLineItem> workOrderLineItem = HOT_MyServiceAppointmentListController.getParentWorkOrderLineItems();
         System.assertEquals(1, workOrderLineItem.size(), 'Could not fetch parent WorkOrderLineItems');
     }
+
+    @isTest
+    static void getMyServiceAppointmentsTestOldSA() {
+        WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_MySAListControllerTestnewSA', workType);
+        insert request;
+        request.StartTime__c = System.today() + 24;
+        request.EndTime__c = System.today() + 25;
+        request.Status__c = 'Godkjent';
+        update request;
+
+        HOT_Request__c request2 = HOT_TestDataFactory.createRequest('HOT_MySAListControllerTestOldSA', workType);
+        insert request2;
+        request2.StartTime__c = System.today() - (365 * 3 + 8);
+        request2.EndTime__c = System.today() - (365 * 3 + 7);
+        request2.Status__c = 'Godkjent';
+        update request2;
+
+        List<ServiceAppointment> allSAs = [
+            SELECT Id, Status, HOT_IsThreeYearsOld__c, SchedEndTime
+            FROM ServiceAppointment
+        ];
+
+        for (ServiceAppointment sa : allSAs) {
+            sa.Status = 'Dispatched';
+        }
+
+        update allSAs;
+
+        Test.startTest();
+        List<ServiceAppointment> myServiceAppointmentsafter = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
+        Test.stopTest();
+
+        System.assertEquals(
+            1,
+            myServiceAppointmentsafter.size(),
+            'Expected one service appointment after inserting another with a date older than 3 years.'
+        );
+    }
 }
