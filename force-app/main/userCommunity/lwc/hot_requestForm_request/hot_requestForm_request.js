@@ -2,7 +2,7 @@ import { LightningElement, track, api } from 'lwc';
 
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
-        UserSubject__c: '',
+        Subject__c: '',
         MeetingStreet__c: '',
         MeetingPostalCity__c: '',
         MeetingPostalCode__c: '',
@@ -83,8 +83,8 @@ export default class Hot_requestForm_request extends LightningElement {
         this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.sameAddressRadioButtons[1].checked =
             this.fieldValues.InterpretationStreet__c !== this.fieldValues.MeetingStreet__c;
-        this.componentValues.sameAddressRadioButtons[0].checked = !this.componentValues.sameAddressRadioButtons[1]
-            .checked;
+        this.componentValues.sameAddressRadioButtons[0].checked =
+            !this.componentValues.sameAddressRadioButtons[1].checked;
         this.componentValues.isOptionalFields =
             this.fieldValues.UserInterpretationMethod__c !== '' ||
             this.fieldValues.UserPreferredInterpreter__c !== '' ||
