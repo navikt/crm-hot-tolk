@@ -328,12 +328,22 @@ export default class Hot_recurringTimeInput extends LightningElement {
                 for (let timeMap of result.data) {
                     //let temp = new Object(this.setTimesValue(timeMap));
                     this.times.push(new Object(this.setTimesValue(timeMap)));
+                    this.times[this.times.length - 1].dateMilliseconds = new Date(timeMap.date).getTime();
                     this.times[this.times.length - 1].startTimeString = this.dateTimeToTimeString(
                         new Date(Number(timeMap.startTime))
                     );
+                    this.times[this.times.length - 1].startTime = this.timeStringToDateTime(
+                        this.times[this.times.length - 1].dateMilliseconds,
+                        this.times[this.times.length - 1].startTimeString
+                    ).getTime();
+
                     this.times[this.times.length - 1].endTimeString = this.dateTimeToTimeString(
                         new Date(Number(timeMap.endTime))
                     );
+                    this.times[this.times.length - 1].endTime = this.timeStringToDateTime(
+                        this.times[this.times.length - 1].dateMilliseconds,
+                        this.times[this.times.length - 1].endTimeString
+                    ).getTime();
                 }
                 this.validateSimpleTimes();
             }
