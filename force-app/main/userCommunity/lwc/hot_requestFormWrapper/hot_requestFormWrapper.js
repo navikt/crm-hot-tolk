@@ -248,7 +248,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
     @track requestIds = [];
 
-    // TODO: Errors here due to some ID missing(?) when editing
     goToMyRequests() {
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
