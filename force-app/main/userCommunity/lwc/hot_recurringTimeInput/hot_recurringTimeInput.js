@@ -324,26 +324,21 @@ export default class Hot_recurringTimeInput extends LightningElement {
             if (result.data.length === 0) {
                 this.times = [this.setTimesValue(null)];
             } else {
-                this.times = [];
+                this.times = []; // Empty times
                 for (let timeMap of result.data) {
-                    //let temp = new Object(this.setTimesValue(timeMap));
-                    this.times.push(new Object(this.setTimesValue(timeMap)));
-                    this.times[this.times.length - 1].dateMilliseconds = new Date(timeMap.date).getTime();
-                    this.times[this.times.length - 1].startTimeString = this.dateTimeToTimeString(
-                        new Date(Number(timeMap.startTime))
-                    );
-                    this.times[this.times.length - 1].startTime = this.timeStringToDateTime(
-                        this.times[this.times.length - 1].dateMilliseconds,
-                        this.times[this.times.length - 1].startTimeString
+                    let timeObject = new Object(this.setTimesValue(timeMap));
+                    timeObject.dateMilliseconds = new Date(timeMap.date).getTime();
+                    timeObject.startTimeString = this.dateTimeToTimeString(new Date(Number(timeMap.startTime)));
+                    timeObject.startTime = this.timeStringToDateTime(
+                        timeObject.dateMilliseconds,
+                        timeObject.startTimeString
                     ).getTime();
-
-                    this.times[this.times.length - 1].endTimeString = this.dateTimeToTimeString(
-                        new Date(Number(timeMap.endTime))
-                    );
-                    this.times[this.times.length - 1].endTime = this.timeStringToDateTime(
-                        this.times[this.times.length - 1].dateMilliseconds,
-                        this.times[this.times.length - 1].endTimeString
+                    timeObject.endTimeString = this.dateTimeToTimeString(new Date(Number(timeMap.endTime)));
+                    timeObject.endTime = this.timeStringToDateTime(
+                        timeObject.dateMilliseconds,
+                        timeObject.endTimeString
                     ).getTime();
+                    this.times.push(timeObject);
                 }
                 this.validateSimpleTimes();
             }
