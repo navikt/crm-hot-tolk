@@ -110,5 +110,8 @@ export let iconByValue = {
     },
     Reserved: {
         icon: ''
+    },
+    Scheduled: {
+        icon: ''
     }
 };
