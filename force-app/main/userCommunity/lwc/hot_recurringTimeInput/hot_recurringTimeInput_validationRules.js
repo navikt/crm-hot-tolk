@@ -12,7 +12,7 @@ export function dateInPast(date) {
 export function startBeforeEnd(endDate, startDate) {
     startDate = new Date(startDate);
     endDate = new Date(endDate);
-    return startDate.getTime() > endDate.getTime() ? 'Start tid må være før slutt tid.' : '';
+    return startDate.getTime() >= endDate.getTime() ? 'Start tid må være før slutt tid.' : '';
 }
 
 export function requireRecurringDays(input) {
