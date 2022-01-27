@@ -3,8 +3,8 @@
     <caseValues>
         <article>None</article>
         <plural>false</plural>
-        <value>Planlagt start</value>
+        <value>Bestilt sluttid</value>
     </caseValues>
     <gender>Masculine</gender>
-    <name>serviceappointment_schedstarttime</name>
+    <name>serviceappointment_duedate</name>
 </CustomFieldTranslation>

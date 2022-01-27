@@ -40,7 +40,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
 
     @track columns = [
         {
-            label: 'Start tid',
+            label: 'Bestilt starttid',
             fieldName: 'StartTime__c',
             type: 'date',
             sortable: true,
@@ -54,7 +54,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
             }
         },
         {
-            label: 'Slutt tid',
+            label: 'Bestilt sluttid',
             fieldName: 'EndTime__c',
             type: 'date',
             sortable: true,
@@ -103,8 +103,8 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         }
     ];
     mobileColumns = [
-        "'Start tid'",
-        "'Slutt tid'",
+        "'Bestilt starttid'",
+        "'Bestilt sluttid'",
         "'Bestilling'",
         "'Oppmøtested'",
         "'Tema'",
