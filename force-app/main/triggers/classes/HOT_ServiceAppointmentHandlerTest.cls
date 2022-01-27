@@ -497,6 +497,18 @@ private class HOT_ServiceAppointmentHandlerTest {
         system.assertEquals(startTime, sa.SchedStartTime, 'Start time not set!');
         system.assertEquals(endTime, sa.SchedEndTime, 'End time not set');
         system.assertEquals('None', sa.Status, 'Status not set');
+
+        sa.EarliestStartTime = Datetime.now().addHours(2);
+        sa.DueDate = Datetime.now().addHours(3);
+        update sa;
+
+        sa = [
+            SELECT Id, SchedEndTime, SchedStartTime, EarliestStartTime, DueDate
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
+        system.assertEquals(sa.SchedStartTime, sa.EarliestStartTime, 'SchedStart time not set!');
+        system.assertEquals(sa.SchedEndTime, sa.DueDate, 'SchedEnd not set');
     }
 
     @isTest
