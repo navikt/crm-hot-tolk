@@ -3,7 +3,7 @@
     <caseValues>
         <article>None</article>
         <plural>false</plural>
-        <value>Bestilt slutttid</value>
+        <value>Planlagt slutt</value>
     </caseValues>
     <gender>Masculine</gender>
     <name>serviceappointment_schedendtime</name>
