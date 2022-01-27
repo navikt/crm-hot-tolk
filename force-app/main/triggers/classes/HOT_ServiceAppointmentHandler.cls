@@ -685,6 +685,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.SchedStartTime = oldServiceAppointment.SchedStartTime;
                 serviceAppointment.SchedEndTime = oldServiceAppointment.SchedEndTime;
             }
+            if (
+                serviceAppointment.EarliestStartTime != null &&
+                serviceAppointment.DueDate != null &&
+                (serviceAppointment.EarliestStartTime != oldServiceAppointment.EarliestStartTime ||
+                serviceAppointment.DueDate != oldServiceAppointment.DueDate)
+            ) {
+                serviceAppointment.SchedStartTime = serviceAppointment.EarliestStartTime;
+                serviceAppointment.SchedEndTime = serviceAppointment.DueDate;
+            }
         }
     }
     @TestVisible
