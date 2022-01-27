@@ -10,6 +10,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<ServiceAppointment> serviceAppointmentsStatusFromCannotCompleteToNone = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsChangedOrderedTime = new List<ServiceAppointment>();
         List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
         List<ServiceAppointment> updatedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithDeletedPreferredResources = new List<ServiceAppointment>();
@@ -168,6 +169,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
             updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
+
+            // Ordered time is changed
+            if (
+                serviceAppointment.EarliestStartTime !=
+                triggerOldMap.get(serviceAppointment.Id).get('EarliestStartTime') ||
+                serviceAppointment.DueDate != triggerOldMap.get(serviceAppointment.Id).get('DueDate')
+            ) {
+                serviceAppointmentsChangedOrderedTime.add(serviceAppointment);
+            }
         }
         if (!updatedServiceAppointments.isEmpty()) {
             setFieldsByPreferredResource(updatedServiceAppointments);
@@ -218,6 +228,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsWithActualTimeSet.size() > 0) {
             setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
+        }
+        if (serviceAppointmentsChangedOrderedTime.size() > 0) {
+            preserveSchedulesTimes(serviceAppointmentsChangedOrderedTime, triggerOldMap);
         }
     }
 
@@ -665,11 +678,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         insert newHistoricallyAssignedResources;
     }
-    private static void preserveSchedulesTimes(
-        List<ServiceAppointment> serviceAppointmentsStatusFromCannotCompleteToNone,
-        Map<Id, sObject> triggerOldMap
-    ) {
-        for (ServiceAppointment serviceAppointment : serviceAppointmentsStatusFromCannotCompleteToNone) {
+    private static void preserveSchedulesTimes(List<ServiceAppointment> records, Map<Id, sObject> triggerOldMap) {
+        for (ServiceAppointment serviceAppointment : records) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
             if (serviceAppointment.SchedStartTime == null && serviceAppointment.SchedEndTime == null) {
                 serviceAppointment.SchedStartTime = oldServiceAppointment.SchedStartTime;
