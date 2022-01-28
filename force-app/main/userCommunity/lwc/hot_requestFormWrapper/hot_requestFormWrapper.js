@@ -199,14 +199,15 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track previousPage = 'home';
     connectedCallback() {
-        console.log('connectedCallback');
+        console.log('connected');
         let parsed_params = getParametersFromURL();
-        console.log(parsed_params);
         if (parsed_params != null) {
             if (parsed_params.fromList != null) {
+                console.log('fromlist');
                 this.previousPage = 'mine-bestillinger';
+                this.breadcrumbs[this.breadcrumbs.length - 1].label = 'Mine Bestillinger';
+                this.breadcrumbs[this.breadcrumbs.length - 1].href = 'mine-bestillinger';
             }
-
             if (parsed_params.fieldValues != null) {
                 this.setFieldValuesFromURL(parsed_params);
             }
@@ -215,19 +216,26 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
-    handleEditModeRequestType(parsed_params) {
+    handleEditOrCopyModeRequestType(parsed_params) {
+        console.log('handleEditOrCopyModeRequestType');
+        console.log(JSON.stringify(this.breadcrumbs));
+        console.log(this.breadcrumbs.length);
+        if (parsed_params.edit != null) {
+            this.breadcrumbs.push({ label: 'Rediger bestilling' });
+        }
+        if (parsed_params.copy != null) {
+            this.breadcrumbs.push({ label: 'Kopier bestilling' });
+        }
         this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
         this.requestTypeChosen = this.isEditOrCopyMode;
         this.isTypeMe = this.fieldValues.Type__c === 'Me';
         this.isEditModeAndTypeMe = this.isTypeMe && this.isEditOrCopyMode;
-        console.log('this.isEditOrCopyMode: ', this.isEditOrCopyMode);
-        console.log('this.isTypeMe: ', this.isTypeMe);
     }
 
     isGetAll = false;
     setFieldValuesFromURL(parsed_params) {
         this.fieldValues = JSON.parse(parsed_params.fieldValues);
-        this.handleEditModeRequestType(parsed_params);
+        this.handleEditOrCopyModeRequestType(parsed_params);
         this.userCheckboxValue = this.fieldValues.UserName__c ? true : false;
         this.isGetAll = this.fieldValues.Account__c === this.personAccount.Id ? true : false;
 

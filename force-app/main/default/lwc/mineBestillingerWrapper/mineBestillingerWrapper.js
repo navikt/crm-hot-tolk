@@ -12,6 +12,17 @@ import { refreshApex } from '@salesforce/apex';
 import { updateRecord } from 'lightning/uiRecordApi';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
+    breadcrumbs = [
+        {
+            label: 'Tolketjenesten',
+            href: ''
+        },
+        {
+            label: 'Mine Bestillinger',
+            href: 'mine-bestillinger'
+        }
+    ];
+
     @track filters = [];
     connectedCallback() {
         this.filters = defaultFilters();

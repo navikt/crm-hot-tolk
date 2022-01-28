@@ -32,6 +32,11 @@
     margin: 2rem 0;
 }
 
+.skjema-max-width {
+    width: 100%;
+    max-width: 1200px;
+}
+
 p {
     font-weight: bold;
 }
@@ -41,7 +46,6 @@ span {
 }
 
 .mainContent {
-    margin-top: 3.5rem;
     margin-bottom: 3.5rem;
 }
 
