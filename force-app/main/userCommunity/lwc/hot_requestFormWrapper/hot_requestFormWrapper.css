@@ -56,6 +56,10 @@
         margin-bottom: -2rem;
         margin-top: 0;
     }
+
+    .back-link {
+        padding-left: 1rem;
+    }
 }
 
 .skjema-max-width {
