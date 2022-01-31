@@ -1,5 +1,8 @@
 <template>
-    <div class="mainContent">
+    <div class="brodsmulesti">
+        <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
+    </div>
+    <main class="mainContent">
         <div if:true={isList} class="mine-bestillinger-wrapper">
             <div class="navigation-container">
                 <a class="back-link" href="/s/"
@@ -76,7 +79,6 @@
                     disabled={isRequestAddFilesButtonDisabled}
                 ></c-button>
             </div>
-            <br />
             <div class="record-details-container">
                 <c-table
                     records={workOrders}
@@ -160,7 +162,7 @@
                 ></c-button>
             </div>
         </div>
-    </div>
+    </main>
     <c-alertdialog
         header={modalHeader}
         content={modalContent}
