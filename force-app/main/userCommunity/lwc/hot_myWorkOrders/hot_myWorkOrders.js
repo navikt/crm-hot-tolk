@@ -14,7 +14,7 @@ import { formatRecord } from 'c/hot_recordDetails';
 export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) {
     @track columns = [
         {
-            label: 'Start tid',
+            label: 'Bestilt starttid',
             fieldName: 'StartDate',
             type: 'date',
             sortable: true,
@@ -29,7 +29,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
             initialWidth: 135
         },
         {
-            label: 'Slutt tid',
+            label: 'Bestilt sluttid',
             fieldName: 'EndDate',
             type: 'date',
             sortable: true,
