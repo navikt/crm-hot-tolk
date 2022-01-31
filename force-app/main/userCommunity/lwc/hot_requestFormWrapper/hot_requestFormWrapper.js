@@ -199,11 +199,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     @track previousPage = 'home';
     connectedCallback() {
-        console.log('connected');
         let parsed_params = getParametersFromURL();
         if (parsed_params != null) {
             if (parsed_params.fromList != null) {
-                console.log('fromlist');
                 this.previousPage = 'mine-bestillinger';
                 this.breadcrumbs[this.breadcrumbs.length - 1].label = 'Mine Bestillinger';
                 this.breadcrumbs[this.breadcrumbs.length - 1].href = 'mine-bestillinger';
@@ -217,9 +215,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
     handleEditOrCopyModeRequestType(parsed_params) {
-        console.log('handleEditOrCopyModeRequestType');
-        console.log(JSON.stringify(this.breadcrumbs));
-        console.log(this.breadcrumbs.length);
         if (parsed_params.edit != null) {
             this.breadcrumbs.push({ label: 'Rediger bestilling' });
         }

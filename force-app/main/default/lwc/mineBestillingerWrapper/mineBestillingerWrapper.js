@@ -173,7 +173,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     refresh() {
-        console.log('Refresh');
         this.getRecords();
         this.updateURL();
         this.updateView();
