@@ -1,0 +1,63 @@
+<template>
+    <div class="wrapper-contaner">
+        <div class="filter-container"></div>
+        <div class="list-container">
+            <lightning-datatable
+                key-field="Id"
+                data={shifts}
+                columns={columns}
+                default-sort-direction={defaultSortDirection}
+                sorted-direction={sortDirection}
+                sorted-by={sortedBy}
+                onsort={onHandleSort}
+                onrowaction={handleRowAction}
+                onrowselection={handleRowSelection}
+            >
+            </lightning-datatable>
+        </div>
+        <div if:true={isSelected} class="action-container">
+            <c-button button-label="Rediger" onbuttonclick={editShifts}></c-button>
+            <c-button
+                style="margin-left: 1rem"
+                button-styling="danger"
+                button-label="Slett"
+                onbuttonclick={deleteShifts}
+            ></c-button>
+        </div>
+        <div class="centered-content" if:true={showForm}>
+            <div class="overlay-content third-width">
+                <lightning-input
+                    name="StartTime"
+                    label="Ny starttid"
+                    type="time"
+                    value={record.StartTime}
+                ></lightning-input>
+                <lightning-input
+                    name="EndTime"
+                    label="Ny slutttid"
+                    type="time"
+                    value={record.EndTime}
+                ></lightning-input>
+                <lightning-input name="Label" label="Tittel" type="text" value={record.Label}></lightning-input>
+                <div class="button-container">
+                    <c-button onbuttonclick={handleSubmit} button-label="Lagre"></c-button>
+                    <c-button
+                        button-styling="secondary"
+                        style="margin-left: 1rem"
+                        onbuttonclick={reset}
+                        button-label="Avbryt"
+                    ></c-button>
+                </div>
+            </div>
+        </div>
+        <div class="centered-content" if:true={showPrompt}>
+            <div class="overlay-content centered-content">
+                <h3>Er du sikker på at du vil slette <span>{selectedShifts.length}</span> skift?</h3>
+                <div class="button-container">
+                    <c-button onbuttonclick={confirmDeleteShifts} button-label="Ja"></c-button>
+                    <c-button button-styling="secondary" onbuttonclick={reset} button-label="Avbryt"></c-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
