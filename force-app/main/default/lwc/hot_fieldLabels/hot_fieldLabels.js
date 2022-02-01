@@ -129,8 +129,8 @@ export let interestedResourceFieldLabels = {
 export let myServiceAppointmentFieldLabels = {
     AppointmentNumber: { label: 'Oppdragsnummer', type: 'string' },
     HOT_FreelanceSubject__c: { label: 'Tema', type: 'string' },
-    SchedStartTime: { label: 'Planlagt start', type: 'datetime' },
-    SchedEndTime: { label: 'Planlagt slutt', type: 'datetime' },
+    EarliestStartTime: { label: 'Bestilt starttid', type: 'datetime' },
+    DueDate: { label: 'Bestilt sluttid', type: 'datetime' },
     ActualStartTime: { label: 'Faktisk start', type: 'datetime' },
     ActualEndTime: { label: 'Faktsik slutt', type: 'datetime' },
     HOT_AddressFormated__c: { label: 'Adresse', type: 'string' },
@@ -145,8 +145,8 @@ export let myServiceAppointmentFieldLabels = {
 };
 
 export let workOrderFieldLabels = {
-    StartDate: { label: 'Bestilt starttid', type: 'datetime' },
-    EndDate: { label: 'Bestilt sluttid', type: 'datetime' },
+    StartDate: { label: 'Starttid', type: 'datetime' },
+    EndDate: { label: 'Sluttid', type: 'datetime' },
     Subject: { label: 'Tema', type: 'string' },
     HOT_RequestName__c: { label: 'Bestillingsnummer', type: 'string' },
     HOT_ExternalWorkOrderStatus__c: { label: 'Status', type: 'string' },
