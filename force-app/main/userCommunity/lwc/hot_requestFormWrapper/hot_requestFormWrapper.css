@@ -42,10 +42,23 @@
     position: relative;
 }
 
+.back-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-decoration: none;
+    padding-top: 2rem;
+    font-weight: bold;
+}
+
 @media (max-width: 576px) {
     .skjema-ikon {
         margin-bottom: -2rem;
         margin-top: 0;
+    }
+
+    .back-link {
+        padding-left: 1rem;
     }
 }
 
@@ -56,7 +69,6 @@
 
 div.skjema {
     margin-bottom: 3.5rem;
-    margin-top: -2rem;
     border-radius: 0.5rem;
     padding: 0 2rem;
     background-color: #fff;

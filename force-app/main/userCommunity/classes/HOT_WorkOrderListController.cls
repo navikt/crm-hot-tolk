@@ -94,7 +94,7 @@ public without sharing class HOT_WorkOrderListController {
                         toLabel(HOT_Request__r.UserInterpretationMethod__c),
                         HOT_Request__r.Company__r.Name
                     FROM WorkOrder
-                    WHERE HOT_Request__r.Account__c = :user.AccountId
+                    WHERE HOT_Request__r.Account__c = :user.AccountId AND Status != 'Annul'
                     ORDER BY StartDate
                 ]
             );

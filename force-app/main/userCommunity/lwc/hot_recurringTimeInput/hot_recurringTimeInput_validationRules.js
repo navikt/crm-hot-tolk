@@ -12,7 +12,7 @@ export function dateInPast(date) {
 export function startBeforeEnd(endDate, startDate) {
     startDate = new Date(startDate);
     endDate = new Date(endDate);
-    return startDate.getTime() >= endDate.getTime() ? 'Start tid må være før slutt tid.' : '';
+    return startDate.getTime() >= endDate.getTime() ? 'Starttid må være før sluttid.' : '';
 }
 
 export function requireRecurringDays(input) {
@@ -26,7 +26,7 @@ export function requireRecurringDays(input) {
 
 export function startDateBeforeRecurringEndDate(recurringEndDate, startDate) {
     return new Date(startDate).getTime() > new Date(recurringEndDate).getTime()
-        ? 'Slutt dato må være etter start dato'
+        ? 'Sluttdato må være etter startdato'
         : '';
 }
 export function restrictTheNumberOfDays(recurringEndDate, startDate) {
@@ -54,7 +54,7 @@ export function chosenDaysWithinPeriod(type, days, recurringEndDate, startDate) 
                 }
             }
         }
-        return 'Velg en slutt dato slik at valgt dag faller innenfor perioden mellom start dato og slutt dato';
+        return 'Velg en sluttdato slik at valgt dag faller innenfor perioden mellom startdato og sluttdato';
     }
     return '';
 }

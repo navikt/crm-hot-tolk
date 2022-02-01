@@ -43,7 +43,16 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         }
     }
     onMy() {
-        const columnLabels = ["'Start tid'", "'Slutt tid'", "'Poststed'", "'Tema'", "'Arbeidstype'", "''", "''", "''"];
+        const columnLabels = [
+            "'Bestilt starttid'",
+            "'Bestilt sluttid'",
+            "'Poststed'",
+            "'Tema'",
+            "'Arbeidstype'",
+            "''",
+            "''",
+            "''"
+        ];
         for (var i = 0; i < 10; i++) {
             if (i < columnLabels.length) {
                 document.documentElement.style.setProperty('--columnlabel_' + i.toString(), columnLabels[i]);

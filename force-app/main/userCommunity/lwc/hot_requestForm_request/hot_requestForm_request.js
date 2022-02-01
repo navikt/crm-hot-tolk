@@ -9,7 +9,7 @@ export default class Hot_requestForm_request extends LightningElement {
         InterpretationStreet__c: '',
         InterpretationPostalCode__c: '',
         InterpretationPostalCity__c: '',
-        UserDescription__c: '',
+        Description__c: '',
         IsFileConsent__c: false,
         Source__c: 'Community',
         IsOrdererWantStatusUpdateOnSMS__c: true,
@@ -125,7 +125,7 @@ export default class Hot_requestForm_request extends LightningElement {
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
-        this.fieldValues.UserDescription__c = this.template.querySelector('c-textarea').getValue();
+        this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
         this.setDependentFields();
     }
 
