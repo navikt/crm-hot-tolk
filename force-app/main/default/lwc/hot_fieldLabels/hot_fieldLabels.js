@@ -75,8 +75,8 @@ export let openServiceAppointmentFieldLabels = {
     HOT_WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
     HOT_AssignmentType__c: { label: 'Oppdragstype', type: 'string' },
     HOT_ServiceTerritoryName__c: { label: 'Region', type: 'string' },
-    EarliestStartTime: { label: 'Start tid', type: 'datetime' },
-    DueDate: { label: 'Slutt tid', type: 'datetime' },
+    EarliestStartTime: { label: 'Bestilt starttid', type: 'datetime' },
+    DueDate: { label: 'Bestilt sluttid', type: 'datetime' },
     HOT_AddressFormated__c: { label: 'Adresse', type: 'string' },
     HOT_FreelanceSubject__c: { label: 'Tema', type: 'string' },
     getSubFields: function (section) {
@@ -113,8 +113,8 @@ export let openServiceAppointmentFieldLabels = {
 
 export let interestedResourceFieldLabels = {
     AppointmentNumber__c: { label: 'Oppdrag', type: 'string' },
-    ServiceAppointmentStartTime__c: { label: 'Start tid', type: 'datetime' },
-    ServiceAppointmentEndTime__c: { label: 'Slutt tid', type: 'datetime' },
+    ServiceAppointmentStartTime__c: { label: 'Bestilt starttid', type: 'datetime' },
+    ServiceAppointmentEndTime__c: { label: 'Bestilt sluttid', type: 'datetime' },
     ServiceAppointmentAddress__c: { label: 'Adresse', type: 'string' },
     WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
     AssignmentType__c: { label: 'Oppdragstype', type: 'string' },
@@ -129,8 +129,8 @@ export let interestedResourceFieldLabels = {
 export let myServiceAppointmentFieldLabels = {
     AppointmentNumber: { label: 'Oppdragsnummer', type: 'string' },
     HOT_FreelanceSubject__c: { label: 'Tema', type: 'string' },
-    SchedStartTime: { label: 'Planlagt start', type: 'datetime' },
-    SchedEndTime: { label: 'Planlagt slutt', type: 'datetime' },
+    EarliestStartTime: { label: 'Bestilt starttid', type: 'datetime' },
+    DueDate: { label: 'Bestilt sluttid', type: 'datetime' },
     ActualStartTime: { label: 'Faktisk start', type: 'datetime' },
     ActualEndTime: { label: 'Faktsik slutt', type: 'datetime' },
     HOT_AddressFormated__c: { label: 'Adresse', type: 'string' },
@@ -145,8 +145,8 @@ export let myServiceAppointmentFieldLabels = {
 };
 
 export let workOrderFieldLabels = {
-    StartDate: { label: 'Start tid', type: 'datetime' },
-    EndDate: { label: 'Slutt tid', type: 'datetime' },
+    StartDate: { label: 'Starttid', type: 'datetime' },
+    EndDate: { label: 'Sluttid', type: 'datetime' },
     Subject: { label: 'Tema', type: 'string' },
     HOT_RequestName__c: { label: 'Bestillingsnummer', type: 'string' },
     HOT_ExternalWorkOrderStatus__c: { label: 'Status', type: 'string' },
