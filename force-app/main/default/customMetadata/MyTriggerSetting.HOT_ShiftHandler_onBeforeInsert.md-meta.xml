@@ -16,7 +16,7 @@
     </values>
     <values>
         <field>Description__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">Used to set defaultFieldValues</value>
     </values>
     <values>
         <field>Event__c</field>
