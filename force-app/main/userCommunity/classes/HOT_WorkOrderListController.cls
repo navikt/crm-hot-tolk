@@ -108,8 +108,7 @@ public without sharing class HOT_WorkOrderListController {
         for (WorkOrder wo : workOrders.values()) {
             if (wo.HOT_Request__r.Account__c == user.AccountId) {
                 workOrdersAccount.put(wo.Id, wo);
-            }
-            if (wo.HOT_Request__r.Orderer__c == user.AccountId) {
+            } else {
                 workOrdersOrderer.put(wo.Id, wo);
             }
         }
