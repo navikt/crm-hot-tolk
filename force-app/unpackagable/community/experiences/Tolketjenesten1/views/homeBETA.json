@@ -1,8 +1,8 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:dynamicLayout",
-  "id" : "4d22e0aa-f118-4729-9c3f-1ea08a14cd97",
-  "label" : "mine-oppdrag-default",
+  "id" : "f3f4780d-1177-42d7-aecb-f4e6897ad7f6",
+  "label" : "home BETA",
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
@@ -10,9 +10,9 @@
         "backgroundOverlay" : "rgba(0,0,0,0.5)",
         "contentAreaWidth" : 100,
         "sectionConfig" : {
-          "UUID" : "1537cb88-a2ab-4830-9110-d6816d4944dd",
+          "UUID" : "953025f4-2735-4846-9764-98505c684b39",
           "columns" : [ {
-            "UUID" : "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
+            "UUID" : "e749bd0c-81c2-4958-ad7c-2bf4dd8fa053",
             "columnKey" : "1",
             "columnName" : "Column 1",
             "columnWidth" : "12",
@@ -22,19 +22,17 @@
         "sectionHeight" : 300
       },
       "componentName" : "forceCommunity:section",
-      "id" : "1537cb88-a2ab-4830-9110-d6816d4944dd",
+      "id" : "953025f4-2735-4846-9764-98505c684b39",
       "regions" : [ {
         "components" : [ {
-          "componentAttributes" : {
-            "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" rel=\"noopener noreferrer\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" rel=\"noopener noreferrer\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
-          },
-          "componentName" : "forceCommunity:richTextInline",
-          "id" : "c34975a4-7c91-48e0-87f4-572619ad0cb8",
+          "componentAttributes" : { },
+          "componentName" : "c:hot_tolketjenestenHovedBanner",
+          "id" : "709de3b2-c94c-479d-a8b7-cdecaec0313e",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         } ],
-        "id" : "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
+        "id" : "e749bd0c-81c2-4958-ad7c-2bf4dd8fa053",
         "regionLabel" : "Column 1",
         "regionName" : "1",
         "renditionMap" : { },
@@ -44,7 +42,7 @@
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "9c3a179c-01b7-409e-9add-b7bdfb151350",
+    "id" : "3e5f21e5-c538-4d52-a41d-fbbc711c65b3",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -52,18 +50,18 @@
       "componentAttributes" : {
         "customHeadTags" : "",
         "description" : "",
-        "title" : "Mine oppdrag"
+        "title" : "Tolketjenesten"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "a26ac4bd-7c1c-47f1-ba95-8c069a2a1bdd",
+      "id" : "545d7042-4c5f-45f6-b746-b75319dc4da3",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "bf3767b9-f42c-4af3-a4ab-11c894f5b6ac",
+    "id" : "2e8a972e-d459-431e-a6eb-b28e15e55035",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],
   "themeLayoutType" : "Inner",
   "type" : "view",
-  "viewType" : "custom-mine-oppdrag"
+  "viewType" : "home"
 }
