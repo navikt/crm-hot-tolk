@@ -12,7 +12,7 @@ import { refreshApex } from '@salesforce/apex';
 import { updateRecord } from 'lightning/uiRecordApi';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
-    @api header = 'Mine Bestillinger';
+    @api header;
     breadcrumbs = [
         {
             label: 'Tolketjenesten',
@@ -24,6 +24,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
     ];
 
+    isAccountOrOrderer = false;
     @track filters = [];
     connectedCallback() {
         this.filters = defaultFilters();
@@ -34,6 +35,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.columns = mobileColumns;
             this.workOrderColumns = workOrderMobileColumns;
         }
+        this.isAccountOrOrderer = this.header === 'Mine Bestillinger';
         this.refresh();
     }
     isList = true;
@@ -47,7 +49,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track records = [];
     @track allRecords = [];
     wiredMyWorkOrdersNewResult;
-    @wire(getMyWorkOrdersAndRelatedRequest)
+    @wire(getMyWorkOrdersAndRelatedRequest, { isAccountOrOrderer: '$isAccountOrOrderer' })
     wiredMyWorkOrdersNew(result) {
         this.wiredMyWorkOrdersNewResult = result;
         if (result.data) {
