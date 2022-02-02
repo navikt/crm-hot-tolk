@@ -210,7 +210,7 @@
         <name>Error_Screen</name>
         <label>Feilmelding</label>
         <locationX>50</locationX>
-        <locationY>638</locationY>
+        <locationY>637</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
