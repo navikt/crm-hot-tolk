@@ -27,7 +27,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
         this.pageLinks = {
             newRequest: baseURL + '/ny-bestilling',
             myRequests: baseURL + '/mine-bestillinger',
-            myRequestsOther: baseURL + '/mine-bestillinger-andre',
+            mySchedule: baseURL + '/min-tidsplan',
             myPage: baseURL + '/min-side',
             myServiceAppointments: baseURL + '/mine-oppdrag',
             freelanceMyPage: baseURL + '/frilanstolk-min-side'
