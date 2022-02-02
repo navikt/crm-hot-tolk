@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>CreateWorkOrderService</name>
@@ -10,6 +10,7 @@
         <connector>
             <targetReference>Error_Decision</targetReference>
         </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>endDate</name>
             <value>
@@ -87,6 +88,7 @@
             <name>output</name>
         </outputParameters>
     </actionCalls>
+    <apiVersion>49.0</apiVersion>
     <choices>
         <name>Aldri</name>
         <choiceText>Aldri</choiceText>
@@ -189,6 +191,7 @@
         <connector>
             <targetReference>Start_Screen</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
@@ -213,8 +216,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Text</name>
-            <fieldText
-            >&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!Error}&lt;/i&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!Error}&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;Klikk tilbake, og se om noe er skrevet inn feil.&lt;/i&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
