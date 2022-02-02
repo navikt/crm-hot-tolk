@@ -4,8 +4,9 @@ import getShifts from '@salesforce/apex/HOT_UpdateShiftsController.getShifts';
 import updateRecords from '@salesforce/apex/HOT_UpdateShiftsController.updateRecords';
 import deleteRecords from '@salesforce/apex/HOT_UpdateShiftsController.deleteRecords';
 import { refreshApex } from '@salesforce/apex';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class UpdateShifts extends LightningElement {
+export default class UpdateShifts extends NavigationMixin(LightningElement) {
     @track columns = [
         {
             label: 'Skift',
@@ -83,16 +84,21 @@ export default class UpdateShifts extends LightningElement {
         }
     }
     dateTimeToTimeString(dateTime) {
-        console.log(dateTime);
         let hours = dateTime.getHours();
         return (hours < 10 ? '0' + hours.toString() : hours.toString()) + ':00';
     }
     filterShifts() {}
 
+    thisSelected = false;
     @track selectedShifts;
     handleRowSelection(event) {
         this.selectedShifts = event.detail.selectedRows;
         this.isSelected = this.selectedShifts.length > 0;
+        for (let row of this.selectedShifts) {
+            if (row.Id === this.recordId) {
+                this.thisSelected = true;
+            }
+        }
     }
 
     isSelected = false;
@@ -106,8 +112,18 @@ export default class UpdateShifts extends LightningElement {
     }
     confirmDeleteShifts() {
         deleteRecords({ records: this.selectedShifts }).then(() => {
-            refreshApex(this.wiredResult);
-            this.reset();
+            if (this.thisSelected) {
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__objectPage',
+                    attributes: {
+                        objectApiName: 'Shift',
+                        actionName: 'home'
+                    }
+                });
+            } else {
+                refreshApex(this.wiredResult);
+                this.reset();
+            }
         });
     }
     handleSubmit() {
