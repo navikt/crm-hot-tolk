@@ -1,6 +1,6 @@
 export let filterArray = [
     {
-        name: 'Status',
+        name: 'HOT_ExternalWorkOrderStatus__c',
         label: 'Status',
         isCheckboxgroup: true,
         compare: equals,
@@ -10,27 +10,27 @@ export let filterArray = [
                 label: ''
             },
             {
-                name: 'New',
-                label: 'Ikke påbegynt'
+                name: 'Åpen',
+                label: 'Åpen'
             },
             {
-                name: 'Canceled',
+                name: 'Under behandling',
+                label: 'Under behandling'
+            },
+            {
+                name: 'Avlyst',
                 label: 'Avlyst'
             },
             {
-                name: 'Dispatched',
+                name: 'Du har fått tolk',
                 label: 'Du har fått tolk'
-            },
-            {
-                name: 'In Progress',
-                label: 'Pågår'
             },
             {
                 name: 'Cannot Complete',
                 label: 'Ikke ledig tolk'
             },
             {
-                name: 'Completed',
+                name: 'Ferdig',
                 label: 'Ferdig'
             }
         ]

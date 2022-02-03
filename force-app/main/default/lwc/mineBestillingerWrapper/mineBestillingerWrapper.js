@@ -161,6 +161,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goBack() {
+        console.log('goback');
         let currentLevel = this.urlStateParameters.level;
         let goThroughRequest = this.workOrder.HOT_Request__r.IsSerieoppdrag__c;
         if (currentLevel === 'WO' && goThroughRequest) {
@@ -193,8 +194,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     updateURL() {
         let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
         if (this.urlStateParameters.id !== undefined && this.urlStateParameters.level !== undefined) {
+            console.log('setting refresh');
             refresh += '?id=' + this.urlStateParameters.id + '&level=' + this.urlStateParameters.level;
         }
+        console.log('refresh URL: ', refresh);
         window.history.pushState({ path: refresh }, '', refresh);
     }
     applyFilter(event) {
@@ -405,5 +408,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     showModal() {
         this.template.querySelector('c-alertdialog').showModal();
+    }
+
+    deleteMarkedFiles() {
+        this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
     }
 }
