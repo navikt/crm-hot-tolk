@@ -115,7 +115,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isWOAddFilesButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c !== 'Avlyst' ? false : true;
     }
 
+    @track workOrdersToShow = [];
     getWorkOrders() {
+        console.log('getWorkOrders');
         let workOrders = [];
         for (let record of this.records) {
             if (record.HOT_Request__c === this.request.Id) {
@@ -123,6 +125,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             }
         }
         this.workOrders = workOrders;
+        this.workOrdersToShow = this.workOrders;
     }
 
     goToRecordDetails(result) {
@@ -177,7 +180,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.getRecords();
         this.updateURL();
         this.updateView();
-        this.applyFilter({ detail: this.filters });
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
     updateView() {
@@ -200,10 +203,18 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         console.log('refresh URL: ', refresh);
         window.history.pushState({ path: refresh }, '', refresh);
     }
+
+    filteredRecordsLength = 0;
     applyFilter(event) {
-        this.filters = event.detail;
+        let setRecords = event.detail.setRecords;
+        this.filters = event.detail.filterArray;
         let filteredRecords = [];
-        for (let record of this.allRecords) {
+        console.log(this.allRecords.length);
+        console.log(this.records.length);
+        console.log(this.workOrdersToShow.length);
+        console.log(this.workOrders.length);
+        let records = this.isRequestDetails ? this.workOrders : this.allRecords;
+        for (let record of records) {
             let includeRecord = true;
             for (let filter of this.filters) {
                 includeRecord *= filter.compare(record);
@@ -212,7 +223,21 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 filteredRecords.push(record);
             }
         }
-        this.records = filteredRecords;
+        this.filteredRecordsLength = filteredRecords.length;
+
+        if (setRecords) {
+            if (this.isRequestDetails) {
+                this.workOrdersToShow = filteredRecords;
+            } else {
+                this.records = filteredRecords;
+            }
+        }
+        console.log('filteredRecordsLength: ', this.filteredRecordsLength);
+    }
+
+    sendFilteredRecordsLength(event) {
+        this.applyFilter(event);
+        this.template.querySelector('c-list-filters-button').setFilteredRecordsLength(this.filteredRecordsLength);
     }
 
     @track userRecord = { AccountId: null };
