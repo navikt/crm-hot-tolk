@@ -92,6 +92,7 @@ export default class UpdateShifts extends NavigationMixin(LightningElement) {
     thisSelected = false;
     @track selectedShifts;
     handleRowSelection(event) {
+        this.thisSelected = false;
         this.selectedShifts = event.detail.selectedRows;
         this.isSelected = this.selectedShifts.length > 0;
         for (let row of this.selectedShifts) {
