@@ -1,0 +1,26 @@
+.wrapper-contaner {
+    padding: 1rem;
+}
+.action-container {
+    width: 100%;
+    display: flex;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+.overlay-content {
+    width: 100%;
+    padding: 2rem;
+    background-color: white;
+}
+.centered-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.third-width {
+    width: 40%;
+}
+.button-container {
+    margin-top: 1rem;
+}
