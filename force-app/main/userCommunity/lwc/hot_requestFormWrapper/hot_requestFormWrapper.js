@@ -43,11 +43,16 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.setCurrentForm();
     }
 
+    deleteMarkedFiles() {
+        this.template.querySelector('c-hot_request-form_request').deleteMarkedFiles();
+    }
+
     async handleSubmit(event) {
         event.preventDefault();
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
+        this.deleteMarkedFiles();
         let hasErrors = this.handleValidation();
         if (!hasErrors) {
             this.promptOverlap().then((overlapOk) => {
