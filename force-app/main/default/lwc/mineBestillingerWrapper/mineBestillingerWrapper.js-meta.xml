@@ -6,5 +6,12 @@
     <masterLabel>Mine Bestillinger Wrapper</masterLabel>
     <targets>
         <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
     </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="header" type="String" label="Header" default="Mine Bestillinger" />
+            <property name="isAccount" type="Boolean" label="User is Account?" default="false" />
+        </targetConfig>
+    </targetConfigs>
 </LightningComponentBundle>
