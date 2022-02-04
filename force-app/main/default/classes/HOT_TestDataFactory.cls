@@ -263,4 +263,11 @@ public class HOT_TestDataFactory {
         contentDocumentLink.visibility = 'AllUsers';
         return contentDocumentLink;
     }
+    public static Shift createShift(Id serviceResourceId) {
+        Shift shift = new Shift();
+        shift.ServiceResourceId = serviceResourceId;
+        shift.StartTime = Datetime.now().addDays(1);
+        shift.EndTime = Datetime.now().addDays(1).addHours(1);
+        return shift;
+    }
 }

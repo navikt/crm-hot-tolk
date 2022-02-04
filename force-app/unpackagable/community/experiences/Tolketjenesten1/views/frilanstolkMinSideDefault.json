@@ -1,8 +1,8 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:dynamicLayout",
-  "id" : "4d22e0aa-f118-4729-9c3f-1ea08a14cd97",
-  "label" : "mine-oppdrag-default",
+  "id" : "74937890-fe61-4b93-9a10-012b3a83c2af",
+  "label" : "frilanstolk min side default",
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
@@ -10,9 +10,9 @@
         "backgroundOverlay" : "rgba(0,0,0,0.5)",
         "contentAreaWidth" : 100,
         "sectionConfig" : {
-          "UUID" : "1537cb88-a2ab-4830-9110-d6816d4944dd",
+          "UUID" : "0750eab4-3352-48ac-928f-d441590e979a",
           "columns" : [ {
-            "UUID" : "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
+            "UUID" : "79be3bce-1615-482e-83bb-8cabb0392aad",
             "columnKey" : "1",
             "columnName" : "Column 1",
             "columnWidth" : "12",
@@ -22,19 +22,19 @@
         "sectionHeight" : 300
       },
       "componentName" : "forceCommunity:section",
-      "id" : "1537cb88-a2ab-4830-9110-d6816d4944dd",
+      "id" : "0750eab4-3352-48ac-928f-d441590e979a",
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : {
             "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" rel=\"noopener noreferrer\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" rel=\"noopener noreferrer\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
           },
           "componentName" : "forceCommunity:richTextInline",
-          "id" : "c34975a4-7c91-48e0-87f4-572619ad0cb8",
+          "id" : "85fd6f44-0415-4bd2-b210-73e2751c7bf0",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         } ],
-        "id" : "281eb2b8-cff2-4c6b-aa18-ec46d70ea2cd",
+        "id" : "79be3bce-1615-482e-83bb-8cabb0392aad",
         "regionLabel" : "Column 1",
         "regionName" : "1",
         "renditionMap" : { },
@@ -44,7 +44,7 @@
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "9c3a179c-01b7-409e-9add-b7bdfb151350",
+    "id" : "8a5d599a-6ac0-4522-b6fc-97c23490df91",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -52,18 +52,18 @@
       "componentAttributes" : {
         "customHeadTags" : "",
         "description" : "",
-        "title" : "Mine oppdrag"
+        "title" : "Frilanstolk min side"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "a26ac4bd-7c1c-47f1-ba95-8c069a2a1bdd",
+      "id" : "57622e07-5bc8-407c-9e40-2b25f0e0fcf5",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "bf3767b9-f42c-4af3-a4ab-11c894f5b6ac",
+    "id" : "eeccd73d-e22b-4b5f-b387-910380224d54",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],
   "themeLayoutType" : "Inner",
   "type" : "view",
-  "viewType" : "custom-mine-oppdrag"
+  "viewType" : "custom-frilanstolk-min-side"
 }
