@@ -26,21 +26,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track filters = [];
     connectedCallback() {
         this.filters = defaultFilters();
-        if (window.screen.width > 576) {
-            this.columns = columns;
-            this.workOrderColumns = workOrderColumns;
-        } else {
-            this.columns = mobileColumns;
-            this.workOrderColumns = workOrderMobileColumns;
-        }
+        this.setColumns();
         this.refresh();
     }
-    isList = true;
     isRequestDetails = false;
     isWorkOrderDetails = false;
+    isRequestOrWorkOrderDetails = false;
     @track urlStateParameters = { level: '', id: '' };
     @track columns;
-    @track workOrderColumns;
     @track iconByValue = iconByValue;
 
     @track records = [];
@@ -62,7 +55,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.refresh();
         }
     }
-
     @track request = { MeetingStreet__c: '', Subject__c: '' };
     @track workOrder = { HOT_AddressFormated__c: '', Subject: '' };
     @track workOrders = [];
@@ -120,6 +112,23 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isWOEditButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Åpen' ? false : true;
         this.isWOCancelButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst' ? true : false;
         this.isWOAddFilesButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c !== 'Avlyst' ? false : true;
+    }
+
+    header = 'Mine Bestillinger';
+    setHeader() {
+        this.header =
+            this.urlStateParameters.level === 'R' ? 'Serie: ' + this.request.Subject__c : this.workOrder.Subject;
+        if (this.urlStateParameters.id === undefined) {
+            this.header = 'Mine Bestillinger';
+        }
+    }
+
+    setColumns() {
+        if (window.screen.width > 576) {
+            this.columns = this.urlStateParameters.level === 'R' ? workOrderColumns : columns;
+        } else {
+            this.columns = this.urlStateParameters.level === 'R' ? workOrderMobileColumns : mobileColumns;
+        }
     }
 
     getWorkOrders() {
@@ -189,9 +198,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     updateView() {
-        this.isList = this.urlStateParameters.id === undefined;
+        this.setHeader();
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
+        this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
         this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId ? true : false;
         this.setButtonLabels(this.urlStateParameters.level);

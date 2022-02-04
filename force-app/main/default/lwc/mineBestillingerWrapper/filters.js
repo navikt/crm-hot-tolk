@@ -97,14 +97,9 @@ export function defaultFilters() {
 
 function equals(record) {
     let toInclude = true;
-    console.log('this: ', JSON.stringify(this));
-    console.log('this.value: ', JSON.stringify(this.value));
     for (let val of this.value) {
         if (val.value) {
-            console.log('record[this.name]: ', record[this.name]);
-            console.log('val.name: ', val.name);
             if (record[this.name] === val.name) {
-                console.log('its a match');
                 return true;
             }
             toInclude = false;

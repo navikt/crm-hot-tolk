@@ -3,47 +3,25 @@
         <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
     </div>
     <main class="mainContent">
-        <div if:true={isList} class="mine-bestillinger-wrapper">
-            <div class="navigation-container">
-                <a class="back-link" href="/s/"
-                    ><c-icon icon="Back"></c-icon>
-                    <p style="margin-left: 0.25rem">Tilbake</p></a
-                >
-                <h2 class="header">Mine bestillinger</h2>
-                <div class="header-buttons">
-                    <c-button
-                        button-label="Ny bestilling"
-                        button-styling="primary"
-                        style="padding-right: 1vw; padding-bottom: 1vw"
-                        desktop-style="width: 8rem; justify-content: center"
-                        mobile-style="width: 8rem; justify-content: center"
-                        onbuttonclick={newRequest}
-                    ></c-button>
-                    <c-list-filters-button
-                        header="Filtrer søket"
-                        filters={filters}
-                        onapplyfilter={applyFilter}
-                        ongetfilteredrecordslength={sendFilteredRecordsLength}
-                    ></c-list-filters-button>
-                </div>
-            </div>
-            <br />
-            <c-table
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                icon-by-value={iconByValue}
-            ></c-table>
-        </div>
-        <div if:true={isRequestDetails} class="mine-bestillinger-wrapper">
+        <div class="mine-bestillinger-wrapper">
             <div class="navigation-container">
                 <a class="back-link" onclick={goBack}
                     ><c-icon icon="Back"></c-icon>
                     <p style="margin-left: 0.25rem">Tilbake</p></a
                 >
-                <h2 class="header">Serie: <span>{request.Subject__c}</span></h2>
+                <h2 class="header">{header}</h2>
                 <div class="header-buttons">
+                    <c-button
+                        if:false={urlStateParameters.id}
+                        button-label="Ny bestilling"
+                        button-styling="primary"
+                        class="button-padding"
+                        desktop-style="width: 8rem; justify-content: center"
+                        mobile-style="width: 8rem; justify-content: center"
+                        onbuttonclick={newRequest}
+                    ></c-button>
                     <c-list-filters-button
+                        if:false={isWorkOrderDetails}
                         header="Filtrer søket"
                         filters={filters}
                         onapplyfilter={applyFilter}
@@ -51,14 +29,40 @@
                     ></c-list-filters-button>
                 </div>
             </div>
-            <div class="record-details-container">
-                <p>Gjelder fra: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
-                <p>Adresse: <span>{requestAddressToShow}</span></p>
-                <br />
-                <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
+            <div if:true={isRequestDetails}>
+                <div class="record-details-container">
+                    <p>Gjelder fra: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
+                    <p>Adresse: <span>{requestAddressToShow}</span></p>
+                    <br />
+                    <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
+                </div>
             </div>
-            <br />
-            <div class="buttonRow">
+            <div if:true={isWorkOrderDetails}>
+                <div class="record-details-container">
+                    <p>Fra dato: <span>{workOrderStartDate}</span></p>
+                    <p>Til dato: <span>{workOrderEndDate}</span></p>
+                    <br />
+                    <p>Adresse: <span>{workOrder.HOT_AddressFormated__c}</span></p>
+                    <br />
+                    <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
+                    <br />
+                    <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
+                    <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
+                    <br if:true={workOrder.HOT_Interpreters__c} />
+                    <p if:true={workOrder.HOT_Interpreters__c}>
+                        {interpreter}: <span>{workOrder.HOT_Interpreters__c}</span>
+                    </p>
+                </div>
+                <c-record-files-with-sharing
+                    record-id={request.Id}
+                    is-get-all={isGetAllFiles}
+                    is-delete-option="true"
+                    title="Tidligere opplastede vedlegg"
+                    delete-file-on-button-click="true"
+                ></c-record-files-with-sharing>
+                <br />
+            </div>
+            <div class="buttonRow" if:true={isRequestOrWorkOrderDetails}>
                 <c-button
                     button-label={editButtonLabel}
                     button-styling="primary"
@@ -97,88 +101,12 @@
             </div>
             <div class="record-details-container">
                 <c-table
+                    if:false={isWorkOrderDetails}
                     records={records}
-                    columns={workOrderColumns}
+                    columns={columns}
                     onrowclick={goToRecordDetails}
                     icon-by-value={iconByValue}
                 ></c-table>
-            </div>
-        </div>
-        <div if:true={isWorkOrderDetails} class="mine-bestillinger-wrapper">
-            <div class="navigation-container">
-                <a class="back-link" onclick={goBack}
-                    ><c-icon icon="Back"></c-icon>
-                    <p style="margin-left: 0.25rem">Tilbake</p></a
-                >
-                <h2 class="header" style="flex: unset">{workOrder.Subject}</h2>
-                <c-list-filters-button
-                    style="visibility: hidden"
-                    aria-hidden="true"
-                    header="Filtrer søket"
-                    filters={filters}
-                    onapplyfilter={applyFilter}
-                    ongetfilteredrecordslength={sendFilteredRecordsLength}
-                ></c-list-filters-button>
-            </div>
-            <div class="record-details-container">
-                <p>Fra dato: <span>{workOrderStartDate}</span></p>
-                <p>Til dato: <span>{workOrderEndDate}</span></p>
-                <br />
-                <p>Adresse: <span>{workOrder.HOT_AddressFormated__c}</span></p>
-                <br />
-                <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
-                <br />
-                <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
-                <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
-                <br if:true={workOrder.HOT_Interpreters__c} />
-                <p if:true={workOrder.HOT_Interpreters__c}>
-                    {interpreter}: <span>{workOrder.HOT_Interpreters__c}</span>
-                </p>
-            </div>
-            <c-record-files-with-sharing
-                record-id={request.Id}
-                is-get-all={isGetAllFiles}
-                is-delete-option="true"
-                title="Tidligere opplastede vedlegg"
-                delete-file-on-button-click="true"
-            ></c-record-files-with-sharing>
-            <br />
-            <div class="buttonRow">
-                <c-button
-                    button-label={editButtonLabel}
-                    button-styling="primary"
-                    style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
-                    onbuttonclick={editOrder}
-                    disabled={isWOEditButtonDisabled}
-                ></c-button>
-                <c-button
-                    button-label={copyButtonLabel}
-                    button-styling="secondary"
-                    style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
-                    onbuttonclick={cloneOrder}
-                ></c-button>
-                <c-button
-                    button-label={cancelButtonLabel}
-                    button-styling="secondary"
-                    style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
-                    onbuttonclick={cancelOrder}
-                    disabled={isWOCancelButtonDisabled}
-                ></c-button>
-                <c-button
-                    button-label="Legg til filer"
-                    button-styling="primary"
-                    style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
-                    onbuttonclick={addFiles}
-                    disabled={isWOAddFilesButtonDisabled}
-                ></c-button>
             </div>
         </div>
     </main>
@@ -193,7 +121,6 @@
         disabled={buttonDisabled}
     >
     </c-alertdialog>
-
     <div
         class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
         style="z-index: 9999; background-color: rgba(38, 38, 38, 0.7)"

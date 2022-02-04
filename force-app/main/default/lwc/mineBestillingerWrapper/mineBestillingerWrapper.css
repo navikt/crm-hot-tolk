@@ -98,6 +98,10 @@ span {
     margin-right: auto;
 }
 
+.button-padding {
+    padding-right: 1vw;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -116,5 +120,9 @@ span {
     }
     .header-buttons {
         flex-direction: column;
+    }
+    .button-padding {
+        padding-bottom: 1vw;
+        padding-right: unset;
     }
 }
