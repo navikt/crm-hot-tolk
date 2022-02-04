@@ -335,6 +335,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     cancelAndRefreshApex() {
+        this.template.querySelector('.ReactModal__Overlay').classList.remove('hidden');
+        this.template.querySelector('.loader').classList.remove('hidden');
         const fields = {};
         fields[REQUEST_ID.fieldApiName] = this.request.Id;
         fields[STATUS.fieldApiName] = 'Avlyst';
@@ -343,11 +345,15 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         updateRecord(recordInput)
             .then(() => {
                 refreshApex(this.allRecords);
+                this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                this.template.querySelector('.loader').classList.add('hidden');
                 this.modalContent = 'Bestillingen er avlyst.';
                 this.noCancelButton = true;
                 this.showModal();
             })
             .catch(() => {
+                this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                this.template.querySelector('.loader').classList.add('hidden');
                 this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
                 this.showModal();
             });
@@ -448,7 +454,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         if (event.detail === 'confirm' && this.modalContent === 'Er du sikker på at du vil avlyse bestillingen?') {
             this.cancelAndRefreshApex();
         }
-        if (event.detail === 'confirm' && this.modalContent === 'Bestillingen ble avlyst.') {
+        if (event.detail === 'confirm' && this.modalContent === 'Bestillingen er avlyst.') {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
                 attributes: {
