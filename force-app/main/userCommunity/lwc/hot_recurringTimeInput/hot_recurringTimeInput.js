@@ -171,22 +171,21 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
 
     chosenDays = [];
-    get days() {
-        return [
-            { label: 'Mandag', value: 'monday' },
-            { label: 'Tirsdag', value: 'tuesday' },
-            { label: 'Onsdag', value: 'wednesday' },
-            { label: 'Torsdag', value: 'thursday' },
-            { label: 'Fredag', value: 'friday' },
-            { label: 'Lørdag', value: 'saturday' },
-            { label: 'Søndag', value: 'sunday' }
-        ];
-    }
+    days = [
+        { label: 'Mandag', value: false, name: 'monday' },
+        { label: 'Tirsdag', value: false, name: 'tuesday' },
+        { label: 'Onsdag', value: false, name: 'wednesday' },
+        { label: 'Torsdag', value: false, name: 'thursday' },
+        { label: 'Fredag', value: false, name: 'friday' },
+        { label: 'Lørdag', value: false, name: 'saturday' },
+        { label: 'Søndag', value: false, name: 'sunday' }
+    ];
+
     handleDayChosen(event) {
         this.chosenDays = [];
         event.detail.forEach((element) => {
             if (element.checked) {
-                this.chosenDays.push(element.value);
+                this.chosenDays.push(element.name);
             }
         });
     }
