@@ -64,7 +64,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     getRecords() {
         this.resetRequestAndWorkOrder();
         let recordId = this.urlStateParameters.id;
-        console.log('recordId: ', recordId);
         for (let record of this.records) {
             if (recordId === record.Id) {
                 this.workOrder = record;
@@ -116,15 +115,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isWOAddFilesButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c !== 'Avlyst' ? false : true;
     }
 
-    header = 'Mine Bestillinger';
+    headerToShow = '';
     setHeader() {
-        this.header =
+        this.headerToShow =
             this.urlStateParameters.level === 'R' ? 'Serie: ' + this.request.Subject__c : this.workOrder.Subject;
         if (this.urlStateParameters.id === undefined) {
-            this.header = 'Mine Bestillinger';
+            this.headerToShow = this.header;
         }
     }
-
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = this.urlStateParameters.level === 'R' ? workOrderColumns : columns;
@@ -134,7 +132,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     getWorkOrders() {
-        console.log('getWorkOrders');
         let workOrders = [];
         for (let record of this.records) {
             if (record.HOT_Request__c === this.request.Id) {
@@ -214,10 +211,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     updateURL() {
         let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
         if (this.urlStateParameters.id !== undefined && this.urlStateParameters.level !== undefined) {
-            console.log('setting refresh');
             refresh += '?id=' + this.urlStateParameters.id + '&level=' + this.urlStateParameters.level;
         }
-        console.log('refresh URL: ', refresh);
         window.history.pushState({ path: refresh }, '', refresh);
     }
 
@@ -227,12 +222,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.filters = event.detail.filterArray;
 
         let filteredRecords = [];
-        console.log(this.allRecords.length);
-        console.log(this.workOrders.length);
-        console.log(this.request.Id);
         let records = this.isRequestDetails ? this.workOrders : this.allRecords;
-        console.log(records.length);
-        console.log('applyFilter this.filters: ', JSON.stringify(this.filters));
         for (let record of records) {
             let includeRecord = true;
             for (let filter of this.filters) {
@@ -245,10 +235,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.filteredRecordsLength = filteredRecords.length;
 
         if (setRecords) {
-            console.log('setRecords: ', setRecords);
             this.records = filteredRecords;
         }
-        console.log('filteredRecordsLength: ', this.filteredRecordsLength);
     }
 
     sendFilteredRecordsLength(event) {
