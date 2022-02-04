@@ -34,7 +34,7 @@ public without sharing class HOT_WorkOrderListController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<WorkOrder> getMyWorkOrdersAndRelatedRequest(Boolean isAccountOrOrderer) {
+    public static List<WorkOrder> getMyWorkOrdersAndRelatedRequest(Boolean isAccount) {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>();
         Id userId = UserInfo.getUserId();
         User user = [SELECT Id, AccountId, Name FROM User WHERE Id = :userId];

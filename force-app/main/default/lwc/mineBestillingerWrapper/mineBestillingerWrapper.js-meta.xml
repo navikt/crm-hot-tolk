@@ -11,6 +11,7 @@
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
             <property name="header" type="String" label="Header" default="Mine Bestillinger" />
+            <property name="isAccount" type="Boolean" label="User is Account?" default="false" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
