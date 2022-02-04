@@ -112,7 +112,7 @@ public without sharing class HOT_WorkOrderListController {
                 workOrdersOrderer.put(wo.Id, wo);
             }
         }
-        workOrders = isAccountOrOrderer ? workOrdersAccount : workOrdersOrderer;
+        workOrders = isAccount ? workOrdersAccount : workOrdersOrderer;
         workOrders = getAndSetInterpreters(workOrders);
         return workOrders.values();
     }
