@@ -68,7 +68,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track workOrders = [];
     interpreter = 'Tolk';
     getRecords() {
+        this.resetRequestAndWorkOrder();
         let recordId = this.urlStateParameters.id;
+        console.log('recordId: ', recordId);
         for (let record of this.records) {
             if (recordId === record.Id) {
                 this.workOrder = record;
@@ -78,6 +80,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         if (this.request.Id !== undefined) {
             this.getWorkOrders();
         }
+    }
+
+    resetRequestAndWorkOrder() {
+        this.request = { MeetingStreet__c: '', Subject__c: '' };
+        this.workOrder = { HOT_AddressFormated__c: '', Subject: '' };
     }
 
     workOrderStartDate = '';
@@ -115,7 +122,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isWOAddFilesButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c !== 'Avlyst' ? false : true;
     }
 
-    @track workOrdersToShow = [];
     getWorkOrders() {
         console.log('getWorkOrders');
         let workOrders = [];
@@ -125,7 +131,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             }
         }
         this.workOrders = workOrders;
-        this.workOrdersToShow = this.workOrders;
     }
 
     goToRecordDetails(result) {
@@ -208,12 +213,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
+
         let filteredRecords = [];
         console.log(this.allRecords.length);
-        console.log(this.records.length);
-        console.log(this.workOrdersToShow.length);
         console.log(this.workOrders.length);
+        console.log(this.request.Id);
         let records = this.isRequestDetails ? this.workOrders : this.allRecords;
+        console.log(records.length);
+        console.log('applyFilter this.filters: ', JSON.stringify(this.filters));
         for (let record of records) {
             let includeRecord = true;
             for (let filter of this.filters) {
@@ -226,11 +233,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.filteredRecordsLength = filteredRecords.length;
 
         if (setRecords) {
-            if (this.isRequestDetails) {
-                this.workOrdersToShow = filteredRecords;
-            } else {
-                this.records = filteredRecords;
-            }
+            console.log('setRecords: ', setRecords);
+            this.records = filteredRecords;
         }
         console.log('filteredRecordsLength: ', this.filteredRecordsLength);
     }
@@ -305,6 +309,19 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.modalContent = 'Du kan ikke avlyse denne bestillingen.';
             this.showModal();
         }
+    }
+
+    newRequest() {
+        this.isNavigatingAway = true;
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'ny-bestilling'
+            },
+            state: {
+                fromList: true
+            }
+        });
     }
 
     cancelAndRefreshApex() {

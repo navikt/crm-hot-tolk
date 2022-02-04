@@ -10,12 +10,22 @@
                     <p style="margin-left: 0.25rem">Tilbake</p></a
                 >
                 <h2 class="header">Mine bestillinger</h2>
-                <c-list-filters-button
-                    header="Filtrer søket"
-                    filters={filters}
-                    onapplyfilter={applyFilter}
-                    ongetfilteredrecordslength={sendFilteredRecordsLength}
-                ></c-list-filters-button>
+                <div class="header-buttons">
+                    <c-button
+                        button-label="Ny bestilling"
+                        button-styling="primary"
+                        style="padding-right: 1vw; padding-bottom: 1vw"
+                        desktop-style="width: 8rem; justify-content: center"
+                        mobile-style="width: 8rem; justify-content: center"
+                        onbuttonclick={newRequest}
+                    ></c-button>
+                    <c-list-filters-button
+                        header="Filtrer søket"
+                        filters={filters}
+                        onapplyfilter={applyFilter}
+                        ongetfilteredrecordslength={sendFilteredRecordsLength}
+                    ></c-list-filters-button>
+                </div>
             </div>
             <br />
             <c-table
@@ -32,12 +42,14 @@
                     <p style="margin-left: 0.25rem">Tilbake</p></a
                 >
                 <h2 class="header">Serie: <span>{request.Subject__c}</span></h2>
-                <c-list-filters-button
-                    header="Filtrer søket"
-                    filters={filters}
-                    onapplyfilter={applyFilter}
-                    ongetfilteredrecordslength={sendFilteredRecordsLength}
-                ></c-list-filters-button>
+                <div class="header-buttons">
+                    <c-list-filters-button
+                        header="Filtrer søket"
+                        filters={filters}
+                        onapplyfilter={applyFilter}
+                        ongetfilteredrecordslength={sendFilteredRecordsLength}
+                    ></c-list-filters-button>
+                </div>
             </div>
             <div class="record-details-container">
                 <p>Gjelder fra: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
@@ -85,7 +97,7 @@
             </div>
             <div class="record-details-container">
                 <c-table
-                    records={workOrdersToShow}
+                    records={records}
                     columns={workOrderColumns}
                     onrowclick={goToRecordDetails}
                     icon-by-value={iconByValue}
@@ -98,7 +110,7 @@
                     ><c-icon icon="Back"></c-icon>
                     <p style="margin-left: 0.25rem">Tilbake</p></a
                 >
-                <h2 class="header" style="text-align: center">{workOrder.Subject}</h2>
+                <h2 class="header" style="flex: unset">{workOrder.Subject}</h2>
                 <c-list-filters-button
                     style="visibility: hidden"
                     aria-hidden="true"
