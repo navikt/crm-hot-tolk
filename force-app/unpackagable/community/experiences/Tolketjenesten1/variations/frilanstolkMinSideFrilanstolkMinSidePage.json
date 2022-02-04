@@ -1,0 +1,13 @@
+{
+  "componentVariants" : [ {
+    "id" : "b37b9815-3b28-4ddd-8695-95e09b5ca19c",
+    "propertyOverrides" : {
+      "activeViewId" : "f684a604-f097-4391-abc4-a98262e7f0e8"
+    },
+    "targetId" : "e10960da-e07d-4c1f-a513-491b905b81c3",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Frilanstolk_min_side_Frilanstolk_min_side_Page",
+  "id" : "d7aba03c-7389-4028-be88-dab04c374287",
+  "type" : "experienceVariation"
+}

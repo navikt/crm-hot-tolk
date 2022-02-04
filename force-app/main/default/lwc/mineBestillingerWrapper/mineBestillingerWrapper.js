@@ -1,4 +1,4 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
@@ -12,6 +12,8 @@ import { refreshApex } from '@salesforce/apex';
 import { updateRecord } from 'lightning/uiRecordApi';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
+    @api header;
+    @api isAccount;
     breadcrumbs = [
         {
             label: 'Tolketjenesten',
@@ -39,7 +41,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track records = [];
     @track allRecords = [];
     wiredMyWorkOrdersNewResult;
-    @wire(getMyWorkOrdersAndRelatedRequest)
+    @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
     wiredMyWorkOrdersNew(result) {
         this.wiredMyWorkOrdersNewResult = result;
         if (result.data) {
