@@ -52,7 +52,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
-        this.deleteMarkedFiles();
+        if (this.isEditOrCopyMode) {
+            this.deleteMarkedFiles();
+        }
         let hasErrors = this.handleValidation();
         if (!hasErrors) {
             this.promptOverlap().then((overlapOk) => {

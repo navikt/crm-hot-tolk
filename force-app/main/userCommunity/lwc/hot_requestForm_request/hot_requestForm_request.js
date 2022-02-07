@@ -253,6 +253,9 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     @api deleteMarkedFiles() {
-        this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
+        let ele = this.template.querySelector('c-record-files-with-sharing');
+        if (ele !== null) {
+            ele.deleteMarkedFiles();
+        }
     }
 }

@@ -107,8 +107,12 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     isWOCancelButtonDisabled = false;
     isWOAddFilesButtonDisabled = false;
     setButtonStates() {
+        let tempEndDate = this.isRequestDetails
+            ? new Date(this.request.SeriesEndDate__c)
+            : new Date(this.workOrder.EndDate);
         this.isRequestEditButtonDisabled = this.request.Status__c === 'Åpen' ? false : true;
-        this.isRequestCancelButtonDisabled = this.request.Status__c === 'Avlyst' ? true : false;
+        this.isRequestCancelButtonDisabled =
+            this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() ? true : false;
         this.isRequestAddFilesButtonDisabled = this.request.Status__c !== 'Avlyst' ? false : true;
         this.isWOEditButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Åpen' ? false : true;
         this.isWOCancelButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst' ? true : false;
@@ -157,8 +161,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     editButtonLabel = 'Rediger';
     copyButtonLabel = 'Kopier';
     cancelButtonLabel = 'Avlys';
-    setButtonLabels(level) {
-        if (level === 'R') {
+    setButtonLabels() {
+        if (this.urlStateParameters.level === 'R') {
             this.editButtonLabel = 'Rediger serie';
             this.copyButtonLabel = 'Kopier serie';
             this.cancelButtonLabel = 'Avlys serie';
@@ -179,7 +183,17 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     goBack() {
         console.log('goback');
         let currentLevel = this.urlStateParameters.level;
-        let goThroughRequest = this.workOrder.HOT_Request__r.IsSerieoppdrag__c;
+        if (currentLevel === undefined) {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'home'
+                }
+            });
+        }
+        let goThroughRequest = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
+        console.log('currentLevel: ', currentLevel);
+        console.log('goThroughRequest: ', goThroughRequest);
         if (currentLevel === 'WO' && goThroughRequest) {
             this.urlStateParameters.level = 'R';
         } else {
@@ -190,6 +204,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     refresh() {
+        console.log('refresh');
+        refreshApex(this.wiredMyWorkOrdersNewResult);
         this.getRecords();
         this.updateURL();
         this.updateView();
@@ -203,7 +219,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
         this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId ? true : false;
-        this.setButtonLabels(this.urlStateParameters.level);
+        this.setButtonLabels();
         this.setButtonStates();
         this.setDateFormats();
         this.setAddressFormat();
@@ -213,7 +229,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         if (this.urlStateParameters.id !== undefined && this.urlStateParameters.level !== undefined) {
             refresh += '?id=' + this.urlStateParameters.id + '&level=' + this.urlStateParameters.level;
         }
+        console.log('url: ', refresh);
         window.history.pushState({ path: refresh }, '', refresh);
+        console.log(JSON.stringify(window.history.state));
     }
 
     filteredRecordsLength = 0;
@@ -311,7 +329,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
     }
 
-    newRequest() {
+    goToNewRequest() {
         this.isNavigatingAway = true;
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
@@ -393,7 +411,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.showModal();
         }
         this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-        this.template.querySelector('.skjema').classList.remove('hidden');
     }
 
     onUploadError(err) {
@@ -402,7 +419,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.modalContent = 'Kunne ikke laste opp fil(er). Feilmelding: ' + err;
         this.showModal();
         this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-        this.template.querySelector('.skjema').classList.remove('hidden');
     }
 
     validateCheckbox() {

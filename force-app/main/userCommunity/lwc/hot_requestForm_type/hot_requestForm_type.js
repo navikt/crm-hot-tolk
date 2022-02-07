@@ -2,7 +2,7 @@ import { LightningElement, track, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
 export default class Hot_requestForm_type extends NavigationMixin(LightningElement) {
-    @api previousPage = 'Home';
+    @api previousPage = 'home';
     @track currentRequestType = 'Me';
     @track radiobuttons = [
         { label: 'For meg selv', value: 'Me', checked: true },
