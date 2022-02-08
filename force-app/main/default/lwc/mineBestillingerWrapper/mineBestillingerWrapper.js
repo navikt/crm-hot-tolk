@@ -2,7 +2,7 @@ import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
-import { defaultFilters } from './filters';
+import { defaultFilters, compare } from './filters';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
@@ -185,7 +185,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goBack() {
-        console.log('goback');
         let currentLevel = this.urlStateParameters.level;
         if (currentLevel === undefined) {
             this[NavigationMixin.Navigate]({
@@ -196,8 +195,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             });
         }
         let goThroughRequest = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
-        console.log('currentLevel: ', currentLevel);
-        console.log('goThroughRequest: ', goThroughRequest);
         if (currentLevel === 'WO' && goThroughRequest) {
             this.urlStateParameters.level = 'R';
         } else {
@@ -208,7 +205,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     refresh() {
-        console.log('refresh');
         this.getRecords();
         this.updateURL();
         this.updateView();
@@ -245,7 +241,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         for (let record of records) {
             let includeRecord = true;
             for (let filter of this.filters) {
-                includeRecord *= filter.compare(record);
+                includeRecord *= compare(filter, record);
             }
             if (includeRecord) {
                 filteredRecords.push(record);
