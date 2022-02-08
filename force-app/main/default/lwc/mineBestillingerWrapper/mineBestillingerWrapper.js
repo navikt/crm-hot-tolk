@@ -52,7 +52,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
-        if (currentPageReference && this.isNavigatingAway === false) {
+        if (
+            currentPageReference &&
+            Object.keys(currentPageReference.state).length > 0 &&
+            this.isNavigatingAway === false
+        ) {
             this.urlStateParameters = { ...currentPageReference.state };
             this.refresh();
         }
@@ -123,7 +127,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     setHeader() {
         this.headerToShow =
             this.urlStateParameters.level === 'R' ? 'Serie: ' + this.request.Subject__c : this.workOrder.Subject;
-        if (this.urlStateParameters.id === undefined) {
+        if (this.urlStateParameters.id === '') {
             this.headerToShow = this.header;
         }
     }
@@ -197,8 +201,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         if (currentLevel === 'WO' && goThroughRequest) {
             this.urlStateParameters.level = 'R';
         } else {
-            this.urlStateParameters.id = undefined;
-            this.urlStateParameters.level = undefined;
+            this.urlStateParameters.id = '';
+            this.urlStateParameters.level = '';
         }
         this.refresh();
     }
@@ -224,14 +228,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.setAddressFormat();
     }
     updateURL() {
-        let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        if (this.urlStateParameters.id !== undefined && this.urlStateParameters.level !== undefined) {
+        if (this.urlStateParameters.id !== '' && this.urlStateParameters.level !== '') {
+            let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
             refresh += '?id=' + this.urlStateParameters.id + '&level=' + this.urlStateParameters.level;
+            window.history.pushState({ path: refresh }, '', refresh);
         }
-        console.log('url: ', refresh);
-        window.history.pushState({ path: refresh }, '', refresh);
-        console.log(JSON.stringify(window.history.state));
-        console.log(window.history.length);
     }
 
     filteredRecordsLength = 0;
