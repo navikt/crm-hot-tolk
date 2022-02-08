@@ -17,8 +17,6 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
                 workOrderList.add(wo);
             }
         }
-        update records;
-        update workOrderList;
 
         try {
             update records;
