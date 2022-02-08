@@ -219,14 +219,17 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    submitButtonLabel = 'Send inn';
     isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
     handleEditOrCopyModeRequestType(parsed_params) {
         if (parsed_params.edit != null) {
             this.breadcrumbs.push({ label: 'Rediger bestilling' });
+            this.submitButtonLabel = 'Lagre';
         }
         if (parsed_params.copy != null) {
             this.breadcrumbs.push({ label: 'Kopier bestilling' });
+            this.submitButtonLabel = 'Send inn';
         }
         this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
         this.requestTypeChosen = this.isEditOrCopyMode;

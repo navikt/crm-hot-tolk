@@ -209,7 +209,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.updateURL();
         this.updateView();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
-        refreshApex(this.wiredMyWorkOrdersNewResult);
     }
 
     updateView() {
@@ -326,6 +325,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.showModal();
         } else {
             this.modalContent = 'Du kan ikke avlyse denne bestillingen.';
+            this.noCancelButton = true;
             this.showModal();
         }
     }
@@ -344,6 +344,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     cancelAndRefreshApex() {
+        this.showCancelUploadButton = false;
         this.template.querySelector('.ReactModal__Overlay').classList.remove('hidden');
         this.template.querySelector('.loader').classList.remove('hidden');
         const fields = {};
@@ -354,13 +355,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         updateRecord(recordInput)
             .then(() => {
                 refreshApex(this.wiredMyWorkOrdersNewResult);
+                this.noCancelButton = true;
                 this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
                 this.template.querySelector('.loader').classList.add('hidden');
                 this.modalContent = 'Bestillingen er avlyst.';
-                this.noCancelButton = true;
                 this.showModal();
             })
             .catch(() => {
+                this.noCancelButton = true;
                 this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
                 this.template.querySelector('.loader').classList.add('hidden');
                 this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
@@ -477,5 +479,12 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     deleteMarkedFiles() {
         this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
+    }
+
+    isRefreshButtonDisabled = false;
+    refreshList() {
+        refreshApex(this.wiredMyWorkOrdersNewResult).then(() => {
+            this.isRefreshButtonDisabled = true;
+        });
     }
 }
