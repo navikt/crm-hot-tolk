@@ -125,4 +125,7 @@ span {
         padding-bottom: 1vw;
         padding-right: unset;
     }
+    .refresh-button {
+        padding-bottom: 1vw;
+    }
 }

@@ -102,13 +102,13 @@
             <div class="record-details-container">
                 <div style="display: flex; flex-direction: row; justify-content: end">
                     <c-button
+                        class="refresh-button"
                         if:false={urlStateParameters.id}
                         button-label="Oppdater liste"
                         button-styling="secondary"
                         desktop-style="justify-content: center"
                         mobile-style="justify-content: center"
                         onbuttonclick={refreshList}
-                        disabled={isRefreshButtonDisabled}
                     ></c-button>
                 </div>
                 <c-table
