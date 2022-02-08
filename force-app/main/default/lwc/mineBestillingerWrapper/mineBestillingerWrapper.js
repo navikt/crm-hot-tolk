@@ -205,11 +205,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     refresh() {
         console.log('refresh');
-        refreshApex(this.wiredMyWorkOrdersNewResult);
         this.getRecords();
         this.updateURL();
         this.updateView();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        refreshApex(this.wiredMyWorkOrdersNewResult);
     }
 
     updateView() {
@@ -232,6 +232,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         console.log('url: ', refresh);
         window.history.pushState({ path: refresh }, '', refresh);
         console.log(JSON.stringify(window.history.state));
+        console.log(window.history.length);
     }
 
     filteredRecordsLength = 0;
@@ -352,7 +353,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         const recordInput = { fields };
         updateRecord(recordInput)
             .then(() => {
-                refreshApex(this.allRecords);
+                refreshApex(this.wiredMyWorkOrdersNewResult);
                 this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
                 this.template.querySelector('.loader').classList.add('hidden');
                 this.modalContent = 'Bestillingen er avlyst.';
