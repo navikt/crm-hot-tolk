@@ -482,10 +482,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
     }
 
-    isRefreshButtonDisabled = false;
     refreshList() {
-        refreshApex(this.wiredMyWorkOrdersNewResult).then(() => {
-            this.isRefreshButtonDisabled = true;
-        });
+        refreshApex(this.wiredMyWorkOrdersNewResult);
     }
 }
