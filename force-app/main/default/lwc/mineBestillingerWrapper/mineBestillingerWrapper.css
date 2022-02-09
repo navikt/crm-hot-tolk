@@ -99,7 +99,7 @@ span {
 }
 
 .button-padding {
-    padding-right: 1vw;
+    padding-right: 0.5vw;
 }
 
 @keyframes spin {
