@@ -1,4 +1,4 @@
-public with sharing class HOT_UpdateShiftsController {
+public without sharing class HOT_UpdateShiftsController {
     @AuraEnabled(cacheable=true)
     public static List<Shift> getShifts(Id recordId) {
         Shift shift = [SELECT Id, ServiceResourceId, StartTime FROM Shift WHERE Id = :recordId];
