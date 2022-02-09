@@ -6,6 +6,10 @@ private class HOT_RequestHandlerTest {
         TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'HOT_Request__c');
         TestDataFactory.getPublicGroup('HMS Nordland', 'group_4718');
         TestDataFactory.getQueue('HMS Nordland', 'queue_4718', 'HOT_Request__c');
+        Group g = new Group(Type = 'Queue', Name = 'HOT Arkiv');
+        insert g;
+        QueueSobject archiveQueue = new QueueSobject(SobjectType = 'HOT_Request__c', QueueId = g.Id);
+        insert archiveQueue;
     }
 
     @isTest
@@ -175,5 +179,26 @@ private class HOT_RequestHandlerTest {
         System.assertEquals(req.isClone(), true, 'Request was not a clone');
         req = [SELECT Source__c FROM HOT_Request__c WHERE Id = :req.Id];
         System.assertEquals(req.Source__c, 'Dispatcher', 'Request source is not "Dispatcher" (Formidler)');
+    }
+
+    @isTest
+    public static void setArchiveAsOwnerTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        Id requestId = request.Id;
+
+        request.IsHideRequest__c = true;
+        update request;
+
+        HOT_Request__c requestUpdated = [SELECT Id, Owner.Name FROM HOT_Request__c WHERE Id = :requestId LIMIT 1];
+
+        System.assertEquals(
+            'HOT Arkiv',
+            requestUpdated.Owner.Name,
+            'The owner was not changed to "HOT Arkiv" as expected.'
+        );
     }
 }
