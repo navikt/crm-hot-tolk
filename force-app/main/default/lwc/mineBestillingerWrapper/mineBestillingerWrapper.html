@@ -48,10 +48,19 @@
                     <br />
                     <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
                     <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
-                    <br if:true={workOrder.HOT_Interpreters__c} />
+                    <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
+                    <br />
+                    <p if:true={request.UserPreferredInterpreter__c}>
+                        Ønsket tolk: <span>{request.UserPreferredInterpreter__c}</span>
+                    </p>
                     <p if:true={workOrder.HOT_Interpreters__c}>
                         {interpreter}: <span>{workOrder.HOT_Interpreters__c}</span>
                     </p>
+                    <p if:true={request.UserInterpretationMethod__c}>
+                        Foretrukket tolkemetode: <span>{request.UserInterpretationMethod__c}</span>
+                    </p>
+                    <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
+                    <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
                 </div>
                 <c-record-files-with-sharing
                     record-id={request.Id}

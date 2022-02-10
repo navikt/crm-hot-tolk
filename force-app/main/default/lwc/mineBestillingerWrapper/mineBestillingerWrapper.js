@@ -28,8 +28,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track filters = [];
     connectedCallback() {
         this.filters = defaultFilters();
-        this.setColumns();
-        this.refresh();
+        //this.refresh();
     }
     isRequestDetails = false;
     isWorkOrderDetails = false;
@@ -50,8 +49,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.refresh();
         }
     }
+
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
+        console.log('getStateParameters');
+        console.log(JSON.stringify(currentPageReference.state));
         if (
             currentPageReference &&
             Object.keys(currentPageReference.state).length > 0 &&
@@ -64,7 +66,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track request = { MeetingStreet__c: '', Subject__c: '' };
     @track workOrder = { HOT_AddressFormated__c: '', Subject: '' };
     @track workOrders = [];
-    interpreter = 'Tolk';
+
     getRecords() {
         this.resetRequestAndWorkOrder();
         let recordId = this.urlStateParameters.id;
@@ -186,7 +188,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     goBack() {
         let currentLevel = this.urlStateParameters.level;
-        if (currentLevel === undefined) {
+        if (currentLevel === undefined || currentLevel === '') {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
                 attributes: {
@@ -205,18 +207,23 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     refresh() {
+        console.log('refresh');
         this.getRecords();
         this.updateURL();
+        this.setColumns();
         this.updateView();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
+    interpreter = 'Tolk';
+    isOrdererWantStatusUpdateOnSMS = 'Ja';
     updateView() {
         this.setHeader();
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
+        this.isOrdererWantStatusUpdateOnSMS = this.request.IsOrdererWantStatusUpdateOnSMS__c ? 'Ja' : 'Nei';
         this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId ? true : false;
         this.setButtonLabels();
         this.setButtonStates();
@@ -224,9 +231,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.setAddressFormat();
     }
     updateURL() {
+        let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
         if (this.urlStateParameters.id !== '' && this.urlStateParameters.level !== '') {
-            let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
             refresh += '?id=' + this.urlStateParameters.id + '&level=' + this.urlStateParameters.level;
+            window.history.pushState({ path: refresh }, '', refresh);
+        } else {
             window.history.pushState({ path: refresh }, '', refresh);
         }
     }
