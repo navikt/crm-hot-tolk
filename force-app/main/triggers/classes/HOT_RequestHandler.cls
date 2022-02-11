@@ -402,12 +402,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     public static void setArchiveAsOwner(List<Hot_Request__c> requests) {
-        QueueSobject archive = [
-            SELECT Id, QueueId, Queue.Name
-            FROM QueueSobject
-            WHERE Queue.Name = 'HOT Arkiv'
-            LIMIT 1
-        ];
+        QueueSobject archive = [SELECT QueueId, Queue.Name FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
+
         for (HOT_Request__c request : requests) {
             request.OwnerId = archive.QueueId;
         }

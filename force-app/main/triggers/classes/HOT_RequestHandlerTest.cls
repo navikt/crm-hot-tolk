@@ -6,10 +6,6 @@ private class HOT_RequestHandlerTest {
         TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'HOT_Request__c');
         TestDataFactory.getPublicGroup('HMS Nordland', 'group_4718');
         TestDataFactory.getQueue('HMS Nordland', 'queue_4718', 'HOT_Request__c');
-        Group g = new Group(Type = 'Queue', Name = 'HOT Arkiv');
-        insert g;
-        QueueSobject archiveQueue = new QueueSobject(SobjectType = 'HOT_Request__c', QueueId = g.Id);
-        insert archiveQueue;
     }
 
     @isTest
@@ -194,10 +190,11 @@ private class HOT_RequestHandlerTest {
         update request;
 
         HOT_Request__c requestUpdated = [SELECT Id, Owner.Name FROM HOT_Request__c WHERE Id = :requestId LIMIT 1];
+        Group archive = [SELECT Id FROM Group WHERE TYPE = 'Queue' AND NAME = 'HOT Arkiv' LIMIT 1];
 
         System.assertEquals(
-            'HOT Arkiv',
-            requestUpdated.Owner.Name,
+            archive.Id,
+            requestUpdated.OwnerId,
             'The owner was not changed to "HOT Arkiv" as expected.'
         );
     }
