@@ -34,12 +34,10 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     ];
 
     @track requestTypeResult = {};
-    isTypeMe = false;
     handleRequestType(event) {
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
-        this.isTypeMe = this.requestTypeResult.type === 'Me';
         this.setCurrentForm();
     }
 
@@ -223,8 +221,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
         this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
         this.requestTypeChosen = this.isEditOrCopyMode;
-        this.isTypeMe = this.fieldValues.Type__c === 'Me';
-        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditOrCopyMode;
+        this.isEditModeAndTypeMe = this.fieldValues.Type__c === 'Me' && this.isEditOrCopyMode;
     }
 
     isGetAll = false;
