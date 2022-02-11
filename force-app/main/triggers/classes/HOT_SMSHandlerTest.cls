@@ -3,7 +3,6 @@ public with sharing class HOT_SMSHandlerTest {
     @isTest
     static void setArchiveAsOwnerTest() {
         SMS__c sms = new SMS__c();
-        Id smsId = sms.Id;
         insert sms;
 
         sms.HOT_IsSMSHidden__c = true;
