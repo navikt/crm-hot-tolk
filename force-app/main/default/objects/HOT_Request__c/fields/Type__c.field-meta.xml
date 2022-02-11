@@ -24,7 +24,7 @@
             <value>
                 <fullName>Company</fullName>
                 <default>false</default>
-                <label>Virksomhet på vegne av bruker (annen betaler)</label>
+                <label>På vegne av en virksomhet/arrangement/annet</label>
             </value>
             <value>
                 <fullName>PublicEvent</fullName>
