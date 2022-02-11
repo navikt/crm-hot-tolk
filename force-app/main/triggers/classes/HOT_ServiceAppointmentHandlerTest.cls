@@ -846,4 +846,27 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Planlagt sluttid ble ikke satt til faktisk sluttid'
         );
     }
+
+    @isTest
+    public static void setArchiveAsOwnerTest() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+
+        serviceAppointment.HOT_IsHideServiceApointment__c = true;
+        update serviceAppointment;
+
+        ServiceAppointment serviceAppointmentUpdated = [
+            SELECT Id, Owner.Name
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+            LIMIT 1
+        ];
+
+        Group archive = [SELECT Id FROM Group WHERE TYPE = 'Queue' AND NAME = 'HOT Arkiv' LIMIT 1];
+
+        System.assertEquals(
+            archive.Id,
+            serviceAppointmentUpdated.OwnerId,
+            'The owner was not changed to "HOT Arkiv" as expected.'
+        );
+    }
 }
