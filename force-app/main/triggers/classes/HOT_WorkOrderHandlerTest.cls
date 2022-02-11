@@ -252,4 +252,27 @@ private class HOT_WorkOrderHandlerTest {
         System.assertEquals(workOrder3.StartDate.date(), request.SeriesStartDate__c);
         System.assertEquals(workOrder2.EndDate.date(), request.SeriesEndDate__c);
     }
+
+    @isTest
+    public static void setArchiveAsOwnerTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        workOrder.HOT_IsHideWorkOrder__c = true;
+        update workOrder;
+
+        WorkOrder workOrderUpdated = [SELECT Id, Owner.Name FROM WorkOrder WHERE Id = :workOrder.Id LIMIT 1];
+
+        Group archive = [SELECT Id FROM Group WHERE TYPE = 'Queue' AND NAME = 'HOT Arkiv' LIMIT 1];
+
+        System.assertEquals(
+            archive.Id,
+            workOrderUpdated.OwnerId,
+            'The owner was not changed to "HOT Arkiv" as expected.'
+        );
+    }
 }

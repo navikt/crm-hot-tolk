@@ -7,6 +7,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrder> avlystWorkOrder = new List<WorkOrder>();
         List<WorkOrder> setWorkOrdersToUpdateTextFields = new List<WorkOrder>();
+        List<WorkOrder> changeOwnerToArchive = new List<WorkOrder>();
 
         for (WorkOrder workorder : (List<WorkOrder>) records) {
             if (workorder.Status != triggerOldMap.get(workorder.Id).get('Status') && workorder.Status == 'Canceled') {
@@ -22,6 +23,12 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             ) {
                 setWorkOrdersToUpdateTextFields.add(workorder);
             }
+            if (
+                triggerOldMap.get(workOrder.Id).get('HOT_IsHideWorkOrder__c') !== workOrder.HOT_IsHideWorkOrder__c &&
+                workOrder.HOT_IsHideWorkOrder__c == true
+            ) {
+                changeOwnerToArchive.add(WorkOrder);
+            }
         }
 
         if (avlystWorkOrder.size() > 0) {
@@ -30,6 +37,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
         if (setWorkOrdersToUpdateTextFields.size() > 0) {
             setWorkOrdersToUpdateTextFields(setWorkOrdersToUpdateTextFields, triggerOldMap);
+        }
+        if (changeOwnerToArchive.size() > 0) {
+            setArchiveAsOwner(changeOwnerToArchive);
         }
     }
 
@@ -402,6 +412,14 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             if (workOrder.HOT_UserDescription__c != triggerOldMap.get(workOrder.Id).get('HOT_UserDescription__c')) {
                 workOrder.Description = workOrder.HOT_UserDescription__c;
             }
+        }
+    }
+
+    public static void setArchiveAsOwner(List<WorkOrder> workOrders) {
+        QueueSobject archive = [SELECT QueueId, Queue.Name FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
+
+        for (WorkOrder workOrder : workOrders) {
+            workOrder.OwnerId = archive.QueueId;
         }
     }
 }
