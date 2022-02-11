@@ -38,7 +38,7 @@ export default class Hot_requestForm_request extends LightningElement {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
         }
-        this.isRequestTypeMe = this.fieldValues.Type__c === 'Me' ? true : false;
+        this.isRequestTypeMe = this.fieldValues.Type__c === 'Me';
         if (this.fieldValues.Type__c !== 'Company') {
             this.removeTPAFromAssignmentList();
         }
