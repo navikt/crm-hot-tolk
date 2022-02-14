@@ -2,6 +2,9 @@
     <div style="margin-bottom: 0.5rem">
         <template iterator:it={times}>
             <div key={it.value.id} class="listClass">
+                <h2 class="sr-only">
+                    Dato: {it.value.date}. Tid: {it.value.startTimeString} - {it.value.endTimeString}
+                </h2>
                 <c-input
                     label="Dato"
                     data-id="date"
