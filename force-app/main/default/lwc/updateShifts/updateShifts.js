@@ -105,10 +105,12 @@ export default class UpdateShifts extends NavigationMixin(LightningElement) {
     isSelected = false;
     showForm = false;
     editShifts() {
+        this.reset();
         this.showForm = true;
     }
     showPrompt = false;
     deleteShifts() {
+        this.reset();
         this.showPrompt = true;
     }
     confirmDeleteShifts() {
