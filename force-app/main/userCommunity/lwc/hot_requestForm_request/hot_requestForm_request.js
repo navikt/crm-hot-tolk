@@ -265,4 +265,11 @@ export default class Hot_requestForm_request extends LightningElement {
     checkFileDataLength(event) {
         this.hasFiles = event.detail > 0;
     }
+
+    @api deleteMarkedFiles() {
+        let ele = this.template.querySelector('c-record-files-with-sharing');
+        if (ele !== null) {
+            ele.deleteMarkedFiles();
+        }
+    }
 }

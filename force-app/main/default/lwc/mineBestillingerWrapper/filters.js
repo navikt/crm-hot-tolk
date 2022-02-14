@@ -1,36 +1,35 @@
 export let filterArray = [
     {
-        name: 'Status',
+        name: 'HOT_ExternalWorkOrderStatus__c',
         label: 'Status',
         isCheckboxgroup: true,
-        compare: equals,
         value: [
             {
                 name: 'All records',
                 label: ''
             },
             {
-                name: 'New',
-                label: 'Ikke påbegynt'
+                name: 'Åpen',
+                label: 'Åpen'
             },
             {
-                name: 'Canceled',
+                name: 'Under behandling',
+                label: 'Under behandling'
+            },
+            {
+                name: 'Avlyst',
                 label: 'Avlyst'
             },
             {
-                name: 'Dispatched',
+                name: 'Du har fått tolk',
                 label: 'Du har fått tolk'
-            },
-            {
-                name: 'In Progress',
-                label: 'Pågår'
             },
             {
                 name: 'Cannot Complete',
                 label: 'Ikke ledig tolk'
             },
             {
-                name: 'Completed',
+                name: 'Ferdig',
                 label: 'Ferdig'
             }
         ]
@@ -39,7 +38,6 @@ export let filterArray = [
         name: 'timeInterval',
         label: 'Tidspunkt',
         isDateInterval: true,
-        compare: dateBetween,
         value: [
             {
                 name: 'StartDate',
@@ -57,7 +55,6 @@ export let filterArray = [
         name: 'HOT_AssignmentType__c',
         label: 'Anledning',
         isCheckboxgroup: true,
-        compare: equals,
         value: [
             {
                 name: 'All records',
@@ -95,11 +92,18 @@ export function defaultFilters() {
     return filterArray;
 }
 
-function equals(record) {
+export function compare(filter, record) {
+    if (filter.isDateInterval) {
+        return dateBetween(filter, record);
+    }
+    return equals(filter, record);
+}
+
+function equals(filter, record) {
     let toInclude = true;
-    for (let val of this.value) {
+    for (let val of filter.value) {
         if (val.value) {
-            if (record[this.name] === val.name) {
+            if (record[filter.name] === val.name) {
                 return true;
             }
             toInclude = false;
@@ -108,9 +112,9 @@ function equals(record) {
     return toInclude;
 }
 
-function dateBetween(record) {
-    let startVal = this.value[0];
-    let endVal = this.value[1];
+function dateBetween(filter, record) {
+    let startVal = filter.value[0];
+    let endVal = filter.value[1];
     if (startVal.value !== undefined && startVal.value !== false) {
         let recordStartDate = new Date(record[startVal.name]);
         let startDate = new Date(startVal.value);

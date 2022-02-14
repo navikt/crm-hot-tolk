@@ -41,11 +41,18 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.setCurrentForm();
     }
 
+    deleteMarkedFiles() {
+        this.template.querySelector('c-hot_request-form_request').deleteMarkedFiles();
+    }
+
     async handleSubmit(event) {
         event.preventDefault();
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
+        if (this.isEditOrCopyMode) {
+            this.deleteMarkedFiles();
+        }
         let hasErrors = this.handleValidation();
         if (!hasErrors) {
             this.promptOverlap().then((overlapOk) => {
@@ -210,14 +217,17 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    submitButtonLabel = 'Send inn';
     isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
     handleEditOrCopyModeRequestType(parsed_params) {
         if (parsed_params.edit != null) {
             this.breadcrumbs.push({ label: 'Rediger bestilling' });
+            this.submitButtonLabel = 'Lagre';
         }
         if (parsed_params.copy != null) {
             this.breadcrumbs.push({ label: 'Kopier bestilling' });
+            this.submitButtonLabel = 'Send inn';
         }
         this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
         this.requestTypeChosen = this.isEditOrCopyMode;
