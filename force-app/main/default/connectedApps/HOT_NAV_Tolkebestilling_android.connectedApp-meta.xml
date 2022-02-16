@@ -5,7 +5,7 @@
     <oauthConfig>
         <callbackUrl>https://login.salesforce.com/services/oauth2/callback</callbackUrl>
         <consumerKey>3MVG904d7VkkD2aN8yOOjQM9wu4Sx1MFuBQaoLK_xc6yE.r0nbF25PHJcDbL0.VFPOwbS4rgOv.LT90uF5sEn</consumerKey>
-        <isAdminApproved>false</isAdminApproved>
+        <isAdminApproved>true</isAdminApproved>
         <isConsumerSecretOptional>true</isConsumerSecretOptional>
         <isIntrospectAllTokens>false</isIntrospectAllTokens>
         <isSecretRequiredForRefreshToken>false</isSecretRequiredForRefreshToken>
