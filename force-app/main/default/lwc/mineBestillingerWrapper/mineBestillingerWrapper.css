@@ -9,6 +9,7 @@
 
 .back-link {
     display: flex;
+    flex: 1;
     flex-direction: row;
     align-items: center;
     text-decoration: none;
@@ -21,12 +22,21 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 .header {
+    flex: 2;
     margin: auto 0.5rem;
     width: 100%;
     text-align: center;
     font-size: 1.5rem;
+}
+.header-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+    justify-content: end;
 }
 .record-details-container {
     margin: 2rem 0;
@@ -88,6 +98,10 @@ span {
     margin-right: auto;
 }
 
+.button-padding {
+    padding-right: 0.5vw;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -103,5 +117,15 @@ span {
     }
     .comments-dialog-container {
         width: 100%;
+    }
+    .header-buttons {
+        flex-direction: column;
+    }
+    .button-padding {
+        padding-bottom: 1vw;
+        padding-right: unset;
+    }
+    .refresh-button {
+        padding-bottom: 1vw;
     }
 }

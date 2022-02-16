@@ -59,7 +59,6 @@
                         record-id={recordId}
                         class="subform"
                         if:true={requestTypeResult.requestForm}
-                        is-request-type-me={isTypeMe}
                         is-edit-or-copy-mode={isEditOrCopyMode}
                     ></c-hot_request-form_request>
                     <div class="button-container">
@@ -67,7 +66,7 @@
                         <div if:false={spin} style="display: flex; justify-content: center; flex-direction: column">
                             <c-button
                                 if:true={requestTypeResult.requestForm}
-                                button-label="Send inn"
+                                button-label={submitButtonLabel}
                                 name="Send inn bestilling"
                                 button-styling="primary"
                                 type="submit"
