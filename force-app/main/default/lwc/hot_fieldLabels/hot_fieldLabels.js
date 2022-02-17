@@ -132,7 +132,7 @@ export let myServiceAppointmentFieldLabels = {
     EarliestStartTime: { label: 'Bestilt starttid', type: 'datetime' },
     DueDate: { label: 'Bestilt sluttid', type: 'datetime' },
     ActualStartTime: { label: 'Faktisk start', type: 'datetime' },
-    ActualEndTime: { label: 'Faktsik slutt', type: 'datetime' },
+    ActualEndTime: { label: 'Faktisk slutt', type: 'datetime' },
     HOT_AddressFormated__c: { label: 'Adresse', type: 'string' },
     HOT_ServiceTerritoryName__c: { label: 'Region', type: 'string' },
     Status: { label: 'Status', type: 'string' },
