@@ -46,8 +46,12 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                     personsToUpdate.add(person);
                 }
             }
-            update personsToUpdate;
+            HOT_DatabaseOperations.updateRecords(personsToUpdate);
         } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+
             System.debug('Exception: ' + e.getMessage());
             List<Person__c> personsToUpdate = new List<Person__c>();
             for (Id personId : personIdByPersonalNumber.values()) {
@@ -57,7 +61,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                 person.INT_KrrIntegrationStatus__c = 'Failed';
                 personsToUpdate.add(person);
             }
-            update personsToUpdate;
+            HOT_DatabaseOperations.updateRecords(personsToUpdate);
         }
     }
 }

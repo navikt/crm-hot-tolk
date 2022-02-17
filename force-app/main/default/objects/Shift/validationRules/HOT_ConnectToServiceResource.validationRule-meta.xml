@@ -2,7 +2,9 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_ConnectToServiceResource</fullName>
     <active>true</active>
-    <errorConditionFormula>ISBLANK(ServiceResourceId)</errorConditionFormula>
+    <errorConditionFormula>ISBLANK(ServiceResourceId)
+&amp;&amp;
+ ISPICKVAL(CRM_Domain__c, &apos;HOT&apos;)</errorConditionFormula>
     <errorDisplayField>ServiceResourceId</errorDisplayField>
     <errorMessage>Et skift skal være koblet til en Tjenesteressurs</errorMessage>
 </ValidationRule>

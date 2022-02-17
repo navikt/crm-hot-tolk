@@ -41,11 +41,13 @@ private class HOT_RequestListControllerTest {
         request2.Account__c = account2.Id;
         request2.Orderer__c = account.Id;
         request2.StartTime__c = request2.StartTime__c.addDays(-8);
+        request2.EndTime__c = request2.EndTime__c.addDays(-8);
         insert request2;
         HOT_Request__c request3 = HOT_TestDataFactory.createRequest('Subject 3', workType);
         request3.Account__c = account2.Id;
         request3.Orderer__c = account.Id;
         request3.StartTime__c = request3.StartTime__c.addDays(-8);
+        request3.EndTime__c = request3.EndTime__c.addDays(-8);
         insert request3;
         request3.Status__c = 'Godkjent';
         update request3;

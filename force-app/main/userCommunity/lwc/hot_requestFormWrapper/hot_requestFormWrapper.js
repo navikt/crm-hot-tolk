@@ -34,13 +34,15 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     ];
 
     @track requestTypeResult = {};
-    isTypeMe = false;
     handleRequestType(event) {
         this.requestTypeResult = event.detail;
         this.requestTypeChosen = true;
         this.fieldValues.Type__c = this.requestTypeResult.type;
-        this.isTypeMe = this.requestTypeResult.type === 'Me';
         this.setCurrentForm();
+    }
+
+    deleteMarkedFiles() {
+        this.template.querySelector('c-hot_request-form_request').deleteMarkedFiles();
     }
 
     async handleSubmit(event) {
@@ -48,6 +50,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
+        if (this.isEditOrCopyMode) {
+            this.deleteMarkedFiles();
+        }
         let hasErrors = this.handleValidation();
         if (!hasErrors) {
             this.promptOverlap().then((overlapOk) => {
@@ -212,19 +217,21 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
 
+    submitButtonLabel = 'Send inn';
     isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
     handleEditOrCopyModeRequestType(parsed_params) {
         if (parsed_params.edit != null) {
             this.breadcrumbs.push({ label: 'Rediger bestilling' });
+            this.submitButtonLabel = 'Lagre';
         }
         if (parsed_params.copy != null) {
             this.breadcrumbs.push({ label: 'Kopier bestilling' });
+            this.submitButtonLabel = 'Send inn';
         }
         this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
         this.requestTypeChosen = this.isEditOrCopyMode;
-        this.isTypeMe = this.fieldValues.Type__c === 'Me';
-        this.isEditModeAndTypeMe = this.isTypeMe && this.isEditOrCopyMode;
+        this.isEditModeAndTypeMe = this.fieldValues.Type__c === 'Me' && this.isEditOrCopyMode;
     }
 
     isGetAll = false;
