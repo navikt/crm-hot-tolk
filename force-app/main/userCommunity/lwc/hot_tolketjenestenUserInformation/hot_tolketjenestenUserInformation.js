@@ -10,7 +10,5 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
             this.person = result.data;
             this.recordId = this.person.Id;
         }
-        console.log('wiredGetPerson');
-        console.log(JSON.stringify(this.person));
     }
 }

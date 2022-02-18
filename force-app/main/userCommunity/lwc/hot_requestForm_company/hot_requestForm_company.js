@@ -1,23 +1,48 @@
 import { LightningElement, track, api } from 'lwc';
 export default class Hot_requestForm_company extends LightningElement {
-    @api checkboxValue = false;
+    @api isEditOrCopyMode = false;
     @track fieldValues = {
         OrganizationNumber__c: '',
         InvoiceReference__c: '',
         IsOtherEconomicProvicer__c: false,
-        AdditionalInvoiceText__c: ''
+        AdditionalInvoiceText__c: '',
+        UserName__c: '' // Get UserName from Wrapper on edit/copy. Deleted in getFieldValues() and handled in requestForm_user afterwards.
     };
-    choices = [
-        { name: 'Placeholder', label: 'Velg et alternativ', selected: true },
-        { name: 'NAV', label: 'NAV betaler' },
-        { name: 'Virksomhet', label: 'Virksomhet betaler' }
-    ];
+    @api parentCompanyComponentValues;
+    @track componentValues = {
+        choices: [
+            { name: 'Placeholder', label: 'Velg et alternativ', selected: true },
+            { name: 'NAV', label: 'NAV betaler' },
+            { name: 'Virksomhet', label: 'Virksomhet betaler' }
+        ],
+        checkboxValue: true
+    };
 
-    currentPicklistName;
+    setComponentValuesOnEditAndCopy() {
+        this.componentValues.choices.forEach((element) => {
+            element.selected = false;
+        });
+        this.componentValues.choices[1].selected = !this.fieldValues.IsOtherEconomicProvicer__c;
+        this.componentValues.choices[2].selected = this.fieldValues.IsOtherEconomicProvicer__c;
+        this.componentValues.checkboxValue = this.fieldValues.UserName__c !== '';
+    }
+
+    @api getComponentValues() {
+        return this.componentValues;
+    }
+
     handlePicklist(event) {
+        this.componentValues.choices.forEach((element) => {
+            element.selected = false;
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            }
+        });
         this.fieldValues.IsOtherEconomicProvicer__c = event.detail.name === 'Virksomhet';
-        this.currentPicklistName = event.detail.name;
-        this.sendPicklistValue();
+        if (event.detail.name === 'NAV') {
+            this.fieldValues.InvoiceReference__c = '';
+            this.fieldValues.AdditionalInvoiceText__c = '';
+        }
     }
 
     handleUserCheckbox(event) {
@@ -25,31 +50,13 @@ export default class Hot_requestForm_company extends LightningElement {
             detail: event.detail
         });
         this.dispatchEvent(selectedEvent);
+        this.componentValues.checkboxValue = event.detail;
     }
 
     @api
     setFieldValues() {
         this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
-        });
-    }
-
-    sendPicklistValue() {
-        const selectedEvent = new CustomEvent('getpicklistvalue', {
-            detail: this.currentPicklistName
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
-    setPicklistValue() {
-        if (this.picklistValuePreviouslySet === undefined || this.picklistValuePreviouslySet === null) {
-            return;
-        }
-        this.choices.forEach((element) => {
-            element.selected = false;
-            if (element.name === this.picklistValuePreviouslySet) {
-                element.selected = true;
-            }
         });
     }
 
@@ -67,10 +74,10 @@ export default class Hot_requestForm_company extends LightningElement {
 
     @api
     getFieldValues() {
+        delete this.fieldValues.UserName__c;
         return this.fieldValues;
     }
 
-    @api picklistValuePreviouslySet;
     @api parentFieldValues;
     connectedCallback() {
         for (let field in this.parentFieldValues) {
@@ -78,6 +85,13 @@ export default class Hot_requestForm_company extends LightningElement {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
-        this.setPicklistValue();
+        for (let field in this.parentCompanyComponentValues) {
+            if (this.componentValues[field] != null) {
+                this.componentValues[field] = JSON.parse(JSON.stringify(this.parentCompanyComponentValues[field]));
+            }
+        }
+        if (this.isEditOrCopyMode) {
+            this.setComponentValuesOnEditAndCopy();
+        }
     }
 }

@@ -381,6 +381,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.UserDescription__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.UserSubject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.InterpretationMethodSecondary__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -426,12 +436,22 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.IsDeleteTextFieldsOnR__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.IsFellesOppdrag__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.IsFileConsent__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsHideTextFields__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -666,6 +686,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.UserInterpretationMethod__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.UserName__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -677,6 +702,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.UserPhone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.UserPreferredInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -697,6 +727,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_WageClaim__c.DegreeOfHearingAndVisualImpairment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_WageClaim__c.DurationLongerThanOneHour__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -995,6 +1030,21 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>SMS__c.HOT_IsHideSMS__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SMS__c.HOT_IsSMSHidden__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SMS__c.HOT_Processed__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>SMS__c.Message__c</field>
         <readable>true</readable>
@@ -1210,8 +1260,18 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsDeleteTextFieldsOnSA__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_IsEmployedInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsHideTextFields__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1636,6 +1696,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>WorkOrder.HOT_Interpreters__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>WorkOrder.HOT_IsCancelable__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1652,6 +1717,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_IsNotifyDispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_IsReminderSMSSendt__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1696,7 +1766,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>WorkOrder.HOT_IsDeleteTextFieldsOnWO__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>WorkOrder.IsGeneratedFromMaintenancePlan</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_IsHideTextFields__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1811,6 +1891,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>WorkOrder.HOT_UserDescription__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_UserSubject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>WorkOrder.WorkTypeId</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1877,6 +1967,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrderLineItem.IsGeneratedFromMaintenancePlan</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrderLineItem.HOT_IsDeleteTextFieldsOnWOLI__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrderLineItem.HOT_IsHideTextFields__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

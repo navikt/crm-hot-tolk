@@ -26,7 +26,7 @@
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : {
-            "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
+            "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" rel=\"noopener noreferrer\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" rel=\"noopener noreferrer\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
           },
           "componentName" : "forceCommunity:richTextInline",
           "id" : "c34975a4-7c91-48e0-87f4-572619ad0cb8",

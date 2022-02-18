@@ -1,0 +1,67 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "f3f4780d-1177-42d7-aecb-f4e6897ad7f6",
+  "label" : "home BETA",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "953025f4-2735-4846-9764-98505c684b39",
+          "columns" : [ {
+            "UUID" : "e749bd0c-81c2-4958-ad7c-2bf4dd8fa053",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "953025f4-2735-4846-9764-98505c684b39",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:hot_tolketjenestenHovedBanner",
+          "id" : "709de3b2-c94c-479d-a8b7-cdecaec0313e",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "e749bd0c-81c2-4958-ad7c-2bf4dd8fa053",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "3e5f21e5-c538-4d52-a41d-fbbc711c65b3",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Tolketjenesten"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "545d7042-4c5f-45f6-b746-b75319dc4da3",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "2e8a972e-d459-431e-a6eb-b28e15e55035",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "home"
+}

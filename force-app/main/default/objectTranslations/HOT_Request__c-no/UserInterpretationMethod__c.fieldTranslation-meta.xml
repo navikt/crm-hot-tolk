@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Brukers foretrukne tolkemetode</label>
+    <name>UserInterpretationMethod__c</name>
+    <picklistValues>
+        <masterLabel>Skrivetolking</masterLabel>
+        <translation><!-- Skrivetolking --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Taktilt tegnspråk</masterLabel>
+        <translation><!-- Taktilt tegnspråk --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Taletolking</masterLabel>
+        <translation><!-- Taletolking --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Tegn som støtte til munnavlesning</masterLabel>
+        <translation><!-- Tegn som støtte til munnavlesning --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Tegnspråk</masterLabel>
+        <translation><!-- Tegnspråk --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Tegnspråk i begrenset synsfelt</masterLabel>
+        <translation><!-- Tegnspråk i begrenset synsfelt --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

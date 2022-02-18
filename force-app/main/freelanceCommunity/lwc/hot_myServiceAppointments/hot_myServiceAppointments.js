@@ -10,7 +10,7 @@ var actions = [{ label: 'Detaljer', name: 'details' }];
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [
         {
-            label: 'Start tid',
+            label: 'Bestilt starttid',
             fieldName: 'EarliestStartTime',
             type: 'date',
             sortable: true,
@@ -24,7 +24,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
             }
         },
         {
-            label: 'Slutt tid',
+            label: 'Bestilt sluttid',
             fieldName: 'DueDate',
             type: 'date',
             sortable: true,
@@ -155,7 +155,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     @track recordId;
     @track serviceAppointmentDetails;
     showDetails(row) {
-        this.recordId = row.Id;
+        this.recordId = row.HOT_IsFortyfiveDaysOld__c ? null : row.Id;
         this.serviceAppointmentDetails = formatRecord(row, myServiceAppointmentFieldLabels);
         let detailPage = this.template.querySelector('.detailPage');
         detailPage.classList.remove('hidden');

@@ -25,7 +25,6 @@ export function formatRecord(record, fieldLabels) {
 }
 
 function formatDatetime(datetimeString) {
-    console.log(datetimeString);
     let sub = datetimeString.substr(0, datetimeString.length - 1);
     let datetime = new Date(sub);
     let year = datetime.getFullYear().toString();

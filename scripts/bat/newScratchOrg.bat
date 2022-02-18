@@ -1,17 +1,17 @@
 echo "Oppretter scratch org"
 call sfdx force:org:create -f config\project-scratch-def.json --setalias %1 --durationdays %2 --setdefaultusername --json --loglevel fatal  --wait 10
 
-echo "Installerer crm-platform-base ver. 0.128"
-call sfdx force:package:install --package 04t2o000000yTxIAAU -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-platform-base ver. 0.144"
+call sfdx force:package:install --package 04t7U000000TnubQAC -r -k %3 --wait 10 --publishwait 10
 
-echo "Installerer crm-platform-integration ver. 0.65"
-call sfdx force:package:install --package 04t2o000000yU7SAAU -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-platform-integration ver. 0.67"
+call sfdx force:package:install --package 04t7U000000Tn4QQAS -r -k %3 --wait 10 --publishwait 10
 
 echo "Installerer crm-platform-access-control ver. 0.80"
 call sfdx force:package:install --package 04t2o000000yTjuAAE -r -k %3 --wait 10 --publishwait 10
 
-echo "Installerer crm-community-base ver. 0.35"
-call sfdx force:package:install --package 04t2o000000yU44AAE -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-community-base ver. 0.43"
+call sfdx force:package:install --package 04t7U000000Tna7QAC -r -k %3 --wait 10 --publishwait 10
 
 echo "Installerer crm-platform-reporting ver. 0.25"
 call sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k %3 --wait 10 --publishwait 10

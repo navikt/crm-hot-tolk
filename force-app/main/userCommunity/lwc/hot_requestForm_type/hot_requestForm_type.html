@@ -7,18 +7,22 @@
             group-name="testRadioGroup"
         >
         </c-radiobuttons>
-        <br />
-
-        <lightning-messages aria-live="assertive"> </lightning-messages>
-
-        <c-button
-            button-label="Tilbake"
-            button-styling="secondary"
-            onbuttonclick={goToPreviousPage}
-            desktop-style="margin-right: 1em;"
-            mobile-style="margin-right: 1em;"
-        ></c-button>
-
-        <c-button button-label="Neste" button-styling="primary" onbuttonclick={sendResult}></c-button>
+        <div class="button-container">
+            <c-button
+                button-label="Neste"
+                button-styling="primary"
+                onbuttonclick={sendResult}
+                desktop-style="width: 8rem; justify-content: center"
+                mobile-style="width: 8rem; justify-content: center"
+                style="padding-bottom: 1em"
+            ></c-button>
+            <c-button
+                button-label="Avbryt"
+                button-styling="tertiary"
+                onbuttonclick={goToPreviousPage}
+                desktop-style="width: 8rem; justify-content: center"
+                mobile-style="width: 8rem; justify-content: center"
+            ></c-button>
+        </div>
     </section>
 </template>
