@@ -5,10 +5,11 @@
             tolk, vil være tilgjengelig for tolkebruker
         </p>
         <br />
-        <div style="flex-direction: row; display: flex; align-items: center">
-            <h2 class="header" style="padding-right: 5px">Kontaktinformasjon</h2>
+        <div style="flex-direction: row; display: flex">
+            <h2 class="header">Kontaktinformasjon</h2>
             <c-helptext
                 text="For å kunne kontakte deg ved behov for ytterligere opplysninger, vil dine kontaktopplysninger bli knyttet til denne tolkebestillingen."
+                hover-text="Hjelpeknapp for kontaktinformasjon."
             ></c-helptext>
         </div>
         <br />
@@ -25,7 +26,7 @@
             name="OrdererEmail__c"
             form="tolk-skjema-input"
             value={fieldValues.OrdererEmail__c}
-            error-text="Feltet må fylles ut."
+            error-text="Bestillers e-post må fylles ut."
             type="email"
         ></c-input>
         <br />

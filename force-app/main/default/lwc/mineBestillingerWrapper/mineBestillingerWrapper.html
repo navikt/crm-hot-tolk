@@ -1,0 +1,192 @@
+<template>
+    <div class="brodsmulesti">
+        <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
+    </div>
+    <main class="mainContent">
+        <div class="mine-bestillinger-wrapper">
+            <div class="navigation-container">
+                <a class="back-link" onclick={goBack}
+                    ><c-icon icon="Back"></c-icon>
+                    <p style="margin-left: 0.25rem">Tilbake</p></a
+                >
+                <h2 class="header">{headerToShow}</h2>
+                <div class="header-buttons">
+                    <c-button
+                        if:false={urlStateParameters.id}
+                        button-label="Ny bestilling"
+                        button-styling="primary"
+                        class="button-padding"
+                        desktop-style="width: 8rem; justify-content: center"
+                        mobile-style="width: 8rem; justify-content: center"
+                        onbuttonclick={goToNewRequest}
+                    ></c-button>
+                    <c-list-filters-button
+                        if:false={isWorkOrderDetails}
+                        header="Filtrer søket"
+                        filters={filters}
+                        onapplyfilter={applyFilter}
+                        ongetfilteredrecordslength={sendFilteredRecordsLength}
+                    ></c-list-filters-button>
+                </div>
+            </div>
+            <div if:true={isRequestDetails}>
+                <div class="record-details-container">
+                    <p>Gjelder fra: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
+                    <p>Adresse: <span>{requestAddressToShow}</span></p>
+                    <br />
+                    <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
+                </div>
+            </div>
+            <div if:true={isWorkOrderDetails}>
+                <div class="record-details-container">
+                    <p>Fra dato: <span>{workOrderStartDate}</span></p>
+                    <p>Til dato: <span>{workOrderEndDate}</span></p>
+                    <br />
+                    <p>Adresse: <span>{workOrder.HOT_AddressFormated__c}</span></p>
+                    <br />
+                    <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
+                    <br />
+                    <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
+                    <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
+                    <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
+                    <br />
+                    <p if:true={request.UserPreferredInterpreter__c}>
+                        Ønsket tolk: <span>{request.UserPreferredInterpreter__c}</span>
+                    </p>
+                    <p if:true={workOrder.HOT_Interpreters__c}>
+                        {interpreter}: <span>{workOrder.HOT_Interpreters__c}</span>
+                    </p>
+                    <p if:true={request.UserInterpretationMethod__c}>
+                        Foretrukket tolkemetode: <span>{request.UserInterpretationMethod__c}</span>
+                    </p>
+                    <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
+                    <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
+                </div>
+                <c-record-files-with-sharing
+                    record-id={request.Id}
+                    is-get-all={isGetAllFiles}
+                    is-delete-option="true"
+                    title="Tidligere opplastede vedlegg"
+                    delete-file-on-button-click="true"
+                ></c-record-files-with-sharing>
+                <br />
+            </div>
+            <div class="buttonRow" if:true={isRequestOrWorkOrderDetails}>
+                <c-button
+                    button-label={editButtonLabel}
+                    button-styling="primary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={editOrder}
+                    disabled={isRequestEditButtonDisabled}
+                ></c-button>
+                <c-button
+                    button-label={copyButtonLabel}
+                    button-styling="secondary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={cloneOrder}
+                ></c-button>
+                <c-button
+                    button-label={cancelButtonLabel}
+                    button-styling="secondary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={cancelOrder}
+                    disabled={isRequestCancelButtonDisabled}
+                ></c-button>
+                <c-button
+                    button-label="Legg til filer"
+                    button-styling="primary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={addFiles}
+                    disabled={isRequestAddFilesButtonDisabled}
+                ></c-button>
+            </div>
+            <div class="record-details-container">
+                <div style="display: flex; flex-direction: row; justify-content: end">
+                    <c-button
+                        class="refresh-button"
+                        if:false={urlStateParameters.id}
+                        button-label="Oppdater liste"
+                        button-styling="secondary"
+                        desktop-style="justify-content: center"
+                        mobile-style="justify-content: center"
+                        onbuttonclick={refreshList}
+                    ></c-button>
+                </div>
+                <c-table
+                    if:false={isWorkOrderDetails}
+                    records={records}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                    icon-by-value={iconByValue}
+                ></c-table>
+            </div>
+        </div>
+    </main>
+    <c-alertdialog
+        header={modalHeader}
+        content={modalContent}
+        desktop-style="text-align: center; white-space: pre-line; width: 50%"
+        mobile-style="text-align: center; white-space: pre-line; width: 100%"
+        center-buttons="true"
+        no-cancel-button={noCancelButton}
+        onbuttonclick={handleAlertDialogClick}
+    >
+    </c-alertdialog>
+    <div
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
+        style="z-index: 9999; background-color: rgba(38, 38, 38, 0.7)"
+        tabindex="-1"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open comments-dialog-container"
+            role="dialog"
+            aria-labelledby="details-header-id"
+        >
+            <div class="loader hidden"></div>
+            <div if:true={showUploadFilesComponent}>
+                <h2 style="font-size: 1.25rem; text-align: center">Legg til filer i bestillingen</h2>
+                <br />
+                <c-upload-files
+                    record-id={recordId}
+                    onfiledatalength={checkFileDataLength}
+                    onuploadcomplete={onUploadComplete}
+                    onuploaderror={onUploadError}
+                    ongetcheckboxvalue={getCheckboxValue}
+                    checkbox-validation="true"
+                    checkbox-text-plural="Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får."
+                    checkbox-text-single="Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får."
+                    validation-message="For å legge til dokumenter må du gi samtykke til at formidler og tolk kan se dokumentene som lastes opp"
+                ></c-upload-files>
+            </div>
+            <br />
+            <br />
+            <div style="text-align: center" aria-live="polite">
+                <c-button
+                    if:true={hasFiles}
+                    button-styling="primary"
+                    button-label="Lagre"
+                    onbuttonclick={uploadFilesOnSave}
+                    style="padding-right: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                ></c-button>
+                <c-button
+                    if:true={showCancelUploadButton}
+                    button-styling="secondary"
+                    button-label="Avbryt"
+                    onbuttonclick={cancelUploadFiles}
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                ></c-button>
+            </div>
+        </div>
+    </div>
+</template>

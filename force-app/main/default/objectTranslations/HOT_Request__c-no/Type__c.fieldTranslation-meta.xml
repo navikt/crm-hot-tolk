@@ -15,7 +15,7 @@
         <translation><!-- Bruker på vegne av seg selv --></translation>
     </picklistValues>
     <picklistValues>
-        <masterLabel>Virksomhet på vegne av bruker (annen betaler)</masterLabel>
-        <translation><!-- Virksomhet på vegne av bruker (annen betaler) --></translation>
+        <masterLabel>På vegne av en virksomhet/arrangement/annet</masterLabel>
+        <translation><!-- På vegne av en virksomhet/arrangement/annet --></translation>
     </picklistValues>
 </CustomFieldTranslation>

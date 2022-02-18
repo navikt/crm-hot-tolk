@@ -42,8 +42,8 @@
           "type" : "component"
         }, {
           "componentAttributes" : { },
-          "componentName" : "c:hot_requestList",
-          "id" : "b295372d-b8e0-4832-ab6b-2d2f4ea50c68",
+          "componentName" : "c:mineBestillingerWrapper",
+          "id" : "bfa325f7-d199-465b-b262-4d490c76ff22",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"

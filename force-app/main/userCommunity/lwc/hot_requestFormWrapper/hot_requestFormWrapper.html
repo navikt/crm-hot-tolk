@@ -1,16 +1,23 @@
 <template>
     <div class="brodsmulesti">
-        <lightning-breadcrumbs class="skjema-max-width">
-            <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
-            <lightning-breadcrumb label="Ny bestilling" href="/s/ny-bestilling"> </lightning-breadcrumb>
-        </lightning-breadcrumbs>
+        <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
     </div>
-
-    <div class="main-content submitted-false">
-        <div class="skjema-ikon tolketjenesten">
-            <img class="skjema-ikon-img" src="/s/sfsites/c/resource/1585817547000/SkjemaIkon" alt="" />
-        </div>
+    <c-alertdialog
+        header={modalHeader}
+        content={modalContent}
+        desktop-style="text-align: center; white-space: pre-line; min-width: 50%;"
+        mobile-style="text-align: center; white-space: pre-line; max-width: 100%; min-width: 100%;"
+        center-buttons="true"
+        no-cancel-button={noCancelButton}
+        onbuttonclick={handleAlertDialogClick}
+    >
+    </c-alertdialog>
+    <main class="main-content submitted-false">
         <div class="skjema skjema-max-width">
+            <a class="back-link" onclick={goToPreviousPage} if:true={isEditOrCopyMode}
+                ><c-icon icon="Back"></c-icon>
+                <p style="margin-left: 0.25rem">Tilbake</p></a
+            >
             <lightning-record-edit-form
                 object-api-name="HOT_Request__c"
                 density="comfy"
@@ -32,69 +39,73 @@
                     ></c-hot_request-form_orderer>
                     <c-hot_request-form_company
                         parent-field-values={fieldValues}
+                        parent-company-component-values={componentValues}
                         class="subform"
                         onusercheckboxclicked={handleUserCheckbox}
                         if:true={requestTypeResult.companyForm}
-                        picklist-value-previously-set={picklistValueSetInCompanyform}
-                        ongetpicklistvalue={setPicklistValue}
-                        checkbox-value={userCheckboxValue}
+                        is-edit-or-copy-mode={isEditOrCopyMode}
                     ></c-hot_request-form_company>
                     <c-hot_request-form_user
                         parent-field-values={fieldValues}
                         class="subform"
                         if:true={requestTypeResult.userForm}
+                        is-edit-or-copy-mode={isEditOrCopyMode}
                     ></c-hot_request-form_user>
                     <c-hot_request-form_request
                         parent-field-values={fieldValues}
+                        parent-request-component-values={componentValues}
                         is-get-all={isGetAll}
                         request-ids={requestIds}
                         record-id={recordId}
                         class="subform"
                         if:true={requestTypeResult.requestForm}
-                        is-request-type-me={isTypeMe}
-                        digital-checkbox-value={digitalCheckboxValue}
-                        ondigitalcheckboxclicked={handleDigitalCheckbox}
+                        is-edit-or-copy-mode={isEditOrCopyMode}
                     ></c-hot_request-form_request>
-                    <c-button
-                        button-label="Tilbake"
-                        button-styling="secondary"
-                        onbuttonclick={handleBackButtonClicked}
-                        desktop-style="margin-right: 1em;"
-                        mobile-style="margin-right: 1em;"
-                        style="padding-left: 2rem"
-                    ></c-button>
-                    <c-button
-                        if:false={requestTypeResult.requestForm}
-                        button-label="Neste"
-                        button-styling="primary"
-                        onbuttonclick={handleNextButtonClicked}
-                    ></c-button>
-
                     <div class="button-container">
-                        <div style="display: flex; justify-content: center">
-                            <div if:true={spin} class="loader"></div>
-                        </div>
-                        <div if:false={spin}>
+                        <div if:true={spin} class="loader" style="display: flex; justify-content: center"></div>
+                        <div if:false={spin} style="display: flex; justify-content: center; flex-direction: column">
                             <c-button
                                 if:true={requestTypeResult.requestForm}
-                                button-label="Send inn"
+                                button-label={submitButtonLabel}
                                 name="Send inn bestilling"
                                 button-styling="primary"
                                 type="submit"
+                                style="padding-bottom: 1em"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
                             ></c-button>
-                            <br />
-                            <br />
                             <c-button
+                                if:false={requestTypeResult.requestForm}
+                                button-label="Neste"
+                                button-styling="primary"
+                                onbuttonclick={handleNextButtonClicked}
+                                style="padding-bottom: 1em"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                            ></c-button>
+                            <c-button
+                                if:false={isEditModeAndTypeMe}
+                                button-label="Forrige"
+                                button-styling="secondary"
+                                onbuttonclick={handleBackButtonClicked}
+                                style="padding-bottom: 1em"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                            ></c-button>
+                            <c-button
+                                if:true={requestTypeResult.requestForm}
                                 button-label="Avbryt"
                                 button-styling="tertiary"
                                 onbuttonclick={goToPreviousPage}
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
                             ></c-button>
                         </div>
                     </div>
                 </div>
             </lightning-record-edit-form>
         </div>
-    </div>
+    </main>
 
     <div class="main-content hidden submitted-true">
         <div class="main-content dialog-boks skjema-max-width">
@@ -107,7 +118,9 @@
             >
             </lightning-icon>
             <br />
-            <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1">Bestilling mottatt</h2>
+            <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1" role="alert">
+                Bestilling mottatt
+            </h2>
             <br />
             <lightning-button title="Gå til mine bestillinger" variant="brand" label="OK" onclick={goToMyRequests}>
             </lightning-button>

@@ -1,27 +1,54 @@
 <template>
     <section class="bruker-info-skjema sub-form">
-        <div style="flex-direction: row; display: flex; align-items: center">
-            <h2 class="header" style="padding-right: 5px">Informasjon om tolkebruker</h2>
+        <div style="flex-direction: row; display: flex">
+            <h2 class="header">Informasjon om tolkebruker</h2>
             <c-helptext
                 text="Oppgi hvem som trenger tolk fra tolketjenesten for døve, døvblinde og hørselshemmede."
+                hover-text="Hjelpeknapp for informasjon om tolkebruker."
             ></c-helptext>
         </div>
         <br />
         <c-input
-            label="Tolkbrukers navn"
+            label="Tolkebrukers navn"
             name="UserName__c"
             form="tolk-skjema-input"
             value={fieldValues.UserName__c}
-            error-text="Feltet må fylles ut."
+            error-text="Tolkebrukers navn må fylles ut."
+            disabled={isEditOrCopyMode}
         ></c-input>
         <br />
+        <c-radiobuttons
+            radiobuttons={birthdateAndPhoneRadiobuttons}
+            onradiobuttonsclick={handleBirthdateOrPhone}
+            header="Fyll inn tolkebrukers fødselsnummer eller telefonnummer"
+            group-name="radioGroup"
+            flex-direction="row"
+        ></c-radiobuttons>
+        <br />
         <c-input
-            label="Tolkbrukers fødselsnummer"
+            if:true={isBirthdate}
+            label="Tolkebrukers fødselsnummer"
             name="UserPersonNumber__c"
             form="tolk-skjema-input"
             value={fieldValues.UserPersonNumber__c}
-            error-text={personNumberErrorText}
+            error-text="Ikke gyldig fødselsnummer."
             max-length="11"
+            disabled={isEditOrCopyMode}
+            desktop-style="width: 50%"
+            mobile-style="width: 100%"
+        ></c-input>
+        <c-input
+            if:false={isBirthdate}
+            label="Tolkebrukers telefonnummer"
+            name="UserPhone__c"
+            form="tolk-skjema-input"
+            value={fieldValues.UserPhone__c}
+            type="tel"
+            error-text="Telefonnummer må fylles ut."
+            max-length="8"
+            disabled={isEditOrCopyMode}
+            desktop-style="width: 50%"
+            mobile-style="width: 100%"
         ></c-input>
     </section>
 </template>

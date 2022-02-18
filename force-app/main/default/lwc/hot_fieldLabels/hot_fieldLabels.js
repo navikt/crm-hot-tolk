@@ -1,6 +1,7 @@
 export let requestFieldLabels = {
     Name: { label: 'Bestillingsnummer', type: 'string' },
     ActualUserName__c: { label: 'Brukers navn', type: 'string' },
+    AssignmentType__c: { label: 'Anledning', type: 'string' },
     ExternalRequestStatus__c: { label: 'Status', type: 'string' },
     OrdererName__c: { label: 'Bestillers navn', type: 'string' },
     OrdererPhone__c: { label: 'Bestillers mobil', type: 'string' },
@@ -19,8 +20,10 @@ export let requestFieldLabels = {
     InterpretationPostalCity__c: { label: 'Poststed', type: 'string' },
     IsScreenInterpreter__c: {
         label: 'Skjermtolk',
-        type: 'Deler av bestillingen gjennomføres som Skjermtolking, Se tidsplan'
+        type: 'Deler av bestillingen gjennomføres som Skjermtolking - Se tidsplan'
     },
+    UserInterpretationMethod__c: { label: 'Tolkemetode', type: 'string' },
+    UserPreferredInterpreter__c: { label: 'Ønsket tolk', type: 'string' },
     getSubFields: function (section) {
         if (section === 'user') {
             return {
@@ -54,7 +57,10 @@ export let requestFieldLabels = {
                 InterpretationStreet__c: this.InterpretationStreet__c,
                 InterpretationPostalCode__c: this.InterpretationPostalCode__c,
                 InterpretationPostalCity__c: this.InterpretationPostalCity__c,
-                IsScreenInterpreter__c: this.IsScreenInterpreter__c
+                IsScreenInterpreter__c: this.IsScreenInterpreter__c,
+                UserPreferredInterpreter__c: this.UserPreferredInterpreter__c,
+                AssignmentType__c: this.AssignmentType__c,
+                UserInterpretationMethod__c: this.UserInterpretationMethod__c
             };
         }
         return null;
@@ -69,8 +75,8 @@ export let openServiceAppointmentFieldLabels = {
     HOT_WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
     HOT_AssignmentType__c: { label: 'Oppdragstype', type: 'string' },
     HOT_ServiceTerritoryName__c: { label: 'Region', type: 'string' },
-    EarliestStartTime: { label: 'Start tid', type: 'datetime' },
-    DueDate: { label: 'Slutt tid', type: 'datetime' },
+    EarliestStartTime: { label: 'Bestilt starttid', type: 'datetime' },
+    DueDate: { label: 'Bestilt sluttid', type: 'datetime' },
     HOT_AddressFormated__c: { label: 'Adresse', type: 'string' },
     HOT_FreelanceSubject__c: { label: 'Tema', type: 'string' },
     getSubFields: function (section) {
@@ -107,8 +113,8 @@ export let openServiceAppointmentFieldLabels = {
 
 export let interestedResourceFieldLabels = {
     AppointmentNumber__c: { label: 'Oppdrag', type: 'string' },
-    ServiceAppointmentStartTime__c: { label: 'Start tid', type: 'datetime' },
-    ServiceAppointmentEndTime__c: { label: 'Slutt tid', type: 'datetime' },
+    ServiceAppointmentStartTime__c: { label: 'Bestilt starttid', type: 'datetime' },
+    ServiceAppointmentEndTime__c: { label: 'Bestilt sluttid', type: 'datetime' },
     ServiceAppointmentAddress__c: { label: 'Adresse', type: 'string' },
     WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
     AssignmentType__c: { label: 'Oppdragstype', type: 'string' },
@@ -123,10 +129,10 @@ export let interestedResourceFieldLabels = {
 export let myServiceAppointmentFieldLabels = {
     AppointmentNumber: { label: 'Oppdragsnummer', type: 'string' },
     HOT_FreelanceSubject__c: { label: 'Tema', type: 'string' },
-    SchedStartTime: { label: 'Planlagt start', type: 'datetime' },
-    SchedEndTime: { label: 'Planlagt slutt', type: 'datetime' },
+    EarliestStartTime: { label: 'Bestilt starttid', type: 'datetime' },
+    DueDate: { label: 'Bestilt sluttid', type: 'datetime' },
     ActualStartTime: { label: 'Faktisk start', type: 'datetime' },
-    ActualEndTime: { label: 'Faktsik slutt', type: 'datetime' },
+    ActualEndTime: { label: 'Faktisk slutt', type: 'datetime' },
     HOT_AddressFormated__c: { label: 'Adresse', type: 'string' },
     HOT_ServiceTerritoryName__c: { label: 'Region', type: 'string' },
     Status: { label: 'Status', type: 'string' },
@@ -139,8 +145,8 @@ export let myServiceAppointmentFieldLabels = {
 };
 
 export let workOrderFieldLabels = {
-    StartDate: { label: 'Start tid', type: 'datetime' },
-    EndDate: { label: 'Slutt tid', type: 'datetime' },
+    StartDate: { label: 'Starttid', type: 'datetime' },
+    EndDate: { label: 'Sluttid', type: 'datetime' },
     Subject: { label: 'Tema', type: 'string' },
     HOT_RequestName__c: { label: 'Bestillingsnummer', type: 'string' },
     HOT_ExternalWorkOrderStatus__c: { label: 'Status', type: 'string' },

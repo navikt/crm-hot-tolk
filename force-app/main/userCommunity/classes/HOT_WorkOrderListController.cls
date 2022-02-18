@@ -34,6 +34,91 @@ public without sharing class HOT_WorkOrderListController {
     }
 
     @AuraEnabled(cacheable=true)
+    public static List<WorkOrder> getMyWorkOrdersAndRelatedRequest(Boolean isAccount) {
+        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>();
+        Id userId = UserInfo.getUserId();
+        User user = [SELECT Id, AccountId, Name FROM User WHERE Id = :userId];
+        if (user.AccountId == null) {
+            return new List<WorkOrder>();
+        }
+        workOrders = new Map<Id, WorkOrder>(
+            [
+                SELECT
+                    Id,
+                    HOT_RequestName__c,
+                    StartDate,
+                    EndDate,
+                    Subject,
+                    HOT_AddressFormated__c,
+                    Status,
+                    HOT_ExternalWorkOrderStatus__c,
+                    HOT_Interpreters__c,
+                    HOT_IsCancelable__c,
+                    HOT_Request__c,
+                    HOT_Request__r.SeriesStartDate__c,
+                    HOT_Request__r.Subject__c,
+                    HOT_Request__r.StartTime__c,
+                    HOT_Request__r.EndTime__c,
+                    HOT_Request__r.SeriesEndDate__c,
+                    HOT_Request__r.MeetingStreet__c,
+                    HOT_Request__r.MeetingPostalCode__c,
+                    HOT_Request__r.MeetingPostalCity__c,
+                    HOT_Request__r.NumberOfWorkOrders__c,
+                    HOT_Request__r.AdditionalInvoicetext__c,
+                    HOT_Request__r.InterpretationStreet__c,
+                    HOT_Request__r.InterpretationPostalCode__c,
+                    HOT_Request__r.InterpretationPostalCity__c,
+                    HOT_Request__r.IsSerieoppdrag__c,
+                    HOT_Request__r.IsScreenInterpreter__c,
+                    HOT_Request__r.IsOtherEconomicProvicer__c,
+                    HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c,
+                    HOT_Request__r.InvoiceReference__c,
+                    HOT_Request__r.Description__c,
+                    HOT_Request__r.Status__c,
+                    HOT_Request__r.ExternalRequestStatus__c,
+                    HOT_Request__r.Account__c,
+                    HOT_Request__r.ActualUserName__c,
+                    HOT_Request__r.TempAccountId__c,
+                    HOT_Request__r.OrganizationNumber__c,
+                    HOT_Request__r.Source__c,
+                    HOT_Request__r.Type__c,
+                    toLabel(HOT_Request__r.EventType__c),
+                    HOT_Request__r.Orderer__r.Name,
+                    HOT_Request__r.Orderer__c,
+                    HOT_Request__r.OrdererPhone__c,
+                    HOT_Request__r.OrdererEmail__c,
+                    HOT_Request__r.OrdererName__c,
+                    HOT_Request__r.Owner.Name,
+                    HOT_Request__r.AssignmentType__c,
+                    HOT_AssignmentType__c,
+                    HOT_Request__r.UserName__c,
+                    HOT_Request__r.UserPersonNumber__c,
+                    HOT_Request__r.UserPreferredInterpreter__c,
+                    toLabel(HOT_Request__r.UserInterpretationMethod__c),
+                    HOT_Request__r.Company__r.Name
+                FROM WorkOrder
+                WHERE
+                    (HOT_Request__r.Account__c = :user.AccountId
+                    OR HOT_Request__r.Orderer__c = :user.AccountId)
+                    AND Status != 'Annul'
+                ORDER BY StartDate
+            ]
+        );
+        Map<Id, WorkOrder> workOrdersAccount = new Map<Id, WorkOrder>();
+        Map<Id, WorkOrder> workOrdersOrderer = new Map<Id, WorkOrder>();
+        for (WorkOrder wo : workOrders.values()) {
+            if (wo.HOT_Request__r.Account__c == user.AccountId) {
+                workOrdersAccount.put(wo.Id, wo);
+            } else {
+                workOrdersOrderer.put(wo.Id, wo);
+            }
+        }
+        workOrders = isAccount ? workOrdersAccount : workOrdersOrderer;
+        workOrders = getAndSetInterpreters(workOrders);
+        return workOrders.values();
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<WorkOrder> getWorkOrdersFromRequest(String requestNumber) {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>();
         Id userId = UserInfo.getUserId();

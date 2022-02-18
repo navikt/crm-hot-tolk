@@ -1,0 +1,69 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "74937890-fe61-4b93-9a10-012b3a83c2af",
+  "label" : "frilanstolk min side default",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "0750eab4-3352-48ac-928f-d441590e979a",
+          "columns" : [ {
+            "UUID" : "79be3bce-1615-482e-83bb-8cabb0392aad",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "0750eab4-3352-48ac-928f-d441590e979a",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "richTextValue" : "<h1>Finner ikke siden</h1><p><br></p><p>Vi kan ikke finne siden eller tjenesten du etterspør.</p><p><br></p><p><a href=\"https://www.nav.no/\" rel=\"noopener noreferrer\" target=\"null\">Gå til forsiden av nav.no</a>&nbsp;-&nbsp;<a href=\"https://www.nav.no/person/kontakt-oss/tilbakemeldinger/feil-og-mangler\" rel=\"noopener noreferrer\" target=\"null\">Melde feil og mangler</a></p><p><br></p><p>Feilkode 404</p>"
+          },
+          "componentName" : "forceCommunity:richTextInline",
+          "id" : "85fd6f44-0415-4bd2-b210-73e2751c7bf0",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "79be3bce-1615-482e-83bb-8cabb0392aad",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "8a5d599a-6ac0-4522-b6fc-97c23490df91",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Frilanstolk min side"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "57622e07-5bc8-407c-9e40-2b25f0e0fcf5",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "eeccd73d-e22b-4b5f-b387-910380224d54",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-frilanstolk-min-side"
+}

@@ -103,11 +103,9 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
     assignResourceToServiceAppointment(serviceAppointmentId) {
         this.showList = false;
         this.loading = true;
-        console.log('assignResourceToServiceAppointment');
         this.serviceAppointmentId = serviceAppointmentId;
         assign({ wageClaimId: this.recordId, serviceAppointmentId: serviceAppointmentId })
             .then((result) => {
-                console.log(JSON.stringify(result));
                 this.assigned = true;
                 this.showList = false;
                 this.loading = false;

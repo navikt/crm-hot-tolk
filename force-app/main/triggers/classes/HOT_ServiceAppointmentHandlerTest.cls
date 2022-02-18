@@ -500,6 +500,26 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @isTest
+    static void updateScheduledTimes_onUpdate() {
+        ServiceAppointment sa = [
+            SELECT Id, EarliestStartTime, DueDate, SchedEndTime, SchedStartTime
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        sa.EarliestStartTime = Datetime.now().addHours(2);
+        sa.DueDate = Datetime.now().addHours(3);
+        update sa;
+
+        sa = [
+            SELECT Id, SchedEndTime, SchedStartTime, EarliestStartTime, DueDate
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
+        system.assertEquals(sa.SchedStartTime, sa.EarliestStartTime, 'SchedStart time not set!');
+        system.assertEquals(sa.SchedEndTime, sa.DueDate, 'SchedEnd not set');
+    }
+
+    @isTest
     private static void testReleaseToFreelance() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [
