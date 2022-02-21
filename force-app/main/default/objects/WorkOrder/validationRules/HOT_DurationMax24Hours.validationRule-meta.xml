@@ -2,14 +2,6 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_DurationMax24Hours</fullName>
     <active>true</active>
-    <errorConditionFormula>Duration &gt; 24
-&amp;&amp;
-(
-ISNEW()
-||
-ISCHANGED(StartDate)
-||
-ISCHANGED(EndDate)
-)</errorConditionFormula>
+    <errorConditionFormula>Duration &gt; 24</errorConditionFormula>
     <errorMessage>En arbeidsordre kan ikke strekke seg over med enn 24 timer.</errorMessage>
 </ValidationRule>
