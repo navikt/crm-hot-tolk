@@ -30,13 +30,13 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                     person.INT_KrrIntegrationStatus__c = 'Completed';
 
                     // Map contact information fields if they were returned by krr
-                    if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon != null) {
-                        if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.epostadresse != null) {
+                    if (krrResponseByPersonalNumber.get(personalNumber)?.kontaktinformasjon != null) {
+                        if (krrResponseByPersonalNumber.get(personalNumber)?.kontaktinformasjon?.epostadresse != null) {
                             person.INT_KrrEmail__c = krrResponseByPersonalNumber.get(personalNumber)
                                 .kontaktinformasjon.epostadresse;
                         }
                         if (
-                            krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon.mobiltelefonnummer !=
+                            krrResponseByPersonalNumber.get(personalNumber)?.kontaktinformasjon?.mobiltelefonnummer !=
                             null
                         ) {
                             person.INT_KrrMobilePhone__c = krrResponseByPersonalNumber.get(personalNumber)
