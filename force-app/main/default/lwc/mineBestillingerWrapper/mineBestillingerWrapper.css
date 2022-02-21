@@ -144,6 +144,6 @@ span {
         padding-right: unset;
     }
     .refresh-button {
-        padding-bottom: 1vw;
+        margin-bottom: 2vw;
     }
 }
