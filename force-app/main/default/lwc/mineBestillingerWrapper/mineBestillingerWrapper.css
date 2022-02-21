@@ -102,6 +102,24 @@ span {
     padding-right: 0.5vw;
 }
 
+.refresh-button {
+    width: 3rem; 
+    height: 3rem; 
+    border: 1px solid #929292;
+    background-color: #EFEFEF;
+}
+
+.refresh-button:hover {
+    background-color: #0056b4;
+    color: white;
+}
+
+.refresh-button:active {
+    box-shadow: 0 0 0 3px #00347d;
+    background-color: #0056b4;
+    color: white;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

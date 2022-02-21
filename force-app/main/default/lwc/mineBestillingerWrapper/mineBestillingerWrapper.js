@@ -39,14 +39,19 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     @track records = [];
     @track allRecords = [];
+    noWorkOrders = false;
     wiredMyWorkOrdersNewResult;
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
     wiredMyWorkOrdersNew(result) {
         this.wiredMyWorkOrdersNewResult = result;
+        console.log(JSON.stringify(this.wiredMyWorkOrdersNewResult));
         if (result.data) {
+            this.noWorkOrders = false;
             this.records = [...result.data];
             this.allRecords = [...result.data];
             this.refresh();
+        } else {
+            this.noWorkOrders = true;
         }
     }
 
@@ -344,7 +349,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 pageName: 'ny-bestilling'
             },
             state: {
-                fromList: true
+                fromList: true,
+                isAccount: this.isAccount
             }
         });
     }
@@ -489,5 +495,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     refreshList() {
         refreshApex(this.wiredMyWorkOrdersNewResult);
+        console.log('refresh list');
     }
 }
