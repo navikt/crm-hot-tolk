@@ -44,7 +44,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
     wiredMyWorkOrdersNew(result) {
         this.wiredMyWorkOrdersNewResult = result;
-        console.log(JSON.stringify(this.wiredMyWorkOrdersNewResult));
         if (result.data) {
             this.noWorkOrders = false;
             this.records = [...result.data];
@@ -57,8 +56,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
-        console.log('getStateParameters');
-        console.log(JSON.stringify(currentPageReference.state));
         if (
             currentPageReference &&
             Object.keys(currentPageReference.state).length > 0 &&
@@ -212,7 +209,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     refresh() {
-        console.log('refresh');
         this.getRecords();
         this.updateURL();
         this.setColumns();
@@ -495,6 +491,5 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     refreshList() {
         refreshApex(this.wiredMyWorkOrdersNewResult);
-        console.log('refresh list');
     }
 }

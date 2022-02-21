@@ -37,6 +37,7 @@
     align-items: center;
     flex: 1;
     justify-content: end;
+    z-index: 999;
 }
 .record-details-container {
     margin: 2rem 0;
