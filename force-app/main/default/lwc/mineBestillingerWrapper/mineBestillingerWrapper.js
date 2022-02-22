@@ -40,17 +40,15 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track records = [];
     @track allRecords = [];
     noWorkOrders = false;
-    wiredMyWorkOrdersNewResult;
+    wiredgetWorkOrdersResult;
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
-    wiredMyWorkOrdersNew(result) {
-        this.wiredMyWorkOrdersNewResult = result;
+    wiredgetWorkOrdersResult(result) {
+        this.wiredgetWorkOrdersResult = result;
         if (result.data) {
-            this.noWorkOrders = false;
             this.records = [...result.data];
+            this.noWorkOrders = this.records.length === 0;
             this.allRecords = [...result.data];
             this.refresh();
-        } else {
-            this.noWorkOrders = true;
         }
     }
 
@@ -362,7 +360,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         const recordInput = { fields };
         updateRecord(recordInput)
             .then(() => {
-                refreshApex(this.wiredMyWorkOrdersNewResult);
+                refreshApex(this.wiredgetWorkOrdersResult);
                 this.noCancelButton = true;
                 this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
                 this.template.querySelector('.loader').classList.add('hidden');
@@ -490,6 +488,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     refreshList() {
-        refreshApex(this.wiredMyWorkOrdersNewResult);
+        refreshApex(this.wiredgetWorkOrdersResult);
     }
 }
