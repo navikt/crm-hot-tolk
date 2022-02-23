@@ -12,8 +12,24 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
         }
 
         try {
+            if (personIdByPersonalNumber.size() == 0) {
+                throw new Exception('(HOT) personIdByPersonalNumber was empty.');
+            }
             Map<String, KRRCalloutService.Personer> krrResponseByPersonalNumber = new Map<String, KRRCalloutService.Personer>();
-            List<KRRCalloutService.Personer> personResponse = KrrCalloutService.doPersonOppslag(new List<String>(personIdByPersonalNumber.keySet()));
+            List<String> personNumbers = new List<String>(personIdByPersonalNumber.keySet());
+            List<KRRCalloutService.Personer> personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
+            if (personResponse == null) {
+                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
+            }
+            if (personResponse == null) {
+                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
+            }
+            if (personResponse == null) {
+                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
+            }
+            if (personResponse == null) {
+                throw new Exception('(HOT) KrrCalloutService.doPersonOppslag return null.');
+            }
             for (KRRCalloutService.Personer person : personResponse) {
                 krrResponseByPersonalNumber.put(person.personidentifikator, person);
             }
@@ -46,7 +62,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
             HOT_DatabaseOperations.updateRecords(personsToUpdate);
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.exception(e, requests[0], CRM_ApplicationDomain.Domain.HOT);
             logger.publish();
 
             System.debug('Exception: ' + e.getMessage());
