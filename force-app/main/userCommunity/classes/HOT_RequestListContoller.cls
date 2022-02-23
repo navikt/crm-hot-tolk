@@ -63,7 +63,7 @@ public without sharing class HOT_RequestListContoller {
             List<HOT_Request__c> tempRequests = [
                 SELECT
                     Name,
-                    UserSubject__c,
+                    Subject__c,
                     StartTime__c,
                     EndTime__c,
                     SeriesEndDate__c,
@@ -80,7 +80,7 @@ public without sharing class HOT_RequestListContoller {
                     IsOtherEconomicProvicer__c,
                     IsOrdererWantStatusUpdateOnSMS__c,
                     InvoiceReference__c,
-                    UserDescription__c,
+                    Description__c,
                     Status__c,
                     ExternalRequestStatus__c,
                     Account__c,
