@@ -39,12 +39,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     @track records = [];
     @track allRecords = [];
-    wiredMyWorkOrdersNewResult;
+    noWorkOrders = false;
+    wiredgetWorkOrdersResult;
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
-    wiredMyWorkOrdersNew(result) {
-        this.wiredMyWorkOrdersNewResult = result;
+    wiredgetWorkOrdersResult(result) {
+        this.wiredgetWorkOrdersResult = result;
         if (result.data) {
             this.records = [...result.data];
+            this.noWorkOrders = this.records.length === 0;
             this.allRecords = [...result.data];
             this.refresh();
         }
@@ -52,8 +54,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
-        console.log('getStateParameters');
-        console.log(JSON.stringify(currentPageReference.state));
         if (
             currentPageReference &&
             Object.keys(currentPageReference.state).length > 0 &&
@@ -207,7 +207,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     refresh() {
-        console.log('refresh');
         this.getRecords();
         this.updateURL();
         this.setColumns();
@@ -344,7 +343,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 pageName: 'ny-bestilling'
             },
             state: {
-                fromList: true
+                fromList: true,
+                isAccount: this.isAccount
             }
         });
     }
@@ -360,7 +360,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         const recordInput = { fields };
         updateRecord(recordInput)
             .then(() => {
-                refreshApex(this.wiredMyWorkOrdersNewResult);
+                refreshApex(this.wiredgetWorkOrdersResult);
                 this.noCancelButton = true;
                 this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
                 this.template.querySelector('.loader').classList.add('hidden');
@@ -488,6 +488,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     refreshList() {
-        refreshApex(this.wiredMyWorkOrdersNewResult);
+        refreshApex(this.wiredgetWorkOrdersResult);
     }
 }
