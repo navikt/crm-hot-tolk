@@ -112,6 +112,7 @@
             <div class="record-details-container" if:false={noWorkOrders}>
                 <div style="display: flex; flex-direction: row; justify-content: end">
                     <button
+                        if:false={isWorkOrderDetails}
                         class="refresh-button"
                         title="Oppdater liste"
                         onclick={refreshList}

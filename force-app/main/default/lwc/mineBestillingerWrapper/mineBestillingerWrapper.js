@@ -28,7 +28,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track filters = [];
     connectedCallback() {
         this.filters = defaultFilters();
-        //this.refresh();
     }
     isRequestDetails = false;
     isWorkOrderDetails = false;
