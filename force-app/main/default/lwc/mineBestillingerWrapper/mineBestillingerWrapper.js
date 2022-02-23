@@ -42,7 +42,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     noWorkOrders = false;
     wiredgetWorkOrdersResult;
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
-    wiredgetWorkOrdersResult(result) {
+    wiredgetWorkOrdersHandler(result) {
         this.wiredgetWorkOrdersResult = result;
         if (result.data) {
             this.records = [...result.data];
