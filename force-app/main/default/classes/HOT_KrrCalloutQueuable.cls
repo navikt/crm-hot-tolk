@@ -1,5 +1,6 @@
 public without sharing class HOT_KrrCalloutQueuable implements Queueable, Database.AllowsCallouts {
     private List<HOT_Request__c> requests;
+    private class KRRException extends Exception {}
 
     public HOT_KrrCalloutQueuable(List<HOT_Request__c> requests) {
         this.requests = [SELECT Id, Person__c, Person__r.Name FROM HOT_Request__c WHERE Id IN :requests];
@@ -13,7 +14,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
 
         try {
             if (personIdByPersonalNumber.size() == 0) {
-                throw new Exception('(HOT) personIdByPersonalNumber was empty.');
+                throw new KRRException('(HOT) personIdByPersonalNumber was empty.');
             }
             Map<String, KRRCalloutService.Personer> krrResponseByPersonalNumber = new Map<String, KRRCalloutService.Personer>();
             List<String> personNumbers = new List<String>(personIdByPersonalNumber.keySet());
@@ -30,7 +31,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                 personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
             }
             if (personResponse == null) {
-                throw new Exception('(HOT) KrrCalloutService.doPersonOppslag return null.');
+                throw new KRRException('(HOT) KrrCalloutService.doPersonOppslag return null.');
             }
 
             for (KRRCalloutService.Personer person : personResponse) {
