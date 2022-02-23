@@ -15,14 +15,10 @@ public with sharing class HOT_AutoScheduleService {
 
         if (serviceAppointmentFields.contains('fsl__auto_schedule__c')) {
             if (parentRecordType == 'request') {
-                queryString =
-                    'SELECT Id, FSL__Auto_Schedule__c FROM ServiceAppointment WHERE HOT_Request__c = :parentRecordId AND HOT_ServiceResource__c = null AND Status IN ' +
-                    statusesToInclude;
+                queryString = 'SELECT Id, FSL__Auto_Schedule__c FROM ServiceAppointment WHERE HOT_Request__c = :parentRecordId AND HOT_ServiceResource__c = null AND Status IN :statusesToInclude';
             }
             if (parentRecordType == 'workOrder') {
-                queryString =
-                    'SELECT Id, FSL__Auto_Schedule__c FROM ServiceAppointment WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :parentRecordId  AND HOT_ServiceResource__c = null AND Status IN ' +
-                    statusesToInclude;
+                queryString = 'SELECT Id, FSL__Auto_Schedule__c FROM ServiceAppointment WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :parentRecordId  AND HOT_ServiceResource__c = null AND Status IN :statusesToInclude';
             }
 
             List<ServiceAppointment> serviceAppointments = Database.query(queryString);
