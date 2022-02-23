@@ -2,6 +2,7 @@
     <div class="brodsmulesti">
         <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
     </div>
+
     <main class="mainContent">
         <div class="mine-bestillinger-wrapper">
             <div class="navigation-container">
@@ -34,7 +35,7 @@
                     <p>Gjelder fra: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
                     <p>Adresse: <span>{requestAddressToShow}</span></p>
                     <br />
-                    <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
+                    <p>Bestiller: <span>{request.OrdererNameFormula__c}</span></p>
                 </div>
             </div>
             <div if:true={isWorkOrderDetails}>
@@ -47,7 +48,7 @@
                     <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
                     <br />
                     <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
-                    <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
+                    <p>Bestiller: <span>{request.OrdererNameFormula__c}</span></p>
                     <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
                     <br />
                     <p if:true={request.UserPreferredInterpreter__c}>

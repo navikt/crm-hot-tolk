@@ -27,6 +27,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     @track filters = [];
     connectedCallback() {
+        console.log('connectedCallback');
+        console.log('urlStateParameters: ', JSON.stringify(this.urlStateParameters));
+        console.log('this.header: ', this.header);
+        console.log('this.isAccount: ', this.isAccount);
         this.filters = defaultFilters();
         //this.refresh();
     }
@@ -43,6 +47,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     wiredgetWorkOrdersResult;
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
     wiredgetWorkOrdersHandler(result) {
+        console.log('Wired getWorkOrders');
+        console.log('urlStateParameters: ', JSON.stringify(this.urlStateParameters));
+        console.log('this.header: ', this.header);
+        console.log('this.isAccount: ', this.isAccount);
         this.wiredgetWorkOrdersResult = result;
         if (result.data) {
             this.records = [...result.data];
@@ -54,6 +62,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
+        console.log('getStateParameters');
+        console.log('urlStateParameters: ', JSON.stringify(this.urlStateParameters));
+        console.log('this.header: ', this.header);
+        console.log('this.isAccount: ', this.isAccount);
         if (
             currentPageReference &&
             Object.keys(currentPageReference.state).length > 0 &&
@@ -207,11 +219,13 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     refresh() {
+        console.log('refresh()');
         this.getRecords();
         this.updateURL();
         this.setColumns();
         this.updateView();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        console.log('END');
     }
 
     interpreter = 'Tolk';
