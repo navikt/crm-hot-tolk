@@ -13,11 +13,14 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
 
         try {
             Map<String, KRRCalloutService.Personer> krrResponseByPersonalNumber = new Map<String, KRRCalloutService.Personer>();
-            for (
-                KRRCalloutService.Personer person : KrrCalloutService.doPersonOppslag(
-                    new List<String>(personIdByPersonalNumber.keySet())
-                )
-            ) {
+            if (personIdByPersonalNumber.size() == 0) {
+                return;
+            }
+            List<KRRCalloutService.Personer> personResponse = KrrCalloutService.doPersonOppslag(new List<String>(personIdByPersonalNumber.keySet()));
+            if (personResponse == null) {
+                return;
+            }
+            for (KRRCalloutService.Personer person : personResponse) {
                 krrResponseByPersonalNumber.put(person.personidentifikator, person);
             }
             List<Person__c> personsToUpdate = new List<Person__c>();
