@@ -81,7 +81,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         },
         {
             label: 'Tema',
-            fieldName: 'UserSubject__c',
+            fieldName: 'Subject__c',
             type: 'text',
             sortable: true
         },
