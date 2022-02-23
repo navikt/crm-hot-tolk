@@ -45,7 +45,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
         },
         {
             label: 'Tema',
-            fieldName: 'Subject',
+            fieldName: 'HOT_UserSubject__c',
             type: 'text',
             sortable: true,
             initialWidth: 200
