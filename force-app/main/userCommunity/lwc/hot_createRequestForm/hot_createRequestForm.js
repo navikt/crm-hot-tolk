@@ -118,13 +118,13 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
 
     @track fieldValues = {
         Name: '',
-        Subject__c: '',
+        UserSubject__c: '',
         StartTime__c: '',
         EndTime__c: '',
         MeetingStreet__c: '',
         MeetingPostalCity__c: '',
         MeetingPostalCode__c: '',
-        Description__C: '',
+        UserDescription__c: '',
         IsFileConsent__c: false,
         IsOtherEconomicProvicer__c: false,
         IsOrdererWantStatusUpdateOnSMS__c: false,
@@ -462,7 +462,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     } else {
                         let warningMessage = 'Du har allerede bestillinger i dette tidsrommet:';
                         for (let request of duplicateRequests) {
-                            warningMessage += '\nEmne: ' + request.Subject__c;
+                            warningMessage += '\nEmne: ' + request.UserSubject__c;
                             warningMessage += '\nPeriode: ' + request.SeriesPeriod__c;
                         }
                         if (confirm(warningMessage)) {
