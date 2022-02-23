@@ -27,10 +27,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     @track filters = [];
     connectedCallback() {
-        console.log('connectedCallback');
-        console.log('urlStateParameters: ', JSON.stringify(this.urlStateParameters));
-        console.log('this.header: ', this.header);
-        console.log('this.isAccount: ', this.isAccount);
         this.filters = defaultFilters();
         //this.refresh();
     }
@@ -47,32 +43,24 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     wiredgetWorkOrdersResult;
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
     wiredgetWorkOrdersHandler(result) {
-        console.log('Wired getWorkOrders');
-        console.log('urlStateParameters: ', JSON.stringify(this.urlStateParameters));
-        console.log('this.header: ', this.header);
-        console.log('this.isAccount: ', this.isAccount);
         this.wiredgetWorkOrdersResult = result;
         if (result.data) {
             this.records = [...result.data];
             this.noWorkOrders = this.records.length === 0;
             this.allRecords = [...result.data];
-            this.refresh();
+            this.refresh(false);
         }
     }
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
-        console.log('getStateParameters');
-        console.log('urlStateParameters: ', JSON.stringify(this.urlStateParameters));
-        console.log('this.header: ', this.header);
-        console.log('this.isAccount: ', this.isAccount);
         if (
             currentPageReference &&
             Object.keys(currentPageReference.state).length > 0 &&
             this.isNavigatingAway === false
         ) {
             this.urlStateParameters = { ...currentPageReference.state };
-            this.refresh();
+            this.refresh(false);
         }
     }
     @track request = { MeetingStreet__c: '', Subject__c: '' };
@@ -173,7 +161,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
         this.urlStateParameters.id = recordId;
         this.urlStateParameters.level = level;
-        this.refresh();
+        this.refresh(true);
     }
 
     editButtonLabel = 'Rediger';
@@ -215,17 +203,17 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.urlStateParameters.id = '';
             this.urlStateParameters.level = '';
         }
-        this.refresh();
+        this.refresh(true);
     }
 
-    refresh() {
-        console.log('refresh()');
+    refresh(isUpdateURL) {
         this.getRecords();
-        this.updateURL();
+        if (isUpdateURL) {
+            this.updateURL();
+        }
         this.setColumns();
         this.updateView();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
-        console.log('END');
     }
 
     interpreter = 'Tolk';
