@@ -84,6 +84,7 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.Type__c,
                     toLabel(HOT_Request__r.EventType__c),
                     HOT_Request__r.Orderer__r.Name,
+                    HOT_Request__r.OrdererNameFormula__c,
                     HOT_Request__r.Orderer__c,
                     HOT_Request__r.OrdererPhone__c,
                     HOT_Request__r.OrdererEmail__c,

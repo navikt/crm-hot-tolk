@@ -28,7 +28,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track filters = [];
     connectedCallback() {
         this.filters = defaultFilters();
-        //this.refresh();
     }
     isRequestDetails = false;
     isWorkOrderDetails = false;
@@ -42,13 +41,13 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     noWorkOrders = false;
     wiredgetWorkOrdersResult;
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
-    wiredgetWorkOrdersResult(result) {
+    wiredgetWorkOrdersHandler(result) {
         this.wiredgetWorkOrdersResult = result;
         if (result.data) {
             this.records = [...result.data];
             this.noWorkOrders = this.records.length === 0;
             this.allRecords = [...result.data];
-            this.refresh();
+            this.refresh(false);
         }
     }
 
@@ -60,7 +59,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.isNavigatingAway === false
         ) {
             this.urlStateParameters = { ...currentPageReference.state };
-            this.refresh();
+            this.refresh(false);
         }
     }
     @track request = { MeetingStreet__c: '', Subject__c: '' };
@@ -161,7 +160,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
         this.urlStateParameters.id = recordId;
         this.urlStateParameters.level = level;
-        this.refresh();
+        this.refresh(true);
     }
 
     editButtonLabel = 'Rediger';
@@ -203,12 +202,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.urlStateParameters.id = '';
             this.urlStateParameters.level = '';
         }
-        this.refresh();
+        this.refresh(true);
     }
 
-    refresh() {
+    refresh(isUpdateURL) {
         this.getRecords();
-        this.updateURL();
+        if (isUpdateURL) {
+            this.updateURL();
+        }
         this.setColumns();
         this.updateView();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });

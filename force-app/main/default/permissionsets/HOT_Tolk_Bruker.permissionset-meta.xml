@@ -206,6 +206,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.OrdererNameFormula__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.OrdererName__c</field>
         <readable>true</readable>
@@ -252,6 +257,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.UserDescription__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.UserEmail__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -278,6 +288,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.UserPreferredInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.UserSubject__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
