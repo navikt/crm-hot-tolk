@@ -1,14 +1,14 @@
-import { LightningElement, wire, api, track } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import IS_RELEASED from '@salesforce/schema/ServiceAppointment.HOT_IsReleasedToFreelance__c';
+import STATUS from '@salesforce/schema/ServiceAppointment.Status';
 
 export default class Hot_warningBannerServiceAppointment extends LightningElement {
     @api recordId;
 
-    @wire(getRecord, { recordId: '$recordId', fields: [IS_RELEASED] })
+    @wire(getRecord, { recordId: '$recordId', fields: [STATUS] })
     record;
 
     get isReleased() {
-        return getFieldValue(this.record.data, IS_RELEASED);
+        return getFieldValue(this.record.data, STATUS) === 'Released to Freelance';
     }
 }
