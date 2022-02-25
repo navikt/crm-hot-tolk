@@ -109,7 +109,7 @@ export let iconByValue = {
     Reserved: {},
     Scheduled: {},
     'In Progress': {
-        icon: 'In Progress',
+        icon: 'InProgress',
         fill: '',
         ariaLabel: 'Under behandling'
     },
