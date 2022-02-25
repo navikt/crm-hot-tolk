@@ -108,7 +108,11 @@ export let iconByValue = {
     New: {},
     Reserved: {},
     Scheduled: {},
-    'In Progress': {},
+    'In Progress': {
+        icon: 'In Progress',
+        fill: '',
+        ariaLabel: 'Under behandling'
+    },
     'Partially Complete': {},
     Annulled: {
         icon: 'Canceled',
