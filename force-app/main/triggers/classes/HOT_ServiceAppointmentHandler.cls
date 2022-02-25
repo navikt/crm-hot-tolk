@@ -407,6 +407,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
 
     private static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
+        System.debug('setFieldsBasedOnParent');
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
@@ -440,8 +441,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.SchedEndTime = serviceAppointment.DueDate;
             serviceAppointment.HOT_IsReleasedToFreelance__c = false;
             serviceAppointment.HOT_IsEmployedInterpreter__c = true;
-
+            
             if (serviceAppointment.ParentRecordId != null) {
+                System.debug(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder);
                 if (
                     serviceAppointment.HOT_Request__c == null &&
                     workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.HOT_Request__c != null
@@ -538,6 +540,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     serviceAppointment.HOT_WorkOrderLineItem__c = serviceAppointment.ParentRecordId;
                 }
                 if (workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId != null) {
+                    System.debug('workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId: ', workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.AccountId);
                     serviceAppointment.HOT_Account__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .WorkOrder.AccountId;
                 }
