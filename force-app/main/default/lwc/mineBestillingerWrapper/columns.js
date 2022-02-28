@@ -111,5 +111,6 @@ export let iconByValue = {
         ariaLabel: 'Under behandling'
     },
     Pågår: {},
-    Ukjent: {}
+    Ukjent: {},
+    Åpen: {}
 };
