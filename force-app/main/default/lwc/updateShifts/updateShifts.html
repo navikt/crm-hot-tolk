@@ -55,7 +55,11 @@
                 <h3>Er du sikker på at du vil slette <span>{selectedShifts.length}</span> skift?</h3>
                 <h4 if:true={thisSelected}>Du vil bli navigert tilbake til oversikten over skift.</h4>
                 <div class="button-container">
-                    <c-button onbuttonclick={confirmDeleteShifts} button-label="Ja"></c-button>
+                    <c-button
+                        onbuttonclick={confirmDeleteShifts}
+                        button-label="Ja"
+                        style="margin-right: 0.5rem"
+                    ></c-button>
                     <c-button button-styling="secondary" onbuttonclick={reset} button-label="Avbryt"></c-button>
                 </div>
             </div>

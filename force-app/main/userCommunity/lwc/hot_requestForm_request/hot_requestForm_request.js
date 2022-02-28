@@ -16,9 +16,10 @@ export default class Hot_requestForm_request extends LightningElement {
         IsScreenInterpreter__c: false,
         UserPreferredInterpreter__c: '',
         AssignmentType__c: '',
-        UserInterpretationMethod__c: ''
+        UserInterpretationMethod__c: '',
+        Type__c: ''
     };
-    @api isRequestTypeMe;
+    isRequestTypeMe = false;
     @api isGetAll;
     @api requestIds;
     @api recordId;
@@ -36,6 +37,10 @@ export default class Hot_requestForm_request extends LightningElement {
             if (this.componentValues[field] != null) {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
+        }
+        this.isRequestTypeMe = this.fieldValues.Type__c === 'Me';
+        if (this.fieldValues.Type__c !== 'Company') {
+            this.removeTPAFromAssignmentList();
         }
         if (this.isEditOrCopyMode) {
             this.setFieldAndElementSelected(
@@ -56,6 +61,15 @@ export default class Hot_requestForm_request extends LightningElement {
         this.sameLocation = this.componentValues.sameAddressRadioButtons[0].checked;
         if (this.sameLocation) {
             this.clearInterpretationFields();
+        }
+    }
+
+    removeTPAFromAssignmentList() {
+        let index = this.componentValues.assignmentChoices.findIndex((assignment) => {
+            return assignment.name === 'Interpreter at Work';
+        });
+        if (index !== -1) {
+            this.componentValues.assignmentChoices.splice(index, 1);
         }
     }
 
@@ -250,5 +264,12 @@ export default class Hot_requestForm_request extends LightningElement {
     hasFiles = false;
     checkFileDataLength(event) {
         this.hasFiles = event.detail > 0;
+    }
+
+    @api deleteMarkedFiles() {
+        let ele = this.template.querySelector('c-record-files-with-sharing');
+        if (ele !== null) {
+            ele.deleteMarkedFiles();
+        }
     }
 }

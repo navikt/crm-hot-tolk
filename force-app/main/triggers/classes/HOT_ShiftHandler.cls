@@ -5,7 +5,6 @@ public without sharing class HOT_ShiftHandler extends MyTriggers {
         for (Shift shift : (List<Shift>) records) {
             System.debug(shift);
             if (shift.CRM_ServiceResourceDomain__c == 'HOT') {
-                System.debug('was true');
                 hotShifts.add(shift);
             }
         }
@@ -17,6 +16,7 @@ public without sharing class HOT_ShiftHandler extends MyTriggers {
     private static void setDefaultFieldValues(List<Shift> shifts) {
         for (Shift shift : shifts) {
             shift.TimeSlotType = 'Extended';
+            shift.CRM_Domain__c = 'HOT';
         }
     }
 }

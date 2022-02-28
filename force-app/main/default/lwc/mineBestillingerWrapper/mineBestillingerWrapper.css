@@ -9,6 +9,7 @@
 
 .back-link {
     display: flex;
+    flex: 1;
     flex-direction: row;
     align-items: center;
     text-decoration: none;
@@ -21,12 +22,22 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 .header {
+    flex: 2;
     margin: auto 0.5rem;
     width: 100%;
     text-align: center;
     font-size: 1.5rem;
+}
+.header-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+    justify-content: end;
+    z-index: 999;
 }
 .record-details-container {
     margin: 2rem 0;
@@ -88,6 +99,28 @@ span {
     margin-right: auto;
 }
 
+.button-padding {
+    padding-right: 0.5vw;
+}
+
+.refresh-button {
+    width: 3rem; 
+    height: 3rem; 
+    border: 1px solid #929292;
+    background-color: #EFEFEF;
+}
+
+.refresh-button:hover {
+    background-color: #0056b4;
+    color: white;
+}
+
+.refresh-button:active {
+    box-shadow: 0 0 0 3px #00347d;
+    background-color: #0056b4;
+    color: white;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -103,5 +136,15 @@ span {
     }
     .comments-dialog-container {
         width: 100%;
+    }
+    .header-buttons {
+        flex-direction: column;
+    }
+    .button-padding {
+        padding-bottom: 1vw;
+        padding-right: unset;
+    }
+    .refresh-button {
+        margin-bottom: 2vw;
     }
 }

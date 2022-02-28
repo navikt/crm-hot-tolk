@@ -1,5 +1,6 @@
 public without sharing class HOT_KrrCalloutQueuable implements Queueable, Database.AllowsCallouts {
     private List<HOT_Request__c> requests;
+    private class KRRException extends Exception {}
 
     public HOT_KrrCalloutQueuable(List<HOT_Request__c> requests) {
         this.requests = [SELECT Id, Person__c, Person__r.Name FROM HOT_Request__c WHERE Id IN :requests];
@@ -12,12 +13,28 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
         }
 
         try {
+            if (personIdByPersonalNumber.size() == 0) {
+                throw new KRRException('(HOT) personIdByPersonalNumber was empty.');
+            }
             Map<String, KRRCalloutService.Personer> krrResponseByPersonalNumber = new Map<String, KRRCalloutService.Personer>();
-            for (
-                KRRCalloutService.Personer person : KrrCalloutService.doPersonOppslag(
-                    new List<String>(personIdByPersonalNumber.keySet())
-                )
-            ) {
+            List<String> personNumbers = new List<String>(personIdByPersonalNumber.keySet());
+            List<KRRCalloutService.Personer> personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
+
+            // KrrCalloutService.doPersonOppslag() fails in 25% of cases. We are rerunning the Callout, to see if there are some irregularities with the integration
+            if (personResponse == null) {
+                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
+            }
+            if (personResponse == null) {
+                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
+            }
+            if (personResponse == null) {
+                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
+            }
+            if (personResponse == null) {
+                throw new KRRException('(HOT) KrrCalloutService.doPersonOppslag return null.');
+            }
+
+            for (KRRCalloutService.Personer person : personResponse) {
                 krrResponseByPersonalNumber.put(person.personidentifikator, person);
             }
             List<Person__c> personsToUpdate = new List<Person__c>();
@@ -46,8 +63,12 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                     personsToUpdate.add(person);
                 }
             }
-            update personsToUpdate;
+            HOT_DatabaseOperations.updateRecords(personsToUpdate);
         } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, requests[0], CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+
             System.debug('Exception: ' + e.getMessage());
             List<Person__c> personsToUpdate = new List<Person__c>();
             for (Id personId : personIdByPersonalNumber.values()) {
@@ -57,7 +78,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                 person.INT_KrrIntegrationStatus__c = 'Failed';
                 personsToUpdate.add(person);
             }
-            update personsToUpdate;
+            HOT_DatabaseOperations.updateRecords(personsToUpdate);
         }
     }
 }

@@ -48,8 +48,8 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_WorkTypeName__c,
                 SchedStartTime,
                 SchedEndTime,
-                ActualEndTime,
                 ActualStartTime,
+                ActualEndTime,
                 HOT_TermsOfAgreement__c,
                 City,
                 ServiceTerritory.Name,
@@ -60,7 +60,8 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_AssignmentType__c,
                 HOT_FreelanceSubject__c,
                 HOT_IsFortyfiveDaysOld__c,
-                HOT_IsThreeYearsOld__c
+                HOT_IsThreeYearsOld__c,
+                HOT_Dispatcher__c
             FROM ServiceAppointment
             WHERE
                 Id IN :serviceAppointmentIds
