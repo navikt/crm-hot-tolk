@@ -105,14 +105,14 @@ export let iconByValue = {
         fill: '',
         ariaLabel: 'Avlyst'
     },
-    New: {},
-    Reserved: {},
-    Scheduled: {},
-    'In Progress': {
-        icon: 'InProgress',
+    New: {
+        icon: 'New',
         fill: '',
         ariaLabel: 'Under behandling'
     },
+    Reserved: {},
+    Scheduled: {},
+    'In Progress': {},
     'Partially Complete': {},
     Annulled: {
         icon: 'Canceled',
