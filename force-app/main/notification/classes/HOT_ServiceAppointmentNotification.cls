@@ -102,21 +102,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
             WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
 
-        List<Id> queueIds = new List<Id>();
-        List<Id> workOrderLineItemIds = new List<Id>();
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            queueIds.add(serviceAppointment.OwnerId);
-            workOrderLineItemIds.add(serviceAppointment.HOT_WorkOrderLineItem__c);
-        }
-        Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
-        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
-            [SELECT Id, Status FROM WorkOrderLineItem WHERE Id IN :workOrderLineItemIds AND Status != 'Annul']
-        );
-
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
 
-            Set<String> recipients = new Set<String>{ (String) groupByQueue.get(serviceAppointment.OwnerId) };
+            Set<String> recipients = new Set<String>{ (String) serviceAppointment.OwnerId };
 
             // Varsel ved avlyst av tolk
             if (
