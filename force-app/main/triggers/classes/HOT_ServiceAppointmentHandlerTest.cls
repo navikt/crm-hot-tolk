@@ -846,4 +846,56 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Planlagt sluttid ble ikke satt til faktisk sluttid'
         );
     }
+
+    public static void checkIfHOTAccountFieldIsEqualToAccountOnInsert() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AccountId, HOT_Account__c
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+
+        System.assertEquals(serviceAppointment.AccountId, serviceAppointment.HOT_Account__c);
+    }
+
+    public static void checkIfHOTAccountFieldIsEqualToAccountOnUpdate() {
+        String personAccountRecordTypeId = Schema.getGlobalDescribe()
+        .get('Account')
+        .getDescribe()
+        .getRecordTypeInfosByDeveloperName()
+        .get('PersonAccount')
+        .getRecordTypeId();
+        Account newAccount = new Account(
+            RecordTypeId = personAccountRecordTypeId,
+            FirstName = 'Test',
+            LastName = 'User2',
+            PersonEmail = 'HOT_testaccount@nav.hot.no'
+        );
+        insert newAccount;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AccountId, HOT_Account__c, HOT_WorkOrderLineItem__c
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+
+        WorkOrderLineItem woli = [
+            SELECT Id, WorkOrderId
+            FROM WorkOrderLineItem
+            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.Id
+        ];
+
+        WorkOrder wo = [SELECT Id, AccountId FROM WorKOrder WHERE Id = :woli.WorkOrderId];
+        wo.AccountId = newAccount.Id;
+        
+        Test.startTest();
+        update wo;
+        Test.stopTest();
+
+        serviceAppointment = [
+            SELECT Id, AccountId, HOT_Account__c
+            FROM serviceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        System.assertEquals(serviceAppointment.AccountId, serviceAppointment.HOT_Account__c);
+    }
 }

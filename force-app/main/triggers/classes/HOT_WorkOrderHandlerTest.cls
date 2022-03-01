@@ -252,4 +252,56 @@ private class HOT_WorkOrderHandlerTest {
         System.assertEquals(workOrder3.StartDate.date(), request.SeriesStartDate__c);
         System.assertEquals(workOrder2.EndDate.date(), request.SeriesEndDate__c);
     }
+
+    @isTest
+    private static void testUpdateWorkOrderAccount() {
+        WorkType workType1 = HOT_TestDataFactory.createWorkType();
+        insert workType1;
+        WorkType workType2 = HOT_TestDataFactory.createWorkType();
+        insert workType2;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('subject', workType1, 1, workType2, 1);
+        insert request;
+        request.Status__c = 'Godkjent';
+        update request;
+
+        Account originalAccount = [SELECT Id FROM Account LIMIT 1];
+
+        String personAccountRecordTypeId = Schema.getGlobalDescribe()
+        .get('Account')
+        .getDescribe()
+        .getRecordTypeInfosByDeveloperName()
+        .get('PersonAccount')
+        .getRecordTypeId();
+        Account newAccount = new Account(
+            RecordTypeId = personAccountRecordTypeId,
+            FirstName = 'Test',
+            LastName = 'User2',
+            PersonEmail = 'HOT_testaccount@nav.hot.no'
+        );
+        insert newAccount;
+
+        List<WorkOrder> workOrders = [
+            SELECT Id, AccountId
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
+
+        for (WorkOrder wo : workOrders) {
+            wo.AccountId = newAccount.Id;
+        }
+        
+        Test.startTest();
+        update workOrders;
+        Test.stopTest();
+        
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, AccountId, HOT_Account__c
+            FROM ServiceAppointment
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId in :workOrders
+        ];
+        
+        for (ServiceAppointment sa : serviceAppointments) {
+            System.assertEquals(sa.HOT_Account__c, originalAccount.Id);
+        }
+    }
 }

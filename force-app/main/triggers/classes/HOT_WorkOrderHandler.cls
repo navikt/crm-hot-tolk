@@ -61,7 +61,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     //Vi gjør derfor om denne "trigger"-metoden til en statisk metode, og kaller på den fra HOT_WorkOrderStatusHandler.onAfterUpdate.
     public static void onAfterUpdateTemp(Map<Id, sObject> triggerOldMap, List<WorkOrder> records) {
         List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
-
+        List<WorkOrder> workOrdersWithUpdatedAccount = new List<WorkOrder>();
         //Om status eller tidspunkt på WorkOrder er endret, kan det ha ført til at den førstkommende, ikke-avlyste WorkOrderen har endret seg
         for (WorkOrder record : records) {
             System.debug('record: ' + record);
@@ -72,10 +72,15 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             ) {
                 updatedWorkOrders.add(record);
             }
+            if (record.AccountId != triggerOldMap.get(record.Id).get('AccountId')) {
+                workOrdersWithUpdatedAccount.add(record);
+            }
         }
-
         if (updatedWorkOrders.size() > 0) {
             updateRequests(updatedWorkOrders);
+        }
+        if (workOrdersWithUpdatedAccount.size() > 0) {
+            updateServiceAppointmentAccount(workOrdersWithUpdatedAccount);
         }
     }
     public override void onAfterDelete() {
@@ -83,6 +88,15 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
     public override void onAfterUndelete() {
         updateRequests((List<WorkOrder>) records);
+    }
+
+    public static void updateServiceAppointmentAccount(List<WorkOrder> workOrders) {
+        Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>([SELECT Id, AccountId FROM WorkOrder WHERE Id IN :workOrders]);
+        List<ServiceAppointment> serviceAppointments = [SELECT Id, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrders];
+        for (ServiceAppointment sa : serviceAppointments) {
+            sa.HOT_Account__c = workOrderMap.get(sa.HOT_WorkOrderLineItem__r.WorkOrderId).AccountId;
+        }
+        update serviceAppointments;
     }
 
     public static void createChildRecords(List<WorkOrder> workOrders) {
