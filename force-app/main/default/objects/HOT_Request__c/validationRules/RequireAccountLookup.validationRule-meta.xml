@@ -12,6 +12,15 @@ ISPICKVAL(Source__c, &apos;Dispatcher&apos;)
 &amp;&amp;
 NOT(ISPICKVAL(Type__c, &apos;ImageInterpreter&apos;))
 &amp;&amp;
-NOT(ISPICKVAL(Status__c, &apos;Annullert&apos;))</errorConditionFormula>
+NOT(ISPICKVAL(Status__c, &apos;Annullert&apos;))
+&amp;&amp;
+(
+ISNEW() ||
+ISCHANGED(Account__c) ||
+ISCHANGED(Company__c) ||
+ISCHANGED(Orderer__c)
+)
+&amp;&amp;
+!$Permission.Validation_Override</errorConditionFormula>
     <errorMessage>Forespørselen må være koblet til en person eller virksomhet. Fyll ut Bruker-, Bestiller- eller Virksomhet-feltet.</errorMessage>
 </ValidationRule>
