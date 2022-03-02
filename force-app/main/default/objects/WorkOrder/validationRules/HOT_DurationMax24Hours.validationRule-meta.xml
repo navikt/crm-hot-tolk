@@ -10,6 +10,8 @@ ISNEW()
 ISCHANGED(StartDate)
 ||
 ISCHANGED(EndDate)
-)</errorConditionFormula>
+)
+&amp;&amp;
+! $Permission.Validation_Override</errorConditionFormula>
     <errorMessage>En arbeidsordre kan ikke strekke seg over med enn 24 timer.</errorMessage>
 </ValidationRule>
