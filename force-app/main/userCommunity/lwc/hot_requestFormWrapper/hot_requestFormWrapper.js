@@ -259,10 +259,11 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     @track requestIds = [];
 
     goToMyRequests() {
+        let pageName = this.fieldValues.Type__c === 'Me' ? 'mine-bestillinger' : 'mine-bestillinger-andre';
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
-                pageName: 'mine-bestillinger'
+                pageName: pageName
             }
         });
     }

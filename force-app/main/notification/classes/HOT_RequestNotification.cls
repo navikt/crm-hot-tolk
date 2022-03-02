@@ -6,22 +6,9 @@ public without sharing class HOT_RequestNotification {
             WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
 
-        List<Id> queueIds = new List<Id>();
-        for (HOT_Request__c request : requests) {
-            queueIds.add(request.OwnerId);
-        }
-        Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
-
-        List<GroupMember> groupMembers = [
-            SELECT Id, GroupId, UserORGroupId
-            FROM GroupMember
-            WHERE GroupId IN :groupByQueue.values()
-        ];
-
         for (HOT_Request__c request : requests) {
             HOT_Request__c oldRequest = (HOT_Request__c) triggerOldMap.get(request.Id);
-
-            Set<String> recipients = new Set<String>{ (String) groupByQueue.get(request.OwnerId) };
+            Set<String> recipients = new Set<String>{ (String) request.OwnerId };
 
             // Varsel ved avlyst av bruker
             if (request.Status__c == 'Avlyst' && oldRequest.Status__c != 'Avlyst' && oldRequest.Status__c != 'Åpen') {

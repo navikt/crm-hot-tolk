@@ -5,7 +5,7 @@ export let workOrderColumns = [
         type: 'Datetime'
     },
     {
-        name: 'Status',
+        name: 'HOT_ExternalWorkOrderStatus__c',
         label: 'Status',
         type: 'String',
         svg: true
@@ -48,7 +48,7 @@ export let columns = [
         type: 'Datetime'
     },
     {
-        name: 'Status',
+        name: 'HOT_ExternalWorkOrderStatus__c',
         label: 'Status',
         type: 'String',
         svg: true
@@ -72,7 +72,7 @@ export let mobileColumns = [
         type: 'Datetime'
     },
     {
-        name: 'Status',
+        name: 'HOT_ExternalWorkOrderStatus__c',
         label: 'Status',
         type: 'String',
         svg: true
@@ -85,34 +85,32 @@ export let mobileColumns = [
 ];
 
 export let iconByValue = {
-    Dispatched: {
+    'Du har fått tolk': {
         icon: 'SuccessFilled',
         fill: 'Green',
         ariaLabel: 'Du har fått tolk'
     },
-    Completed: {
+    Ferdig: {
         icon: 'SuccessFilled',
         fill: 'Green',
         ariaLabel: 'Ferdig'
     },
-    'Cannot Complete': {
+    'Ikke ledig tolk': {
         icon: 'ErrorFilled',
         fill: 'Red',
         ariaLabel: 'Ikke ledig tolk'
     },
-    Canceled: {
+    Avlyst: {
         icon: 'Canceled',
         fill: '',
         ariaLabel: 'Avlyst'
     },
-    New: {},
-    Reserved: {},
-    Scheduled: {},
-    'In Progress': {},
-    'Partially Complete': {},
-    Annulled: {
-        icon: 'Canceled',
+    'Under behandling': {
+        icon: 'Scheduled',
         fill: '',
-        ariaLabel: 'Annullert'
-    }
+        ariaLabel: 'Under behandling'
+    },
+    Pågår: {},
+    Ukjent: {},
+    Åpen: {}
 };
