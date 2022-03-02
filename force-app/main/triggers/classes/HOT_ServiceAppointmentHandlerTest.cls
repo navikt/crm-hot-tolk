@@ -857,48 +857,4 @@ private class HOT_ServiceAppointmentHandlerTest {
 
         System.assertEquals(serviceAppointment.AccountId, serviceAppointment.HOT_Account__c, 'SA HOT_Account__c was not set correctly.');
     }
-
-    @isTest
-    public static void checkIfHOTAccountFieldIsEqualToAccountOnUpdate() {
-        String personAccountRecordTypeId = Schema.getGlobalDescribe()
-        .get('Account')
-        .getDescribe()
-        .getRecordTypeInfosByDeveloperName()
-        .get('PersonAccount')
-        .getRecordTypeId();
-        Account newAccount = new Account(
-            RecordTypeId = personAccountRecordTypeId,
-            FirstName = 'Test',
-            LastName = 'User2',
-            PersonEmail = 'HOT_testaccount@nav.hot.no'
-        );
-        insert newAccount;
-
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, AccountId, HOT_Account__c, HOT_WorkOrderLineItem__r.Id
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
-
-        WorkOrderLineItem woli = [
-            SELECT Id, WorkOrderId
-            FROM WorkOrderLineItem
-            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.Id
-        ];
-
-        WorkOrder wo = [SELECT Id, AccountId FROM WorKOrder WHERE Id = :woli.WorkOrderId];
-        wo.AccountId = newAccount.Id;
-        
-        Test.startTest();
-        update wo;
-        Test.stopTest();
-
-        serviceAppointment = [
-            SELECT Id, AccountId, HOT_Account__c
-            FROM serviceAppointment
-            WHERE Id = :serviceAppointment.Id
-        ];
-        System.assertEquals(newAccount.Id, serviceAppointment.AccountId, 'SA AccountId was not set correctly.');
-        System.assertEquals(newAccount.Id, serviceAppointment.HOT_Account__c, 'SA HOT_Account__c was not set correctly.');
-    }
 }
