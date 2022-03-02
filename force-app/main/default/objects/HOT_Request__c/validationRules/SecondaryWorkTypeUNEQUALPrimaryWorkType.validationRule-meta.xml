@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>SecondaryWorkTypeUNEQUALPrimaryWorkType</fullName>
     <active>true</active>
@@ -7,7 +7,15 @@
 &amp;&amp;
 InterpretationMethod__c != null
 &amp;&amp;
-InterpretationMethodSecondary__c != null</errorConditionFormula>
+InterpretationMethodSecondary__c != null
+&amp;&amp;
+(
+ISNEW() ||
+ISCHANGED(InterpretationMethod__c ) ||
+ISCHANGED(InterpretationMethodSecondary__c )
+)
+&amp;&amp;
+!$Permission.Validation_Override</errorConditionFormula>
     <errorDisplayField>InterpretationMethodSecondary__c</errorDisplayField>
     <errorMessage>Sekundær tolkemetode kan ikke være det samme som primær tolkemetode.</errorMessage>
 </ValidationRule>

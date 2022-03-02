@@ -2,15 +2,23 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     public override void onBeforeInsert() {
         setDefaultFields((List<WorkOrder>) records);
         setWorkOrdersToCopyTextFields((List<WorkOrder>) records);
+        setDuration((List<WorkOrder>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrder> avlystWorkOrder = new List<WorkOrder>();
         List<WorkOrder> setWorkOrdersToUpdateTextFields = new List<WorkOrder>();
+        List<WorkOrder> setDurationWorkOrders = new List<WorkOrder>();
 
         for (WorkOrder workorder : (List<WorkOrder>) records) {
             if (workorder.Status != triggerOldMap.get(workorder.Id).get('Status') && workorder.Status == 'Canceled') {
                 avlystWorkOrder.add(workorder);
+            }
+            if (
+                workorder.StartDate != triggerOldMap.get(workorder.Id).get('StartDate') ||
+                workorder.EndDate != triggerOldMap.get(workorder.Id).get('EndDate')
+            ) {
+                setDurationWorkOrders.add(workorder);
             }
 
             if (
@@ -30,6 +38,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
         if (setWorkOrdersToUpdateTextFields.size() > 0) {
             setWorkOrdersToUpdateTextFields(setWorkOrdersToUpdateTextFields, triggerOldMap);
+        }
+        if (setDurationWorkOrders.size() > 0) {
+            setDuration(setDurationWorkOrders);
         }
     }
 
@@ -400,6 +411,12 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             if (workOrder.HOT_UserDescription__c != triggerOldMap.get(workOrder.Id).get('HOT_UserDescription__c')) {
                 workOrder.Description = workOrder.HOT_UserDescription__c;
             }
+        }
+    }
+    public static void setDuration(List<workOrder> workOrders) {
+        for (WorkOrder workOrder : workOrders) {
+            workOrder.Duration =
+                ((Double) workOrder.EndDate.getTime() - (Double) workOrder.StartDate.getTime()) / 3600000;
         }
     }
 }

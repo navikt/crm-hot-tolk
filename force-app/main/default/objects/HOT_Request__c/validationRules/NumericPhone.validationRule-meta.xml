@@ -12,7 +12,9 @@
 !ISNUMBER(OrdererPhone__c)
 ||
 BEGINS(OrdererPhone__c, &apos;-&apos;)
-)</errorConditionFormula>
+)
+&amp;&amp;
+!$Permission.Validation_Override</errorConditionFormula>
     <errorDisplayField>OrdererPhone__c</errorDisplayField>
     <errorMessage>Ugyldig telefonnummer</errorMessage>
 </ValidationRule>

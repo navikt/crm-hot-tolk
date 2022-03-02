@@ -10,6 +10,16 @@ NOT(ISBLANK(Account__c))
 NOT(ISBLANK(Orderer__c))
 ||
 NOT(ISBLANK(Company__c))
-)</errorConditionFormula>
+)
+&amp;&amp;
+(
+ISNEW() ||
+ISCHANGED(Type__c) ||
+ISCHANGED(Account__c) ||
+ISCHANGED(Company__c) ||
+ISCHANGED(Orderer__c)
+)
+&amp;&amp;
+!$Permission.Validation_Override</errorConditionFormula>
     <errorMessage>Bildetolkvakt skal ikke kobles opp mot en bruker eller virksomhet.</errorMessage>
 </ValidationRule>

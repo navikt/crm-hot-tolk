@@ -8,13 +8,10 @@ public without sharing class HOT_WorkOrderNotification {
 
         workOrders = checkServiceAppointments(workOrders);
 
-        List<Id> queueIds = new List<Id>();
         List<Id> requestIds = new List<Id>();
         for (WorkOrder workOrder : workOrders) {
-            queueIds.add(workOrder.OwnerId);
             requestIds.add(workOrder.HOT_Request__c);
         }
-        Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
             [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
         );
@@ -22,7 +19,7 @@ public without sharing class HOT_WorkOrderNotification {
         for (WorkOrder workOrder : workOrders) {
             WorkOrder oldWorkOrder = (WorkOrder) triggerOldMap.get(workOrder.Id);
 
-            Set<String> recipients = new Set<String>{ (String) groupByQueue.get(workOrder.OwnerId) };
+            Set<String> recipients = new Set<String>{ (String) workOrder.OwnerId };
 
             // Varsel ved avlyst av bruker
             if (
