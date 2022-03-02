@@ -846,4 +846,15 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Planlagt sluttid ble ikke satt til faktisk sluttid'
         );
     }
+
+    @isTest
+    public static void checkIfHOTAccountFieldIsEqualToAccountOnInsert() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AccountId, HOT_Account__c
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+
+        System.assertEquals(serviceAppointment.AccountId, serviceAppointment.HOT_Account__c, 'SA HOT_Account__c was not set correctly.');
+    }
 }

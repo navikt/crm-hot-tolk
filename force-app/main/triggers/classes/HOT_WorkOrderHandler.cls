@@ -75,7 +75,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
         //Om status eller tidspunkt på WorkOrder er endret, kan det ha ført til at den førstkommende, ikke-avlyste WorkOrderen har endret seg
         for (WorkOrder record : records) {
-            System.debug('record: ' + record);
             if (
                 record.Status != triggerOldMap.get(record.Id).get('Status') ||
                 record.StartDate != triggerOldMap.get(record.Id).get('StartDate') ||
@@ -84,7 +83,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 updatedWorkOrders.add(record);
             }
         }
-
         if (updatedWorkOrders.size() > 0) {
             updateRequests(updatedWorkOrders);
         }
