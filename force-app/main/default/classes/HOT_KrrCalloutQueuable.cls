@@ -67,7 +67,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                 person.Id = personId;
                 person.INT_LastUpdatedFromKRR__c = System.now();
                 person.INT_KrrIntegrationStatus__c = 'Failed';
-                person.HOT_IntegrationErrorCounter__c += 1;
+                person.HOT_IntegrationErrorCounter__c++;
                 personsToUpdate.add(person);
             }
             HOT_DatabaseOperations.updateRecords(personsToUpdate);
