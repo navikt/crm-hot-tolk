@@ -4,7 +4,7 @@
     <decisions>
         <name>Has_Access</name>
         <label>Has Access?</label>
-        <locationX>182</locationX>
+        <locationX>314</locationX>
         <locationY>638</locationY>
         <defaultConnector>
             <targetReference>No_Access_Text</targetReference>
@@ -52,7 +52,7 @@
         <description>Assigns the user the HOT_Tolk_Mobil_App permission set</description>
         <name>Create_Permission_Set_Assignment</name>
         <label>Create Permission Set Assignment</label>
-        <locationX>314</locationX>
+        <locationX>578</locationX>
         <locationY>878</locationY>
         <connector>
             <targetReference>Success</targetReference>
@@ -80,12 +80,15 @@
         <label>Delete Permission Set</label>
         <locationX>50</locationX>
         <locationY>878</locationY>
+        <faultConnector>
+            <targetReference>Error_Occured_During_Deletion</targetReference>
+        </faultConnector>
         <inputReference>Get_Permission_Set_Assignment</inputReference>
     </recordDeletes>
     <recordLookups>
         <name>Get_Account</name>
         <label>Get Account</label>
-        <locationX>182</locationX>
+        <locationX>314</locationX>
         <locationY>278</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -108,7 +111,7 @@
     <recordLookups>
         <name>Get_Permission_Set</name>
         <label>Get Permission Set</label>
-        <locationX>182</locationX>
+        <locationX>314</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -131,7 +134,7 @@
     <recordLookups>
         <name>Get_Permission_Set_Assignment</name>
         <label>Get Permission Set Assignment</label>
-        <locationX>182</locationX>
+        <locationX>314</locationX>
         <locationY>518</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -159,7 +162,7 @@
     <recordLookups>
         <name>Get_User</name>
         <label>Get User</label>
-        <locationX>182</locationX>
+        <locationX>314</locationX>
         <locationY>398</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -199,7 +202,7 @@
     <screens>
         <name>Error_Occured</name>
         <label>Error Occured</label>
-        <locationX>578</locationX>
+        <locationX>842</locationX>
         <locationY>998</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -213,9 +216,25 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>Error_Occured_During_Deletion</name>
+        <label>Error Occured During Deletion</label>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Error_Occured_During_Deletion_Text</name>
+            <fieldText>&lt;p&gt;En feil oppstod under fjerning av tilgang! Prøv igjen.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>No_Access_Text</name>
         <label>No Access Text</label>
-        <locationX>314</locationX>
+        <locationX>578</locationX>
         <locationY>758</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -234,7 +253,7 @@
     <screens>
         <name>Success</name>
         <label>Success</label>
-        <locationX>314</locationX>
+        <locationX>578</locationX>
         <locationY>998</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -248,7 +267,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
+        <locationX>188</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Permission_Set</targetReference>
