@@ -117,6 +117,9 @@
         <connector>
             <targetReference>Has_Access</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>Permission_Set_Assignment_Error</targetReference>
+        </faultConnector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>AssigneeId</field>
@@ -145,6 +148,9 @@
         <connector>
             <targetReference>Get_Permission_Set_Assignment</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>User_Not_Found</targetReference>
+        </faultConnector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>AccountId</field>
@@ -232,6 +238,22 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>Permission_Set_Assignment_Error</name>
+        <label>Permission Set Assignment Error</label>
+        <locationX>1106</locationX>
+        <locationY>518</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Permission_Set_Assignment_Error_Text</name>
+            <fieldText>&lt;p&gt;Noe feilet 2. Prøv igjen.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Success</name>
         <label>Success</label>
         <locationX>578</locationX>
@@ -246,6 +268,22 @@
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>User_Not_Found</name>
+        <label>User Not Found</label>
+        <locationX>1370</locationX>
+        <locationY>398</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>User_Not_Found_Text</name>
+            <fieldText>&lt;p&gt;Noe feilet. Prøv igjen.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
     </screens>
     <start>
         <locationX>188</locationX>
