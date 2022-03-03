@@ -22,15 +22,6 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
 
             // KrrCalloutService.doPersonOppslag() fails in 25% of cases. We are rerunning the Callout, to see if there are some irregularities with the integration
             if (personResponse == null) {
-                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
-            }
-            if (personResponse == null) {
-                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
-            }
-            if (personResponse == null) {
-                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
-            }
-            if (personResponse == null) {
                 throw new KRRException('(HOT) KrrCalloutService.doPersonOppslag return null.');
             }
 
@@ -76,6 +67,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                 person.Id = personId;
                 person.INT_LastUpdatedFromKRR__c = System.now();
                 person.INT_KrrIntegrationStatus__c = 'Failed';
+                person.HOT_IntegrationErrorCounter__c += 1;
                 personsToUpdate.add(person);
             }
             HOT_DatabaseOperations.updateRecords(personsToUpdate);
