@@ -5,25 +5,25 @@
         <name>Has_Access</name>
         <label>Has Access?</label>
         <locationX>314</locationX>
-        <locationY>638</locationY>
+        <locationY>518</locationY>
         <defaultConnector>
             <targetReference>No_Access_Text</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <defaultConnectorLabel>Add Permission Set</defaultConnectorLabel>
         <rules>
-            <name>Yes</name>
+            <name>Remove_Permission_Set</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Permission_Set_Assignment</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
-                    <booleanValue>true</booleanValue>
+                    <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
                 <targetReference>Already_Access</targetReference>
             </connector>
-            <label>Yes</label>
+            <label>Remove Permission Set</label>
         </rules>
     </decisions>
     <description>Used to assign or revoke HOT_Tolk_Mobil_App permission set</description>
@@ -53,7 +53,7 @@
         <name>Create_Permission_Set_Assignment</name>
         <label>Create Permission Set Assignment</label>
         <locationX>578</locationX>
-        <locationY>878</locationY>
+        <locationY>758</locationY>
         <connector>
             <targetReference>Success</targetReference>
         </connector>
@@ -63,7 +63,7 @@
         <inputAssignments>
             <field>AssigneeId</field>
             <value>
-                <elementReference>Get_User.Id</elementReference>
+                <elementReference>userId</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -79,35 +79,12 @@
         <name>Delete_Permission_Set</name>
         <label>Delete Permission Set</label>
         <locationX>50</locationX>
-        <locationY>878</locationY>
+        <locationY>758</locationY>
         <faultConnector>
             <targetReference>Error_Occured_During_Deletion</targetReference>
         </faultConnector>
         <inputReference>Get_Permission_Set_Assignment</inputReference>
     </recordDeletes>
-    <recordLookups>
-        <name>Get_Account</name>
-        <label>Get Account</label>
-        <locationX>314</locationX>
-        <locationY>278</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_User</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <object>Account</object>
-        <outputReference>CurrentAccount2</outputReference>
-        <queriedFields>Id</queriedFields>
-        <sortField>Id</sortField>
-        <sortOrder>Asc</sortOrder>
-    </recordLookups>
     <recordLookups>
         <name>Get_Permission_Set</name>
         <label>Get Permission Set</label>
@@ -115,7 +92,7 @@
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Account</targetReference>
+            <targetReference>Get_User</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -135,7 +112,7 @@
         <name>Get_Permission_Set_Assignment</name>
         <label>Get Permission Set Assignment</label>
         <locationX>314</locationX>
-        <locationY>518</locationY>
+        <locationY>398</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Has_Access</targetReference>
@@ -145,7 +122,7 @@
             <field>AssigneeId</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_User.Id</elementReference>
+                <elementReference>userId</elementReference>
             </value>
         </filters>
         <filters>
@@ -163,28 +140,32 @@
         <name>Get_User</name>
         <label>Get User</label>
         <locationX>314</locationX>
-        <locationY>398</locationY>
+        <locationY>278</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Permission_Set_Assignment</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Id</field>
+            <field>AccountId</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>CurrentAccount2.Id</elementReference>
+                <elementReference>recordId</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>User</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <outputAssignments>
+            <assignToReference>userId</assignToReference>
+            <field>Id</field>
+        </outputAssignments>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
     </recordLookups>
     <screens>
         <name>Already_Access</name>
         <label>Already Access</label>
         <locationX>50</locationX>
-        <locationY>758</locationY>
+        <locationY>638</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -203,7 +184,7 @@
         <name>Error_Occured</name>
         <label>Error Occured</label>
         <locationX>842</locationX>
-        <locationY>998</locationY>
+        <locationY>878</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -219,7 +200,7 @@
         <name>Error_Occured_During_Deletion</name>
         <label>Error Occured During Deletion</label>
         <locationX>314</locationX>
-        <locationY>998</locationY>
+        <locationY>878</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -235,7 +216,7 @@
         <name>No_Access_Text</name>
         <label>No Access Text</label>
         <locationX>578</locationX>
-        <locationY>758</locationY>
+        <locationY>638</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -254,7 +235,7 @@
         <name>Success</name>
         <label>Success</label>
         <locationX>578</locationX>
-        <locationY>998</locationY>
+        <locationY>878</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -273,16 +254,9 @@
             <targetReference>Get_Permission_Set</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>CurrentAccount</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>CurrentAccount2</name>
         <dataType>SObject</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
@@ -301,6 +275,13 @@
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>userId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
 </Flow>
