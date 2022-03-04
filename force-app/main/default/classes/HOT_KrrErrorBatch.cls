@@ -5,7 +5,7 @@ public without sharing class HOT_KrrErrorBatch implements Database.Batchable<sOb
     }
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        String query = 'SELECT Id, Person__c, Person__r.Name, Person__r.INT_KrrIntegrationStatus__c, Person__r.HOT_IntegrationErrorCounter__c FROM HOT_Request__c WHERE Person__c != null AND Person__r.INT_KrrIntegrationStatus__c = \'Failed\' AND Person__r.HOT_IntegrationErrorCounter__c > 0';
+        String query = 'SELECT Id FROM HOT_Request__c WHERE Person__c != null AND Person__r.INT_KrrIntegrationStatus__c = \'Failed\' AND Person__r.HOT_KrrIntegrationErrorCounter__c > 0';
         return Database.getQueryLocator(query);
     }
 
