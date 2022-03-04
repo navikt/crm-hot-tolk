@@ -8,10 +8,10 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
 
     public void execute(QueueableContext context) {
         Map<String, Id> personIdByPersonalNumber = new Map<String, Id>();
-        Map<Id, Decimal> krrIntegrationErrorCounterByPersonId = new Map<Id, Decimal>();
+        Map<Id, Person__c> personByPersonId = new Map<Id, Person__c>();
         for (HOT_Request__c request : requests) {
             personIdByPersonalNumber.put(String.valueOf(request.Person__r.Name), request.Person__c);
-            krrIntegrationErrorCounterByPersonId.put(request.Person__c, request.Person__r.HOT_KrrIntegrationErrorCounter__c);
+            personByPersonId.put(request.Person__c, request.Person__r);
         }
 
         try {
@@ -70,7 +70,8 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                 person.Id = personId;
                 person.INT_LastUpdatedFromKRR__c = System.now();
                 person.INT_KrrIntegrationStatus__c = 'Failed';
-                krrIntegrationErrorCounterByPersonId.get(personId).HOT_KrrIntegrationErrorCounter__c++;
+                Decimal errorCounter = personByPersonId.get(personId).HOT_KrrIntegrationErrorCounter__c;
+                person.HOT_KrrIntegrationErrorCounter__c = errorCounter+1;
                 personsToUpdate.add(person);
             }
             HOT_DatabaseOperations.updateRecords(personsToUpdate);
