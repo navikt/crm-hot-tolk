@@ -3,13 +3,15 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
     private class KRRException extends Exception {}
 
     public HOT_KrrCalloutQueuable(List<HOT_Request__c> requests) {
-        this.requests = [SELECT Id, Person__c, Person__r.Name FROM HOT_Request__c WHERE Id IN :requests];
+        this.requests = [SELECT Id, Person__c, Person__r.Name, Person__r.HOT_KrrIntegrationErrorCounter__c FROM HOT_Request__c WHERE Id IN :requests];
     }
 
     public void execute(QueueableContext context) {
         Map<String, Id> personIdByPersonalNumber = new Map<String, Id>();
+        Map<Id, Person__c> personByPersonId = new Map<Id, Person__c>();
         for (HOT_Request__c request : requests) {
             personIdByPersonalNumber.put(String.valueOf(request.Person__r.Name), request.Person__c);
+            personByPersonId.put(request.Person__c, request.Person__r);
         }
 
         try {
@@ -21,15 +23,6 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
             List<KRRCalloutService.Personer> personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
 
             // KrrCalloutService.doPersonOppslag() fails in 25% of cases. We are rerunning the Callout, to see if there are some irregularities with the integration
-            if (personResponse == null) {
-                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
-            }
-            if (personResponse == null) {
-                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
-            }
-            if (personResponse == null) {
-                personResponse = KrrCalloutService.doPersonOppslag(personNumbers);
-            }
             if (personResponse == null) {
                 throw new KRRException('(HOT) KrrCalloutService.doPersonOppslag return null.');
             }
@@ -45,6 +38,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                     person.Id = personIdByPersonalNumber.get(personalNumber);
                     person.INT_LastUpdatedFromKRR__c = System.now();
                     person.INT_KrrIntegrationStatus__c = 'Completed';
+                    person.HOT_KrrIntegrationErrorCounter__c = 0;
 
                     // Map contact information fields if they were returned by krr
                     if (krrResponseByPersonalNumber.get(personalNumber).kontaktinformasjon != null) {
@@ -76,6 +70,8 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                 person.Id = personId;
                 person.INT_LastUpdatedFromKRR__c = System.now();
                 person.INT_KrrIntegrationStatus__c = 'Failed';
+                Decimal errorCounter = personByPersonId.get(personId).HOT_KrrIntegrationErrorCounter__c;
+                person.HOT_KrrIntegrationErrorCounter__c = errorCounter+1;
                 personsToUpdate.add(person);
             }
             HOT_DatabaseOperations.updateRecords(personsToUpdate);
