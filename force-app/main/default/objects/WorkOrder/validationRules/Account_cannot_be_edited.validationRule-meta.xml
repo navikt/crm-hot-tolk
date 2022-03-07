@@ -3,7 +3,10 @@
     <fullName>Account_cannot_be_edited</fullName>
     <active>true</active>
     <errorConditionFormula>ISCHANGED(AccountId) 
-        &amp;&amp;
-        !$Permission.Validation_Override</errorConditionFormula>
-    <errorMessage>Konto kan ikke endres.</errorMessage>
+&amp;&amp;
+PRIORVALUE(AccountId) != null
+&amp;&amp;
+!$Permission.Validation_Override</errorConditionFormula>
+    <errorDisplayField>AccountId</errorDisplayField>
+    <errorMessage>Bruker kan ikke endres.</errorMessage>
 </ValidationRule>
