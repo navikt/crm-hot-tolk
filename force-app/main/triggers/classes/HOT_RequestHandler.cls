@@ -175,7 +175,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     @AuraEnabled
     public static void createAndUpdateWorkOrders(Id requestId, Map<String, Map<String, Long>> times) {
-        System.debug('createAndUpdateWorkOrders');
         HOT_Request__c request = [
             SELECT
                 Id,
