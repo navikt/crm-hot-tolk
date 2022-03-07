@@ -8,11 +8,9 @@ public with sharing class HOT_SMSHandlerTest {
         sms.HOT_IsSMSHidden__c = true;
         update sms;
 
-        SMS__c smsUpdated = [SELECT Id, OwnerId FROM SMS__c WHERE Id = :sms.Id LIMIT 1];
-        Id smsOwner = smsUpdated.OwnerId;
-
+        SMS__c updatedSms = [SELECT Id, OwnerId FROM SMS__c WHERE Id = :sms.Id LIMIT 1];
         Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
 
-        System.assertEquals(archive.Id, smsOwner, 'The owner was not changed to "HOT Arkiv" as expected.');
+        System.assertEquals(archive.Id, updatedSms.OwnerId, 'The owner was not changed to "HOT Arkiv" as expected.');
     }
 }

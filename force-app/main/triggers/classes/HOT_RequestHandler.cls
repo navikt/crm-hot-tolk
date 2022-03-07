@@ -62,7 +62,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> requestsToUpdateTextFields = new List<HOT_Request__c>();
-        List<HOT_Request__c> changeOwnerToArchive = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsToChangeOwnerToArchive = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
@@ -92,9 +92,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
             if (
                 triggerOldMap.get(request.Id).get('IsHideRequest__c') !== request.IsHideRequest__c &&
-                request.IsHideRequest__c == true
+                request.IsHideRequest__c
             ) {
-                changeOwnerToArchive.add(request);
+                requestsToChangeOwnerToArchive.add(request);
             }
         }
         if (ownerChangedRequests.size() > 0) {
@@ -110,8 +110,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (requestsToUpdateTextFields.size() > 0) {
             setRequestsToUpdateTextFields(requestsToUpdateTextFields, triggerOldMap);
         }
-        if (changeOwnerToArchive.size() > 0) {
-            setArchiveAsOwner(changeOwnerToArchive);
+        if (requestsToChangeOwnerToArchive.size() > 0) {
+            setArchiveAsOwner(requestsToChangeOwnerToArchive);
         }
     }
 
@@ -402,7 +402,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     public static void setArchiveAsOwner(List<Hot_Request__c> requests) {
-        QueueSobject archive = [SELECT QueueId, Queue.Name FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
+        QueueSobject archive = [SELECT QueueId FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
 
         for (HOT_Request__c request : requests) {
             request.OwnerId = archive.QueueId;

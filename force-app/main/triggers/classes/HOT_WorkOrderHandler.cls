@@ -7,7 +7,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrder> avlystWorkOrder = new List<WorkOrder>();
         List<WorkOrder> setWorkOrdersToUpdateTextFields = new List<WorkOrder>();
-        List<WorkOrder> changeOwnerToArchive = new List<WorkOrder>();
+        List<WorkOrder> workOrdersToChangeOwnerToArchive = new List<WorkOrder>();
 
         for (WorkOrder workorder : (List<WorkOrder>) records) {
             if (workorder.Status != triggerOldMap.get(workorder.Id).get('Status') && workorder.Status == 'Canceled') {
@@ -25,9 +25,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             }
             if (
                 triggerOldMap.get(workOrder.Id).get('HOT_IsHideWorkOrder__c') !== workOrder.HOT_IsHideWorkOrder__c &&
-                workOrder.HOT_IsHideWorkOrder__c == true
+                workOrder.HOT_IsHideWorkOrder__c
             ) {
-                changeOwnerToArchive.add(WorkOrder);
+                workOrdersToChangeOwnerToArchive.add(WorkOrder);
             }
         }
 
@@ -38,8 +38,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         if (setWorkOrdersToUpdateTextFields.size() > 0) {
             setWorkOrdersToUpdateTextFields(setWorkOrdersToUpdateTextFields, triggerOldMap);
         }
-        if (changeOwnerToArchive.size() > 0) {
-            setArchiveAsOwner(changeOwnerToArchive);
+        if (workOrdersToChangeOwnerToArchive.size() > 0) {
+            setArchiveAsOwner(workOrdersToChangeOwnerToArchive);
         }
     }
 
@@ -416,7 +416,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void setArchiveAsOwner(List<WorkOrder> workOrders) {
-        QueueSobject archive = [SELECT QueueId, Queue.Name FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
+        QueueSobject archive = [SELECT QueueId FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
 
         for (WorkOrder workOrder : workOrders) {
             workOrder.OwnerId = archive.QueueId;

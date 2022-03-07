@@ -24,7 +24,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithActualTimeSet = new List<ServiceAppointment>();
-        List<ServiceAppointment> changeOwnerToArchive = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsToChangeOwnerToArchive = new List<ServiceAppointment>();
 
         Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
         Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
@@ -182,9 +182,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('HOT_IsHideServiceApointment__c') !==
                 serviceAppointment.HOT_IsHideServiceApointment__c &&
-                serviceAppointment.HOT_IsHideServiceApointment__c == true
+                serviceAppointment.HOT_IsHideServiceApointment__c
             ) {
-                changeOwnerToArchive.add(serviceAppointment);
+                serviceAppointmentsToChangeOwnerToArchive.add(serviceAppointment);
             }
         }
         if (!updatedServiceAppointments.isEmpty()) {
@@ -240,8 +240,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsChangedOrderedTime.size() > 0) {
             preserveSchedulesTimes(serviceAppointmentsChangedOrderedTime, triggerOldMap);
         }
-        if (changeOwnerToArchive.size() > 0) {
-            setArchiveAsOwner(changeOwnerToArchive);
+        if (serviceAppointmentsToChangeOwnerToArchive.size() > 0) {
+            setArchiveAsOwner(serviceAppointmentsToChangeOwnerToArchive);
         }
     }
 
@@ -972,7 +972,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
 
     public static void setArchiveAsOwner(List<ServiceAppointment> serviceAppointments) {
-        QueueSobject archive = [SELECT QueueId, Queue.Name FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
+        QueueSobject archive = [SELECT QueueId FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.OwnerId = archive.QueueId;

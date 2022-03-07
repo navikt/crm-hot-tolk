@@ -854,8 +854,8 @@ private class HOT_ServiceAppointmentHandlerTest {
         serviceAppointment.HOT_IsHideServiceApointment__c = true;
         update serviceAppointment;
 
-        ServiceAppointment serviceAppointmentUpdated = [
-            SELECT Id, Owner.Name
+        ServiceAppointment updatedServiceAppointment = [
+            SELECT Id, OwnerId
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
             LIMIT 1
@@ -865,7 +865,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
         System.assertEquals(
             archive.Id,
-            serviceAppointmentUpdated.OwnerId,
+            updatedServiceAppointment.OwnerId,
             'The owner was not changed to "HOT Arkiv" as expected.'
         );
     }

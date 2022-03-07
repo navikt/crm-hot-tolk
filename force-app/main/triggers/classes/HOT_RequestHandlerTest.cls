@@ -183,18 +183,15 @@ private class HOT_RequestHandlerTest {
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-
-        Id requestId = request.Id;
-
         request.IsHideRequest__c = true;
         update request;
 
-        HOT_Request__c requestUpdated = [SELECT Id, Owner.Name FROM HOT_Request__c WHERE Id = :requestId LIMIT 1];
+        HOT_Request__c updatedRequest = [SELECT Id, OwnerId FROM HOT_Request__c WHERE Id = :request.Id LIMIT 1];
         Group archive = [SELECT Id FROM Group WHERE TYPE = 'Queue' AND NAME = 'HOT Arkiv' LIMIT 1];
 
         System.assertEquals(
             archive.Id,
-            requestUpdated.OwnerId,
+            updatedRequest.OwnerId,
             'The owner was not changed to "HOT Arkiv" as expected.'
         );
     }

@@ -265,13 +265,13 @@ private class HOT_WorkOrderHandlerTest {
         workOrder.HOT_IsHideWorkOrder__c = true;
         update workOrder;
 
-        WorkOrder workOrderUpdated = [SELECT Id, Owner.Name FROM WorkOrder WHERE Id = :workOrder.Id LIMIT 1];
+        WorkOrder updatedWorkOrder = [SELECT Id, OwnerId FROM WorkOrder WHERE Id = :workOrder.Id LIMIT 1];
 
         Group archive = [SELECT Id FROM Group WHERE TYPE = 'Queue' AND NAME = 'HOT Arkiv' LIMIT 1];
 
         System.assertEquals(
             archive.Id,
-            workOrderUpdated.OwnerId,
+            updatedWorkOrder.OwnerId,
             'The owner was not changed to "HOT Arkiv" as expected.'
         );
     }
