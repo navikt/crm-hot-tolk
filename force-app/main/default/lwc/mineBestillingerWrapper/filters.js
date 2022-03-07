@@ -25,7 +25,7 @@ export let filterArray = [
                 label: 'Du har fått tolk'
             },
             {
-                name: 'Cannot Complete',
+                name: 'Ikke ledig tolk',
                 label: 'Ikke ledig tolk'
             },
             {

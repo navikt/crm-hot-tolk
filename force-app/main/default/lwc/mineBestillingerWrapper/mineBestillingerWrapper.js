@@ -4,10 +4,13 @@ import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
-import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
-import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import FILE_CONSENT from '@salesforce/schema/HOT_Request__c.IsFileConsent__c';
 import NOTIFY_DISPATCHER from '@salesforce/schema/HOT_Request__c.IsNotifyDispatcher__c';
+import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
+import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
+import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkORder.HOT_IsNotifyDispatcher__c';
+import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
+import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import { refreshApex } from '@salesforce/apex';
 import { updateRecord } from 'lightning/uiRecordApi';
 
@@ -28,7 +31,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track filters = [];
     connectedCallback() {
         this.filters = defaultFilters();
-        //this.refresh();
     }
     isRequestDetails = false;
     isWorkOrderDetails = false;
@@ -39,28 +41,28 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     @track records = [];
     @track allRecords = [];
-    wiredMyWorkOrdersNewResult;
+    noWorkOrders = false;
+    wiredgetWorkOrdersResult;
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
-    wiredMyWorkOrdersNew(result) {
-        this.wiredMyWorkOrdersNewResult = result;
+    wiredgetWorkOrdersHandler(result) {
+        this.wiredgetWorkOrdersResult = result;
         if (result.data) {
             this.records = [...result.data];
+            this.noWorkOrders = this.records.length === 0;
             this.allRecords = [...result.data];
-            this.refresh();
+            this.refresh(false);
         }
     }
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
-        console.log('getStateParameters');
-        console.log(JSON.stringify(currentPageReference.state));
         if (
             currentPageReference &&
             Object.keys(currentPageReference.state).length > 0 &&
             this.isNavigatingAway === false
         ) {
             this.urlStateParameters = { ...currentPageReference.state };
-            this.refresh();
+            this.refresh(false);
         }
     }
     @track request = { MeetingStreet__c: '', Subject__c: '' };
@@ -161,7 +163,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
         this.urlStateParameters.id = recordId;
         this.urlStateParameters.level = level;
-        this.refresh();
+        this.refresh(true);
     }
 
     editButtonLabel = 'Rediger';
@@ -203,13 +205,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.urlStateParameters.id = '';
             this.urlStateParameters.level = '';
         }
-        this.refresh();
+        this.refresh(true);
     }
 
-    refresh() {
-        console.log('refresh');
+    refresh(isUpdateURL) {
         this.getRecords();
-        this.updateURL();
+        if (isUpdateURL) {
+            this.updateURL();
+        }
         this.setColumns();
         this.updateView();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -344,7 +347,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 pageName: 'ny-bestilling'
             },
             state: {
-                fromList: true
+                fromList: true,
+                isAccount: this.isAccount
             }
         });
     }
@@ -354,13 +358,19 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.template.querySelector('.ReactModal__Overlay').classList.remove('hidden');
         this.template.querySelector('.loader').classList.remove('hidden');
         const fields = {};
-        fields[REQUEST_ID.fieldApiName] = this.request.Id;
-        fields[STATUS.fieldApiName] = 'Avlyst';
-        fields[NOTIFY_DISPATCHER.fieldApiName] = true;
+        if (this.urlStateParameters.level === 'R') {
+            fields[REQUEST_ID.fieldApiName] = this.request.Id;
+            fields[STATUS.fieldApiName] = 'Avlyst';
+            fields[NOTIFY_DISPATCHER.fieldApiName] = true;
+        } else {
+            fields[WORKORDER_ID.fieldApiName] = this.workOrder.Id;
+            fields[WORKORDER_STATUS.fieldApiName] = 'Canceled';
+            fields[WORKORDER_NOTIFY_DISPATCHER.fieldApiName] = true;
+        }
         const recordInput = { fields };
         updateRecord(recordInput)
             .then(() => {
-                refreshApex(this.wiredMyWorkOrdersNewResult);
+                refreshApex(this.wiredgetWorkOrdersResult);
                 this.noCancelButton = true;
                 this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
                 this.template.querySelector('.loader').classList.add('hidden');
@@ -488,6 +498,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     refreshList() {
-        refreshApex(this.wiredMyWorkOrdersNewResult);
+        refreshApex(this.wiredgetWorkOrdersResult);
     }
 }

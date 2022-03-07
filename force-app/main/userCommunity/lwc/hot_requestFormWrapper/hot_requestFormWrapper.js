@@ -207,7 +207,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         let parsed_params = getParametersFromURL();
         if (parsed_params != null) {
             if (parsed_params.fromList != null) {
-                this.previousPage = 'mine-bestillinger';
+                this.previousPage = parsed_params.isAccount ? 'mine-bestillinger' : 'mine-bestillinger-andre';
                 this.breadcrumbs[this.breadcrumbs.length - 1].label = 'Mine Bestillinger';
                 this.breadcrumbs[this.breadcrumbs.length - 1].href = 'mine-bestillinger';
             }
@@ -259,10 +259,11 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     @track requestIds = [];
 
     goToMyRequests() {
+        let pageName = this.fieldValues.Type__c === 'Me' ? 'mine-bestillinger' : 'mine-bestillinger-andre';
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
-                pageName: 'mine-bestillinger'
+                pageName: pageName
             }
         });
     }

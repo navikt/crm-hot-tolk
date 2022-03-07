@@ -2,6 +2,7 @@
     <div class="brodsmulesti">
         <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
     </div>
+
     <main class="mainContent">
         <div class="mine-bestillinger-wrapper">
             <div class="navigation-container">
@@ -34,7 +35,7 @@
                     <p>Gjelder fra: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
                     <p>Adresse: <span>{requestAddressToShow}</span></p>
                     <br />
-                    <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
+                    <p>Bestiller: <span>{request.OrdererName__c}</span></p>
                 </div>
             </div>
             <div if:true={isWorkOrderDetails}>
@@ -47,7 +48,7 @@
                     <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
                     <br />
                     <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
-                    <p>Bestiller: <span>{request.Orderer__r.Name}</span></p>
+                    <p>Bestiller: <span>{request.OrdererName__c}</span></p>
                     <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
                     <br />
                     <p if:true={request.UserPreferredInterpreter__c}>
@@ -108,17 +109,33 @@
                     disabled={isRequestAddFilesButtonDisabled}
                 ></c-button>
             </div>
-            <div class="record-details-container">
+            <div class="record-details-container" if:false={noWorkOrders}>
                 <div style="display: flex; flex-direction: row; justify-content: end">
-                    <c-button
+                    <button
+                        if:false={isWorkOrderDetails}
                         class="refresh-button"
-                        if:false={urlStateParameters.id}
-                        button-label="Oppdater liste"
-                        button-styling="secondary"
-                        desktop-style="justify-content: center"
-                        mobile-style="justify-content: center"
-                        onbuttonclick={refreshList}
-                    ></c-button>
+                        title="Oppdater liste"
+                        onclick={refreshList}
+                        onkeypress={refreshList}
+                        aria-label="Oppdater liste"
+                    >
+                        <svg
+                            width="1em"
+                            height="1em"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            focusable="false"
+                            role="img"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M0 4.005h5a10.017 10.017 0 00-4 8.02C1 15.956 3.26 19.358 6.543 21l.893-1.794A8.021 8.021 0 013 12.024a8.02 8.02 0 014-6.947v5.945h2V2H0v2.005zm23 7.97c0 3.281-1.572 6.192-4 8.02h5V22h-9v-9.022h2v5.945a8.02 8.02 0 004-6.947 8.021 8.021 0 00-4.436-7.182L17.456 3A10.027 10.027 0 0123 11.976z"
+                                fill="currentColor"
+                            ></path>
+                        </svg>
+                    </button>
                 </div>
                 <c-table
                     if:false={isWorkOrderDetails}
@@ -127,6 +144,10 @@
                     onrowclick={goToRecordDetails}
                     icon-by-value={iconByValue}
                 ></c-table>
+            </div>
+            <div if:true={noWorkOrders} style="text-align: center">
+                <br />
+                Du har ingen bestillinger. Når du sender inn en ny bestilling vil den vises her.
             </div>
         </div>
     </main>

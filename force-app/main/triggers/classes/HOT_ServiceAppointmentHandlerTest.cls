@@ -869,4 +869,14 @@ private class HOT_ServiceAppointmentHandlerTest {
             'The owner was not changed to "HOT Arkiv" as expected.'
         );
     }
+
+    @isTest
+    public static void checkIfHOTAccountFieldIsEqualToAccountOnInsert() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AccountId, HOT_Account__c
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        System.assertEquals(serviceAppointment.AccountId, serviceAppointment.HOT_Account__c, 'SA HOT_Account__c was not set correctly.');
+    }
 }

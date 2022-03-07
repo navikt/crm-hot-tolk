@@ -132,7 +132,7 @@ export let myServiceAppointmentFieldLabels = {
     EarliestStartTime: { label: 'Bestilt starttid', type: 'datetime' },
     DueDate: { label: 'Bestilt sluttid', type: 'datetime' },
     ActualStartTime: { label: 'Faktisk start', type: 'datetime' },
-    ActualEndTime: { label: 'Faktsik slutt', type: 'datetime' },
+    ActualEndTime: { label: 'Faktisk slutt', type: 'datetime' },
     HOT_AddressFormated__c: { label: 'Adresse', type: 'string' },
     HOT_ServiceTerritoryName__c: { label: 'Region', type: 'string' },
     Status: { label: 'Status', type: 'string' },
@@ -141,7 +141,8 @@ export let myServiceAppointmentFieldLabels = {
     HOT_DegreeOfHearingAndVisualImpairment__c: { label: 'Vedtak', type: 'string' },
     HOT_WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
     HOT_TermsOfAgreement__c: { label: 'Avtalte betingelser', type: 'string' },
-    Description: { label: 'Tilleggsopplysninger', type: 'string' }
+    Description: { label: 'Tilleggsopplysninger', type: 'string' },
+    HOT_Dispatcher__c: {label: 'Formidler', type: 'string'}
 };
 
 export let workOrderFieldLabels = {

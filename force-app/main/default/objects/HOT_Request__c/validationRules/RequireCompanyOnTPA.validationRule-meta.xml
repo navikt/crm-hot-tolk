@@ -6,7 +6,16 @@
 &amp;&amp;
 !ISPICKVAL(Source__c, &quot;Community&quot;)
 &amp;&amp;
-ISBLANK(Company__c)</errorConditionFormula>
+ISBLANK(Company__c)
+&amp;&amp;
+(
+ISNEW() || 
+ISCHANGED(AssignmentType__c) || 
+ISCHANGED(Company__c) || 
+ISCHANGED(Source__c)
+)
+&amp;&amp;  
+!$Permission.Validation_Override</errorConditionFormula>
     <errorDisplayField>Company__c</errorDisplayField>
     <errorMessage>Når du har valgt &quot;Tolk på arbeidsplass - TPA&quot; som oppdragstype må du fylle ut feltet Virksomhet.</errorMessage>
 </ValidationRule>

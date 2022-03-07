@@ -2,16 +2,24 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     public override void onBeforeInsert() {
         setDefaultFields((List<WorkOrder>) records);
         setWorkOrdersToCopyTextFields((List<WorkOrder>) records);
+        setDuration((List<WorkOrder>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrder> avlystWorkOrder = new List<WorkOrder>();
         List<WorkOrder> setWorkOrdersToUpdateTextFields = new List<WorkOrder>();
         List<WorkOrder> workOrdersToChangeOwnerToArchive = new List<WorkOrder>();
+        List<WorkOrder> setDurationWorkOrders = new List<WorkOrder>();
 
         for (WorkOrder workorder : (List<WorkOrder>) records) {
             if (workorder.Status != triggerOldMap.get(workorder.Id).get('Status') && workorder.Status == 'Canceled') {
                 avlystWorkOrder.add(workorder);
+            }
+            if (
+                workorder.StartDate != triggerOldMap.get(workorder.Id).get('StartDate') ||
+                workorder.EndDate != triggerOldMap.get(workorder.Id).get('EndDate')
+            ) {
+                setDurationWorkOrders.add(workorder);
             }
 
             if (
@@ -30,16 +38,17 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 workOrdersToChangeOwnerToArchive.add(WorkOrder);
             }
         }
-
         if (avlystWorkOrder.size() > 0) {
             setCancelDate(avlystWorkOrder);
         }
-
         if (setWorkOrdersToUpdateTextFields.size() > 0) {
             setWorkOrdersToUpdateTextFields(setWorkOrdersToUpdateTextFields, triggerOldMap);
         }
         if (workOrdersToChangeOwnerToArchive.size() > 0) {
             setArchiveAsOwner(workOrdersToChangeOwnerToArchive);
+        }
+        if (setDurationWorkOrders.size() > 0) {
+            setDuration(setDurationWorkOrders);
         }
     }
 
@@ -74,7 +83,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
         //Om status eller tidspunkt på WorkOrder er endret, kan det ha ført til at den førstkommende, ikke-avlyste WorkOrderen har endret seg
         for (WorkOrder record : records) {
-            System.debug('record: ' + record);
             if (
                 record.Status != triggerOldMap.get(record.Id).get('Status') ||
                 record.StartDate != triggerOldMap.get(record.Id).get('StartDate') ||
@@ -83,7 +91,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 updatedWorkOrders.add(record);
             }
         }
-
         if (updatedWorkOrders.size() > 0) {
             updateRequests(updatedWorkOrders);
         }
@@ -420,6 +427,13 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
         for (WorkOrder workOrder : workOrders) {
             workOrder.OwnerId = archive.QueueId;
+        }
+    }
+
+    public static void setDuration(List<workOrder> workOrders) {
+        for (WorkOrder workOrder : workOrders) {
+            workOrder.Duration =
+                ((Double) workOrder.EndDate.getTime() - (Double) workOrder.StartDate.getTime()) / 3600000;
         }
     }
 }

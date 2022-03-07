@@ -451,7 +451,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.SchedEndTime = serviceAppointment.DueDate;
             serviceAppointment.HOT_IsReleasedToFreelance__c = false;
             serviceAppointment.HOT_IsEmployedInterpreter__c = true;
-
+            
             if (serviceAppointment.ParentRecordId != null) {
                 if (
                     serviceAppointment.HOT_Request__c == null &&
