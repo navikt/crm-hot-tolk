@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseValues>
         <article>Definite</article>
@@ -31,8 +31,27 @@
         <value>Arbeidsordrer</value>
     </caseValues>
     <gender>Masculine</gender>
+    <layouts>
+        <layout>HOT Work Order Layout</layout>
+        <sections>
+            <label>Adresse</label>
+            <section>Address</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Automatisk planlegg --></label>
+        <name>AutoSchedule</name>
+    </quickActions>
     <quickActions>
         <label><!-- SendEmail --></label>
         <name>SendEmail</name>
     </quickActions>
+    <validationRules>
+        <errorMessage><!-- Bruker kan ikke endres. --></errorMessage>
+        <name>Account_cannot_be_edited</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- En arbeidsordre kan ikke strekke seg over med enn 24 timer. --></errorMessage>
+        <name>HOT_DurationMax24Hours</name>
+    </validationRules>
 </CustomObjectTranslation>
