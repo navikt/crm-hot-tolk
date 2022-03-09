@@ -21,6 +21,12 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>isDispatcherChoice</name>
+            <value>
+                <elementReference>isDispatcher</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>isScreenInterpreterChoice</name>
             <value>
                 <elementReference>isScreenInterpreter</elementReference>
@@ -55,6 +61,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Description</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Dispatcher</name>
+        <choiceText>Formidler</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Dispatcher</stringValue>
         </value>
     </choices>
     <choices>
@@ -114,6 +128,11 @@
         <name>isDescription</name>
         <dataType>Boolean</dataType>
         <expression>CONTAINS({!ChosenFields}, {!Description})</expression>
+    </formulas>
+    <formulas>
+        <name>isDispatcher</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!Dispatcher})</expression>
     </formulas>
     <formulas>
         <name>isScreenInterpreter</name>
@@ -200,8 +219,9 @@
             <choiceReferences>Subject</choiceReferences>
             <choiceReferences>Description</choiceReferences>
             <choiceReferences>ScreenInterpreter</choiceReferences>
+            <choiceReferences>Dispatcher</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>ChosenFields</fieldText>
+            <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
             <isRequired>true</isRequired>
         </fields>
@@ -379,6 +399,38 @@
                 </conditions>
             </visibilityRule>
         </fields>
+        <fields>
+            <name>DispatcherLookup</name>
+            <extensionName>flowruntime:lookup</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>fieldApiName</name>
+                <value>
+                    <stringValue>DispatcherLookup__c</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Dispatcher</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>objectApiName</name>
+                <value>
+                    <elementReference>getRequest.Dispatcher__c</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>recordId</name>
+                <value>
+                    <elementReference>getRequest.Dispatcher__r.Id</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
@@ -389,7 +441,7 @@
             <targetReference>getRequest</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>

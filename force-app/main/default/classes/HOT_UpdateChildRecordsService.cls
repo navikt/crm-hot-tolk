@@ -10,6 +10,8 @@ public without sharing class HOT_UpdateChildRecordsService {
     public Boolean isDescriptionChoice;
     @InvocableVariable
     public Boolean isScreenInterpreterChoice;
+    @InvocableVariable
+    public Boolean isDispatcherChoice;
 
     @InvocableMethod
     public static List<String> updateChildRecordsFromRequest(List<HOT_UpdateChildRecordsService> inputVariables) {
@@ -37,6 +39,9 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         if (input.isScreenInterpreterChoice) {
             requestToUpdate.IsScreenInterpreter__c = request.IsScreenInterpreter__c;
+        }
+        if (input.isDispatcherChoice) {
+            requestToUpdate.Dispatcher__c = request.Dispatcher__c;
         }
 
         try {
@@ -169,9 +174,11 @@ public without sharing class HOT_UpdateChildRecordsService {
             if (input.isDescriptionChoice) {
                 serviceAppointment.Description = request.Description__c;
             }
-
             if (input.isScreenInterpreterChoice) {
                 serviceAppointment.HOT_IsScreenInterpreterNew__c = request.IsScreenInterpreter__c;
+            }
+            if (input.isDispatcherChoice) {
+                serviceAppointment.HOT_DispatcherNew__c = request.Dispatcher__c;
             }
         }
 
