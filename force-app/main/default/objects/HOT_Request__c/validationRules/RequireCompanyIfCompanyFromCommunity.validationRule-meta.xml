@@ -18,6 +18,8 @@ ISCHANGED(Company__c) ||
 ISCHANGED(OrganizationNumber__c)
 )
 &amp;&amp;
+! ISPICKVAL(Status__c, &apos;Annullert&apos;) 
+&amp;&amp;
 !$Permission.Validation_Override</errorConditionFormula>
     <errorDisplayField>OrganizationNumber__c</errorDisplayField>
     <errorMessage>Fant ingen virksomhet med dette organisasjonsnummeret.</errorMessage>
