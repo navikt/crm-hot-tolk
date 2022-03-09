@@ -406,7 +406,7 @@
             <inputParameters>
                 <name>fieldApiName</name>
                 <value>
-                    <stringValue>DispatcherLookup__c</stringValue>
+                    <stringValue>Dispatcher__c</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -418,13 +418,13 @@
             <inputParameters>
                 <name>objectApiName</name>
                 <value>
-                    <elementReference>getRequest.Dispatcher__c</elementReference>
+                    <stringValue>HOT_Request__c</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
                 <name>recordId</name>
                 <value>
-                    <elementReference>getRequest.Dispatcher__r.Id</elementReference>
+                    <elementReference>getRequest.Dispatcher__c</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -441,7 +441,7 @@
             <targetReference>getRequest</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>
