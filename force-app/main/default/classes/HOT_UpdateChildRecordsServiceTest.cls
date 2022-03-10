@@ -45,6 +45,7 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
         input.isSubjectChoice = true;
         input.isDescriptionChoice = true;
         input.isScreenInterpreterChoice = true;
+        input.isDispatcherChoice = true;
 
         Test.startTest();
         HOT_UpdateChildRecordsService.updateChildRecordsFromRequest(new List<HOT_UpdateChildRecordsService>{ input });
