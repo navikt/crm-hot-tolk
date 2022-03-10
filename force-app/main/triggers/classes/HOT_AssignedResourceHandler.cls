@@ -211,7 +211,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         );
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
             [
-                SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c, HOT_ServiceTerritory__r.Id
+                SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c, HOT_ServiceTerritory__c
                 FROM ServiceResource
                 WHERE Id IN :serviceResourceIds
             ]
@@ -219,40 +219,42 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
 
         Map<Id, ServiceAppointment> serviceAppointmentsToUpdate = new Map<Id, ServiceAppointment>();
         for (AssignedResource assignedResource : assignedResources) {
+            ServiceAppointment currentServiceAppointment = serviceAppointments.get(assignedResource.ServiceAppointmentId);
+            ServiceResource currentServiceResource = serviceResources.get(assignedResource.ServiceResourceId);
             // Set Interpreter/Freelance fields
             if (
-                serviceResources.get(assignedResource.ServiceResourceId).HOT_IsEmployedInterpreter__c !=
-                serviceAppointments.get(assignedResource.ServiceAppointmentId).HOT_IsEmployedInterpreter__c
+                currentServiceResource.HOT_IsEmployedInterpreter__c !=
+                currentServiceAppointment.HOT_IsEmployedInterpreter__c
             ) {
-                serviceAppointments.get(assignedResource.ServiceAppointmentId)
-                    .HOT_IsEmployedInterpreter__c = serviceResources.get(assignedResource.ServiceResourceId)
+                currentServiceAppointment
+                    .HOT_IsEmployedInterpreter__c = currentServiceResource
                     .HOT_IsEmployedInterpreter__c;
-                serviceAppointments.get(assignedResource.ServiceAppointmentId)
-                    .HOT_IsReleasedToFreelance__c = serviceResources.get(assignedResource.ServiceResourceId)
+                currentServiceAppointment
+                    .HOT_IsReleasedToFreelance__c = currentServiceResource
                     .HOT_IsFreelanceInterpreter__c;
-                serviceAppointmentsToUpdate.put(serviceAppointments.get(assignedResource.ServiceAppointmentId).Id, serviceAppointments.get(assignedResource.ServiceAppointmentId));
+                serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
             }
             // Set ServiceTerritory
             if (
-                serviceAppointments.get(assignedResource.ServiceAppointmentId).ServiceTerritoryId !=
-                serviceResources.get(assignedResource.ServiceResourceId).HOT_ServiceTerritory__r.Id
+                currentServiceAppointment.ServiceTerritoryId !=
+                currentServiceResource.HOT_ServiceTerritory__c
             ) {
-                serviceAppointments.get(assignedResource.ServiceAppointmentId)
-                    .ServiceTerritoryId = serviceResources.get(assignedResource.ServiceResourceId)
+                currentServiceAppointment
+                    .ServiceTerritoryId = currentServiceResource
                     .HOT_ServiceTerritory__c;
-                serviceAppointmentsToUpdate.put(serviceAppointments.get(assignedResource.ServiceAppointmentId).Id, serviceAppointments.get(assignedResource.ServiceAppointmentId));
+                serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
             }
             // Set SchedStartTime and SchedEndTime
-            if (serviceAppointments.get(assignedResource.ServiceAppointmentId).EarliestStartTime != null && serviceAppointments.get(assignedResource.ServiceAppointmentId)
-            .SchedStartTime != serviceAppointments.get(assignedResource.ServiceAppointmentId).EarliestStartTime) {
-                serviceAppointments.get(assignedResource.ServiceAppointmentId)
-                .SchedStartTime = serviceAppointments.get(assignedResource.ServiceAppointmentId).EarliestStartTime;
+            if (currentServiceAppointment.EarliestStartTime != null && currentServiceAppointment
+            .SchedStartTime != currentServiceAppointment.EarliestStartTime) {
+                currentServiceAppointment
+                .SchedStartTime = currentServiceAppointment.EarliestStartTime;
             }
-            if (serviceAppointments.get(assignedResource.ServiceAppointmentId).DueDate != null && serviceAppointments.get(assignedResource.ServiceAppointmentId)
-            .DueDate != serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedEndTime) {
-                serviceAppointments.get(assignedResource.ServiceAppointmentId)
-                .SchedEndTime = serviceAppointments.get(assignedResource.ServiceAppointmentId).DueDate;
-                serviceAppointmentsToUpdate.put(serviceAppointments.get(assignedResource.ServiceAppointmentId).Id, serviceAppointments.get(assignedResource.ServiceAppointmentId));
+            if (currentServiceAppointment.DueDate != null && currentServiceAppointment
+            .DueDate != currentServiceAppointment.SchedEndTime) {
+                currentServiceAppointment
+                .SchedEndTime = currentServiceAppointment.DueDate;
+                serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
             }
         }
         update serviceAppointmentsToUpdate.values();
