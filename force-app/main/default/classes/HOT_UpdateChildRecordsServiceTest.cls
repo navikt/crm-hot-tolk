@@ -130,6 +130,6 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
             serviceAppointments.values()[0].Subject,
             'Could not update Subject on ServiceAppointment'
         );
-        System.assertEquals(request.Dispatcher__c, serviceAppointments.HOT_DispatcherNew__c, 'Could not update Dispatcher on Request');
+        System.assertEquals(request.Dispatcher__c, serviceAppointments.values()[0].HOT_DispatcherNew__c, 'Could not update Dispatcher on Request');
     }
 }
