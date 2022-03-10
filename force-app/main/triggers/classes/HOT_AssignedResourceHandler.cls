@@ -243,11 +243,13 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 serviceAppointmentsToUpdate.add(serviceAppointments.get(assignedResource.ServiceAppointmentId));
             }
             // Set SchedStartTime and SchedEndTime
-            if (serviceAppointments.get(assignedResource.ServiceAppointmentId).EarliestStartTime != null) {
+            if (serviceAppointments.get(assignedResource.ServiceAppointmentId).EarliestStartTime != null && serviceAppointments.get(assignedResource.ServiceAppointmentId)
+            .SchedStartTime != serviceAppointments.get(assignedResource.ServiceAppointmentId).EarliestStartTime) {
                 serviceAppointments.get(assignedResource.ServiceAppointmentId)
                 .SchedStartTime = serviceAppointments.get(assignedResource.ServiceAppointmentId).EarliestStartTime;
             }
-            if (serviceAppointments.get(assignedResource.ServiceAppointmentId).DueDate != null) {
+            if (serviceAppointments.get(assignedResource.ServiceAppointmentId).DueDate != null && serviceAppointments.get(assignedResource.ServiceAppointmentId)
+            .DueDate != serviceAppointments.get(assignedResource.ServiceAppointmentId).SchedEndTime) {
                 serviceAppointments.get(assignedResource.ServiceAppointmentId)
                 .SchedEndTime = serviceAppointments.get(assignedResource.ServiceAppointmentId).DueDate;
             }
