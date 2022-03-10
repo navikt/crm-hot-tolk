@@ -142,7 +142,7 @@ public without sharing class HOT_Utility {
     public static void setArchiveAsOwner(List<SObject> records) {
         Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
         for (Sobject record : records) {
-            record.OwnerId = archive.Id;
+            record.get('OwnerId') = archive.Id;
         }
     }
 }

@@ -45,7 +45,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             setWorkOrdersToUpdateTextFields(setWorkOrdersToUpdateTextFields, triggerOldMap);
         }
         if (workOrdersToChangeOwnerToArchive.size() > 0) {
-            setArchiveAsOwner(workOrdersToChangeOwnerToArchive);
+            HOT_Utility.setArchiveAsOwner(workOrdersToChangeOwnerToArchive);
         }
         if (setDurationWorkOrders.size() > 0) {
             setDuration(setDurationWorkOrders);
@@ -419,14 +419,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             if (workOrder.HOT_UserDescription__c != triggerOldMap.get(workOrder.Id).get('HOT_UserDescription__c')) {
                 workOrder.Description = workOrder.HOT_UserDescription__c;
             }
-        }
-    }
-
-    public static void setArchiveAsOwner(List<WorkOrder> workOrders) {
-        QueueSobject archive = [SELECT QueueId FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
-
-        for (WorkOrder workOrder : workOrders) {
-            workOrder.OwnerId = archive.QueueId;
         }
     }
 
