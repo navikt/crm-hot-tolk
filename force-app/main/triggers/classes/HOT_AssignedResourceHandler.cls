@@ -230,7 +230,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 serviceAppointments.get(assignedResource.ServiceAppointmentId)
                     .HOT_IsReleasedToFreelance__c = serviceResources.get(assignedResource.ServiceResourceId)
                     .HOT_IsFreelanceInterpreter__c;
-                serviceAppointmentsToUpdate.add(serviceAppointments.get(assignedResource.ServiceAppointmentId));
             }
             // Set ServiceTerritory
             if (
@@ -240,7 +239,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 serviceAppointments.get(assignedResource.ServiceAppointmentId)
                     .ServiceTerritoryId = serviceResources.get(assignedResource.ServiceResourceId)
                     .HOT_ServiceTerritory__c;
-                serviceAppointmentsToUpdate.add(serviceAppointments.get(assignedResource.ServiceAppointmentId));
             }
             // Set SchedStartTime and SchedEndTime
             if (serviceAppointments.get(assignedResource.ServiceAppointmentId).EarliestStartTime != null && serviceAppointments.get(assignedResource.ServiceAppointmentId)
@@ -253,6 +251,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 serviceAppointments.get(assignedResource.ServiceAppointmentId)
                 .SchedEndTime = serviceAppointments.get(assignedResource.ServiceAppointmentId).DueDate;
             }
+            serviceAppointmentsToUpdate.add(serviceAppointments.get(assignedResource.ServiceAppointmentId));
         }
         update serviceAppointmentsToUpdate;
     }
