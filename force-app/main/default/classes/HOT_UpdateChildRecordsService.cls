@@ -21,7 +21,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         HOT_UpdateChildRecordsService input = inputVariables[0];
         HOT_Request__c request = input.request;
         List<String> errors = new List<String>();
-
+        
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
         if (input.isAddressChoice) {
             requestToUpdate.InterpretationStreet__c = request.InterpretationStreet__c;
@@ -100,7 +100,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                     City,
                     Subject,
                     Description,
-                    HOT_IsScreenInterpreterNew__c
+                    HOT_IsScreenInterpreterNew__c,
+                    HOT_DispatcherNew__c
                 FROM ServiceAppointment
                 WHERE HOT_Request__c = :request.Id AND Status IN :saStatuses
             ]
