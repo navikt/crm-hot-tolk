@@ -241,7 +241,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             preserveSchedulesTimes(serviceAppointmentsChangedOrderedTime, triggerOldMap);
         }
         if (serviceAppointmentsToChangeOwnerToArchive.size() > 0) {
-            setArchiveAsOwner(serviceAppointmentsToChangeOwnerToArchive);
+            HOT_Utility.setArchiveAsOwner(serviceAppointmentsToChangeOwnerToArchive);
         }
     }
 
@@ -968,14 +968,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             if (sa.ActualEndTime != null) {
                 sa.SchedEndTime = sa.ActualEndTime;
             }
-        }
-    }
-
-    public static void setArchiveAsOwner(List<ServiceAppointment> serviceAppointments) {
-        QueueSobject archive = [SELECT QueueId FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
-
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.OwnerId = archive.QueueId;
         }
     }
 }

@@ -849,10 +849,15 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @isTest
     public static void setArchiveAsOwnerTest() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = [SELECT Id, OwnerId FROM ServiceAppointment LIMIT 1];
 
+        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
+        System.assertNotEquals(archive.Id, serviceAppointment.OwnerId, 'The owner was "HOT Arkiv". Should be different owner.');
+
+        Test.startTest();
         serviceAppointment.HOT_IsHideServiceApointment__c = true;
         update serviceAppointment;
+        Test.stopTest();
 
         ServiceAppointment updatedServiceAppointment = [
             SELECT Id, OwnerId
@@ -860,9 +865,6 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE Id = :serviceAppointment.Id
             LIMIT 1
         ];
-
-        Group archive = [SELECT Id FROM Group WHERE TYPE = 'Queue' AND NAME = 'HOT Arkiv' LIMIT 1];
-
         System.assertEquals(
             archive.Id,
             updatedServiceAppointment.OwnerId,

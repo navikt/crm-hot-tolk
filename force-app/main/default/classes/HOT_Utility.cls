@@ -138,4 +138,11 @@ public without sharing class HOT_Utility {
         skillMap.put('Tegnspraktolk', 'Tegnspråktolk');
         return [SELECT Id, MasterLabel FROM Skill WHERE DeveloperName IN :skillMap.keySet()];
     }
+
+    public static void setArchiveAsOwner(List<SObject> records) {
+        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
+        for (Sobject record : records) {
+            record.OwnerId = archive.Id;
+        }
+    }
 }

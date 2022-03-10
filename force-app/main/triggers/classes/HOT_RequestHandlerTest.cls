@@ -183,12 +183,16 @@ private class HOT_RequestHandlerTest {
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
+
+        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
+        System.assertNotEquals(archive.Id, request.OwnerId, 'The owner was "HOT Arkiv". Should be different owner.');
+
+        Test.startTest();
         request.IsHideRequest__c = true;
         update request;
+        Test.stopTest();
 
         HOT_Request__c updatedRequest = [SELECT Id, OwnerId FROM HOT_Request__c WHERE Id = :request.Id LIMIT 1];
-        Group archive = [SELECT Id FROM Group WHERE TYPE = 'Queue' AND NAME = 'HOT Arkiv' LIMIT 1];
-
         System.assertEquals(
             archive.Id,
             updatedRequest.OwnerId,

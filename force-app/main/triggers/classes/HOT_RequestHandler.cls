@@ -111,7 +111,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             setRequestsToUpdateTextFields(requestsToUpdateTextFields, triggerOldMap);
         }
         if (requestsToChangeOwnerToArchive.size() > 0) {
-            setArchiveAsOwner(requestsToChangeOwnerToArchive);
+            HOT_Utility.setArchiveAsOwner(requestsToChangeOwnerToArchive);
         }
     }
 
@@ -397,14 +397,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (request.UserDescription__c != triggerOldMap.get(request.Id).get('UserDescription__c')) {
                 request.Description__c = request.UserDescription__c;
             }
-        }
-    }
-
-    public static void setArchiveAsOwner(List<Hot_Request__c> requests) {
-        QueueSobject archive = [SELECT QueueId FROM QueueSobject WHERE Queue.Name = 'HOT Arkiv' LIMIT 1];
-
-        for (HOT_Request__c request : requests) {
-            request.OwnerId = archive.QueueId;
         }
     }
 }
