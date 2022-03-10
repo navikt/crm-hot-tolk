@@ -1,7 +1,7 @@
 @isTest
 public with sharing class HOT_UpdateChildRecordsServiceTest {
     @IsTest
-    static void methodName() {
+    static void updateChildRecordsServiceFlowTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Old Subject', workType);
@@ -62,7 +62,8 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
                 MeetingPostalCity__c,
                 Subject__c,
                 Description__c,
-                IsScreenInterpreter__c
+                IsScreenInterpreter__c,
+                Dispatcher__c
             FROM HOT_Request__c
             WHERE Id = :request.Id
         ];
@@ -110,7 +111,8 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
                     City,
                     Subject,
                     Description,
-                    HOT_IsScreenInterpreterNew__c
+                    HOT_IsScreenInterpreterNew__c,
+                    HOT_DispatcherNew__c
                 FROM ServiceAppointment
                 WHERE HOT_Request__c = :request.Id
             ]
@@ -128,5 +130,6 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
             serviceAppointments.values()[0].Subject,
             'Could not update Subject on ServiceAppointment'
         );
+        System.assertEquals(request.Dispatcher__c, serviceAppointments.HOT_DispatcherNew__c, 'Could not update Dispatcher on Request');
     }
 }
