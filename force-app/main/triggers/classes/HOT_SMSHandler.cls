@@ -10,7 +10,7 @@ public without sharing class HOT_SMSHandler extends MyTriggers {
             }
         }
         if (SMSToChangeOwnerToArchive .size() > 0) {
-            HOT_Utility.setArchiveAsOwner(SMSToChangeOwnerToArchive);
+            HOT_Utility.setArchiveAsOwner(SMSToChangeOwnerToArchive, 'SMS__c');
         }
     }
 }
