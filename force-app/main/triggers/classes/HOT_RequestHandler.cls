@@ -111,7 +111,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             setRequestsToUpdateTextFields(requestsToUpdateTextFields, triggerOldMap);
         }
         if (requestsToChangeOwnerToArchive.size() > 0) {
-            HOT_Utility.setArchiveAsOwner(requestsToChangeOwnerToArchive, 'HOT_Request__c');
+            HOT_Utility.setArchiveAsOwner(requestsToChangeOwnerToArchive);
         }
     }
 

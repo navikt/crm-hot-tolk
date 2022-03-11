@@ -139,26 +139,10 @@ public without sharing class HOT_Utility {
         return [SELECT Id, MasterLabel FROM Skill WHERE DeveloperName IN :skillMap.keySet()];
     }
 
-    public static void setArchiveAsOwner(List<SObject> records, String objectStr) {
-        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
-
-        if (objectStr == 'HOT_Request__c') {
-            for (HOT_Request__c record : (List<HOT_Request__c>) records) {
-                record.OwnerId = archive.Id;
-            }
-        } else if (objectStr == 'SMS__c') {
-            for (SMS__c record : (List<SMS__c>) records) {
-                record.OwnerId = archive.Id;
-            }
-        } else if (objectStr == 'ServiceAppointment') {
-            for (ServiceAppointment record : (List<ServiceAppointment>) records) {
-                record.OwnerId = archive.Id;
-            }
-        }
-        else if (objectStr == 'WorkOrder') {
-            for (WorkOrder record : (List<WorkOrder>) records) {
-                record.OwnerId = archive.Id;
-            }
+    public static void setArchiveAsOwner(List<SObject> records) {
+        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'Hot Arkiv' LIMIT 1];
+        for (SObject record : records) {
+            record.put('OwnerId', archive.Id);
         }
     }
 }

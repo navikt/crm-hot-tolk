@@ -241,7 +241,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             preserveSchedulesTimes(serviceAppointmentsChangedOrderedTime, triggerOldMap);
         }
         if (serviceAppointmentsToChangeOwnerToArchive.size() > 0) {
-            HOT_Utility.setArchiveAsOwner(serviceAppointmentsToChangeOwnerToArchive, 'ServiceAppointment');
+            HOT_Utility.setArchiveAsOwner(serviceAppointmentsToChangeOwnerToArchive);
         }
     }
 

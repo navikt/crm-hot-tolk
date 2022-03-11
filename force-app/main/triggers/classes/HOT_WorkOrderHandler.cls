@@ -45,7 +45,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             setWorkOrdersToUpdateTextFields(setWorkOrdersToUpdateTextFields, triggerOldMap);
         }
         if (workOrdersToChangeOwnerToArchive.size() > 0) {
-            HOT_Utility.setArchiveAsOwner(workOrdersToChangeOwnerToArchive, 'WorkOrder');
+            HOT_Utility.setArchiveAsOwner(workOrdersToChangeOwnerToArchive);
         }
         if (setDurationWorkOrders.size() > 0) {
             setDuration(setDurationWorkOrders);
