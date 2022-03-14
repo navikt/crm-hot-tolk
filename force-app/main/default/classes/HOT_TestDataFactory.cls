@@ -270,4 +270,9 @@ public class HOT_TestDataFactory {
         shift.EndTime = Datetime.now().addDays(1).addHours(1);
         return shift;
     }
+    public static SMS__c createSms() {
+        SMS__c sms = new SMS__c();
+        sms.Domain__c = 'HOT';
+        return sms;
+    }
 }
