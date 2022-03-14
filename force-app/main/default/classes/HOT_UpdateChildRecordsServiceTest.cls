@@ -24,7 +24,8 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
                 MeetingPostalCity__c,
                 Subject__c,
                 Description__c,
-                IsScreenInterpreter__c
+                IsScreenInterpreter__c,
+                Dispatcher__c
             FROM HOT_Request__c
             WHERE Id = :request.Id
         ];
