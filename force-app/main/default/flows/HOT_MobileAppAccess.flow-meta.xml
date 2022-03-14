@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>54.0</apiVersion>
     <decisions>
@@ -80,6 +80,9 @@
         <label>Delete Permission Set</label>
         <locationX>50</locationX>
         <locationY>758</locationY>
+        <connector>
+            <targetReference>SuccesRemoved</targetReference>
+        </connector>
         <faultConnector>
             <targetReference>Error_Occured_During_Deletion</targetReference>
         </faultConnector>
@@ -196,7 +199,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Occured_Text</name>
-            <fieldText>&lt;p&gt;En feil oppstod under tildeling av tilgang! Prøv igjen.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;En feil oppstod under tildeling av tilgang.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -212,7 +215,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Occured_During_Deletion_Text</name>
-            <fieldText>&lt;p&gt;En feil oppstod under fjerning av tilgang! Prøv igjen.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;En feil oppstod under fjerning av tilgang.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -247,7 +250,23 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Permission_Set_Assignment_Error_Text</name>
-            <fieldText>&lt;p&gt;Noe feilet 2. Prøv igjen.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Noe feilet da Tillatelsessetttildeling skulle hentes.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>SuccesRemoved</name>
+        <label>SuccesRemoved</label>
+        <locationX>50</locationX>
+        <locationY>878</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>removedText</name>
+            <fieldText>&lt;p&gt;Bruker har nå ikke lenger tilgang.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -279,7 +298,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>User_Not_Found_Text</name>
-            <fieldText>&lt;p&gt;Noe feilet. Prøv igjen.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Kunne ikke finne aktiv bruker for denne kontoen.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
