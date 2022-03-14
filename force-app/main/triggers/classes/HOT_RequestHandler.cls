@@ -62,6 +62,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> requestsToUpdateTextFields = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsToChangeOwnerToArchive = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
@@ -89,6 +90,12 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             ) {
                 requestsToUpdateTextFields.add(request);
             }
+            if (
+                triggerOldMap.get(request.Id).get('IsHideRequest__c') !== request.IsHideRequest__c &&
+                request.IsHideRequest__c
+            ) {
+                requestsToChangeOwnerToArchive.add(request);
+            }
         }
         if (ownerChangedRequests.size() > 0) {
             setServiceTerritory(ownerChangedRequests);
@@ -102,6 +109,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
         if (requestsToUpdateTextFields.size() > 0) {
             setRequestsToUpdateTextFields(requestsToUpdateTextFields, triggerOldMap);
+        }
+        if (requestsToChangeOwnerToArchive.size() > 0) {
+            HOT_Utility.setArchiveAsOwner(requestsToChangeOwnerToArchive);
         }
     }
 

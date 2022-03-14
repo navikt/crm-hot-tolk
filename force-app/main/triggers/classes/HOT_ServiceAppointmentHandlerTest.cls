@@ -848,13 +848,37 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @isTest
+    public static void setArchiveAsOwnerTest() {
+        ServiceAppointment serviceAppointment = [SELECT Id, OwnerId FROM ServiceAppointment LIMIT 1];
+
+        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
+        System.assertNotEquals(archive.Id, serviceAppointment.OwnerId, 'The owner was "HOT Arkiv". Should be different owner.');
+
+        Test.startTest();
+        serviceAppointment.HOT_IsHideServiceApointment__c = true;
+        update serviceAppointment;
+        Test.stopTest();
+
+        ServiceAppointment updatedServiceAppointment = [
+            SELECT Id, OwnerId
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+            LIMIT 1
+        ];
+        System.assertEquals(
+            archive.Id,
+            updatedServiceAppointment.OwnerId,
+            'The owner was not changed to "HOT Arkiv" as expected.'
+        );
+    }
+
+    @isTest
     public static void checkIfHOTAccountFieldIsEqualToAccountOnInsert() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, AccountId, HOT_Account__c
             FROM ServiceAppointment
             LIMIT 1
         ];
-
         System.assertEquals(serviceAppointment.AccountId, serviceAppointment.HOT_Account__c, 'SA HOT_Account__c was not set correctly.');
     }
 }
