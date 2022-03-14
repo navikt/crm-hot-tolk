@@ -250,7 +250,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Permission_Set_Assignment_Error_Text</name>
-            <fieldText>&lt;p&gt;Noe feilet da Tillatelsessettildeling skulle hentes.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Noe feilet da tillatelsessettildeling skulle hentes.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
