@@ -1,7 +1,6 @@
 public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
     public override void onBeforeInsert() {
-        updateServiceTerritoryOnServiceAppointment((List<AssignedResource>) records);
-        setResourceTypeOnServiceAppointment((List<AssignedResource>) records);
+        setResourceFieldsOnServiceAppointment((List<AssignedResource>) records);
         throwExceptionIfARHasSAOverlap((List<AssignedResource>) records, false);
     }
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -12,8 +11,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
         }
         if (assignedResourcesFiltered.size() > 0) {
-            updateServiceTerritoryOnServiceAppointment(assignedResourcesFiltered);
-            setResourceTypeOnServiceAppointment(assignedResourcesFiltered);
+            setResourceFieldsOnServiceAppointment(assignedResourcesFiltered);
             throwExceptionIfARHasSAOverlap(assignedResourcesFiltered, true);
         }
     }
@@ -196,36 +194,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         return interestedResources;
     }
 
-    public static void updateServiceTerritoryOnServiceAppointment(List<AssignedResource> assignedResources) {
-        List<Id> serviceAppointmentIds = new List<Id>();
-        List<Id> serviceResourceIds = new List<Id>();
-        for (AssignedResource assignedResource : assignedResources) {
-            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
-            serviceResourceIds.add(assignedResource.ServiceResourceId);
-        }
-        Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
-            [SELECT Id, ServiceTerritoryId FROM ServiceAppointment WHERE Id IN :serviceAppointmentIds]
-        );
-        Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
-            [SELECT Id, HOT_ServiceTerritory__r.Id FROM ServiceResource WHERE Id IN :serviceResourceIds]
-        );
-
-        List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
-        for (AssignedResource assignedResource : assignedResources) {
-            if (
-                serviceAppointments.get(assignedResource.ServiceAppointmentId).ServiceTerritoryId !=
-                serviceResources.get(assignedResource.ServiceResourceId).HOT_ServiceTerritory__r.Id
-            ) {
-                serviceAppointments.get(assignedResource.ServiceAppointmentId)
-                    .ServiceTerritoryId = serviceResources.get(assignedResource.ServiceResourceId)
-                    .HOT_ServiceTerritory__c;
-                serviceAppointmentsToUpdate.add(serviceAppointments.get(assignedResource.ServiceAppointmentId));
-            }
-        }
-        update serviceAppointmentsToUpdate;
-    }
-
-    public static void setResourceTypeOnServiceAppointment(List<AssignedResource> assignedResources) {
+    public static void setResourceFieldsOnServiceAppointment(List<AssignedResource> assignedResources) {
         List<Id> serviceAppointmentIds = new List<Id>();
         List<Id> serviceResourceIds = new List<Id>();
         for (AssignedResource assignedResource : assignedResources) {
@@ -234,35 +203,61 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         }
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c
+                SELECT Id, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c, ServiceTerritoryId, 
+                EarliestStartTime, DueDate, SchedStartTime, SchedEndTime
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
         );
         Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
             [
-                SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
+                SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c, HOT_ServiceTerritory__c
                 FROM ServiceResource
                 WHERE Id IN :serviceResourceIds
             ]
         );
 
-        List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
+        Map<Id, ServiceAppointment> serviceAppointmentsToUpdate = new Map<Id, ServiceAppointment>();
         for (AssignedResource assignedResource : assignedResources) {
+            ServiceAppointment currentServiceAppointment = serviceAppointments.get(assignedResource.ServiceAppointmentId);
+            ServiceResource currentServiceResource = serviceResources.get(assignedResource.ServiceResourceId);
+            // Set Interpreter/Freelance fields
             if (
-                serviceResources.get(assignedResource.ServiceResourceId).HOT_IsEmployedInterpreter__c !=
-                serviceAppointments.get(assignedResource.ServiceAppointmentId).HOT_IsEmployedInterpreter__c
+                currentServiceResource.HOT_IsEmployedInterpreter__c !=
+                currentServiceAppointment.HOT_IsEmployedInterpreter__c
             ) {
-                serviceAppointments.get(assignedResource.ServiceAppointmentId)
-                    .HOT_IsEmployedInterpreter__c = serviceResources.get(assignedResource.ServiceResourceId)
+                currentServiceAppointment
+                    .HOT_IsEmployedInterpreter__c = currentServiceResource
                     .HOT_IsEmployedInterpreter__c;
-                serviceAppointments.get(assignedResource.ServiceAppointmentId)
-                    .HOT_IsReleasedToFreelance__c = serviceResources.get(assignedResource.ServiceResourceId)
+                currentServiceAppointment
+                    .HOT_IsReleasedToFreelance__c = currentServiceResource
                     .HOT_IsFreelanceInterpreter__c;
-                serviceAppointmentsToUpdate.add(serviceAppointments.get(assignedResource.ServiceAppointmentId));
+                serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
+            }
+            // Set ServiceTerritory
+            if (
+                currentServiceAppointment.ServiceTerritoryId !=
+                currentServiceResource.HOT_ServiceTerritory__c
+            ) {
+                currentServiceAppointment
+                    .ServiceTerritoryId = currentServiceResource
+                    .HOT_ServiceTerritory__c;
+                serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
+            }
+            // Set SchedStartTime and SchedEndTime
+            if (currentServiceAppointment.EarliestStartTime != null && currentServiceAppointment
+            .SchedStartTime != currentServiceAppointment.EarliestStartTime) {
+                currentServiceAppointment
+                .SchedStartTime = currentServiceAppointment.EarliestStartTime;
+            }
+            if (currentServiceAppointment.DueDate != null && currentServiceAppointment
+            .DueDate != currentServiceAppointment.SchedEndTime) {
+                currentServiceAppointment
+                .SchedEndTime = currentServiceAppointment.DueDate;
+                serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
             }
         }
-        update serviceAppointmentsToUpdate;
+        update serviceAppointmentsToUpdate.values();
     }
 
     public static void notifyResource(List<AssignedResource> assignedResources) {
