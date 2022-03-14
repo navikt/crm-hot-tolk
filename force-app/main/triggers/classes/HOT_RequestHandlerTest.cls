@@ -176,4 +176,27 @@ private class HOT_RequestHandlerTest {
         req = [SELECT Source__c FROM HOT_Request__c WHERE Id = :req.Id];
         System.assertEquals(req.Source__c, 'Dispatcher', 'Request source is not "Dispatcher" (Formidler)');
     }
+
+    @isTest
+    public static void setArchiveAsOwnerTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
+        System.assertNotEquals(archive.Id, request.OwnerId, 'The owner was "HOT Arkiv". Should be different owner.');
+
+        Test.startTest();
+        request.IsHideRequest__c = true;
+        update request;
+        Test.stopTest();
+
+        HOT_Request__c updatedRequest = [SELECT Id, OwnerId FROM HOT_Request__c WHERE Id = :request.Id LIMIT 1];
+        System.assertEquals(
+            archive.Id,
+            updatedRequest.OwnerId,
+            'The owner was not changed to "HOT Arkiv" as expected.'
+        );
+    }
 }

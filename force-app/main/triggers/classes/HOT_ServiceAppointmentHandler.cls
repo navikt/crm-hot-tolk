@@ -24,6 +24,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithActualTimeSet = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsToChangeOwnerToArchive = new List<ServiceAppointment>();
 
         Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
         Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
@@ -178,6 +179,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsChangedOrderedTime.add(serviceAppointment);
             }
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsHideServiceApointment__c') !==
+                serviceAppointment.HOT_IsHideServiceApointment__c &&
+                serviceAppointment.HOT_IsHideServiceApointment__c
+            ) {
+                serviceAppointmentsToChangeOwnerToArchive.add(serviceAppointment);
+            }
         }
         if (!updatedServiceAppointments.isEmpty()) {
             setFieldsByPreferredResource(updatedServiceAppointments);
@@ -231,6 +239,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsChangedOrderedTime.size() > 0) {
             preserveSchedulesTimes(serviceAppointmentsChangedOrderedTime, triggerOldMap);
+        }
+        if (serviceAppointmentsToChangeOwnerToArchive.size() > 0) {
+            HOT_Utility.setArchiveAsOwner(serviceAppointmentsToChangeOwnerToArchive);
         }
     }
 

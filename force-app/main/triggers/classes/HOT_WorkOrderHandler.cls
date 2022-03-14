@@ -8,6 +8,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrder> avlystWorkOrder = new List<WorkOrder>();
         List<WorkOrder> setWorkOrdersToUpdateTextFields = new List<WorkOrder>();
+        List<WorkOrder> workOrdersToChangeOwnerToArchive = new List<WorkOrder>();
         List<WorkOrder> setDurationWorkOrders = new List<WorkOrder>();
 
         for (WorkOrder workorder : (List<WorkOrder>) records) {
@@ -30,14 +31,21 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             ) {
                 setWorkOrdersToUpdateTextFields.add(workorder);
             }
+            if (
+                triggerOldMap.get(workOrder.Id).get('HOT_IsHideWorkOrder__c') !== workOrder.HOT_IsHideWorkOrder__c &&
+                workOrder.HOT_IsHideWorkOrder__c
+            ) {
+                workOrdersToChangeOwnerToArchive.add(WorkOrder);
+            }
         }
-
         if (avlystWorkOrder.size() > 0) {
             setCancelDate(avlystWorkOrder);
         }
-
         if (setWorkOrdersToUpdateTextFields.size() > 0) {
             setWorkOrdersToUpdateTextFields(setWorkOrdersToUpdateTextFields, triggerOldMap);
+        }
+        if (workOrdersToChangeOwnerToArchive.size() > 0) {
+            HOT_Utility.setArchiveAsOwner(workOrdersToChangeOwnerToArchive);
         }
         if (setDurationWorkOrders.size() > 0) {
             setDuration(setDurationWorkOrders);
@@ -413,6 +421,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             }
         }
     }
+
     public static void setDuration(List<workOrder> workOrders) {
         for (WorkOrder workOrder : workOrders) {
             workOrder.Duration =
