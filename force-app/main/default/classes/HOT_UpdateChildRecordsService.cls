@@ -10,6 +10,8 @@ public without sharing class HOT_UpdateChildRecordsService {
     public Boolean isDescriptionChoice;
     @InvocableVariable
     public Boolean isScreenInterpreterChoice;
+    @InvocableVariable
+    public Boolean isDispatcherChoice;
 
     @InvocableMethod
     public static List<String> updateChildRecordsFromRequest(List<HOT_UpdateChildRecordsService> inputVariables) {
@@ -19,7 +21,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         HOT_UpdateChildRecordsService input = inputVariables[0];
         HOT_Request__c request = input.request;
         List<String> errors = new List<String>();
-
+        
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
         if (input.isAddressChoice) {
             requestToUpdate.InterpretationStreet__c = request.InterpretationStreet__c;
@@ -37,6 +39,9 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         if (input.isScreenInterpreterChoice) {
             requestToUpdate.IsScreenInterpreter__c = request.IsScreenInterpreter__c;
+        }
+        if (input.isDispatcherChoice) {
+            requestToUpdate.Dispatcher__c = request.Dispatcher__c;
         }
 
         try {
@@ -95,7 +100,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                     City,
                     Subject,
                     Description,
-                    HOT_IsScreenInterpreterNew__c
+                    HOT_IsScreenInterpreterNew__c,
+                    HOT_DispatcherNew__c
                 FROM ServiceAppointment
                 WHERE HOT_Request__c = :request.Id AND Status IN :saStatuses
             ]
@@ -169,9 +175,11 @@ public without sharing class HOT_UpdateChildRecordsService {
             if (input.isDescriptionChoice) {
                 serviceAppointment.Description = request.Description__c;
             }
-
             if (input.isScreenInterpreterChoice) {
                 serviceAppointment.HOT_IsScreenInterpreterNew__c = request.IsScreenInterpreter__c;
+            }
+            if (input.isDispatcherChoice) {
+                serviceAppointment.HOT_DispatcherNew__c = request.Dispatcher__c;
             }
         }
 

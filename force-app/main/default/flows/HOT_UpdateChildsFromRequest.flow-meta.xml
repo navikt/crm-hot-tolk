@@ -3,8 +3,8 @@
     <actionCalls>
         <name>UpdateChildRecords</name>
         <label>UpdateChildRecords</label>
-        <locationX>50</locationX>
-        <locationY>638</locationY>
+        <locationX>182</locationX>
+        <locationY>974</locationY>
         <actionName>HOT_UpdateChildRecordsService</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
@@ -18,6 +18,12 @@
             <name>isDescriptionChoice</name>
             <value>
                 <elementReference>isDescription</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>isDispatcherChoice</name>
+            <value>
+                <elementReference>isDispatcher</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -41,6 +47,22 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
     <apiVersion>52.0</apiVersion>
+    <assignments>
+        <name>Store_Dispatcher_Value</name>
+        <label>Store Dispatcher Value</label>
+        <locationX>50</locationX>
+        <locationY>758</locationY>
+        <assignmentItems>
+            <assignToReference>getRequest.Dispatcher__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>DispatcherLookup.recordId</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>UpdateChildRecords</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>Address</name>
         <choiceText>Adresser</choiceText>
@@ -55,6 +77,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Description</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Dispatcher</name>
+        <choiceText>Formidler</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Dispatcher</stringValue>
         </value>
     </choices>
     <choices>
@@ -76,7 +106,7 @@
     <decisions>
         <name>Check_Request</name>
         <label>Check Request</label>
-        <locationX>182</locationX>
+        <locationX>336</locationX>
         <locationY>278</locationY>
         <defaultConnector>
             <targetReference>Cannot_update_Screen</targetReference>
@@ -105,6 +135,31 @@
             <label>Ok</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Is_Dispatcher</name>
+        <label>Is Dispatcher?</label>
+        <locationX>182</locationX>
+        <locationY>638</locationY>
+        <defaultConnector>
+            <targetReference>UpdateChildRecords</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Dispatcher</defaultConnectorLabel>
+        <rules>
+            <name>isDispatcherCheck</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isDispatcher</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Store_Dispatcher_Value</targetReference>
+            </connector>
+            <label>isDispatcherCheck</label>
+        </rules>
+    </decisions>
     <formulas>
         <name>isAddress</name>
         <dataType>Boolean</dataType>
@@ -114,6 +169,11 @@
         <name>isDescription</name>
         <dataType>Boolean</dataType>
         <expression>CONTAINS({!ChosenFields}, {!Description})</expression>
+    </formulas>
+    <formulas>
+        <name>isDispatcher</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!Dispatcher})</expression>
     </formulas>
     <formulas>
         <name>isScreenInterpreter</name>
@@ -149,7 +209,7 @@
     <recordLookups>
         <name>getRequest</name>
         <label>getRequest</label>
-        <locationX>182</locationX>
+        <locationX>336</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -170,7 +230,7 @@
     <screens>
         <name>Cannot_update_Screen</name>
         <label>Cannot update Screen</label>
-        <locationX>314</locationX>
+        <locationX>490</locationX>
         <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -186,7 +246,7 @@
     <screens>
         <name>ChooseFieldScreen</name>
         <label>ChooseFieldScreen</label>
-        <locationX>50</locationX>
+        <locationX>182</locationX>
         <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -200,8 +260,9 @@
             <choiceReferences>Subject</choiceReferences>
             <choiceReferences>Description</choiceReferences>
             <choiceReferences>ScreenInterpreter</choiceReferences>
+            <choiceReferences>Dispatcher</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>ChosenFields</fieldText>
+            <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
             <isRequired>true</isRequired>
         </fields>
@@ -211,13 +272,13 @@
     <screens>
         <name>NewValuesScreen</name>
         <label>NewValuesScreen</label>
-        <locationX>50</locationX>
+        <locationX>182</locationX>
         <locationY>518</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>UpdateChildRecords</targetReference>
+            <targetReference>Is_Dispatcher</targetReference>
         </connector>
         <fields>
             <name>NewValuesScreen_Section1</name>
@@ -379,11 +440,75 @@
                 </conditions>
             </visibilityRule>
         </fields>
+        <fields>
+            <name>NewValuesScreen_Section5</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section5_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>DispatcherLookup</name>
+                    <extensionName>flowruntime:lookup</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>fieldApiName</name>
+                        <value>
+                            <stringValue>Dispatcher__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value>
+                            <stringValue>Dispatcher</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value>
+                            <stringValue>HOT_Request__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value>
+                            <elementReference>getRequest.Dispatcher__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>required</name>
+                        <value>
+                            <booleanValue>true</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFields</leftValueReference>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Dispatcher</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
+        <locationX>210</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>getRequest</targetReference>
