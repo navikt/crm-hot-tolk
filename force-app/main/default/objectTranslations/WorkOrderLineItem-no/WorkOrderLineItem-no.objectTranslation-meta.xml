@@ -31,13 +31,6 @@
         <value>Arbeidsordrelinjer</value>
     </caseValues>
     <gender>Neuter</gender>
-    <layouts>
-        <layout>HOT Work Order Line Item Layout</layout>
-        <sections>
-            <label>Adresse</label>
-            <section>Address</section>
-        </sections>
-    </layouts>
     <quickActions>
         <label><!-- SendEmail --></label>
         <name>SendEmail</name>
