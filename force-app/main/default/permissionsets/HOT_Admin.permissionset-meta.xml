@@ -381,11 +381,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.UserDescription__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>HOT_Request__c.InterpretationMethodSecondary__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1857,11 +1852,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.TotalPrice</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.HOT_UserDescription__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
