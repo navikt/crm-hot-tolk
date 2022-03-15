@@ -97,6 +97,9 @@
         <connector>
             <targetReference>Get_User</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>PermsetFault_0</targetReference>
+        </faultConnector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Name</field>
@@ -170,6 +173,7 @@
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
+    <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Already_Access</name>
         <label>Already Access</label>
@@ -251,6 +255,22 @@
         <fields>
             <name>Permission_Set_Assignment_Error_Text</name>
             <fieldText>&lt;p&gt;Noe feilet da tillatelsessettildeling skulle hentes.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>PermsetFault_0</name>
+        <label>PermsetFault</label>
+        <locationX>1634</locationX>
+        <locationY>278</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>PermsetErrorMessage_0</name>
+            <fieldText>&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
