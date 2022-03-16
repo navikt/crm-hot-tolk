@@ -25,6 +25,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithActualTimeSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToChangeOwnerToArchive = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithStatusNone = new List<ServiceAppointment>();
 
         Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
         Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
@@ -186,6 +187,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsToChangeOwnerToArchive.add(serviceAppointment);
             }
+            if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'None') {
+                serviceAppointmentsWithStatusNone.add(serviceAppointment);
+            }
         }
         if (!updatedServiceAppointments.isEmpty()) {
             setFieldsByPreferredResource(updatedServiceAppointments);
@@ -242,6 +247,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsToChangeOwnerToArchive.size() > 0) {
             HOT_Utility.setArchiveAsOwner(serviceAppointmentsToChangeOwnerToArchive);
+        }
+        if (serviceAppointmentsWithStatusNone.size() > 0) {
+            setScheduledTimesOnStatusNone(serviceAppointmentsWithStatusNone);
         }
     }
 
@@ -707,6 +715,17 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
     }
+    private static void setScheduledTimesOnStatusNone(List<ServiceAppointment> records) {
+        for (ServiceAppointment serviceAppointment : records) {
+            if (serviceAppointment.EarliestStartTime != null) {
+                serviceAppointment.SchedStartTime = serviceAppointment.EarliestStartTime;
+            }
+            if (serviceAppointment.DueDate != null) {
+                serviceAppointment.SchedEndTime = serviceAppointment.DueDate;
+            }
+        }
+    }
+    
     @TestVisible
     private static String getTranslatedStatus(String status) {
         if (status == 'Annul')

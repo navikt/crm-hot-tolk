@@ -244,18 +244,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     .HOT_ServiceTerritory__c;
                 serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
             }
-            // Set SchedStartTime and SchedEndTime
-            if (currentServiceAppointment.EarliestStartTime != null && currentServiceAppointment
-            .SchedStartTime != currentServiceAppointment.EarliestStartTime) {
-                currentServiceAppointment
-                .SchedStartTime = currentServiceAppointment.EarliestStartTime;
-            }
-            if (currentServiceAppointment.DueDate != null && currentServiceAppointment
-            .DueDate != currentServiceAppointment.SchedEndTime) {
-                currentServiceAppointment
-                .SchedEndTime = currentServiceAppointment.DueDate;
-                serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
-            }
         }
         update serviceAppointmentsToUpdate.values();
     }
