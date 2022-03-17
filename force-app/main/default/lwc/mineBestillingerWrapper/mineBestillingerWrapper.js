@@ -17,20 +17,21 @@ import { updateRecord } from 'lightning/uiRecordApi';
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @api header;
     @api isAccount;
-    breadcrumbs = [
+    @track filters = [];
+    @track breadcrumbs = [];
+
+    connectedCallback() {
+        this.filters = defaultFilters();
+        this.breadcrumbs = [ 
         {
             label: 'Tolketjenesten',
             href: ''
         },
         {
-            label: 'Mine Bestillinger',
+            label: this.header,
             href: 'mine-bestillinger'
         }
-    ];
-
-    @track filters = [];
-    connectedCallback() {
-        this.filters = defaultFilters();
+        ];
     }
     isRequestDetails = false;
     isWorkOrderDetails = false;
