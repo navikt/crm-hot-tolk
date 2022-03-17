@@ -476,15 +476,22 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
     @isTest
     static void preserveScheduledTimes_onUpdate() {
-        ServiceAppointment sa = [SELECT Id, Status, SchedEndTime, SchedStartTime FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment sa = [
+            SELECT Id, Status, SchedEndTime, SchedStartTime, EarliestStartTime, DueDate
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
         datetime startTime = Datetime.now().addHours(1);
         datetime endTime = Datetime.now().addHours(2);
+        sa.EarliestStartTime = startTime;
+        sa.DueDate = endTime;
         sa.SchedStartTime = startTime;
         sa.SchedEndTime = endTime;
         sa.Status = 'Cannot Complete';
         update sa;
 
         sa = [SELECT Id, Status, SchedEndTime, SchedStartTime FROM ServiceAppointment WHERE Id = :sa.Id];
+
         system.assertEquals(startTime, sa.SchedStartTime, 'Start time not set!');
         system.assertEquals(endTime, sa.SchedEndTime, 'End time not set');
         system.assertEquals('Cannot Complete', sa.Status, 'Status not set');
@@ -852,7 +859,11 @@ private class HOT_ServiceAppointmentHandlerTest {
         ServiceAppointment serviceAppointment = [SELECT Id, OwnerId FROM ServiceAppointment LIMIT 1];
 
         Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
-        System.assertNotEquals(archive.Id, serviceAppointment.OwnerId, 'The owner was "HOT Arkiv". Should be different owner.');
+        System.assertNotEquals(
+            archive.Id,
+            serviceAppointment.OwnerId,
+            'The owner was "HOT Arkiv". Should be different owner.'
+        );
 
         Test.startTest();
         serviceAppointment.HOT_IsHideServiceApointment__c = true;
@@ -874,11 +885,11 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @isTest
     public static void checkIfHOTAccountFieldIsEqualToAccountOnInsert() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, AccountId, HOT_Account__c
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
-        System.assertEquals(serviceAppointment.AccountId, serviceAppointment.HOT_Account__c, 'SA HOT_Account__c was not set correctly.');
+        ServiceAppointment serviceAppointment = [SELECT Id, AccountId, HOT_Account__c FROM ServiceAppointment LIMIT 1];
+        System.assertEquals(
+            serviceAppointment.AccountId,
+            serviceAppointment.HOT_Account__c,
+            'SA HOT_Account__c was not set correctly.'
+        );
     }
 }
