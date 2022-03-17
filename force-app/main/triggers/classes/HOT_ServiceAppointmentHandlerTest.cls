@@ -484,7 +484,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         datetime startTime = Datetime.now().addHours(1);
         datetime endTime = Datetime.now().addHours(2);
         sa.EarliestStartTime = startTime;
-        sa.DueDate = startTime;
+        sa.DueDate = endTime;
         sa.SchedStartTime = startTime;
         sa.SchedEndTime = endTime;
         sa.Status = 'Cannot Complete';
