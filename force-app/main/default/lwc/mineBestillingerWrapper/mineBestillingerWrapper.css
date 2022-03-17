@@ -147,4 +147,7 @@ span {
     .refresh-button {
         margin-bottom: 2vw;
     }
+    .header {
+        font-size: 1.4rem;
+    }
 }
