@@ -32,10 +32,33 @@
             </div>
             <div if:true={isRequestDetails}>
                 <div class="record-details-container">
-                    <p>Gjelder fra: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
+                    <p>Gjelder periode: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
                     <p>Adresse: <span>{requestAddressToShow}</span></p>
+                    <p>Oppmøteadresse: <span>{requestInterpretationAddressToShow}</span></p>
+                    <p if:true={requestInterpretationAddressToShow}>
+                        Oppmøteadresse: <span>{requestInterpretationAddressToShow}</span>
+                    </p>
                     <br />
+                    <p>Bestillingsnummer: <span>{request.Name}</span></p>
                     <p>Bestiller: <span>{request.OrdererName__c}</span></p>
+                    <p if:true={request.UserName__c}>
+                        Tolkbrukers navn: <span>{request.UserName__c}</span>
+                    </p>
+                    <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
+                    <p if:true={request.UserPreferredInterpreter__c}>
+                        Ønsket tolk: <span>{request.UserPreferredInterpreter__c}</span>
+                    </p>
+                    <p if:true={request.UserInterpretationMethod__c}>
+                        Foretrukket tolkemetode: <span>{request.UserInterpretationMethod__c}</span>
+                    </p>
+                    <p if:true={request.InterpretationMethod__c}>
+                        Tolkemetode: {request.InterpretationMethod__c}
+                    </p>
+                    <p if:true={request.PaymentLiability__c}>
+                        Betalingsansvar: <span>{request.PaymentLiability__c}</span>
+                    </p>
+                    <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
+                    <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
                 </div>
             </div>
             <div if:true={isWorkOrderDetails}>
@@ -44,11 +67,17 @@
                     <p>Til dato: <span>{workOrderEndDate}</span></p>
                     <br />
                     <p>Adresse: <span>{workOrder.HOT_AddressFormated__c}</span></p>
+                    <p if:true={workOrderInterpretationAddressToShow}>
+                        Oppmøteadresse: <span>{workOrderInterpretationAddressToShow}</span>
+                    </p>
                     <br />
                     <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
                     <br />
                     <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
                     <p>Bestiller: <span>{request.OrdererName__c}</span></p>
+                    <p if:true={request.UserName__c}>
+                        Tolkbrukers navn: <span>{request.UserName__c}</span>
+                    </p>
                     <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
                     <br />
                     <p if:true={request.UserPreferredInterpreter__c}>
@@ -59,6 +88,12 @@
                     </p>
                     <p if:true={request.UserInterpretationMethod__c}>
                         Foretrukket tolkemetode: <span>{request.UserInterpretationMethod__c}</span>
+                    </p>
+                    <p if:true={request.InterpretationMethod__c}>
+                        Tolkemetode: {request.InterpretationMethod__c}
+                    </p>
+                    <p if:true={request.PaymentLiability__c}>
+                        Betalingsansvar: <span>{request.PaymentLiability__c}</span>
                     </p>
                     <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
                     <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>

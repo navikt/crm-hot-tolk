@@ -182,11 +182,27 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
     }
 
+    //TODO: Hide interpretation addresses if equal to addresses
     requestAddressToShow;
+    requestInterpretationAddressToShow;
+    workOrderInterpretationAddressToShow;
     setAddressFormat() {
         this.requestAddressToShow = this.request.IsScreenInterpreter__c
             ? 'Digitalt oppmøte'
-            : this.request.MeetingStreet__c;
+            : this.request.MeetingStreet__c + ', ' + this.request.MeetingPostalCode__c + ' ' + this.request.MeetingPostalCity__c;
+        this.requestInterpretationAddressToShow = this.request.IsScreenInterpreter__c
+            ? 'Digitalt oppmøte'
+            : this.request.InterpretationStreet__c + ', ' + this.request.InterpretationPostalCode__c + ' ' + this.request.InterpretationPostalCity__c;
+        this.workOrderInterpretationAddressToShow = this.request.IsScreenInterpreter__c
+        ? 'Digitalt oppmøte'
+        : this.workOrder.HOT_InterpretationStreet__c + ', ' + this.workOrder.HOT_InterpretationPostalCode__c + ' ' + this.workOrder.HOT_InterpretationPostalCity__c;
+        if (this.requestInterpretationAddressToShow === this.requestAddressToShow) {
+            this.requestInterpretationAddressToShow = null;
+            console.log('this.requestInterpretationAddressToShow: ', this.requestInterpretationAddressToShow);
+        }
+        if (this.workOrderInterpretationAddressToShow === this.workOrder.HOT_AddressFormated__c) {
+            this.workOrderInterpretationAddressToShow = null;
+        }
     }
 
     goBack() {
