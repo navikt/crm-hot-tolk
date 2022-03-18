@@ -26,11 +26,10 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_AssignmentType__c,
                 AssignmentType__c,
                 AppointmentDeadlineDate__c,
-                AppointmentServiceTerritory__c,
-                WorkOrderCanceledDate__c,
-                IsThreeYearsOld__c
+                AppointmentServiceTerritory__c, //crtl + z
+                WorkOrderCanceledDate__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c IN :serviceResource AND IsThreeYearsOld__c = FALSE
+            WHERE ServiceResource__c IN :serviceResource
         ];
         return interestedResources;
     }

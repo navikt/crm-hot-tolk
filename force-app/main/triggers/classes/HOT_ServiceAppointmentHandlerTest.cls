@@ -866,7 +866,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
 
         Test.startTest();
-        serviceAppointment.HOT_IsHideServiceApointment__c = true;
+        serviceAppointment.HOT_DelPol_IsHideRecord__c = true;
         update serviceAppointment;
         Test.stopTest();
 
