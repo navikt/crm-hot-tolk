@@ -33,6 +33,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
         ];
     }
+    renderedCallback() {
+        refreshApex(this.wiredgetWorkOrdersResult);
+    }
+
     isRequestDetails = false;
     isWorkOrderDetails = false;
     isRequestOrWorkOrderDetails = false;
@@ -433,6 +437,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.hasFiles = event.detail > 0;
     }
 
+    // Ideally should show files immediately when uploaded. Need to run refreshApex on a query of ContentDocuments?
     onUploadComplete() {
         this.template.querySelector('.loader').classList.add('hidden');
         this.modalHeader = 'Suksess!';
@@ -506,9 +511,5 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     deleteMarkedFiles() {
         this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
-    }
-
-    refreshList() {
-        refreshApex(this.wiredgetWorkOrdersResult);
     }
 }
