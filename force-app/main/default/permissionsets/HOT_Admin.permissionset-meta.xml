@@ -1016,12 +1016,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>SMS__c.HOT_IsHideSMS__c</field>
+        <field>SMS__c.HOT_DelPol_ToHideRecord__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>SMS__c.HOT_IsSMSHidden__c</field>
+        <field>SMS__c.HOT_DelPol_IsHideRecord__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

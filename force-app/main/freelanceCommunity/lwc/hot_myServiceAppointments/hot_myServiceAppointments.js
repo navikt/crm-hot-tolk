@@ -155,7 +155,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     @track recordId;
     @track serviceAppointmentDetails;
     showDetails(row) {
-        this.recordId = row.HOT_IsFortyfiveDaysOld__c ? null : row.Id;
+        this.recordId = row.HOT_DelPol_IsHideFilesFromFreelance__c ? null : row.Id;
         this.serviceAppointmentDetails = formatRecord(row, myServiceAppointmentFieldLabels);
         let detailPage = this.template.querySelector('.detailPage');
         detailPage.classList.remove('hidden');

@@ -20,8 +20,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 setDurationWorkOrders.add(workorder);
             }
             if (
-                triggerOldMap.get(workOrder.Id).get('HOT_IsHideWorkOrder__c') !== workOrder.HOT_IsHideWorkOrder__c &&
-                workOrder.HOT_IsHideWorkOrder__c
+                triggerOldMap.get(workOrder.Id).get('HOT_DelPol_IsHideRecord__c') !==
+                workOrder.HOT_DelPol_IsHideRecord__c && workOrder.HOT_DelPol_IsHideRecord__c
             ) {
                 workOrdersToChangeOwnerToArchive.add(WorkOrder);
             }

@@ -73,8 +73,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 notifyDispatcherRequests.add(request);
             }
             if (
-                triggerOldMap.get(request.Id).get('IsHideRequest__c') !== request.IsHideRequest__c &&
-                request.IsHideRequest__c
+                triggerOldMap.get(request.Id).get('HOT_DelPol_IsHideRecord__c') !==
+                request.HOT_DelPol_IsHideRecord__c && request.HOT_DelPol_IsHideRecord__c
             ) {
                 requestsToChangeOwnerToArchive.add(request);
             }
