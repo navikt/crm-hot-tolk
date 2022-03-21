@@ -249,6 +249,9 @@ private class HOT_ServiceAppointmentHandlerTest {
         AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
         insert ar;
 
+        sa.Status = 'Dispatched';
+        update sa;
+
         sa.Status = 'None';
         update sa;
         Test.stopTest();
