@@ -182,7 +182,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
     }
 
-    //TODO: Hide interpretation addresses if equal to addresses
     requestAddressToShow;
     requestInterpretationAddressToShow;
     workOrderInterpretationAddressToShow;
@@ -196,13 +195,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.workOrderInterpretationAddressToShow = this.request.IsScreenInterpreter__c
         ? 'Digitalt oppmøte'
         : this.workOrder.HOT_InterpretationStreet__c + ', ' + this.workOrder.HOT_InterpretationPostalCode__c + ' ' + this.workOrder.HOT_InterpretationPostalCity__c;
-        if (this.requestInterpretationAddressToShow === this.requestAddressToShow) {
-            this.requestInterpretationAddressToShow = null;
-            console.log('this.requestInterpretationAddressToShow: ', this.requestInterpretationAddressToShow);
-        }
-        if (this.workOrderInterpretationAddressToShow === this.workOrder.HOT_AddressFormated__c) {
-            this.workOrderInterpretationAddressToShow = null;
-        }
     }
 
     goBack() {
@@ -237,11 +229,13 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     interpreter = 'Tolk';
     isOrdererWantStatusUpdateOnSMS = 'Ja';
+    isSeries = false;
     updateView() {
         this.setHeader();
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
+        this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
         this.isOrdererWantStatusUpdateOnSMS = this.request.IsOrdererWantStatusUpdateOnSMS__c ? 'Ja' : 'Nei';
         this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId ? true : false;

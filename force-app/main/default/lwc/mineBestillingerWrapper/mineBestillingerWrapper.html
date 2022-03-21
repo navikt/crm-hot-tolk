@@ -34,7 +34,6 @@
                 <div class="record-details-container">
                     <p>Gjelder periode: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
                     <p>Adresse: <span>{requestAddressToShow}</span></p>
-                    <p>Oppmøteadresse: <span>{requestInterpretationAddressToShow}</span></p>
                     <p if:true={requestInterpretationAddressToShow}>
                         Oppmøteadresse: <span>{requestInterpretationAddressToShow}</span>
                     </p>
@@ -60,6 +59,15 @@
                     <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
                     <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
                 </div>
+                <c-record-files-with-sharing
+                    if:true={isSeries}
+                    record-id={request.Id}
+                    is-get-all={isGetAllFiles}
+                    is-delete-option="true"
+                    title="Vedlegg"
+                    delete-file-on-button-click="true"
+                ></c-record-files-with-sharing>
+                <br />
             </div>
             <div if:true={isWorkOrderDetails}>
                 <div class="record-details-container">
@@ -79,7 +87,6 @@
                         Tolkbrukers navn: <span>{request.UserName__c}</span>
                     </p>
                     <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
-                    <br />
                     <p if:true={request.UserPreferredInterpreter__c}>
                         Ønsket tolk: <span>{request.UserPreferredInterpreter__c}</span>
                     </p>
@@ -99,10 +106,11 @@
                     <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
                 </div>
                 <c-record-files-with-sharing
+                    if:false={isSeries}
                     record-id={request.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
-                    title="Tidligere opplastede vedlegg"
+                    title="Vedlegg"
                     delete-file-on-button-click="true"
                 ></c-record-files-with-sharing>
                 <br />
