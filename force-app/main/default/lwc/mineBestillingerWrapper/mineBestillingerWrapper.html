@@ -6,12 +6,14 @@
     <main class="mainContent">
         <div class="mine-bestillinger-wrapper">
             <div class="navigation-container">
+                <!-- TODO: Show back button when on a record -->
                 <a class="back-link" onclick={goBack}
                     ><c-icon icon="Back"></c-icon>
                     <p style="margin-left: 0.25rem">Tilbake</p></a
                 >
                 <h2 class="header">{headerToShow}</h2>
                 <div class="filter-button">
+                    <!-- TODO: Change button to be like Lena's button -->
                     <!--<c-button
                         if:false={urlStateParameters.id}
                         button-label="Ny bestilling"

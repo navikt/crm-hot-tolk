@@ -34,7 +34,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         ];
     }
     renderedCallback() {
-        refreshApex(this.wiredgetWorkOrdersResult);
+        if (this.urlStateParameters.id === '' && this.urlStateParameters.level === '') {
+            refreshApex(this.wiredgetWorkOrdersResult);
+        }
     }
 
     isRequestDetails = false;
