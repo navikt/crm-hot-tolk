@@ -188,7 +188,7 @@ private class HOT_RequestHandlerTest {
         System.assertNotEquals(archive.Id, request.OwnerId, 'The owner was "HOT Arkiv". Should be different owner.');
 
         Test.startTest();
-        request.IsHideRequest__c = true;
+        request.HOT_DelPol_IsHideRecord__c = true;
         update request;
         Test.stopTest();
 

@@ -9,7 +9,7 @@ public with sharing class HOT_SMSHandlerTest {
         System.assertNotEquals(archive.Id, sms.OwnerId, 'The owner was "HOT Arkiv". Should be different owner.');
 
         Test.startTest();
-        sms.HOT_IsSMSHidden__c = true;
+        sms.HOT_DelPol_IsHideRecord__c = true;
         update sms;
         Test.stopTest();
 

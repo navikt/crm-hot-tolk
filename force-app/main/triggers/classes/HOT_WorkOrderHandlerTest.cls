@@ -262,7 +262,7 @@ private class HOT_WorkOrderHandlerTest {
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
 
-        workOrder.HOT_IsHideWorkOrder__c = true;
+        workOrder.HOT_DelPol_IsHideRecord__c = true;
         update workOrder;
 
         WorkOrder updatedWorkOrder = [SELECT Id, OwnerId FROM WorkOrder WHERE Id = :workOrder.Id LIMIT 1];
@@ -275,7 +275,7 @@ private class HOT_WorkOrderHandlerTest {
             'The owner was not changed to "HOT Arkiv" as expected.'
         );
     }
-    
+
     @isTest
     private static void testSetDuration() {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
