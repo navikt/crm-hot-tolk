@@ -112,5 +112,5 @@ export let iconByValue = {
     },
     Pågår: {},
     Ukjent: {},
-    Åpen: {},
+    Åpen: {}
 };
