@@ -113,5 +113,4 @@ export let iconByValue = {
     Pågår: {},
     Ukjent: {},
     Åpen: {},
-    New: {},
 };
