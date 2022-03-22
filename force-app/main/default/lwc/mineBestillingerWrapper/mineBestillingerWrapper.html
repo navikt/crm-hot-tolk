@@ -6,23 +6,27 @@
     <main class="mainContent">
         <div class="mine-bestillinger-wrapper">
             <div class="navigation-container">
-                <!-- TODO: Show back button when on a record -->
-                <a class="back-link" onclick={goBack}
+                <a if:false={isMobile} class="back-link" onclick={goBack}
                     ><c-icon icon="Back"></c-icon>
                     <p style="margin-left: 0.25rem">Tilbake</p></a
                 >
                 <h2 class="header">{headerToShow}</h2>
-                <div class="filter-button">
-                    <!-- TODO: Change button to be like Lena's button -->
-                    <!--<c-button
+                <div class="header-buttons">
+                    <c-button
                         if:false={urlStateParameters.id}
-                        button-label="Ny bestilling"
+                        button-label={buttonText}
                         button-styling="primary"
-                        class="button-padding"
-                        desktop-style="width: 8rem; justify-content: center"
-                        mobile-style="width: 6rem; justify-content: center; height: 48px;"
+                        class="button-padding mobile-button"
+                        desktop-style="width: 7em; height: 3em; justify-content: center"
+                        mobile-style="border-radius: 50%; justify-content: center; border-radius: 50%; 
+                        justify-content: center; height: 15vw; font-size: 12vw; width: 15vw; 
+                        box-shadow: 0px 5px 10px 0px rgb(0 0 0 / 30%); background-color: forestgreen;"
                         onbuttonclick={goToNewRequest}
-                    ></c-button>-->
+                    ></c-button>
+                    <a if:true={isMobile} class="back-link" onclick={goBack}>
+                        <c-icon icon="Back"></c-icon>
+                        <p style="margin-left: 0.25rem">Tilbake</p></a
+                    >
                     <c-list-filters-button
                         if:false={isWorkOrderDetails}
                         header="Filtrer søket"
@@ -35,11 +39,13 @@
             <div if:true={isRequestDetails}>
                 <div class="record-details-container">
                     <p>Gjelder periode: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
+                    <br/>
                     <p>Adresse: <span>{requestAddressToShow}</span></p>
                     <p if:true={requestInterpretationAddressToShow}>
                         Oppmøteadresse: <span>{requestInterpretationAddressToShow}</span>
                     </p>
                     <br />
+                    <!--<p>Sentral: <span>{request.Owner.Name}</span></p>-->
                     <p>Bestillingsnummer: <span>{request.Name}</span></p>
                     <p>Bestiller: <span>{request.OrdererName__c}</span></p>
                     <p if:true={request.UserName__c}>
@@ -52,9 +58,13 @@
                     <p if:true={request.UserInterpretationMethod__c}>
                         Foretrukket tolkemetode: <span>{request.UserInterpretationMethod__c}</span>
                     </p>
-                    <p if:true={request.InterpretationMethod__c}>
-                        Tolkemetode: {request.InterpretationMethod__c}
-                    </p>
+                    <!--TODO: Show tolkemetode1 and 2 combined-->
+                    <!--<p if:true={request.InterpretationMethod__r.Name}>
+                        Tolkemetode: {request.InterpretationMethod__r.Name}
+                    </p>-->
+                    <!--<p if:true={request.Company__r.Name}>
+                        Virksomhet: {request.Company__r.Name}
+                    </p>-->
                     <p if:true={request.PaymentLiability__c}>
                         Betalingsansvar: <span>{request.PaymentLiability__c}</span>
                     </p>
@@ -83,6 +93,7 @@
                     <br />
                     <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
                     <br />
+                    <!--<p>Sentral: <span>{workOrder.Owner.Name}</span></p>-->
                     <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
                     <p>Bestiller: <span>{request.OrdererName__c}</span></p>
                     <p if:true={request.UserName__c}>
@@ -98,9 +109,13 @@
                     <p if:true={request.UserInterpretationMethod__c}>
                         Foretrukket tolkemetode: <span>{request.UserInterpretationMethod__c}</span>
                     </p>
-                    <p if:true={request.InterpretationMethod__c}>
-                        Tolkemetode: {request.InterpretationMethod__c}
-                    </p>
+                    <!--TODO: Show tolkemetode1 and 2 combined-->
+                    <!--<p if:true={request.InterpretationMethod__r.Name}>
+                        Tolkemetode: {request.InterpretationMethod__r.Name}
+                    </p>-->
+                    <!--<p if:true={request.Company__r.Name}>
+                        Virksomhet: {request.Company__r.Name}
+                    </p>-->
                     <p if:true={request.PaymentLiability__c}>
                         Betalingsansvar: <span>{request.PaymentLiability__c}</span>
                     </p>

@@ -26,12 +26,12 @@
 }
 .header {
     flex: 2;
-    margin: auto 0.5rem;
+    margin: 0rem 0rem 0.5rem 0rem;
     width: 100%;
     text-align: center;
     font-size: 1.5rem;
 }
-.filter-button {
+.header-buttons {
     display: flex;
     flex-direction: row;
     flex: 1;
@@ -125,16 +125,18 @@ span {
     .header {
         font-size: 1.4rem;
     }
-    .back-link {
-        display: none;
-    }
-    .header {
-        display: none;
-    }
     .record-details-container {
         margin: 4vw 0;
     }
     .navigation-container {
         display: block;
+    }
+    .mobile-button {
+        position: fixed;
+        bottom: 30vw;
+        right: 10vw;
+    }
+    .header-buttons {
+        justify-content: space-between;
     }
 }

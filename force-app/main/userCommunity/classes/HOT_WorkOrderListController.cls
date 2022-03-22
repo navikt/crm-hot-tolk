@@ -51,6 +51,7 @@ public without sharing class HOT_WorkOrderListController {
                     Subject,
                     HOT_AddressFormated__c,
                     Status,
+                    Owner.Name,
                     HOT_ExternalWorkOrderStatus__c,
                     HOT_Interpreters__c,
                     HOT_IsCancelable__c,
@@ -100,7 +101,9 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.UserPersonNumber__c,
                     HOT_Request__r.UserPreferredInterpreter__c,
                     toLabel(HOT_Request__r.UserInterpretationMethod__c),
-                    HOT_Request__r.Company__r.Name
+                    HOT_Request__r.Company__r.Name,
+                    HOT_Request__r.InterpretationMethod__r.Name,
+                    HOT_Request__r.InterpretationMethodSecondary__r.Name
                 FROM WorkOrder
                 WHERE
                     (HOT_Request__r.Account__c = :user.AccountId
