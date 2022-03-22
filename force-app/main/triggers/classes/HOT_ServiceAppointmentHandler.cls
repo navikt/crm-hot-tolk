@@ -181,14 +181,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointmentsChangedOrderedTime.add(serviceAppointment);
             }
             if (
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsHideServiceApointment__c') !==
-                serviceAppointment.HOT_IsHideServiceApointment__c &&
-                serviceAppointment.HOT_IsHideServiceApointment__c
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_DelPol_IsHideRecord__c') !==
+                serviceAppointment.HOT_DelPol_IsHideRecord__c && serviceAppointment.HOT_DelPol_IsHideRecord__c
             ) {
                 serviceAppointmentsToChangeOwnerToArchive.add(serviceAppointment);
             }
-            if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
-                serviceAppointment.Status == 'None') {
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'None'
+            ) {
                 serviceAppointmentsWithStatusNone.add(serviceAppointment);
             }
         }
@@ -272,7 +273,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointmentsOwnerChangedWithAssignedResource.add(serviceAppointment);
             }
             if (
-                (serviceAppointment.Status == 'Canceled' || serviceAppointment.Status == 'Annul') &&
+                (serviceAppointment.Status == 'Canceled' ||
+                serviceAppointment.Status == 'Annul' ||
+                serviceAppointment.Status == 'None') &&
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')
             ) {
                 serviceAppointmentsToRemoveAssignedResource.add(serviceAppointment);
@@ -459,7 +462,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.SchedEndTime = serviceAppointment.DueDate;
             serviceAppointment.HOT_IsReleasedToFreelance__c = false;
             serviceAppointment.HOT_IsEmployedInterpreter__c = true;
-            
+
             if (serviceAppointment.ParentRecordId != null) {
                 if (
                     serviceAppointment.HOT_Request__c == null &&
@@ -725,7 +728,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
     }
-    
+
     @TestVisible
     private static String getTranslatedStatus(String status) {
         if (status == 'Annul')
