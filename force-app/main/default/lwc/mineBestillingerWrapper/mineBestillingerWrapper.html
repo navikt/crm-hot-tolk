@@ -45,30 +45,36 @@
                         Oppmøteadresse: <span>{requestInterpretationAddressToShow}</span>
                     </p>
                     <br />
-                    <!--<p>Sentral: <span>{request.Owner.Name}</span></p>-->
+                    <p if:true={requestOwnerToShow}>
+                        Sentral: <span>{requestOwnerToShow}</span>
+                    </p>
                     <p>Bestillingsnummer: <span>{request.Name}</span></p>
-                    <p>Bestiller: <span>{request.OrdererName__c}</span></p>
+                    <p if:true={request.OrdererName__c}>
+                        Bestiller: <span>{request.OrdererName__c}</span>
+                    </p>
                     <p if:true={request.UserName__c}>
                         Tolkbrukers navn: <span>{request.UserName__c}</span>
                     </p>
                     <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
+                    <br/>
                     <p if:true={request.UserPreferredInterpreter__c}>
                         Ønsket tolk: <span>{request.UserPreferredInterpreter__c}</span>
                     </p>
                     <p if:true={request.UserInterpretationMethod__c}>
                         Foretrukket tolkemetode: <span>{request.UserInterpretationMethod__c}</span>
                     </p>
-                    <!--TODO: Show tolkemetode1 and 2 combined-->
-                    <!--<p if:true={request.InterpretationMethod__r.Name}>
-                        Tolkemetode: {request.InterpretationMethod__r.Name}
-                    </p>-->
-                    <!--<p if:true={request.Company__r.Name}>
-                        Virksomhet: {request.Company__r.Name}
-                    </p>-->
+                    <p if:true={interpretationMethodToShow}>
+                        Tolkemetode: <span>{interpretationMethodToShow}</span>
+                    </p>
+                    <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
+                    <br/>
+                    <p if:true={requestCompanyToShow}>
+                        Virksomhet: <span>{requestCompanyToShow}</span>
+                    </p>
                     <p if:true={request.PaymentLiability__c}>
                         Betalingsansvar: <span>{request.PaymentLiability__c}</span>
                     </p>
-                    <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
+                    <br if:true={request.Description__c}/>
                     <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
                 </div>
                 <c-record-files-with-sharing
@@ -93,13 +99,18 @@
                     <br />
                     <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
                     <br />
-                    <!--<p>Sentral: <span>{workOrder.Owner.Name}</span></p>-->
+                    <p if:true={requestOwnerToShow}>
+                        Sentral: <span>{requestOwnerToShow}</span>
+                    </p>
                     <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
-                    <p>Bestiller: <span>{request.OrdererName__c}</span></p>
+                    <p if:true={request.OrdererName__c}>
+                        Bestiller: <span>{request.OrdererName__c}</span>
+                    </p>
                     <p if:true={request.UserName__c}>
                         Tolkbrukers navn: <span>{request.UserName__c}</span>
                     </p>
                     <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
+                    <br/>
                     <p if:true={request.UserPreferredInterpreter__c}>
                         Ønsket tolk: <span>{request.UserPreferredInterpreter__c}</span>
                     </p>
@@ -109,17 +120,18 @@
                     <p if:true={request.UserInterpretationMethod__c}>
                         Foretrukket tolkemetode: <span>{request.UserInterpretationMethod__c}</span>
                     </p>
-                    <!--TODO: Show tolkemetode1 and 2 combined-->
-                    <!--<p if:true={request.InterpretationMethod__r.Name}>
-                        Tolkemetode: {request.InterpretationMethod__r.Name}
-                    </p>-->
-                    <!--<p if:true={request.Company__r.Name}>
-                        Virksomhet: {request.Company__r.Name}
-                    </p>-->
+                    <p if:true={interpretationMethodToShow}>
+                        Tolkemetode: <span>{interpretationMethodToShow}</span>
+                    </p>
+                    <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
+                    <br/>
+                    <p if:true={requestCompanyToShow}>
+                        Virksomhet: <span>{requestCompanyToShow}</span>
+                    </p>
                     <p if:true={request.PaymentLiability__c}>
                         Betalingsansvar: <span>{request.PaymentLiability__c}</span>
                     </p>
-                    <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
+                    <br if:true={request.Description__c}/>
                     <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
                 </div>
                 <c-record-files-with-sharing
@@ -132,6 +144,7 @@
                 ></c-record-files-with-sharing>
                 <br />
             </div>
+            
             <div class="buttonRow" if:true={isRequestOrWorkOrderDetails}>
                 <c-button
                     button-label={editButtonLabel}

@@ -210,6 +210,24 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         : this.workOrder.HOT_InterpretationStreet__c + ', ' + this.workOrder.HOT_InterpretationPostalCode__c + ' ' + this.workOrder.HOT_InterpretationPostalCity__c;
     }
 
+    interpretationMethodToShow = null;
+    requestOwnerToShow = null;
+    requestCompanyToShow = null;
+    setFields() {
+        // Tolkemetode
+        if (this.request.InterpretationMethod__r?.Name != undefined && this.request.InterpretationMethodSecondary__r?.Name != undefined) {
+            this.interpretationMethodToShow = this.request.InterpretationMethod__r.Name + ' og ' + this.request.InterpretationMethodSecondary__r.Name; 
+        } else if (this.request.InterpretationMethod__r?.Name != undefined) {
+            this.interpretationMethodToShow = this.request.InterpretationMethod__r?.Name;
+        } else {
+            this.interpretationMethodToShow = null;
+        }
+        // Sentral
+        this.requestOwnerToShow = this.request.Owner?.Name != undefined ? this.request.Owner.Name : null;
+        // Virksomhet
+        this.requestCompanyToShow = this.request.Company__r?.Name != undefined ? this.request.Company__r.Name : null;
+    }
+
     goBack() {
         let currentLevel = this.urlStateParameters.level;
         if (currentLevel === undefined || currentLevel === '') {
@@ -244,7 +262,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     isOrdererWantStatusUpdateOnSMS = 'Ja';
     isSeries = false;
     updateView() {
-        this.setHeader();
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
@@ -252,10 +269,12 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
         this.isOrdererWantStatusUpdateOnSMS = this.request.IsOrdererWantStatusUpdateOnSMS__c ? 'Ja' : 'Nei';
         this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId ? true : false;
+        this.setHeader();
         this.setButtonLabels();
         this.setButtonStates();
         this.setDateFormats();
         this.setAddressFormat();
+        this.setFields();
     }
     updateURL() {
         let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
