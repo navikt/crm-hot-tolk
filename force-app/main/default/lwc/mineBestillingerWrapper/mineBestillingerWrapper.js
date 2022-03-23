@@ -210,24 +210,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         : this.workOrder.HOT_InterpretationStreet__c + ', ' + this.workOrder.HOT_InterpretationPostalCode__c + ' ' + this.workOrder.HOT_InterpretationPostalCity__c;
     }
 
-    interpretationMethodToShow = null;
-    requestOwnerToShow = null;
-    requestCompanyToShow = null;
-    setFields() {
-        // Tolkemetode
-        if (this.request.InterpretationMethod__r?.Name != undefined && this.request.InterpretationMethodSecondary__r?.Name != undefined) {
-            this.interpretationMethodToShow = this.request.InterpretationMethod__r.Name + ' og ' + this.request.InterpretationMethodSecondary__r.Name; 
-        } else if (this.request.InterpretationMethod__r?.Name != undefined) {
-            this.interpretationMethodToShow = this.request.InterpretationMethod__r?.Name;
-        } else {
-            this.interpretationMethodToShow = null;
-        }
-        // Sentral
-        this.requestOwnerToShow = this.request.Owner?.Name != undefined ? this.request.Owner.Name : null;
-        // Virksomhet
-        this.requestCompanyToShow = this.request.Company__r?.Name != undefined ? this.request.Company__r.Name : null;
-    }
-
     goBack() {
         let currentLevel = this.urlStateParameters.level;
         if (currentLevel === undefined || currentLevel === '') {
@@ -274,7 +256,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.setButtonStates();
         this.setDateFormats();
         this.setAddressFormat();
-        this.setFields();
     }
     updateURL() {
         let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
