@@ -114,7 +114,11 @@ public without sharing class HOT_WorkOrderListController {
         Map<Id, WorkOrder> workOrdersAccount = new Map<Id, WorkOrder>();
         Map<Id, WorkOrder> workOrdersOrderer = new Map<Id, WorkOrder>();
         for (WorkOrder wo : workOrders.values()) {
+            if (wo.HOT_Request__r.Orderer__c == user.AccountId) {
+                wo.HOT_Request__r.Orderer__r.Name = null;
+            }
             if (wo.HOT_Request__r.Account__c == user.AccountId) {
+                wo.HOT_Request__r.PaymentLiability__c = null;
                 workOrdersAccount.put(wo.Id, wo);
             } else {
                 workOrdersOrderer.put(wo.Id, wo);
