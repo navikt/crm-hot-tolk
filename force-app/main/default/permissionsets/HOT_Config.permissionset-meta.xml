@@ -484,23 +484,13 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Request__c.HOT_DelPol_IsHideRecord__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.HOT_DelPol_IsHideRequestFromOrderer__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.HOT_DelPol_IsHideUserNameFromOrderer__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.HOT_DelPol_ToDeleteFiles__c</field>
+        <editable>true</editable>
+        <field>HOT_Request__c.HOT_DelPol_IsDeleteFiles__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -520,12 +510,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.IsFellesOppdrag__c</field>
+        <field>HOT_Request__c.HOT_DelPol_ToDeleteFiles__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.IsFileConsent__c</field>
+        <field>HOT_Request__c.HOT_DelPol_ToHideRecord__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
