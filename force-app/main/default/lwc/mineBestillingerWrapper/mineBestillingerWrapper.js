@@ -17,21 +17,35 @@ import { updateRecord } from 'lightning/uiRecordApi';
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @api header;
     @api isAccount;
-    breadcrumbs = [
+    @track filters = [];
+    @track breadcrumbs = [];
+
+    isMobile = false;
+    buttonText = 'Ny bestilling';
+    setMobileButtonText() {
+        this.isMobile = window.screen.width < 576;
+        this.buttonText = this.isMobile ? '+' : 'Ny bestilling';
+    }
+    connectedCallback() {
+        this.setMobileButtonText();
+        this.filters = defaultFilters();
+        this.breadcrumbs = [ 
         {
             label: 'Tolketjenesten',
             href: ''
         },
         {
-            label: 'Mine Bestillinger',
+            label: this.header,
             href: 'mine-bestillinger'
         }
-    ];
-
-    @track filters = [];
-    connectedCallback() {
-        this.filters = defaultFilters();
+        ];
     }
+    renderedCallback() {
+        if (this.urlStateParameters.id === '' && this.urlStateParameters.level === '') {
+            refreshApex(this.wiredgetWorkOrdersResult);
+        }
+    }
+
     isRequestDetails = false;
     isWorkOrderDetails = false;
     isRequestOrWorkOrderDetails = false;
@@ -182,10 +196,18 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     requestAddressToShow;
+    requestInterpretationAddressToShow;
+    workOrderInterpretationAddressToShow;
     setAddressFormat() {
         this.requestAddressToShow = this.request.IsScreenInterpreter__c
             ? 'Digitalt oppmøte'
-            : this.request.MeetingStreet__c;
+            : this.request.MeetingStreet__c + ', ' + this.request.MeetingPostalCode__c + ' ' + this.request.MeetingPostalCity__c;
+        this.requestInterpretationAddressToShow = this.request.IsScreenInterpreter__c
+            ? 'Digitalt oppmøte'
+            : this.request.InterpretationStreet__c + ', ' + this.request.InterpretationPostalCode__c + ' ' + this.request.InterpretationPostalCity__c;
+        this.workOrderInterpretationAddressToShow = this.request.IsScreenInterpreter__c
+        ? 'Digitalt oppmøte'
+        : this.workOrder.HOT_InterpretationStreet__c + ', ' + this.workOrder.HOT_InterpretationPostalCode__c + ' ' + this.workOrder.HOT_InterpretationPostalCity__c;
     }
 
     goBack() {
@@ -220,14 +242,16 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     interpreter = 'Tolk';
     isOrdererWantStatusUpdateOnSMS = 'Ja';
+    isSeries = false;
     updateView() {
-        this.setHeader();
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
+        this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
         this.isOrdererWantStatusUpdateOnSMS = this.request.IsOrdererWantStatusUpdateOnSMS__c ? 'Ja' : 'Nei';
         this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId ? true : false;
+        this.setHeader();
         this.setButtonLabels();
         this.setButtonStates();
         this.setDateFormats();
@@ -423,6 +447,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     onUploadComplete() {
+        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        }
         this.template.querySelector('.loader').classList.add('hidden');
         this.modalHeader = 'Suksess!';
         // Only show pop-up modal if in add files window
@@ -495,9 +522,5 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     deleteMarkedFiles() {
         this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
-    }
-
-    refreshList() {
-        refreshApex(this.wiredgetWorkOrdersResult);
     }
 }

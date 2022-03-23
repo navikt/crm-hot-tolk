@@ -29,7 +29,7 @@ export let workOrderMobileColumns = [
         type: 'Datetime'
     },
     {
-        name: 'Status',
+        name: 'HOT_ExternalWorkOrderStatus__c',
         label: 'Status',
         type: 'String',
         svg: true

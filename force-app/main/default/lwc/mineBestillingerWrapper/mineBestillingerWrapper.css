@@ -26,7 +26,7 @@
 }
 .header {
     flex: 2;
-    margin: auto 0.5rem;
+    margin: 0rem 0rem 0.5rem 0rem;
     width: 100%;
     text-align: center;
     font-size: 1.5rem;
@@ -34,7 +34,6 @@
 .header-buttons {
     display: flex;
     flex-direction: row;
-    align-items: center;
     flex: 1;
     justify-content: end;
     z-index: 999;
@@ -103,24 +102,6 @@ span {
     padding-right: 0.5vw;
 }
 
-.refresh-button {
-    width: 3rem; 
-    height: 3rem; 
-    border: 1px solid #929292;
-    background-color: #EFEFEF;
-}
-
-.refresh-button:hover {
-    background-color: #0056b4;
-    color: white;
-}
-
-.refresh-button:active {
-    box-shadow: 0 0 0 3px #00347d;
-    background-color: #0056b4;
-    color: white;
-}
-
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -137,14 +118,25 @@ span {
     .comments-dialog-container {
         width: 100%;
     }
-    .header-buttons {
-        flex-direction: column;
-    }
     .button-padding {
         padding-bottom: 1vw;
         padding-right: unset;
     }
-    .refresh-button {
-        margin-bottom: 2vw;
+    .header {
+        font-size: 1.4rem;
+    }
+    .record-details-container {
+        margin: 4vw 0;
+    }
+    .navigation-container {
+        display: block;
+    }
+    .mobile-button {
+        position: fixed;
+        bottom: 5vw;
+        right: 10vw;
+    }
+    .header-buttons {
+        justify-content: space-between;
     }
 }
