@@ -465,8 +465,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.hasFiles = event.detail > 0;
     }
 
-    // Ideally should show files immediately when uploaded. Need to run refreshApex on a query of ContentDocuments?
     onUploadComplete() {
+        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        }
         this.template.querySelector('.loader').classList.add('hidden');
         this.modalHeader = 'Suksess!';
         // Only show pop-up modal if in add files window
