@@ -119,7 +119,6 @@ public without sharing class HOT_WorkOrderListController {
                 wo.HOT_Request__r.Orderer__r.Name = null;
             }
             if (wo.HOT_Request__r.Account__c == user.AccountId) {
-                wo.HOT_Request__r.PaymentLiability__c = null;
                 workOrdersAccount.put(wo.Id, wo);
             } else {
                 workOrdersOrderer.put(wo.Id, wo);
