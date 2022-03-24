@@ -4,6 +4,7 @@ public without sharing class HOT_WorkOrderListController {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>();
         Id userId = UserInfo.getUserId();
         User user = [SELECT Id, AccountId, Name FROM User WHERE Id = :userId];
+
         if (user.AccountId != null) {
             workOrders = new Map<Id, WorkOrder>(
                 [
