@@ -4,6 +4,7 @@ public without sharing class HOT_WorkOrderListController {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>();
         Id userId = UserInfo.getUserId();
         User user = [SELECT Id, AccountId, Name FROM User WHERE Id = :userId];
+
         if (user.AccountId != null) {
             workOrders = new Map<Id, WorkOrder>(
                 [
@@ -114,6 +115,9 @@ public without sharing class HOT_WorkOrderListController {
         Map<Id, WorkOrder> workOrdersAccount = new Map<Id, WorkOrder>();
         Map<Id, WorkOrder> workOrdersOrderer = new Map<Id, WorkOrder>();
         for (WorkOrder wo : workOrders.values()) {
+            if (wo.HOT_Request__r.Orderer__c == user.AccountId) {
+                wo.HOT_Request__r.Orderer__r.Name = null;
+            }
             if (wo.HOT_Request__r.Account__c == user.AccountId) {
                 workOrdersAccount.put(wo.Id, wo);
             } else {
