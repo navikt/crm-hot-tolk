@@ -199,4 +199,22 @@ private class HOT_RequestHandlerTest {
             'The owner was not changed to "HOT Arkiv" as expected.'
         );
     }
+
+    @isTest
+    public static void setUserInterpretationField() {
+        WorkType workType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        workType.HOT_DeveloperName__c = 'TS';
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Source__c = 'Community';
+        request.UserInterpretationMethod__c = 'TS';
+        
+        Test.startTest();
+        insert request;
+        Test.stopTest();
+
+        request = [SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c FROM HOT_Request__c WHERE Id = :request.Id];
+        System.assertEquals(request.InterpretationMethod__r.HOT_DeveloperName__c, request.UserInterpretationMethod__c, 'Request.InterpretationMethod__r.HOT_DeveloperName__c field is not equal to UserInterpretationMethod__c field.');
+    }
 }

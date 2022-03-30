@@ -21,7 +21,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (request.Type__c == 'ImageInterpreter') {
                 imageInterpreterRequests.add(request);
             }
-            if (request.UserInterpretationMethod__c != null && request.Source__c = 'Fra nav.no') {
+            if (request.UserInterpretationMethod__c != null && request.Source__c == 'Community') {
                 requestsWithUserInterpretationMethod.add(request);
             }
         }
@@ -357,10 +357,13 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
     public static void setInterpretationMethod(List<HOT_Request__c> requests) {
-        // Change API names of UserInterpretationMethod__c so that request.UserInterpretationMethod__c equals WorkType.Name
-        Map<Id, Name> interpretationMethods = new Map<Id, Name>();
-        for (WorkType wt : [SELECT Id FROM WorkType WHERE Name LIKE :request.UserInterpretationMethod__c]) {
-            interpretationMethods.put(wt.Name, wt.Id);
+        List<String> userInterpretationMethodList = new List<String>();
+        for (HOT_Request__c req : requests) {
+            userInterpretationMethodList.add(req.UserInterpretationMethod__c);
+        }
+        Map<String, Id> interpretationMethods = new Map<String, Id>();
+        for (WorkType wt : [SELECT Id, HOT_DeveloperName__c FROM WorkType WHERE HOT_DeveloperName__c LIKE :userInterpretationMethodList]) {
+            interpretationMethods.put(wt.HOT_DeveloperName__c, wt.Id);
         }
         for (HOT_Request__c request : requests) {
             request.InterpretationMethod__c = interpretationMethods.get(request.UserInterpretationMethod__c);
