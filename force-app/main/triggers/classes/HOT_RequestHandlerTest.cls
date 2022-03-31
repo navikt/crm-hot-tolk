@@ -208,6 +208,7 @@ private class HOT_RequestHandlerTest {
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.Source__c = 'Community';
+        request.InterpretationMethod__c = null;
         request.UserInterpretationMethod__c = 'TS';
         
         Test.startTest();
@@ -216,5 +217,25 @@ private class HOT_RequestHandlerTest {
 
         request = [SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c FROM HOT_Request__c WHERE Id = :request.Id];
         System.assertEquals(request.InterpretationMethod__r.HOT_DeveloperName__c, request.UserInterpretationMethod__c, 'Request.InterpretationMethod__r.HOT_DeveloperName__c field is not equal to UserInterpretationMethod__c field.');
+    }
+
+    @isTest
+    public static void userInterpretationFieldShouldNotBeSet() {
+        WorkType workType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        workType.HOT_DeveloperName__c = 'TS';
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Source__c = 'Dispatcher';
+        Account acc = HOT_TestDataFactory.createAccount(true);
+        insert acc;
+        request.Orderer__c = acc.Id;
+
+        Test.startTest();
+        insert request;
+        Test.stopTest();
+
+        request = [SELECT InterpretationMethod__c, UserInterpretationMethod__c FROM HOT_Request__c WHERE Id = :request.Id];
+        System.assertNotEquals(request.InterpretationMethod__c, request.UserInterpretationMethod__c, 'InterpretationMethod__c field should not be equal to UserInterpretationMethod__c field in this case.');
     }
 }

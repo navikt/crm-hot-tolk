@@ -358,15 +358,15 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
     public static void setInterpretationMethod(List<HOT_Request__c> requests) {
         List<String> userInterpretationMethodList = new List<String>();
-        for (HOT_Request__c req : requests) {
-            userInterpretationMethodList.add(req.UserInterpretationMethod__c);
+        for (HOT_Request__c request : requests) {
+            userInterpretationMethodList.add(request.UserInterpretationMethod__c);
         }
-        Map<String, Id> interpretationMethods = new Map<String, Id>();
-        for (WorkType wt : [SELECT Id, HOT_DeveloperName__c FROM WorkType WHERE HOT_DeveloperName__c LIKE :userInterpretationMethodList]) {
-            interpretationMethods.put(wt.HOT_DeveloperName__c, wt.Id);
+        Map<String, Id> workTypeIdByDeveloperName = new Map<String, Id>();
+        for (WorkType workType : [SELECT Id, HOT_DeveloperName__c FROM WorkType WHERE HOT_DeveloperName__c LIKE :userInterpretationMethodList]) {
+            workTypeIdByDeveloperName.put(workType.HOT_DeveloperName__c, workType.Id);
         }
         for (HOT_Request__c request : requests) {
-            request.InterpretationMethod__c = interpretationMethods.get(request.UserInterpretationMethod__c);
+            request.InterpretationMethod__c = workTypeIdByDeveloperName.get(request.UserInterpretationMethod__c);
         }
     }
 }
