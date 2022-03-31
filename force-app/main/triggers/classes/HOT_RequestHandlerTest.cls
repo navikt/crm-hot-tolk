@@ -235,7 +235,7 @@ private class HOT_RequestHandlerTest {
         insert request;
         Test.stopTest();
 
-        request = [SELECT InterpretationMethod__c, UserInterpretationMethod__c FROM HOT_Request__c WHERE Id = :request.Id];
-        System.assertNotEquals(request.InterpretationMethod__c, request.UserInterpretationMethod__c, 'InterpretationMethod__c field should not be equal to UserInterpretationMethod__c field in this case.');
+        request = [SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c FROM HOT_Request__c WHERE Id = :request.Id];
+        System.assertNotEquals(request.InterpretationMethod__r.HOT_DeveloperName__c, request.UserInterpretationMethod__c, 'InterpretationMethod__c field should not be equal to UserInterpretationMethod__c field in this case.');
     }
 }
