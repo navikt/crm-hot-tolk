@@ -1,8 +1,8 @@
 echo "Oppretter scratch org"
 call sfdx force:org:create -f config\project-scratch-def.json --setalias %1 --durationdays %2 --setdefaultusername --json --loglevel fatal  --wait 10
 
-echo "Installerer crm-platform-base ver. 0.150"
-call sfdx force:package:install --package 04t7U000000Toh9QAC -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-platform-base ver. 0.151"
+call sfdx force:package:install --package 04t7U000000TonMQAS -r -k %3 --wait 10 --publishwait 10
 
 echo "Installerer crm-platform-integration ver. 0.75"
 call sfdx force:package:install --package 04t7U000000TobpQAC -r -k %3 --wait 10 --publishwait 10
