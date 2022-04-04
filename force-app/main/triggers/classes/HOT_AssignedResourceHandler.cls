@@ -349,6 +349,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         }
     }
 
+    // TODO: Remove name when AR delete
+    // TODO: Replace name when AR edit
     public static void getAndSetInterpretersOnWorkOrders(List<AssignedResource> assignedResources) {
         List<Id> serviceAppointmentIds = new List<Id>();
         for (AssignedResource assignedResource : assignedResources) {
