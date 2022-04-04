@@ -416,4 +416,62 @@ private class HOT_AssignedResourceHandlerTest {
             'Could not set Interested Resource Status to Assigned'
         );
     }
+
+    @isTest
+    static void updateInterpreterFieldOnWorkOrderAfterAssignedResourceInsert() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c, Status
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+        ServiceResource adminResource = [
+            SELECT Id, RelatedRecordId, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            adminResource.Id
+        );
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        Test.startTest();
+        insert assignedResource1;
+        Test.stopTest();
+
+        serviceAppointment = [
+            SELECT Id, HOT_WorkOrderLineItem__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+            LIMIT 1
+        ];
+        WorkOrderLineItem workOrderLineItem = [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__c LIMIT 1];
+        WorkOrder workOrder = [
+            SELECT Id, HOT_Interpreters__c, HOT_DelPol_IsHideInterpreterFromUser__c 
+            FROM WorkOrder 
+            WHERE Id = :workOrderLineItem.WorkOrderId];
+            
+        System.assertEquals(
+            adminResource.Name,
+            workOrder.HOT_Interpreters__c,
+            'Could not set HOT_Interpreters__c onAfterInsert'
+        ); 
+    }
+
+    @isTest
+    static void updateInterpreterFieldOnWorkOrderAfterMultipleAssignedResourceInsert() {
+        //TODO
+    }
+
+    @isTest
+    static void updateInterpreterFieldOnWorkOrderAfterAssignedResourceEdit() {
+        //TODO
+    }
+
+    @isTest
+    static void updateInterpreterFieldOnWorkOrderAfterAssignedResourceDelete() {
+        //TODO
+    }
 }

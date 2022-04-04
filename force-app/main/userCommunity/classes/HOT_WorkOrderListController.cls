@@ -29,7 +29,6 @@ public without sharing class HOT_WorkOrderListController {
                 ]
             );
         }
-        workOrders = getAndSetInterpreters(workOrders);
         workOrders = getRowActions(workOrders);
         return workOrders.values();
     }
@@ -125,7 +124,6 @@ public without sharing class HOT_WorkOrderListController {
             }
         }
         workOrders = isAccount ? workOrdersAccount : workOrdersOrderer;
-        workOrders = getAndSetInterpreters(workOrders);
         return workOrders.values();
     }
 
@@ -161,58 +159,8 @@ public without sharing class HOT_WorkOrderListController {
                 ]
             );
         }
-        workOrders = getAndSetInterpreters(workOrders);
         workOrders = getRowActions(workOrders);
         return workOrders.values();
-    }
-
-    public static Map<Id, WorkOrder> getAndSetInterpreters(Map<Id, WorkOrder> workOrders) {
-        List<String> statuses = new List<String>{ 'Dispatched', 'In Progress', 'Completed', 'Partially Complete' };
-        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
-            [
-                SELECT Id, WorkOrderId
-                FROM WorkOrderLineItem
-                WHERE WorkOrderId IN :workOrders.keySet() AND WorkOrder.Status IN :statuses
-            ]
-        );
-        List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c
-            FROM ServiceAppointment
-            WHERE ParentRecordId IN :workOrderLineItems.keySet() AND Status IN :statuses
-        ];
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            if (serviceAppointment.HOT_ServiceResource__r.Name != null) {
-                String screenInterpreter = '';
-                if (serviceAppointment.HOT_IsScreenInterpreterNew__c) {
-                    screenInterpreter = ' (skjermtolk)';
-                }
-
-                if (
-                    workOrders.get(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrderId)
-                        .HOT_Interpreters__c == null
-                ) {
-                    workOrders.get(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrderId)
-                            .HOT_Interpreters__c =
-                        serviceAppointment.HOT_ServiceResource__r.Name +
-                        screenInterpreter +
-                        ', ';
-                } else {
-                    workOrders.get(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrderId)
-                            .HOT_Interpreters__c +=
-                        serviceAppointment.HOT_ServiceResource__r.Name +
-                        screenInterpreter +
-                        ', ';
-                }
-            }
-        }
-        for (Id id : workOrders.keySet()) {
-            if (workOrders.get(id).HOT_Interpreters__c != null) {
-                if (workOrders.get(id).HOT_Interpreters__c.right(2) == ', ') {
-                    workOrders.get(id).HOT_Interpreters__c = workOrders.get(id).HOT_Interpreters__c.removeEnd(', ');
-                }
-            }
-        }
-        return workOrders;
     }
 
     public static Map<Id, WorkOrder> getRowActions(Map<Id, WorkOrder> workOrders) {

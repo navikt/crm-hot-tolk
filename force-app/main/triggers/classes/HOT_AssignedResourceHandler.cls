@@ -29,6 +29,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             (List<AssignedResource>) records
         );
         update interestedResources;
+        getAndSetInterpretersOnWorkOrders((List<AssignedResource>) records);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -53,6 +54,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 (List<AssignedResource>) records
             );
             update interestedResources;
+            getAndSetInterpretersOnWorkOrders(assignedResourcesFiltered);
         }
     }
 
@@ -85,6 +87,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
     }
 
     public override void onAfterDelete() {
+        // TODO: AR Edit same as AR Delete?
+        //getAndSetInterpretersOnWorkOrders((List<AssignedResource>) records);
         List<Id> serviceAppointmentIds = new List<Id>();
         for (AssignedResource ar : (List<AssignedResource>) records) {
             serviceAppointmentIds.add(ar.ServiceAppointmentId);
@@ -343,5 +347,56 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 }
             }
         }
+    }
+
+    public static void getAndSetInterpretersOnWorkOrders(List<AssignedResource> assignedResources) {
+        List<Id> serviceAppointmentIds = new List<Id>();
+        for (AssignedResource assignedResource : assignedResources) {
+            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+        }
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c, HOT_WorkOrderLineItem__c
+            FROM ServiceAppointment
+            WHERE Id IN :serviceAppointmentIds AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != null
+        ];
+        List<Id> workOrderLineItemIds = new List<Id>();
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            workOrderLineItemIds.add(serviceAppointment.HOT_WorkOrderLineItem__c);
+        }
+        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
+            [
+                SELECT Id, WorkOrderId
+                FROM WorkOrderLineItem
+                WHERE Id IN :workOrderLineItemIds AND WorkOrder.Status != 'Scheduled'
+            ]
+        );
+        List<Id> workOrderIds = new List<Id>();
+        for (WorkOrderLineItem workOrderLineItem : workOrderLineItems.values()) {
+            workOrderIds.add(workOrderLineItem.WorkOrderId);
+        }
+        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(
+            [
+            SELECT Id, HOT_Interpreters__c, HOT_DelPol_IsHideInterpreterFromUser__c 
+            FROM WorkOrder 
+            WHERE Id IN :workOrderIds
+            ]
+        );
+            
+        Map<Id, WorkOrder> workOrdersToUpdate = new Map<Id, WorkOrder>();
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
+            WorkOrder workOrder = workOrders.get(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrderId);
+            if (workOrder.HOT_Interpreters__c == null) {
+                workOrder.HOT_Interpreters__c = serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter + ', ';
+            } else {
+                workOrder.HOT_Interpreters__c += ', ' + serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter + ', ';
+            }
+            workOrder.HOT_Interpreters__c =  workOrder.HOT_Interpreters__c.removeEnd(', ');
+            if (workOrder.HOT_DelPol_IsHideInterpreterFromUser__c) {
+                workOrder.HOT_Interpreters__c = '';
+            }
+            workOrdersToUpdate.put(workOrder.Id, workOrder);
+        }
+        update workOrdersToUpdate.values();
     }
 }
