@@ -318,7 +318,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                     state: {
                         fieldValues: JSON.stringify(this.request),
                         fromList: true,
-                        edit: true
+                        edit: true,
+                        isAccount: JSON.stringify(this.isAccount)
                     }
                 });
             }
@@ -339,7 +340,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             state: {
                 fieldValues: JSON.stringify(this.request),
                 fromList: true,
-                copy: true
+                copy: true,
+                isAccount: JSON.stringify(this.isAccount)
             }
         });
     }
