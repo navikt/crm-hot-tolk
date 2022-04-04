@@ -159,6 +159,9 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
             ) {
                 sharesToBeDeleted.add(share);
             }
+            if (serviceAppointmentMap.get(share.ParentId).HOT_DelPol_IsHideRecord__c) {
+                sharesToBeDeleted.add(share);
+            }
         }
         try {
             delete sharesToBeDeleted;
