@@ -5,7 +5,7 @@ public without sharing class HOT_RecalculateManualSharingBatch implements Databa
     }
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        String query = 'SELECT Id, HOT_IsRecalculateManualSharing__c, HOT_ServiceResource__r.RelatedRecordId FROM ServiceAppointment WHERE HOT_IsRecalculateManualSharing__c = true';
+        String query = 'SELECT Id, HOT_IsRecalculateManualSharing__c, HOT_ServiceResource__r.RelatedRecordId, HOT_DelPol_IsHideRecord__c FROM ServiceAppointment WHERE HOT_IsRecalculateManualSharing__c = true';
         return Database.getQueryLocator(query);
     }
 

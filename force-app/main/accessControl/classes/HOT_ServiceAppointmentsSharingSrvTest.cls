@@ -323,7 +323,12 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         update serviceAppointment;
 
         serviceAppointment = [
-            SELECT Id, HOT_IsRecalculateManualSharing__c, HOT_ServiceResource__c, HOT_ServiceResource__r.RelatedRecordId
+            SELECT
+                Id,
+                HOT_IsRecalculateManualSharing__c,
+                HOT_ServiceResource__c,
+                HOT_ServiceResource__r.RelatedRecordId,
+                HOT_DelPol_IsHideRecord__c
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];

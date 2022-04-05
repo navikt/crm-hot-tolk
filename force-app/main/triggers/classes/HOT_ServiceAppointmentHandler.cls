@@ -248,6 +248,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsToChangeOwnerToArchive.size() > 0) {
             HOT_Utility.setArchiveAsOwner(serviceAppointmentsToChangeOwnerToArchive);
+            HOT_ServiceAppointmentsSharingService.recalculateManualSharing(serviceAppointmentsToChangeOwnerToArchive);
         }
         if (serviceAppointmentsWithStatusNone.size() > 0) {
             setScheduledTimesOnStatusNone(serviceAppointmentsWithStatusNone);
