@@ -420,7 +420,7 @@ private class HOT_AssignedResourceHandlerTest {
     @isTest
     static void updateInterpreterFieldOnWorkOrderAfterAssignedResourceInsert() {
         ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c, Status
+            SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__c
             FROM ServiceAppointment
             WHERE Subject = 'subject'
             LIMIT 1
@@ -441,15 +441,9 @@ private class HOT_AssignedResourceHandlerTest {
         insert assignedResource1;
         Test.stopTest();
 
-        serviceAppointment = [
-            SELECT Id, HOT_WorkOrderLineItem__c
-            FROM ServiceAppointment
-            WHERE Id = :serviceAppointment.Id
-            LIMIT 1
-        ];
         WorkOrderLineItem workOrderLineItem = [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__c LIMIT 1];
         WorkOrder workOrder = [
-            SELECT Id, HOT_Interpreters__c, HOT_DelPol_IsHideInterpreterFromUser__c 
+            SELECT Id, HOT_Interpreters__c 
             FROM WorkOrder 
             WHERE Id = :workOrderLineItem.WorkOrderId];
             
@@ -462,16 +456,90 @@ private class HOT_AssignedResourceHandlerTest {
 
     @isTest
     static void updateInterpreterFieldOnWorkOrderAfterMultipleAssignedResourceInsert() {
-        //TODO
+        ServiceAppointment serviceAppointment1 = [
+            SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+        WorkOrderLineItem workOrderLineItem = [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE Id = :serviceAppointment1.HOT_WorkOrderLineItem__c LIMIT 1];
+        ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        insert serviceAppointment2;
+        ServiceResource adminResource = [
+            SELECT Id, RelatedRecordId, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        ServiceResource testResource = [
+            SELECT Id, RelatedRecordId, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId != :UserInfo.getUserId()
+        ];
+        AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment1.Id,
+            adminResource.Id
+        );
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            testResource.Id
+        );
+        serviceAppointment1.Status = 'Dispatched';
+        serviceAppointment2.Status = 'Dispatched';
+        update serviceAppointment1;
+        update serviceAppointment2;
+        
+        Test.startTest();
+        insert assignedResource1;
+        insert assignedResource2;
+        Test.stopTest();
+        
+        WorkOrder workOrder = [
+            SELECT Id, HOT_Interpreters__c 
+            FROM WorkOrder 
+            WHERE Id = :workOrderLineItem.WorkOrderId];
+            
+        System.assertEquals(
+            adminResource.Name + ', ' + testResource.Name,
+            workOrder.HOT_Interpreters__c,
+            'Could not set multiple HOT_Interpreters__c onAfterInsert'
+        ); 
     }
 
     @isTest
-    static void updateInterpreterFieldOnWorkOrderAfterAssignedResourceEdit() {
-        //TODO
-    }
+    static void updateInterpreterFieldOnWorkOrderAfterAssignedResourceEditDelete() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+        ServiceResource adminResource = [
+            SELECT Id, RelatedRecordId, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            adminResource.Id
+        );
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+        insert assignedResource1;
 
-    @isTest
-    static void updateInterpreterFieldOnWorkOrderAfterAssignedResourceDelete() {
-        //TODO
+        Test.startTest();
+        delete assignedResource1;
+        Test.stopTest();
+
+        WorkOrderLineItem workOrderLineItem = [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__c LIMIT 1];
+        WorkOrder workOrder = [
+            SELECT Id, HOT_Interpreters__c 
+            FROM WorkOrder 
+            WHERE Id = :workOrderLineItem.WorkOrderId];
+            
+        System.assertEquals(
+            '',
+            workOrder.HOT_Interpreters__c,
+            'Could not remove name from HOT_Interpreters__c onAfterDelete'
+        ); 
     }
 }
