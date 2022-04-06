@@ -13,6 +13,7 @@
         "CustomerCommunityPlusLogin",
         "PersonAccounts",
         "ProcessBuilder",
+        "Knowledge",
         "API",
         "ServiceCloud",
         "LiveAgent",
@@ -59,6 +60,13 @@
         },
         "liveAgentSettings": {
             "enableLiveAgent": true
+        },
+        "knowledgeSettings": {
+            "enableKnowledge": true,
+            "enableLightningKnowledge": true
+        },
+        "omniChannelSettings": {
+            "enableOmniChannel": true
         }
     }
 }

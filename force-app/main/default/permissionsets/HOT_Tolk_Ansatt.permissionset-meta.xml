@@ -1017,6 +1017,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_MobileDevice__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>ServiceResource.HOT_MobilePhone__c</field>
         <readable>true</readable>

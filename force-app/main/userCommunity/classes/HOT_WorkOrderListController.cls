@@ -4,6 +4,7 @@ public without sharing class HOT_WorkOrderListController {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>();
         Id userId = UserInfo.getUserId();
         User user = [SELECT Id, AccountId, Name FROM User WHERE Id = :userId];
+
         if (user.AccountId != null) {
             workOrders = new Map<Id, WorkOrder>(
                 [
@@ -51,10 +52,16 @@ public without sharing class HOT_WorkOrderListController {
                     Subject,
                     HOT_AddressFormated__c,
                     Status,
+                    Owner.Name,
                     HOT_ExternalWorkOrderStatus__c,
                     HOT_Interpreters__c,
                     HOT_IsCancelable__c,
+                    HOT_InterpretationStreet__c,
+                    HOT_InterpretationPostalCity__c,
+                    HOT_InterpretationPostalCode__c,
                     HOT_Request__c,
+                    HOT_Request__r.Name,
+                    HOT_Request__r.PaymentLiability__c,
                     HOT_Request__r.SeriesStartDate__c,
                     HOT_Request__r.Subject__c,
                     HOT_Request__r.StartTime__c,
@@ -88,14 +95,15 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.OrdererPhone__c,
                     HOT_Request__r.OrdererEmail__c,
                     HOT_Request__r.OrdererName__c,
-                    HOT_Request__r.Owner.Name,
-                    HOT_Request__r.AssignmentType__c,
+                    toLabel(HOT_Request__r.AssignmentType__c),
                     HOT_AssignmentType__c,
                     HOT_Request__r.UserName__c,
                     HOT_Request__r.UserPersonNumber__c,
                     HOT_Request__r.UserPreferredInterpreter__c,
                     toLabel(HOT_Request__r.UserInterpretationMethod__c),
-                    HOT_Request__r.Company__r.Name
+                    HOT_Request__r.CompanyName__c,
+                    HOT_Request__r.OwnerName__c,
+                    HOT_Request__r.InterpretationMethodName__c
                 FROM WorkOrder
                 WHERE
                     (HOT_Request__r.Account__c = :user.AccountId
@@ -107,6 +115,9 @@ public without sharing class HOT_WorkOrderListController {
         Map<Id, WorkOrder> workOrdersAccount = new Map<Id, WorkOrder>();
         Map<Id, WorkOrder> workOrdersOrderer = new Map<Id, WorkOrder>();
         for (WorkOrder wo : workOrders.values()) {
+            if (wo.HOT_Request__r.Orderer__c == user.AccountId) {
+                wo.HOT_Request__r.Orderer__r.Name = null;
+            }
             if (wo.HOT_Request__r.Account__c == user.AccountId) {
                 workOrdersAccount.put(wo.Id, wo);
             } else {

@@ -646,12 +646,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_DispatcherNew__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_Dispatcher__c</field>
+        <field>ServiceAppointment.HOT_DispatcherName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -847,6 +842,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.HOT_IsAvailableForAcuteAssignments__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_MobileDevice__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -26,7 +26,7 @@
 }
 .header {
     flex: 2;
-    margin: auto 0.5rem;
+    margin: 0rem 0rem 0.5rem 0rem;
     width: 100%;
     text-align: center;
     font-size: 1.5rem;
@@ -34,9 +34,9 @@
 .header-buttons {
     display: flex;
     flex-direction: row;
-    align-items: center;
     flex: 1;
     justify-content: end;
+    z-index: 999;
 }
 .record-details-container {
     margin: 2rem 0;
@@ -118,14 +118,25 @@ span {
     .comments-dialog-container {
         width: 100%;
     }
-    .header-buttons {
-        flex-direction: column;
-    }
     .button-padding {
         padding-bottom: 1vw;
         padding-right: unset;
     }
-    .refresh-button {
-        padding-bottom: 1vw;
+    .header {
+        font-size: 1.4rem;
+    }
+    .record-details-container {
+        margin: 4vw 0;
+    }
+    .navigation-container {
+        display: block;
+    }
+    .mobile-button {
+        position: fixed;
+        bottom: 5vw;
+        right: 10vw;
+    }
+    .header-buttons {
+        justify-content: space-between;
     }
 }

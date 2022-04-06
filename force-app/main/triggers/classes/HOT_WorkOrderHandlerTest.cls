@@ -252,4 +252,60 @@ private class HOT_WorkOrderHandlerTest {
         System.assertEquals(workOrder3.StartDate.date(), request.SeriesStartDate__c);
         System.assertEquals(workOrder2.EndDate.date(), request.SeriesEndDate__c);
     }
+
+    @isTest
+    public static void setArchiveAsOwnerTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        workOrder.HOT_DelPol_IsHideRecord__c = true;
+        update workOrder;
+
+        WorkOrder updatedWorkOrder = [SELECT Id, OwnerId FROM WorkOrder WHERE Id = :workOrder.Id LIMIT 1];
+
+        Group archive = [SELECT Id FROM Group WHERE TYPE = 'Queue' AND NAME = 'HOT Arkiv' LIMIT 1];
+
+        System.assertEquals(
+            archive.Id,
+            updatedWorkOrder.OwnerId,
+            'The owner was not changed to "HOT Arkiv" as expected.'
+        );
+    }
+
+    @isTest
+    private static void testSetDuration() {
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.StartDate = Datetime.now().addHours(1);
+        workOrder.EndDate = Datetime.now().addHours(2);
+
+        Test.startTest();
+        insert workOrder;
+        Test.stopTest();
+
+        workOrder = [SELECT Id, Duration, EndDate FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals(1.00, workOrder.Duration, 'Set Duration onBeforeInsert');
+
+        workOrder.EndDate = workOrder.EndDate.addHours(1);
+        update workOrder;
+
+        workOrder = [SELECT Id, Duration FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals(2.00, workOrder.Duration, 'Set Duration onBeforeUpdate');
+    }
 }

@@ -240,6 +240,26 @@ private class HOT_ServiceAppointmentHandlerTest {
         System.assertEquals(0, arList.size(), 'Could not delete AR');
         System.assertEquals('Canceled', sa.Status, 'Service Appointment did not retain correct status');
     }
+    @isTest
+    static void testRemoveAssignedResourceNone() {
+        Test.startTest();
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceResource resource = [SELECT Id FROM ServiceResource LIMIT 1];
+
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        sa.Status = 'Dispatched';
+        update sa;
+
+        sa.Status = 'None';
+        update sa;
+        Test.stopTest();
+        List<AssignedResource> arList = [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId = :sa.Id];
+        sa = [SELECT Id, Status FROM ServiceAppointment WHERE Id = :sa.id];
+        System.assertEquals(0, arList.size(), 'Could not delete AR');
+        System.assertEquals('None', sa.Status, 'Service Appointment did not retain correct status');
+    }
 
     @isTest
     private static void testCreateHistoricallyAssignedResources_addResource() {
@@ -476,15 +496,22 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
     @isTest
     static void preserveScheduledTimes_onUpdate() {
-        ServiceAppointment sa = [SELECT Id, Status, SchedEndTime, SchedStartTime FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment sa = [
+            SELECT Id, Status, SchedEndTime, SchedStartTime, EarliestStartTime, DueDate
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
         datetime startTime = Datetime.now().addHours(1);
         datetime endTime = Datetime.now().addHours(2);
+        sa.EarliestStartTime = startTime;
+        sa.DueDate = endTime;
         sa.SchedStartTime = startTime;
         sa.SchedEndTime = endTime;
         sa.Status = 'Cannot Complete';
         update sa;
 
         sa = [SELECT Id, Status, SchedEndTime, SchedStartTime FROM ServiceAppointment WHERE Id = :sa.Id];
+
         system.assertEquals(startTime, sa.SchedStartTime, 'Start time not set!');
         system.assertEquals(endTime, sa.SchedEndTime, 'End time not set');
         system.assertEquals('Cannot Complete', sa.Status, 'Status not set');
@@ -844,6 +871,45 @@ private class HOT_ServiceAppointmentHandlerTest {
             serviceAppointment.SchedEndTime,
             serviceAppointment.ActualEndTime,
             'Planlagt sluttid ble ikke satt til faktisk sluttid'
+        );
+    }
+
+    @isTest
+    public static void setArchiveAsOwnerTest() {
+        ServiceAppointment serviceAppointment = [SELECT Id, OwnerId FROM ServiceAppointment LIMIT 1];
+
+        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
+        System.assertNotEquals(
+            archive.Id,
+            serviceAppointment.OwnerId,
+            'The owner was "HOT Arkiv". Should be different owner.'
+        );
+
+        Test.startTest();
+        serviceAppointment.HOT_DelPol_IsHideRecord__c = true;
+        update serviceAppointment;
+        Test.stopTest();
+
+        ServiceAppointment updatedServiceAppointment = [
+            SELECT Id, OwnerId
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+            LIMIT 1
+        ];
+        System.assertEquals(
+            archive.Id,
+            updatedServiceAppointment.OwnerId,
+            'The owner was not changed to "HOT Arkiv" as expected.'
+        );
+    }
+
+    @isTest
+    public static void checkIfHOTAccountFieldIsEqualToAccountOnInsert() {
+        ServiceAppointment serviceAppointment = [SELECT Id, AccountId, HOT_Account__c FROM ServiceAppointment LIMIT 1];
+        System.assertEquals(
+            serviceAppointment.AccountId,
+            serviceAppointment.HOT_Account__c,
+            'SA HOT_Account__c was not set correctly.'
         );
     }
 }

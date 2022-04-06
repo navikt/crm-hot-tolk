@@ -155,7 +155,9 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         List<ServiceAppointmentShare> sharesToBeDeleted = new List<ServiceAppointmentShare>();
         for (ServiceAppointmentShare share : serviceAppointmentShares) {
             if (
-                share.UserOrGroupId != serviceAppointmentMap.get(share.ParentId).HOT_ServiceResource__r.RelatedRecordId
+                share.UserOrGroupId !=
+                serviceAppointmentMap.get(share.ParentId).HOT_ServiceResource__r.RelatedRecordId ||
+                serviceAppointmentMap.get(share.ParentId).HOT_DelPol_IsHideRecord__c
             ) {
                 sharesToBeDeleted.add(share);
             }

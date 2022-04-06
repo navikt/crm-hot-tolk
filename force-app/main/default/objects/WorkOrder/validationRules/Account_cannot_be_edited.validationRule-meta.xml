@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account_cannot_be_edited</fullName>
+    <active>true</active>
+    <errorConditionFormula>ISCHANGED(AccountId) 
+&amp;&amp;
+PRIORVALUE(AccountId) != null
+&amp;&amp;
+!$Permission.Validation_Override</errorConditionFormula>
+    <errorDisplayField>AccountId</errorDisplayField>
+    <errorMessage>Bruker kan ikke endres.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_DispatcherName__c</fullName>
+    <externalId>false</externalId>
+    <formula>HOT_DispatcherNew__r.FirstName 
++
+IF(ISBLANK(HOT_DispatcherNew__r.MiddleName), &apos;&apos;, &apos; &apos; + HOT_DispatcherNew__r.MiddleName)
++
+&apos; &apos;
++
+HOT_DispatcherNew__r.LastName</formula>
+    <label>Dispatcher Name</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

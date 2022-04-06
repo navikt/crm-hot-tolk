@@ -4,16 +4,6 @@
     <deleteConstraint>SetNull</deleteConstraint>
     <externalId>false</externalId>
     <label>Dispatcher</label>
-    <lookupFilter>
-        <active>true</active>
-        <errorMessage>Du kan kun velge en formidler</errorMessage>
-        <filterItems>
-            <field>User.Profile.Name</field>
-            <operation>equals</operation>
-            <value>HOT Tolk Formidler</value>
-        </filterItems>
-        <isOptional>false</isOptional>
-    </lookupFilter>
     <referenceTo>User</referenceTo>
     <relationshipName>HOT_ServiceAppointments</relationshipName>
     <required>false</required>

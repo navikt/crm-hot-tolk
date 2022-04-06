@@ -15,20 +15,21 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         );
         setSourceFieldOnClone((List<HOT_Request__c>) records);
         List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
-        List<HOT_Request__c> requestsToCopyTextFields = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsWithUserInterpretationMethod = new List<HOT_Request__c>();
+
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             if (request.Type__c == 'ImageInterpreter') {
                 imageInterpreterRequests.add(request);
             }
-            if (!request.IsHideTextFields__c) {
-                requestsToCopyTextFields.add(request);
+            if (request.UserInterpretationMethod__c != null && request.Source__c == 'Community') {
+                requestsWithUserInterpretationMethod.add(request);
             }
         }
         if (imageInterpreterRequests.size() > 0) {
             setImageInterpreterFields(imageInterpreterRequests);
         }
-        if (requestsToCopyTextFields.size() > 0) {
-            setRequestsToCopyTextFields(requestsToCopyTextFields);
+        if (requestsWithUserInterpretationMethod.size() > 0) {
+            setInterpretationMethod(requestsWithUserInterpretationMethod);
         }
     }
 
@@ -61,7 +62,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
-        List<HOT_Request__c> requestsToUpdateTextFields = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsToChangeOwnerToArchive = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
@@ -79,15 +80,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             ) {
                 notifyDispatcherRequests.add(request);
             }
-            //Oppdatert (bruker)tema eller (bruker)tilleggsbeskrivelse på request
             if (
-                !request.IsHideTextFields__c &&
-                (request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c') ||
-                request.Description__c != triggerOldMap.get(request.Id).get('Description__c') ||
-                request.UserSubject__c != triggerOldMap.get(request.Id).get('UserSubject__c') ||
-                request.UserDescription__c != triggerOldMap.get(request.Id).get('UserDescription__c'))
+                triggerOldMap.get(request.Id).get('HOT_DelPol_IsHideRecord__c') !==
+                request.HOT_DelPol_IsHideRecord__c && request.HOT_DelPol_IsHideRecord__c
             ) {
-                requestsToUpdateTextFields.add(request);
+                requestsToChangeOwnerToArchive.add(request);
             }
         }
         if (ownerChangedRequests.size() > 0) {
@@ -100,8 +97,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             HOT_RequestNotification.notifyDispatchers_requestChanged(notifyDispatcherRequests, triggerOldMap);
             resetNotifyDispatcher(notifyDispatcherRequests);
         }
-        if (requestsToUpdateTextFields.size() > 0) {
-            setRequestsToUpdateTextFields(requestsToUpdateTextFields, triggerOldMap);
+        if (requestsToChangeOwnerToArchive.size() > 0) {
+            HOT_Utility.setArchiveAsOwner(requestsToChangeOwnerToArchive);
         }
     }
 
@@ -175,7 +172,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     @AuraEnabled
     public static void createAndUpdateWorkOrders(Id requestId, Map<String, Map<String, Long>> times) {
-        System.debug('createAndUpdateWorkOrders');
         HOT_Request__c request = [
             SELECT
                 Id,
@@ -342,7 +338,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
-
     public static void resetNotifyDispatcher(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
             request.IsNotifyDispatcher__c = false;
@@ -361,33 +356,17 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
-
-    public static void setRequestsToCopyTextFields(List<HOT_Request__c> requests) {
+    public static void setInterpretationMethod(List<HOT_Request__c> requests) {
+        List<String> userInterpretationMethodList = new List<String>();
         for (HOT_Request__c request : requests) {
-            if (request.Subject__c != null) {
-                request.UserSubject__c = request.Subject__c;
-                request.UserDescription__c = request.Description__c;
-            } else {
-                request.Subject__c = request.UserSubject__c;
-                request.Description__c = request.UserDescription__c;
-            }
+            userInterpretationMethodList.add(request.UserInterpretationMethod__c);
         }
-    }
-
-    public static void setRequestsToUpdateTextFields(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
+        Map<String, Id> workTypeIdByDeveloperName = new Map<String, Id>();
+        for (WorkType workType : [SELECT Id, HOT_DeveloperName__c FROM WorkType WHERE HOT_DeveloperName__c LIKE :userInterpretationMethodList]) {
+            workTypeIdByDeveloperName.put(workType.HOT_DeveloperName__c, workType.Id);
+        }
         for (HOT_Request__c request : requests) {
-            if (request.Subject__c != triggerOldMap.get(request.Id).get('Subject__c')) {
-                request.UserSubject__c = request.Subject__c;
-            }
-            if (request.Description__c != triggerOldMap.get(request.Id).get('Description__c')) {
-                request.UserDescription__c = request.Description__c;
-            }
-            if (request.UserSubject__c != triggerOldMap.get(request.Id).get('UserSubject__c')) {
-                request.Subject__c = request.UserSubject__c;
-            }
-            if (request.UserDescription__c != triggerOldMap.get(request.Id).get('UserDescription__c')) {
-                request.Description__c = request.UserDescription__c;
-            }
+            request.InterpretationMethod__c = workTypeIdByDeveloperName.get(request.UserInterpretationMethod__c);
         }
     }
 }

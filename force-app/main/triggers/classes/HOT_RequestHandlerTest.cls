@@ -176,4 +176,66 @@ private class HOT_RequestHandlerTest {
         req = [SELECT Source__c FROM HOT_Request__c WHERE Id = :req.Id];
         System.assertEquals(req.Source__c, 'Dispatcher', 'Request source is not "Dispatcher" (Formidler)');
     }
+
+    @isTest
+    public static void setArchiveAsOwnerTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
+        System.assertNotEquals(archive.Id, request.OwnerId, 'The owner was "HOT Arkiv". Should be different owner.');
+
+        Test.startTest();
+        request.HOT_DelPol_IsHideRecord__c = true;
+        update request;
+        Test.stopTest();
+
+        HOT_Request__c updatedRequest = [SELECT Id, OwnerId FROM HOT_Request__c WHERE Id = :request.Id LIMIT 1];
+        System.assertEquals(
+            archive.Id,
+            updatedRequest.OwnerId,
+            'The owner was not changed to "HOT Arkiv" as expected.'
+        );
+    }
+
+    @isTest
+    public static void setUserInterpretationField() {
+        WorkType workType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        workType.HOT_DeveloperName__c = 'TS';
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Source__c = 'Community';
+        request.InterpretationMethod__c = null;
+        request.UserInterpretationMethod__c = 'TS';
+        
+        Test.startTest();
+        insert request;
+        Test.stopTest();
+
+        request = [SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c FROM HOT_Request__c WHERE Id = :request.Id];
+        System.assertEquals(request.InterpretationMethod__r.HOT_DeveloperName__c, request.UserInterpretationMethod__c, 'Request.InterpretationMethod__r.HOT_DeveloperName__c field is not equal to UserInterpretationMethod__c field.');
+    }
+
+    @isTest
+    public static void userInterpretationFieldShouldNotBeSet() {
+        WorkType workType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        workType.HOT_DeveloperName__c = 'TS';
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Source__c = 'Dispatcher';
+        Account acc = HOT_TestDataFactory.createAccount(true);
+        insert acc;
+        request.Orderer__c = acc.Id;
+
+        Test.startTest();
+        insert request;
+        Test.stopTest();
+
+        request = [SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c FROM HOT_Request__c WHERE Id = :request.Id];
+        System.assertNotEquals(request.InterpretationMethod__r.HOT_DeveloperName__c, request.UserInterpretationMethod__c, 'InterpretationMethod__c field should not be equal to UserInterpretationMethod__c field in this case.');
+    }
 }

@@ -59,13 +59,14 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_Escort__c,
                 HOT_AssignmentType__c,
                 HOT_FreelanceSubject__c,
-                HOT_IsFortyfiveDaysOld__c,
-                HOT_IsThreeYearsOld__c
+                HOT_DelPol_IsHideFilesFromFreelance__c,
+                HOT_DelPol_ToHideRecord__c,
+                HOT_Dispatcher__c
             FROM ServiceAppointment
             WHERE
                 Id IN :serviceAppointmentIds
                 AND Status IN ('Dispatched', 'Completed')
-                AND HOT_IsThreeYearsOld__c = FALSE
+                AND HOT_DelPol_ToHideRecord__c = FALSE
             ORDER BY SchedStartTime ASC
         ];
         return serviceAppointments;

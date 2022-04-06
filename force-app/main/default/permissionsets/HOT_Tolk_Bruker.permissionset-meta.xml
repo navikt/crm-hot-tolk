@@ -71,6 +71,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.CompanyName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.Company__c</field>
         <readable>true</readable>
@@ -106,13 +111,8 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Request__c.UserDescription__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Request__c.UserSubject__c</field>
+        <editable>false</editable>
+        <field>HOT_Request__c.InterpretationMethodName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -223,6 +223,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.OrganizationNumber__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.OwnerName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -378,16 +383,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_IsNotifyDispatcher__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.HOT_UserDescription__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.HOT_UserSubject__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
