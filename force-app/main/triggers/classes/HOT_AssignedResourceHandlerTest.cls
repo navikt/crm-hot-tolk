@@ -418,25 +418,23 @@ private class HOT_AssignedResourceHandlerTest {
     }
 
     @isTest
-    static void updateInterpreterFieldOnWorkOrderAfterAssignedResourceInsert() {
+    static void updateInterpreterFieldOnWorkOrderAfterSingleAssignedResourceInsert() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__c
             FROM ServiceAppointment
             WHERE Subject = 'subject'
             LIMIT 1
         ];
-        ServiceResource adminResource = [
+        ServiceResource resource1 = [
             SELECT Id, RelatedRecordId, Name
             FROM ServiceResource
             WHERE RelatedRecordId = :UserInfo.getUserId()
         ];
         AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
-            adminResource.Id
+            resource1.Id
         );
-        serviceAppointment.Status = 'Dispatched';
-        update serviceAppointment;
-
+    
         Test.startTest();
         insert assignedResource1;
         Test.stopTest();
@@ -448,7 +446,7 @@ private class HOT_AssignedResourceHandlerTest {
             WHERE Id = :workOrderLineItem.WorkOrderId];
             
         System.assertEquals(
-            adminResource.Name,
+            resource1.Name,
             workOrder.HOT_Interpreters__c,
             'Could not set HOT_Interpreters__c onAfterInsert'
         ); 
@@ -463,34 +461,55 @@ private class HOT_AssignedResourceHandlerTest {
             LIMIT 1
         ];
         WorkOrderLineItem workOrderLineItem = [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE Id = :serviceAppointment1.HOT_WorkOrderLineItem__c LIMIT 1];
+        WorkOrderLineItem workOrderLineItem2 = workOrderLineItem.clone();
+        insert workOrderLineItem2;
+        // Create and insert service appointments based on same work order line item
         ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        ServiceAppointment serviceAppointment3 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
         insert serviceAppointment2;
-        ServiceResource adminResource = [
+        insert serviceAppointment3;
+        ServiceResource resource1 = [
             SELECT Id, RelatedRecordId, Name
             FROM ServiceResource
             WHERE RelatedRecordId = :UserInfo.getUserId()
         ];
-        ServiceResource testResource = [
+        ServiceResource resource2 = [
             SELECT Id, RelatedRecordId, Name
             FROM ServiceResource
             WHERE RelatedRecordId != :UserInfo.getUserId()
         ];
+        // Create third service resource
+        Profile profile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        User user3 = HOT_TestDataFactory.createUser('User3', profile);
+        insert user3;
+        ServiceResource resource3 = HOT_TestDataFactory.createServiceResource(user3.Id);
+        resource3.HOT_IsFreelanceInterpreter__c = true;
+        ServiceTerritory serviceTerritory = [SELECT ID FROM ServiceTerritory LIMIT 1];
+        resource3.HOT_ServiceTerritory__c = serviceTerritory.Id;
+        insert resource3;
+
+        // Add assigned resources
         AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment1.Id,
-            adminResource.Id
+            resource1.Id
         );
         AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment2.Id,
-            testResource.Id
+            resource2.Id
         );
-        serviceAppointment1.Status = 'Dispatched';
-        serviceAppointment2.Status = 'Dispatched';
-        update serviceAppointment1;
-        update serviceAppointment2;
+        AssignedResource assignedResource3 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment3.Id,
+            resource3.Id
+        );
         
         Test.startTest();
         insert assignedResource1;
         insert assignedResource2;
+        insert assignedResource3;
         Test.stopTest();
         
         WorkOrder workOrder = [
@@ -498,32 +517,37 @@ private class HOT_AssignedResourceHandlerTest {
             FROM WorkOrder 
             WHERE Id = :workOrderLineItem.WorkOrderId];
             
-        System.assertEquals(
-            adminResource.Name + ', ' + testResource.Name,
-            workOrder.HOT_Interpreters__c,
+        System.assert(
+            workOrder.HOT_Interpreters__c.contains(resource1.Name),
+            'Could not set multiple HOT_Interpreters__c onAfterInsert'
+        ); 
+        System.assert(
+            workOrder.HOT_Interpreters__c.contains(resource2.Name),
+            'Could not set multiple HOT_Interpreters__c onAfterInsert'
+        ); 
+        System.assert(
+            workOrder.HOT_Interpreters__c.contains(resource3.Name),
             'Could not set multiple HOT_Interpreters__c onAfterInsert'
         ); 
     }
 
     @isTest
-    static void updateInterpreterFieldOnWorkOrderAfterAssignedResourceEditDelete() {
+    static void updateInterpreterFieldOnWorkOrderAfterSingleAssignedResourceDelete() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__c
             FROM ServiceAppointment
             WHERE Subject = 'subject'
             LIMIT 1
         ];
-        ServiceResource adminResource = [
+        ServiceResource resource1 = [
             SELECT Id, RelatedRecordId, Name
             FROM ServiceResource
             WHERE RelatedRecordId = :UserInfo.getUserId()
         ];
         AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
-            adminResource.Id
+            resource1.Id
         );
-        serviceAppointment.Status = 'Dispatched';
-        update serviceAppointment;
         insert assignedResource1;
 
         Test.startTest();
@@ -540,6 +564,213 @@ private class HOT_AssignedResourceHandlerTest {
             '',
             workOrder.HOT_Interpreters__c,
             'Could not remove name from HOT_Interpreters__c onAfterDelete'
+        ); 
+    }
+
+    @isTest
+    static void updateInterpreterFieldOnWorkOrderAfterMultipleAssignedResourceDelete() {
+        ServiceAppointment serviceAppointment1 = [
+            SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+        WorkOrderLineItem workOrderLineItem = [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE Id = :serviceAppointment1.HOT_WorkOrderLineItem__c LIMIT 1];
+        WorkOrderLineItem workOrderLineItem2 = workOrderLineItem.clone();
+        insert workOrderLineItem2;
+        // Create and insert service appointments based on same work order line item
+        ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        ServiceAppointment serviceAppointment3 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
+        insert serviceAppointment2;
+        insert serviceAppointment3;
+        ServiceResource resource1 = [
+            SELECT Id, RelatedRecordId, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        ServiceResource resource2 = [
+            SELECT Id, RelatedRecordId, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId != :UserInfo.getUserId()
+        ];
+        // Create third service resource
+        Profile profile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        User user3 = HOT_TestDataFactory.createUser('User3', profile);
+        insert user3;
+        ServiceResource resource3 = HOT_TestDataFactory.createServiceResource(user3.Id);
+        resource3.HOT_IsFreelanceInterpreter__c = true;
+        ServiceTerritory serviceTerritory = [SELECT ID FROM ServiceTerritory LIMIT 1];
+        resource3.HOT_ServiceTerritory__c = serviceTerritory.Id;
+        insert resource3;
+
+        // Add assigned resources
+        AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment1.Id,
+            resource1.Id
+        );
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            resource2.Id
+        );
+        AssignedResource assignedResource3 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment3.Id,
+            resource3.Id
+        );
+        insert assignedResource1;
+        insert assignedResource2;
+        insert assignedResource3;
+
+        Test.startTest();
+        delete assignedResource2;
+        Test.stopTest();
+        
+        WorkOrder workOrder = [
+            SELECT Id, HOT_Interpreters__c 
+            FROM WorkOrder 
+            WHERE Id = :workOrderLineItem.WorkOrderId];
+            
+        System.assert(
+            workOrder.HOT_Interpreters__c.contains(resource1.Name),
+            'Could not set multiple HOT_Interpreters__c onAfterDelete'
+        ); 
+        System.assert(
+            !workOrder.HOT_Interpreters__c.contains(resource2.Name),
+            'Could not set multiple HOT_Interpreters__c onAfterDelete'
+        ); 
+        System.assert(
+            workOrder.HOT_Interpreters__c.contains(resource3.Name),
+            'Could not set multiple HOT_Interpreters__c onAfterDelete'
+        ); 
+    }
+
+    @isTest
+    static void updateInterpreterFieldOnWorkOrderAfterSingleAssignedResourceEdit() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+        ServiceResource resource1 = [
+            SELECT Id, RelatedRecordId, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        ServiceResource resource2 = [
+            SELECT Id, RelatedRecordId, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId != :UserInfo.getUserId()
+        ];
+        AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            resource1.Id
+        );
+        insert assignedResource1;
+        assignedResource1.serviceResource = resource2;
+
+        Test.startTest();
+        update assignedResource1;
+        Test.stopTest();
+
+        WorkOrderLineItem workOrderLineItem = [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__c LIMIT 1];
+        WorkOrder workOrder = [
+            SELECT Id, HOT_Interpreters__c 
+            FROM WorkOrder 
+            WHERE Id = :workOrderLineItem.WorkOrderId];
+            
+        System.assert(
+            workOrder.HOT_Interpreters__c.contains(resource2.Name),
+            'Could not set single HOT_Interpreters__c onAfterUpdate'
+        ); 
+        System.assert(
+            !workOrder.HOT_Interpreters__c.contains(resource1.Name),
+            'Could not set single HOT_Interpreters__c onAfterUpdate'
+        ); 
+    }
+
+    @isTest
+    static void updateInterpreterFieldOnWorkOrderAfterMultipleAssignedResourceEdit() {
+        ServiceAppointment serviceAppointment1 = [
+            SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+        WorkOrderLineItem workOrderLineItem = [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE Id = :serviceAppointment1.HOT_WorkOrderLineItem__c LIMIT 1];
+        WorkOrderLineItem workOrderLineItem2 = workOrderLineItem.clone();
+        insert workOrderLineItem2;
+        // Create and insert service appointments based on same work order line item
+        ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
+        insert serviceAppointment2;
+        ServiceAppointment serviceAppointment3 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
+        insert serviceAppointment3;
+        
+         // Create third service resource
+         Profile profile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        User user3 = HOT_TestDataFactory.createUser('User3', profile);
+        insert user3;
+        ServiceResource resource3 = HOT_TestDataFactory.createServiceResource(user3.Id);
+        resource3.HOT_IsFreelanceInterpreter__c = true;
+        ServiceTerritory serviceTerritory = [SELECT ID FROM ServiceTerritory LIMIT 1];
+        resource3.HOT_ServiceTerritory__c = serviceTerritory.Id;
+        insert resource3;
+
+        ServiceResource resource1 = [
+            SELECT Id, RelatedRecordId, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        ServiceResource resource2 = [
+            SELECT Id, RelatedRecordId, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId != :UserInfo.getUserId()
+        ];
+        // Add assigned resources
+        AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment1.Id,
+            resource1.Id
+        );
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            resource2.Id
+        );
+        AssignedResource assignedResource3 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment3.Id,
+            resource3.Id
+        );
+        insert assignedResource1;
+        insert assignedResource2;
+
+
+        assignedResource2.ServiceResource = resource3;
+        Test.startTest();
+        update assignedResource3;
+        Test.stopTest();
+        
+        WorkOrder workOrder = [
+            SELECT Id, HOT_Interpreters__c 
+            FROM WorkOrder 
+            WHERE Id = :workOrderLineItem.WorkOrderId];
+            
+        System.assert(
+            workOrder.HOT_Interpreters__c.contains(resource1.Name),
+            'Could not set multiple HOT_Interpreters__c onAfterUpdate'
+        ); 
+        System.assert(
+            !workOrder.HOT_Interpreters__c.contains(resource2.Name),
+            'Could not set multiple HOT_Interpreters__c onAfterUpdate'
+        ); 
+        System.assert(
+            workOrder.HOT_Interpreters__c.contains(resource3.Name),
+            'Could not set multiple HOT_Interpreters__c onAfterUpdate'
         ); 
     }
 }
