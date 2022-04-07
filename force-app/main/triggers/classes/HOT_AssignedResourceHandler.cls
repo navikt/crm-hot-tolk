@@ -206,8 +206,15 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         }
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c, ServiceTerritoryId, 
-                EarliestStartTime, DueDate, SchedStartTime, SchedEndTime
+                SELECT
+                    Id,
+                    HOT_IsReleasedToFreelance__c,
+                    HOT_IsEmployedInterpreter__c,
+                    ServiceTerritoryId,
+                    EarliestStartTime,
+                    DueDate,
+                    SchedStartTime,
+                    SchedEndTime
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
@@ -222,29 +229,24 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
 
         Map<Id, ServiceAppointment> serviceAppointmentsToUpdate = new Map<Id, ServiceAppointment>();
         for (AssignedResource assignedResource : assignedResources) {
-            ServiceAppointment currentServiceAppointment = serviceAppointments.get(assignedResource.ServiceAppointmentId);
+            ServiceAppointment currentServiceAppointment = serviceAppointments.get(
+                assignedResource.ServiceAppointmentId
+            );
             ServiceResource currentServiceResource = serviceResources.get(assignedResource.ServiceResourceId);
             // Set Interpreter/Freelance fields
             if (
                 currentServiceResource.HOT_IsEmployedInterpreter__c !=
                 currentServiceAppointment.HOT_IsEmployedInterpreter__c
             ) {
-                currentServiceAppointment
-                    .HOT_IsEmployedInterpreter__c = currentServiceResource
+                currentServiceAppointment.HOT_IsEmployedInterpreter__c = currentServiceResource
                     .HOT_IsEmployedInterpreter__c;
-                currentServiceAppointment
-                    .HOT_IsReleasedToFreelance__c = currentServiceResource
+                currentServiceAppointment.HOT_IsReleasedToFreelance__c = currentServiceResource
                     .HOT_IsFreelanceInterpreter__c;
                 serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
             }
             // Set ServiceTerritory
-            if (
-                currentServiceAppointment.ServiceTerritoryId !=
-                currentServiceResource.HOT_ServiceTerritory__c
-            ) {
-                currentServiceAppointment
-                    .ServiceTerritoryId = currentServiceResource
-                    .HOT_ServiceTerritory__c;
+            if (currentServiceAppointment.ServiceTerritoryId != currentServiceResource.HOT_ServiceTerritory__c) {
+                currentServiceAppointment.ServiceTerritoryId = currentServiceResource.HOT_ServiceTerritory__c;
                 serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
             }
         }
@@ -315,7 +317,11 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             [
                 SELECT
                     Id,
-                    (SELECT Id, EarliestStartTime, DueDate, HOT_ServiceResource__c FROM HOT_ServiceAppointments__r WHERE Status NOT IN :exludedStatuses)
+                    (
+                        SELECT Id, EarliestStartTime, DueDate, HOT_ServiceResource__c
+                        FROM HOT_ServiceAppointments__r
+                        WHERE Status NOT IN :exludedStatuses
+                    )
                 FROM ServiceResource
                 WHERE Id IN :serviceResourceIds
             ]
@@ -365,7 +371,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         // Reset HOT_Interpreters__c field and set it again afterwards
         for (WorkOrder workOrder : workOrders.values()) {
             workOrder.HOT_Interpreters__c = '';
-        }  
+        }
         Map<Id, WorkOrder> workOrdersToUpdate = new Map<Id, WorkOrder>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             WorkOrder workOrder = workOrders.get(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrderId);
@@ -375,32 +381,44 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
             String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
             if (isDelete && serviceAppointmentIds.contains(serviceAppointment.Id)) {
-                workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.remove(serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter);
+                workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.remove(
+                    serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter
+                );
             } else {
                 if (workOrder.HOT_Interpreters__c == '') {
-                    workOrder.HOT_Interpreters__c = serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter + ', ';
+                    workOrder.HOT_Interpreters__c =
+                        serviceAppointment.HOT_ServiceResource__r.Name +
+                        screenInterpreter +
+                        ', ';
                 } else {
-                    workOrder.HOT_Interpreters__c += ', ' + serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter + ', ';
+                    workOrder.HOT_Interpreters__c +=
+                        ', ' +
+                        serviceAppointment.HOT_ServiceResource__r.Name +
+                        screenInterpreter +
+                        ', ';
                 }
             }
-            workOrder.HOT_Interpreters__c =  workOrder.HOT_Interpreters__c.replace(',,', ',').removeEnd(', ');
+            workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.replace(',,', ',').removeEnd(', ');
             workOrdersToUpdate.put(workOrder.Id, workOrder);
         }
         update workOrdersToUpdate.values();
     }
 
-    public static Map<Id, WorkOrder> getWorkOrdersFromAssignedResources(List<AssignedResource> assignedResources, List<Id> serviceAppointmentIds) {
+    public static Map<Id, WorkOrder> getWorkOrdersFromAssignedResources(
+        List<AssignedResource> assignedResources,
+        List<Id> serviceAppointmentIds
+    ) {
         // Get all Service Appointments related to Assigned Resources
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c
             FROM ServiceAppointment
-            WHERE Id IN :serviceAppointmentIds AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != null
+            WHERE Id IN :serviceAppointmentIds AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != NULL
         ];
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
         }
-         // Get all Work Order Line Items related to ServiceAppointments
+        // Get all Work Order Line Items related to ServiceAppointments
         Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
             [
                 SELECT Id, WorkOrderId
@@ -408,7 +426,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 WHERE Id IN :workOrderLineItemIds AND WorkOrder.Status != 'Scheduled'
             ]
         );
-        if (workOrderLineItems.size() == 0) { // Status is Scheduled - Show error "Kan ikke endre AR når status = Tildelt" ?
+        if (workOrderLineItems.size() == 0) {
             return new Map<Id, WorkOrder>();
         }
         List<Id> workOrderIds = new List<Id>();
@@ -418,9 +436,9 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         // Get all Work Orders related to Work Order Line Items
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(
             [
-            SELECT Id, HOT_Interpreters__c, HOT_DelPol_IsHideInterpreterFromUser__c 
-            FROM WorkOrder 
-            WHERE Id IN :workOrderIds
+                SELECT Id, HOT_Interpreters__c, HOT_DelPol_IsHideInterpreterFromUser__c
+                FROM WorkOrder
+                WHERE Id IN :workOrderIds
             ]
         );
         return workOrders;
@@ -428,21 +446,23 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
 
     public static Map<Id, WorkOrderLineItem> getWorkOrderLineItemsFromWorkOrders(Map<Id, WorkOrder> workOrders) {
         // Get all Work Order Line Items related to Work Order
-        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>([
-            SELECT Id, WorkOrderId
-            FROM WorkOrderLineItem 
-            WHERE WorkOrderId IN :workOrders.keySet()
-            ]
+        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
+            [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE WorkOrderId IN :workOrders.keySet()]
         );
         return workOrderLineItems;
     }
 
-    public static List<ServiceAppointment> getServiceAppointmentsFromWorkOrderLineItems(Map<Id, WorkOrderLineItem> workOrderLineItems) {
+    public static List<ServiceAppointment> getServiceAppointmentsFromWorkOrderLineItems(
+        Map<Id, WorkOrderLineItem> workOrderLineItems
+    ) {
         // Get all Service Appointments based on Work Order Line Items
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c
             FROM ServiceAppointment
-            WHERE ParentRecordId IN :workOrderLineItems.keySet() AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != null
+            WHERE
+                ParentRecordId IN :workOrderLineItems.keySet()
+                AND Status != 'Scheduled'
+                AND HOT_ServiceResource__r.Name != NULL
         ];
         return serviceAppointments;
     }
