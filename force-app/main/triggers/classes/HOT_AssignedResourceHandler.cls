@@ -353,61 +353,16 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (AssignedResource assignedResource : assignedResources) {
             serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
         }
-        // Get all Service Appointments related to Assigned Resources
-        List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c
-            FROM ServiceAppointment
-            WHERE Id IN :serviceAppointmentIds AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != null
-        ];
-        List<Id> workOrderLineItemIds = new List<Id>();
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
-        }
-         // Get all Work Order Line Items related to ServiceAppointments
-        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
-            [
-                SELECT Id, WorkOrderId
-                FROM WorkOrderLineItem
-                WHERE Id IN :workOrderLineItemIds AND WorkOrder.Status != 'Scheduled'
-            ]
-        );
-        if (workOrderLineItems.size() == 0) { // Status is Scheduled - Show error "Kan ikke endre AR når status = Tildelt?"
+        Map<Id, WorkOrder> workOrders = getWorkOrdersFromAssignedResources(assignedResources, serviceAppointmentIds);
+        Map<Id, WorkOrderLineItem> workOrderLineItems = getWorkOrderLineItemsFromWorkOrders(workOrders);
+        List<ServiceAppointment> serviceAppointments = getServiceAppointmentsFromWorkOrderLineItems(workOrderLineItems);
+        if (workOrders.size() == 0 || serviceAppointments.size() == 0) {
             return;
         }
-        List<Id> workOrderIds = new List<Id>();
-        for (WorkOrderLineItem workOrderLineItem : workOrderLineItems.values()) {
-            workOrderIds.add(workOrderLineItem.WorkOrderId);
-        }
-        // Get all Work Orders related to Work Order Line Items
-        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(
-            [
-            SELECT Id, HOT_Interpreters__c, HOT_DelPol_IsHideInterpreterFromUser__c 
-            FROM WorkOrder 
-            WHERE Id IN :workOrderIds
-            ]
-        );
-        // Get all Service Appointments related to all Work Order Line Items related to Work Order
-        workOrderLineItems = new Map<Id, WorkOrderLineItem>([
-            SELECT Id, WorkOrderId
-            FROM WorkOrderLineItem 
-            WHERE WorkOrderId IN :workOrderIds
-            ]
-        );
-        workOrderLineItemIds.clear();
-        for (WorkOrderLineItem workOrderLineItem : workOrderLineItems.values()) {
-            workOrderLineItemIds.add(workOrderLineItem.Id);
-        }
-        // Get all Service Appointments based on Work Order Line Items
-        serviceAppointments = [
-            SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c
-            FROM ServiceAppointment
-            WHERE ParentRecordId IN :workOrderLineItemIds AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != null
-        ];
         // Reset HOT_Interpreters__c field and set it again afterwards
         for (WorkOrder workOrder : workOrders.values()) {
             workOrder.HOT_Interpreters__c = '';
-        }
-            
+        }  
         Map<Id, WorkOrder> workOrdersToUpdate = new Map<Id, WorkOrder>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             WorkOrder workOrder = workOrders.get(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrderId);
@@ -429,5 +384,63 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             workOrdersToUpdate.put(workOrder.Id, workOrder);
         }
         update workOrdersToUpdate.values();
+    }
+
+    public static Map<Id, WorkOrder> getWorkOrdersFromAssignedResources(List<AssignedResource> assignedResources, List<Id> serviceAppointmentIds) {
+        // Get all Service Appointments related to Assigned Resources
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c
+            FROM ServiceAppointment
+            WHERE Id IN :serviceAppointmentIds AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != null
+        ];
+        List<Id> workOrderLineItemIds = new List<Id>();
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
+        }
+         // Get all Work Order Line Items related to ServiceAppointments
+        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
+            [
+                SELECT Id, WorkOrderId
+                FROM WorkOrderLineItem
+                WHERE Id IN :workOrderLineItemIds AND WorkOrder.Status != 'Scheduled'
+            ]
+        );
+        if (workOrderLineItems.size() == 0) { // Status is Scheduled - Show error "Kan ikke endre AR når status = Tildelt" ?
+            return null;
+        }
+        List<Id> workOrderIds = new List<Id>();
+        for (WorkOrderLineItem workOrderLineItem : workOrderLineItems.values()) {
+            workOrderIds.add(workOrderLineItem.WorkOrderId);
+        }
+        // Get all Work Orders related to Work Order Line Items
+        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(
+            [
+            SELECT Id, HOT_Interpreters__c, HOT_DelPol_IsHideInterpreterFromUser__c 
+            FROM WorkOrder 
+            WHERE Id IN :workOrderIds
+            ]
+        );
+        return workOrders;
+    }
+
+    public static Map<Id, WorkOrderLineItem> getWorkOrderLineItemsFromWorkOrders(Map<Id, WorkOrder> workOrders) {
+        // Get all Work Order Line Items related to Work Order
+        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>([
+            SELECT Id, WorkOrderId
+            FROM WorkOrderLineItem 
+            WHERE WorkOrderId IN :workOrders.keySet()
+            ]
+        );
+        return workOrderLineItems;
+    }
+
+    public static List<ServiceAppointment> getServiceAppointmentsFromWorkOrderLineItems(Map<Id, WorkOrderLineItem> workOrderLineItems) {
+        // Get all Service Appointments based on Work Order Line Items
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c
+            FROM ServiceAppointment
+            WHERE ParentRecordId IN :workOrderLineItems.keySet() AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != null
+        ];
+        return serviceAppointments;
     }
 }

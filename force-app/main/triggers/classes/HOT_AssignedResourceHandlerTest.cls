@@ -469,12 +469,12 @@ private class HOT_AssignedResourceHandlerTest {
         insert serviceAppointment2;
         insert serviceAppointment3;
         ServiceResource resource1 = [
-            SELECT Id, RelatedRecordId, Name
+            SELECT Id, Name
             FROM ServiceResource
             WHERE RelatedRecordId = :UserInfo.getUserId()
         ];
         ServiceResource resource2 = [
-            SELECT Id, RelatedRecordId, Name
+            SELECT Id, Name
             FROM ServiceResource
             WHERE RelatedRecordId != :UserInfo.getUserId()
         ];
@@ -491,6 +491,11 @@ private class HOT_AssignedResourceHandlerTest {
         ServiceTerritory serviceTerritory = [SELECT ID FROM ServiceTerritory LIMIT 1];
         resource3.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert resource3;
+        // Set unique names
+        resource1.Name = 'resource1';
+        resource2.Name = 'resource2';
+        resource3.Name = 'resource3';
+        update new List<ServiceResource>{resource1, resource2, resource3}; 
 
         // Add assigned resources
         AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
@@ -540,7 +545,7 @@ private class HOT_AssignedResourceHandlerTest {
             LIMIT 1
         ];
         ServiceResource resource1 = [
-            SELECT Id, RelatedRecordId, Name
+            SELECT Id, Name
             FROM ServiceResource
             WHERE RelatedRecordId = :UserInfo.getUserId()
         ];
@@ -581,15 +586,15 @@ private class HOT_AssignedResourceHandlerTest {
         // Create and insert service appointments based on same work order line item
         ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
         ServiceAppointment serviceAppointment3 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
-        insert serviceAppointment2;
-        insert serviceAppointment3;
+        insert new List<ServiceAppointment>{serviceAppointment2, serviceAppointment3};
+
         ServiceResource resource1 = [
-            SELECT Id, RelatedRecordId, Name
+            SELECT Id, Name
             FROM ServiceResource
             WHERE RelatedRecordId = :UserInfo.getUserId()
         ];
         ServiceResource resource2 = [
-            SELECT Id, RelatedRecordId, Name
+            SELECT Id, Name
             FROM ServiceResource
             WHERE RelatedRecordId != :UserInfo.getUserId()
         ];
@@ -606,6 +611,11 @@ private class HOT_AssignedResourceHandlerTest {
         ServiceTerritory serviceTerritory = [SELECT ID FROM ServiceTerritory LIMIT 1];
         resource3.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert resource3;
+        // Set unique names
+        resource1.Name = 'resource1';
+        resource2.Name = 'resource2';
+        resource3.Name = 'resource3';
+        update new List<ServiceResource>{resource1, resource2, resource3}; 
 
         // Add assigned resources
         AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
@@ -620,9 +630,7 @@ private class HOT_AssignedResourceHandlerTest {
             serviceAppointment3.Id,
             resource3.Id
         );
-        insert assignedResource1;
-        insert assignedResource2;
-        insert assignedResource3;
+        insert new List<AssignedResource>{assignedResource1, assignedResource2, assignedResource3};
 
         Test.startTest();
         delete assignedResource2;
@@ -632,7 +640,7 @@ private class HOT_AssignedResourceHandlerTest {
             SELECT Id, HOT_Interpreters__c 
             FROM WorkOrder 
             WHERE Id = :workOrderLineItem.WorkOrderId];
-            
+
         System.assert(
             workOrder.HOT_Interpreters__c.contains(resource1.Name),
             'Could not set multiple HOT_Interpreters__c onAfterDelete'
@@ -656,24 +664,28 @@ private class HOT_AssignedResourceHandlerTest {
             LIMIT 1
         ];
         ServiceResource resource1 = [
-            SELECT Id, RelatedRecordId, Name
+            SELECT Id, Name
             FROM ServiceResource
             WHERE RelatedRecordId = :UserInfo.getUserId()
         ];
         ServiceResource resource2 = [
-            SELECT Id, RelatedRecordId, Name
+            SELECT Id, Name
             FROM ServiceResource
             WHERE RelatedRecordId != :UserInfo.getUserId()
         ];
-        AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
             resource1.Id
         );
-        insert assignedResource1;
-        assignedResource1.serviceResource = resource2;
+        // Set unique names
+        resource1.Name = 'resource1';
+        resource2.Name = 'resource2';
+        update new List<ServiceResource>{resource1, resource2}; 
+        insert assignedResource;
+        assignedResource.ServiceResourceId = resource2.Id;
 
         Test.startTest();
-        update assignedResource1;
+        update assignedResource;
         Test.stopTest();
 
         WorkOrderLineItem workOrderLineItem = [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__c LIMIT 1];
@@ -681,7 +693,8 @@ private class HOT_AssignedResourceHandlerTest {
             SELECT Id, HOT_Interpreters__c 
             FROM WorkOrder 
             WHERE Id = :workOrderLineItem.WorkOrderId];
-            
+        
+        System.debug('workOrder.HOT_Interpreters__c: ' + workOrder.HOT_Interpreters__c);
         System.assert(
             workOrder.HOT_Interpreters__c.contains(resource2.Name),
             'Could not set single HOT_Interpreters__c onAfterUpdate'
@@ -705,10 +718,19 @@ private class HOT_AssignedResourceHandlerTest {
         insert workOrderLineItem2;
         // Create and insert service appointments based on same work order line item
         ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
-        insert serviceAppointment2;
         ServiceAppointment serviceAppointment3 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
-        insert serviceAppointment3;
+        insert new List<ServiceAppointment>{serviceAppointment2, serviceAppointment3};
         
+        ServiceResource resource1 = [
+            SELECT Id, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        ServiceResource resource2 = [
+            SELECT Id, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId != :UserInfo.getUserId()
+        ];
          // Create third service resource
          Profile profile = [
             SELECT Id, Name
@@ -722,17 +744,12 @@ private class HOT_AssignedResourceHandlerTest {
         ServiceTerritory serviceTerritory = [SELECT ID FROM ServiceTerritory LIMIT 1];
         resource3.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert resource3;
+        // Set unique names
+        resource1.Name = 'resource1';
+        resource2.Name = 'resource2';
+        resource3.Name = 'resource3';
+        update new List<ServiceResource>{resource1, resource2, resource3};
 
-        ServiceResource resource1 = [
-            SELECT Id, RelatedRecordId, Name
-            FROM ServiceResource
-            WHERE RelatedRecordId = :UserInfo.getUserId()
-        ];
-        ServiceResource resource2 = [
-            SELECT Id, RelatedRecordId, Name
-            FROM ServiceResource
-            WHERE RelatedRecordId != :UserInfo.getUserId()
-        ];
         // Add assigned resources
         AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment1.Id,
@@ -742,17 +759,11 @@ private class HOT_AssignedResourceHandlerTest {
             serviceAppointment2.Id,
             resource2.Id
         );
-        AssignedResource assignedResource3 = HOT_TestDataFactory.createAssignedResource(
-            serviceAppointment3.Id,
-            resource3.Id
-        );
-        insert assignedResource1;
-        insert assignedResource2;
-
-
-        assignedResource2.ServiceResource = resource3;
+        insert new List<AssignedResource>{assignedResource1, assignedResource2};
+        
+        assignedResource2.ServiceResourceId = resource3.Id;
         Test.startTest();
-        update assignedResource3;
+        update assignedResource2;
         Test.stopTest();
         
         WorkOrder workOrder = [
