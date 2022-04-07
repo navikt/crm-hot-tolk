@@ -15,13 +15,21 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         );
         setSourceFieldOnClone((List<HOT_Request__c>) records);
         List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsWithUserInterpretationMethod = new List<HOT_Request__c>();
+
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             if (request.Type__c == 'ImageInterpreter') {
                 imageInterpreterRequests.add(request);
             }
+            if (request.UserInterpretationMethod__c != null && request.Source__c == 'Community') {
+                requestsWithUserInterpretationMethod.add(request);
+            }
         }
         if (imageInterpreterRequests.size() > 0) {
             setImageInterpreterFields(imageInterpreterRequests);
+        }
+        if (requestsWithUserInterpretationMethod.size() > 0) {
+            setInterpretationMethod(requestsWithUserInterpretationMethod);
         }
     }
 
@@ -330,7 +338,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
-
     public static void resetNotifyDispatcher(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
             request.IsNotifyDispatcher__c = false;
@@ -347,6 +354,19 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (imageInterpretationMethod != null) {
                 request.InterpretationMethod__c = imageInterpretationMethod.Id;
             }
+        }
+    }
+    public static void setInterpretationMethod(List<HOT_Request__c> requests) {
+        List<String> userInterpretationMethodList = new List<String>();
+        for (HOT_Request__c request : requests) {
+            userInterpretationMethodList.add(request.UserInterpretationMethod__c);
+        }
+        Map<String, Id> workTypeIdByDeveloperName = new Map<String, Id>();
+        for (WorkType workType : [SELECT Id, HOT_DeveloperName__c FROM WorkType WHERE HOT_DeveloperName__c LIKE :userInterpretationMethodList]) {
+            workTypeIdByDeveloperName.put(workType.HOT_DeveloperName__c, workType.Id);
+        }
+        for (HOT_Request__c request : requests) {
+            request.InterpretationMethod__c = workTypeIdByDeveloperName.get(request.UserInterpretationMethod__c);
         }
     }
 }

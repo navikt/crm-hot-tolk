@@ -248,6 +248,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsToChangeOwnerToArchive.size() > 0) {
             HOT_Utility.setArchiveAsOwner(serviceAppointmentsToChangeOwnerToArchive);
+            setRecalculateManualSharingFlag(serviceAppointmentsToChangeOwnerToArchive);
         }
         if (serviceAppointmentsWithStatusNone.size() > 0) {
             setScheduledTimesOnStatusNone(serviceAppointmentsWithStatusNone);
@@ -268,7 +269,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('OwnerId') != serviceAppointment.OwnerId &&
-                serviceAppointment.HOT_AssignedResourceId__c != null
+                serviceAppointment.HOT_AssignedResourceId__c != null &&
+                serviceAppointment.HOT_DelPol_IsHideRecord__c == false
             ) {
                 serviceAppointmentsOwnerChangedWithAssignedResource.add(serviceAppointment);
             }
@@ -991,5 +993,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 sa.SchedEndTime = sa.ActualEndTime;
             }
         }
+    }
+
+    public static List<ServiceAppointment> setRecalculateManualSharingFlag(
+        List<ServiceAppointment> serviceAppointments
+    ) {
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.HOT_IsRecalculateManualSharing__c = true;
+        }
+        return serviceAppointments;
     }
 }

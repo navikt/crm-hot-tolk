@@ -112,5 +112,9 @@ export let iconByValue = {
     },
     Pågår: {},
     Ukjent: {},
-    Åpen: {}
+    Åpen: {
+        icon: 'Open',
+        fill: '',
+        ariaLabel: 'Åpen'
+    }
 };

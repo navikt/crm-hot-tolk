@@ -207,9 +207,15 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         let parsed_params = getParametersFromURL();
         if (parsed_params != null) {
             if (parsed_params.fromList != null) {
-                this.previousPage = parsed_params.isAccount ? 'mine-bestillinger' : 'mine-bestillinger-andre';
-                this.breadcrumbs[this.breadcrumbs.length - 1].label = 'Mine Bestillinger';
-                this.breadcrumbs[this.breadcrumbs.length - 1].href = 'mine-bestillinger';
+                if (parsed_params.isAccount === 'true') {
+                    this.previousPage = 'mine-bestillinger';
+                    this.breadcrumbs[this.breadcrumbs.length - 1].label = 'Mine Bestillinger';
+                    this.breadcrumbs[this.breadcrumbs.length - 1].href = 'mine-bestillinger';
+                } else {
+                    this.previousPage = 'mine-bestillinger-andre';
+                    this.breadcrumbs[this.breadcrumbs.length - 1].label = 'Bestillinger på vegne av andre';
+                    this.breadcrumbs[this.breadcrumbs.length - 1].href = 'mine-bestillinger-andre';
+                }
             }
             if (parsed_params.fieldValues != null) {
                 this.setFieldValuesFromURL(parsed_params);
