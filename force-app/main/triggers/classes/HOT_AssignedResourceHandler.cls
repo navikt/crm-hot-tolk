@@ -354,9 +354,12 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
         }
         Map<Id, WorkOrder> workOrders = getWorkOrdersFromAssignedResources(assignedResources, serviceAppointmentIds);
+        if (workOrders.size() == 0) {
+            return;
+        }
         Map<Id, WorkOrderLineItem> workOrderLineItems = getWorkOrderLineItemsFromWorkOrders(workOrders);
         List<ServiceAppointment> serviceAppointments = getServiceAppointmentsFromWorkOrderLineItems(workOrderLineItems);
-        if (workOrders.size() == 0 || serviceAppointments.size() == 0) {
+        if (serviceAppointments.size() == 0) {
             return;
         }
         // Reset HOT_Interpreters__c field and set it again afterwards
@@ -406,7 +409,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             ]
         );
         if (workOrderLineItems.size() == 0) { // Status is Scheduled - Show error "Kan ikke endre AR når status = Tildelt" ?
-            return null;
+            return new Map<Id, WorkOrder>();
         }
         List<Id> workOrderIds = new List<Id>();
         for (WorkOrderLineItem workOrderLineItem : workOrderLineItems.values()) {
