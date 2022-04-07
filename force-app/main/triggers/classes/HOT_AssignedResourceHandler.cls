@@ -359,111 +359,70 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (AssignedResource assignedResource : assignedResources) {
             serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
         }
-        Map<Id, WorkOrder> workOrders = getWorkOrdersFromAssignedResources(assignedResources, serviceAppointmentIds);
-        if (workOrders.size() == 0) {
+
+        // Get all Service Appointments related to Assigned Resources
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT
+                Id,
+                ParentRecordId,
+                HOT_ServiceResource__r.Name,
+                HOT_IsScreenInterpreterNew__c,
+                HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Id IN :serviceAppointmentIds AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != NULL
+        ];
+
+        Map<WorkOrder, List<ServiceAppointment>> serviceAppointmentsByWorkOrder = getServiceAppointmentsByWorkOrder(
+            serviceAppointments
+        );
+        if (serviceAppointmentsByWorkOrder.isEmpty()) {
             return;
-        }
-        Map<Id, WorkOrderLineItem> workOrderLineItems = getWorkOrderLineItemsFromWorkOrders(workOrders);
-        List<ServiceAppointment> serviceAppointments = getServiceAppointmentsFromWorkOrderLineItems(workOrderLineItems);
-        if (serviceAppointments.size() == 0) {
-            return;
-        }
-        // Reset HOT_Interpreters__c field and set it again afterwards
-        for (WorkOrder workOrder : workOrders.values()) {
-            workOrder.HOT_Interpreters__c = '';
         }
         Map<Id, WorkOrder> workOrdersToUpdate = new Map<Id, WorkOrder>();
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            WorkOrder workOrder = workOrders.get(workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrderId);
+        for (WorkOrder workOrder : serviceAppointmentsByWorkOrder.keySet()) {
+            workOrder.HOT_Interpreters__c = '';
             if (workOrder.HOT_DelPol_IsHideInterpreterFromUser__c) {
                 workOrder.HOT_Interpreters__c = '';
                 continue;
             }
-            String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
-            if (isDelete && serviceAppointmentIds.contains(serviceAppointment.Id)) {
-                workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.remove(
-                    serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter
-                );
-            } else {
-                if (workOrder.HOT_Interpreters__c == '') {
-                    workOrder.HOT_Interpreters__c =
-                        serviceAppointment.HOT_ServiceResource__r.Name +
-                        screenInterpreter +
-                        ', ';
-                } else {
-                    workOrder.HOT_Interpreters__c +=
-                        ', ' +
-                        serviceAppointment.HOT_ServiceResource__r.Name +
-                        screenInterpreter +
-                        ', ';
-                }
+            for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrder.get(workOrder)) {
+                String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
+                workOrder.HOT_Interpreters__c +=
+                    serviceAppointment.HOT_ServiceResource__r.Name +
+                    screenInterpreter +
+                    ', ';
             }
-            workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.replace(',,', ',').removeEnd(', ');
+            workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.removeEnd(', ');
             workOrdersToUpdate.put(workOrder.Id, workOrder);
         }
         update workOrdersToUpdate.values();
     }
 
-    public static Map<Id, WorkOrder> getWorkOrdersFromAssignedResources(
-        List<AssignedResource> assignedResources,
-        List<Id> serviceAppointmentIds
+    public static Map<WorkOrder, List<ServiceAppointment>> getServiceAppointmentsByWorkOrder(
+        List<ServiceAppointment> serviceAppointments
     ) {
-        // Get all Service Appointments related to Assigned Resources
-        List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c
-            FROM ServiceAppointment
-            WHERE Id IN :serviceAppointmentIds AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != NULL
-        ];
-        List<Id> workOrderLineItemIds = new List<Id>();
+        Map<WorkOrder, List<ServiceAppointment>> serviceAppointmentsByWorkOrder = new Map<WorkOrder, List<ServiceAppointment>>();
+        Map<Id, List<ServiceAppointment>> workOrderIds = new Map<Id, List<ServiceAppointment>>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            workOrderLineItemIds.add(serviceAppointment.ParentRecordId);
-        }
-        // Get all Work Order Line Items related to ServiceAppointments
-        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
-            [
-                SELECT Id, WorkOrderId
-                FROM WorkOrderLineItem
-                WHERE Id IN :workOrderLineItemIds AND WorkOrder.Status != 'Scheduled'
-            ]
-        );
-        if (workOrderLineItems.size() == 0) {
-            return new Map<Id, WorkOrder>();
-        }
-        List<Id> workOrderIds = new List<Id>();
-        for (WorkOrderLineItem workOrderLineItem : workOrderLineItems.values()) {
-            workOrderIds.add(workOrderLineItem.WorkOrderId);
+            if (workOrderIds.get(serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId) == null) {
+                workOrderIds.put(
+                    serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
+                    new List<ServiceAppointment>()
+                );
+            }
+            if (workOrderIds.get(serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId) != null) {
+                workOrderIds.get(serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId).add(serviceAppointment);
+            }
         }
         // Get all Work Orders related to Work Order Line Items
-        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(
-            [
-                SELECT Id, HOT_Interpreters__c, HOT_DelPol_IsHideInterpreterFromUser__c
-                FROM WorkOrder
-                WHERE Id IN :workOrderIds
-            ]
-        );
-        return workOrders;
-    }
+        for (WorkOrder workOrder : [
+            SELECT Id, HOT_Interpreters__c, HOT_DelPol_IsHideInterpreterFromUser__c
+            FROM WorkOrder
+            WHERE Id IN :workOrderIds.keySet() AND Status != 'Scheduled'
+        ]) {
+            serviceAppointmentsByWorkOrder.put(workOrder, workOrderIds.get(workOrder.Id));
+        }
 
-    public static Map<Id, WorkOrderLineItem> getWorkOrderLineItemsFromWorkOrders(Map<Id, WorkOrder> workOrders) {
-        // Get all Work Order Line Items related to Work Order
-        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
-            [SELECT Id, WorkOrderId FROM WorkOrderLineItem WHERE WorkOrderId IN :workOrders.keySet()]
-        );
-        return workOrderLineItems;
-    }
-
-    public static List<ServiceAppointment> getServiceAppointmentsFromWorkOrderLineItems(
-        Map<Id, WorkOrderLineItem> workOrderLineItems
-    ) {
-        // Get all Service Appointments based on Work Order Line Items
-        List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, ParentRecordId, HOT_ServiceResource__r.Name, HOT_IsScreenInterpreterNew__c
-            FROM ServiceAppointment
-            WHERE
-                ParentRecordId IN :workOrderLineItems.keySet()
-                AND Status != 'Scheduled'
-                AND HOT_ServiceResource__r.Name != NULL
-        ];
-        return serviceAppointments;
+        return serviceAppointmentsByWorkOrder;
     }
 }
