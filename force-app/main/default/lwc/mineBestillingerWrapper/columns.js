@@ -116,5 +116,6 @@ export let iconByValue = {
         icon: 'Open',
         fill: '',
         ariaLabel: 'Åpen'
-    }
+    },
+    Avslått: {},
 };
