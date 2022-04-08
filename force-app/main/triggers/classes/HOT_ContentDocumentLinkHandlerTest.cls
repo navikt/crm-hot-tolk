@@ -2,6 +2,18 @@
 private class HOT_ContentDocumentLinkHandlerTest {
     @testSetup
     static void setup() {
+    }
+
+    @isTest
+    public static void addContentDocumentLinkToServiceAppointment() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert WorkType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
@@ -9,11 +21,7 @@ private class HOT_ContentDocumentLinkHandlerTest {
 
         request.Status__c = 'Godkjent';
         update request;
-    }
 
-    @isTest
-    public static void addContentDocumentLinkToServiceAppointment() {
-        HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_Request__c
             FROM ServiceAppointment
@@ -74,8 +82,13 @@ private class HOT_ContentDocumentLinkHandlerTest {
         personAccount.CRM_Person__c = person.Id;
         insert personAccount;
 
-        HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c LIMIT 1];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert WorkType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
         request.Account__c = personAccount.Id;
+        insert request;
+
+        request.Status__c = 'Godkjent';
         update request;
 
         ContentVersion contentVersion = new ContentVersion(
@@ -123,7 +136,21 @@ private class HOT_ContentDocumentLinkHandlerTest {
 
     @isTest
     public static void addContentDocumentLinkToAccountNoAccountTest() {
-        HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c LIMIT 1];
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert WorkType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
 
         ContentVersion contentVersion = new ContentVersion(
             Title = 'a picture',
