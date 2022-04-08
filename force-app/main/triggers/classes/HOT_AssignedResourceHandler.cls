@@ -29,7 +29,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             (List<AssignedResource>) records
         );
         update interestedResources;
-        getAndSetInterpretersOnWorkOrders((List<AssignedResource>) records, false);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -54,7 +53,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 (List<AssignedResource>) records
             );
             update interestedResources;
-            getAndSetInterpretersOnWorkOrders(assignedResourcesFiltered, false);
         }
     }
 
@@ -87,7 +85,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
     }
 
     public override void onAfterDelete() {
-        getAndSetInterpretersOnWorkOrders((List<AssignedResource>) records, true);
         List<Id> serviceAppointmentIds = new List<Id>();
         for (AssignedResource ar : (List<AssignedResource>) records) {
             serviceAppointmentIds.add(ar.ServiceAppointmentId);
@@ -352,77 +349,5 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 }
             }
         }
-    }
-
-    public static void getAndSetInterpretersOnWorkOrders(List<AssignedResource> assignedResources, Boolean isDelete) {
-        List<Id> serviceAppointmentIds = new List<Id>();
-        for (AssignedResource assignedResource : assignedResources) {
-            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
-        }
-
-        // Get all Service Appointments related to Assigned Resources
-        List<ServiceAppointment> serviceAppointments = [
-            SELECT
-                Id,
-                ParentRecordId,
-                HOT_ServiceResource__r.Name,
-                HOT_IsScreenInterpreterNew__c,
-                HOT_WorkOrderLineItem__r.WorkOrderId
-            FROM ServiceAppointment
-            WHERE Id IN :serviceAppointmentIds AND Status != 'Scheduled' AND HOT_ServiceResource__r.Name != NULL
-        ];
-
-        Map<WorkOrder, List<ServiceAppointment>> serviceAppointmentsByWorkOrder = getServiceAppointmentsByWorkOrder(
-            serviceAppointments
-        );
-        if (serviceAppointmentsByWorkOrder.isEmpty()) {
-            return;
-        }
-        Map<Id, WorkOrder> workOrdersToUpdate = new Map<Id, WorkOrder>();
-        for (WorkOrder workOrder : serviceAppointmentsByWorkOrder.keySet()) {
-            workOrder.HOT_Interpreters__c = '';
-            if (workOrder.HOT_DelPol_IsHideInterpreterFromUser__c) {
-                workOrder.HOT_Interpreters__c = '';
-                continue;
-            }
-            for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrder.get(workOrder)) {
-                String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
-                workOrder.HOT_Interpreters__c +=
-                    serviceAppointment.HOT_ServiceResource__r.Name +
-                    screenInterpreter +
-                    ', ';
-            }
-            workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.removeEnd(', ');
-            workOrdersToUpdate.put(workOrder.Id, workOrder);
-        }
-        update workOrdersToUpdate.values();
-    }
-
-    public static Map<WorkOrder, List<ServiceAppointment>> getServiceAppointmentsByWorkOrder(
-        List<ServiceAppointment> serviceAppointments
-    ) {
-        Map<WorkOrder, List<ServiceAppointment>> serviceAppointmentsByWorkOrder = new Map<WorkOrder, List<ServiceAppointment>>();
-        Map<Id, List<ServiceAppointment>> workOrderIds = new Map<Id, List<ServiceAppointment>>();
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            if (workOrderIds.get(serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId) == null) {
-                workOrderIds.put(
-                    serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
-                    new List<ServiceAppointment>()
-                );
-            }
-            if (workOrderIds.get(serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId) != null) {
-                workOrderIds.get(serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId).add(serviceAppointment);
-            }
-        }
-        // Get all Work Orders related to Work Order Line Items
-        for (WorkOrder workOrder : [
-            SELECT Id, HOT_Interpreters__c, HOT_DelPol_IsHideInterpreterFromUser__c
-            FROM WorkOrder
-            WHERE Id IN :workOrderIds.keySet() AND Status != 'Scheduled'
-        ]) {
-            serviceAppointmentsByWorkOrder.put(workOrder, workOrderIds.get(workOrder.Id));
-        }
-
-        return serviceAppointmentsByWorkOrder;
     }
 }
