@@ -55,7 +55,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
          }
         for (let i = 0; i < this.skill.length; i++) {
             this.serviceResourceSkillList.forEach((element) => {
-                console.log(element.EffectiveEndDate);
                 if (element.SkillId === this.skill[i].Id && element.EffectiveEndDate === undefined) {
                     showSkillList.push(this.skill[i]);
                 }
