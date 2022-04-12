@@ -41,8 +41,8 @@ public without sharing class HOT_FreelanceQualificationsController {
     }
 
     @AuraEnabled
-    public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
-        List<ServiceResourceSkill> serviceResourceSkillsToDelete = new List<ServiceResourceSkill>();
+    public static void editServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
+        List<ServiceResourceSkill> serviceResourceSkillsToSetEndDate = new List<ServiceResourceSkill>();
         List<ServiceResourceSkill> serviceResourceSkillsToCreate = new List<ServiceResourceSkill>();
 
         Map<Id, ServiceResourceSkill> serviceResourceSkills = getServiceResourceSkillMap();
@@ -54,10 +54,10 @@ public without sharing class HOT_FreelanceQualificationsController {
                 serviceResourceSkillsToCreate.add(setResourceSkill(serviceResource, skill));
             }
         }
-
         for (Id skillId : serviceResourceSkills.keySet()) {
             if (!selectedSkillsIds.contains(skillId)) {
-                serviceResourceSkillsToDelete.add(serviceResourceSkills.get(skillId));
+                serviceResourceSkills.get(skillId).EffectiveEndDate = Datetime.now();
+                serviceResourceSkillsToSetEndDate.add(serviceResourceSkills.get(skillId));
             }
         }
 
@@ -69,7 +69,7 @@ public without sharing class HOT_FreelanceQualificationsController {
             logger.publishSynch();
         }
         try {
-            delete serviceResourceSkillsToDelete;
+            update serviceResourceSkillsToSetEndDate;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);

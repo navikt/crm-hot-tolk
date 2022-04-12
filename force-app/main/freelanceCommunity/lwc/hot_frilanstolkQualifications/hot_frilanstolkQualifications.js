@@ -1,6 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
 import getServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.getServiceResourceSkill';
-import createServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.createServiceResourceSkill';
+import editServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.editServiceResourceSkill';
 import myServiceResource from '@salesforce/apex/HOT_FreelanceQualificationsController.myServiceResource';
 import getAllSkillsList from '@salesforce/apex/HOT_FreelanceQualificationsController.getAllSkillsList';
 export default class Hot_frilanstolkQualifications extends LightningElement {
@@ -33,7 +33,8 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     wiredGetServiceResourceSkill(result) {
         this.serviceResourceSkillResult = result;
         if (result.data) {
-            this.serviceResourceSkill = result.data;
+            this.serviceResourceSkillList = result.data;
+            console.log(this.serviceResourceSkillList.length);
         }
     }
     //Henter ut alle skills
@@ -48,20 +49,19 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     }
     //Sjekker serviceResourceSkills
     @track serviceResourceSkillList;
-    @track showSkillList;
     serviceResourceSkillListFunction() {
         let showSkillList = [];
-        if (typeof this.serviceResourceSkill !== 'undefined') {
-            this.serviceResourceSkillList = this.serviceResourceSkill;
-            for (let j = 0; j < this.skill.length; j++) {
-                this.serviceResourceSkillList.forEach((element) => {
-                    if (element.SkillId == this.skill[j].Id && element.EffectiveEndDate == null) {
-                        showSkillList.push(this.skill[j]);
-                    }
-                });
-            }
-            this.serviceResourceSkillList = showSkillList;
+        if (typeof this.serviceResourceSkillList === 'undefined') {
+            return;
+         }
+        for (let i = 0; i < this.skill.length; i++) {
+            this.serviceResourceSkillList.forEach((element) => {
+                if (element.SkillId == this.skill[i].Id && element.EffectiveEndDate == null) {
+                    showSkillList.push(this.skill[i]);
+                }
+            });
         }
+        this.serviceResourceSkillList = showSkillList;
     }
 
     //funksjon som henter inn alle serviceResourceSkill-idene og sjekker de når man trykker på edit-knappen
@@ -87,7 +87,7 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     //Sender inn alle huket av skills til Controller og refresher siden når det er fullført.
     handleSelect() {
         try {
-            createServiceResourceSkill({
+            editServiceResourceSkill({
                 serviceResource: this.serviceResource,
                 selectedSkills: this.userSelectedRows
             }).then(() => {
