@@ -29,7 +29,14 @@
                         </div>
                     </div>
                 </lightning-record-view-form>
-                <lightning-button
+                <c-button
+                    button-label="Rediger kontaktinformasjon"
+                    button-styling="primary"
+                    desktop-style="width: 20rem; justify-content: center"
+                    mobile-style="width: 16rem; justify-content: center"
+                    onbuttonclick={editProfile}
+                ></c-button>
+                <!--<lightning-button
                     class="editButton"
                     icon-name="utility:edit"
                     icon-position="left"
@@ -37,7 +44,7 @@
                     variant="brand"
                     onclick={editProfile}
                 >
-                </lightning-button>
+                </lightning-button>-->
             </section>
             <section class="editUserInformation" if:true={editUserInformation} aria-live>
                 <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
