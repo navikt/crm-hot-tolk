@@ -1,106 +1,92 @@
 import { LightningElement, wire, track } from 'lwc';
-import getServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.getServiceResourceSkill';
+import getUserServiceResourceSkills from '@salesforce/apex/HOT_FreelanceQualificationsController.getUserServiceResourceSkills';
 import editServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificationsController.editServiceResourceSkill';
-import myServiceResource from '@salesforce/apex/HOT_FreelanceQualificationsController.myServiceResource';
 import getAllSkillsList from '@salesforce/apex/HOT_FreelanceQualificationsController.getAllSkillsList';
+import { refreshApex } from '@salesforce/apex';
 export default class Hot_frilanstolkQualifications extends LightningElement {
-    @track columns = [
+    columns = [
         {
-            label: ' Velg dine kvalifikasjoner',
+            label: 'Velg dine kvalifikasjoner',
             fieldName: 'MasterLabel',
             type: 'text'
         }
     ];
-    @track masterLabelColumns = [
+    masterLabelColumns = [
         {
             label: 'Kvalifikasjonene du innehar',
             fieldName: 'MasterLabel',
             type: 'text'
         }
     ];
-    //henter ut serviceResource
-    @track serviceResource;
-    @wire(myServiceResource)
-    wiredMyServiceresource(result) {
-        if (result.data) {
-            this.serviceResource = result.data;
-        }
-    }
     //Henter ut ServiceResourceSkills som bruker har
-    @track serviceResourceSkill;
-    serviceResourceSkillResult;
-    @wire(getServiceResourceSkill)
-    wiredGetServiceResourceSkill(result) {
-        this.serviceResourceSkillResult = result;
+    wiredUserServiceResourceSkillsResult;
+    @wire(getUserServiceResourceSkills)
+    wiredGetUserServiceResourceSkills(result) {
+        this.wiredUserServiceResourceSkillsResult = result;
         if (result.data) {
             this.serviceResourceSkillList = result.data;
         }
     }
-    //Henter ut alle skills
-    @track Id;
+    //Henter ut alle skills som eksisterer i org
     @track skill;
     @wire(getAllSkillsList)
     wiredgetAllSkillsList(resultList) {
         if (resultList.data) {
             this.skill = resultList.data;
-            this.serviceResourceSkillListFunction();
+            this.filterServiceResourceSkills();
         }
     }
-    //Sjekker serviceResourceSkills
+    //Viser skills som huket av om de ikke har en end date
     @track serviceResourceSkillList;
-    serviceResourceSkillListFunction() {
-        let showSkillList = [];
+    filterServiceResourceSkills() {
+        let skillsToShowList = [];
         if (this.serviceResourceSkillList === 'undefined' || this.serviceResourceSkillList.length === 0) {
             return;
          }
         for (let i = 0; i < this.skill.length; i++) {
             this.serviceResourceSkillList.forEach((element) => {
                 if (element.SkillId === this.skill[i].Id && element.EffectiveEndDate === undefined) {
-                    showSkillList.push(this.skill[i]);
+                    skillsToShowList.push(this.skill[i]);
                 }
             });
         }
-        this.serviceResourceSkillList = showSkillList;
+        this.serviceResourceSkillList = skillsToShowList;
     }
-
-    //funksjon som henter inn alle serviceResourceSkill-idene og sjekker de når man trykker på edit-knappen
-    @track viewQualifications = true;
-    @track editQualifications = false;
-
+    isViewQualifications = true;
+    isEditQualifications = false;
     @track userSelectedRows = [];
     @track selectedRows = [];
-    //Lager en liste som viser alle eksisterende skills ServiceResourcen har
-    editSkills() {
-        this.viewQualifications = false;
-        this.editQualifications = true;
-        let initialSelectedRows = [];
+    //Viser alle eksisterende og nye huket av skills
+    handleEditSkills() {
+        this.isViewQualifications = false;
+        this.isEditQualifications = true;
+        this.selectedRows = [];
         this.serviceResourceSkillList.forEach((element) => {
-            initialSelectedRows.push(element.Id);
+            this.selectedRows.push(element.Id);
         });
-        this.selectedRows = initialSelectedRows;
     }
     //Lagrer alle huket av skills i en liste
-    selectedRowHandler(event) {
+    handleRowSelect(event) {
         this.userSelectedRows = event.detail.selectedRows;
     }
-    //Sender inn alle huket av skills til Controller og refresher siden når det er fullført.
-    handleSelect() {
+    //Sender inn alle huket av skills til Controller og refresher Apex
+    handleSave() {
         try {
             editServiceResourceSkill({
-                serviceResource: this.serviceResource,
                 selectedSkills: this.userSelectedRows
             }).then(() => {
-                this.viewQualifications = true;
-                this.editQualifications = false;
-                location.reload();
+                this.isViewQualifications = true;
+                this.isEditQualifications = false;
+                refreshApex(this.wiredUserServiceResourceSkillsResult).then(() => {
+                    this.filterServiceResourceSkills();
+                });
             });
         } catch (error) {
             console.log(JSON.stringify(error));
         }
     }
-
     handleAbort() {
-        this.viewQualifications = true;
-        this.editQualifications = false;
+        this.isViewQualifications = true;
+        this.isEditQualifications = false;
     }
 }

@@ -2,7 +2,7 @@
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
             <h1 style="font-size: 20px">Kvalifikasjoner</h1>
-            <section class="viewQualifications" if:true={viewQualifications} aria-live>
+            <section class="viewQualifications" if:true={isViewQualifications}>
                 <lightning-datatable
                     key-field="Id"
                     data={serviceResourceSkillList}
@@ -12,42 +12,44 @@
                 >
                 </lightning-datatable>
                 <div class="slds-m-top_large">
-                    <lightning-button
-                        class="slds-m-top_large"
-                        variant="brand"
-                        type="submit"
-                        icon-name="utility:edit"
-                        label="Rediger kvalifikasjoner"
-                        onclick={editSkills}
-                    ></lightning-button>
+                    <c-button
+                    button-label="Rediger kvalifikasjoner"
+                    button-styling="primary"
+                    desktop-style="width: 20rem; justify-content: center"
+                    mobile-style="width: 16rem; justify-content: center"
+                    onbuttonclick={handleEditSkills}
+                    type="submit"
+                ></c-button>
                 </div>
             </section>
-            <section class="editQualifications" if:true={editQualifications} aria-live>
+            <section class="editQualifications" if:true={isEditQualifications}>
                 <lightning-datatable
                     key-field="Id"
                     class="cell-border order-column"
                     data={skill}
                     columns={columns}
-                    onrowselection={selectedRowHandler}
+                    onrowselection={handleRowSelect}
                     selected-rows={selectedRows}
                 >
                 </lightning-datatable>
-                <div class="slds-m-top_large button-spaced">
-                    <lightning-button
-                        class="slds-m-top_x-large"
-                        variant="brand"
-                        type="submit"
-                        name="Lagre"
-                        label="Lagre"
-                        onclick={handleSelect}
-                    ></lightning-button>
-                    <lightning-button
-                        class="slds-m-top_x-large"
-                        variant="base"
-                        name="Avbryt"
-                        label="Avbryt"
-                        onclick={handleAbort}
-                    ></lightning-button>
+                <div class="button-class">
+                    <c-button
+                    button-label="Lagre"
+                    button-styling="primary"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={handleSave}
+                    type="submit"
+                ></c-button>
+                <c-button
+                    button-label="Avbryt"
+                    button-styling="secondary"
+                    style="padding-left: 1vw;"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={handleAbort}
+                    type="submit"
+                ></c-button>
                 </div>
             </section>
         </div>

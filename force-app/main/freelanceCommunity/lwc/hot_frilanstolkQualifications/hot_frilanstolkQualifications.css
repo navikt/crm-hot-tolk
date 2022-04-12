@@ -17,6 +17,7 @@
     margin-top: 1rem;
     max-width: 800px;
     width: 100%;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
 }
 
 .sub-form > form {
@@ -39,9 +40,9 @@
     align-items: center;
 }
 
-.button-spaced {
-    display: flex;
-    justify-content: space-around;
+.button-class {
+    text-align: center; 
+    padding-top: 1vw;
 }
 
 @media (max-width: 576px) {

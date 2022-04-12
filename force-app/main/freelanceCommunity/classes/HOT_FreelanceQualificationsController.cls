@@ -11,7 +11,7 @@ public without sharing class HOT_FreelanceQualificationsController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<ServiceResourceSkill> getServiceResourceSkill() {
+    public static List<ServiceResourceSkill> getUserServiceResourceSkills() {
         return getServiceResourceSkillMap().values();
     }
 
@@ -41,7 +41,8 @@ public without sharing class HOT_FreelanceQualificationsController {
     }
 
     @AuraEnabled
-    public static void editServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
+    public static void editServiceResourceSkill(List<Skill> selectedSkills) {
+        ServiceResource serviceResource = myServiceResource();
         List<ServiceResourceSkill> serviceResourceSkillsToUpdateEndDate = new List<ServiceResourceSkill>();
         List<ServiceResourceSkill> serviceResourceSkillsToCreate = new List<ServiceResourceSkill>();
 
