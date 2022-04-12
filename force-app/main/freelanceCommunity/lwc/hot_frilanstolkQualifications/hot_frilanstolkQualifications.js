@@ -34,7 +34,6 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         this.serviceResourceSkillResult = result;
         if (result.data) {
             this.serviceResourceSkillList = result.data;
-            console.log(this.serviceResourceSkillList.length);
         }
     }
     //Henter ut alle skills
@@ -51,12 +50,13 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
     @track serviceResourceSkillList;
     serviceResourceSkillListFunction() {
         let showSkillList = [];
-        if (typeof this.serviceResourceSkillList === 'undefined') {
+        if (this.serviceResourceSkillList === 'undefined' || this.serviceResourceSkillList.length === 0) {
             return;
          }
         for (let i = 0; i < this.skill.length; i++) {
             this.serviceResourceSkillList.forEach((element) => {
-                if (element.SkillId == this.skill[i].Id && element.EffectiveEndDate == null) {
+                console.log(element.EffectiveEndDate);
+                if (element.SkillId === this.skill[i].Id && element.EffectiveEndDate === undefined) {
                     showSkillList.push(this.skill[i]);
                 }
             });
