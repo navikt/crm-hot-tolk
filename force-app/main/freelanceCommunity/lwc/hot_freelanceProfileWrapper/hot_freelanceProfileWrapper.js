@@ -1,7 +1,7 @@
 import { LightningElement, track } from 'lwc';
 
 export default class hot_freelanceProfileWrapper extends LightningElement {
-    @track breadcrumbs = [ 
+    breadcrumbs = [ 
         {
             label: 'Tolketjenesten',
             href: ''
