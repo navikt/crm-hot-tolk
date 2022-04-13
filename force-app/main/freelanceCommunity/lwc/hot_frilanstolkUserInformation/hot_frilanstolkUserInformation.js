@@ -11,8 +11,8 @@ export default class Hot_frilanstolkUserInformation extends LightningElement {
             this.recordId = this.serviceResource.Id;
         }
     }
-    @track viewUserInformation = true;
-    @track editUserInformation = false;
+    viewUserInformation = true;
+    editUserInformation = false;
     editProfile() {
         this.viewUserInformation = false;
         this.editUserInformation = true;

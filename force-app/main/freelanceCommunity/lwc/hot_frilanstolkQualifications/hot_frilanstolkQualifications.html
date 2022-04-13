@@ -1,7 +1,7 @@
 <template>
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
-            <h1 style="font-size: 20px">Kvalifikasjoner</h1>
+            <h1>Kvalifikasjoner</h1>
             <section class="viewQualifications" if:true={isViewQualifications}>
                 <lightning-datatable
                     key-field="Id"
@@ -18,6 +18,7 @@
                     desktop-style="width: 20rem; justify-content: center"
                     mobile-style="width: 16rem; justify-content: center"
                     onbuttonclick={handleEditSkills}
+                    style="margin-top: 1.5rem"
                 ></c-button>
                 </div>
             </section>
@@ -42,7 +43,7 @@
                 <c-button
                     button-label="Avbryt"
                     button-styling="secondary"
-                    style="padding-left: 1vw;"
+                    style="padding-left: 1rem;"
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={handleAbort}

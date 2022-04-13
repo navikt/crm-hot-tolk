@@ -1,7 +1,7 @@
 <template>
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
-            <h1 style="font-size: 20px">Kontaktinformasjon</h1>
+            <h1>Kontaktinformasjon</h1>
             <section class="viewUserInformation center-content" if:true={viewUserInformation} aria-live>
                 <lightning-record-view-form object-api-name="ServiceResource" record-id={recordId} mode="view">
                     <div class="form-wrapper">
@@ -35,16 +35,8 @@
                     desktop-style="width: 20rem; justify-content: center"
                     mobile-style="width: 16rem; justify-content: center"
                     onbuttonclick={editProfile}
+                    style="margin-top: 1.5rem"
                 ></c-button>
-                <!--<lightning-button
-                    class="editButton"
-                    icon-name="utility:edit"
-                    icon-position="left"
-                    label="Rediger kontaktinformasjon"
-                    variant="brand"
-                    onclick={editProfile}
-                >
-                </lightning-button>-->
             </section>
             <section class="editUserInformation" if:true={editUserInformation} aria-live>
                 <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
@@ -74,24 +66,22 @@
                             ></lightning-input-field>
                         </div>
                     </div>
-                    <div class="slds-m-top_large button-spaced">
-                        <lightning-button
-                            class="slds-m-top_x-large"
-                            variant="brand"
-                            type="submit"
-                            name="Lagre"
-                            label="Lagre"
-                            onclick={handleSubmit}
-                        >
-                        </lightning-button>
-                        <lightning-button
-                            class="slds-m-top_x-large"
-                            variant="base"
-                            name="Avbryt"
-                            label="Avbryt"
-                            onclick={handleAbort}
-                        >
-                        </lightning-button>
+                    <div class="button-class">
+                        <c-button
+                        button-label="Lagre"
+                        button-styling="primary"
+                        desktop-style="width: 8rem; justify-content: center"
+                        mobile-style="width: 8rem; justify-content: center"
+                        onbuttonclick={handleSubmit}
+                    ></c-button>
+                    <c-button
+                        button-label="Avbryt"
+                        button-styling="secondary"
+                        style="padding-left: 1rem;"
+                        desktop-style="width: 8rem; justify-content: center"
+                        mobile-style="width: 8rem; justify-content: center"
+                        onbuttonclick={handleAbort}
+                    ></c-button>
                     </div>
                 </lightning-record-edit-form>
             </section>
