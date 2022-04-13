@@ -42,14 +42,14 @@ export default class Hot_frilanstolkQualifications extends LightningElement {
         let skillsToShowList = [];
         if (this.serviceResourceSkillList === 'undefined' || this.serviceResourceSkillList.length === 0) {
             return;
-         }
-        for (let i = 0; i < this.skill.length; i++) {
+        }
+        this.skill.forEach((skill) => {
             this.serviceResourceSkillList.forEach((element) => {
-                if (element.SkillId === this.skill[i].Id && element.EffectiveEndDate === undefined) {
-                    skillsToShowList.push(this.skill[i]);
+                if (element.SkillId === skill.Id && element.EffectiveEndDate === undefined) {
+                    skillsToShowList.push(skill);
                 }
             });
-        }
+        });
         this.serviceResourceSkillList = skillsToShowList;
     }
     isViewQualifications = true;
