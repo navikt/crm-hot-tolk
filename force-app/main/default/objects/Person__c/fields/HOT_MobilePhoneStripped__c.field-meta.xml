@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_MobilePhoneStripped__c</fullName>
+    <externalId>false</externalId>
+    <formula>RIGHT( INT_KrrMobilePhone__c , 8 )</formula>
+    <label>Mobile Phone Stripped</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

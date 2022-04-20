@@ -20,7 +20,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                     idents.add(request.Account__c);
                 }
                 if (!String.isBlank(request.UserPhone__c)) {
-                    idents.add(request.UserPhone__c);
+                    idents = addUserPhoneVariations(idents, request.UserPhone__c);
                 }
             }
         }
@@ -30,6 +30,13 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         if (imageInterpreterRequests.size() > 0) {
             routeToCreatedByQueue(imageInterpreterRequests);
         }
+    }
+
+    private static List<String> addUserPhoneVariations(List<String> idents, String phoneNumber) {
+        idents.add(phoneNumber);
+        idents.add('+47' + phoneNumber);
+        idents.add('0047' + phoneNumber);
+        return idents;
     }
 
     public static void routeToCreatedByQueue(List<HOT_Request__c> imageInterpreterRequests) {
@@ -68,7 +75,14 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
     public void routeAccountConnectedRequests(List<HOT_Request__c> accountConnectedRequests, List<String> idents) {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         List<Account> accounts = [
-            SELECT Id, Name, INT_PersonIdent__c, CRM_Person__c, INT_OrganizationNumber__c, INT_KrrMobilePhone__c
+            SELECT
+                Id,
+                Name,
+                INT_PersonIdent__c,
+                CRM_Person__c,
+                INT_OrganizationNumber__c,
+                INT_KrrMobilePhone__c,
+                CRM_Person__r.HOT_MobilePhoneStripped__c
             FROM Account
             WHERE
                 INT_PersonIdent__c IN :idents
@@ -89,8 +103,8 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             if (account.INT_OrganizationNumber__c != null) {
                 orgNumberToAccount.put(account.INT_OrganizationNumber__c, account);
             }
-            if (account.INT_KrrMobilePhone__c != null) {
-                phoneNumberToAccount.put(account.INT_KrrMobilePhone__c, account);
+            if (account.CRM_Person__r.HOT_MobilePhoneStripped__c != null) {
+                phoneNumberToAccount.put(account.CRM_Person__r.HOT_MobilePhoneStripped__c, account);
             }
             idToAccount.put(account.Id, account);
         }
