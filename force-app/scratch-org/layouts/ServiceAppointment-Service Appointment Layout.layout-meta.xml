@@ -256,9 +256,9 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns/>
-        <layoutColumns/>
-        <layoutColumns/>
+        <layoutColumns />
+        <layoutColumns />
+        <layoutColumns />
         <style>CustomLinks</style>
     </layoutSections>
     <layoutSections>
@@ -321,7 +321,7 @@
             <sortOrder>5</sortOrder>
         </platformActionListItems>
     </platformActionList>
-    <quickActionList/>
+    <quickActionList />
     <relatedLists>
         <fields>ServiceResource</fields>
         <fields>Name</fields>
@@ -333,8 +333,8 @@
         <fields>ServiceResource__c</fields>
         <fields>Status__c</fields>
         <fields>ResourceAddress__c</fields>
-        <fields>IsDispatcherNewComment__c</fields>
-        <fields>CREATED_DATE</fields>
+        <fields>ServiceTerritory__c</fields>
+        <fields>IsNewComment__c</fields>
         <relatedList>HOT_InterestedResource__c.ServiceAppointment__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -354,7 +354,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h7a000001NTEk</masterLabel>
+        <masterLabel>00h3O000001Emmw</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

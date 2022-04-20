@@ -83,7 +83,6 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.Status__c,
                     HOT_Request__r.ExternalRequestStatus__c,
                     HOT_Request__r.Account__c,
-                    HOT_Request__r.ActualUserName__c,
                     HOT_Request__r.TempAccountId__c,
                     HOT_Request__r.OrganizationNumber__c,
                     HOT_Request__r.Source__c,
@@ -98,6 +97,7 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_AssignmentType__c,
                     HOT_Request__r.UserName__c,
                     HOT_Request__r.UserPersonNumber__c,
+                    HOT_Request__r.UserPhone__c,
                     HOT_Request__r.UserPreferredInterpreter__c,
                     toLabel(HOT_Request__r.UserInterpretationMethod__c),
                     HOT_Request__r.CompanyName__c,
@@ -111,15 +111,21 @@ public without sharing class HOT_WorkOrderListController {
                 ORDER BY StartDate
             ]
         );
+        DateTime oneWeekAgo = DateTime.now().addDays(-7);
+        DateTime sixMonthsAgo = DateTime.now().addMonths(-6);
+
         Map<Id, WorkOrder> workOrdersAccount = new Map<Id, WorkOrder>();
         Map<Id, WorkOrder> workOrdersOrderer = new Map<Id, WorkOrder>();
         for (WorkOrder wo : workOrders.values()) {
             if (wo.HOT_Request__r.Orderer__c == user.AccountId) {
                 wo.HOT_Request__r.Orderer__r.Name = null;
             }
+            if (wo.EndDate < oneWeekAgo) {
+                wo.HOT_Request__r.UserName__c = null;
+            }
             if (wo.HOT_Request__r.Account__c == user.AccountId) {
                 workOrdersAccount.put(wo.Id, wo);
-            } else {
+            } else if (wo.EndDate > sixMonthsAgo) {
                 workOrdersOrderer.put(wo.Id, wo);
             }
         }
