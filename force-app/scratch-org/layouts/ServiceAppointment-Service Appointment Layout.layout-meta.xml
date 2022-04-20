@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <layoutSections>
         <customLabel>false</customLabel>
@@ -256,9 +256,9 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns />
-        <layoutColumns />
-        <layoutColumns />
+        <layoutColumns/>
+        <layoutColumns/>
+        <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
     <layoutSections>
@@ -321,7 +321,7 @@
             <sortOrder>5</sortOrder>
         </platformActionListItems>
     </platformActionList>
-    <quickActionList />
+    <quickActionList/>
     <relatedLists>
         <fields>ServiceResource</fields>
         <fields>Name</fields>
@@ -330,11 +330,11 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
-        <fields>ServiceResource.NAME</fields>
+        <fields>ServiceResource__c</fields>
         <fields>Status__c</fields>
         <fields>ResourceAddress__c</fields>
-        <fields>ServiceResource.HOT_ServiceTerritory__c</fields>
-        <fields>IsDispatcherNewComment__c</fields>
+        <fields>ServiceTerritory__c</fields>
+        <fields>IsNewComment__c</fields>
         <relatedList>HOT_InterestedResource__c.ServiceAppointment__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -354,7 +354,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1j000003L4oe</masterLabel>
+        <masterLabel>00h3O000001Emmw</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
