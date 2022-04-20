@@ -20,7 +20,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                     idents.add(request.Account__c);
                 }
                 if (!String.isBlank(request.UserPhone__c)) {
-                    idents.add(request.UserPhone__c);
+                    idents = addUserPhoneVariations(idents, request.UserPhone__c);
                 }
             }
         }
@@ -30,6 +30,13 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         if (imageInterpreterRequests.size() > 0) {
             routeToCreatedByQueue(imageInterpreterRequests);
         }
+    }
+
+    private static List<String> addUserPhoneVariations(List<String> idents, String phoneNumber) {
+        idents.add(phoneNumber);
+        idents.add('+47' + phoneNumber);
+        idents.add('0047' + phoneNumber);
+        return idents;
     }
 
     public static void routeToCreatedByQueue(List<HOT_Request__c> imageInterpreterRequests) {
