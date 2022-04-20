@@ -84,7 +84,6 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.Status__c,
                     HOT_Request__r.ExternalRequestStatus__c,
                     HOT_Request__r.Account__c,
-                    HOT_Request__r.ActualUserName__c,
                     HOT_Request__r.TempAccountId__c,
                     HOT_Request__r.OrganizationNumber__c,
                     HOT_Request__r.Source__c,
@@ -123,7 +122,7 @@ public without sharing class HOT_WorkOrderListController {
                 wo.HOT_Request__r.Orderer__r.Name = null;
             }
             if (wo.EndDate < oneWeekAgo) {
-                wo.HOT_Request__r.ActualUserName__c = null;
+                wo.HOT_Request__r.UserName__c = null;
             }
             if (wo.HOT_Request__r.Account__c == user.AccountId) {
                 workOrdersAccount.put(wo.Id, wo);
