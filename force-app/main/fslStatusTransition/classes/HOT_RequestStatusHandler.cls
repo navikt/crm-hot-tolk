@@ -20,6 +20,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> annullertRequests = new List<HOT_Request__c>();
+        List<HOT_Request__c> avslaattRequests = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Avlyst requests
@@ -33,12 +34,18 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
             ) {
                 annullertRequests.add(request);
             }
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avslått') {
+                avslaattRequests.add(request);
+            }
         }
         if (avlystRequests.size() > 0) {
             updateChildRecords(avlystRequests, 'Canceled');
         }
         if (annullertRequests.size() > 0) {
             updateChildRecords(annullertRequests, 'Annul');
+        }
+        if (avslaattRequests.size() > 0) {
+            updateChildRecords(avslaattRequests, 'Denied');
         }
     }
 
