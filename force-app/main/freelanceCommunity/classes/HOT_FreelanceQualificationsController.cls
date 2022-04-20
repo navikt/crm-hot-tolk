@@ -11,7 +11,7 @@ public without sharing class HOT_FreelanceQualificationsController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<ServiceResourceSkill> getServiceResourceSkill() {
+    public static List<ServiceResourceSkill> getUserServiceResourceSkills() {
         return getServiceResourceSkillMap().values();
     }
 
@@ -41,8 +41,9 @@ public without sharing class HOT_FreelanceQualificationsController {
     }
 
     @AuraEnabled
-    public static void createServiceResourceSkill(ServiceResource serviceResource, List<Skill> selectedSkills) {
-        List<ServiceResourceSkill> serviceResourceSkillsToDelete = new List<ServiceResourceSkill>();
+    public static void editServiceResourceSkill(List<Skill> selectedSkills) {
+        ServiceResource serviceResource = myServiceResource();
+        List<ServiceResourceSkill> serviceResourceSkillsToUpdateEndDate = new List<ServiceResourceSkill>();
         List<ServiceResourceSkill> serviceResourceSkillsToCreate = new List<ServiceResourceSkill>();
 
         Map<Id, ServiceResourceSkill> serviceResourceSkills = getServiceResourceSkillMap();
@@ -50,14 +51,20 @@ public without sharing class HOT_FreelanceQualificationsController {
         Set<Id> selectedSkillsIds = new Set<Id>();
         for (Skill skill : selectedSkills) {
             selectedSkillsIds.add(skill.Id);
+            // Create Skill not yet existing on user
             if (!serviceResourceSkills.keySet().contains(skill.Id)) {
                 serviceResourceSkillsToCreate.add(setResourceSkill(serviceResource, skill));
+            } 
+            // Set Skill EffectiveEndDate to null if Skill already exists on user
+            if (serviceResourceSkills.keySet().contains(skill.Id) && serviceResourceSkills.get(skill.Id).EffectiveEndDate != null) {
+                serviceResourceSkills.get(skill.Id).EffectiveEndDate = null;
+                serviceResourceSkillsToUpdateEndDate.add(serviceResourceSkills.get(skill.Id));
             }
         }
-
         for (Id skillId : serviceResourceSkills.keySet()) {
-            if (!selectedSkillsIds.contains(skillId)) {
-                serviceResourceSkillsToDelete.add(serviceResourceSkills.get(skillId));
+            if (!selectedSkillsIds.contains(skillId) && serviceResourceSkills.get(skillId).EffectiveEndDate == null) {
+                serviceResourceSkills.get(skillId).EffectiveEndDate = Datetime.now();
+                serviceResourceSkillsToUpdateEndDate.add(serviceResourceSkills.get(skillId));
             }
         }
 
@@ -69,7 +76,7 @@ public without sharing class HOT_FreelanceQualificationsController {
             logger.publishSynch();
         }
         try {
-            delete serviceResourceSkillsToDelete;
+            update serviceResourceSkillsToUpdateEndDate;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);

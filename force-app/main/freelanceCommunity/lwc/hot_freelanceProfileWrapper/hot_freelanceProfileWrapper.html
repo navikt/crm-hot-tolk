@@ -1,9 +1,6 @@
 <template>
     <div class="brodsmulesti">
-        <lightning-breadcrumbs class="breadcrumb-width">
-            <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
-            <lightning-breadcrumb label="Frilanstolk min side" href="/s/frilanstolk-min-side"> </lightning-breadcrumb>
-        </lightning-breadcrumbs>
+        <c-breadcrumbs url-list={breadcrumbs} class="breadcrumb-width"></c-breadcrumbs>
     </div>
     <c-hot_frilanstolk-user-information item-name="userInformation"></c-hot_frilanstolk-user-information>
     <c-hot_frilanstolk-qualifications item-name="frilanstolkQualifications"></c-hot_frilanstolk-qualifications>
