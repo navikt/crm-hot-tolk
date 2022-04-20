@@ -148,8 +148,9 @@
     </layoutSections>
     <relatedLists>
         <fields>NAME</fields>
-        <fields>ServiceAppointment.std21</fields>
-        <fields>ServiceAppointment.std22</fields>
+        <fields>ServiceAppointment__c</fields>
+        <fields>Status__c</fields>
+        <fields>Comments__c</fields>
         <relatedList>HOT_InterestedResource__c.ServiceResource__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -265,7 +266,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h0E000002J2xC</masterLabel>
+        <masterLabel>00h3O000001Emmk</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
