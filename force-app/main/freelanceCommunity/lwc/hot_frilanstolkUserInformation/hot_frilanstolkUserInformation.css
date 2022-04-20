@@ -13,10 +13,9 @@
     position: relative;
     flex-grow: 0;
     overflow-x: auto;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
     max-width: 800px;
     width: 100%;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
 }
 
 .sub-form > form {
@@ -43,10 +42,20 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 1rem;
 }
 .form-section {
     margin: 0 1rem;
+}
+
+.button-class {
+    text-align: center; 
+    margin-top: 1.5rem;
+}
+
+h1 {
+    font-weight: 600;
+    font-size: 1.5rem;
+    font-family: 'Source Sans Pro', Arial, Sans serif;
 }
 
 @media (max-width: 576px) {
