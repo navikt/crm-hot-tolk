@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_DelPol_ToAnonymizeComments__c</fullName>
     <externalId>false</externalId>
-    <formula>TODAY() &gt;= (DATEVALUE(ServiceAppointment__r.DueDate) + 365)</formula>
+    <formula>TODAY() &gt;= (DATEVALUE(ServiceAppointment__r.DueDate) + 365 + 1)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>HOT DelPol Anonymize Comments Condition</label>
     <trackHistory>false</trackHistory>
