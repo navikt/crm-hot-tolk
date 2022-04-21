@@ -149,13 +149,6 @@
     <relatedLists>
         <fields>NAME</fields>
         <fields>ServiceAppointment__c</fields>
-        <fields>Status__c</fields>
-        <fields>Comments__c</fields>
-        <relatedList>HOT_InterestedResource__c.ServiceResource__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <fields>ServiceAppointment__c</fields>
         <fields>SchedStartTime__c</fields>
         <fields>SchedEndTime__c</fields>
         <fields>Status__c</fields>

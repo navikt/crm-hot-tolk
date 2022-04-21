@@ -1,4 +1,38 @@
 public without sharing class HOT_InterpreterOnWorkOrderService {
+    @AuraEnabled(cacheable=true)
+    public static List<String> getInterpreters(String recordId, String mergeField, String objectName) {
+        List<SObject> originRecord = Database.query(
+            'SELECT ' +
+            mergeField +
+            ' FROM ' +
+            objectName +
+            ' WHERE Id = :recordId'
+        );
+        Id workOrderId = (Id) originRecord[0].get(mergeField);
+        List<String> interpreters = getInterpretersOnWorkOrder(workOrderId);
+        return interpreters;
+    }
+    
+    @AuraEnabled(cacheable=true)
+    public static List<String> getInterpreters2(String workOrderId) {
+        List<String> interpreters = getInterpretersOnWorkOrder(workOrderId);
+        return interpreters;
+    }
+
+    public static List<String> getInterpretersOnWorkOrder(Id workOrderId) {
+        List<String> interpreters = new List<String>();
+        Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = getServiceAppointmentsByWorkOrderId(
+            new Set<Id>{ workOrderId }
+        );
+        if (serviceAppointmentsByWorkOrderId.get(workOrderId) != null) {
+            for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(workOrderId)) {
+                String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
+                interpreters.add(serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter);
+            }
+        }
+        return interpreters;
+    }
+
     public static void setInterpreterOnWorkOrder(Set<Id> workOrderIds) {
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = getServiceAppointmentsByWorkOrderId(
             workOrderIds
