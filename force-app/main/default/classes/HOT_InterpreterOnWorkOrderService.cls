@@ -56,7 +56,6 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
     }
 
     public static void setInterpreterOnWorkOrderFromServiceAppointment(Set<Id> serviceAppointmentIds) {
-        System.debug('vegard setInterpreterOnWorkOrderFromServiceAppointment');
         Set<Id> workOrderIds = new Set<Id>();
         for (ServiceAppointment serviceAppointment : [
             SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
