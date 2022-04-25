@@ -55,7 +55,7 @@ export let columns = [
     },
     {
         name: 'Subject',
-        label: 'Emne',
+        label: 'Tema',
         type: 'String'
     },
     {
@@ -79,7 +79,7 @@ export let mobileColumns = [
     },
     {
         name: 'Subject',
-        label: 'Emne',
+        label: 'Tema',
         type: 'String'
     }
 ];
@@ -117,5 +117,5 @@ export let iconByValue = {
         fill: '',
         ariaLabel: 'Åpen'
     },
-    Avslått: {},
+    Avslått: {}
 };

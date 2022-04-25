@@ -462,7 +462,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     } else {
                         let warningMessage = 'Du har allerede bestillinger i dette tidsrommet:';
                         for (let request of duplicateRequests) {
-                            warningMessage += '\nEmne: ' + request.Subject__c;
+                            warningMessage += '\nTema: ' + request.Subject__c;
                             warningMessage += '\nPeriode: ' + request.SeriesPeriod__c;
                         }
                         if (confirm(warningMessage)) {
