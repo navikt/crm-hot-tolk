@@ -12,12 +12,6 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
         List<String> interpreters = getInterpretersOnWorkOrder(workOrderId);
         return interpreters;
     }
-    
-    @AuraEnabled(cacheable=true)
-    public static List<String> getInterpreters2(String workOrderId) {
-        List<String> interpreters = getInterpretersOnWorkOrder(workOrderId);
-        return interpreters;
-    }
 
     public static List<String> getInterpretersOnWorkOrder(Id workOrderId) {
         List<String> interpreters = new List<String>();
@@ -31,24 +25,6 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
             }
         }
         return interpreters;
-    }
-
-    public static void setInterpreterOnWorkOrder(Set<Id> workOrderIds) {
-        Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = getServiceAppointmentsByWorkOrderId(
-            workOrderIds
-        );
-        List<WorkOrder> workOrders = new List<WorkOrder>();
-        for (Id workOrderId : workOrderIds) {
-            WorkOrder workOrder = new WorkOrder(Id = workOrderId, HOT_Interpreters__c = '');
-            if (serviceAppointmentsByWorkOrderId.get(workOrderId) != null) {
-                for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(workOrderId)) {
-                    appendInterpreterName(workOrder, serviceAppointment);
-                }
-                workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.removeEnd(', ');
-            }
-            workOrders.add(workOrder);
-        }
-        update workOrders;
     }
 
     private static Map<Id, List<ServiceAppointment>> getServiceAppointmentsByWorkOrderId(Set<Id> workOrderIds) {
@@ -81,23 +57,5 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
             }
         }
         return serviceAppointmentsByWorkOrderId;
-    }
-
-    private static WorkOrder appendInterpreterName(WorkOrder workOrder, ServiceAppointment serviceAppointment) {
-        String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
-        workOrder.HOT_Interpreters__c += serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter + ', ';
-        return workOrder;
-    }
-
-    public static void setInterpreterOnWorkOrderFromServiceAppointment(Set<Id> serviceAppointmentIds) {
-        Set<Id> workOrderIds = new Set<Id>();
-        for (ServiceAppointment serviceAppointment : [
-            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
-            FROM ServiceAppointment
-            WHERE Id IN :serviceAppointmentIds
-        ]) {
-            workOrderIds.add(serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId);
-        }
-        setInterpreterOnWorkOrder(workOrderIds);
     }
 }
