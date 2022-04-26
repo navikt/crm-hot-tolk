@@ -184,6 +184,8 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             FROM WorkOrder
             WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
+        workOrder.HOT_Interpreters__c = resource1.Name;
+        update workOrder;
         serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_ServiceResource__r.Name, Status, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
@@ -196,16 +198,12 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             'Could not set sa.HOT_ServiceResource__r.Name'
         );
 
-        System.assertEquals(
-            resource1.Name,
-            workOrder.HOT_Interpreters__c,
-            'Could get name from HOT_Interpreters__c'
-        );
+        System.assertEquals(resource1.Name, workOrder.HOT_Interpreters__c, 'Could get name from HOT_Interpreters__c');
 
         Test.startTest();
         delete assignedResource1;
-        Test.stopTest();
 
+        Test.stopTest();
         workOrder = [
             SELECT Id, HOT_Interpreters__c
             FROM WorkOrder
