@@ -13,9 +13,8 @@
                 <object>WorkOrder</object>
                 <object>ServiceAppointment</object>
             </objects>
-            <property name="mergeField" type="String" label="Merge Field (Work Order Id)" default="Id" />
-            <property name="objectName" type="String" label="ObjectName (API Name)" default="WorkOrder" />
-            <property name="workOrderId" type="String" label="workOrderId" />
+            <property name="mergeField" type="String" label="Merge Field (Work Order Id)" />
+            <property name="objectName" type="String" label="ObjectName (API Name)" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

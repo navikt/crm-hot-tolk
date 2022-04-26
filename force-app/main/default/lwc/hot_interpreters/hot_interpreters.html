@@ -1,9 +1,16 @@
 <template>
-    <template if:true={interpreters}>
-        <ul>
-            <template iterator:it={interpreters}>
-                <li key={it.value}><p>{it.value}</p></li>
-            </template>
-        </ul>
+    <template if:false={commaSeperatedList}>
+        <template if:true={interpreters}>
+            <ul>
+                <template iterator:it={interpreters}>
+                    <li key={it.value}><p>{it.value}</p></li>
+                </template>
+            </ul>
+        </template>
+    </template>
+    <template if:true={commaSeperatedList}>
+        <template if:true={interpreters}>
+            <p>{interpreters}</p>
+        </template>
     </template>
 </template>
