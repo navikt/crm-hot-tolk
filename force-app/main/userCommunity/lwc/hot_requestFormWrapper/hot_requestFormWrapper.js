@@ -127,7 +127,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                 this.noCancelButton = false;
                 for (let request of duplicateRequests) {
                     this.modalContent += '\nTema: ' + request.Subject__c;
-                    this.modalContent += '\nPeriode: ' + request.SeriesPeriod__c;
+                    this.modalContent += '\nPeriode: ' + request.SeriesPeriod__c + '\n';
                 }
                 this.template.querySelector('c-alertdialog').showModal();
                 response = false;
