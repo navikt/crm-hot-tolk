@@ -102,7 +102,8 @@ public without sharing class HOT_WorkOrderListController {
                     toLabel(HOT_Request__r.UserInterpretationMethod__c),
                     HOT_Request__r.CompanyName__c,
                     HOT_Request__r.OwnerName__c,
-                    HOT_Request__r.InterpretationMethodName__c
+                    HOT_Request__r.InterpretationMethodName__c,
+                    HOT_DelPol_IsHideInterpreterFromUser__c
                 FROM WorkOrder
                 WHERE
                     (HOT_Request__r.Account__c = :user.AccountId
@@ -122,6 +123,9 @@ public without sharing class HOT_WorkOrderListController {
             }
             if (wo.EndDate < oneWeekAgo) {
                 wo.HOT_Request__r.UserName__c = null;
+            }
+            if (wo.HOT_DelPol_IsHideInterpreterFromUser__c) {
+                wo.HOT_Interpreters__c = '';
             }
             if (wo.HOT_Request__r.Account__c == user.AccountId) {
                 workOrdersAccount.put(wo.Id, wo);
