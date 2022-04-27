@@ -51,7 +51,11 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
 
     private static WorkOrder appendInterpreterName(WorkOrder workOrder, ServiceAppointment serviceAppointment) {
         String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
-        workOrder.HOT_Interpreters__c += serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter + ', ';
+        workOrder.HOT_Interpreters__c =
+            (workOrder.HOT_Interpreters__c == null ? '' : workOrder.HOT_Interpreters__c) +
+            serviceAppointment.HOT_ServiceResource__r.Name +
+            screenInterpreter +
+            ', ';
         return workOrder;
     }
 
