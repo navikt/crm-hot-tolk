@@ -38,6 +38,8 @@ public without sharing class HOT_NotificationHandler {
             //Fellesoppdrag
             if (queue.DeveloperName.contains('fellesoppdrag')) {
                 groupName = 'HOT_group_' + queue.DeveloperName.split('_')[2] + '_formidler';
+            } else if (queue.DeveloperName.contains('Akuttvakt')) {
+                groupName = 'HOT_Tolk_Akuttvakt';
             } else {
                 groupName = 'HOT_group_' + queue.DeveloperName.split('_')[1] + '_formidler';
             }
