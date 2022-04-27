@@ -62,8 +62,7 @@
                         is-edit-or-copy-mode={isEditOrCopyMode}
                     ></c-hot_request-form_request>
                     <div class="button-container">
-                        <div if:true={spin} class="loader" style="display: flex; justify-content: center"></div>
-                        <div if:false={spin} style="display: flex; justify-content: center; flex-direction: column">
+                        <div style="display: flex; justify-content: center; flex-direction: column">
                             <c-button
                                 if:true={requestTypeResult.requestForm}
                                 button-label={submitButtonLabel}
@@ -124,6 +123,16 @@
             <br />
             <lightning-button title="Gå til mine bestillinger" variant="brand" label="OK" onclick={goToMyRequests}>
             </lightning-button>
+        </div>
+    </div>
+    <div class="main-content hidden submitted-loading">
+        <div class="main-content dialog-boks skjema-max-width">
+            <h2 class="typo-undertittel h2-loadingMessage" id="loadingMessage" tabindex="-1" role="alert">
+                Sender bestilling...
+            </h2>
+            <br/>
+            <div if:true={spin} class="loader" style="display: flex; justify-content: center"></div>
+            <br />
         </div>
     </div>
 </template>
