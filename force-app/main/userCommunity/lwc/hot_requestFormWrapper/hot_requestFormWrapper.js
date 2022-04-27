@@ -57,6 +57,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         if (!hasErrors) {
             this.promptOverlap().then((overlapOk) => {
                 if (overlapOk) {
+                    this.hideFormAndShowLoading();
                     this.submitForm();
                 } else {
                     this.spin = false;
@@ -126,7 +127,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                 this.noCancelButton = false;
                 for (let request of duplicateRequests) {
                     this.modalContent += '\nTema: ' + request.Subject__c;
-                    this.modalContent += '\nPeriode: ' + request.SeriesPeriod__c;
+                    this.modalContent += '\nPeriode: ' + request.SeriesPeriod__c + '\n';
                 }
                 this.template.querySelector('c-alertdialog').showModal();
                 response = false;
@@ -137,8 +138,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
 
     handleAlertDialogClick(event) {
         if (event.detail === 'confirm' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
-            this.submitForm();
             this.spin = true;
+            this.hideFormAndShowLoading();
+            this.submitForm();
         }
     }
 
@@ -172,9 +174,16 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     hideFormAndShowSuccess() {
+        this.template.querySelector('.submitted-loading').classList.add('hidden');
+        this.template.querySelector('.submitted-false').classList.add('hidden');
         this.template.querySelector('.submitted-true').classList.remove('hidden');
         this.template.querySelector('.h2-successMessage').focus();
+    }
+
+    hideFormAndShowLoading() {
         this.template.querySelector('.submitted-false').classList.add('hidden');
+        this.template.querySelector('.submitted-loading').classList.remove('hidden');
+        this.template.querySelector('.h2-loadingMessage').focus();
     }
 
     uploadFiles() {
