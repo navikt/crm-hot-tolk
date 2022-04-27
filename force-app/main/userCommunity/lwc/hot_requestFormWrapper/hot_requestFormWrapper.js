@@ -165,9 +165,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     handleSuccess(event) {
-        this.spin = false;
         this.recordId = event.detail.id;
-        this.hideFormAndShowSuccess();
         this.uploadFiles();
         this.createWorkOrders();
         window.scrollTo(0, 0);
@@ -201,12 +199,18 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                         recurringType: timeInput.repeatingOptionChosen,
                         recurringDays: timeInput.chosenDays,
                         recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
+                    }).then(() => {
+                        this.spin = false;
+                        this.hideFormAndShowSuccess();
                     });
                 } catch (error) {
                     console.log(JSON.stringify(error));
                 }
             } else {
-                createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times });
+                createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(() => {
+                    this.spin = false;
+                    this.hideFormAndShowSuccess();
+                });
             }
         }
     }
