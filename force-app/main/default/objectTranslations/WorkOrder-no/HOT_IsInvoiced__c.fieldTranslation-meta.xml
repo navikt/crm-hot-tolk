@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <help><!-- Settes av faktura-prosessen (RPA). Viser om en arbeidsordre er fakturert eller ikke. --></help>
-    <label>Fakturert?</label>
+    <help>
+        <!-- Settes av faktura-prosessen (RPA). Viser om en oppdragskvitteringer for fakturering er mottatt eller ikke. -->
+    </help>
+    <label>Oppdragskvitteringer mottatt?</label>
     <name>HOT_IsInvoiced__c</name>
 </CustomFieldTranslation>
