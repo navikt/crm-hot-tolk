@@ -203,8 +203,15 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         }
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c, ServiceTerritoryId, 
-                EarliestStartTime, DueDate, SchedStartTime, SchedEndTime
+                SELECT
+                    Id,
+                    HOT_IsReleasedToFreelance__c,
+                    HOT_IsEmployedInterpreter__c,
+                    ServiceTerritoryId,
+                    EarliestStartTime,
+                    DueDate,
+                    SchedStartTime,
+                    SchedEndTime
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
@@ -219,29 +226,24 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
 
         Map<Id, ServiceAppointment> serviceAppointmentsToUpdate = new Map<Id, ServiceAppointment>();
         for (AssignedResource assignedResource : assignedResources) {
-            ServiceAppointment currentServiceAppointment = serviceAppointments.get(assignedResource.ServiceAppointmentId);
+            ServiceAppointment currentServiceAppointment = serviceAppointments.get(
+                assignedResource.ServiceAppointmentId
+            );
             ServiceResource currentServiceResource = serviceResources.get(assignedResource.ServiceResourceId);
             // Set Interpreter/Freelance fields
             if (
                 currentServiceResource.HOT_IsEmployedInterpreter__c !=
                 currentServiceAppointment.HOT_IsEmployedInterpreter__c
             ) {
-                currentServiceAppointment
-                    .HOT_IsEmployedInterpreter__c = currentServiceResource
+                currentServiceAppointment.HOT_IsEmployedInterpreter__c = currentServiceResource
                     .HOT_IsEmployedInterpreter__c;
-                currentServiceAppointment
-                    .HOT_IsReleasedToFreelance__c = currentServiceResource
+                currentServiceAppointment.HOT_IsReleasedToFreelance__c = currentServiceResource
                     .HOT_IsFreelanceInterpreter__c;
                 serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
             }
             // Set ServiceTerritory
-            if (
-                currentServiceAppointment.ServiceTerritoryId !=
-                currentServiceResource.HOT_ServiceTerritory__c
-            ) {
-                currentServiceAppointment
-                    .ServiceTerritoryId = currentServiceResource
-                    .HOT_ServiceTerritory__c;
+            if (currentServiceAppointment.ServiceTerritoryId != currentServiceResource.HOT_ServiceTerritory__c) {
+                currentServiceAppointment.ServiceTerritoryId = currentServiceResource.HOT_ServiceTerritory__c;
                 serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
             }
         }
@@ -312,7 +314,11 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             [
                 SELECT
                     Id,
-                    (SELECT Id, EarliestStartTime, DueDate, HOT_ServiceResource__c FROM HOT_ServiceAppointments__r WHERE Status NOT IN :exludedStatuses)
+                    (
+                        SELECT Id, EarliestStartTime, DueDate, HOT_ServiceResource__c
+                        FROM HOT_ServiceAppointments__r
+                        WHERE Status NOT IN :exludedStatuses
+                    )
                 FROM ServiceResource
                 WHERE Id IN :serviceResourceIds
             ]
