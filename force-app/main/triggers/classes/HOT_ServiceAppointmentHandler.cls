@@ -265,6 +265,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, Id> serviceResourceByServiceAppointmentSchedTimeChanged = new Map<Id, Id>();
         Map<Id, ServiceAppointment> oldServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> newServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
+        Map<Id, ServiceAppointment> serviceAppointmentWithNewAssignedResource = new Map<Id, ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -322,6 +323,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 );
                 newServiceAppointmentsSchedTimeChanged.put(serviceAppointment.Id, serviceAppointment);
             }
+            if (
+                serviceAppointment.Status != 'Scheduled' &&
+                (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
+                serviceAppointment.HOT_ServiceResource__c !=
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c'))
+            ) {
+                serviceAppointmentWithNewAssignedResource.put(serviceAppointment.Id, serviceAppointment);
+            }
         }
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
@@ -338,6 +347,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             deleteRelatedEvents(serviceAppointmentsToRemoveAssignedResource);
+        }
+        if (!serviceAppointmentWithNewAssignedResource.isEmpty()) {
+            HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
+                serviceAppointmentWithNewAssignedResource.keySet()
+            );
         }
         if (serviceAppointmentsOwnerChangedWithAssignedResource.size() > 0) {
             Map<String, Map<Id, Id>> appointmentAndResourceByAssignment = getAppointmentAndResourceByAssignment(

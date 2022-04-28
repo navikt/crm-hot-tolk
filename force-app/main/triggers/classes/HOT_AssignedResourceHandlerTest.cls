@@ -54,7 +54,6 @@ private class HOT_AssignedResourceHandlerTest {
 
     @isTest
     static void createUpdateDeleteAssignedResourceTest() {
-        // code_block
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
             FROM ServiceAppointment
