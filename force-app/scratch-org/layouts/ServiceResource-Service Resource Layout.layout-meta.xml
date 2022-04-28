@@ -141,9 +141,9 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns />
-        <layoutColumns />
-        <layoutColumns />
+        <layoutColumns/>
+        <layoutColumns/>
+        <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
@@ -165,13 +165,6 @@
     <relatedLists>
         <fields>ServiceAppointment</fields>
         <relatedList>ServiceAppointments</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <fields>ServiceAppointment__c</fields>
-        <fields>Status__c</fields>
-        <fields>Comments__c</fields>
-        <relatedList>HOT_InterestedResource__c.ServiceResource__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
