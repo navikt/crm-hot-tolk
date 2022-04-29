@@ -3,20 +3,21 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = getServiceAppointmentsByWorkOrderId(
             workOrderIds
         );
-        List<WorkOrder> workOrders = new List<WorkOrder>();
-        for (Id workOrderId : workOrderIds) {
-            WorkOrder workOrder = new WorkOrder(Id = workOrderId, HOT_Interpreters__c = '');
-            if (serviceAppointmentsByWorkOrderId.get(workOrderId) != null) {
-                for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(workOrderId)) {
+        List<WorkOrder> workOrders = new List<WorkOrder>([SELECT Id, HOT_Interpreters__c, Status FROM WorkOrder WHERE Id IN :workOrderIds]);
+        List<WorkOrder> workOrdersToUpdate = new List<WorkOrder>();
+        for (WorkOrder workOrder : workOrders) {
+            workOrder.HOT_Interpreters__c = '';
+            if (serviceAppointmentsByWorkOrderId.get(workOrder.Id) != null) {
+                for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(workOrder.Id)) {
                     if (workOrder.Status == 'Completed' || workOrder.Status == 'Partially Complete' || workOrder.Status == 'Dispatched') {
-                        appendInterpreterName(workOrder, serviceAppointment);
+                        workOrder = appendInterpreterName(workOrder, serviceAppointment);
                     }
                 }
                 workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.removeEnd(', ');
             }
-            workOrders.add(workOrder);
+            workOrdersToUpdate.add(workOrder);
         }
-        update workOrders;
+        update workOrdersToUpdate;
     }
 
     private static Map<Id, List<ServiceAppointment>> getServiceAppointmentsByWorkOrderId(Set<Id> workOrderIds) {
