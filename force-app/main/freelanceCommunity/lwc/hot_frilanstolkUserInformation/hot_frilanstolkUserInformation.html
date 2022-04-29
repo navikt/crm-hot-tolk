@@ -2,7 +2,7 @@
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
             <h1>Kontaktinformasjon</h1>
-            <section class="viewUserInformation center-content" if:true={viewUserInformation} aria-live>
+            <section class="viewUserInformation center-content" if:true={viewUserInformation} aria-live="polite">
                 <lightning-record-view-form object-api-name="ServiceResource" record-id={recordId} mode="view">
                     <div class="form-wrapper">
                         <div class="form-section">
@@ -38,7 +38,7 @@
                     style="margin-top: 1.5rem"
                 ></c-button>
             </section>
-            <section class="editUserInformation" if:true={editUserInformation} aria-live>
+            <section class="editUserInformation" if:true={editUserInformation} aria-live="polite">
                 <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
                     <div class="form-wrapper">
                         <div class="form-section">
