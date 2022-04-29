@@ -8,7 +8,9 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
             WorkOrder workOrder = new WorkOrder(Id = workOrderId, HOT_Interpreters__c = '');
             if (serviceAppointmentsByWorkOrderId.get(workOrderId) != null) {
                 for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(workOrderId)) {
-                    appendInterpreterName(workOrder, serviceAppointment);
+                    if (workOrder.Status == 'Completed' || workOrder.Status == 'Partially Complete' || workOrder.Status == 'Dispatched') {
+                        appendInterpreterName(workOrder, serviceAppointment);
+                    }
                 }
                 workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.removeEnd(', ');
             }
