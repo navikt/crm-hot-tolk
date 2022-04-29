@@ -375,11 +375,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceAppointment.Status</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.WorkTypeId</field>
         <readable>true</readable>
@@ -537,6 +532,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.HOT_InterpretationStreet__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_InvoiceStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
