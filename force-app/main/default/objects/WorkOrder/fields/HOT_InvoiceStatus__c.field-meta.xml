@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_InvoiceStatus__c</fullName>
+    <externalId>false</externalId>
+    <label>Invoice Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Robot: Avventer kvittering fra tolk</fullName>
+                <default>false</default>
+                <label>Robot: Avventer kvittering fra tolk</label>
+            </value>
+            <value>
+                <fullName>Robot: Avventer fakturering</fullName>
+                <default>false</default>
+                <label>Robot: Avventer fakturering</label>
+            </value>
+            <value>
+                <fullName>Robot: Faktura lagt til OeBS</fullName>
+                <default>false</default>
+                <label>Robot: Faktura lagt til OeBS</label>
+            </value>
+            <value>
+                <fullName>Manuell: Skal ikke faktureres</fullName>
+                <default>false</default>
+                <label>Manuell: Skal ikke faktureres</label>
+            </value>
+            <value>
+                <fullName>Manuell: Avventer fakturering</fullName>
+                <default>false</default>
+                <label>Manuell: Avventer fakturering</label>
+            </value>
+            <value>
+                <fullName>Manuell: Faktura sendt</fullName>
+                <default>false</default>
+                <label>Manuell: Faktura sendt</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
