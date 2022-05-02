@@ -3,8 +3,7 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = getServiceAppointmentsByWorkOrderId(
             workOrderIds
         );
-        List<WorkOrder> workOrders = new List<WorkOrder>([SELECT Id, HOT_Interpreters__c, Status FROM WorkOrder WHERE Id IN :workOrderIds]);
-        List<WorkOrder> workOrdersToUpdate = new List<WorkOrder>();
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Interpreters__c, Status FROM WorkOrder WHERE Id IN :workOrderIds];
         for (WorkOrder workOrder : workOrders) {
             workOrder.HOT_Interpreters__c = '';
             if (serviceAppointmentsByWorkOrderId.get(workOrder.Id) != null) {
@@ -15,9 +14,8 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
                 }
                 workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.removeEnd(', ');
             }
-            workOrdersToUpdate.add(workOrder);
         }
-        update workOrdersToUpdate;
+        update workOrders;
     }
 
     private static Map<Id, List<ServiceAppointment>> getServiceAppointmentsByWorkOrderId(Set<Id> workOrderIds) {
