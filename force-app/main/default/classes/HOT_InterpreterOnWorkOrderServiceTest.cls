@@ -75,7 +75,6 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             FROM WorkOrder
             WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
-        System.debug('WORKORDER STATUS: ' + workOrder.Status);
 
         System.assertEquals(
             resource1.Name,
@@ -186,7 +185,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             WHERE Subject = 'subject'
             LIMIT 1
         ];
-        
+
         ServiceResource resource1 = [
             SELECT Id, Name
             FROM ServiceResource
@@ -203,14 +202,14 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
         workOrder.Status = 'Dispatched';
+        workOrder.HOT_Interpreters__c = resource1.Name;
         update workOrder;
         insert assignedResource1;
 
         serviceAppointment = [
             SELECT Id, HOT_ServiceResource__r.Name, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
-            WHERE Subject = 'subject'
-            LIMIT 1
+            WHERE Id = :serviceAppointment.Id
         ];
 
         System.assertEquals(
@@ -225,7 +224,11 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
 
-        System.assertEquals(resource1.Name, workOrder.HOT_Interpreters__c, 'Could not get name from HOT_Interpreters__c');
+        System.assertEquals(
+            resource1.Name,
+            workOrder.HOT_Interpreters__c,
+            'Could not get name from HOT_Interpreters__c'
+        );
 
         Test.startTest();
         delete assignedResource1;
@@ -322,7 +325,6 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         Test.stopTest();
 
         workOrder = [SELECT Id, HOT_Interpreters__c FROM WorkOrder WHERE Id = :workOrderLineItem.WorkOrderId];
-        System.debug('workOrder: ' + workOrder);
 
         System.assert(
             workOrder.HOT_Interpreters__c.contains(resource1.Name),
@@ -387,7 +389,6 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         ];
         workOrder = [SELECT Id, HOT_Interpreters__c FROM WorkOrder WHERE Id = :workOrderLineItem.WorkOrderId];
 
-        System.debug('workOrder.HOT_Interpreters__c: ' + workOrder.HOT_Interpreters__c);
         System.assert(
             workOrder.HOT_Interpreters__c.contains(resource2.Name),
             'Could not set single HOT_Interpreters__c onAfterUpdate'
