@@ -272,4 +272,10 @@ export default class Hot_requestForm_request extends LightningElement {
             ele.deleteMarkedFiles();
         }
     }
+
+    onUploadComplete() {
+        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        }
+    }
 }
