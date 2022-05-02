@@ -156,9 +156,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         update workOrder;
 
         Test.startTest();
-        insert assignedResource1;
-        insert assignedResource2;
-        insert assignedResource3;
+        insert new List<AssignedResource>{ assignedResource1, assignedResource2, assignedResource3 };
         Test.stopTest();
 
         workOrder = [SELECT Id, HOT_Interpreters__c FROM WorkOrder WHERE Id = :workOrderLineItem.WorkOrderId];
@@ -358,16 +356,10 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             FROM ServiceResource
             WHERE RelatedRecordId != :UserInfo.getUserId()
         ];
-        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
-            serviceAppointment.Id,
-            resource1.Id
-        );
         // Set unique names
         resource1.Name = 'resource1';
         resource2.Name = 'resource2';
         update new List<ServiceResource>{ resource1, resource2 };
-        insert assignedResource;
-        assignedResource.ServiceResourceId = resource2.Id;
 
         WorkOrder workOrder = [
             SELECT Status
@@ -377,17 +369,22 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         workOrder.Status = 'Dispatched';
         update workOrder;
 
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            resource1.Id
+        );
+        insert assignedResource;
+
+        assignedResource.ServiceResourceId = resource2.Id;
         Test.startTest();
         update assignedResource;
         Test.stopTest();
 
-        WorkOrderLineItem workOrderLineItem = [
-            SELECT Id, WorkOrderId
-            FROM WorkOrderLineItem
-            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__c
-            LIMIT 1
+        workOrder = [
+            SELECT Id, HOT_Interpreters__c
+            FROM WorkOrder
+            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
-        workOrder = [SELECT Id, HOT_Interpreters__c FROM WorkOrder WHERE Id = :workOrderLineItem.WorkOrderId];
 
         System.assert(
             workOrder.HOT_Interpreters__c.contains(resource2.Name),
@@ -449,6 +446,14 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         resource3.Name = 'resource3';
         update new List<ServiceResource>{ resource1, resource2, resource3 };
 
+        WorkOrder workOrder = [
+            SELECT Status
+            FROM WorkOrder
+            WHERE Id = :serviceAppointment1.HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
+        workOrder.Status = 'Dispatched';
+        update workOrder;
+
         // Add assigned resources
         AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment1.Id,
@@ -461,15 +466,6 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         insert new List<AssignedResource>{ assignedResource1, assignedResource2 };
 
         assignedResource2.ServiceResourceId = resource3.Id;
-
-        WorkOrder workOrder = [
-            SELECT Status
-            FROM WorkOrder
-            WHERE Id = :serviceAppointment1.HOT_WorkOrderLineItem__r.WorkOrderId
-        ];
-        workOrder.Status = 'Dispatched';
-        update workOrder;
-
         Test.startTest();
         update assignedResource2;
         Test.stopTest();
