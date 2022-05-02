@@ -1776,6 +1776,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>WorkOrder.HOT_Interpreters__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>WorkOrder.HOT_InterpretationPostalCity__c</field>
         <readable>true</readable>
     </fieldPermissions>
