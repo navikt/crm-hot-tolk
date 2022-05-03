@@ -20,7 +20,7 @@ public without sharing class HOT_WorkOrderListController {
                         Status,
                         HOT_ExternalWorkOrderStatus__c,
                         HOT_RequestName__c,
-                        //HOT_Interpreters__c,
+                        HOT_Interpreters__c,
                         HOT_Request__r.Orderer__c,
                         HOT_IsCancelable__c
                     FROM WorkOrder
@@ -53,7 +53,7 @@ public without sharing class HOT_WorkOrderListController {
                     Status,
                     Owner.Name,
                     HOT_ExternalWorkOrderStatus__c,
-                    //HOT_Interpreters__c,
+                    HOT_Interpreters__c,
                     HOT_IsCancelable__c,
                     HOT_InterpretationStreet__c,
                     HOT_InterpretationPostalCity__c,
@@ -125,7 +125,7 @@ public without sharing class HOT_WorkOrderListController {
                 wo.HOT_Request__r.UserName__c = null;
             }
             if (wo.HOT_DelPol_IsHideInterpreterFromUser__c) {
-                //wo.HOT_Interpreters__c = '';
+                wo.HOT_Interpreters__c = '';
             }
             if (wo.HOT_Request__r.Account__c == user.AccountId) {
                 workOrdersAccount.put(wo.Id, wo);
@@ -157,7 +157,7 @@ public without sharing class HOT_WorkOrderListController {
                         Status,
                         HOT_ExternalWorkOrderStatus__c,
                         HOT_RequestName__c,
-                        //HOT_Interpreters__c,
+                        HOT_Interpreters__c,
                         HOT_Request__r.Orderer__c,
                         HOT_IsCancelable__c
                     FROM WorkOrder
