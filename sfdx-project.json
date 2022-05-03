@@ -30,6 +30,18 @@
                     "versionNumber": "0.25.0.LATEST"
                 },
                 {
+                    "package": "crm-journal-utilities",
+                    "versionNumber": "0.14.0.LATEST"
+                },
+                {
+                    "package": "crm-shared-user-notification",
+                    "versionNumber": "0.15.0.LATEST"
+                },
+                {
+                    "package": "crm-shared-flowComponents",
+                    "versionNumber": "0.2.0.LATEST"
+                },
+                {
                     "package": "crm-henvendelse",
                     "versionNumber": "0.55.0.LATEST"
                 }
