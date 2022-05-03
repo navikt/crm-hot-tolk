@@ -1,5 +1,6 @@
 @isTest
 public class HOT_InterpreterOnWorkOrderServiceTest {
+    /*
     @testSetup
     static void setup() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -485,4 +486,5 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             'Could not set multiple HOT_Interpreters__c onAfterUpdate'
         );
     }
+    */
 }

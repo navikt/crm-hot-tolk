@@ -1,4 +1,5 @@
 public without sharing class HOT_InterpreterOnWorkOrderService {
+    /*
     public static void setInterpreterOnWorkOrder(Set<Id> workOrderIds) {
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = getServiceAppointmentsByWorkOrderId(
             workOrderIds
@@ -55,16 +56,12 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
     }
 
     private static WorkOrder appendInterpreterName(WorkOrder workOrder, ServiceAppointment serviceAppointment) {
-        String oldInterpreters = workOrder.HOT_Interpreters__c;
         String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
         workOrder.HOT_Interpreters__c =
             (workOrder.HOT_Interpreters__c == null ? '' : workOrder.HOT_Interpreters__c) +
             serviceAppointment.HOT_ServiceResource__r.Name +
             screenInterpreter +
             ', ';
-        if (workOrder.HOT_Interpreters__c.length() > 255) {
-            workOrder.HOT_Interpreters__c = oldInterpreters + ' ...';
-        }
 
         return workOrder;
     }
@@ -81,4 +78,5 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
         }
         setInterpreterOnWorkOrder(workOrderIds);
     }
+    */
 }
