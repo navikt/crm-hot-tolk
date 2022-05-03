@@ -16,13 +16,13 @@ call sfdx force:package:install --package 04t7U000000Tos2QAC -r -k %3 --wait 10 
 echo "Installerer crm-platform-reporting ver. 0.25"
 call sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k %3 --wait 10 --publishwait 10
 
-echo "crm-journal-utilities"
+echo "crm-journal-utilities ver. 0.14"
 call force:package:install --package 04t7U000000Tn6gQAC -r -k %3 --wait 10 --publishwait 10  
 
-echo "crm-shared-user-notification"
+echo "crm-shared-user-notification ver. 0.15"
 call force:package:install --package 04t2o000000yUGyAAM -r -k %3 --wait 10 --publishwait 10  
 
-echo "crm-shared-flowComponents"
+echo "crm-shared-flowComponents ver. 0.2"
 call force:package:install --package 04t2o000000yUEnAAM -r -k %3 --wait 10 --publishwait 10
 
 echo "Installer crm-henvendelse ver. 0.55"
