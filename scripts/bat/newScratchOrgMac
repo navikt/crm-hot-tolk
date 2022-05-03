@@ -19,13 +19,13 @@ sfdx force:package:install --package 04t7U000000Tos2QAC -r -k $3 --wait 10 --pub
 sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k $3 --wait 10 --publishwait 10
 
 # crm-journal-utilities ver. 0.14
-sfdx force:package:install --package 0Ho2o000000fxXkCAI -r -k $3 --wait 10 --publishwait 10  
+sfdx force:package:install --package 04t7U000000ToUyQAK -r -k $3 --wait 10 --publishwait 10  
 
 # crm-shared-user-notification ver. 0.15
-sfdx force:package:install --package 0Ho2o000000fxY4CAI -r -k $3 --wait 10 --publishwait 10  
+sfdx force:package:install --package 04t7U000000TovBQAS -r -k $3 --wait 10 --publishwait 10  
 
 #crm-shared-flowComponents ver. 0.2
-sfdx force:package:install --package 0Ho2o000000fxYJCAY -r -k $3 --wait 10 --publishwait 10
+sfdx force:package:install --package 04t7U000000ToqLQAS -r -k $3 --wait 10 --publishwait 10
 
 # Installer crm-henvendelse ver. 0.55
 sfdx force:package:install --package 04t7U000000Tp0kQAC -r -k $3 --wait 10 --publishwait 10
