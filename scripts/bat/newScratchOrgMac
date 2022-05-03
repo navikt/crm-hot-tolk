@@ -18,7 +18,7 @@ sfdx force:package:install --package 04t7U000000Tos2QAC -r -k $3 --wait 10 --pub
 # Installer crm-platform-reporting ver. 0.25
 sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k $3 --wait 10 --publishwait 10
 
-# Installer crm-platform-henvendelse ver. 0.55
+# Installer crm-henvendelse ver. 0.55
 sfdx force:package:install --package 04t7U000000Tp0kQAC -r -k $3 --wait 10 --publishwait 10
 
 # Dytt kildekoden til scratch org'en
