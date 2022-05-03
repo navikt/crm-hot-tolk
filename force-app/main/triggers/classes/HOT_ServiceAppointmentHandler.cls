@@ -349,9 +349,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             deleteRelatedEvents(serviceAppointmentsToRemoveAssignedResource);
         }
         if (!serviceAppointmentWithNewAssignedResource.isEmpty()) {
-            HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
-                serviceAppointmentWithNewAssignedResource.keySet()
-            );
+            //HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
+            //    serviceAppointmentWithNewAssignedResource.keySet()
+            //);
         }
         if (serviceAppointmentsOwnerChangedWithAssignedResource.size() > 0) {
             Map<String, Map<Id, Id>> appointmentAndResourceByAssignment = getAppointmentAndResourceByAssignment(
