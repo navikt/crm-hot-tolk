@@ -5,6 +5,7 @@ private with sharing class HOT_KrrErrorBatchTest {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = 'Person test';
         person.INT_KrrIntegrationStatus__c = 'Failed';
+        person.HOT_WorkplaceInterpreter__c = true;
         insert person;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
