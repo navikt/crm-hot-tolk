@@ -8,14 +8,18 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
             workOrder.HOT_Interpreters__c = '';
             if (serviceAppointmentsByWorkOrderId.get(workOrder.Id) != null) {
                 for (ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(workOrder.Id)) {
-                    if (workOrder.Status == 'Completed' || workOrder.Status == 'Partially Complete' || workOrder.Status == 'Dispatched') {
+                    if (
+                        workOrder.Status == 'Completed' ||
+                        workOrder.Status == 'Partially Complete' ||
+                        workOrder.Status == 'Dispatched'
+                    ) {
                         workOrder = appendInterpreterName(workOrder, serviceAppointment);
                     }
                 }
                 workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c.removeEnd(', ');
             }
         }
-        update workOrders;
+        HOT_DatabaseOperations.updateRecords(workOrders);
     }
 
     private static Map<Id, List<ServiceAppointment>> getServiceAppointmentsByWorkOrderId(Set<Id> workOrderIds) {
@@ -51,12 +55,17 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
     }
 
     private static WorkOrder appendInterpreterName(WorkOrder workOrder, ServiceAppointment serviceAppointment) {
+        String oldInterpreters = workOrder.HOT_Interpreters__c;
         String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
         workOrder.HOT_Interpreters__c =
             (workOrder.HOT_Interpreters__c == null ? '' : workOrder.HOT_Interpreters__c) +
             serviceAppointment.HOT_ServiceResource__r.Name +
             screenInterpreter +
             ', ';
+        if (workOrder.HOT_Interpreters__c.length() > 255) {
+            workOrder.HOT_Interpreters__c = oldInterpreters + ' ...';
+        }
+
         return workOrder;
     }
 
