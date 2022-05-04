@@ -28,6 +28,22 @@
                 {
                     "package": "crm-platform-reporting",
                     "versionNumber": "0.25.0.LATEST"
+                },
+                {
+                    "package": "crm-journal-utilities",
+                    "versionNumber": "0.14.0.LATEST"
+                },
+                {
+                    "package": "crm-shared-user-notification",
+                    "versionNumber": "0.15.0.LATEST"
+                },
+                {
+                    "package": "crm-shared-flowComponents",
+                    "versionNumber": "0.2.0.LATEST"
+                },
+                {
+                    "package": "crm-henvendelse",
+                    "versionNumber": "0.55.0.LATEST"
                 }
             ]
         },
@@ -56,6 +72,22 @@
                 {
                     "package": "crm-platform-reporting",
                     "versionNumber": "0.25.0.LATEST"
+                },
+                {
+                    "package": "crm-journal-utilities",
+                    "versionNumber": "0.14.0.LATEST"
+                },
+                {
+                    "package": "crm-shared-user-notification",
+                    "versionNumber": "0.15.0.LATEST"
+                },
+                {
+                    "package": "crm-shared-flowComponents",
+                    "versionNumber": "0.2.0.LATEST"
+                },
+                {
+                    "package": "crm-henvendelse",
+                    "versionNumber": "0.55.0.LATEST"
                 }
             ]
         }
@@ -67,6 +99,11 @@
         "crm-community-base": "0Ho2o0000008OSzCAM",
         "crm-hot-dev": "0Ho2o000000KylqCAC",
         "crm-platform-reporting": "0Ho2o0000008OSfCAM",
-        "crm-platform-integration": "0Ho2o0000008ORrCAM"
+        "crm-platform-integration": "0Ho2o0000008ORrCAM",
+        "crm-journal-utilities": "0Ho2o000000fxXkCAI",
+        "crm-shared-user-notification": "0Ho2o000000fxY4CAI",
+        "crm-shared-flowComponents": "0Ho2o000000fxYJCAY",
+        "crm-henvendelse": "0Ho2o000000fxXfCAI",
+        "crm-hot@1.148.0-3": "04t7U000000TpBiQAK"
     }
 }
