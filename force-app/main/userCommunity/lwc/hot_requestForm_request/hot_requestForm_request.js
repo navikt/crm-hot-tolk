@@ -1,4 +1,5 @@
 import { LightningElement, track, api } from 'lwc';
+import createContentDocumentLinks from '@salesforce/apex/HOT_RequestHandler.createContentDocumentLinks';
 
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
@@ -185,10 +186,6 @@ export default class Hot_requestForm_request extends LightningElement {
         return false;
     }
 
-    getFileConsent(event) {
-        this.fieldValues.IsFileConsent__c = event.detail;
-    }
-
     sameLocation = true;
     handleSameAddressRadiobuttons(event) {
         this.componentValues.sameAddressRadioButtons = event.detail;
@@ -246,36 +243,17 @@ export default class Hot_requestForm_request extends LightningElement {
         this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 
-    uploadFilesDropHandler(event) {
-        event.preventDefault();
-        this.template.querySelector('c-upload-files').dropHandler(event);
-    }
-
-    dragOverHandler(event) {
-        event.preventDefault();
+    // TODO: Show uploaded files list below upload component
+    // TODO: Create checkbox for file consent?
+    uploadedFiles = [];
+    handleUploadFinished(event) {
+        event.detail.files.forEach((file) => {
+            this.uploadedFiles.push(file);
+        });
     }
 
     @api
-    handleFileUpload(recordId) {
-        if (this.hasFiles) {
-            this.template.querySelector('c-upload-files').handleFileUpload(recordId);
-        }
-    }
-    hasFiles = false;
-    checkFileDataLength(event) {
-        this.hasFiles = event.detail > 0;
-    }
-
-    @api deleteMarkedFiles() {
-        let ele = this.template.querySelector('c-record-files-with-sharing');
-        if (ele !== null) {
-            ele.deleteMarkedFiles();
-        }
-    }
-
-    onUploadComplete() {
-        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
-            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
-        }
+    uploadFiles(recordId) {
+        createContentDocumentLinks({files: this.uploadedFiles, recordId: recordId});
     }
 }

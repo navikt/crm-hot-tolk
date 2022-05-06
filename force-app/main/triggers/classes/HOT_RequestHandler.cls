@@ -369,4 +369,34 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             request.InterpretationMethod__c = workTypeIdByDeveloperName.get(request.UserInterpretationMethod__c);
         }
     }
+
+    @AuraEnabled
+    public static void createContentDocumentLinks(List<Map<String, String>> files, String recordId) {
+        if (recordId == null) {
+            return;
+        }
+        List<ContentDocumentLink> contentDocumentLinkList = new List<ContentDocumentLink>();
+        for (Map<String, String> file : files) {
+            if (file.get('contentVersionId') == null || file.get('documentId') == null) {
+                continue;
+            }
+            ContentDocumentLink cdl = new ContentDocumentLink();
+            cdl.contentDocumentId = file.get('documentId');
+            cdl.LinkedEntityId = recordId;
+            cdl.ShareType = 'V'; // V = Viewer, C = Collaborator, I = Inferred
+            cdl.Visibility = 'AllUsers';
+            contentDocumentLinkList.add(cdl);
+        }
+        insertContentDocumentLinks(contentDocumentLinkList);
+    }
+
+    private static void insertContentDocumentLinks(List<ContentDocumentLink> contentDocumentLinkList) {
+        try {
+            insert contentDocumentLinkList;
+        } catch (DMLException e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
 }

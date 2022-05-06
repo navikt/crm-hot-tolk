@@ -185,7 +185,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     uploadFiles() {
-        this.template.querySelector('c-hot_request-form_request').handleFileUpload(this.recordId);
+        this.template.querySelector('c-hot_request-form_request').uploadFiles(this.recordId);
     }
 
     createWorkOrders() {
