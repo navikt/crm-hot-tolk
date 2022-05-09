@@ -1,5 +1,5 @@
 import { LightningElement, track, api } from 'lwc';
-import createContentDocumentLinks from '@salesforce/apex/HOT_RequestHandler.createContentDocumentLinks';
+import createContentDocumentLinks from '@salesforce/apex/HOT_RequestListContoller.createContentDocumentLinks';
 
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
@@ -253,7 +253,9 @@ export default class Hot_requestForm_request extends LightningElement {
 
     @api
     uploadFiles(recordId) {
-        createContentDocumentLinks({files: this.uploadedFiles, recordId: recordId});
+        if (this.uploadFiles.length > 0) {
+            createContentDocumentLinks({files: this.uploadedFiles, recordId: recordId});
+        }
     }
 
     fileButtonLabel;

@@ -13,16 +13,6 @@ public without sharing class HOT_RequestListContoller {
         insertContentDocumentLinks(cdlList);
     }
 
-    private static void insertContentDocumentLinks(List<ContentDocumentLink> cdlList) {
-        try {
-            insert cdlList;
-        } catch (DMLException e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-    }
-
     private static void insertContentVersions(List<ContentVersion> cvList) {
         try {
             insert cvList;
@@ -199,5 +189,29 @@ public without sharing class HOT_RequestListContoller {
             times.add(timeMap);
         }
         return times;
+    }
+
+    @AuraEnabled
+    public static void createContentDocumentLinks(List<Map<String, String>> files, String recordId) {
+        if (recordId == null) {
+            return;
+        }
+        List<ContentDocumentLink> contentDocumentLinkList = new List<ContentDocumentLink>();
+        for (Map<String, String> file : files) {
+            if (file.get('contentVersionId') == null || file.get('documentId') == null) {
+                continue;
+            }
+            ContentDocumentLink cdl = new ContentDocumentLink();
+            cdl.contentDocumentId = file.get('documentId');
+            cdl.LinkedEntityId = recordId;
+            cdl.ShareType = 'V'; // V = Viewer, C = Collaborator, I = Inferred
+            cdl.Visibility = 'AllUsers';
+            contentDocumentLinkList.add(cdl);
+        }
+        insertContentDocumentLinks(contentDocumentLinkList);
+    }
+
+    private static void insertContentDocumentLinks(List<ContentDocumentLink> contentDocumentLinkList) {
+        HOT_DatabaseOperations.insertRecords(contentDocumentLinkList);
     }
 }
