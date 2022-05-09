@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -1140,6 +1140,24 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>showClose</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>singleThread</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentName>crmMessagingMessageComponent</componentName>
+                <identifier>c_crmMessagingMessageComponent1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-106279a9-3252-4af3-9023-d7650414a46c</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
                     <name>body</name>
                     <value>Facet-4ef3a908-254a-4b72-9c7c-a74dd1198f17</value>
                 </componentInstanceProperties>
@@ -1209,6 +1227,20 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>customTab4</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-106279a9-3252-4af3-9023-d7650414a46c</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>Tråd</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tab</componentName>
+                <identifier>flexipage_tab1</identifier>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>
