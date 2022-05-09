@@ -4,10 +4,10 @@
     <allowMembersToFlag>false</allowMembersToFlag>
     <changePasswordTemplate>unfiled$public/CommunityChangePasswordEmailTemplate</changePasswordTemplate>
     <communityRoles/>
-    <disableReputationRecordConversations>true</disableReputationRecordConversations>
+    <disableReputationRecordConversations>false</disableReputationRecordConversations>
     <emailSenderAddress>tolketjenesten@nav.no.temp</emailSenderAddress>
     <emailSenderName>Tolketjenesten</emailSenderName>
-    <enableCustomVFErrorPageOverrides>false</enableCustomVFErrorPageOverrides>
+    <enableCustomVFErrorPageOverrides>true</enableCustomVFErrorPageOverrides>
     <enableDirectMessages>true</enableDirectMessages>
     <enableExperienceBundleBasedSnaOverrideEnabled>true</enableExperienceBundleBasedSnaOverrideEnabled>
     <enableGuestChatter>false</enableGuestChatter>

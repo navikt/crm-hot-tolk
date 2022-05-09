@@ -1,8 +1,8 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:sldsOneColLayout",
-  "id" : "10f3ecb5-0a9b-46e7-a735-11aa674ce61e",
-  "label" : "Home",
+  "id" : "b74aaafd-833c-4ee0-b424-c3526b9b8ac4",
+  "label" : "Thread Detail",
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
@@ -10,46 +10,45 @@
         "navareapicklist" : "Privatperson"
       },
       "componentName" : "c:globalCommunityHeader",
-      "id" : "6aba83c4-87cb-41ca-89a6-0807c9f3c63e",
+      "id" : "79a5c018-20ab-4407-81c7-30e42e95179d",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "cf0d62f9-2201-48c4-81d3-d43b062cca9d",
+    "id" : "56dca452-b869-4789-bdd4-a1137d8fe946",
     "regionName" : "header",
     "type" : "region"
   }, {
     "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_tolketjenestenHovedBanner",
-      "id" : "685600bb-3cfd-4c31-ae0e-4c5ce27ab8c9",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_home",
-      "id" : "d19e8491-9698-4c04-a35c-71721b105397",
+      "componentAttributes" : {
+        "alertopen" : "",
+        "alerttext" : "Dialogen er lukket",
+        "header" : "Dialog",
+        "maxLength" : 0,
+        "recordId" : "{!recordId}"
+      },
+      "componentName" : "c:crmMessagingCommunityThreadViewer",
+      "id" : "b04bbdf4-9df0-4c56-aca6-cf00fcb2fe5d",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "c5a95738-5c4f-4724-8966-c247481dd786",
+    "id" : "77b508ee-11fa-420e-aea9-32cd55f8adb1",
     "regionName" : "content",
     "type" : "region"
   }, {
     "components" : [ {
       "componentAttributes" : {
-        "NAVarea" : "",
+        "NAVarea" : "Privatperson",
         "navareapicklist" : "Privatperson"
       },
       "componentName" : "c:globalCommunityFooter",
-      "id" : "40efbd18-d9a5-4487-8d4e-2e4b9ba0fc67",
+      "id" : "90a74ad2-0f40-4f6a-a96b-1df8aa79bd8b",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "c5b68662-2ff9-4c8d-83fd-9322e73d5a4e",
+    "id" : "36e320ae-6bfd-4cb3-9d16-f9db4f506700",
     "regionName" : "footer",
     "type" : "region"
   }, {
@@ -57,18 +56,18 @@
       "componentAttributes" : {
         "customHeadTags" : "",
         "description" : "",
-        "title" : "Tolketjenesten"
+        "title" : "{!Record._Object}: {!Record._Title}"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "ba1c40fb-b763-4197-8d2b-b2fd9b1273c1",
+      "id" : "3d95a202-2d9d-4c84-89a3-c866967de384",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "986e8bab-b14d-49c2-99bf-bbb11682626a",
+    "id" : "86068f07-c391-44a1-87ab-6adc047c0315",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],
   "themeLayoutType" : "Inner",
   "type" : "view",
-  "viewType" : "home"
+  "viewType" : "detail-a1f"
 }
