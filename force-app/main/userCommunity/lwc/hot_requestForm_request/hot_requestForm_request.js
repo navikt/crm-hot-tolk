@@ -180,8 +180,8 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     validateCheckbox() {
-        if (this.hasFiles) {
-            return this.template.querySelector('c-upload-files').validateCheckbox();
+        if (this.uploadedFiles.length > 0 && !this.checkboxValue) {
+            return this.template.querySelector('[data-id="fileCheckbox"]').validationHandler();
         }
         return false;
     }
@@ -243,17 +243,66 @@ export default class Hot_requestForm_request extends LightningElement {
         this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 
-    // TODO: Show uploaded files list below upload component
-    // TODO: Create checkbox for file consent?
-    uploadedFiles = [];
-    handleUploadFinished(event) {
+    @track uploadedFiles = [];
+    handleFileUpload(event) {
         event.detail.files.forEach((file) => {
             this.uploadedFiles.push(file);
         });
+        this.showOrHideCheckbox();
     }
 
     @api
     uploadFiles(recordId) {
         createContentDocumentLinks({files: this.uploadedFiles, recordId: recordId});
+    }
+
+    fileButtonLabel;
+    onFileFocus(event) {
+        this.fileButtonLabel = '';
+        const index = event.currentTarget.dataset.index;
+        this.fileButtonLabel = 'Slett vedlegg ' + this.uploadedFiles[index].name;
+    }
+
+    onFileDelete(event) {
+        const index = event.currentTarget.dataset.index;
+        if (this.uploadedFiles.length < index) {
+            return;
+        }
+        this.uploadedFiles.splice(index, 1);
+        this.showOrHideCheckbox();
+    }
+
+    checkboxValue = false;
+    handleCheckboxValue(event) {
+        if (this.checkboxValidationVal) {
+            this.checkboxValue = event.detail;
+        }
+    }
+
+    showOrHideCheckbox() {
+        if (this.uploadedFiles.length === 0) {
+            this.clearCheckboxValue();
+            this.template.querySelector('.checkboxClass').classList.add('hidden');
+        } else {
+            this.template.querySelector('.checkboxClass').classList.remove('hidden');
+            this.setCheckboxContent();
+            this.focusCheckbox();
+        }
+    }
+
+    checkboxContentPlural="Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får.";
+    checkboxContentSingle="Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får.";
+    checkboxContent;
+    setCheckboxContent() {
+        this.checkboxContent = this.uploadedFiles.length > 1 ? this.checkboxContentPlural : this.checkboxContentSingle;
+    }
+
+    focusCheckbox() {
+        this.template.querySelector('c-checkbox').focusCheckbox();
+    }
+
+    clearCheckboxValue() {
+        this.template.querySelector('c-checkbox').clearCheckboxValue();
+        this.checkboxValue = false;
     }
 }

@@ -145,9 +145,38 @@
                 aria-label="Last opp fil"
                 name="fileUploader"
                 record-id={recordId}
-                onuploadfinished={handleUploadFinished}
+                onuploadfinished={handleFileUpload}
                 multiple>
             </lightning-file-upload>
+            <div class="checkboxClass hidden">
+                <c-checkbox
+                    data-id="fileCheckbox"
+                    label={checkboxContent}
+                    oncheckboxclick={handleCheckboxValue}
+                    error-text="Du må gi samtykke for å laste opp filer."
+                ></c-checkbox>
+            </div>
+            <div class="filesClass">
+                <ul aria-label="Liste over filer">
+                    <template for:each={uploadedFiles} for:item="file" for:index="index">
+                        <li key={file.name} class="fileAndButton">
+                            <span key={file.name} class="typo-normal content fileNameClass">{file.name}</span>
+                            <button
+                                onfocus={onFileFocus}
+                                aria-label={fileButtonLabel}
+                                data-index={index}
+                                key={file.name}
+                                type="button"
+                                value={file.name}
+                                class="navds-button"
+                                onclick={onFileDelete}
+                            >
+                                Slett
+                            </button>
+                        </li>
+                    </template>
+                </ul>
+            </div>
             <br />
             <c-record-files-with-sharing
                 record-id={recordId}
