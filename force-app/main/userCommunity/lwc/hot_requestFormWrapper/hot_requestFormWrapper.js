@@ -42,7 +42,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     deleteMarkedFiles() {
-        this.template.querySelector('c-hot_request-form_request').deleteMarkedFiles();
+        if (this.template.querySelector('c-hot_request-form_request') !== null) {
+            this.template.querySelector('c-hot_request-form_request').deleteMarkedFiles();
+        }
     }
 
     async handleSubmit(event) {

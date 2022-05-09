@@ -254,8 +254,15 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     uploadFiles(recordId) {
         if (this.uploadFiles.length > 0) {
-            createContentDocumentLinks({files: this.uploadedFiles, recordId: recordId});
+            createContentDocumentLinks({files: this.uploadedFiles, recordId: recordId}).then(() => {
+                this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+            });
         }
+    }
+
+    @api
+    deleteMarkedFiles() {
+        this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
     }
 
     fileButtonLabel;

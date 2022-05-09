@@ -412,7 +412,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 this.showModal();
             });
     }
-    
+
     setFileConsent() {
         let fields = {};
         fields[REQUEST_ID.fieldApiName] = this.request.Id;
@@ -441,10 +441,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     showModal() {
         this.template.querySelector('c-alertdialog').showModal();
-    }
-
-    deleteMarkedFiles() {
-        this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
     }
 
     @track uploadedFiles = [];
@@ -508,7 +504,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     fileButtonLabel;
     onFileFocus(event) {
-        this.fileButtonLabel = ''; // TODO: Need this??
         const index = event.currentTarget.dataset.index;
         this.fileButtonLabel = 'Slett vedlegg ' + this.uploadedFiles[index].name;
     }
