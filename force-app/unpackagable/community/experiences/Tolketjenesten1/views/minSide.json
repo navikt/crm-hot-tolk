@@ -49,7 +49,8 @@
           "type" : "component"
         }, {
           "componentAttributes" : {
-            "NAVarea" : "Privatperson"
+            "NAVarea" : "",
+            "navareapicklist" : "Privatperson"
           },
           "componentName" : "c:globalCommunityFooter",
           "id" : "9b2a7f4f-7efb-425d-8ae5-3062be6d90ea",
