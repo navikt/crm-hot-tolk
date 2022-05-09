@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingOwnerRules>
+        <fullName>HOT_Tolk_Alle_Formidlere</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>HOT Tolk Alle Formidlere</label>
+        <sharedTo>
+            <group>HOT_group_47000_formidler</group>
+        </sharedTo>
+        <sharedFrom>
+            <group>HOT_Tolk_Admin</group>
+        </sharedFrom>
+    </sharingOwnerRules>
+</SharingRules>
