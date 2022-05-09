@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_ErrorDetails__c</fullName>
+    <externalId>false</externalId>
+    <label>Error Details</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Forespørsel kommer inn uten tidspunkt</fullName>
+                <default>false</default>
+                <label>Forespørsel kommer inn uten tidspunkt</label>
+            </value>
+            <value>
+                <fullName>Ikke koblet til bruker</fullName>
+                <default>false</default>
+                <label>Ikke koblet til bruker</label>
+            </value>
+            <value>
+                <fullName>Feil status</fullName>
+                <default>false</default>
+                <label>Feil status</label>
+            </value>
+            <value>
+                <fullName>Automatisk planlegg fungerer ikke</fullName>
+                <default>false</default>
+                <label>Automatisk planlegg fungerer ikke</label>
+            </value>
+            <value>
+                <fullName>Får ikke tildelt ressurs</fullName>
+                <default>false</default>
+                <label>Får ikke tildelt ressurs</label>
+            </value>
+            <value>
+                <fullName>Feil i outlook synken</fullName>
+                <default>false</default>
+                <label>Feil i outlook synken</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

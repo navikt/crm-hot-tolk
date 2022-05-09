@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_ErrorOn__c</fullName>
+    <externalId>false</externalId>
+    <label>Error On</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Forespørsel</fullName>
+                <default>false</default>
+                <label>Forespørsel</label>
+            </value>
+            <value>
+                <fullName>Arbeidsordre</fullName>
+                <default>false</default>
+                <label>Arbeidsordre</label>
+            </value>
+            <value>
+                <fullName>Oppdrag</fullName>
+                <default>false</default>
+                <label>Oppdrag</label>
+            </value>
+            <value>
+                <fullName>Tjenesteressurs</fullName>
+                <default>false</default>
+                <label>Tjenesteressurs</label>
+            </value>
+            <value>
+                <fullName>Interessert ressurs</fullName>
+                <default>false</default>
+                <label>Interessert ressurs</label>
+            </value>
+            <value>
+                <fullName>Ressursplanlegger</fullName>
+                <default>false</default>
+                <label>Ressursplanlegger</label>
+            </value>
+            <value>
+                <fullName>Field Service Mobil App</fullName>
+                <default>false</default>
+                <label>Field Service Mobil App</label>
+            </value>
+            <value>
+                <fullName>Tolkebruker</fullName>
+                <default>false</default>
+                <label>Tolkebruker</label>
+            </value>
+            <value>
+                <fullName>Varsel</fullName>
+                <default>false</default>
+                <label>Varsel</label>
+            </value>
+            <value>
+                <fullName>Outlook</fullName>
+                <default>false</default>
+                <label>Outlook</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
