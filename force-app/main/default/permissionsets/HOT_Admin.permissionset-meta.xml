@@ -50,6 +50,10 @@
     </classAccesses>
     <customPermissions>
         <enabled>true</enabled>
+        <name>HOT_Config</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>HOT_DeleteFiles</name>
     </customPermissions>
     <customPermissions>
