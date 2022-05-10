@@ -1,5 +1,7 @@
 import { LightningElement, track, api } from 'lwc';
 import createContentDocumentLinks from '@salesforce/apex/HOT_RequestListContoller.createContentDocumentLinks';
+import lightningFileUploadStyling from '@salesforce/resourceUrl/lightningFileUploadStyling';
+import { loadStyle } from 'lightning/platformResourceLoader';
 
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
@@ -29,6 +31,7 @@ export default class Hot_requestForm_request extends LightningElement {
     @api isEditOrCopyMode = false;
 
     connectedCallback() {
+        loadStyle(this, lightningFileUploadStyling);
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];

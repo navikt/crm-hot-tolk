@@ -14,6 +14,8 @@ import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import { refreshApex } from '@salesforce/apex';
 import { updateRecord } from 'lightning/uiRecordApi';
+import lightningFileUploadStyling from '@salesforce/resourceUrl/lightningFileUploadStyling';
+import { loadStyle } from 'lightning/platformResourceLoader';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @api header;
@@ -28,6 +30,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.buttonText = this.isMobile ? '+' : 'Ny bestilling';
     }
     connectedCallback() {
+        loadStyle(this, lightningFileUploadStyling);
         this.setMobileButtonText();
         this.filters = defaultFilters();
         this.breadcrumbs = [ 
@@ -464,8 +467,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             });
         }
     }
-
-    // TODO: Catch onUploadError?
+    
     onUploadComplete() {
         let file = this.uploadedFiles.length > 1 ? 'Filene' : 'Filen';
         this.modalContent = file + ' ble lagt til i bestillingen.';
