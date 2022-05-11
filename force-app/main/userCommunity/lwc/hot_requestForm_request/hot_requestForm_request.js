@@ -258,6 +258,7 @@ export default class Hot_requestForm_request extends LightningElement {
     uploadFiles(recordId) {
         if (this.uploadFiles.length > 0) {
             createContentDocumentLinks({files: this.uploadedFiles, recordId: recordId}).then(() => {
+                this.fieldValues.IsFileConsent__c = true;
                 this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
             });
         }
@@ -302,11 +303,11 @@ export default class Hot_requestForm_request extends LightningElement {
         }
     }
 
-    checkboxContentPlural="Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får.";
-    checkboxContentSingle="Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får.";
     checkboxContent;
     setCheckboxContent() {
-        this.checkboxContent = this.uploadedFiles.length > 1 ? this.checkboxContentPlural : this.checkboxContentSingle;
+        this.checkboxContent = this.uploadedFiles.length > 1 ? 
+        "Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får." : 
+        "Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får.";
     }
 
     focusCheckbox() {
