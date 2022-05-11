@@ -545,11 +545,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
     }
 
-    checkboxContentPlural="Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får.";
-    checkboxContentSingle="Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får.";
     checkboxContent;
     setCheckboxContent() {
-        this.checkboxContent = this.uploadedFiles.length > 1 ? this.checkboxContentPlural : this.checkboxContentSingle;
+        this.checkboxContent = this.uploadedFiles.length > 1 ? 
+        "Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får." : 
+        "Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får.";
     }
 
     focusCheckbox() {
