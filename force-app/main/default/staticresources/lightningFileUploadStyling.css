@@ -55,6 +55,15 @@
     border-color: #0056b4 !important;
 }
 
+.slds-button--neutral:disabled {
+    background-color: #a0a0a0 !important;
+    color: #ffffff !important;
+    cursor: not-allowed !important;
+    border-width: 0 !important;
+    box-shadow: none !important;
+    transform: none ;
+}
+
 .slds-text-body--small {
     font-family: 'Source Sans Pro', Arial, sans-serif !important;
     font-size: 16px !important;

@@ -359,7 +359,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.request.ExternalRequestStatus__c !== 'Dekket' &&
             tempEndDate.getTime() > Date.now()
         ) {
-            this.modalContent = 'Er du sikker på at du vil avlyse bestillingen?';
+            this.modalContent = this.isSeries ? 'Er du sikker på at du vil avlyse alle datoer for denne seriebestillingen?' : 'Er du sikker på at du vil avlyse bestillingen?';
             this.noCancelButton = false;
             this.showModal();
         } else {
@@ -516,6 +516,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             return;
         }
         this.uploadedFiles.splice(index, 1);
+        this.hasFiles = this.uploadedFiles.length > 0;
         this.showOrHideCheckbox();
     }
 
