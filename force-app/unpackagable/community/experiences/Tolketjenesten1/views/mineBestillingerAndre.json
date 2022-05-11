@@ -42,9 +42,12 @@
           "renditionMap" : { },
           "type" : "component"
         }, {
-          "componentAttributes" : { },
+          "componentAttributes" : {
+            "header" : "Bestillinger på vegne av andre",
+            "isAccount" : false
+          },
           "componentName" : "c:mineBestillingerWrapper",
-          "id" : "76e3e91c-3c11-4140-add2-2c1d8a26f066",
+          "id" : "f734acdd-6b77-4d2d-ba38-c51130269b21",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"

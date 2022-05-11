@@ -26,10 +26,11 @@
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : {
-            "NAVarea" : "Privatperson"
+            "NAVarea" : "Privatperson",
+            "navareapicklist" : "Privatperson"
           },
           "componentName" : "c:globalCommunityHeader",
-          "id" : "b56fd4ad-1b27-4a71-b272-1950339efc92",
+          "id" : "2e25bb0e-e518-410d-8961-f1147bf963cc",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
@@ -48,7 +49,10 @@
           "renditionMap" : { },
           "type" : "component"
         }, {
-          "componentAttributes" : { },
+          "componentAttributes" : {
+            "NAVarea" : "",
+            "navareapicklist" : "Privatperson"
+          },
           "componentName" : "c:globalCommunityFooter",
           "id" : "8de6a005-08ca-4204-bb3c-838021a3fce4",
           "renderPriority" : "NEUTRAL",

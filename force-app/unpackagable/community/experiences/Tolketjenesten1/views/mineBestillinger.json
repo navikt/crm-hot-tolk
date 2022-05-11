@@ -26,10 +26,11 @@
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : {
-            "NAVarea" : "Privatperson"
+            "NAVarea" : "Privatperson",
+            "navareapicklist" : "Privatperson"
           },
           "componentName" : "c:globalCommunityHeader",
-          "id" : "fd696493-f5b3-4e87-a8a2-0ee847f309c2",
+          "id" : "b10a4531-5927-43bf-b1a4-7e4119c80a48",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
@@ -41,16 +42,22 @@
           "renditionMap" : { },
           "type" : "component"
         }, {
-          "componentAttributes" : { },
+          "componentAttributes" : {
+            "header" : "Mine Bestillinger ",
+            "isAccount" : true
+          },
           "componentName" : "c:mineBestillingerWrapper",
-          "id" : "bfa325f7-d199-465b-b262-4d490c76ff22",
+          "id" : "1eb443f1-02ed-41d7-ad51-96a95cb20e26",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
         }, {
-          "componentAttributes" : { },
+          "componentAttributes" : {
+            "NAVarea" : "Privatperson",
+            "navareapicklist" : "Privatperson"
+          },
           "componentName" : "c:globalCommunityFooter",
-          "id" : "762f5710-d213-4598-abc9-9e6c63b51ed3",
+          "id" : "dcfc48bd-d023-4b3d-9116-9898d4f746fa",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
