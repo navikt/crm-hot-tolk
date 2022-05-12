@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>HOT_Record__c</fullName>
+    <fullName>HOT_RelatedRecordId__c</fullName>
     <externalId>false</externalId>
-    <formula>HYPERLINK(HOT_RelatedRecordId__c, &apos;Record&apos;)</formula>
-    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Record</label>
+    <label>Related Record Id</label>
+    <length>255</length>
     <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
