@@ -124,6 +124,7 @@
         <object>RecordType</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>GetUserInput</name>
         <label>GetUserInput</label>
