@@ -1,5 +1,5 @@
 import { LightningElement, track, api } from 'lwc';
-import createContentDocumentLinks from '@salesforce/apex/HOT_RequestListContoller.createContentDocumentLinks';
+import createContentDocumentLinks from '@salesforce/apex/HOT_RequestListController.createContentDocumentLinks';
 import lightningFileUploadStyling from '@salesforce/resourceUrl/lightningFileUploadStyling';
 import { loadStyle } from 'lightning/platformResourceLoader';
 

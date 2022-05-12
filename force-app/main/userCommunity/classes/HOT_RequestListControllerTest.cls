@@ -67,10 +67,10 @@ private class HOT_RequestListControllerTest {
         Test.stopTest();
 
         System.runAs(user) {
-            List<HOT_Request__c> requests = HOT_RequestListContoller.getRequestList();
+            List<HOT_Request__c> requests = HOT_RequestListController.getRequestList();
             System.assertEquals(3, requests.size(), 'Could not get my requests');
         }
-        List<HOT_Request__c> requests = HOT_RequestListContoller.getRequestList();
+        List<HOT_Request__c> requests = HOT_RequestListController.getRequestList();
         System.assertEquals(null, requests, 'Falsly fetched requests');
     }
 
@@ -83,7 +83,7 @@ private class HOT_RequestListControllerTest {
         request.Status__c = 'Godkjent';
         update request;
 
-        List<Map<String, String>> times = HOT_RequestListContoller.getTimes(new List<String>{ (String) request.Id });
+        List<Map<String, String>> times = HOT_RequestListController.getTimes(new List<String>{ (String) request.Id });
         System.assertEquals(1, times.size(), 'Could not get times');
     }
 
@@ -98,7 +98,7 @@ private class HOT_RequestListControllerTest {
         Map<String, String> files = new Map<String, String>();
         files.put('base64test', 'filename');
 
-        HOT_RequestListContoller.uploadFile(files, request.Id);
+        HOT_RequestListController.uploadFile(files, request.Id);
         List<ContentDocumentLink> file = [
             SELECT ContentDocumentId
             FROM ContentDocumentLink

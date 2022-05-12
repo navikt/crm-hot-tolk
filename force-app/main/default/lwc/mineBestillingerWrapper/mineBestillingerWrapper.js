@@ -1,7 +1,7 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
-import createContentDocumentLinks from '@salesforce/apex/HOT_RequestListContoller.createContentDocumentLinks';
-import deleteUploadedFilesOnCancel from '@salesforce/apex/HOT_RequestListContoller.deleteUploadedFilesOnCancel';
+import createContentDocumentLinks from '@salesforce/apex/HOT_RequestListController.createContentDocumentLinks';
+import deleteUploadedFilesOnCancel from '@salesforce/apex/HOT_RequestListController.deleteUploadedFilesOnCancel';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';

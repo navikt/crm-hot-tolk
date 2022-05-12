@@ -2,7 +2,7 @@ import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
-import deleteUploadedFilesOnCancel from '@salesforce/apex/HOT_RequestListContoller.deleteUploadedFilesOnCancel';
+import deleteUploadedFilesOnCancel from '@salesforce/apex/HOT_RequestListController.deleteUploadedFilesOnCancel';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
