@@ -340,7 +340,12 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Case.HOT_Record__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.HOT_RelatedRecordId__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
