@@ -1,6 +1,7 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
 import createContentDocumentLinks from '@salesforce/apex/HOT_RequestListContoller.createContentDocumentLinks';
+import deleteUploadedFilesOnCancel from '@salesforce/apex/HOT_RequestListContoller.deleteUploadedFilesOnCancel';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -500,8 +501,13 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     showCancelUploadButton = true;
     cancelUploadFiles() {
         this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+        let contentDocumentIds = [];
+        this.uploadedFiles.forEach(file => {
+            contentDocumentIds.push(file['documentId']);
+        });
         this.uploadedFiles = [];
         this.showUploadFilesComponent = false;
+        deleteUploadedFilesOnCancel({contentDocumentIds: contentDocumentIds});
     }
 
     fileButtonLabel;

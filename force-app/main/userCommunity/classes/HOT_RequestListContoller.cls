@@ -214,4 +214,16 @@ public without sharing class HOT_RequestListContoller {
     private static void insertContentDocumentLinks(List<ContentDocumentLink> contentDocumentLinkList) {
         HOT_DatabaseOperations.insertRecords(contentDocumentLinkList);
     }
+
+    @AuraEnabled // Deleting ContentDocument also deletes ContentVersion
+    public static void deleteUploadedFilesOnCancel(List<String> contentDocumentIds) {
+        List<ContentDocument> contentDocumentsToDelete = [SELECT Id FROM ContentDocument WHERE Id IN :contentDocumentIds];
+        List<ContentDocumentLink> contentDocumentLinkToDelete = [SELECT Id FROM ContentDocumentLink WHERE ContentDocumentId IN :contentDocumentIds];
+        if(contentDocumentsToDelete.size() > 0) {
+            HOT_DatabaseOperations.deleteRecords(contentDocumentsToDelete);
+        }
+        if(contentDocumentLinkToDelete.size() > 0) {
+            HOT_DatabaseOperations.deleteRecords(contentDocumentLinkToDelete);
+        }        
+    }
 }

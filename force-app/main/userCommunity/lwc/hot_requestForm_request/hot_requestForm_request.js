@@ -256,7 +256,7 @@ export default class Hot_requestForm_request extends LightningElement {
 
     @api
     uploadFiles(recordId) {
-        if (this.uploadFiles.length > 0) {
+        if (this.uploadedFiles.length > 0) {
             createContentDocumentLinks({files: this.uploadedFiles, recordId: recordId}).then(() => {
                 this.fieldValues.IsFileConsent__c = true;
                 this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
@@ -283,6 +283,17 @@ export default class Hot_requestForm_request extends LightningElement {
         }
         this.uploadedFiles.splice(index, 1);
         this.showOrHideCheckbox();
+    }
+
+    @api
+    getUploadedDocumentIds() {
+        let contentDocumentIds = [];
+        if (this.uploadedFiles.length > 0) {
+            this.uploadedFiles.forEach(file => {
+                contentDocumentIds.push(file['documentId']);
+            });
+        }
+        return contentDocumentIds;
     }
 
     checkboxValue = false;

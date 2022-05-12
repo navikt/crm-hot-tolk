@@ -2,6 +2,7 @@ import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
+import deleteUploadedFilesOnCancel from '@salesforce/apex/HOT_RequestListContoller.deleteUploadedFilesOnCancel';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
@@ -289,6 +290,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         });
     }
     goToPreviousPage() {
+        if (this.template.querySelector('c-hot_request-form_request') !== null) {
+            let contentDocumentIds = this.template.querySelector('c-hot_request-form_request').getUploadedDocumentIds();
+            if (contentDocumentIds.length > 0) {
+                deleteUploadedFilesOnCancel({contentDocumentIds: contentDocumentIds});
+            }
+        }
         window.scrollTo(0, 0);
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
