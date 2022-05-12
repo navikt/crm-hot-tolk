@@ -287,6 +287,7 @@ export default class Hot_requestForm_request extends LightningElement {
 
     @api
     getUploadedDocumentIds() {
+        this.deleteMarkedFiles(); // Also delete files manually deleted with button when pressing cancel
         let contentDocumentIds = [];
         if (this.uploadedFiles.length > 0) {
             this.uploadedFiles.forEach(file => {
