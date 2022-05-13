@@ -61,7 +61,7 @@
     cursor: not-allowed !important;
     border-width: 0 !important;
     box-shadow: none !important;
-    transform: none ;
+    transform: none !important;
 }
 
 .slds-text-body--small {
@@ -77,6 +77,14 @@
 
 .cancel {
     visibility: hidden;
+}
+
+.slds-icon-utility-close {
+    display: none;
+}
+
+.slds-modal__close {
+    display: none;
 }
 
 @media (max-width: 576px) {

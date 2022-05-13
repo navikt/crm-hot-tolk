@@ -53,7 +53,10 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
-        this.deleteMarkedFiles();
+        if (this.isEditOrCopyMode) {
+            this.deleteMarkedFiles();
+        }
+        this.deleteUploadedAndThenDeletedFilesOnSave();
         let hasErrors = this.handleValidation();
         if (!hasErrors) {
             this.promptOverlap().then((overlapOk) => {
@@ -287,13 +290,26 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         });
     }
-    goToPreviousPage() {
+
+    deleteUploadedAndThenDeletedFilesOnSave() {
         if (this.template.querySelector('c-hot_request-form_request') !== null) {
-            let contentDocumentIds = this.template.querySelector('c-hot_request-form_request').getUploadedDocumentIds();
+            let contentDocumentIds = this.template.querySelector('c-hot_request-form_request').getUploadedAndThenDeletedDocumentIdsOnSave();
             if (contentDocumentIds.length > 0) {
                 deleteUploadedFilesOnCancel({contentDocumentIds: contentDocumentIds});
             }
         }
+    }
+    deleteUploadedFilesOnCancel() {
+        if (this.template.querySelector('c-hot_request-form_request') !== null) {
+            let contentDocumentIds = this.template.querySelector('c-hot_request-form_request').getUploadedDocumentIdsOnCancel();
+            if (contentDocumentIds.length > 0) {
+                deleteUploadedFilesOnCancel({contentDocumentIds: contentDocumentIds});
+            }
+        }
+    }
+
+    goToPreviousPage() {
+        this.deleteUploadedFilesOnCancel();
         window.scrollTo(0, 0);
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',

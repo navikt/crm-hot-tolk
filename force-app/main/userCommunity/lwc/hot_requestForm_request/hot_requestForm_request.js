@@ -276,25 +276,31 @@ export default class Hot_requestForm_request extends LightningElement {
         this.fileButtonLabel = 'Slett vedlegg ' + this.uploadedFiles[index].name;
     }
 
+    filesToDelete = [];
     onFileDelete(event) {
         const index = event.currentTarget.dataset.index;
         if (this.uploadedFiles.length < index) {
             return;
         }
+        this.filesToDelete.push(this.uploadedFiles[index].documentId);
         this.uploadedFiles.splice(index, 1);
         this.showOrHideCheckbox();
     }
 
     @api
-    getUploadedDocumentIds() {
-        this.deleteMarkedFiles(); // Also delete files manually deleted with button when pressing cancel
-        let contentDocumentIds = [];
+    getUploadedDocumentIdsOnCancel() {
+        let contentDocumentIdsToDelete = [];
         if (this.uploadedFiles.length > 0) {
             this.uploadedFiles.forEach(file => {
-                contentDocumentIds.push(file['documentId']);
+                contentDocumentIdsToDelete.push(file['documentId']);
             });
         }
-        return contentDocumentIds;
+        return contentDocumentIdsToDelete;
+    }
+
+    @api
+    getUploadedAndThenDeletedDocumentIdsOnSave() {
+        return this.filesToDelete;
     }
 
     checkboxValue = false;
