@@ -295,7 +295,7 @@ export default class Hot_requestForm_request extends LightningElement {
                 contentDocumentIdsToDelete.push(file['documentId']);
             });
         }
-        return contentDocumentIdsToDelete;
+        return contentDocumentIdsToDelete.concat(this.filesToDelete);
     }
 
     @api
