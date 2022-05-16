@@ -6,7 +6,11 @@
 &amp;&amp;
 PRIORVALUE(AccountId) != null
 &amp;&amp;
+!ISPICKVAL(HOT_Request__r.Status__c, &quot;Annullert&quot;)
+&amp;&amp;
+!ISPICKVAL(HOT_Request__r.Status__c, &quot;Åpen&quot;)
+&amp;&amp;
 !$Permission.Validation_Override</errorConditionFormula>
     <errorDisplayField>AccountId</errorDisplayField>
-    <errorMessage>Bruker kan ikke endres.</errorMessage>
+    <errorMessage>Konto kan ikke endres når status på forespørsel er &quot;Godkjent&quot;.</errorMessage>
 </ValidationRule>
