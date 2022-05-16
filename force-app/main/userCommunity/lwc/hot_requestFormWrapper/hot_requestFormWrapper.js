@@ -2,6 +2,7 @@ import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
+import deleteUploadedFilesOnCancel from '@salesforce/apex/HOT_RequestListController.deleteUploadedFilesOnCancel';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
@@ -42,7 +43,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     deleteMarkedFiles() {
-        this.template.querySelector('c-hot_request-form_request').deleteMarkedFiles();
+        if (this.template.querySelector('c-hot_request-form_request') !== null) {
+            this.template.querySelector('c-hot_request-form_request').deleteMarkedFiles();
+        }
     }
 
     async handleSubmit(event) {
@@ -53,6 +56,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         if (this.isEditOrCopyMode) {
             this.deleteMarkedFiles();
         }
+        this.deleteUploadedAndThenDeletedFilesOnSave();
         let hasErrors = this.handleValidation();
         if (!hasErrors) {
             this.promptOverlap().then((overlapOk) => {
@@ -185,7 +189,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     uploadFiles() {
-        this.template.querySelector('c-hot_request-form_request').handleFileUpload(this.recordId);
+        this.template.querySelector('c-hot_request-form_request').uploadFiles(this.recordId);
     }
 
     createWorkOrders() {
@@ -286,7 +290,26 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         });
     }
+
+    deleteUploadedAndThenDeletedFilesOnSave() {
+        if (this.template.querySelector('c-hot_request-form_request') !== null) {
+            let contentDocumentIds = this.template.querySelector('c-hot_request-form_request').getUploadedAndThenDeletedDocumentIdsOnSave();
+            if (contentDocumentIds.length > 0) {
+                deleteUploadedFilesOnCancel({contentDocumentIds: contentDocumentIds});
+            }
+        }
+    }
+    deleteUploadedFilesOnCancel() {
+        if (this.template.querySelector('c-hot_request-form_request') !== null) {
+            let contentDocumentIds = this.template.querySelector('c-hot_request-form_request').getUploadedDocumentIdsOnCancel();
+            if (contentDocumentIds.length > 0) {
+                deleteUploadedFilesOnCancel({contentDocumentIds: contentDocumentIds});
+            }
+        }
+    }
+
     goToPreviousPage() {
+        this.deleteUploadedFilesOnCancel();
         window.scrollTo(0, 0);
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
