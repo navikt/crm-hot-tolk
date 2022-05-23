@@ -1,7 +1,4 @@
 import { LightningElement, track, api } from 'lwc';
-import createContentDocumentLinks from '@salesforce/apex/HOT_RequestListController.createContentDocumentLinks';
-import lightningFileUploadStyling from '@salesforce/resourceUrl/lightningFileUploadStyling';
-import { loadStyle } from 'lightning/platformResourceLoader';
 
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
@@ -31,7 +28,6 @@ export default class Hot_requestForm_request extends LightningElement {
     @api isEditOrCopyMode = false;
 
     connectedCallback() {
-        loadStyle(this, lightningFileUploadStyling);
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];
@@ -183,10 +179,14 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     validateCheckbox() {
-        if (this.uploadedFiles.length > 0 && !this.checkboxValue) {
-            return this.template.querySelector('[data-id="fileCheckbox"]').validationHandler();
+        if (this.hasFiles) {
+            return this.template.querySelector('c-upload-files').validateCheckbox();
         }
         return false;
+    }
+
+    getFileConsent(event) {
+        this.fieldValues.IsFileConsent__c = event.detail;
     }
 
     sameLocation = true;
@@ -246,94 +246,36 @@ export default class Hot_requestForm_request extends LightningElement {
         this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 
-    @track uploadedFiles = [];
-    handleFileUpload(event) {
-        event.detail.files.forEach((file) => {
-            this.uploadedFiles.push(file);
-        });
-        this.showOrHideCheckbox();
+    uploadFilesDropHandler(event) {
+        event.preventDefault();
+        this.template.querySelector('c-upload-files').dropHandler(event);
+    }
+
+    dragOverHandler(event) {
+        event.preventDefault();
     }
 
     @api
-    uploadFiles(recordId) {
-        if (this.uploadedFiles.length > 0) {
-            createContentDocumentLinks({files: this.uploadedFiles, recordId: recordId}).then(() => {
-                this.fieldValues.IsFileConsent__c = true;
-                this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
-            });
+    handleFileUpload(recordId) {
+        if (this.hasFiles) {
+            this.template.querySelector('c-upload-files').handleFileUpload(recordId);
+        }
+    }
+    hasFiles = false;
+    checkFileDataLength(event) {
+        this.hasFiles = event.detail > 0;
+    }
+
+    @api deleteMarkedFiles() {
+        let ele = this.template.querySelector('c-record-files-with-sharing');
+        if (ele !== null) {
+            ele.deleteMarkedFiles();
         }
     }
 
-    @api
-    deleteMarkedFiles() {
-        this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
-    }
-
-    fileButtonLabel;
-    onFileFocus(event) {
-        this.fileButtonLabel = '';
-        const index = event.currentTarget.dataset.index;
-        this.fileButtonLabel = 'Slett vedlegg ' + this.uploadedFiles[index].name;
-    }
-
-    filesToDelete = [];
-    onFileDelete(event) {
-        const index = event.currentTarget.dataset.index;
-        if (this.uploadedFiles.length < index) {
-            return;
+    onUploadComplete() {
+        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
         }
-        this.filesToDelete.push(this.uploadedFiles[index].documentId);
-        this.uploadedFiles.splice(index, 1);
-        this.showOrHideCheckbox();
-    }
-
-    @api
-    getUploadedDocumentIdsOnCancel() {
-        let contentDocumentIdsToDelete = [];
-        if (this.uploadedFiles.length > 0) {
-            this.uploadedFiles.forEach(file => {
-                contentDocumentIdsToDelete.push(file['documentId']);
-            });
-        }
-        return contentDocumentIdsToDelete.concat(this.filesToDelete);
-    }
-
-    @api
-    getUploadedAndThenDeletedDocumentIdsOnSave() {
-        return this.filesToDelete;
-    }
-
-    checkboxValue = false;
-    handleCheckboxValue(event) {
-        if (this.checkboxValidationVal) {
-            this.checkboxValue = event.detail;
-        }
-    }
-
-    showOrHideCheckbox() {
-        if (this.uploadedFiles.length === 0) {
-            this.clearCheckboxValue();
-            this.template.querySelector('.checkboxClass').classList.add('hidden');
-        } else {
-            this.template.querySelector('.checkboxClass').classList.remove('hidden');
-            this.setCheckboxContent();
-            this.focusCheckbox();
-        }
-    }
-
-    checkboxContent;
-    setCheckboxContent() {
-        this.checkboxContent = this.uploadedFiles.length > 1 ? 
-        "Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får." : 
-        "Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får.";
-    }
-
-    focusCheckbox() {
-        this.template.querySelector('c-checkbox').focusCheckbox();
-    }
-
-    clearCheckboxValue() {
-        this.template.querySelector('c-checkbox').clearCheckboxValue();
-        this.checkboxValue = false;
     }
 }

@@ -1,11 +1,11 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
-import getRequestList from '@salesforce/apex/HOT_RequestListController.getRequestList';
+import getRequestList from '@salesforce/apex/HOT_RequestListContoller.getRequestList';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import getOrdererDetails from '@salesforce/apex/HOT_Utility.getOrdererDetails';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
-import getTimes from '@salesforce/apex/HOT_RequestListController.getTimes';
+import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimes';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
 import { validate } from 'c/validationController';

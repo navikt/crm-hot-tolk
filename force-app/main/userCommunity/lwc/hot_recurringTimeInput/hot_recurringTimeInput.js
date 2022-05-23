@@ -1,5 +1,5 @@
 import { LightningElement, track, wire, api } from 'lwc';
-import getTimes from '@salesforce/apex/HOT_RequestListController.getTimesNew';
+import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimesNew';
 import {
     requireInput,
     dateInPast,
