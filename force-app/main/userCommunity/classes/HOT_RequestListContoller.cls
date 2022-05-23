@@ -1,4 +1,4 @@
-public without sharing class HOT_RequestListController {
+public without sharing class HOT_RequestListContoller {
     @AuraEnabled
     public static void uploadFile(Map<String, String> files, String recordId) {
         List<ContentVersion> cvList = new List<ContentVersion>();
@@ -11,6 +11,16 @@ public without sharing class HOT_RequestListController {
             cdlList.add(createContentDocumentLink(cv.Id, recordId));
         }
         insertContentDocumentLinks(cdlList);
+    }
+
+    private static void insertContentDocumentLinks(List<ContentDocumentLink> cdlList) {
+        try {
+            insert cdlList;
+        } catch (DMLException e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     private static void insertContentVersions(List<ContentVersion> cvList) {
@@ -189,41 +199,5 @@ public without sharing class HOT_RequestListController {
             times.add(timeMap);
         }
         return times;
-    }
-
-    @AuraEnabled
-    public static void createContentDocumentLinks(List<Map<String, String>> files, String recordId) {
-        if (recordId == null) {
-            return;
-        }
-        List<ContentDocumentLink> contentDocumentLinkList = new List<ContentDocumentLink>();
-        for (Map<String, String> file : files) {
-            if (file.get('contentVersionId') == null || file.get('documentId') == null) {
-                continue;
-            }
-            ContentDocumentLink cdl = new ContentDocumentLink();
-            cdl.contentDocumentId = file.get('documentId');
-            cdl.LinkedEntityId = recordId;
-            cdl.ShareType = 'V'; // V = Viewer, C = Collaborator, I = Inferred
-            cdl.Visibility = 'AllUsers';
-            contentDocumentLinkList.add(cdl);
-        }
-        insertContentDocumentLinks(contentDocumentLinkList);
-    }
-
-    private static void insertContentDocumentLinks(List<ContentDocumentLink> contentDocumentLinkList) {
-        HOT_DatabaseOperations.insertRecords(contentDocumentLinkList);
-    }
-
-    @AuraEnabled // Deleting ContentDocument also deletes ContentVersion
-    public static void deleteUploadedFilesOnCancel(List<String> contentDocumentIds) {
-        List<ContentDocument> contentDocumentsToDelete = [SELECT Id FROM ContentDocument WHERE Id IN :contentDocumentIds];
-        List<ContentDocumentLink> contentDocumentLinkToDelete = [SELECT Id FROM ContentDocumentLink WHERE ContentDocumentId IN :contentDocumentIds];
-        if(contentDocumentsToDelete.size() > 0) {
-            HOT_DatabaseOperations.deleteRecords(contentDocumentsToDelete);
-        }
-        if(contentDocumentLinkToDelete.size() > 0) {
-            HOT_DatabaseOperations.deleteRecords(contentDocumentLinkToDelete);
-        }        
     }
 }
