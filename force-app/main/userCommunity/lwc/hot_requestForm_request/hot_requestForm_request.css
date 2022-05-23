@@ -269,3 +269,37 @@ section {
     font-family: Source Sans Pro, Arial, sans-serif;
     color: #262626;
 }
+
+.filesClass {
+    padding: 0.25em 0 0 0;
+}
+
+.fileAndButton {
+    width: fit-content;
+    height: fit-content;
+}
+
+.fileNameClass {
+    margin: 0 0.5em 0 0;
+}
+
+.navds-button {
+    cursor: pointer;
+    color: #ba3a26;
+    text-align: center;
+    text-decoration: none;
+    align-items: center;
+    padding: 0;
+    font-weight: bold;
+    font-size: 1rem;
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.navds-button:hover {
+    opacity: 0.7;
+}
+
+.hidden {
+    display: none;
+}
