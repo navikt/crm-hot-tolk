@@ -1,7 +1,5 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
-import createContentDocumentLinks from '@salesforce/apex/HOT_RequestListController.createContentDocumentLinks';
-import deleteUploadedFilesOnCancel from '@salesforce/apex/HOT_RequestListController.deleteUploadedFilesOnCancel';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -15,8 +13,6 @@ import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import { refreshApex } from '@salesforce/apex';
 import { updateRecord } from 'lightning/uiRecordApi';
-import lightningFileUploadStyling from '@salesforce/resourceUrl/lightningFileUploadStyling';
-import { loadStyle } from 'lightning/platformResourceLoader';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @api header;
@@ -31,7 +27,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.buttonText = this.isMobile ? '+' : 'Ny bestilling';
     }
     connectedCallback() {
-        loadStyle(this, lightningFileUploadStyling);
         this.setMobileButtonText();
         this.filters = defaultFilters();
         this.breadcrumbs = [ 
@@ -360,7 +355,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.request.ExternalRequestStatus__c !== 'Dekket' &&
             tempEndDate.getTime() > Date.now()
         ) {
-            this.modalContent = this.isSeries ? 'Er du sikker på at du vil avlyse alle datoer for denne seriebestillingen?' : 'Er du sikker på at du vil avlyse bestillingen?';
+            this.modalContent = 'Er du sikker på at du vil avlyse bestillingen?';
             this.noCancelButton = false;
             this.showModal();
         } else {
@@ -417,6 +412,86 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             });
     }
 
+    showUploadFilesComponent = false;
+    isAddFiles = false;
+    addFiles() {
+        this.showCancelUploadButton = true;
+        this.checkboxValue = false;
+        this.isAddFiles = true;
+        this.showUploadFilesComponent = true;
+        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        detailPage.classList.remove('hidden');
+        detailPage.focus();
+    }
+
+    showCancelUploadButton = true;
+    cancelUploadFiles() {
+        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+        this.template.querySelector('c-upload-files').clearFileData();
+        this.showUploadFilesComponent = false;
+    }
+
+    handleFileUpload() {
+        if (this.hasFiles) {
+            this.template.querySelector('c-upload-files').handleFileUpload(this.request.Id);
+        }
+    }
+
+    clearFileData() {
+        this.template.querySelector('c-upload-files').clearFileData();
+    }
+
+    hasFiles = false;
+    fileLength;
+    checkFileDataLength(event) {
+        this.fileLength = event.detail;
+        this.hasFiles = event.detail > 0;
+    }
+
+    onUploadComplete() {
+        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        }
+        this.template.querySelector('.loader').classList.add('hidden');
+        this.modalHeader = 'Suksess!';
+        // Only show pop-up modal if in add files window
+        if (this.isAddFiles) {
+            this.showModal();
+        }
+        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+    }
+
+    onUploadError(err) {
+        this.template.querySelector('.loader').classList.add('hidden');
+        this.modalHeader = 'Noe gikk galt';
+        this.modalContent = 'Kunne ikke laste opp fil(er). Feilmelding: ' + err;
+        this.showModal();
+        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+    }
+
+    validateCheckbox() {
+        this.template.querySelector('c-upload-files').validateCheckbox();
+    }
+
+    checkboxValue = false;
+    getCheckboxValue(event) {
+        this.checkboxValue = event.detail;
+    }
+
+    uploadFilesOnSave() {
+        let file = this.fileLength > 1 ? 'Filene' : 'Filen';
+        this.modalContent = file + ' ble lagt til i bestillingen.';
+        this.validateCheckbox();
+        // Show spinner
+        if (this.checkboxValue) {
+            this.showCancelUploadButton = false;
+            this.template.querySelector('.loader').classList.remove('hidden');
+            this.showUploadFilesComponent = false;
+        }
+        this.handleFileUpload();
+        this.setFileConsent();
+    }
+
     setFileConsent() {
         let fields = {};
         fields[REQUEST_ID.fieldApiName] = this.request.Id;
@@ -447,123 +522,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.template.querySelector('c-alertdialog').showModal();
     }
 
-    @track uploadedFiles = [];
-    hasFiles = false;
-    handleFileUpload(event) {
-        event.detail.files.forEach((file) => {
-            this.uploadedFiles.push(file);
-        });
-        this.hasFiles = this.uploadedFiles.length > 0;
-        this.showOrHideCheckbox();
-    }
-
-    uploadFiles() {
-        if (this.uploadedFiles.length > 0 && !this.validateCheckbox()) {
-            this.showCancelUploadButton = false; // Hide "Cancel" button while uploading
-            this.hasFiles = false; // Hide "Save" button while uploading
-            this.template.querySelector('.loader').classList.remove('hidden'); // Show spinner
-            this.showUploadFilesComponent = false;
-            createContentDocumentLinks({files: this.uploadedFiles, recordId: this.request.Id}).then(() => {
-                this.onUploadComplete();
-            });
-        }
-    }
-    
-    onUploadComplete() {
-        let file = this.uploadedFiles.length > 1 ? 'Filene' : 'Filen';
-        this.modalContent = file + ' ble lagt til i bestillingen.';
-        this.modalHeader = 'Suksess!';
-        this.template.querySelector('.loader').classList.add('hidden'); // Hide spinner
-        this.setFileConsent();
-        if (this.isAddFiles) {
-            this.showModal();
-        }
-        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
-            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
-        }
-        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-    }
-
-    showUploadFilesComponent = false;
-    isAddFiles = false;
-    addFiles() {
-        this.hasFiles = false;
-        this.uploadedFiles = [];
-        this.showCancelUploadButton = true;
-        this.checkboxValue = false;
-        this.isAddFiles = true;
-        this.showUploadFilesComponent = true;
-        let detailPage = this.template.querySelector('.ReactModal__Overlay');
-        detailPage.classList.remove('hidden');
-        detailPage.focus();
-    }
-
-    showCancelUploadButton = true;
-    cancelUploadFiles() {
-        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-        let contentDocumentIds = [];
-        this.uploadedFiles.forEach(file => {
-            contentDocumentIds.push(file['documentId']);
-        });
-        this.uploadedFiles = [];
-        this.showUploadFilesComponent = false;
-        deleteUploadedFilesOnCancel({contentDocumentIds: contentDocumentIds});
-    }
-
-    fileButtonLabel;
-    onFileFocus(event) {
-        const index = event.currentTarget.dataset.index;
-        this.fileButtonLabel = 'Slett vedlegg ' + this.uploadedFiles[index].name;
-    }
-
-    onFileDelete(event) {
-        const index = event.currentTarget.dataset.index;
-        if (this.uploadedFiles.length < index) {
-            return;
-        }
-        this.uploadedFiles.splice(index, 1);
-        this.hasFiles = this.uploadedFiles.length > 0;
-        this.showOrHideCheckbox();
-    }
-
-    checkboxValue = false;
-    handleCheckboxValue(event) {
-        if (this.checkboxValidationVal) {
-            this.checkboxValue = event.detail;
-        }
-    }
-
-    validateCheckbox() {
-        if (this.uploadedFiles.length > 0 && !this.checkboxValue) {
-            return this.template.querySelector('[data-id="fileCheckbox"]').validationHandler();
-        }
-        return false;
-    }
-
-    showOrHideCheckbox() {
-        if (this.uploadedFiles.length === 0) {
-            this.clearCheckboxValue();
-            this.template.querySelector('.checkboxClass').classList.add('hidden');
-        } else {
-            this.template.querySelector('.checkboxClass').classList.remove('hidden');
-            this.setCheckboxContent();
-            this.focusCheckbox();
-        }
-    }
-
-    checkboxContent;
-    setCheckboxContent() {
-        this.checkboxContent = this.uploadedFiles.length > 1 ? 
-        "Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får." : 
-        "Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får.";
-    }
-
-    focusCheckbox() {
-        this.template.querySelector('c-checkbox').focusCheckbox();
-    }
-
-    clearCheckboxValue() {
-        this.template.querySelector('c-checkbox').clearCheckboxValue();
-        this.checkboxValue = false;
+    deleteMarkedFiles() {
+        this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
     }
 }
