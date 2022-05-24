@@ -375,10 +375,6 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Formidler</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Phone</fullName>
             <default>false</default>
         </values>
@@ -427,10 +423,6 @@
     </picklistValues>
     <picklistValues>
         <picklist>Type</picklist>
-        <values>
-            <fullName>Internal Case</fullName>
-            <default>false</default>
-        </values>
         <values>
             <fullName>Sample Cases</fullName>
             <default>false</default>
