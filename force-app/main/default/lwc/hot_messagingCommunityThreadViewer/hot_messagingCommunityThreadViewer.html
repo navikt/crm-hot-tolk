@@ -1,0 +1,79 @@
+<template>
+    <div class="decorator-wrapper">
+        <div class="header" style="text-align: center">
+            <h1 class="typo-sidetittel">{name}</h1>
+            <slot name="subheader"></slot>
+        </div>
+        <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
+        </c-community-error-summary>
+        <div class="contentholder">
+            <template for:each={messages} for:item="message">
+                <c-crm-messaging-Community-Message-Container
+                    tabindex="0"
+                    message={message}
+                    user-contact-id={userContactId}
+                    key={message.Id}
+                ></c-crm-messaging-Community-Message-Container>
+            </template>
+        </div>
+        <div>
+            <template if:false={isclosed}>
+                <lightning-layout horizontal-align="center">
+                    <lightning-layout-item
+                        size="12"
+                        class="slds-var-p-top_medium slds-var-p-horizontal_medium largePadding"
+                    >
+                        <lightning-messages></lightning-messages>
+                        <lightning-input-field
+                            class="msgText slds-hidden"
+                            field-name="CRM_Message_Text__c"
+                        ></lightning-input-field>
+                        <div class="body-wrapper" style="">
+                            <div class="example__inner">
+                                <div class="">
+                                    <c-community-textarea
+                                        max-length={maxLength}
+                                        class="inputTextbox slds-var-m-bottom_medium"
+                                        ontextchanged={handleTextChange}
+                                    ></c-community-textarea>
+                                    <button
+                                        disabled={buttonisdisabled}
+                                        type="submit"
+                                        class="knapp knapp--hoved .slds-float_right"
+                                        name="submit"
+                                        label="Send"
+                                        onclick={handleSendButtonClick}
+                                    >
+                                        Send
+                                    </button>
+                                </div>
+                            </div>
+                            <template if:true={showopenwarning}>
+                                <c-crm-community-alert-stripe
+                                    class="alertbox closebox"
+                                    type="info"
+                                    alerttext={alertopen}
+                                ></c-crm-community-alert-stripe>
+                            </template>
+                        </div>
+
+                        <lightning-input-field
+                            field-name="CRM_From_Contact__c"
+                            value={userContactId}
+                            class="slds-hidden"
+                        ></lightning-input-field>
+                        <lightning-input-field field-name="CRM_Thread__c" value={recordId} class="slds-hidden">
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </div>
+        <template if:true={isclosed}>
+            <div class="infocontainer slds-var-p-top_medium slds-var-p-horizontal_medium largePadding">
+                <c-crm-community-alert-stripe
+                    class="alertbox"
+                    type="info"
+                    alerttext={alerttext}
+                ></c-crm-community-alert-stripe></div
+        ></template></div
+></template>
