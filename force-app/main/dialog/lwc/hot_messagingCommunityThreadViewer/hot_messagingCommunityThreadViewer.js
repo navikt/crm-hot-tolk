@@ -1,5 +1,5 @@
 import { LightningElement, wire, api, track } from 'lwc';
-import getmessages from '@salesforce/apex/CRM_MessageHelper.getMessagesFromThread';
+import getmessages from '@salesforce/apex/HOT_ExternalDialogueController.getMessagesFromThread';
 import markAsRead from '@salesforce/apex/CRM_MessageHelper.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/CRM_MessageHelper.getUserContactId';

@@ -8,12 +8,12 @@
         </c-community-error-summary>
         <div class="contentholder">
             <template for:each={messages} for:item="message">
-                <c-crm-messaging-Community-Message-Container
+                <c-hot_messaging-Community-Message-Container
                     tabindex="0"
                     message={message}
                     user-contact-id={userContactId}
                     key={message.Id}
-                ></c-crm-messaging-Community-Message-Container>
+                ></c-hot_messaging-Community-Message-Container>
             </template>
         </div>
         <div>
