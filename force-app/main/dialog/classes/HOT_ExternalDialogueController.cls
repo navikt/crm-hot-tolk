@@ -1,5 +1,4 @@
 public with sharing class HOT_ExternalDialogueController {
-    
     @AuraEnabled(cacheable=true)
     public static List<Message__c> getMessagesFromThread(Id threadId) {
         try {
@@ -29,4 +28,5 @@ public with sharing class HOT_ExternalDialogueController {
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
+    }
 }
