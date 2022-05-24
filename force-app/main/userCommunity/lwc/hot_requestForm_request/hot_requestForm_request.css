@@ -269,3 +269,7 @@ section {
     font-family: Source Sans Pro, Arial, sans-serif;
     color: #262626;
 }
+
+.header:focus {
+    outline: none;
+}
