@@ -1,7 +1,7 @@
 public with sharing class HOT_ThreadListController {
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getMyThreads() {
-        // TODO: Select read by nav field on message
+        // TODO: Roll-up field on Thread to check if there are any Message children with CRM_Read_By_NAV__C == true?
         List<Thread__c> threads = [
             SELECT
                 Id,
