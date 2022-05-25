@@ -1,0 +1,14 @@
+.main-content {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+@media (max-width: 576px) {
+    .slds-button_brand,
+    .slds-button--brand {
+        width: 100%;
+    }
+}
