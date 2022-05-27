@@ -81,6 +81,14 @@ public with sharing class HOT_MessageHelper {
         insert newThread;
     }
 
+    public static Thread__c createHOTThread(Id recordId, Id accountId) {
+        Thread__c thread = new Thread__c();
+        thread.CRM_Related_Object__c = recordId;
+        thread.CRM_Type__c = 'HOT';
+        thread.CRM_Account__c = accountId;
+        return thread;
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<Message__c> getMessagesFromThread(Id threadId) {
         try {
@@ -96,7 +104,8 @@ public with sharing class HOT_MessageHelper {
                     CRM_From_Contact__c,
                     CRM_From_First_Name__c,
                     CRM_External_Message__c,
-                    CRM_From_Label__c
+                    CRM_From_Label__c,
+                    HOT_UserRole__c
                 FROM Message__c
                 WHERE CRM_Thread__c = :threadId
                 ORDER BY CRM_Sent_date__c ASC
