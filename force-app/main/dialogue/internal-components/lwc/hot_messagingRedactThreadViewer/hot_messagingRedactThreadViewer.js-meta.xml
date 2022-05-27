@@ -2,7 +2,7 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>53.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>Henvendelse - Redact Thread Component</masterLabel>
+    <masterLabel>HOT - Redact Thread Component</masterLabel>
     <targets>
         <target>lightning__RecordPage</target>
     </targets>
