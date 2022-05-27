@@ -1,5 +1,5 @@
 import { LightningElement, track, wire, api } from 'lwc';
-import getTimes from '@salesforce/apex/HOT_RequestListContoller.getTimesNew';
+import getTimes from '@salesforce/apex/HOT_RequestListController.getTimesNew';
 import {
     requireInput,
     dateInPast,
@@ -58,7 +58,8 @@ export default class Hot_recurringTimeInput extends LightningElement {
         const index = this.getTimesIndex(event.target.name);
         this.times[index].endTimeString = event.detail;
         this.times[index].endTime = this.timeStringToDateTime(
-            this.times[index].dateMilliseconds + (this.times[index].endTimeString < this.times[index].startTimeString ? 86400000 : 0),
+            this.times[index].dateMilliseconds +
+                (this.times[index].endTimeString < this.times[index].startTimeString ? 86400000 : 0),
             event.detail
         ).getTime();
     }
@@ -330,7 +331,8 @@ export default class Hot_recurringTimeInput extends LightningElement {
                     ).getTime();
                     timeObject.endTimeString = this.dateTimeToTimeString(new Date(Number(timeMap.endTime)));
                     timeObject.endTime = this.timeStringToDateTime(
-                        timeObject.dateMilliseconds + (timeObject.endTimeString < timeObject.startTimeString ? 86400000 : 0),
+                        timeObject.dateMilliseconds +
+                            (timeObject.endTimeString < timeObject.startTimeString ? 86400000 : 0),
                         timeObject.endTimeString
                     ).getTime();
                     this.times.push(timeObject);

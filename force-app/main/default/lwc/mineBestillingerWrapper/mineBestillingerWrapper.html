@@ -10,17 +10,18 @@
                     ><c-icon icon="Back"></c-icon>
                     <p style="margin-left: 0.25rem">Tilbake</p></a
                 >
-                <h2 class="header">{headerToShow}</h2>
+                <h2 class="header" tabindex="-1" autofocus>{headerToShow}</h2>
                 <div class="header-buttons">
                     <c-button
                         if:false={urlStateParameters.id}
                         button-label={buttonText}
+                        aria-label="Ny bestilling"
                         button-styling="primary"
                         class="button-padding mobile-button"
                         desktop-style="width: 7em; height: 3em; justify-content: center"
                         mobile-style="border-radius: 50%; justify-content: center; border-radius: 50%; 
                         justify-content: center; height: 15vw; font-size: 12vw; width: 15vw; 
-                        box-shadow: 0px 5px 10px 0px rgb(0 0 0 / 30%); background-color: forestgreen;"
+                        box-shadow: 0px 5px 10px 0px rgb(0 0 0 / 30%); background-color: forestgreen"
                         onbuttonclick={goToNewRequest}
                     ></c-button>
                     <a if:true={isMobile} class="back-link" onclick={goBack}>
