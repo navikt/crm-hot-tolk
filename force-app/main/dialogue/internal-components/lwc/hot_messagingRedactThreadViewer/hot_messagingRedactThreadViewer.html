@@ -1,0 +1,43 @@
+<template>
+    <lightning-card
+        class="slds--sds-c-card-shadow"
+        variant="Narrow"
+        title="Samtale"
+        icon-name="standard:messaging_user"
+    >
+        <section role="log" class="slds-chat">
+            <ul class="slds-chat-list">
+                <li class="slds-chat-listitem slds-chat-listitem_bookend">
+                    <div class="slds-chat-bookend">
+                        <lightning-icon
+                            icon-name="utility:chat"
+                            alternative-text="chat-icon"
+                            size="x-small"
+                            title="Dialog"
+                        ></lightning-icon>
+                        <p>
+                            Henvendelse startet av <b>{firstname} {lastname} </b>
+                            <lightning-formatted-date-time
+                                value={registereddate}
+                                month="numeric"
+                                day="numeric"
+                                year="numeric"
+                                hour="2-digit"
+                                minute="2-digit"
+                            ></lightning-formatted-date-time>
+                        </p>
+                    </div>
+                </li>
+                <template for:each={messages} for:item="message">
+                    <c-hot_messaging-redact-message
+                        key={message.Id}
+                        message={message}
+                        onsuccess={refreshMessages}
+                        onredactall={handleRedactAllClick}
+                    >
+                    </c-hot_messaging-redact-message>
+                </template>
+            </ul>
+        </section>
+    </lightning-card>
+</template>

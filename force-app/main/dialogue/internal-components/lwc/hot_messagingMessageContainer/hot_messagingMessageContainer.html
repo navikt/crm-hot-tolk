@@ -1,0 +1,16 @@
+<template>
+    <!-- Shows inbound, outbound or event dependent on the type of message-->
+    <template if:true={isevent}>
+        <c-hot_messaging-message-event message={message}></c-hot_messaging-message-event>
+    </template>
+    <template if:false={isevent}>
+        <template if:false={isoutbound}>
+            <div>
+                <c-hot_messaging-message-inbound message={message}></c-hot_messaging-message-inbound>
+            </div>
+        </template>
+        <template if:true={isoutbound}>
+            <c-hot_messaging-message-outbound message={message} userid={userid}></c-hot_messaging-message-outbound>
+        </template>
+    </template>
+</template>

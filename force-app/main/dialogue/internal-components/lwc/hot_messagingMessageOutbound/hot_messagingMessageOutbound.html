@@ -1,0 +1,34 @@
+<template>
+    <li class="slds-chat-listitem slds-chat-listitem_outbound">
+        <div class="slds-chat-message">
+            <div class="slds-chat-message__body">
+                <template if:true={isOwner}>
+                    <div class="slds-chat-message__text slds-chat-message__text_outbound">
+                        <lightning-formatted-rich-text
+                            value={message.CRM_Message_Text__c}
+                        ></lightning-formatted-rich-text>
+                    </div>
+                </template>
+                <template if:false={isOwner}>
+                    <div class="slds-chat-message__text slds-chat-message__text_outbound-agent">
+                        <lightning-formatted-rich-text
+                            value={message.CRM_Message_Text__c}
+                        ></lightning-formatted-rich-text>
+                    </div>
+                </template>
+                <template if:false={isInfo}>
+                    <div class="slds-chat-message__meta">
+                        {message.CRM_From_First_Name__c} &nbsp;
+                        <c-hot_nav-formatted-date date={message.CRM_Sent_date__c}></c-hot_nav-formatted-date>
+                    </div>
+                </template>
+                <template if:true={isInfo}>
+                    <div class="slds-chat-message__meta">
+                        NAV &nbsp;
+                        <c-hot_nav-formatted-date date={message.CRM_Sent_date__c}></c-hot_nav-formatted-date>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </li>
+</template>
