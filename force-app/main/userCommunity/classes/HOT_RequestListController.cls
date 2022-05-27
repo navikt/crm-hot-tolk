@@ -1,4 +1,4 @@
-public without sharing class HOT_RequestListContoller {
+public without sharing class HOT_RequestListController {
     @AuraEnabled
     public static void uploadFile(Map<String, String> files, String recordId) {
         List<ContentVersion> cvList = new List<ContentVersion>();
