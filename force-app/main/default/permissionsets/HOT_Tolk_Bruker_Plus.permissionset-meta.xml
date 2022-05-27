@@ -437,11 +437,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Thread__c.AAREG_Thread_Subject__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Thread__c.CRM_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>

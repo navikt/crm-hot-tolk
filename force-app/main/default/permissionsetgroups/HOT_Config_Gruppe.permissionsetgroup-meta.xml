@@ -3,5 +3,6 @@
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT Config Gruppe</label>
     <permissionSets>HOT_Dialog</permissionSets>
+    <permissionSets>HOT_Config</permissionSets>
     <status>Updated</status>
 </PermissionSetGroup>
