@@ -1,5 +1,5 @@
 @isTest
-public class CRM_ThreadRelationHandler_Test {
+public class HOT_ThreadRelationHandler_Test {
     @isTest
     static void testRelationHandling() {
         Account acc = (Account) HOT_DIALOG_TestDataFactory.createRecord(new Account());

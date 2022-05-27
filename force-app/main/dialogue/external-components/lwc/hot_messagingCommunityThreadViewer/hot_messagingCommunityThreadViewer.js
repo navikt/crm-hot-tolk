@@ -1,11 +1,11 @@
 import { LightningElement, wire, api, track } from 'lwc';
-import getmessages from '@salesforce/apex/CRM_MessageHelper.getMessagesFromThread';
-import markAsRead from '@salesforce/apex/CRM_MessageHelper.markAsRead';
+import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
+import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
 import { refreshApex } from '@salesforce/apex';
-import getContactId from '@salesforce/apex/CRM_MessageHelper.getUserContactId';
+import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import createmsg from '@salesforce/apex/CRM_MessageHelper.createMessage';
+import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 

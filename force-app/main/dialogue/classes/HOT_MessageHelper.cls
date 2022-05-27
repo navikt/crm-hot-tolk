@@ -3,7 +3,7 @@
  * @Author Lars Petter Johnsen
  * @Date 20.05.2021
  */
-public with sharing class CRM_MessageHelper {
+public with sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=true)
     public static String getRecordObjectType(Id recordId) {
         String objectType = recordId.getSObjectType().getDescribe().getName();

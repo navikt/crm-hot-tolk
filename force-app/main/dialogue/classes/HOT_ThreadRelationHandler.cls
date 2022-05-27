@@ -1,4 +1,4 @@
-public without sharing class CRM_ThreadRelationHandler extends MyTriggers {
+public without sharing class HOT_ThreadRelationHandler extends MyTriggers {
     public override void onBeforeInsert() {
         for (Thread__c thread : (List<Thread__c>) Records) {
             if (String.isNotBlank(thread.CRM_Related_Object__c)) {

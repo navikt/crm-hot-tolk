@@ -1,6 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
-import getThreads from '@salesforce/apex/CRM_MessageHelper.getThreadsCollection';
-import createThread from '@salesforce/apex/CRM_MessageHelper.createThread';
+import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreadsCollection';
+import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import { refreshApex } from '@salesforce/apex';
 
 export default class CrmMessagingMessageComponent extends LightningElement {

@@ -1,16 +1,16 @@
 @isTest
-public class CRM_ReferenceUtil_Test {
+public class HOT_ReferenceUtil_Test {
     @isTest
     static void testReferenceGeneration() {
-        String ref = CRM_ReferenceUtil.generateReference(new Account());
+        String ref = HOT_ReferenceUtil.generateReference(new Account());
 
         System.assert(ref.contains(Account.getSObjectType().getDescribe().getKeyPrefix()));
     }
 
     @isTest
     static void testGetObjectName() {
-        String ref = CRM_ReferenceUtil.generateReference(new Account());
+        String ref = HOT_ReferenceUtil.generateReference(new Account());
 
-        System.assertEquals('Account', CRM_ReferenceUtil.getObjectNameFromIdPrefix(ref.substring(0, 3)));
+        System.assertEquals('Account', HOT_ReferenceUtil.getObjectNameFromIdPrefix(ref.substring(0, 3)));
     }
 }

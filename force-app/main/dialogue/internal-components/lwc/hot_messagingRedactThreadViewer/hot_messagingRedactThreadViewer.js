@@ -9,7 +9,7 @@ import REGISTERED_DATE from '@salesforce/schema/Thread__c.CRM_Date_Time_Register
 import FIRSTNAME_FIELD from '@salesforce/schema/Thread__c.CreatedBy.FirstName';
 import LASTNAME_FIELD from '@salesforce/schema/Thread__c.CreatedBy.LastName';
 
-import getmessages from '@salesforce/apex/CRM_MessageHelper.getMessagesFromThread';
+import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 export default class CrmMessagingRedactThreadViewer extends LightningElement {
     @api recordId;
     messages = [];

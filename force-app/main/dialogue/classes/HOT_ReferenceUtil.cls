@@ -1,4 +1,4 @@
-global class CRM_ReferenceUtil {
+global class HOT_ReferenceUtil {
     /**
      * @description: Generates a reference for an sObject on the form <ID_Prefix>_<15HEX_CHARS>
      * @author Stian Ruud Schikora | 10-04-2021

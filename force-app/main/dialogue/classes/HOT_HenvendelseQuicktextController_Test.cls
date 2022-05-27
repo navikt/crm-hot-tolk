@@ -1,5 +1,5 @@
 @isTest
-public with sharing class CRM_HenvendelseQuicktextController_Test {
+public with sharing class HOT_HenvendelseQuicktextController_Test {
     @TestSetup
     static void makeData() {
         HOT_DIALOG_TestDataFactory.createQuickTexts(3);
@@ -7,7 +7,7 @@ public with sharing class CRM_HenvendelseQuicktextController_Test {
     @isTest
     static void searchRecordsTest() {
         Test.startTest();
-        List<CRM_HenvendelseQuicktextController.QuickTextMessage> msgList = CRM_HenvendelseQuicktextController.searchRecords(
+        List<HOT_HenvendelseQuicktextController.QuickTextMessage> msgList = HOT_HenvendelseQuicktextController.searchRecords(
             'Melding'
         );
         Test.stopTest();
@@ -15,6 +15,6 @@ public with sharing class CRM_HenvendelseQuicktextController_Test {
     }
     @isTest
     static void getQuicktext_Test() {
-        List<QuickText> qList = CRM_HenvendelseQuicktextController.getQuicktexts();
+        List<QuickText> qList = HOT_HenvendelseQuicktextController.getQuicktexts();
     }
 }

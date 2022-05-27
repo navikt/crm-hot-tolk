@@ -1,7 +1,7 @@
-public with sharing class CRM_HenvendelseQuicktextController {
+public with sharing class HOT_HenvendelseQuicktextController {
     @AuraEnabled
-    public static List<CRM_HenvendelseQuicktextController.QuickTextMessage> searchRecords(String search) {
-        List<CRM_HenvendelseQuicktextController.QuickTextMessage> quickTexts = new List<CRM_HenvendelseQuicktextController.QuickTextMessage>();
+    public static List<HOT_HenvendelseQuicktextController.QuickTextMessage> searchRecords(String search) {
+        List<HOT_HenvendelseQuicktextController.QuickTextMessage> quickTexts = new List<HOT_HenvendelseQuicktextController.QuickTextMessage>();
         for (QuickText qt : [SELECT Id, Name, Message FROM QuickText]) {
             if (
                 qt.Message.toLowerCase().contains(search.toLowerCase()) ||
