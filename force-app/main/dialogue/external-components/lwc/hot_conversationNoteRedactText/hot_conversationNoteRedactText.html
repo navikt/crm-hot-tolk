@@ -1,0 +1,56 @@
+<template>
+    <lightning-card title="Samtale" icon-name="custom:custom22">
+        <div class="slds-p-horizontal_small">
+            <lightning-layout multiple-rows="true">
+                <lightning-layout-item size="12" class="slds-is-relative">
+                    <lightning-formatted-rich-text if:false={isRedacting} value={text}></lightning-formatted-rich-text>
+                    <lightning-record-edit-form
+                        if:true={isRedacting}
+                        object-api-name="Conversation_Note__c"
+                        record-id={recordId}
+                        onsuccess={handleSuccess}
+                        onerror={handleError}
+                        onsubmit={handleSubmit}
+                    >
+                        <lightning-spinner
+                            if:true={showSpinner}
+                            alternative-text="Lagrer"
+                            size="small"
+                        ></lightning-spinner>
+                        <c-hot_redact-text text-to-redact={text} ontext_redacted={handleRedactEvent}>
+                            <lightning-button
+                                slot="toolbarEnd"
+                                label="Lagre"
+                                icon-name="utility:save"
+                                disabled={canSaveDisabled}
+                                variant="brand"
+                                type="submit"
+                                class="slds-p-left_large"
+                            ></lightning-button>
+                        </c-hot_redact-text>
+                        <lightning-input-field
+                            class="slds-hide"
+                            value={redactedText}
+                            field-name="CRM_Conversation_Note__c"
+                        ></lightning-input-field>
+                        <lightning-input-field
+                            class="slds-hide"
+                            value={trueValue}
+                            field-name="CRM_Is_Redacted__c"
+                        ></lightning-input-field>
+                    </lightning-record-edit-form>
+                </lightning-layout-item>
+                <lightning-layout-item>
+                    <lightning-button-stateful
+                        icon-name-when-off="utility:edit"
+                        icon-name-when-on="utility:edit"
+                        selected={isRedacting}
+                        onclick={toggleRedacting}
+                        label-when-off="Start sladding"
+                        label-when-on="Avbryt sladding"
+                    ></lightning-button-stateful>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </lightning-card>
+</template>

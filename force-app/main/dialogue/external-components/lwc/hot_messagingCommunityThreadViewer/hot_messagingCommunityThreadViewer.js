@@ -77,7 +77,7 @@ export default class hot_messagingCommunityThreadViewer extends LightningElement
                 field.reset();
             });
         }
-        const textBoks = this.template.querySelector('c-community-textarea');
+        const textBoks = this.template.querySelector('c-hot_community-textarea');
         textBoks.clearText();
         this.buttonisdisabled = false;
         return refreshApex(this._mySendForSplitting);

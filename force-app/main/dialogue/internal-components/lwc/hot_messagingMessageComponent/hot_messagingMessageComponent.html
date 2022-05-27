@@ -1,0 +1,57 @@
+<template>
+    <lightning-card
+        class="slds--sds-c-card-shadow"
+        variant="Narrow"
+        title={cardTitle}
+        icon-name="standard:messaging_user"
+    >
+        <div class="slds-is-relative" style="min-height: 2em">
+            <!-- Singlethread true - WIll only ever be one thread in the iteration-->
+            <lightning-spinner
+                if:true={showSpinner}
+                alternative-text="Laster samtalekomponent"
+                size="medium"
+                variant="brand"
+            ></lightning-spinner>
+            <div
+                if:true={hasError}
+                class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
+                role="alert"
+            >
+                <lightning-layout vertical-align="center">
+                    <lightning-icon icon-name="utility:error" size="x-small" variant="inverse"></lightning-icon>
+                    <span class="slds-assistive-text">Feil</span>
+                    <h2 class="slds-p-left_small" style="margin-top: auto; margin-bottom: auto">
+                        Det oppsto en uventet feil
+                    </h2>
+                </lightning-layout>
+            </div>
+            <template if:true={shownewbutton}>
+                <lightning-button
+                    label="Klikk for å starte samtale"
+                    icon-name="utility:anywhere_chat"
+                    variant="border-filled"
+                    slot="actions"
+                    class="slds-align_absolute-center"
+                    onclick={handlenewpressed}
+                ></lightning-button>
+            </template>
+            <template for:each={threads} for:item="thread">
+                <c-hot_messaging-thread-Viewer
+                    onenglishevent={handleEnglishEvent}
+                    english-text-template={englishTextTemplate}
+                    key={thread.Id}
+                    text-template={textTemplate}
+                    thread={thread}
+                    show-close={showClose}
+                >
+                    <!--Ability to pass toolbar buttons thorugh slots to the toolbar-->
+                    <div slot="toolbar">
+                        <slot name="toolbar"></slot>
+                    </div>
+                </c-hot_messaging-thread-Viewer>
+            </template>
+        </div>
+        <!-- Modal Stop-->
+    </lightning-card>
+</template>

@@ -1,0 +1,31 @@
+@page {
+  @top-center {
+    content: element(header);
+  }
+  @bottom-left {
+    content: element(footer);
+  }
+}
+div.document{
+    margin-left: 1.25em;
+    font-family: SansSerif;
+}
+div.header {
+    margin-top: 4em;
+    position: relative;
+}
+div.footer {
+    display: block;
+    padding: 0.4em;
+    position: running(footer);
+}
+div.content {
+    margin-top: -0.4em;
+    position: relative;
+}
+.pagenumber:before {
+  content: counter(page);
+}
+.pagecount:before {
+  content: counter(pages);
+}
