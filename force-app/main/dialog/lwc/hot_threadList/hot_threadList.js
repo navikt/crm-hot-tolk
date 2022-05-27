@@ -1,29 +1,46 @@
 import { LightningElement, wire, track } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreads';
 import openThread from '@salesforce/apex/HOT_ThreadListController.openThread';
+import { refreshApex } from '@salesforce/apex';
 
-export default class Hot_threadList extends LightningElement {
-    @track columns = [
+export default class Hot_threadList extends NavigationMixin(LightningElement) {
+    breadcrumbs = [ 
         {
-            label: 'Tittel',
+            label: 'Tolketjenesten',
+            href: ''
+        },
+        {
+            label: 'Mine samtaler',
+            href: 'mine-samtaler'
+        }
+    ];
+    @track columns = [
+        /*{
+            label: '',
             fieldName: 'HOT_Subject__c',
             type: 'text',
             sortable: true,
         },
-        /*{ CRM_Read_By_Nav__c is on Message object
+        {
             label: 'Lest',
-            fieldName: 'CRM_Read_By_Nav__c',
+            fieldName: 'CRM_Number_of_unread_Messages__c',
             type: 'boolean',
             sortable: true,
         },*/
+        {
+            label: 'Thread Name',
+            fieldName: 'Name',
+            type: 'text'
+        },
         {
             type: 'action',
             typeAttributes: { rowActions: this.getRowActions }
         }
     ];
     mobileColumns = [
-        "'Tittel'",
-        "'Lest'"
+        "'Tittel'"
+        //"'Lest'"
     ];
 
     getRowActions(doneCallback) {
@@ -32,7 +49,7 @@ export default class Hot_threadList extends LightningElement {
         doneCallback(actions);
     }
 
-   /* //Sorting methods
+    //Sorting methods
     @track defaultSortDirection = 'asc';
     @track sortDirection = 'asc';
     @track sortedBy = 'StartTime__c';
@@ -45,7 +62,7 @@ export default class Hot_threadList extends LightningElement {
         this.sortDirection = event.detail.sortDirection;
         this.sortedBy = event.detail.fieldName;
         this.threads = sortList(this.threads, this.sortedBy, this.sortDirection);
-    }*/
+    }
 
     //Row action methods
     handleRowAction(event) {
@@ -62,12 +79,23 @@ export default class Hot_threadList extends LightningElement {
     @wire(getMyThreads)
     wiredThreads(result) {
         this.wiredThreadsResult = result;
+        console.log('wiredThreads');
         if (result.data) {
+            console.log(JSON.stringify(result.data));
             this.threads = result.data;
         }
     }
 
     connectedCallback() {
         refreshApex(this.wiredThreadsResult);
+    }
+    
+    goBack() {
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'home'
+            }
+        });
     }
 }

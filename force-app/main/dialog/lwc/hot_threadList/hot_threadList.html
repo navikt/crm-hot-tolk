@@ -1,12 +1,27 @@
 <template>
-    <div class="main-content">
-        <lightning-datatable
-            key-field="Id"
-            data={threads}
-            columns={columns}
-            hide-checkbox-column="true"
-            onrowaction={handleRowAction}
-        >
-        </lightning-datatable>
+    <div class="brodsmulesti">
+        <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
     </div>
+    <main class="mainContent">
+        <div class="thread-wrapper">
+            <div class="navigation-container">
+                <a if:false={isMobile} class="back-link" onclick={goBack}>
+                    <c-icon icon="Back"></c-icon>
+                    <p style="margin-left: 0.25rem">Tilbake</p>
+                </a>
+                <h2 class="header">Mine samtaler</h2>
+                <div class="empty"></div>
+            </div>
+            <lightning-datatable
+                key-field="Id"
+                data={threads}
+                columns={columns}
+                onrowaction={handleRowAction}
+                default-sort-direction={defaultSortDirection}
+                sorted-direction={sortDirection}
+                sorted-by={sortedBy}
+                onsort={onHandleSort}>
+            </lightning-datatable>
+        </div>
+    </main>
 </template>
