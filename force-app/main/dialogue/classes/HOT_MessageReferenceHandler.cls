@@ -1,0 +1,7 @@
+public without sharing class HOT_MessageReferenceHandler extends MyTriggers {
+    public override void onBeforeInsert() {
+        for (Message__c msg : (List<Message__c>) Records) {
+            msg.CRM_API_Reference__c = HOT_ReferenceUtil.generateReference(msg);
+        }
+    }
+}

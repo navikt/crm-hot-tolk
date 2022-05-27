@@ -1,0 +1,22 @@
+<template>
+    <textarea class={textAreaClass} onselect={onSelectText} readonly>{redactedValue}</textarea>
+    <div role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none slds-rich-text-editor__toolbar_bottom">
+        <slot name="toolbarStart"></slot>
+        <lightning-button-group>
+            <lightning-button-icon
+                icon-name="utility:undo"
+                disabled={canUndoDisabled}
+                alternative-text="Angre"
+                onclick={undoChanges}
+            ></lightning-button-icon>
+            <lightning-button-icon
+                icon-name="utility:redo"
+                disabled={canRedoDisabled}
+                alternative-text="Gjør om"
+                onclick={redoChanges}
+            ></lightning-button-icon>
+        </lightning-button-group>
+        <slot name="toolbarEnd"></slot>
+    </div>
+    <slot></slot>
+</template>

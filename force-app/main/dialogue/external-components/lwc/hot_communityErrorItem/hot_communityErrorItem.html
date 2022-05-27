@@ -1,0 +1,10 @@
+<template>
+    <li>
+        <template if:true={linkToElement}>
+            <a href="#" class="navds-error-summary__item navds-link" onclick={handleLinkClick}>{error.Text}</a>
+        </template>
+        <template if:false={linkToElement}>
+            <lightning-formatted-rich-text value={error.Text}></lightning-formatted-rich-text>
+        </template>
+    </li>
+</template>

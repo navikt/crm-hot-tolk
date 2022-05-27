@@ -1,0 +1,157 @@
+<template>
+    <template if:false={isEvent}>
+        <li class={liClasses}>
+            <div class="slds-chat-message">
+                <div class="slds-chat-message__body">
+                    <div class={divClasses}>
+                        <lightning-formatted-rich-text
+                            if:false={isRedacting}
+                            value={message.CRM_Message_Text__c}
+                        ></lightning-formatted-rich-text>
+                        <lightning-record-edit-form
+                            if:true={isRedacting}
+                            object-api-name="Message__c"
+                            record-id={messageId}
+                            onsuccess={handleSuccess}
+                            onerror={handleError}
+                            onsubmit={handleSubmit}
+                            style="display: flex"
+                            class="slds-text-color_default slds-is-relative"
+                        >
+                            <lightning-spinner
+                                if:true={showSpinner}
+                                alternative-text="Lagrer"
+                                size="small"
+                            ></lightning-spinner>
+                            <c-hot_redact-text
+                                text-to-redact={messageText}
+                                ontext_redacted={handleRedactEvent}
+                                class="width_large"
+                            >
+                                <lightning-button
+                                    slot="toolbarEnd"
+                                    label="Lagre"
+                                    icon-name="utility:save"
+                                    disabled={canSaveDisabled}
+                                    variant="brand"
+                                    type="submit"
+                                    class="slds-var-p-left_medium"
+                                ></lightning-button>
+                                <lightning-button
+                                    slot="toolbarEnd"
+                                    class="slds-var-p-left_medium"
+                                    icon-name="utility:clear"
+                                    variant="brand"
+                                    onclick={RedactAllMessageText}
+                                    label="Sladd hele meldingen"
+                                ></lightning-button>
+                            </c-hot_redact-text>
+                            <lightning-input-field
+                                class="slds-hide"
+                                value={redactedText}
+                                field-name="CRM_Message_Text__c"
+                            ></lightning-input-field>
+                            <lightning-input-field
+                                class="slds-hide"
+                                value={trueValue}
+                                field-name="CRM_Is_Redacted__c"
+                            ></lightning-input-field>
+                        </lightning-record-edit-form>
+                    </div>
+                    <template if:false={isInfo}>
+                        <div class="slds-chat-message__meta slds-m-left_none">
+                            <template if:false={isInbound}>
+                                {message.CRM_From_First_Name__c}&nbsp;
+                                <lightning-formatted-date-time
+                                    value={message.CRM_Sent_date__c}
+                                    year="numeric"
+                                    month="numeric"
+                                    day="numeric"
+                                    hour="2-digit"
+                                    minute="2-digit"
+                                >
+                                </lightning-formatted-date-time>
+                                <lightning-button-stateful
+                                    class="slds-chat-message__action slds-float_right"
+                                    icon-name-when-off="utility:edit"
+                                    icon-name-when-on="utility:edit"
+                                    selected={isRedacting}
+                                    onclick={toggleRedacting}
+                                    label-when-off="Start sladding"
+                                    label-when-on="Avbryt sladding"
+                                ></lightning-button-stateful>
+                            </template>
+                            <template if:true={isInbound}>
+                                <lightning-button-stateful
+                                    class="
+                                        slds-chat-message__action
+                                        slds-float_left
+                                        slds-m-left_none
+                                        slds-var-m-right_x-small
+                                    "
+                                    icon-name-when-off="utility:edit"
+                                    icon-name-when-on="utility:edit"
+                                    selected={isRedacting}
+                                    onclick={toggleRedacting}
+                                    label-when-off="Start sladding"
+                                    label-when-on="Avbryt sladding"
+                                ></lightning-button-stateful
+                                >{message.CRM_From_First_Name__c}&nbsp;
+                                <lightning-formatted-date-time
+                                    value={message.CRM_Sent_date__c}
+                                    year="numeric"
+                                    month="numeric"
+                                    day="numeric"
+                                    hour="2-digit"
+                                    minute="2-digit"
+                                >
+                                </lightning-formatted-date-time>
+                            </template>
+                        </div>
+                    </template>
+                    <template if:true={isInfo}>
+                        <div class="slds-chat-message__meta">
+                            NAV &nbsp;
+                            <lightning-formatted-date-time
+                                value={message.CRM_Sent_date__c}
+                                year="numeric"
+                                month="numeric"
+                                day="numeric"
+                                hour="2-digit"
+                                minute="2-digit"
+                            >
+                            </lightning-formatted-date-time>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </li>
+    </template>
+    <template if:true={isEvent}>
+        <li class="slds-chat-listitem slds-chat-listitem_event">
+            <div class="slds-chat-event">
+                <div class="slds-chat-event__body">
+                    <lightning-icon
+                        icon-name="utility:events"
+                        alternative-text="Hendelse"
+                        title="Hendelse"
+                        size="small"
+                        class="slds-var-p-right_small"
+                    ></lightning-icon>
+                    <p>
+                        {message.CRM_Message_Text__c} • &nbsp;
+                        <lightning-formatted-date-time
+                            value={message.CRM_Sent_date__c}
+                            year="numeric"
+                            month="numeric"
+                            day="numeric"
+                            hour="2-digit"
+                            minute="2-digit"
+                        >
+                        </lightning-formatted-date-time>
+                    </p>
+                </div>
+            </div>
+        </li>
+    </template>
+</template>

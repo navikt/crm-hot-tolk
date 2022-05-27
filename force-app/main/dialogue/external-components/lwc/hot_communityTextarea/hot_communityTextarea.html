@@ -1,0 +1,28 @@
+<template>
+    <div class={wrapperClass}>
+        <div class="navds-textarea__wrapper">
+            <label for="textareaInput" class="sr-only">{labelTekst}</label>
+            <textarea
+                aria-invalid={errorState}
+                name="textbox"
+                onchange={handleChange}
+                oninput={handleMessage}
+                label="Skriv din melding her"
+                class="navds-textarea__input navds-body-short navds-body-medium navds-textarea--counter tekstboks minRow"
+                onfocusout={checkError}
+                id="textareaInput"
+            >
+            {message}
+            </textarea>
+            <div aria-hidden="true" class="mirror minRow" tabindex="-1"></div>
+            <template if:true={limitCharacters}>
+                <p aria-live="off" class={remainingCharacterClass}>{remainingCharacterText}</p>
+            </template>
+        </div>
+        <div aria-relevant="additions removals" aria-live="polite">
+            <template if:true={errorState}>
+                <div class="navds-error-message navds-error-message--medium navds-label">{errorMessage}</div>
+            </template>
+        </div>
+    </div>
+</template>
