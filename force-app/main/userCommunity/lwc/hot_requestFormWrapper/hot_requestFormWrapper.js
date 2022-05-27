@@ -182,6 +182,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelector('.submitted-false').classList.add('hidden');
         this.template.querySelector('.submitted-loading').classList.remove('hidden');
         this.template.querySelector('.h2-loadingMessage').focus();
+        window.scrollTo(0, 0);
     }
 
     uploadFiles() {
