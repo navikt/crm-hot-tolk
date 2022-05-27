@@ -1,5 +1,5 @@
 @isTest
-public class CRM_MessageReferenceHandler_Test {
+public class HOT_MessageReferenceHandler_Test {
     @isTest
     static void testReferenceGeneration() {
         Test.startTest();

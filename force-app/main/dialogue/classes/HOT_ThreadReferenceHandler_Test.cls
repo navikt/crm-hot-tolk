@@ -12,7 +12,7 @@ public class HOT_ThreadReferenceHandler_Test {
     @isTest
     static void testExistingReference() {
         Test.startTest();
-        HOT_DIALOG_TestDataFactory.createRecord(new Thread__c(HOT_Henvendelse_BehandlingsId__c = '123TEST'));
+        HOT_DIALOG_TestDataFactory.createRecord(new Thread__c(CRM_Henvendelse_BehandlingsId__c = '123TEST'));
         Test.stopTest();
 
         System.assertEquals(1, [SELECT COUNT() FROM Thread__c WHERE CRM_API_Reference__c = '123TEST']);
