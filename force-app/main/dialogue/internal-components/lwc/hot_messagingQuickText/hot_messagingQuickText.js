@@ -1,7 +1,6 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import searchRecords from '@salesforce/apex/HOT_HenvendelseQuicktextController.searchRecords';
 import getQuicktexts from '@salesforce/apex/HOT_HenvendelseQuicktextController.getQuicktexts';
-import BLANK_ERROR from '@salesforce/label/c.CRMHenveldelse_Blank';
 
 const ESC_KEY_CODE = 27;
 const ESC_KEY_STRING = 'Escape';
@@ -13,7 +12,7 @@ const LIGHTNING_INPUT_FIELD = 'LIGHTNING-INPUT-FIELD';
 const keyCodes = [0, 3, 9, 13, 16, 17, 18, 19, 20, 21, 25, 27, 28, 29, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 47, 91, 92, 93, 95, 112, 113, 114, 115, 116, 117, 119, 120, 121, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 151, 166, 167, 172, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 224, 225, 230, 233, 255];
 
 export default class crmQuickText extends LightningElement {
-    labels = { BLANK_ERROR };
+    labels = {};
     _conversationNote;
     loadingData = false;
     qmap;
@@ -321,7 +320,7 @@ export default class crmQuickText extends LightningElement {
         if (this.required === true) {
             return this.conversationNote && this.conversationNote.length > 0
                 ? { isValid: true }
-                : { isValid: false, errorMessage: this.labels.BLANK_ERROR }; //CUSTOM LABEL HERE
+                : { isValid: false, errorMessage: 'Conversation Note Blank Error' }; //CUSTOM LABEL HERE
         }
         return { isValid: true };
     }
