@@ -1,0 +1,19 @@
+<template>
+    <div class="slds-p-right_medium">
+        <template if:true={isevent}>
+            <c-hot_messaging-message-event message={message}></c-hot_messaging-message-event>
+        </template>
+        <template if:false={isevent}>
+            <template if:false={isoutbound}>
+                <c-hot_messaging-community-message-inbound
+                    message={message}
+                ></c-hot_messaging-community-message-inbound>
+            </template>
+            <template if:true={isoutbound}>
+                <c-hot_messaging-community-message-outbound
+                    message={message}
+                ></c-hot_messaging-community-message-outbound>
+            </template>
+        </template>
+    </div>
+</template>

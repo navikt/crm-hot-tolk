@@ -1,0 +1,23 @@
+textarea {
+    width: 100%; /*var(--lwc-sizeMedium);*/
+}
+
+:host(.width_xx-large) textarea {
+    width: var(--lwc-sizeXLarge);
+}
+
+:host(.width_x-large) textarea {
+    width: var(--lwc-sizeXxLarge);
+}
+
+:host(.width_large) textarea {
+    width: var(--lwc-sizeLarge);
+}
+
+:host(.width_medium) textarea {
+    width: var(--lwc-sizeMedium);
+}
+
+:host(.width_small) textarea {
+    width: var(--lwc-sizeSmall);
+}
