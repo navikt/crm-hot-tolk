@@ -1,6 +1,6 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
-import createThreadFromCommunityUser from '@salesforce/apex/HOT_MessageHelper.createThreadFromCommunityUser';
+import createHOTThread from '@salesforce/apex/HOT_MessageHelper.createHOTThread';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -531,7 +531,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     threadButtonLabel = 'Opprett samtale';
     goToThread() {
         // TODO: If no existing threads, create, else, go to the thread
-        createThreadFromCommunityUser({ recordId: this.request.Id })
+        createHOTThread({ recordId: this.request.Id, accountId: this.request.Account__c })
             .then((result) => {
                 // TODO: Navigate to this thread
             })
