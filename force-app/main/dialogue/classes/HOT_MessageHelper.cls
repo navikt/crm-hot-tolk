@@ -15,6 +15,11 @@ public with sharing class HOT_MessageHelper {
         return [SELECT Id, ContactId FROM User WHERE Id = :UserInfo.getUserId()]?.ContactId;
     }
 
+    @AuraEnabled
+    public static Id getAccountOnRequest(Id recordId) {
+        return [SELECT Account__c FROM HOT_Request__c WHERE Id = :recordId];
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadsCollection(Id recordId, Boolean singleThread) {
         if (singleThread == false) {
