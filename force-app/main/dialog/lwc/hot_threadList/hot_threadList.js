@@ -51,10 +51,8 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
     @wire(getMyThreads)
     wiredThreads(result) {
         this.wiredThreadsResult = result;
-        console.log('wiredThreads');
         if (result.data) {
             this.threads = result.data.map(x => ({...x, read: x.CRM_Number_of_unread_Messages__c > 0 ? false : true}));
-            console.log('this.threads: ', JSON.stringify(this.threads));
         }
     }
 
