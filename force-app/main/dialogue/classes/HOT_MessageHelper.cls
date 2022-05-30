@@ -75,9 +75,11 @@ public with sharing class HOT_MessageHelper {
     }
 
     @AuraEnabled
-    public static void createThread(Id recordId) {
+    public static void createThreadFromCommunityUser(Id recordId) {
+        User user = [SELECT Name, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         Thread__c newThread = new Thread__c();
         newThread.CRM_Related_Object__c = recordId;
+        newThread.CRM_Account__c = user.AccountId;
         insert newThread;
     }
 

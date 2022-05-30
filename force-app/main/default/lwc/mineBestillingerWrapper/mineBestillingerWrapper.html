@@ -182,6 +182,14 @@
                     onbuttonclick={addFiles}
                     disabled={isRequestAddFilesButtonDisabled}
                 ></c-button>
+                <c-button
+                    button-label={threadButtonLabel}
+                    button-styling="primary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                    onbuttonclick={goToThread}
+                ></c-button>
             </div>
             <div class="record-details-container" if:false={noWorkOrders}>
                 <c-table
