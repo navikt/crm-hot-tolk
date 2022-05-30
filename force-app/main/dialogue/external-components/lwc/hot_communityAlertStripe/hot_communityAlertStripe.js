@@ -1,5 +1,5 @@
 import { LightningElement, api } from 'lwc';
-import ALERTLOGOS from '@salesforce/resourceUrl/alertlogos';
+import ALERTLOGOS from '@salesforce/resourceUrl/hot_alertlogos';
 
 export default class Alertstripe extends LightningElement {
     @api type; //info, suksess, advarsel, feil,
