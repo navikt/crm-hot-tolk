@@ -12,16 +12,14 @@
                 <h2 class="header">Mine samtaler</h2>
                 <div class="empty"></div>
             </div>
-            <lightning-datatable
-                key-field="Id"
-                data={threads}
-                columns={columns}
-                onrowaction={handleRowAction}
-                default-sort-direction={defaultSortDirection}
-                sorted-direction={sortDirection}
-                sorted-by={sortedBy}
-                onsort={onHandleSort}>
-            </lightning-datatable>
+            <div class="record-details-container">
+                <c-table
+                    records={threads}
+                    columns={columns}
+                    onrowclick={openThread}
+                    icon-by-value={iconByValue}
+                ></c-table>
+            </div>
         </div>
     </main>
 </template>

@@ -58,3 +58,25 @@ span {
     flex-grow: 3;
     flex-basis: 33%;
 }
+
+.record-details-container {
+    margin: 2rem 0;
+}
+
+@media (max-width: 576px) {
+    .mine-bestillinger-wrapper {
+        padding: 1rem;
+    }
+    .header {
+        font-size: 1.4rem;
+    }
+    .back-link {
+        padding-bottom: 4vw;
+    }
+    .record-details-container {
+        margin: 4vw 0;
+    }
+    .navigation-container {
+        display: block;
+    }
+}
