@@ -9,7 +9,7 @@
      &apos;NAV Bruker&apos;, &apos;Tolkebruker&apos;,
      &apos;NAV Bruker Plus&apos;, &apos;Tolkebruker&apos;,
 
-&apos;&apos;)</formula>
+&apos;Administrator&apos;)</formula>
     <label>User Role</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
