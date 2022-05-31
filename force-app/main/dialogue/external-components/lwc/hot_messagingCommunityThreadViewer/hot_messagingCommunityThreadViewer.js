@@ -6,7 +6,7 @@ import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
-import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject';
+import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 
 const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD]; //Extract the name of the thread record
