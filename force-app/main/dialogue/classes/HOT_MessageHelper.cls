@@ -15,7 +15,7 @@ public with sharing class HOT_MessageHelper {
         return [SELECT Id, ContactId FROM User WHERE Id = :UserInfo.getUserId()]?.ContactId;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Id getAccountOnRequest(Id recordId) {
         return [SELECT Account__c FROM HOT_Request__c WHERE Id = :recordId]?.Account__c;
     }
