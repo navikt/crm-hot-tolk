@@ -79,12 +79,19 @@ public with sharing class HOT_MessageHelperTest {
         Account acc = new Account();
         acc.Name = 'Newly created account';
         insert acc;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
 
         Test.startTest();
-        HOT_MessageHelper.createThread(acc.Id);
+        Thread__c thread = HOT_MessageHelper.createThread(request.Id, acc.Id);
+        insert thread;
         Test.stopTest();
-        List<Thread__c> tList = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :acc.Id];
+        List<Thread__c> tList = [SELECT Id, CRM_Account__c FROM Thread__c WHERE CRM_Related_Object__c = :request.Id];
         System.assertNotEquals(null, tList);
+        System.assertEquals(tList[0].CRM_Account__c, acc.Id);
     }
     @isTest
     static void getMessagesFromThreadTest() {

@@ -74,7 +74,8 @@ public with sharing class HOT_MessageHelper {
         }
     }
 
-    public static Thread__c createHOTThread(Id recordId, Id accountId) {
+    @AuraEnabled(cacheable=true)
+    public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = recordId;
         thread.CRM_Type__c = 'HOT';

@@ -1,6 +1,6 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
-import createHOTThread from '@salesforce/apex/HOT_MessageHelper.createHOTThread';
+import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -526,12 +526,12 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     deleteMarkedFiles() {
         this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
     }
-
-    // TODO: If any threads exist - label should be "Gå til samtale", otherwise "Opprett samtale"
-    threadButtonLabel = 'Opprett samtale';
+    
     goToThread() {
+        console.log('goToThread');
+        // TODO: Fetch thread related to request
         // TODO: If no existing threads, create, else, go to the thread
-        createHOTThread({ recordId: this.request.Id, accountId: this.request.Account__c })
+        createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
             .then((result) => {
                 // TODO: Navigate to this thread
             })
