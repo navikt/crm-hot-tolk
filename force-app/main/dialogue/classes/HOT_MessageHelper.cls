@@ -79,7 +79,7 @@ public with sharing class HOT_MessageHelper {
         }
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = recordId;

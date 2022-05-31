@@ -82,18 +82,16 @@ public with sharing class HOT_MessageHelperTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
         insert workType;
-        WorkType workType2 = HOT_TestDataFactory.createWorkType();
-        workType2.Name = 'Work Type Name 2';
-        insert workType2;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
-        request.NumberOfInterpreters__c = 2;
         insert request;
 
         Test.startTest();
-        HOT_MessageHelper.createThread(request.Id, acc.Id);
+        Thread__c thread = HOT_MessageHelper.createThread(request.Id, acc.Id);
+        insert thread;
         Test.stopTest();
-        List<Thread__c> tList = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :acc.Id];
+        List<Thread__c> tList = [SELECT Id, CRM_Account__c FROM Thread__c WHERE CRM_Related_Object__c = :request.Id];
         System.assertNotEquals(null, tList);
+        System.assertEquals(tList[0].CRM_Account__c, acc.Id);
     }
 
     @isTest
@@ -101,11 +99,7 @@ public with sharing class HOT_MessageHelperTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
         insert workType;
-        WorkType workType2 = HOT_TestDataFactory.createWorkType();
-        workType2.Name = 'Work Type Name 2';
-        insert workType2;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
-        request.NumberOfInterpreters__c = 2;
         Account personAccount = HOT_TestDataFactory.createAccount(true);
         insert personAccount;
         request.Account__c = personAccount.Id;
@@ -115,6 +109,7 @@ public with sharing class HOT_MessageHelperTest {
         Id accountId = HOT_MessageHelper.getAccountOnRequest(request.Id);
         Test.stopTest();
         System.assertNotEquals(null, accountId);
+        System.assertEquals(personAccount.Id, request.Account__c);
     }
 
     @isTest
