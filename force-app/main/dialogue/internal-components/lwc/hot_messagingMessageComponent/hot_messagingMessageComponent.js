@@ -1,6 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreadsCollection';
-import createHOTThread from '@salesforce/apex/HOT_MessageHelper.createHOTThread';
+import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
 import { refreshApex } from '@salesforce/apex';
 
@@ -39,12 +39,12 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     wiredAccount(result) {
         this.accountResult = result;
         if (result.data) {
-            this.accountId = result;
+            this.accountId = result.data;
         }
     }
 
     handlenewpressed() {
-        createHOTThread({ recordId: this.recordId, accountId: this.accountId })
+        createThread({ recordId: this.recordId, accountId: this.accountId })
             .then((result) => {
                 return refreshApex(this._threadsforRefresh);
             })

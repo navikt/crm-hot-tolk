@@ -17,7 +17,7 @@ public with sharing class HOT_MessageHelper {
 
     @AuraEnabled
     public static Id getAccountOnRequest(Id recordId) {
-        return [SELECT Account__c FROM HOT_Request__c WHERE Id = :recordId];
+        return [SELECT Account__c FROM HOT_Request__c WHERE Id = :recordId]?.Account__c;
     }
 
     @AuraEnabled(cacheable=true)
@@ -80,13 +80,7 @@ public with sharing class HOT_MessageHelper {
     }
 
     @AuraEnabled
-    public static void createThread(Id recordId) {
-        Thread__c newThread = new Thread__c();
-        newThread.CRM_Related_Object__c = recordId;
-        insert newThread;
-    }
-
-    public static Thread__c createHOTThread(Id recordId, Id accountId) {
+    public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = recordId;
         thread.CRM_Type__c = 'HOT';
