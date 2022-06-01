@@ -27,14 +27,16 @@ public with sharing class HOT_MessageHelper {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<Thread__c> getThreads(Id recordId) {
-        List<Thread__c> threadList;
+    public static List<sObject> getThreads(Id recordId) {
+        List<sObject> threadList;
         try {
-            threadList = [
-                SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
-                FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId
-            ];
+            String query = 'SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c FROM Thread__c WHERE CRM_Type__c = \'HOT\' ';
+            if (recordId.getSObjectType() == 'HOT_Request__c') {
+                query += 'AND HOT_Request__c = :recordId';
+            } else {
+                query += 'AND CRM_Related_Object__c = :recordId';
+            }
+            threadList = Database.query(query);
         } catch (Exception e) {
         }
         return threadList;
@@ -77,22 +79,12 @@ public with sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=false)
     public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
+        thread.HOT_Request__c = recordId.getSObjectType() == 'HOT_Request__c' ? recordId : null;
         thread.CRM_Related_Object__c = recordId;
         thread.CRM_Type__c = 'HOT';
         thread.CRM_Account__c = accountId;
-        insertThread(thread);
+        HOT_DatabaseOperations.insertRecords(thread);
         return thread;
-    }
-    
-    @AuraEnabled(cacheable=false)
-    public static void insertThread(Thread__c thread) {
-        try {
-            HOT_DatabaseOperations.insertRecords(thread);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
     }
 
     @AuraEnabled(cacheable=true)
