@@ -28,6 +28,6 @@ public with sharing class HOT_ThreadListControllerTest {
         Test.startTest();
         List<Thread__c> threadList = HOT_ThreadListController.getMyThreads();
         Test.stopTest();
-        System.assertEquals(threadList, null); // Can't get current running user in test
+        System.assertEquals(new List<Thread__c>(), threadList); // Can't get current running user in test
     }
 }
