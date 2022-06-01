@@ -82,7 +82,7 @@ public with sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=false)
     public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
-        thread.HOT_Request__c = recordId.getSObjectType() == 'HOT_Request__c' ? recordId : null;
+        thread.HOT_Request__c = recordId.getSObjectType().getDescribe().getName() == 'HOT_Request__c' ? recordId : null;
         thread.CRM_Related_Object__c = recordId;
         thread.CRM_Thread_Type__c = 'HOT';
         thread.CRM_Account__c = accountId;
