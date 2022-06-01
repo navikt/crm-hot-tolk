@@ -109,7 +109,7 @@ public with sharing class HOT_MessageHelperTest {
         Id accountId = HOT_MessageHelper.getAccountOnRequest(request.Id);
         Test.stopTest();
         System.assertNotEquals(null, accountId);
-        System.assertEquals(personAccount.Id, request.Account__c);
+        System.assertEquals(accountId, personAccount.Id);
     }
 
     @isTest
