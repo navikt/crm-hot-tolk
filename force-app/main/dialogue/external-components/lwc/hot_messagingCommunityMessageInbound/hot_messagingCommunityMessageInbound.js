@@ -1,7 +1,7 @@
 import { LightningElement, api } from 'lwc';
-import logos from '@salesforce/resourceUrl/hot_stoLogos';
+import logo from '@salesforce/resourceUrl/hot_tindLogo';
 
 export default class CommunityMessageInbound extends LightningElement {
     @api message;
-    navlogo = logos + '/navLogoRed.svg';
+    navlogo = logo;
 }

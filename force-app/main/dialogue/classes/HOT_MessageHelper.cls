@@ -38,7 +38,7 @@ public with sharing class HOT_MessageHelper {
             threadList = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId
+                WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = 'HOT'
             ];
         } catch (Exception e) {
         }
@@ -53,7 +53,7 @@ public with sharing class HOT_MessageHelper {
             Thread__c t = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId
+                WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = 'HOT'
                 LIMIT 1
             ];
 
@@ -134,7 +134,11 @@ public with sharing class HOT_MessageHelper {
      */
     @AuraEnabled
     public static void markAsRead(Id threadId) {
-        List<Message__c> msgList = [SELECT Id, CRM_Read__c, CRM_Read_Datetime__c FROM Message__c WHERE CRM_Read__c = FALSE AND CRM_Thread__c = :threadId];
+        List<Message__c> msgList = [
+            SELECT Id, CRM_Read__c, CRM_Read_Datetime__c
+            FROM Message__c
+            WHERE CRM_Read__c = FALSE AND CRM_Thread__c = :threadId
+        ];
         for (Message__c msg : msgList) {
             msg.CRM_Read__c = true;
             msg.CRM_Read_Datetime__c = DateTime.now();
@@ -152,7 +156,11 @@ public with sharing class HOT_MessageHelper {
      */
     @AuraEnabled
     public static void markAsReadByNav(Id threadId) {
-        List<Message__c> msgList = [SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c FROM Message__c WHERE CRM_Read_By_Nav__c = FALSE AND CRM_Thread__c = :threadId];
+        List<Message__c> msgList = [
+            SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
+            FROM Message__c
+            WHERE CRM_Read_By_Nav__c = FALSE AND CRM_Thread__c = :threadId
+        ];
         for (Message__c msg : msgList) {
             msg.CRM_Read_By_Nav__c = true;
             msg.CRM_Read_By_Nav_Datetime__c = DateTime.now();
