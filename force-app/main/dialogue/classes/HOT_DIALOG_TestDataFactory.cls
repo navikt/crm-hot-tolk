@@ -529,7 +529,8 @@ public class HOT_DIALOG_TestDataFactory {
         public Map<String, Object> getFieldDefaults(Boolean bulkify) {
             return new Map<String, Object>{
                 'CRM_Contact__c' => bulkify ? 'Contact' : createRecord('Contact', null),
-                'CRM_isActive__c' => true
+                'CRM_isActive__c' => true,
+                'CRM_Type__c' => 'HOT'
             };
         }
         public Map<String, String> getDmlFields() {
