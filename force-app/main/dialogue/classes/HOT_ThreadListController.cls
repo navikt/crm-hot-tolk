@@ -1,4 +1,4 @@
-public without sharing class HOT_ThreadListController {
+public with sharing class HOT_ThreadListController {
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getMyThreads() {
         User user = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()];
@@ -10,6 +10,7 @@ public without sharing class HOT_ThreadListController {
             FROM Thread__c
             WHERE
                 CRM_Account__c = :user.AccountId
+                AND CRM_Type__c = 'HOT'
         ];
         return threads;
     }

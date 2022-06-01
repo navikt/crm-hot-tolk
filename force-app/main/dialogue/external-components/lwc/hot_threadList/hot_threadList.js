@@ -37,11 +37,13 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
         },
     ];
         
-    openThread() {
+    openThread(event) {
         this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
+            type: 'standard__recordPage',
             attributes: {
-                pageName: 'thread'
+                recordId: event.detail.Id,
+                objectApiName: 'Thread__c',
+                actionName: 'view'
             }
         });
     }
@@ -51,7 +53,9 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
     @wire(getMyThreads)
     wiredThreads(result) {
         this.wiredThreadsResult = result;
+        console.log('result: ', JSON.stringify(result));
         if (result.data) {
+            console.log('result.data: ', result.data);
             this.threads = result.data.map(x => ({...x, read: x.CRM_Number_of_unread_Messages__c > 0 ? false : true}));
         }
     }
