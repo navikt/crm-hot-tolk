@@ -74,13 +74,25 @@ public with sharing class HOT_MessageHelper {
         }
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = recordId;
         thread.CRM_Type__c = 'HOT';
         thread.CRM_Account__c = accountId;
+        insertThread(thread);
         return thread;
+    }
+    
+    @AuraEnabled(cacheable=false)
+    public static void insertThread(Thread__c thread) {
+        try {
+            HOT_DatabaseOperations.insertRecords(thread);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     @AuraEnabled(cacheable=true)

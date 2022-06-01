@@ -183,6 +183,7 @@
                     disabled={isRequestAddFilesButtonDisabled}
                 ></c-button>
                 <c-button
+                    if:true={isUserAccount}
                     button-label="Gå til samtale"
                     button-styling="primary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
