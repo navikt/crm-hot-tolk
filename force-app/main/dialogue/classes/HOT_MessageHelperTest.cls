@@ -94,6 +94,25 @@ public with sharing class HOT_MessageHelperTest {
         System.assertEquals(tList[0].CRM_Account__c, acc.Id);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT');
     }
+
+    @isTest
+    static void getAccountonRequestTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        insert personAccount;
+        request.Account__c = personAccount.Id;
+        insert request;
+
+        Test.startTest();
+        Id accountId = HOT_MessageHelper.getAccountOnRequest(request.Id);
+        Test.stopTest();
+        System.assertNotEquals(null, accountId);
+        System.assertEquals(accountId, personAccount.Id);
+    }
+
     @isTest
     static void getMessagesFromThreadTest() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
