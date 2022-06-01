@@ -16,6 +16,11 @@ public with sharing class HOT_MessageHelper {
     }
 
     @AuraEnabled(cacheable=true)
+    public static Id getAccountOnRequest(Id recordId) {
+        return [SELECT Account__c FROM HOT_Request__c WHERE Id = :recordId]?.Account__c;
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadsCollection(Id recordId, Boolean singleThread) {
         if (singleThread == false) {
             return getThreads(recordId);
@@ -33,7 +38,7 @@ public with sharing class HOT_MessageHelper {
             threadList = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId
+                WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = 'HOT'
             ];
         } catch (Exception e) {
         }
@@ -48,7 +53,7 @@ public with sharing class HOT_MessageHelper {
             Thread__c t = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId
+                WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = 'HOT'
                 LIMIT 1
             ];
 
@@ -74,14 +79,8 @@ public with sharing class HOT_MessageHelper {
         }
     }
 
-    @AuraEnabled
-    public static void createThread(Id recordId) {
-        Thread__c newThread = new Thread__c();
-        newThread.CRM_Related_Object__c = recordId;
-        insert newThread;
-    }
-
-    public static Thread__c createHOTThread(Id recordId, Id accountId) {
+    @AuraEnabled(cacheable=true)
+    public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = recordId;
         thread.CRM_Type__c = 'HOT';
@@ -135,7 +134,11 @@ public with sharing class HOT_MessageHelper {
      */
     @AuraEnabled
     public static void markAsRead(Id threadId) {
-        List<Message__c> msgList = [SELECT Id, CRM_Read__c, CRM_Read_Datetime__c FROM Message__c WHERE CRM_Read__c = FALSE AND CRM_Thread__c = :threadId];
+        List<Message__c> msgList = [
+            SELECT Id, CRM_Read__c, CRM_Read_Datetime__c
+            FROM Message__c
+            WHERE CRM_Read__c = FALSE AND CRM_Thread__c = :threadId
+        ];
         for (Message__c msg : msgList) {
             msg.CRM_Read__c = true;
             msg.CRM_Read_Datetime__c = DateTime.now();
@@ -153,7 +156,11 @@ public with sharing class HOT_MessageHelper {
      */
     @AuraEnabled
     public static void markAsReadByNav(Id threadId) {
-        List<Message__c> msgList = [SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c FROM Message__c WHERE CRM_Read_By_Nav__c = FALSE AND CRM_Thread__c = :threadId];
+        List<Message__c> msgList = [
+            SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
+            FROM Message__c
+            WHERE CRM_Read_By_Nav__c = FALSE AND CRM_Thread__c = :threadId
+        ];
         for (Message__c msg : msgList) {
             msg.CRM_Read_By_Nav__c = true;
             msg.CRM_Read_By_Nav_Datetime__c = DateTime.now();
