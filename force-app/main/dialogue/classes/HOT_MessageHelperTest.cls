@@ -79,13 +79,39 @@ public with sharing class HOT_MessageHelperTest {
         Account acc = new Account();
         acc.Name = 'Newly created account';
         insert acc;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
 
         Test.startTest();
-        HOT_MessageHelper.createThread(acc.Id);
+        Thread__c thread = HOT_MessageHelper.createThread(request.Id, acc.Id);
+        insert thread;
         Test.stopTest();
-        List<Thread__c> tList = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :acc.Id];
+        List<Thread__c> tList = [SELECT Id, CRM_Account__c FROM Thread__c WHERE CRM_Related_Object__c = :request.Id];
         System.assertNotEquals(null, tList);
+        System.assertEquals(tList[0].CRM_Account__c, acc.Id);
     }
+
+    @isTest
+    static void getAccountonRequestTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        insert personAccount;
+        request.Account__c = personAccount.Id;
+        insert request;
+
+        Test.startTest();
+        Id accountId = HOT_MessageHelper.getAccountOnRequest(request.Id);
+        Test.stopTest();
+        System.assertNotEquals(null, accountId);
+        System.assertEquals(accountId, personAccount.Id);
+    }
+
     @isTest
     static void getMessagesFromThreadTest() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
