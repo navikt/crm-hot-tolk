@@ -556,6 +556,5 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                  });
             }
         });
-       
     }
 }
