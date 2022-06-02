@@ -1,6 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreadsCollection';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
+import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
 import { refreshApex } from '@salesforce/apex';
 
@@ -73,5 +74,10 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             detail: event.detail
         });
         this.dispatchEvent(englishEvent);
+    }
+    connectedCallback() {
+        if (this.threads?.length > 0) {
+            markAsReadByNav({ threadId: this.threads[0]?.Id });
+        }
     }
 }
