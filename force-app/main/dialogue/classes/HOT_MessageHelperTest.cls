@@ -87,7 +87,6 @@ public with sharing class HOT_MessageHelperTest {
 
         Test.startTest();
         Thread__c thread = HOT_MessageHelper.createThread(request.Id, acc.Id);
-        insert thread;
         Test.stopTest();
         List<Thread__c> tList = [SELECT Id, CRM_Account__c FROM Thread__c WHERE CRM_Related_Object__c = :request.Id];
         System.assertNotEquals(null, tList);
