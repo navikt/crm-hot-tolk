@@ -55,16 +55,19 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
         let hasErrors = this.handleValidation();
         if (!hasErrors) {
+            this.template.querySelector('[data-id="saveButton"]').disabled = true;
             this.promptOverlap().then((overlapOk) => {
                 if (overlapOk) {
                     this.hideFormAndShowLoading();
                     this.submitForm();
                 } else {
                     this.spin = false;
+                    this.template.querySelector('[data-id="saveButton"]').disabled = false;
                 }
             });
         } else {
             this.spin = false;
+            this.template.querySelector('[data-id="saveButton"]').disabled = false;
         }
     }
     setAccountLookupFieldsBasedOnRequestType() {
