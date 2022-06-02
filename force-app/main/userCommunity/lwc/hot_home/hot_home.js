@@ -29,6 +29,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
             myRequests: baseURL + '/mine-bestillinger',
             myRequestsOther: baseURL + '/mine-bestillinger-andre',
             myPage: baseURL + '/min-side',
+            myThreads: baseURL + '/mine-samtaler',
             myServiceAppointments: baseURL + '/mine-oppdrag',
             freelanceMyPage: baseURL + '/frilanstolk-min-side'
         };
