@@ -1,0 +1,67 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "id" : "fad4f636-86fe-469f-a31d-747739192d6a",
+  "label" : "Mine Samtaler",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "NAVarea" : "Privatperson",
+        "navareapicklist" : "Privatperson"
+      },
+      "componentName" : "c:globalCommunityHeader",
+      "id" : "50fe4b6f-608e-46be-8f0f-9101db0cafb6",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "b84a46a2-eaa7-46dc-8ba3-9d91939f4572",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:hot_threadList",
+      "id" : "32d0f621-dc92-47fe-9b53-9fe1e74eb38c",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "986d8e02-348f-4ed3-b3d2-c43e2d093394",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "NAVarea" : "Privatperson",
+        "navareapicklist" : "Privatperson"
+      },
+      "componentName" : "c:globalCommunityFooter",
+      "id" : "e6c7e631-da4c-4561-97ab-56244e6fc5f2",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "57cbe772-5890-4476-bcc9-302cb990f9cd",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Mine Samtaler"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "32f065e3-013e-4bf2-b575-87e295aac477",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "8c65e914-f172-4dca-9785-ab08c805f6d1",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-mine-samtaler"
+}
