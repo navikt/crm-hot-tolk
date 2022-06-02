@@ -67,7 +67,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             });
         } else {
             this.spin = false;
-            this.template.querySelector('[data-id="saveButton"]').disabled = false;
         }
     }
     setAccountLookupFieldsBasedOnRequestType() {
