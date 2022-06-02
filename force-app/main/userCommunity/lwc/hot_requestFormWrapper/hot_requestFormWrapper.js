@@ -1,6 +1,7 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
+import getRequestStatus from '@salesforce/apex/HOT_RequestListController.getRequestStatus';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
@@ -50,11 +51,16 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.spin = true;
         this.setAccountLookupFieldsBasedOnRequestType();
         this.getFieldValuesFromSubForms();
+        let status = 'Åpen';
         if (this.isEditOrCopyMode) {
             this.deleteMarkedFiles();
+            status = await getRequestStatus({ recordId: this.recordId });
+            if (status !== null && status !== 'Åpen') {
+                this.showModalOnEditNotAllowed();
+            }
         }
         let hasErrors = this.handleValidation();
-        if (!hasErrors) {
+        if (!hasErrors && (status === 'Åpen' || status === null)) {
             this.promptOverlap().then((overlapOk) => {
                 if (overlapOk) {
                     this.hideFormAndShowLoading();
@@ -142,6 +148,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.hideFormAndShowLoading();
             this.submitForm();
         }
+        if (event.detail === 'confirm' && this.modalHeader === 'Kunne ikke redigere bestilling') {
+            this.goToMyRequests();
+        }
     }
 
     submitForm() {
@@ -165,6 +174,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     handleSuccess(event) {
+        if (this.editNotAllowed) {
+            return;
+        }
         this.recordId = event.detail.id;
         this.uploadFiles();
         this.createWorkOrders();
@@ -183,6 +195,16 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelector('.submitted-loading').classList.remove('hidden');
         this.template.querySelector('.h2-loadingMessage').focus();
         window.scrollTo(0, 0);
+    }
+
+    editNotAllowed = false;
+    showModalOnEditNotAllowed() {
+        this.editNotAllowed = true;
+        this.noCancelButton = true;
+        this.confirmButtonStyle = 'width: 15rem;';
+        this.modalContent = 'En formidler har nettopp begynt å jobbe med bestillingen din, og den kan derfor ikke redigeres.';
+        this.modalHeader = 'Kunne ikke redigere bestilling';
+        this.template.querySelector('c-alertdialog').showModal();
     }
 
     uploadFiles() {
@@ -238,16 +260,19 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     }
 
     submitButtonLabel = 'Send inn';
+    submitSuccessMessage = 'Bestilling mottatt';
     isEditOrCopyMode = false;
     isEditModeAndTypeMe = false;
     handleEditOrCopyModeRequestType(parsed_params) {
         if (parsed_params.edit != null) {
             this.breadcrumbs.push({ label: 'Rediger bestilling' });
             this.submitButtonLabel = 'Lagre';
+            this.submitSuccessMessage = 'Dine endringer er lagret';
         }
         if (parsed_params.copy != null) {
             this.breadcrumbs.push({ label: 'Kopier bestilling' });
             this.submitButtonLabel = 'Send inn';
+            this.submitSuccessMessage = 'Bestilling mottatt';
         }
         this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
         this.requestTypeChosen = this.isEditOrCopyMode;

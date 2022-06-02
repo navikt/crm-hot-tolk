@@ -54,6 +54,12 @@ public without sharing class HOT_RequestListController {
         return cdl;
     }
 
+    @AuraEnabled(cacheable=true) 
+    public static String getRequestStatus(Id recordId) {
+        return [SELECT Status__c FROM HOT_Request__c WHERE Id = :recordId]?.Status__c;
+    }
+    
+
     @AuraEnabled(cacheable=true)
     public static List<HOT_Request__c> getRequestList() {
         Id userId = UserInfo.getUserId();
