@@ -17,4 +17,8 @@
         <object>Thread__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <tabSettings>
+        <tab>Thread__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
 </PermissionSet>
