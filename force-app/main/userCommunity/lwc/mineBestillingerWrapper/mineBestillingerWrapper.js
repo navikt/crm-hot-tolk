@@ -1,5 +1,7 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
+import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
+import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreads';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -243,7 +245,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     interpreter = 'Tolk';
     isOrdererWantStatusUpdateOnSMS = 'Ja';
     isSeries = false;
+    isUserAccount = false;
     updateView() {
+        this.isUserAccount = this.request.Account__c === this.userRecord.AccountId;
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
@@ -524,5 +528,33 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     deleteMarkedFiles() {
         this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
+    }
+
+    navigateToThread(recordId) {
+        this[NavigationMixin.Navigate]({
+                    type: 'standard__recordPage',
+                    attributes: {
+                        recordId: recordId,
+                        objectApiName: 'Thread__c',
+                        actionName: 'view'
+                    }
+                });
+    }
+
+    goToThread() {
+        getThreads({ recordId: this.request.Id }).then((res) => {
+            if (res.length > 0) {
+                this.navigateToThread(res[0].Id);
+            } else {
+                createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
+                .then((result) => {
+                    this.navigateToThread(result.Id);
+                }).catch((error) => {
+                    this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                    this.noCancelButton = true;
+                    this.showModal();
+                 });
+            }
+        });
     }
 }
