@@ -149,7 +149,7 @@
             <div class="buttonRow" if:true={isRequestOrWorkOrderDetails}>
                 <c-button
                     button-label={editButtonLabel}
-                    button-styling="primary"
+                    button-styling="secondary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"
@@ -181,6 +181,15 @@
                     mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={addFiles}
                     disabled={isRequestAddFilesButtonDisabled}
+                ></c-button>
+                <c-button
+                    if:true={isUserAccount}
+                    button-label="Gå til samtale"
+                    button-styling="primary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 10rem; justify-content: center"
+                    mobile-style="width: 10rem; justify-content: center"
+                    onbuttonclick={goToThread}
                 ></c-button>
             </div>
             <div class="record-details-container" if:false={noWorkOrders}>
