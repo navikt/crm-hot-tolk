@@ -62,7 +62,6 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                     this.submitForm();
                 } else {
                     this.spin = false;
-                    this.template.querySelector('[data-id="saveButton"]').disabled = false;
                 }
             });
         } else {
@@ -143,6 +142,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.spin = true;
             this.hideFormAndShowLoading();
             this.submitForm();
+        }
+        if (event.detail === 'cancel' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
+            this.template.querySelector('[data-id="saveButton"]').disabled = false;
         }
     }
 
