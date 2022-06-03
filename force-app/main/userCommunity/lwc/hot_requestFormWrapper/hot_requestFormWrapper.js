@@ -154,6 +154,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     modalContent = '';
     noCancelButton = true;
     handleError(event) {
+        this.template.querySelector('[data-id="saveButton"]').disabled = false;
         this.modalHeader = 'Noe gikk galt';
         this.noCancelButton = true;
         if (event.detail.detail === 'Fant ingen virksomhet med dette organisasjonsnummeret.') {
