@@ -1,5 +1,19 @@
 .decorator-wrapper {
 }
+.body-wrapper{
+    padding: 1rem;
+}
+.back-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    max-width: 80em;
+    margin: auto;
+    padding-top: 2rem;
+}
+p {
+    font-weight: bold;
+}
 .contentholder {
     margin: auto;
     max-width: 80em;
@@ -8,6 +22,7 @@
     float: right;
 }
 .knapp {
+    margin-top: 2rem;
     float: right;
 }
 .panel {
@@ -27,4 +42,9 @@
 
 .largePadding {
     padding-bottom: 5.5em;
+}
+@media (max-width: 576px) {
+    .back-link {
+        padding-left: 2rem;
+    }
 }

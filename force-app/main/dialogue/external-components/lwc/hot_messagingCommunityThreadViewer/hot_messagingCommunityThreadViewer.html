@@ -1,4 +1,8 @@
 <template>
+    <a class="back-link" onclick={goBack}>
+        <c-icon icon="Back"></c-icon>
+        <p style="margin-left: 0.25rem">Tilbake</p>
+    </a>
     <div class="decorator-wrapper">
         <div class="header" style="text-align: center">
             <h1 class="typo-sidetittel">{name}</h1>
@@ -28,7 +32,7 @@
                             class="msgText slds-hidden"
                             field-name="CRM_Message_Text__c"
                         ></lightning-input-field>
-                        <div class="body-wrapper" style="">
+                        <div class="body-wrapper">
                             <div class="example__inner">
                                 <div class="">
                                     <c-hot_community-textarea
