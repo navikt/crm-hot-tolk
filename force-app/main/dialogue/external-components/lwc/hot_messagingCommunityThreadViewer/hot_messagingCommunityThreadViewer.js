@@ -176,20 +176,22 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 pageName: this.navigationBaseUrl
             },
             state: {
-                id: this.navigationUrl,
-                level: 'WO'
+                id: this.navigationId,
+                level: this.navigationLevel
             }
         });
     }
 
-    navigationUrl = '';
+    navigationId = '';
+    navigationLevel = '';
     navigationBaseUrl = '';
     getParams() {
         let parsed_params = getParametersFromURL();
         if (parsed_params !== null) {
-            if (parsed_params.fromMineBestillinger && parsed_params.urlStateParametersId !== null) {
+            if (parsed_params.from && parsed_params.recordId !== null && parsed_params.level !== null) {
                 this.navigationBaseUrl = 'mine-bestillinger';
-                this.navigationUrl = parsed_params.urlStateParametersId;
+                this.navigationId = parsed_params.recordId;
+                this.navigationLevel = parsed_params.level;
             }
         } else {
             this.navigationBaseUrl = 'mine-samtaler';
