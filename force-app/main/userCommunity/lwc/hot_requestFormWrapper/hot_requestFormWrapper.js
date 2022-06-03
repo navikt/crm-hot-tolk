@@ -61,6 +61,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
         let hasErrors = this.handleValidation();
         if (!hasErrors && (status === 'Åpen' || status === null)) {
+        this.template.querySelector('[data-id="saveButton"]').disabled = true;
             this.promptOverlap().then((overlapOk) => {
                 if (overlapOk) {
                     this.hideFormAndShowLoading();
@@ -148,6 +149,9 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             this.hideFormAndShowLoading();
             this.submitForm();
         }
+        if (event.detail === 'cancel' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
+            this.template.querySelector('[data-id="saveButton"]').disabled = false;
+        }
         if (event.detail === 'confirm' && this.modalHeader === 'Kunne ikke redigere bestilling') {
             this.goToMyRequests();
         }
@@ -161,6 +165,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     modalContent = '';
     noCancelButton = true;
     handleError(event) {
+        this.template.querySelector('[data-id="saveButton"]').disabled = false;
         this.modalHeader = 'Noe gikk galt';
         this.noCancelButton = true;
         if (event.detail.detail === 'Fant ingen virksomhet med dette organisasjonsnummeret.') {
