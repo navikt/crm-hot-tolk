@@ -186,13 +186,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     navigationLevel = '';
     navigationBaseUrl = '';
     getParams() {
-        let parsed_params = getParametersFromURL();
-        if (parsed_params !== null) {
-            if (parsed_params.from && parsed_params.recordId !== null && parsed_params.level !== null) {
-                this.navigationBaseUrl = 'mine-bestillinger';
+        let parsed_params = getParametersFromURL() ?? '';
+            if (parsed_params.from && parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
+                this.navigationBaseUrl = parsed_params.from;
                 this.navigationId = parsed_params.recordId;
                 this.navigationLevel = parsed_params.level;
-            }
         } else {
             this.navigationBaseUrl = 'mine-samtaler';
         }
