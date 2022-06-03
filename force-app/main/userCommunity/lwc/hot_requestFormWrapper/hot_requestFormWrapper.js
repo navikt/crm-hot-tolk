@@ -55,12 +55,14 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
         let hasErrors = this.handleValidation();
         if (!hasErrors) {
+            this.template.querySelector('[data-id="saveButton"]').disabled = true;
             this.promptOverlap().then((overlapOk) => {
                 if (overlapOk) {
                     this.hideFormAndShowLoading();
                     this.submitForm();
                 } else {
                     this.spin = false;
+                    this.template.querySelector('[data-id="saveButton"]').disabled = false;
                 }
             });
         } else {
@@ -152,6 +154,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     modalContent = '';
     noCancelButton = true;
     handleError(event) {
+        this.template.querySelector('[data-id="saveButton"]').disabled = false;
         this.modalHeader = 'Noe gikk galt';
         this.noCancelButton = true;
         if (event.detail.detail === 'Fant ingen virksomhet med dette organisasjonsnummeret.') {
