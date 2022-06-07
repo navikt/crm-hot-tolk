@@ -29,7 +29,6 @@
 }
 .header {
     flex: 2;
-    margin: 0rem 0rem 0.5rem 0rem;
     width: 100%;
     text-align: center;
     font-size: 1.5rem;
@@ -131,9 +130,10 @@ span {
     }
     .header {
         font-size: 1.4rem;
+        margin-bottom: 1rem;
     }
     .record-details-container {
-        margin: 4vw 0;
+        margin: 5vw 0;
     }
     .navigation-container {
         display: block;

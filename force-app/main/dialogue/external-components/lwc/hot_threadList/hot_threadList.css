@@ -8,7 +8,7 @@
     margin: 0 auto;
     width: 100%;
     max-width: 1200px;
-    padding: 2rem;
+    padding: 1rem;
 }
 
 .navigation-container {
@@ -16,7 +16,6 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 2rem;
 }
 .back-link {
     display: flex;
@@ -52,7 +51,6 @@ span {
 .header {
     flex-grow: 2;
     flex-basis: 33%;
-    margin: 0rem 0rem 0.5rem 0rem;
     width: 100%;
     text-align: center;
     font-size: 1.5rem;
@@ -73,12 +71,10 @@ span {
     }
     .header {
         font-size: 1.4rem;
-    }
-    .back-link {
-        padding-bottom: 4vw;
+        margin-bottom: 1rem;
     }
     .record-details-container {
-        margin: 4vw 0;
+        margin: 5vw 0;
     }
     .navigation-container {
         display: block;
