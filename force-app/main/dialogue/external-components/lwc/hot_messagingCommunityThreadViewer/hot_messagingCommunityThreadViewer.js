@@ -68,8 +68,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
 
     get name() {
-        //return getFieldValue(this.thread.data, THREADNAME_FIELD);
-        return 'jada haehae';
+        return getFieldValue(this.thread.data, THREADNAME_FIELD);
     }
 
     @wire(getmessages, { threadId: '$recordId' }) //Calls apex and extracts messages related to this record
