@@ -65,9 +65,11 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
         }
     }
 
-    isMobile = false;
+    get isMobile() {
+        return window.screen.width < 576;
+    }
+    
     connectedCallback() {
-        this.isMobile = window.screen.width < 576;
         refreshApex(this.wiredThreadsResult);
     }
     
