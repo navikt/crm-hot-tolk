@@ -537,6 +537,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                         recordId: recordId,
                         objectApiName: 'Thread__c',
                         actionName: 'view'
+                    },
+                    state: {
+                        from: 'mine-bestillinger',
+                        recordId: this.urlStateParameters.id,
+                        level: this.urlStateParameters.level
                     }
                 });
     }

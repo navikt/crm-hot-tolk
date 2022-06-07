@@ -1,4 +1,5 @@
 import { LightningElement, wire, api, track } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
 import { refreshApex } from '@salesforce/apex';
@@ -6,12 +7,13 @@ import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
+import { getParametersFromURL } from 'c/hot_URIDecoder';
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 
 const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD]; //Extract the name of the thread record
 
-export default class hot_messagingCommunityThreadViewer extends LightningElement {
+export default class hot_messagingCommunityThreadViewer extends NavigationMixin(LightningElement) {
     _mySendForSplitting;
     messages = [];
     buttonisdisabled = false;
@@ -28,6 +30,7 @@ export default class hot_messagingCommunityThreadViewer extends LightningElement
     @api errorList = { title: '', errors: [] };
 
     connectedCallback() {
+        this.getParams();
         markAsRead({ threadId: this.recordId });
         getContactId({})
             .then((contactId) => {
@@ -164,5 +167,32 @@ export default class hot_messagingCommunityThreadViewer extends LightningElement
     handleErrorClick(event) {
         let item = this.template.querySelector(event.detail);
         item.focus();
+    }
+
+    goBack() {
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: this.navigationBaseUrl
+            },
+            state: {
+                id: this.navigationId,
+                level: this.navigationLevel
+            }
+        });
+    }
+
+    navigationId = '';
+    navigationLevel = '';
+    navigationBaseUrl = '';
+    getParams() {
+        let parsed_params = getParametersFromURL() ?? '';
+            if (parsed_params.from && parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
+                this.navigationBaseUrl = parsed_params.from;
+                this.navigationId = parsed_params.recordId;
+                this.navigationLevel = parsed_params.level;
+        } else {
+            this.navigationBaseUrl = 'mine-samtaler';
+        }
     }
 }
