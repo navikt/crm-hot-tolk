@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_UserRole__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <formula>CASE(CRM_From_User__r.Profile.Name, 
+    <formula>CRM_From_User__r.FirstName + &apos;, &apos; 
+
++
+
+CASE(CRM_From_User__r.Profile.Name, 
      &apos;HOT Tolk Formidler&apos;, &apos;Formidler&apos;, 
      &apos;HOT Tolk Ansatt&apos;, &apos;Tolk&apos;, 
      &apos;NAV Samhandler&apos;, &apos;Tolk&apos;,
