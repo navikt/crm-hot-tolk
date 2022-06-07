@@ -67,7 +67,7 @@
                     "componentAttributes": {
                         "customHeadTags": "",
                         "description": "",
-                        "title": "{!Record._Object}: {!Record._Title}"
+                        "title": "Samtale: {!Record.HOT_Subject__c}"
                     },
                     "componentName": "forceCommunity:seoAssistant",
                     "id": "3d95a202-2d9d-4c84-89a3-c866967de384",
