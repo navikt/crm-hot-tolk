@@ -9,7 +9,6 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
-            <property name="recordId" type="String" label="Record ID" description="Should be set to {!recordId}" />
             <property name="header" type="String" label="Header text" />
             <property name="secondheader" type="String" label="Secondary header text" />
             <property name="alerttext" type="String" label="Alert text when closed" description="Alert text shown when the thread is closed. HTML formatted" default="Dialogen er lukket" />
