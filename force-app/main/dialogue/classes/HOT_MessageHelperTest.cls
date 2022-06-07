@@ -6,16 +6,16 @@ public with sharing class HOT_MessageHelperTest {
         acc.Name = 'Test account';
         insert acc;
 
-        Thread__c t = new Thread__c();
+        Thread__c t = HOT_TestDataFactory.createThread();
         t.CRM_Related_Object__c = acc.Id;
 
-        Thread__c t2 = new Thread__c();
+        Thread__c t2 = HOT_TestDataFactory.createThread();
         t2.CRM_Related_Object__c = acc.Id;
 
-        Thread__c t3 = new Thread__c();
+        Thread__c t3 = HOT_TestDataFactory.createThread();
         t3.CRM_Related_Object__c = acc.Id;
 
-        HOT_DIALOG_TestDataFactory.createRecordList(new List<Thread__c>{ t, t2, t3 });
+        insert new List<Thread__c>{ t, t2, t3 };
 
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
