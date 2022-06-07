@@ -7,9 +7,19 @@
     display: flex;
     align-items: center;
     text-decoration: none;
+    max-width: fit-content;
+}
+.back-link-div {
     max-width: 80em;
     margin: auto;
     padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+.brodsmulesti {
+    max-width: 80em;
+    margin: auto;
+    padding: 1rem;
+    justify-content: start;
 }
 p {
     font-weight: bold;

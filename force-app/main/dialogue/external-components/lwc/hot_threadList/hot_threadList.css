@@ -18,16 +18,20 @@
     align-items: center;
     padding-bottom: 2rem;
 }
-
 .back-link {
     display: flex;
-    flex-grow: 1;
-    flex-basis: 33%;
-    flex-direction: row;
     align-items: center;
     text-decoration: none;
+    max-width: fit-content;
 }
-
+.back-link-div {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-basis: 33%;
+    max-width: 80em;
+    margin: auto;
+}
 .back-link:hover {
     text-decoration: underline;
 }

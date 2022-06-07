@@ -6,10 +6,12 @@
     <main class="mainContent">
         <div class="mine-bestillinger-wrapper">
             <div class="navigation-container">
-                <a if:false={isMobile} class="back-link" onclick={goBack}
-                    ><c-icon icon="Back"></c-icon>
-                    <p style="margin-left: 0.25rem">Tilbake</p></a
-                >
+                <div if:false={isMobile} class="back-link-div">
+                    <a class="back-link" onclick={goBack}>
+                    <c-icon icon="Back"></c-icon>
+                    <p style="margin-left: 0.25rem">Tilbake</p>
+                    </a>
+                </div>
                 <h2 class="header" tabindex="-1" autofocus>{headerToShow}</h2>
                 <div class="header-buttons">
                     <c-button
@@ -24,10 +26,12 @@
                         box-shadow: 0px 5px 10px 0px rgb(0 0 0 / 30%); background-color: forestgreen"
                         onbuttonclick={goToNewRequest}
                     ></c-button>
-                    <a if:true={isMobile} class="back-link" onclick={goBack}>
+                    <div if:true={isMobile} class="back-link-div">
+                        <a class="back-link" onclick={goBack}>
                         <c-icon icon="Back"></c-icon>
-                        <p style="margin-left: 0.25rem">Tilbake</p></a
-                    >
+                        <p style="margin-left: 0.25rem">Tilbake</p>
+                        </a>
+                    </div>
                     <c-list-filters-button
                         if:false={isWorkOrderDetails}
                         header="Filtrer søket"

@@ -9,12 +9,15 @@
 
 .back-link {
     display: flex;
-    flex: 1;
-    flex-direction: row;
     align-items: center;
     text-decoration: none;
+    max-width: fit-content;
 }
-
+.back-link-div {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+}
 .back-link:hover {
     text-decoration: underline;
 }
