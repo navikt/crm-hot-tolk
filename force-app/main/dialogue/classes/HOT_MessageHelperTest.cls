@@ -95,7 +95,7 @@ public with sharing class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
         System.assertEquals(tList[0].CRM_Account__c, acc.Id);
-        System.assertEquals(tList[0].CRM_Type__c, 'HOT');
+        System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-FORMIDLER');
     }
 
     @isTest
