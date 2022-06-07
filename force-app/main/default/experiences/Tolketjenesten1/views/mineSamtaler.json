@@ -1,0 +1,74 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "id" : "2cfca6a0-7b70-424c-9261-357a7c468e70",
+  "label" : "Mine Samtaler",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "NAVarea" : "Privatperson",
+        "navareapicklist" : "Privatperson"
+      },
+      "componentName" : "c:globalCommunityHeader",
+      "id" : "e35ba6c9-1d20-4841-b992-6fffe5f393d1",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "1d03a1d3-4c47-4ba1-b64b-9c76b8649c30",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:hot_tolketjenestenHovedBanner",
+      "id" : "a94b1124-7a00-4f52-9574-ece7b1087747",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : { },
+      "componentName" : "c:hot_threadList",
+      "id" : "939712e5-b9c5-4c98-b8a9-921e3a81df84",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "746d2664-f49c-4002-aa41-3f84b31d7831",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "NAVarea" : "Privatperson",
+        "navareapicklist" : "Privatperson"
+      },
+      "componentName" : "c:globalCommunityFooter",
+      "id" : "c866b813-6067-4ae4-b569-62c5fa6c608c",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "98e95750-28c6-4a39-8e9c-d768c48334f5",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Mine Samtaler"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "5301cfbe-1f43-48a7-85a9-2626b742e684",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "b61a1538-3465-4161-aa03-e5b03627695f",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-mine-samtaler"
+}
