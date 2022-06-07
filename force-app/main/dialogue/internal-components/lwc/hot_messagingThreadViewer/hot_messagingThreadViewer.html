@@ -1,17 +1,4 @@
 <template>
-    <!-- Header start -->
-    <div class="slds-chat-bookend">
-        <lightning-icon
-            icon-name="utility:chat"
-            alternative-text="chat-icon"
-            size="x-small"
-            title="Dialog"
-        ></lightning-icon>
-        <p style="text-align: center">
-            &nbsp;Henvendelse startet&nbsp;<c-hot_nav-formatted-date date={registereddate}></c-hot_nav-formatted-date>
-        </p>
-    </div>
-    <!-- Header Stop-->
     <!-- Messages Start-->
     <section role="log" id="scroller" class="slds-box scroller slds-scrollable_y">
         <template for:each={messages} for:item="message">

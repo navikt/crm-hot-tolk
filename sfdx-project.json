@@ -32,7 +32,7 @@
                 },
                 {
                     "package": "crm-henvendelse-base",
-                    "versionNumber": "0.3.0.LATEST"
+                    "versionNumber": "0.7.0.LATEST"
                 }
             ]
         },
@@ -64,7 +64,7 @@
                 },
                 {
                     "package": "crm-henvendelse-base",
-                    "versionNumber": "0.3.0.LATEST"
+                    "versionNumber": "0.7.0.LATEST"
                 }
             ]
         }
