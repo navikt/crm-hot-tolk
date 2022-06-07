@@ -12,13 +12,17 @@
                 <h2 class="header">Mine samtaler</h2>
                 <div class="empty"></div>
             </div>
-            <div class="record-details-container">
+            <div class="record-details-container" if:false={noThreads}>
                 <c-table
                     records={threads}
                     columns={columns}
                     onrowclick={openThread}
                     icon-by-value={iconByValue}
                 ></c-table>
+            </div>
+            <div if:true={noThreads} style="text-align: center">
+                <br />
+                Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
             </div>
         </div>
     </main>

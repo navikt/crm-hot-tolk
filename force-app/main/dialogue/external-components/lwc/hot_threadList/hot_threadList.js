@@ -20,7 +20,12 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
             icon: 'Information',
             fill: '',
             ariaLabel: 'Du har nye meldinger'
-        }
+        },
+        true: {
+            icon: 'SuccessFilled',
+            fill: 'Green',
+            ariaLabel: 'Ingen nye meldinger'
+        },
     };
     
     @track columns = [
@@ -49,12 +54,14 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
     }
 
     @track threads = [];
+    noThreads = false;
     wiredThreadsResult;
     @wire(getMyThreads)
     wiredThreads(result) {
         this.wiredThreadsResult = result;
         if (result.data) {
             this.threads = result.data.map(x => ({...x, read: x.CRM_Number_of_unread_Messages__c > 0 ? false : true}));
+            this.noThreads = this.threads.length === 0;
         }
     }
 
