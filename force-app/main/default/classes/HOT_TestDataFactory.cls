@@ -275,4 +275,12 @@ public class HOT_TestDataFactory {
         sms.Domain__c = 'HOT';
         return sms;
     }
+    public static Thread__c createThread() {
+        return createThread('HOT_BRUKER-FORMIDLER');
+    }
+    public static Thread__c createThread(String threadType) {
+        Thread__c thread = new Thread__c();
+        thread.CRM_Thread_Type__c = threadType;
+        return thread;
+    }
 }
