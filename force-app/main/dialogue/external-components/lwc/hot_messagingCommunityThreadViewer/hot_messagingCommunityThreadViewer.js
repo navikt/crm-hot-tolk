@@ -41,6 +41,21 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             });
     }
 
+    @track breadcrumbs = [ 
+        {
+            label: 'Tolketjenesten',
+            href: ''
+        },
+        {
+            label: 'Mine samtaler',
+            href: 'mine-samtaler'
+        },
+        {
+            label: 'Min samtale',
+            href: 'detail'
+        }
+    ];
+
     @wire(getRecord, { recordId: '$recordId', fields })
     wirethread(result) {
         this.thread = result;
@@ -191,6 +206,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 this.navigationBaseUrl = parsed_params.from;
                 this.navigationId = parsed_params.recordId;
                 this.navigationLevel = parsed_params.level;
+                this.breadcrumbs[1] = {
+                    label: 'Mine bestillinger',
+                    href: 'mine-bestillinger'
+                };
         } else {
             this.navigationBaseUrl = 'mine-samtaler';
         }

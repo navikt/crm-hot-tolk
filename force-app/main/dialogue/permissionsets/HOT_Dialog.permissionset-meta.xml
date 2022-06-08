@@ -5,6 +5,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.CRM_Number_of_unread_Messages_by_NAV__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Thread__c.HOT_Request__c</field>
         <readable>true</readable>

@@ -22,14 +22,16 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track filters = [];
     @track breadcrumbs = [];
 
-    isMobile = false;
-    buttonText = 'Ny bestilling';
-    setMobileButtonText() {
-        this.isMobile = window.screen.width < 576;
-        this.buttonText = this.isMobile ? '+' : 'Ny bestilling';
+
+    get isMobile() {
+        return window.screen.width < 576;
     }
+
+    get buttonText() {
+        return this.isMobile ? '+' : 'Ny bestilling';
+    }
+    
     connectedCallback() {
-        this.setMobileButtonText();
         this.filters = defaultFilters();
         this.breadcrumbs = [ 
         {
