@@ -1,7 +1,7 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:sldsOneColLayout",
-  "id" : "fad4f636-86fe-469f-a31d-747739192d6a",
+  "id" : "496132da-81dc-4288-85ee-a0efb60501df",
   "label" : "Mine Samtaler",
   "regions" : [ {
     "components" : [ {
@@ -10,24 +10,31 @@
         "navareapicklist" : "Privatperson"
       },
       "componentName" : "c:globalCommunityHeader",
-      "id" : "50fe4b6f-608e-46be-8f0f-9101db0cafb6",
+      "id" : "43d0f45f-025a-461f-8259-23768d42e1be",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "b84a46a2-eaa7-46dc-8ba3-9d91939f4572",
+    "id" : "2aa5f9c6-2fb5-4756-9f24-d3845ada8c00",
     "regionName" : "header",
     "type" : "region"
   }, {
     "components" : [ {
       "componentAttributes" : { },
+      "componentName" : "c:hot_tolketjenestenHovedBanner",
+      "id" : "6b208694-d94a-4bb0-a98d-d7bb33016c78",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : { },
       "componentName" : "c:hot_threadList",
-      "id" : "32d0f621-dc92-47fe-9b53-9fe1e74eb38c",
+      "id" : "0559acfc-e110-4cd2-95e1-40f3e6ccd446",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "986d8e02-348f-4ed3-b3d2-c43e2d093394",
+    "id" : "557fe495-083c-4858-a2e5-5affdc6b0b66",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -37,12 +44,12 @@
         "navareapicklist" : "Privatperson"
       },
       "componentName" : "c:globalCommunityFooter",
-      "id" : "e6c7e631-da4c-4561-97ab-56244e6fc5f2",
+      "id" : "920b5cfd-1508-4b29-8052-a378660a0331",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "57cbe772-5890-4476-bcc9-302cb990f9cd",
+    "id" : "ded1241b-c854-480f-a315-9f0f8fba6348",
     "regionName" : "footer",
     "type" : "region"
   }, {
@@ -53,11 +60,11 @@
         "title" : "Mine Samtaler"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "32f065e3-013e-4bf2-b575-87e295aac477",
+      "id" : "671ece0e-0540-43d0-b442-6a445eaa5604",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "8c65e914-f172-4dca-9785-ab08c805f6d1",
+    "id" : "d1cebcd4-d4e4-470b-a482-a71d1ff7d549",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],
