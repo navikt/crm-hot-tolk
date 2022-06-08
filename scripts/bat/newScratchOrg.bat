@@ -16,8 +16,8 @@ call sfdx force:package:install --package 04t7U000000TpSZQA0 -r -k %3 --wait 10 
 echo "Installerer crm-platform-reporting ver. 0.25"
 call sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k %3 --wait 10 --publishwait 10
 
-echo "Installer crm-henvendelse-base ver. 0.7"
-call sfdx force:package:install --package 04t7U000000TpcyQAC -r -k %3 --wait 10 --publishwait 10
+echo "Installer crm-henvendelse-base ver. 0.8"
+call sfdx force:package:install --package 04t7U000000TpdwQAC -r -k %3 --wait 10 --publishwait 10
 
 echo "Dytter kildekoden til scratch org'en"
 call sfdx force:source:push
