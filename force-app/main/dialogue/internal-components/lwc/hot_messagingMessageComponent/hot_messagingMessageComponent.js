@@ -1,6 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreadsCollection';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
+import setThreadLookupOnRequest from '@salesforce/apex/HOT_MessageHelper.setThreadLookupOnRequest';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
 import { refreshApex } from '@salesforce/apex';
@@ -47,6 +48,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     handlenewpressed() {
         createThread({ recordId: this.recordId, accountId: this.accountId })
             .then((result) => {
+                setThreadLookupOnRequest({ requestId: this.recordId, threadId: result.Id});
                 return refreshApex(this._threadsforRefresh);
             })
             .catch((error) => {});

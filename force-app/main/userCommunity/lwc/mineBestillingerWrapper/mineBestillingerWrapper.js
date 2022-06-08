@@ -1,7 +1,8 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
-import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreads';
+import setThreadLookupOnRequest from '@salesforce/apex/HOT_MessageHelper.setThreadLookupOnRequest';
+import getThreadLookupOnRequest from '@salesforce/apex/HOT_MessageHelper.getThreadLookupOnRequest';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -548,15 +549,20 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 });
     }
 
+    // TODO: Create lookup field on Request to Thread
     goToThread() {
-        getThreads({ recordId: this.request.Id }).then((res) => {
-            if (res.length > 0) {
-                this.navigateToThread(res[0].Id);
+        getThreadLookupOnRequest({ requestId: this.request.Id }).then((res) => {
+            if (res.Id !== null) {
+                this.navigateToThread(res.Id);
             } else {
                 createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
                 .then((result) => {
                     this.navigateToThread(result.Id);
+                    setThreadLookupOnRequest({ requestId: this.request.Id, threadId: result.id }).then(() => {
+                        refreshApex(this.wiredgetWorkOrdersResult);
+                    });
                 }).catch((error) => {
+                    this.modalHeader = 'Noe gikk galt';
                     this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
                     this.noCancelButton = true;
                     this.showModal();

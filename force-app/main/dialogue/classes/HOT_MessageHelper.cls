@@ -32,6 +32,33 @@ public with sharing class HOT_MessageHelper {
     }
 
     @AuraEnabled(cacheable=true)
+    public static Id getThreadLookupOnRequest(Id requestId) {
+        List<HOT_Request__c> requestWithThread;
+        try {
+            requestWithThread = [
+                SELECT Thread__c
+                FROM HOT_Request__c
+                WHERE Id = :requestId
+            ];
+        } catch (Exception e) {}
+        return requestWithThread[0].Thread__c;
+    }
+
+    // Note: Only HOT_BRUKER-FORMIDLER should be set as lookup on Request
+    @AuraEnabled(cacheable=true) 
+    public static void setThreadLookupOnRequest(Id requestId, Id threadId) {
+        try {
+            HOT_Request__c request = [
+                SELECT Thread__c
+                FROM HOT_Request__c
+                WHERE Id = :requestId
+            ];
+            request.Thread__c = threadId;
+            HOT_DatabaseOperations.updateRecords(request);
+        } catch (Exception e) {}
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreads(Id recordId) {
         List<Thread__c> threadList;
         try {
