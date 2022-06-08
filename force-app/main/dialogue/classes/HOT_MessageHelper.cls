@@ -45,7 +45,7 @@ public with sharing class HOT_MessageHelper {
     }
 
     // Note: Only HOT_BRUKER-FORMIDLER should be set as lookup on Request
-    @AuraEnabled(cacheable=true) 
+    @AuraEnabled
     public static void setThreadLookupOnRequest(Id requestId, Id threadId) {
         try {
             HOT_Request__c request = [

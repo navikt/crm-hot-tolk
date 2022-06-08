@@ -552,9 +552,12 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     // TODO: Create lookup field on Request to Thread
     goToThread() {
         getThreadLookupOnRequest({ requestId: this.request.Id }).then((res) => {
-            if (res.Id !== null) {
+            console.log('getThreadLookupOnRequest');
+            console.log('res: ', res);
+            if (res && res.Id !== null) {
                 this.navigateToThread(res.Id);
             } else {
+                console.log('createThread');
                 createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
                 .then((result) => {
                     this.navigateToThread(result.Id);
