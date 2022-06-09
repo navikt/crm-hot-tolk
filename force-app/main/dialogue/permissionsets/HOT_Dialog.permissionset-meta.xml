@@ -10,6 +10,11 @@
     </classAccesses>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.Thread__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Message__c.CRM_From_User__c</field>
         <readable>true</readable>
     </fieldPermissions>
