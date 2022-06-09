@@ -554,14 +554,17 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         getThreadLookupOnRequest({ requestId: this.request.Id }).then((res) => {
             console.log('getThreadLookupOnRequest');
             console.log('res: ', res);
-            if (res && res.Id !== null) {
-                this.navigateToThread(res.Id);
+            if (res) {
+                this.navigateToThread(res);
             } else {
                 console.log('createThread');
                 createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
                 .then((result) => {
                     this.navigateToThread(result.Id);
+                    console.log('threadId: ', result.Id);
+                    console.log('requestId: ', this.request.Id);
                     setThreadLookupOnRequest({ requestId: this.request.Id, threadId: result.id }).then(() => {
+                        console.log('setThreadLookupOnRequest done');
                         refreshApex(this.wiredgetWorkOrdersResult);
                     });
                 }).catch((error) => {
