@@ -509,6 +509,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.IsAccountNotNull__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.IsAgreement__c</field>
         <readable>true</readable>
     </fieldPermissions>
