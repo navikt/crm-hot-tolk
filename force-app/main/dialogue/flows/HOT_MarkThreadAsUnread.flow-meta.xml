@@ -13,6 +13,9 @@
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
+        <connector>
+            <targetReference>Success</targetReference>
+        </connector>
     </assignments>
     <decisions>
         <name>checkIfAlreadyUnread</name>
@@ -141,6 +144,22 @@
         <sortOrder>Desc</sortOrder>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <screens>
+        <name>Success</name>
+        <label>Success</label>
+        <locationX>737</locationX>
+        <locationY>878</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>SucessScreen</name>
+            <fieldText>&lt;p&gt;Tråden ble markert som ulest.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
@@ -148,7 +167,7 @@
             <targetReference>GetCurrentThread</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>message</name>
         <dataType>SObject</dataType>
