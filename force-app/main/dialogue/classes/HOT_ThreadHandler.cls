@@ -7,7 +7,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             }
         }
         if (!threadByRequestId.isEmpty()) {
-            setThreadOwner(threadByRequestId);
+            setDefaultFields(threadByRequestId);
         }
     }
     public override void onAfterInsert() {
@@ -22,14 +22,15 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         }
     }
 
-    private static void setThreadOwner(Map<Id, Thread__c> threadByRequestId) {
+    private static void setDefaultFields(Map<Id, Thread__c> threadByRequestId) {
         List<HOT_Request__c> requests = [
-            SELECT Id, OwnerId
+            SELECT Id, OwnerId, Subject__c
             FROM HOT_Request__c
             WHERE Id IN :threadByRequestId.keySet()
         ];
         for (HOT_Request__c request : requests) {
             threadByRequestId.get(request.Id).OwnerId = request.OwnerId;
+            threadByRequestId.get(request.Id).Name = request.Subject__c;
         }
     }
 
