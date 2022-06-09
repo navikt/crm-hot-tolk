@@ -39,21 +39,6 @@ public with sharing class HOT_MessageHelperTest {
     }
 
     @isTest
-    static void getThreadLookupOnRequestTest() {
-        Thread__c thread = [SELECT Id FROM Thread__c LIMIT 1];
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
-        request.Thread__c = thread.Id;
-        insert request;
-
-        Test.startTest();
-        Id threadId = HOT_MessageHelper.getThreadLookupOnRequest(request.Id);
-        Test.stopTest();
-        System.assertEquals(thread.Id, threadId, 'Could not get Thread lookup on Request');
-    }
-
-    @isTest
     static void getThreadsCollectionSingleTest() {
         List<Account> accList = [SELECT Id FROM Account];
         Test.startTest();

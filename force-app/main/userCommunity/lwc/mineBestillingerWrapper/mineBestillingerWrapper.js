@@ -1,7 +1,6 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
-import getThreadLookupOnRequest from '@salesforce/apex/HOT_MessageHelper.getThreadLookupOnRequest';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -549,20 +548,19 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goToThread() {
-        getThreadLookupOnRequest({ requestId: this.request.Id }).then((res) => {
-            if (res) {
-                this.navigateToThread(res);
-            } else {
-                createThread({ recordId: this.request.Id, accountId: this.request.Account__c }).then((result) => {
-                    this.navigateToThread(result.Id);
-                    refreshApex(this.wiredgetWorkOrdersResult);
-                }).catch((error) => {
-                    this.modalHeader = 'Noe gikk galt';
-                    this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                    this.noCancelButton = true;
-                    this.showModal();
-                 });
-            }
-        });
+        console.log('this.request.Thread__c: ', this.request.Thread__c);
+        if (this.request.Thread__c !== undefined) {
+            this.navigateToThread(this.request.Thread__c);
+        } else {
+            createThread({ recordId: this.request.Id, accountId: this.request.Account__c }).then((result) => {
+                this.navigateToThread(result.Id);
+                refreshApex(this.wiredgetWorkOrdersResult);
+            }).catch((error) => {
+                this.modalHeader = 'Noe gikk galt';
+                this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                this.noCancelButton = true;
+                this.showModal();
+                });
+        }
     }
 }

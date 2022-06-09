@@ -31,23 +31,6 @@ public with sharing class HOT_MessageHelper {
         }
     }
 
-    @AuraEnabled(cacheable=false)
-    public static Id getThreadLookupOnRequest(Id requestId) {
-        HOT_Request__c request;
-        try {
-            request = [
-                SELECT Thread__c
-                FROM HOT_Request__c
-                WHERE Id = :requestId
-            ];
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-        return request.Thread__c;
-    }
-
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreads(Id recordId) {
         List<Thread__c> threadList;
