@@ -10,11 +10,11 @@
             <assignToReference>getMessage.CRM_Read_By_Nav__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <booleanValue>true</booleanValue>
+                <booleanValue>false</booleanValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Success</targetReference>
+            <targetReference>updateThread</targetReference>
         </connector>
     </assignments>
     <decisions>
@@ -144,16 +144,45 @@
         <sortOrder>Desc</sortOrder>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <screens>
-        <name>Success</name>
-        <label>Success</label>
+    <recordUpdates>
+        <name>updateThread</name>
+        <label>updateThread</label>
         <locationX>737</locationX>
         <locationY>878</locationY>
+        <connector>
+            <targetReference>Success</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>ErrorOnUpdate</targetReference>
+        </faultConnector>
+        <inputReference>getMessage</inputReference>
+    </recordUpdates>
+    <screens>
+        <name>ErrorOnUpdate</name>
+        <label>ErrorOnUpdate</label>
+        <locationX>1001</locationX>
+        <locationY>998</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>SucessScreen</name>
+            <name>ErrorText</name>
+            <fieldText>&lt;p&gt;Det skjedde en feil under oppdatering av tråden.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Success</name>
+        <label>Success</label>
+        <locationX>737</locationX>
+        <locationY>998</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>SuccessText</name>
             <fieldText>&lt;p&gt;Tråden ble markert som ulest.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
