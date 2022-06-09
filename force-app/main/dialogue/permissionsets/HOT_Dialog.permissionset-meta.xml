@@ -10,6 +10,26 @@
     </classAccesses>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Message__c.CRM_From_User__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Message__c.CRM_Message_Text__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Message__c.CRM_Read_By_Nav_Datetime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Message__c.CRM_Read_By_Nav__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Thread__c.CRM_Date_Time_Registered__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -41,6 +61,15 @@
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT Dialog</label>
     <license>Salesforce</license>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Message__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>false</allowDelete>
