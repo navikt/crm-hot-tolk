@@ -40,7 +40,11 @@ public with sharing class HOT_MessageHelper {
                 FROM HOT_Request__c
                 WHERE Id = :requestId
             ];
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
         return request.Thread__c;
     }
 
@@ -54,8 +58,12 @@ public with sharing class HOT_MessageHelper {
                 WHERE Id = :requestId
             ];
             request.Thread__c = threadId;
-            HOT_DatabaseOperations.updateRecords(request);
-        } catch (Exception e) {}
+            update request;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     @AuraEnabled(cacheable=true)
@@ -68,6 +76,9 @@ public with sharing class HOT_MessageHelper {
                 WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
             ];
         } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
         }
         return threadList;
     }
