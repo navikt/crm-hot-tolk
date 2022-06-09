@@ -35,6 +35,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         System.assertEquals(request.Subject__c, thread.Name, 'Could not set thread Name based on request');
     }
+
     @isTest
     static void setThreadLookupOnRequestTest() {
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c];
