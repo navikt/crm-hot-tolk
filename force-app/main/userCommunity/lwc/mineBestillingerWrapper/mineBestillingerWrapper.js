@@ -1,7 +1,6 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
-import setThreadLookupOnRequest from '@salesforce/apex/HOT_MessageHelper.setThreadLookupOnRequest';
 import getThreadLookupOnRequest from '@salesforce/apex/HOT_MessageHelper.getThreadLookupOnRequest';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
@@ -15,7 +14,7 @@ import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkORder.HOT_IsNoti
 import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import { refreshApex } from '@salesforce/apex';
-import { updateRecord } from 'lightning/uiRecordApi';
+import { updateRecord, getRecordNotifyChange } from 'lightning/uiRecordApi';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @api header;
@@ -549,24 +548,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 });
     }
 
-    // TODO: Create lookup field on Request to Thread
     goToThread() {
         getThreadLookupOnRequest({ requestId: this.request.Id }).then((res) => {
-            console.log('getThreadLookupOnRequest');
-            console.log('res: ', res);
             if (res) {
                 this.navigateToThread(res);
             } else {
-                console.log('createThread');
-                createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
-                .then((result) => {
+                createThread({ recordId: this.request.Id, accountId: this.request.Account__c }).then((result) => {
                     this.navigateToThread(result.Id);
-                    console.log('threadId: ', result.Id);
-                    console.log('requestId: ', this.request.Id);
-                    setThreadLookupOnRequest({ requestId: this.request.Id, threadId: result.id }).then(() => {
-                        console.log('setThreadLookupOnRequest done');
-                        refreshApex(this.wiredgetWorkOrdersResult);
-                    });
+                    refreshApex(this.wiredgetWorkOrdersResult);
                 }).catch((error) => {
                     this.modalHeader = 'Noe gikk galt';
                     this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;

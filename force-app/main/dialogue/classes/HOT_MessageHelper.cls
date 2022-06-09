@@ -31,7 +31,7 @@ public with sharing class HOT_MessageHelper {
         }
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static Id getThreadLookupOnRequest(Id requestId) {
         HOT_Request__c request;
         try {
@@ -46,24 +46,6 @@ public with sharing class HOT_MessageHelper {
             logger.publishSynch();
         }
         return request.Thread__c;
-    }
-
-    // Note: Only HOT_BRUKER-FORMIDLER type should be set as lookup on Request
-    @AuraEnabled(cacheable=false)
-    public static void setThreadLookupOnRequest(Id requestId, Id threadId) {
-        try {
-            HOT_Request__c request = [
-                SELECT Thread__c
-                FROM HOT_Request__c
-                WHERE Id = :requestId
-            ];
-            request.Thread__c = threadId;
-            update request;
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
     }
 
     @AuraEnabled(cacheable=true)

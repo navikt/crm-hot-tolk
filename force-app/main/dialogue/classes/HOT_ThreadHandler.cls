@@ -17,7 +17,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                 threadIdByRequestId.put(thread.HOT_Request__c, thread.Id);
             }
         }
-        if (!threadByRequestId.isEmpty()) {
+        if (!threadIdByRequestId.isEmpty()) {
             setLookupOnRequest(threadIdByRequestId);
         }
     }
