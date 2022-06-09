@@ -36,6 +36,9 @@
                     <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
+            <connector>
+                <targetReference>AlreadyUnread</targetReference>
+            </connector>
             <label>Already Unread</label>
         </rules>
     </decisions>
@@ -157,6 +160,22 @@
         </faultConnector>
         <inputReference>getMessage</inputReference>
     </recordUpdates>
+    <screens>
+        <name>AlreadyUnread</name>
+        <label>AlreadyUnread</label>
+        <locationX>473</locationX>
+        <locationY>758</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>AlreadyUnreadText</name>
+            <fieldText>&lt;p&gt;Tråden er allerede markert som ulest.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
     <screens>
         <name>ErrorOnUpdate</name>
         <label>ErrorOnUpdate</label>
