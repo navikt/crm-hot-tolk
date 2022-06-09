@@ -14,7 +14,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>updateThread</targetReference>
+            <targetReference>updateMessage</targetReference>
         </connector>
     </assignments>
     <decisions>
@@ -74,8 +74,11 @@
             <name>Record_Not_Found</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>recordId</leftValueReference>
-                <operator>EqualTo</operator>
+                <leftValueReference>GetCurrentThread.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
             </conditions>
             <label>Record Not Found</label>
         </rules>
@@ -148,8 +151,8 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
-        <name>updateThread</name>
-        <label>updateThread</label>
+        <name>updateMessage</name>
+        <label>updateMessage</label>
         <locationX>737</locationX>
         <locationY>878</locationY>
         <connector>
