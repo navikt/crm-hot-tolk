@@ -19,4 +19,7 @@
     <queueSobject>
         <sobjectType>SMS__c</sobjectType>
     </queueSobject>
+    <queueSobject>
+        <sobjectType>Thread__c</sobjectType>
+    </queueSobject>
 </Queue>
