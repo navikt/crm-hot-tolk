@@ -1,7 +1,6 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
-import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreads';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -14,7 +13,7 @@ import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkORder.HOT_IsNoti
 import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import { refreshApex } from '@salesforce/apex';
-import { updateRecord } from 'lightning/uiRecordApi';
+import { updateRecord, getRecordNotifyChange } from 'lightning/uiRecordApi';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @api header;
@@ -549,19 +548,19 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goToThread() {
-        getThreads({ recordId: this.request.Id }).then((res) => {
-            if (res.length > 0) {
-                this.navigateToThread(res[0].Id);
-            } else {
-                createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
-                .then((result) => {
-                    this.navigateToThread(result.Id);
-                }).catch((error) => {
-                    this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                    this.noCancelButton = true;
-                    this.showModal();
-                 });
-            }
-        });
+        console.log('this.request.Thread__c: ', this.request.Thread__c);
+        if (this.request.Thread__c !== undefined) {
+            this.navigateToThread(this.request.Thread__c);
+        } else {
+            createThread({ recordId: this.request.Id, accountId: this.request.Account__c }).then((result) => {
+                this.navigateToThread(result.Id);
+                refreshApex(this.wiredgetWorkOrdersResult);
+            }).catch((error) => {
+                this.modalHeader = 'Noe gikk galt';
+                this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                this.noCancelButton = true;
+                this.showModal();
+                });
+        }
     }
 }

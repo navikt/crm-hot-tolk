@@ -41,6 +41,9 @@ public with sharing class HOT_MessageHelper {
                 WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
             ];
         } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
         }
         return threadList;
     }
