@@ -4,12 +4,13 @@ import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThrea
 import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
+import {subscribe, unsubscribe, MessageContext} from 'lightning/messageService';
+import DIALOG_CHANNEL from '@salesforce/messageChannel/DialogChannel__c';
 
 const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD]; //Extract the name of the thread record
 
@@ -30,6 +31,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @api errorList = { title: '', errors: [] };
 
     connectedCallback() {
+        this.subscribeToMessageChannel();
         this.getParams();
         markAsRead({ threadId: this.recordId });
         getContactId({})
@@ -39,6 +41,37 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             .catch((error) => {
                 //Apex error
             });
+    }
+
+    disconnectedCallback() {
+        unsubscribe(this.subscription);
+        this.subscription = null;
+    }
+
+    @wire(MessageContext)
+    messageContext;
+
+    receivedMessage;
+    subscription = null;
+    // Pass scope to the subscribe() method.
+    subscribeToMessageChannel() {
+        if (!this.subscription) {
+            this.subscription = subscribe(
+                this.messageContext,
+                DIALOG_CHANNEL,
+                (message) => {
+                    this.handleMessage(message);
+                }
+            );
+        }
+        console.log('subscription done');
+    }
+
+    handleMessage(message) {
+        this.receivedMessage = message ? JSON.stringify(message) : 'no message';
+        console.log('message received.');
+        console.log('message: ', this.receivedMessage);
+        console.log('message: ', message);
     }
 
     @track breadcrumbs = [ 

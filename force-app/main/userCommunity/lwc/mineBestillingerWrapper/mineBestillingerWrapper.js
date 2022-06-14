@@ -548,7 +548,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goToThread() {
-        console.log('this.request.Thread__c: ', this.request.Thread__c);
         if (this.request.Thread__c !== undefined) {
             this.navigateToThread(this.request.Thread__c);
         } else {
