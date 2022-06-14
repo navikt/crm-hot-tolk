@@ -59,6 +59,7 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_InterpretationPostalCity__c,
                     HOT_InterpretationPostalCode__c,
                     HOT_Request__c,
+                    HOT_Request__r.Thread__c,
                     HOT_Request__r.Name,
                     HOT_Request__r.PaymentLiability__c,
                     HOT_Request__r.SeriesStartDate__c,
