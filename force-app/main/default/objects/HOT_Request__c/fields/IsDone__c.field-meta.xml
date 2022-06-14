@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsDone__c</fullName>
+    <externalId>false</externalId>
+    <formula>OR( 
+    ISPICKVAL(Status__c, &quot;Dekket&quot;),
+    ISPICKVAL(Status__c, &quot;Delvis dekket&quot;),
+    ISPICKVAL(Status__c, &quot;Udekket&quot;),
+    ISPICKVAL(Status__c, &quot;Avlyst&quot;),
+    ISPICKVAL(Status__c, &quot;Avslått&quot;),
+    ISPICKVAL(Status__c, &quot;Annullert&quot;)
+)</formula>
+    <label>IsDone</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
