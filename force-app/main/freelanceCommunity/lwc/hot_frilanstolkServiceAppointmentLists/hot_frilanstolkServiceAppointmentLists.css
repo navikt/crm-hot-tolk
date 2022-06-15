@@ -1,15 +1,15 @@
 lightning-tabset {
     width: 100%;
+    padding-left: 1rem;
 }
 
 .liste-max-width {
-    max-width: 1480px;
+    max-width: 1200px;
     width: 100%;
-    padding: 0 3.25rem;
 }
 
 .liste {
-    padding: 3.25rem 3.25rem 3.25rem 3.25rem;
+    padding-top: 3.25rem;
     background-color: #fff !important;
     font-family: 'Source Sans Pro', Arial, sans-serif;
     margin: 1rem auto 1rem auto;

@@ -40,10 +40,13 @@
                 onpicklistvaluechange={onHandleSort}
             ></c-picklist>
         </div>
-        <c-table
-                    records={allServiceAppointmentsFiltered}
-                    columns={columns}
-                ></c-table>
+        <div>
+            <c-table
+            records={allServiceAppointmentsFiltered}
+            columns={columns}
+        ></c-table>
+        </div>
+        
         <!--<lightning-datatable
             key-field="AppointmentNumber"
             data={allServiceAppointmentsFiltered}

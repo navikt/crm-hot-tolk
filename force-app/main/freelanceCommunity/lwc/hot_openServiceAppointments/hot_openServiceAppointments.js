@@ -18,34 +18,33 @@ export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [
         {
             label: 'Frigitt dato',
-            fieldName: 'HOT_ReleaseDate__c',
-            type: 'date',
+            name: 'HOT_ReleaseDate__c',
+            type: 'Datetime',
         },
         {
             label: 'Start tid',
-            fieldName: 'EarliestStartTime',
-            type: 'date',
+            name: 'EarliestStartTime',
+            type: 'Datetime',
         },
         {
             label: 'Slutt tid',
-            fieldName: 'DueDate',
-            type: 'date',
+            name: 'DueDate',
+            type: 'Datetime',
         },
         {
             label: 'Informasjon',
-            fieldName: 'HOT_Information__c',
-            type: 'text',
+            name: 'HOT_Information__c',
+            type: 'String',
         },
         {
             label: 'Tema',
-            fieldName: 'HOT_FreelanceSubject__c',
-            type: 'text',
-            sortable: true
+            name: 'HOT_FreelanceSubject__c',
+            type: 'String',
         },
         {
             label: 'Frist',
-            fieldName: 'HOT_DeadlineDate__c',
-            type: 'date',
+            name: 'HOT_DeadlineDate__c',
+            type: 'Datetime',
         },
     ];
 
@@ -128,9 +127,23 @@ export default class Hot_openServiceAppointments extends LightningElement {
             ) {
                 tempServiceAppointments.push(this.allServiceAppointments[i]);
             }
+            if (tempServiceAppointments[i] !== null) {
+                let tempRec = Object.assign({}, tempServiceAppointments[i]);
+                tempRec.DueDate = this.setDateFormat(tempServiceAppointments[i].DueDate);
+                tempRec.EarliestStartTime = this.setDateFormat(tempServiceAppointments[i].EarliestStartTime);
+                tempRec.HOT_DeadlineDate__c = tempServiceAppointments[i].HOT_DeadlineDate__c.replaceAll('-', '.').split('.').reverse().join('.');
+                tempRec.HOT_ReleaseDate__c = tempServiceAppointments[i].HOT_ReleaseDate__c.replaceAll('-', '.').split('.').reverse().join('.');
+                tempServiceAppointments[i] = tempRec;
+            }
         }
         this.allServiceAppointmentsFiltered = tempServiceAppointments;
-        console.log(JSON.stringify(this.allServiceAppointmentsFiltered));
+    }
+
+    setDateFormat(value) {
+        value = new Date(value);
+        value = value.toLocaleString();
+        value = value.substring(0, value.length - 3);
+        return value;
     }
 
     connectedCallback() {
