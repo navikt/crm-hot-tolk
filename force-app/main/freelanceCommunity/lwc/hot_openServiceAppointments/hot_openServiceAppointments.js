@@ -20,50 +20,21 @@ export default class Hot_openServiceAppointments extends LightningElement {
             label: 'Frigitt dato',
             fieldName: 'HOT_ReleaseDate__c',
             type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric'
-            },
-            initialWidth: 135
         },
         {
             label: 'Start tid',
             fieldName: 'EarliestStartTime',
             type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            },
-            initialWidth: 135
         },
         {
             label: 'Slutt tid',
             fieldName: 'DueDate',
             type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            },
-            initialWidth: 135
         },
         {
             label: 'Informasjon',
             fieldName: 'HOT_Information__c',
             type: 'text',
-            sortable: true,
-            initialWidth: 270
         },
         {
             label: 'Tema',
@@ -75,18 +46,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             label: 'Frist',
             fieldName: 'HOT_DeadlineDate__c',
             type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric'
-            },
-            initialWidth: 90
         },
-        {
-            type: 'action',
-            typeAttributes: { rowActions: this.getRowActions }
-        }
     ];
 
     columnLabels = ["'Frigitt dato'", "''", "'Start tid'", "'Slutt tid'", "'Informasjon'", "'Tema'", "'Frist"];
@@ -170,6 +130,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
         this.allServiceAppointmentsFiltered = tempServiceAppointments;
+        console.log(JSON.stringify(this.allServiceAppointmentsFiltered));
     }
 
     connectedCallback() {

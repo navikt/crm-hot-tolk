@@ -40,7 +40,11 @@
                 onpicklistvaluechange={onHandleSort}
             ></c-picklist>
         </div>
-        <lightning-datatable
+        <c-table
+                    records={allServiceAppointmentsFiltered}
+                    columns={columns}
+                ></c-table>
+        <!--<lightning-datatable
             key-field="AppointmentNumber"
             data={allServiceAppointmentsFiltered}
             columns={columns}
@@ -51,7 +55,7 @@
             onrowaction={handleRowAction}
             onrowselection={getSelectedName}
         >
-        </lightning-datatable>
+        </lightning-datatable>-->
 
         <div class="action-container">
             <div class="left-content"></div>
