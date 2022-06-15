@@ -5,6 +5,7 @@ import USER_ID from '@salesforce/user/Id';
 import NAME_FIELD from '@salesforce/schema/User.FirstName';
 import checkAssignedPermissionSet from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSet';
 import checkAssignedPermissionSetGroup from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSetGroup';
+import HOT_HOME_LOGOS from '@salesforce/resourceUrl/hot_home_logos';
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
     @track name;
@@ -17,6 +18,13 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
             this.name = data.fields.FirstName.value;
         }
     }
+
+    mineSamtalerImg = HOT_HOME_LOGOS + '/MineSamtaler.svg';
+    mineBestillingerImg = HOT_HOME_LOGOS + '/MineBestillinger.svg';
+    minSideImg = HOT_HOME_LOGOS + '/MinSide.svg';
+    minTidsplanImg = HOT_HOME_LOGOS + '/MinTidsplan.svg';
+    kunnskapsbankenImg = HOT_HOME_LOGOS + '/Kunnskapsbanken.svg';
+    bestilleTolkImg = HOT_HOME_LOGOS + '/BestilleTolk.svg';
 
     @track pageLinks = {};
     connectedCallback() {
