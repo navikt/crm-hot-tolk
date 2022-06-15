@@ -5,7 +5,13 @@ public with sharing class HOT_ThreadListController {
         List<Thread__c> threads = [
             SELECT Id, HOT_Subject__c, CRM_Number_of_unread_Messages__c
             FROM Thread__c
-            WHERE CRM_Account__c = :user.AccountId AND CRM_Account__c != NULL AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
+            WHERE
+                CRM_Account__c = :user.AccountId
+                AND CRM_Account__c != NULL
+                AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
+                AND HOT_Request__c != NULL
+                AND (HOT_Request__r.IsDone__c = FALSE
+                OR CRM_Number_of_unread_Messages__c > 0)
         ];
         return threads;
     }

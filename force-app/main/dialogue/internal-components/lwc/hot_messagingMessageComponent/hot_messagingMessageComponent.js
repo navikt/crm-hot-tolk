@@ -46,7 +46,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
 
     handlenewpressed() {
         createThread({ recordId: this.recordId, accountId: this.accountId })
-            .then((result) => {
+            .then(() => {
                 return refreshApex(this._threadsforRefresh);
             })
             .catch((error) => {});

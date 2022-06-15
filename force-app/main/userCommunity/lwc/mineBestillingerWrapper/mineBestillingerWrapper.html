@@ -8,8 +8,8 @@
             <div class="navigation-container">
                 <div if:false={isMobile} class="back-link-div">
                     <a class="back-link" onclick={goBack}>
-                    <c-icon icon="Back"></c-icon>
-                    <p style="margin-left: 0.25rem">Tilbake</p>
+                        <c-icon icon="Back"></c-icon>
+                        <p style="margin-left: 0.25rem">Tilbake</p>
                     </a>
                 </div>
                 <h2 class="header" tabindex="-1" autofocus>{headerToShow}</h2>
@@ -28,8 +28,8 @@
                     ></c-button>
                     <div if:true={isMobile} class="back-link-div">
                         <a class="back-link" onclick={goBack}>
-                        <c-icon icon="Back"></c-icon>
-                        <p style="margin-left: 0.25rem">Tilbake</p>
+                            <c-icon icon="Back"></c-icon>
+                            <p style="margin-left: 0.25rem">Tilbake</p>
                         </a>
                     </div>
                     <c-list-filters-button
@@ -44,24 +44,18 @@
             <div if:true={isRequestDetails}>
                 <div class="record-details-container">
                     <p>Gjelder periode: <span>{requestSeriesStartDate} - {requestSeriesEndDate}</span></p>
-                    <br/>
+                    <br />
                     <p>Adresse: <span>{requestAddressToShow}</span></p>
                     <p if:true={requestInterpretationAddressToShow}>
                         Oppmøteadresse: <span>{requestInterpretationAddressToShow}</span>
                     </p>
                     <br />
-                    <p if:true={request.OwnerName__c}>
-                        Sentral: <span>{request.OwnerName__c}</span>
-                    </p>
+                    <p if:true={request.OwnerName__c}>Sentral: <span>{request.OwnerName__c}</span></p>
                     <p>Bestillingsnummer: <span>{request.Name}</span></p>
-                    <p if:true={request.OrdererName__c}>
-                        Bestiller: <span>{request.OrdererName__c}</span>
-                    </p>
-                    <p if:true={request.UserName__c}>
-                        Tolkebrukers navn: <span>{request.UserName__c}</span>
-                    </p>
+                    <p if:true={request.OrdererName__c}>Bestiller: <span>{request.OrdererName__c}</span></p>
+                    <p if:true={request.UserName__c}>Tolkebrukers navn: <span>{request.UserName__c}</span></p>
                     <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
-                    <br/>
+                    <br />
                     <p if:true={request.UserPreferredInterpreter__c}>
                         Ønsket tolk: <span>{request.UserPreferredInterpreter__c}</span>
                     </p>
@@ -72,14 +66,12 @@
                         Tolkemetode: <span>{request.InterpretationMethodName__c}</span>
                     </p>
                     <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
-                    <br/>
-                    <p if:true={request.CompanyName__c}>
-                        Virksomhet: <span>{request.CompanyName__c}</span>
-                    </p>
+                    <br />
+                    <p if:true={request.CompanyName__c}>Virksomhet: <span>{request.CompanyName__c}</span></p>
                     <p if:true={request.PaymentLiability__c}>
                         Betalingsansvar: <span>{request.PaymentLiability__c}</span>
                     </p>
-                    <br if:true={request.Description__c}/>
+                    <br if:true={request.Description__c} />
                     <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
                 </div>
                 <c-record-files-with-sharing
@@ -104,18 +96,12 @@
                     <br />
                     <p>Status: <span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
                     <br />
-                    <p if:true={request.OwnerName__c}>
-                        Sentral: <span>{request.OwnerName__c}</span>
-                    </p>
+                    <p if:true={request.OwnerName__c}>Sentral: <span>{request.OwnerName__c}</span></p>
                     <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
-                    <p if:true={request.OrdererName__c}>
-                        Bestiller: <span>{request.OrdererName__c}</span>
-                    </p>
-                    <p if:true={request.UserName__c}>
-                        Tolkebrukers navn: <span>{request.UserName__c}</span>
-                    </p>
+                    <p if:true={request.OrdererName__c}>Bestiller: <span>{request.OrdererName__c}</span></p>
+                    <p if:true={request.UserName__c}>Tolkebrukers navn: <span>{request.UserName__c}</span></p>
                     <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
-                    <br/>
+                    <br />
                     <p if:true={request.UserPreferredInterpreter__c}>
                         Ønsket tolk: <span>{request.UserPreferredInterpreter__c}</span>
                     </p>
@@ -129,14 +115,12 @@
                         Tolkemetode: <span>{request.InterpretationMethodName__c}</span>
                     </p>
                     <p if:true={request.AssignmentType__c}>Anledning: <span>{request.AssignmentType__c}</span></p>
-                    <br/>
-                    <p if:true={request.CompanyName__c}>
-                        Virksomhet: <span>{request.CompanyName__c}</span>
-                    </p>
+                    <br />
+                    <p if:true={request.CompanyName__c}>Virksomhet: <span>{request.CompanyName__c}</span></p>
                     <p if:true={request.PaymentLiability__c}>
                         Betalingsansvar: <span>{request.PaymentLiability__c}</span>
                     </p>
-                    <br if:true={request.Description__c}/>
+                    <br if:true={request.Description__c} />
                     <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
                 </div>
                 <c-record-files-with-sharing
@@ -149,7 +133,7 @@
                 ></c-record-files-with-sharing>
                 <br />
             </div>
-            
+
             <div class="buttonRow" if:true={isRequestOrWorkOrderDetails}>
                 <c-button
                     button-label={editButtonLabel}
@@ -188,11 +172,11 @@
                 ></c-button>
                 <c-button
                     if:true={isUserAccount}
-                    button-label="Gå til samtale"
+                    button-label="Samtale med formidler"
                     button-styling="primary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 10rem; justify-content: center"
-                    mobile-style="width: 10rem; justify-content: center"
+                    desktop-style="justify-content: center"
+                    mobile-style="justify-content: center"
                     onbuttonclick={goToThread}
                 ></c-button>
             </div>

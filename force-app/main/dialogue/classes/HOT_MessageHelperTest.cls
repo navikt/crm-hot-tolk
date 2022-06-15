@@ -37,6 +37,7 @@ public with sharing class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(null, contactId, 'User Contact Id was not returned correctly');
     }
+
     @isTest
     static void getThreadsCollectionSingleTest() {
         List<Account> accList = [SELECT Id FROM Account];
@@ -46,7 +47,7 @@ public with sharing class HOT_MessageHelperTest {
         System.assertEquals(1, resList.size());
     }
     /**
-     * TODO, has to run in a users contect
+     * TODO, has to run in a users context
      */
     @isTest
     static void getThreadsCollectionMultiTest() {
