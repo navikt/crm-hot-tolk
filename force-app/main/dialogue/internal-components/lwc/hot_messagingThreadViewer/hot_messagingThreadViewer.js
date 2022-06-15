@@ -110,6 +110,8 @@ export default class messagingThreadViewer extends LightningElement {
             // If messagefield is empty, stop the submit
             textInput.CRM_Thread__c = this.thread.Id;
             textInput.CRM_From_User__c = userId;
+            textInput.CRM_Read_By_Nav__c = true;
+            textInput.CRM_Read_By_Nav_Datetime__c = new Date().toISOString();
 
             if (textInput.CRM_Message_Text__c == null || textInput.CRM_Message_Text__c === '') {
                 const event1 = new ShowToastEvent({
