@@ -49,3 +49,14 @@
     font-weight: bolder;
     display: inline;
 }
+
+.layout-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 576px) {
+    .iconholder {
+        display: none;
+    }
+}
