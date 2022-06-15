@@ -43,3 +43,18 @@
     margin-top: 1em;
     margin-right: 0.5em;
 }
+.layout-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.iconholder {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 576px) {
+    .iconholder {
+        display: none;
+    }
+}
