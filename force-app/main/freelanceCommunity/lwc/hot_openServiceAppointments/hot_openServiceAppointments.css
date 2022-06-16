@@ -4,6 +4,7 @@
     width: 100%;
     font-family: 'Source Sans Pro', Arial, sans-serif;
     align-items: center;
+    padding-top: 0.5rem;
 }
 .action-container {
     margin-bottom: 1rem;
