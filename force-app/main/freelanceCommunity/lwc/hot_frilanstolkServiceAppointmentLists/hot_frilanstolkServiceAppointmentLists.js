@@ -4,6 +4,16 @@ import { NavigationMixin } from 'lightning/navigation';
 export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMixin(LightningElement) {
     @track activeTab; // = 'open';
 
+    breadcrumbs = [ 
+        {
+            label: 'Tolketjenesten',
+            href: ''
+        },
+        {
+            label: 'Oppdrag',
+            href: 'mine-oppdrag'
+        }
+    ];
     onOpen() {
         const columnLabels = [
             "'Frigitt dato'",

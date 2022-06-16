@@ -1,6 +1,5 @@
 lightning-tabset {
     width: 100%;
-    padding-left: 1rem;
 }
 
 .liste-max-width {
@@ -9,6 +8,7 @@ lightning-tabset {
 }
 
 .liste {
+    padding: 2rem;
     padding-top: 3.25rem;
     background-color: #fff !important;
     font-family: 'Source Sans Pro', Arial, sans-serif;
@@ -20,9 +20,13 @@ lightning-tabset {
     flex-direction: column;
 }
 
+.skjema-max-width {
+    width: 100%;
+    max-width: 1200px;
+}
+
 @media (max-width: 576px) {
     .liste {
-        padding: 1rem 1rem 1rem 1rem;
-        margin: 1rem auto 1rem auto;
+        padding: 1rem;
     }
 }

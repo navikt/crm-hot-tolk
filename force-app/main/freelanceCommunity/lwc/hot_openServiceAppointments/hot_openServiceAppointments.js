@@ -1,45 +1,21 @@
 import { LightningElement, wire, track } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
+import { columns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
-import { sortList, getMobileSortingOptions } from 'c/sortController';
 import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 import { formatRecord } from 'c/hot_recordDetails';
 
 export default class Hot_openServiceAppointments extends LightningElement {
-    @track columns = [
-        {
-            label: 'Frigitt dato',
-            name: 'HOT_ReleaseDate__c',
-            type: 'Datetime',
-        },
-        {
-            label: 'Start tid',
-            name: 'EarliestStartTime',
-            type: 'Datetime',
-        },
-        {
-            label: 'Slutt tid',
-            name: 'DueDate',
-            type: 'Datetime',
-        },
-        {
-            label: 'Informasjon',
-            name: 'HOT_Information__c',
-            type: 'String',
-        },
-        {
-            label: 'Tema',
-            name: 'HOT_FreelanceSubject__c',
-            type: 'String',
-        },
-        {
-            label: 'Frist',
-            name: 'HOT_DeadlineDate__c',
-            type: 'Datetime',
-        },
-    ];
+    @track columns = [];
+    setColumns() {
+        if (window.screen.width > 576) {
+            this.columns = columns;
+        } else {
+            this.columns = mobileColumns;
+        }
+    }
 
     @track serviceResource;
     @track serviceResourceId;
@@ -93,6 +69,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     connectedCallback() {
+        this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
     }
 
