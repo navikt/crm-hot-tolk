@@ -1,17 +1,5 @@
 <template>
     <div class="main-content">
-        <div class="action-container">
-            <div class="left-content">
-                <div style="display: flex; flex-direction: row">
-                    <lightning-button
-                        label="Regioner"
-                        name="filterRegionButton"
-                        onclick={handleShowRegionFilter}
-                    >
-                    </lightning-button>
-                </div>
-            </div>
-        </div>
         <div if:false={noServiceAppointments}>
             <c-table
                 records={allServiceAppointmentsFiltered}
@@ -21,36 +9,6 @@
         <div if:true={noServiceAppointments} style="text-align: center">
             <br />
             Det finnes ingen ledige oppdrag.
-        </div>
-    </div>
-
-    <div
-        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay regionPage hidden"
-        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
-        tabindex="-1"
-    >
-        <div
-            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-            role="dialog"
-            aria-labelledby="regions-header-id"
-        >
-            <section>
-                <h2 id="regions-header-id" class="typo-undertittel">Regioner</h2>
-                <lightning-record-edit-form
-                    class="no-padding"
-                    object-api-name="ServiceResource"
-                    density="comfy"
-                    onsubmit={handleSubmit}
-                    record-id={serviceResourceId}
-                >
-                    <lightning-input-field field-name="HOT_PreferredRegions__c"> </lightning-input-field>
-                    <br />
-                    <lightning-button title="Lagre" variant="brand" label="Lagre" type="submit"> </lightning-button>
-                </lightning-record-edit-form>
-            </section>
-            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={handleHideRegionFilter}>
-                <span class="text-hide">Lukk</span>
-            </button>
         </div>
     </div>
 </template>

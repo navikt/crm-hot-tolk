@@ -108,21 +108,4 @@ export default class Hot_openServiceAppointments extends LightningElement {
         });
         this.template.querySelector('.commentPage').classList.add('hidden');
     }*/
-    @track regions = [];
-    handleSubmit(event) {
-        event.preventDefault();
-        const fields = event.detail.fields;
-        this.regions = fields.HOT_PreferredRegions__c;
-        this.setDateFormats();
-        this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
-        this.handleHideRegionFilter();
-    }
-    handleShowRegionFilter() {
-        let regionPage = this.template.querySelector('.regionPage');
-        regionPage.classList.remove('hidden');
-        regionPage.focus();
-    }
-    handleHideRegionFilter() {
-        this.template.querySelector('.regionPage').classList.add('hidden');
-    }
 }
