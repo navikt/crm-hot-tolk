@@ -2,11 +2,6 @@ lightning-tabset {
     width: 100%;
 }
 
-.liste-max-width {
-    max-width: 1200px;
-    width: 100%;
-}
-
 .liste {
     padding: 2rem;
     padding-top: 3.25rem;
@@ -18,11 +13,13 @@ lightning-tabset {
     display: flex;
     justify-content: center;
     flex-direction: column;
+    max-width: 1400px; /*200px wider than Mine Bestillinger to give more columns to freelance interpreters */
+    width: 100%;
 }
 
 .skjema-max-width {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
 }
 
 @media (max-width: 576px) {

@@ -3,9 +3,9 @@ import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointm
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { columns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
-import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
-import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
-import { formatRecord } from 'c/hot_recordDetails';
+//import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
+//import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
+//import { formatRecord } from 'c/hot_recordDetails';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
@@ -32,6 +32,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
+    noServiceAppointments = true;
     @track allServiceAppointments;
     @track allServiceAppointmentsFiltered;
     wiredAllServiceAppointmentsResult;
@@ -40,15 +41,16 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.wiredAllServiceAppointmentsResult = result;
         if (result.data) {
             this.allServiceAppointments = result.data;
+            this.noServiceAppointments = this.allServiceAppointments.length === 0;
             this.error = undefined;
-            this.filterServiceAppointments();
+            this.setDateFormats();
         } else if (result.error) {
             this.error = result.error;
             this.allServiceAppointments = undefined;
         }
     }
 
-    filterServiceAppointments() {
+    setDateFormats() {
         let tempServiceAppointments = [];
         for (let i = 0; i < this.allServiceAppointments.length; i++) {
             let tempRec = Object.assign({}, this.allServiceAppointments[i]);
@@ -73,7 +75,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         refreshApex(this.wiredAllServiceAppointmentsResult);
     }
 
-    @track serviceAppointmentCommentDetails = [];
+   /* @track serviceAppointmentCommentDetails = [];
     abortSendingInterest() {
         this.template.querySelector('.commentPage').classList.add('hidden');
     }
@@ -105,14 +107,13 @@ export default class Hot_openServiceAppointments extends LightningElement {
             refreshApex(this.wiredAllServiceAppointmentsResult);
         });
         this.template.querySelector('.commentPage').classList.add('hidden');
-    }
-
+    }*/
     @track regions = [];
     handleSubmit(event) {
         event.preventDefault();
         const fields = event.detail.fields;
         this.regions = fields.HOT_PreferredRegions__c;
-        this.filterServiceAppointments();
+        this.setDateFormats();
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
         this.handleHideRegionFilter();
     }

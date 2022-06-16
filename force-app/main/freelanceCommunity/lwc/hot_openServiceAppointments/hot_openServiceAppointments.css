@@ -4,7 +4,6 @@
     width: 100%;
     font-family: 'Source Sans Pro', Arial, sans-serif;
     align-items: center;
-    max-width: 1200px;
 }
 .action-container {
     margin-bottom: 1rem;
@@ -44,10 +43,6 @@
     }
 }
 
-.filter-list-checkbox {
-    width: 50%;
-}
-
 @media (max-width: 576px) {
     .right-content {
         margin-bottom: 0;
@@ -57,10 +52,6 @@
     .slds-button--brand {
         width: 100%;
     }
-}
-
-lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:after {
-    content: ' (ingen sensitive opplysninger)';
 }
 
 .no-padding form {

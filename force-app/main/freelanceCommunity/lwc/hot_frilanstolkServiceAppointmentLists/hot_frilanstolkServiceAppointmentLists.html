@@ -2,7 +2,7 @@
     <div class="brodsmulesti">
         <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
     </div>
-    <div class="liste liste-max-width">
+    <div class="liste">
         <lightning-tabset active-tab-value={activeTab}>
             <lightning-tab label="Ledige oppdrag" value="open" onactive={onOpen}>
                 <c-hot_open-service-appointments item-name="openServiceAppointments"> </c-hot_open-service-appointments>
@@ -16,7 +16,7 @@
                 <c-hot_my-service-appointments item-name="myServiceAppointments"> </c-hot_my-service-appointments>
             </lightning-tab>
 
-            <lightning-tab label="Ledig på lønn" value="wageClaim" onactive={onWageClaim}>
+            <lightning-tab label="Ledig med lønn" value="wageClaim" onactive={onWageClaim}>
                 <c-hot_wage-claim-list item-name="wageClaims"> </c-hot_wage-claim-list>
             </lightning-tab>
         </lightning-tabset>

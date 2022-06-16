@@ -1,56 +1,14 @@
 <template>
     <div class="main-content">
-        <div class="action-container">
-            <div class="left-content">
-                <c-picklist
-                    master-label="Filtrer på status"
-                    choices={choices}
-                    onpicklistvaluechange={handlePicklist}
-                ></c-picklist>
-            </div>
-            <div class="right-content"></div>
+        <div if:false={noServiceAppointments}>
+            <c-table
+                records={myServiceAppointmentsFiltered}
+                columns={columns}
+            ></c-table>
         </div>
-        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
-            <c-picklist
-                master-label="Sorter etter"
-                choices={sortingOptions}
-                onpicklistvaluechange={onHandleSort}
-            ></c-picklist>
-        </div>
-
-        <lightning-datatable
-            key-field="AppointmentNumber"
-            data={myServiceAppointmentsFiltered}
-            columns={columns}
-            hide-checkbox-column="true"
-            default-sort-direction={defaultSortDirection}
-            sorted-direction={sortDirection}
-            sorted-by={sortedBy}
-            onsort={onHandleSort}
-            onrowaction={handleRowAction}
-        >
-        </lightning-datatable>
-    </div>
-
-    <div
-        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden detailPage"
-        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
-        tabindex="-1"
-    >
-        <div
-            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-            role="dialog"
-            aria-labelledby="details-header-id"
-        >
-            <section>
-                <h2 id="details-header-id" class="typo-undertittel">Detaljer</h2>
-                <c-hot_record-details record={serviceAppointmentDetails}></c-hot_record-details>
-                <c-record-files-without-sharing record-id={recordId} is-get-all="true"></c-record-files-without-sharing>
-            </section>
-
-            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
-                <span class="text-hide">Lukk</span>
-            </button>
+        <div if:true={noServiceAppointments} style="text-align: center">
+            <br />
+            Du har ingen oppdrag.
         </div>
     </div>
 </template>

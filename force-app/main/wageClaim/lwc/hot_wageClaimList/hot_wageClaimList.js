@@ -1,102 +1,20 @@
 import { LightningElement, wire, track } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
-import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
-import { sortList, getMobileSortingOptions } from 'c/sortController';
+//import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
+import { columns, mobileColumns } from './columns';
 
 export default class Hot_wageClaimList extends LightningElement {
-    @track columns = [
-        {
-            label: 'Start tid',
-            fieldName: 'StartTime__c',
-            type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }
-        },
-        {
-            label: 'Slutt tid',
-            fieldName: 'EndTime__c',
-            type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }
-        },
-        {
-            label: 'Døv/Døvblind',
-            fieldName: 'DegreeOfHearingAndVisualImpairment__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Oppdragstype',
-            fieldName: 'AssignmentType__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Region',
-            fieldName: 'ServiceTerritoryName__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Arbeidstype',
-            fieldName: 'WorkTypeName__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Oppdrag',
-            fieldName: 'ServiceAppointmentName__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Status',
-            fieldName: 'Status__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            type: 'action',
-            typeAttributes: { rowActions: this.getRowActions }
+    @track columns = [];
+    setColumns() {
+        if (window.screen.width > 576) {
+            this.columns = columns;
+        } else {
+            this.columns = mobileColumns;
         }
-    ];
-
-    mobileColumns = [
-        "'Start tid'",
-        "'Slutt tid'",
-        "'Døv/Døvblind'",
-        "'Oppdragstype'",
-        "'Region'",
-        "'Arbeidstype'",
-        "'Oppdrag'",
-        "'Status'"
-    ];
-
-    getRowActions(row, doneCallback) {
-        let actions = [];
-        let tempEndDate = new Date(row['EndTime__c']);
-        if (row['Status__c'] === 'Åpen' && tempEndDate.getTime() > Date.now()) {
-            actions.push({ label: 'Tilbaketrekk tilgjengelighet', name: 'retract availability' });
-        }
-
-        doneCallback(actions);
     }
 
+    noWageClaims = true;
     @track wageClaims = [];
     @track allWageClaims = [];
     wiredWageClaimsResult;
@@ -105,8 +23,9 @@ export default class Hot_wageClaimList extends LightningElement {
         this.wiredWageClaimsResult = result;
         if (result.data) {
             this.allWageClaims = result.data;
+            this.noWageClaims = this.allWageClaims.length === 0;
             this.error = undefined;
-            this.filterWageClaims();
+            this.setDateFormats();
         } else if (result.error) {
             this.error = result.error;
             this.allWageClaims = undefined;
@@ -114,19 +33,11 @@ export default class Hot_wageClaimList extends LightningElement {
     }
 
     connectedCallback() {
+        this.setColumns();
         refreshApex(this.wiredWageClaimsResult);
     }
 
-    //Row action methods
-    handleRowAction(event) {
-        const actionName = event.detail.action.name;
-        const row = event.detail.row;
-        if (actionName == 'retract availability') {
-            this.retractAvailability(row);
-        }
-    }
-
-    retractAvailability(row) {
+    /*retractAvailability(row) {
         if (
             confirm(
                 'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.'
@@ -140,50 +51,23 @@ export default class Hot_wageClaimList extends LightningElement {
                 alert(JSON.stringify(error));
             }
         }
-    }
+    }*/
 
-    @track choices = [
-        { name: 'Ledig på lønn', label: 'Ledig på lønn' },
-        { name: 'Tilbaketrukket', label: 'Tilbaketrukket' },
-        { name: 'Alle', label: 'Alle' }
-    ];
-
-    @track picklistValue = 'Ledig på lønn';
-    handlePicklist(event) {
-        this.picklistValue = event.detail.name;
-        this.filterWageClaims();
-    }
-
-    filterWageClaims() {
-        let tempWageClaim = [];
-        for (let wageClaim of this.allWageClaims) {
-            if (this.picklistValue === 'Ledig på lønn') {
-                if (wageClaim.Status__c === 'Åpen') {
-                    tempWageClaim.push(wageClaim);
-                }
-            } else if (this.picklistValue === 'Alle') {
-                tempWageClaim.push(wageClaim);
-            } else if (this.picklistValue === 'Tilbaketrukket') {
-                if (wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet') {
-                    tempWageClaim.push(wageClaim);
-                }
-            }
+    setDateFormats() {
+        let tempWageClaims = [];
+        for (var i = 0; i < this.allWageClaims.length; i++) {
+            let tempRec = Object.assign({}, this.allWageClaims[i]);
+            tempRec.StartTime__c = this.setDateFormat(this.allWageClaims[i].StartTime__c);
+            tempRec.EndTime__c = this.setDateFormat(this.allWageClaims[i].EndTime__c);
+            tempWageClaims[i] = tempRec;
         }
-        this.wageClaims = tempWageClaim;
+        this.wageClaims = tempWageClaims;
     }
 
-    //Sorting methods
-    @track defaultSortDirection = 'asc';
-    @track sortDirection = 'asc';
-    @track sortedBy = 'StartTime__c';
-
-    get sortingOptions() {
-        return getMobileSortingOptions(this.columns);
-    }
-
-    onHandleSort(event) {
-        this.sortDirection = event.detail.sortDirection;
-        this.sortedBy = event.detail.fieldName;
-        this.wageClaims = sortList(this.wageClaims, this.sortedBy, this.sortDirection);
+    setDateFormat(value) {
+        value = new Date(value);
+        value = value.toLocaleString();
+        value = value.substring(0, value.length - 3);
+        return value;
     }
 }

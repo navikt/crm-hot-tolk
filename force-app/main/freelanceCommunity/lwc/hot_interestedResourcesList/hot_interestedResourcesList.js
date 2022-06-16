@@ -2,93 +2,19 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
-import retractInterests from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterests';
-import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
-import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
-import { interestedResourceFieldLabels } from 'c/hot_fieldLabels';
-import { formatRecord } from 'c/hot_recordDetails';
-import { sortList, getMobileSortingOptions } from 'c/sortController';
-
-var actions = [
-    //{ label: 'Kommenter', name: 'comment' },
-    { label: 'Detaljer', name: 'details' }
-];
+//import retractInterests from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterests';
+//import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
+import { columns, mobileColumns } from './columns';
 
 export default class Hot_interestedResourcesList extends LightningElement {
-    @track columns = [
-        {
-            label: 'Start tid',
-            fieldName: 'ServiceAppointmentStartTime__c',
-            type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }
-        },
-        {
-            label: 'Slutt tid',
-            fieldName: 'ServiceAppointmentEndTime__c',
-            type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }
-        },
-        {
-            label: 'Poststed',
-            fieldName: 'ServiceAppointmentCity__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Tema',
-            fieldName: 'ServiceAppointmentFreelanceSubject__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Tolkemetode',
-            fieldName: 'WorkTypeName__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Status',
-            fieldName: 'Status__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Ny kommentar',
-            fieldName: 'IsNewComment__c',
-            type: 'boolean'
-        },
-        {
-            type: 'action',
-            typeAttributes: { rowActions: actions }
+    @track columns = [];
+    setColumns() {
+        if (window.screen.width > 576) {
+            this.columns = columns;
+        } else {
+            this.columns = mobileColumns;
         }
-    ];
-
-    @track choices = [
-        { name: 'Alle', label: 'Alle' },
-        { name: 'Påmeldt', label: 'Påmeldt' },
-        { name: 'Tildelt', label: 'Tildelt' },
-        { name: 'Ikke tildelt deg', label: 'Ikke tildelt deg' },
-        { name: 'Tilbaketrukket påmelding', label: 'Tilbaketrukket påmelding' },
-        { name: 'Avlyst', label: 'Avlyst' },
-        { name: 'Oppdrag tilbaketrukket', label: 'Oppdrag tilbaketrukket' },
-        { name: 'Avlyst av tolk', label: 'Avlyst av tolk' }
-    ];
+    }
 
     @track serviceResource;
     @wire(getServiceResource)
@@ -98,6 +24,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         }
     }
 
+    noInterestedResources = true;
     @track interestedResources;
     @track interestedResourcesFiltered;
     wiredInterestedResourcesResult;
@@ -106,70 +33,38 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.wiredInterestedResourcesResult = result;
         if (result.data) {
             this.interestedResources = result.data;
+            this.noInterestedResources = this.interestedResources.length === 0;
             this.error = undefined;
-            this.filterInterestedResources();
+            this.setDateFormats();
         } else if (result.error) {
             this.error = result.error;
             this.interestedResources = undefined;
         }
     }
-    filterInterestedResources() {
+    setDateFormats() {
         var tempInterestedResources = [];
         for (var i = 0; i < this.interestedResources.length; i++) {
-            if (this.picklistValue === 'Alle') {
-                tempInterestedResources.push(this.interestedResources[i]);
-                // Covers statuses: 'Tildelt', 'Påmeldt', 'Ikke tildelt deg', 'Tilbaketrukket påmelding', 'Avlyst', 'Oppdrag tilbaketrukket' and 'Avlyst av tolk'
-            } else if (this.picklistValue === this.interestedResources[i].Status__c) {
-                tempInterestedResources.push(this.interestedResources[i]);
-            }
+            let tempRec = Object.assign({}, this.interestedResources[i]);
+            tempRec.ServiceAppointmentEndTime__c = this.setDateFormat(this.interestedResources[i].ServiceAppointmentEndTime__c);
+            tempRec.ServiceAppointmentStartTime__c = this.setDateFormat(this.interestedResources[i].ServiceAppointmentStartTime__c);
+            tempInterestedResources[i] = tempRec;
         }
         this.interestedResourcesFiltered = tempInterestedResources;
     }
 
-    @track picklistValue = 'Alle';
-    handlePicklist(event) {
-        this.picklistValue = event.detail.name;
-        this.filterInterestedResources();
+    setDateFormat(value) {
+        value = new Date(value);
+        value = value.toLocaleString();
+        value = value.substring(0, value.length - 3);
+        return value;
     }
 
     connectedCallback() {
+        this.setColumns();
         refreshApex(this.wiredInterestedResourcesResult);
     }
 
-    //Sorting methods
-    @track defaultSortDirection = 'asc';
-    @track sortDirection = 'asc';
-    @track sortedBy = 'ServiceAppointmentStartTime__c';
-
-    get sortingOptions() {
-        return getMobileSortingOptions(this.columns);
-    }
-
-    onHandleSort(event) {
-        this.sortDirection = event.detail.sortDirection;
-        this.sortedBy = event.detail.fieldName;
-        this.interestedResources = sortList(this.interestedResources, this.sortedBy, this.sortDirection);
-        this.filterInterestedResources();
-    }
-
-    //Row action methods
-    handleRowAction(event) {
-        const actionName = event.detail.action.name;
-        const row = event.detail.row;
-        switch (actionName) {
-            case 'comment':
-                this.openComments(row);
-                break;
-            case 'details':
-                this.openDetails(row);
-                break;
-            default:
-        }
-    }
-
-    @track appointmentNumber = 'Ingen detaljer';
-    @track recordId;
-    @track prevComments = ['Ingen tidligere kommentarer'];
+    /*@track recordId;
     sendComment() {
         let interestedResourceId = this.recordId;
         var newComment = this.template.querySelector('.newComment').value;
@@ -177,34 +72,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
             refreshApex(this.wiredInterestedResourcesResult);
         });
         this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-    }
-
-    @track deadlineDate;
-    @track interestedResourceDetails;
-    openDetails(row) {
-        this.interestedResourceDetails = formatRecord(row, interestedResourceFieldLabels);
-        let detailPage = this.template.querySelector('.ReactModal__Overlay');
-        detailPage.classList.remove('hidden');
-        detailPage.focus();
-
-        this.recordId = row.Id;
-        if (row['Comments__c'] != undefined) {
-            this.prevComments = row.Comments__c.split('\n\n');
-        } else {
-            this.prevComments = '';
-        }
-        let interestedResourceId = this.recordId;
-        readComment({ interestedResourceId }).then(() => {
-            refreshApex(this.wiredInterestedResourcesResult);
-        });
-    }
-    abortShowDetails() {
-        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-    }
-
-    @track selectedRows = [];
-    getSelectedName(event) {
-        this.selectedRows = event.detail.selectedRows;
     }
 
     retractInterest() {
@@ -221,5 +88,5 @@ export default class Hot_interestedResourcesList extends LightningElement {
         } else {
             alert('Velg oppdrag du ønsker å tilbaketrekke interesse for, så trykk på knappen.');
         }
-    }
+    }*/
 }

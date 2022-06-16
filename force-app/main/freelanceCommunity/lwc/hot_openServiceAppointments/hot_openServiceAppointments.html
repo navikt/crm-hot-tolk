@@ -4,14 +4,6 @@
             <div class="left-content">
                 <div style="display: flex; flex-direction: row">
                     <lightning-button
-                        if:true={isSeriesSelected}
-                        label="Vis alle"
-                        name="filterRegionButton"
-                        onclick={handleBackToFullList}
-                    >
-                    </lightning-button>
-                    <lightning-button
-                        if:false={isSeriesSelected}
                         label="Regioner"
                         name="filterRegionButton"
                         onclick={handleShowRegionFilter}
@@ -19,23 +11,16 @@
                     </lightning-button>
                 </div>
             </div>
-            <div class="right-content">
-                <lightning-button title="Meld interesse" variant="brand" label="Meld interesse" onclick={sendInterest}>
-                </lightning-button>
-            </div>
         </div>
-        <div>
+        <div if:false={noServiceAppointments}>
             <c-table
-            records={allServiceAppointmentsFiltered}
-            columns={columns}
-        ></c-table>
+                records={allServiceAppointmentsFiltered}
+                columns={columns}
+            ></c-table>
         </div>
-        <div class="action-container">
-            <div class="left-content"></div>
-            <div class="right-content" style="margin-top: 1rem">
-                <lightning-button title="Meld interesse" variant="brand" label="Meld interesse" onclick={sendInterest}>
-                </lightning-button>
-            </div>
+        <div if:true={noServiceAppointments} style="text-align: center">
+            <br />
+            Det finnes ingen ledige oppdrag.
         </div>
     </div>
 
@@ -64,73 +49,6 @@
                 </lightning-record-edit-form>
             </section>
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={handleHideRegionFilter}>
-                <span class="text-hide">Lukk</span>
-            </button>
-        </div>
-    </div>
-
-    <div
-        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay commentPage hidden"
-        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
-        tabindex="-1"
-        aria-label="Legg inn kommentarer til oppdragene"
-    >
-        <div
-            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-            role="dialog"
-            aria-labelledby="comment-header-id"
-        >
-            <section>
-                <div>
-                    <h2 id="comment-header-id" class="typo-undertittel">Legg til kommentarer til oppdragene</h2>
-
-                    <template iterator:it={serviceAppointmentCommentDetails}>
-                        <lightning-record-edit-form
-                            class="comment-form"
-                            key={it.value.Id}
-                            object-api-name="HOT_InterestedResource__c"
-                            density="comfy"
-                        >
-                            <c-hot_record-details record={it.value}></c-hot_record-details>
-                            <lightning-input-field
-                                class="ikke-sensitive-opplysninger comment-field"
-                                field-name="Comments__c"
-                            >
-                            </lightning-input-field>
-                        </lightning-record-edit-form>
-                    </template>
-
-                    <lightning-button
-                        class="slds-m-left_x-small"
-                        variant="brand"
-                        type="submit"
-                        label="Send inn"
-                        onclick={confirmSendingInterest}
-                    >
-                    </lightning-button>
-                </div>
-            </section>
-            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortSendingInterest}>
-                <span class="text-hide">Lukk</span>
-            </button>
-        </div>
-    </div>
-
-    <div
-        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay detailPage hidden"
-        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
-        tabindex="-1"
-    >
-        <div
-            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-            role="dialog"
-            aria-labelledby="details-header-id"
-        >
-            <section>
-                <h2 id="details-header-id" class="typo-undertittel">Detaljer</h2>
-                <c-hot_record-details record={serviceAppointmentDetails}></c-hot_record-details>
-            </section>
-            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
                 <span class="text-hide">Lukk</span>
             </button>
         </div>

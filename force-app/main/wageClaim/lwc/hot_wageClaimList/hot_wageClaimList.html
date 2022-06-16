@@ -1,33 +1,14 @@
 <template>
     <div class="main-content">
-        <div class="action-container">
-            <div class="left-content">
-                <c-picklist
-                    master-label="Filtrer på status"
-                    choices={choices}
-                    onpicklistvaluechange={handlePicklist}
-                ></c-picklist>
-            </div>
-            <div class="right-content"></div>
+        <div if:false={noWageClaims}>
+            <c-table
+                records={wageClaims}
+                columns={columns}
+            ></c-table>
         </div>
-        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
-            <c-picklist
-                master-label="Sorter etter"
-                choices={sortingOptions}
-                onpicklistvaluechange={onHandleSort}
-            ></c-picklist>
+        <div if:true={noWageClaims} style="text-align: center">
+            <br />
+            Du har ingen ledig med lønn oppdrag.
         </div>
-        <lightning-datatable
-            key-field="Id"
-            data={wageClaims}
-            columns={columns}
-            hide-checkbox-column="true"
-            default-sort-direction={defaultSortDirection}
-            sorted-direction={sortDirection}
-            sorted-by={sortedBy}
-            onsort={onHandleSort}
-            onrowaction={handleRowAction}
-        >
-        </lightning-datatable>
     </div>
 </template>
