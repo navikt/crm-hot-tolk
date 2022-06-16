@@ -23,8 +23,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
 
-    // TODO: When going back with browser button - set active tab
-    // TODO: When going back with link - does not work
+    // TODO: When going back with browser button - set active tab is not working and go to home is not working
     goBack() {
         let res;
         if (this.activeTab === 'open') {

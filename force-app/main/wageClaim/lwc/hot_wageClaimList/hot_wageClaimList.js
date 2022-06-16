@@ -80,7 +80,10 @@ export default class Hot_wageClaimList extends LightningElement {
     }
 
     @api goBack() {
-        return {id: this.urlStateParameterId, tab: 'wageClaim'};
+        let recordIdToReturn = this.urlStateParameterId;
+        this.urlStateParameterId = '';
+        this.isWageClaimDetails = false;
+        return {id: recordIdToReturn, tab: 'wageClaim'};
     }
 
     /*retractAvailability(row) {

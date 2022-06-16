@@ -89,7 +89,10 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
 
     @api goBack() {
-        return {id: this.urlStateParameterId, tab: 'interested'};
+        let recordIdToReturn = this.urlStateParameterId;
+        this.urlStateParameterId = '';
+        this.isInterestedResourceDetails = false;
+        return {id: recordIdToReturn, tab: 'interested'};
     }
     /*@track recordId;
     sendComment() {

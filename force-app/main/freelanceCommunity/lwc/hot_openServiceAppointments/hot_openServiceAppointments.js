@@ -92,6 +92,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     @api goBack() {
-        return {id: this.urlStateParameterId, tab: 'open'};
+        let recordIdToReturn = this.urlStateParameterId;
+        this.urlStateParameterId = '';
+        this.isServiceAppointmentDetails = false;
+        return {id: recordIdToReturn, tab: 'open'};
     }
 }
