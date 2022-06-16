@@ -26,32 +26,32 @@ export default class Hot_myServiceAppointments extends LightningElement {
     }
 
     noServiceAppointments = true;
+    @track myServiceAppointmentsWired;
     @track myServiceAppointments;
-    @track myServiceAppointmentsFiltered;
     wiredMyServiceAppointmentsResult;
     @wire(getMyServiceAppointments)
     wiredMyServiceAppointments(result) {
         this.wiredMyServiceAppointmentsResult = result;
         if (result.data) {
-            this.myServiceAppointments = result.data;
-            this.noServiceAppointments = this.myServiceAppointments.length === 0;
+            this.myServiceAppointmentsWired = result.data;
+            this.noServiceAppointments = this.myServiceAppointmentsWired.length === 0;
             this.error = undefined;
             this.setDateFormats();
         } else if (result.error) {
             this.error = result.error;
-            this.myServiceAppointments = undefined;
+            this.myServiceAppointmentsWired = undefined;
         }
     }
 
     setDateFormats() {
         var tempServiceAppointments = [];
-        for (var i = 0; i < this.myServiceAppointments.length; i++) {
-            let tempRec = Object.assign({}, this.myServiceAppointments[i]);
-            tempRec.DueDate = this.setDateFormat(this.myServiceAppointments[i].DueDate);
-            tempRec.EarliestStartTime = this.setDateFormat(this.myServiceAppointments[i].EarliestStartTime);
+        for (var i = 0; i < this.myServiceAppointmentsWired.length; i++) {
+            let tempRec = Object.assign({}, this.myServiceAppointmentsWired[i]);
+            tempRec.DueDate = this.setDateFormat(this.myServiceAppointmentsWired[i].DueDate);
+            tempRec.EarliestStartTime = this.setDateFormat(this.myServiceAppointmentsWired[i].EarliestStartTime);
             tempServiceAppointments[i] = tempRec;
         }
-        this.myServiceAppointmentsFiltered = tempServiceAppointments;
+        this.myServiceAppointments = tempServiceAppointments;
     }
 
     setDateFormat(value) {
@@ -59,5 +59,33 @@ export default class Hot_myServiceAppointments extends LightningElement {
         value = value.toLocaleString();
         value = value.substring(0, value.length - 3);
         return value;
+    }
+
+    @track serviceAppointment;
+    isServiceAppointmentDetails = false;
+    goToRecordDetails(result) {
+        window.scrollTo(0, 0);
+        let recordId = result.detail.Id;
+        this.urlStateParameterId = recordId;
+        this.isServiceAppointmentDetails = this.urlStateParameterId !== '';
+        for (let serviceAppointment of this.myServiceAppointments) {
+            if (recordId === serviceAppointment.Id) {
+                this.serviceAppointment = serviceAppointment;
+            }
+        }
+        this.updateURL();
+    }
+
+    @track urlStateParameterId = '';
+    updateURL() {
+        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        if (this.urlStateParameterId !== '') {
+            baseURL += '?list=my' + '&id=' + this.urlStateParameterId;
+        }
+        window.history.pushState({ path: baseURL }, '', baseURL);
+    }
+
+    @api goBack() {
+        return {id: this.urlStateParameterId, tab: 'my'};
     }
 }

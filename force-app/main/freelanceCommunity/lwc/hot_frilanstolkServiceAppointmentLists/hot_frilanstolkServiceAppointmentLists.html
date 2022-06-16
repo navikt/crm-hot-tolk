@@ -2,21 +2,25 @@
     <div class="brodsmulesti">
         <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
     </div>
+    <a class="back-link" onclick={goBack}>
+        <c-icon icon="Back"></c-icon>
+        <p style="margin-left: 0.25rem">Tilbake</p>
+    </a>
     <div class="liste">
-        <lightning-tabset active-tab-value={activeTab}>
-            <lightning-tab label="Ledige oppdrag" value="open" onactive={onOpen}>
+        <lightning-tabset>
+            <lightning-tab label="Ledige oppdrag" value="open" onactive={setActiveTab}>
                 <c-hot_open-service-appointments item-name="openServiceAppointments"> </c-hot_open-service-appointments>
             </lightning-tab>
 
-            <lightning-tab label="Påmeldte oppdrag" value="interested" onactive={onInterested}>
+            <lightning-tab label="Påmeldte oppdrag" value="interested" onactive={setActiveTab}>
                 <c-hot_interested-resources-list item-name="interestedResources"> </c-hot_interested-resources-list>
             </lightning-tab>
 
-            <lightning-tab label="Mine oppdrag" value="my" onactive={onMy}>
+            <lightning-tab label="Mine oppdrag" value="my" onactive={setActiveTab}>
                 <c-hot_my-service-appointments item-name="myServiceAppointments"> </c-hot_my-service-appointments>
             </lightning-tab>
 
-            <lightning-tab label="Ledig med lønn" value="wageClaim" onactive={onWageClaim}>
+            <lightning-tab label="Ledig med lønn" value="wageClaim" onactive={setActiveTab}>
                 <c-hot_wage-claim-list item-name="wageClaims"> </c-hot_wage-claim-list>
             </lightning-tab>
         </lightning-tabset>

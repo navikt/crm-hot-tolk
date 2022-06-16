@@ -25,31 +25,31 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
 
     noInterestedResources = true;
+    @track interestedResourcesWired;
     @track interestedResources;
-    @track interestedResourcesFiltered;
     wiredInterestedResourcesResult;
     @wire(getInterestedResources)
     wiredInterestedResources(result) {
         this.wiredInterestedResourcesResult = result;
         if (result.data) {
-            this.interestedResources = result.data;
-            this.noInterestedResources = this.interestedResources.length === 0;
+            this.interestedResourcesWired = result.data;
+            this.noInterestedResources = this.interestedResourcesWired.length === 0;
             this.error = undefined;
             this.setDateFormats();
         } else if (result.error) {
             this.error = result.error;
-            this.interestedResources = undefined;
+            this.interestedResourcesWired = undefined;
         }
     }
     setDateFormats() {
         var tempInterestedResources = [];
-        for (var i = 0; i < this.interestedResources.length; i++) {
-            let tempRec = Object.assign({}, this.interestedResources[i]);
-            tempRec.ServiceAppointmentEndTime__c = this.setDateFormat(this.interestedResources[i].ServiceAppointmentEndTime__c);
-            tempRec.ServiceAppointmentStartTime__c = this.setDateFormat(this.interestedResources[i].ServiceAppointmentStartTime__c);
+        for (var i = 0; i < this.interestedResourcesWired.length; i++) {
+            let tempRec = Object.assign({}, this.interestedResourcesWired[i]);
+            tempRec.ServiceAppointmentEndTime__c = this.setDateFormat(this.interestedResourcesWired[i].ServiceAppointmentEndTime__c);
+            tempRec.ServiceAppointmentStartTime__c = this.setDateFormat(this.interestedResourcesWired[i].ServiceAppointmentStartTime__c);
             tempInterestedResources[i] = tempRec;
         }
-        this.interestedResourcesFiltered = tempInterestedResources;
+        this.interestedResources = tempInterestedResources;
     }
 
     setDateFormat(value) {
@@ -64,6 +64,33 @@ export default class Hot_interestedResourcesList extends LightningElement {
         refreshApex(this.wiredInterestedResourcesResult);
     }
 
+    @track interestedResource;
+    isInterestedResourceDetails = false;
+    goToRecordDetails(result) {
+        window.scrollTo(0, 0);
+        let recordId = result.detail.Id;
+        this.urlStateParameterId = recordId;
+        this.isInterestedResourceDetails = this.urlStateParameterId !== '';
+        for (let interestedResource of this.interestedResources) {
+            if (recordId === interestedResource.Id) {
+                this.interestedResource = interestedResource;
+            }
+        }
+        this.updateURL();
+    }
+
+    @track urlStateParameterId = '';
+    updateURL() {
+        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        if (this.urlStateParameterId !== '') {
+            baseURL += '?list=interested' + '&id=' + this.urlStateParameterId;
+        }
+        window.history.pushState({ path: baseURL }, '', baseURL);
+    }
+
+    @api goBack() {
+        return {id: this.urlStateParameterId, tab: 'interested'};
+    }
     /*@track recordId;
     sendComment() {
         let interestedResourceId = this.recordId;

@@ -1,4 +1,4 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
 //import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
@@ -16,25 +16,71 @@ export default class Hot_wageClaimList extends LightningElement {
 
     noWageClaims = true;
     @track wageClaims = [];
-    @track allWageClaims = [];
+    @track allWageClaimsWired = [];
     wiredWageClaimsResult;
     @wire(getMyWageClaims)
     wiredWageClaims(result) {
         this.wiredWageClaimsResult = result;
         if (result.data) {
-            this.allWageClaims = result.data;
-            this.noWageClaims = this.allWageClaims.length === 0;
+            this.allWageClaimsWired = result.data;
+            this.noWageClaims = this.allWageClaimsWired.length === 0;
             this.error = undefined;
             this.setDateFormats();
         } else if (result.error) {
             this.error = result.error;
-            this.allWageClaims = undefined;
+            this.allWageClaimsWired = undefined;
         }
     }
 
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredWageClaimsResult);
+    }
+
+    setDateFormats() {
+        let tempWageClaims = [];
+        for (var i = 0; i < this.allWageClaimsWired.length; i++) {
+            let tempRec = Object.assign({}, this.allWageClaimsWired[i]);
+            tempRec.StartTime__c = this.setDateFormat(this.allWageClaimsWired[i].StartTime__c);
+            tempRec.EndTime__c = this.setDateFormat(this.allWageClaimsWired[i].EndTime__c);
+            tempWageClaims[i] = tempRec;
+        }
+        this.wageClaims = tempWageClaims;
+    }
+
+    setDateFormat(value) {
+        value = new Date(value);
+        value = value.toLocaleString();
+        value = value.substring(0, value.length - 3);
+        return value;
+    }
+
+    @track wageClaim;
+    isWageClaimDetails = false;
+    goToRecordDetails(result) {
+        window.scrollTo(0, 0);
+        let recordId = result.detail.Id;
+        this.urlStateParameterId = recordId;
+        this.isWageClaimDetails = this.urlStateParameterId !== '';
+        for (let wageClaim of this.wageClaims) {
+            if (recordId === wageClaim.Id) {
+                this.wageClaim = wageClaim;
+            }
+        }
+        this.updateURL();
+    }
+
+    @track urlStateParameterId = '';
+    updateURL() {
+        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        if (this.urlStateParameterId !== '') {
+            baseURL += '?list=wageClaim' + '&id=' + this.urlStateParameterId;
+        }
+        window.history.pushState({ path: baseURL }, '', baseURL);
+    }
+
+    @api goBack() {
+        return {id: this.urlStateParameterId, tab: 'wageClaim'};
     }
 
     /*retractAvailability(row) {
@@ -52,22 +98,4 @@ export default class Hot_wageClaimList extends LightningElement {
             }
         }
     }*/
-
-    setDateFormats() {
-        let tempWageClaims = [];
-        for (var i = 0; i < this.allWageClaims.length; i++) {
-            let tempRec = Object.assign({}, this.allWageClaims[i]);
-            tempRec.StartTime__c = this.setDateFormat(this.allWageClaims[i].StartTime__c);
-            tempRec.EndTime__c = this.setDateFormat(this.allWageClaims[i].EndTime__c);
-            tempWageClaims[i] = tempRec;
-        }
-        this.wageClaims = tempWageClaims;
-    }
-
-    setDateFormat(value) {
-        value = new Date(value);
-        value = value.toLocaleString();
-        value = value.substring(0, value.length - 3);
-        return value;
-    }
 }

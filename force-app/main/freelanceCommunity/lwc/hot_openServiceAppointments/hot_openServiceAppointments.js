@@ -1,11 +1,8 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { columns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
-//import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
-//import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
-//import { formatRecord } from 'c/hot_recordDetails';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
@@ -24,43 +21,38 @@ export default class Hot_openServiceAppointments extends LightningElement {
         if (result.data) {
             this.serviceResource = result.data;
             this.serviceResourceId = this.serviceResource.Id;
-            let tempRegions =
-                result.data.HOT_PreferredRegions__c != null ? result.data.HOT_PreferredRegions__c.split(';') : [];
-            for (let tempRegion of tempRegions) {
-                this.regions.push(tempRegion);
-            }
         }
     }
 
     noServiceAppointments = true;
+    @track allServiceAppointmentsWired;
     @track allServiceAppointments;
-    @track allServiceAppointmentsFiltered;
-    wiredAllServiceAppointmentsResult;
+    wiredAllServiceAppointmentsWiredResult;
     @wire(getOpenServiceAppointments)
-    wiredAllServiceAppointments(result) {
-        this.wiredAllServiceAppointmentsResult = result;
+    wiredAllServiceAppointmentsWired(result) {
+        this.wiredAllServiceAppointmentsWiredResult = result;
         if (result.data) {
-            this.allServiceAppointments = result.data;
-            this.noServiceAppointments = this.allServiceAppointments.length === 0;
+            this.allServiceAppointmentsWired = result.data;
+            this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             this.error = undefined;
             this.setDateFormats();
         } else if (result.error) {
             this.error = result.error;
-            this.allServiceAppointments = undefined;
+            this.allServiceAppointmentsWired = undefined;
         }
     }
 
     setDateFormats() {
         let tempServiceAppointments = [];
-        for (let i = 0; i < this.allServiceAppointments.length; i++) {
-            let tempRec = Object.assign({}, this.allServiceAppointments[i]);
-            tempRec.DueDate = this.setDateFormat(this.allServiceAppointments[i].DueDate);
-            tempRec.EarliestStartTime = this.setDateFormat(this.allServiceAppointments[i].EarliestStartTime);
-            tempRec.HOT_DeadlineDate__c = this.allServiceAppointments[i].HOT_DeadlineDate__c.replaceAll('-', '.').split('.').reverse().join('.');
-            tempRec.HOT_ReleaseDate__c = this.allServiceAppointments[i].HOT_ReleaseDate__c.replaceAll('-', '.').split('.').reverse().join('.');
+        for (let i = 0; i < this.allServiceAppointmentsWired.length; i++) {
+            let tempRec = Object.assign({}, this.allServiceAppointmentsWired[i]);
+            tempRec.DueDate = this.setDateFormat(this.allServiceAppointmentsWired[i].DueDate);
+            tempRec.EarliestStartTime = this.setDateFormat(this.allServiceAppointmentsWired[i].EarliestStartTime);
+            tempRec.HOT_DeadlineDate__c = this.allServiceAppointmentsWired[i].HOT_DeadlineDate__c.replaceAll('-', '.').split('.').reverse().join('.');
+            tempRec.HOT_ReleaseDate__c = this.allServiceAppointmentsWired[i].HOT_ReleaseDate__c.replaceAll('-', '.').split('.').reverse().join('.');
             tempServiceAppointments[i] = tempRec;
         }
-        this.allServiceAppointmentsFiltered = tempServiceAppointments;
+        this.allServiceAppointments = tempServiceAppointments;
     }
 
     setDateFormat(value) {
@@ -72,40 +64,34 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     connectedCallback() {
         this.setColumns();
-        refreshApex(this.wiredAllServiceAppointmentsResult);
+        refreshApex(this.wiredAllServiceAppointmentsWiredResult);
     }
 
-   /* @track serviceAppointmentCommentDetails = [];
-    abortSendingInterest() {
-        this.template.querySelector('.commentPage').classList.add('hidden');
-    }
-    sendInterest() {
-        if (this.selectedRows.length > 0) {
-            this.serviceAppointmentCommentDetails = [];
-            for (let row of this.selectedRows) {
-                this.serviceAppointmentCommentDetails.push(
-                    formatRecord(row, openServiceAppointmentFieldLabels.getSubFields('comment'))
-                );
+    @track serviceAppointment;
+    isServiceAppointmentDetails = false;
+    goToRecordDetails(result) {
+        window.scrollTo(0, 0);
+        let recordId = result.detail.Id;
+        this.urlStateParameterId = recordId;
+        this.isServiceAppointmentDetails = this.urlStateParameterId !== '';
+        for (let serviceAppointment of this.allServiceAppointments) {
+            if (recordId === serviceAppointment.Id) {
+                this.serviceAppointment = serviceAppointment;
             }
-            let commentPage = this.template.querySelector('.commentPage');
-            commentPage.classList.remove('hidden');
-            commentPage.focus();
-        } else {
-            alert('Velg oppdrag du ønsker å melde interesse om, så trykk på knappen.');
         }
+        this.updateURL();
     }
-    confirmSendingInterest() {
-        let serviceAppointmentIds = [];
-        let comments = [];
-        for (let i = 0; i < this.selectedRows.length; i++) {
-            serviceAppointmentIds.push(this.selectedRows[i].Id);
+
+    @track urlStateParameterId = '';
+    updateURL() {
+        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        if (this.urlStateParameterId !== '') {
+            baseURL += '?list=open' + '&id=' + this.urlStateParameterId;
         }
-        this.template.querySelectorAll('.comment-field').forEach((element) => {
-            comments.push(element.value);
-        });
-        createInterestedResources({ serviceAppointmentIds, comments }).then(() => {
-            refreshApex(this.wiredAllServiceAppointmentsResult);
-        });
-        this.template.querySelector('.commentPage').classList.add('hidden');
-    }*/
+        window.history.pushState({ path: baseURL }, '', baseURL);
+    }
+
+    @api goBack() {
+        return {id: this.urlStateParameterId, tab: 'open'};
+    }
 }

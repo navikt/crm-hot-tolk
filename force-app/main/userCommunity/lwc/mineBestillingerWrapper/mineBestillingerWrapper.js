@@ -13,7 +13,7 @@ import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkORder.HOT_IsNoti
 import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import { refreshApex } from '@salesforce/apex';
-import { updateRecord, getRecordNotifyChange } from 'lightning/uiRecordApi';
+import { updateRecord } from 'lightning/uiRecordApi';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @api header;
@@ -266,10 +266,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         let refresh = window.location.protocol + '//' + window.location.host + window.location.pathname;
         if (this.urlStateParameters.id !== '' && this.urlStateParameters.level !== '') {
             refresh += '?id=' + this.urlStateParameters.id + '&level=' + this.urlStateParameters.level;
-            window.history.pushState({ path: refresh }, '', refresh);
-        } else {
-            window.history.pushState({ path: refresh }, '', refresh);
         }
+        window.history.pushState({ path: refresh }, '', refresh);
     }
 
     filteredRecordsLength = 0;

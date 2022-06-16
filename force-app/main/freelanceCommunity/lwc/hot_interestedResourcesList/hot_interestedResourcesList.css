@@ -6,3 +6,21 @@
     align-items: center;
     padding-top: 0.5rem;
 }
+
+.record-details-container {
+    margin: 2rem 0;
+}
+
+p {
+    font-weight: bold;
+}
+
+span {
+    font-weight: normal;
+}
+
+@media (max-width: 576px) {
+    .record-details-container {
+        margin: 5vw 0;
+    }
+}

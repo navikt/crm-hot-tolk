@@ -21,6 +21,15 @@ lightning-tabset {
     max-width: 1400px;
 }
 
+.back-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    max-width: 1400px;
+    width: 100%;
+    margin: auto;
+}
+
 @media (max-width: 576px) {
     .liste {
         padding: 1rem;

@@ -1,14 +1,20 @@
 <template>
     <div class="main-content">
-        <div if:false={noWageClaims}>
-            <c-table
-                records={wageClaims}
-                columns={columns}
-            ></c-table>
+        <div if:false={isWageClaimDetails}>
+            <div if:false={noWageClaims}>
+                <c-table
+                    records={wageClaims}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                ></c-table>
+            </div>
+            <div if:true={noWageClaims} style="text-align: center">
+                <br />
+                Du har ingen ledig med lønn oppdrag.
+            </div>
         </div>
-        <div if:true={noWageClaims} style="text-align: center">
-            <br />
-            Du har ingen ledig med lønn oppdrag.
+        <div if:true={isWageClaimDetails}>
+            <p>Status: <span>{wageClaim.Status__c}</span></p>
         </div>
     </div>
 </template>
