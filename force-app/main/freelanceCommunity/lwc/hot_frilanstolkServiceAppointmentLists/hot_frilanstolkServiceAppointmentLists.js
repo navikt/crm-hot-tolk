@@ -16,7 +16,6 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     @track urlStateParameterList = '';
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        console.log('baseURL: ', baseURL);
         if (this.urlStateParameterList !== '') {
             baseURL += '?list=' + this.urlStateParameterList;
         }
@@ -44,11 +43,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
                 }
             });
         }
-        console.log('res.id: ', res.id);
-        console.log('res.list: ', res.tab);
-        console.log('this.activeTab: ', this.activeTab);
         if (res.id && this.activeTab === res.tab) {
-            console.log('go back to list view');
             this.updateURL();
             this.template.querySelector('lightning-tabset').activeTabValue = res.tab;
         }
