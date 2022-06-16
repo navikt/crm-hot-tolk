@@ -18,27 +18,11 @@
                     >
                     </lightning-button>
                 </div>
-                <template if:false={isSeriesSelected}>
-                    <br />
-                    <c-picklist
-                        master-label="Type oppdrag"
-                        choices={choices}
-                        onpicklistvaluechange={handlePicklist}
-                    ></c-picklist>
-                </template>
             </div>
             <div class="right-content">
                 <lightning-button title="Meld interesse" variant="brand" label="Meld interesse" onclick={sendInterest}>
                 </lightning-button>
             </div>
-        </div>
-
-        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
-            <c-picklist
-                master-label="Sorter etter"
-                choices={sortingOptions}
-                onpicklistvaluechange={onHandleSort}
-            ></c-picklist>
         </div>
         <div>
             <c-table
@@ -46,20 +30,6 @@
             columns={columns}
         ></c-table>
         </div>
-        
-        <!--<lightning-datatable
-            key-field="AppointmentNumber"
-            data={allServiceAppointmentsFiltered}
-            columns={columns}
-            default-sort-direction={defaultSortDirection}
-            sorted-direction={sortDirection}
-            sorted-by={sortedBy}
-            onsort={onHandleSort}
-            onrowaction={handleRowAction}
-            onrowselection={getSelectedName}
-        >
-        </lightning-datatable>-->
-
         <div class="action-container">
             <div class="left-content"></div>
             <div class="right-content" style="margin-top: 1rem">
