@@ -31,7 +31,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         for (HOT_Request__c request : requests) {
             threadByRequestId.get(request.Id).OwnerId = request.OwnerId;
             threadByRequestId.get(request.Id).HOT_Request__c = request.Id;
-            threadByRequestId.get(request.Id).Name = request.Subject__c;
+            threadByRequestId.get(request.Id).Name = request.Subject__c.left(80);
         }
     }
 
