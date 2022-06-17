@@ -24,9 +24,8 @@ lightning-tabset {
     display: flex;
     align-items: center;
     text-decoration: none;
-    max-width: 1400px;
     width: 100%;
-    margin: auto;
+    max-width: fit-content;
 }
 
 .header-buttons {
