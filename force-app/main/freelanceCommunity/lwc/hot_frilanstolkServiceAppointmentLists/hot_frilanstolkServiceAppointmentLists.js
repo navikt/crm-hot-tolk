@@ -2,6 +2,7 @@ import { LightningElement, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
 export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMixin(LightningElement) {
+    // TODO: Send records from active tab to filter when pressed
     @track filters = [];
     breadcrumbs = [
         {
