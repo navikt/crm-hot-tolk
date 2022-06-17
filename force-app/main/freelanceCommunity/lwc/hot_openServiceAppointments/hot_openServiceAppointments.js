@@ -79,6 +79,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 this.serviceAppointment = serviceAppointment;
             }
         }
+        if (this.serviceAppointment.HOT_IsSerieoppdrag__c) {
+            // TODO: Set table records to all service appointments in series
+        }
         this.updateURL();
     }
 
