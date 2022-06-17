@@ -8,11 +8,24 @@ public without sharing class HOT_ThreadHandlerTest {
         insert request;
     }
     @isTest
+    static void setRequestLookupBasedOnRelatedObjectTest() {
+        HOT_Request__c request = [SELECT Id, OwnerId FROM HOT_Request__c];
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = request.Id;
+        Test.startTest();
+        insert thread;
+        Test.stopTest();
+
+        thread = [SELECT Id, HOT_Request__c FROM Thread__c WHERE Id = :thread.Id];
+
+        System.assertEquals(request.Id, thread.HOT_Request__c, 'Could not set HOT_Request__c field on thread');
+    }
+
+    @isTest
     static void setThreadOwnerBasedOnRequestTest() {
         HOT_Request__c request = [SELECT Id, OwnerId FROM HOT_Request__c];
         Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.HOT_Request__c = request.Id;
-
+        thread.CRM_Related_Object__c = request.Id;
         Test.startTest();
         insert thread;
         Test.stopTest();
@@ -25,7 +38,7 @@ public without sharing class HOT_ThreadHandlerTest {
     static void setThreadNameBasedOnRequestTest() {
         HOT_Request__c request = [SELECT Id, OwnerId, Subject__c FROM HOT_Request__c];
         Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.HOT_Request__c = request.Id;
+        thread.CRM_Related_Object__c = request.Id;
 
         Test.startTest();
         insert thread;
@@ -40,7 +53,7 @@ public without sharing class HOT_ThreadHandlerTest {
     static void setThreadLookupOnRequestTest() {
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c];
         Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.HOT_Request__c = request.Id;
+        thread.CRM_Related_Object__c = request.Id;
 
         Test.startTest();
         insert thread;
