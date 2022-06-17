@@ -8,7 +8,6 @@ lightning-tabset {
     font-family: 'Source Sans Pro', Arial, sans-serif;
     margin: 1rem auto 1rem auto;
     border-radius: 0.5rem;
-    align-items: center;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -28,6 +27,13 @@ lightning-tabset {
     max-width: 1400px;
     width: 100%;
     margin: auto;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    z-index: 999;
 }
 
 @media (max-width: 576px) {
