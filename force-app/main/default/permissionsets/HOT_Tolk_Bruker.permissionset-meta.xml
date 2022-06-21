@@ -490,6 +490,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Thread__c.CRM_Number_of_Messages__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Thread__c.CRM_Number_of_unread_Messages__c</field>
         <readable>true</readable>
     </fieldPermissions>
