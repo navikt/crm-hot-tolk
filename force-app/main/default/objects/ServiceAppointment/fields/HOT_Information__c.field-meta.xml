@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_Information__c</fullName>
     <externalId>false</externalId>
@@ -11,7 +11,7 @@ IF( HOT_Request__r.IsSerieoppdrag__c,
     &apos;&apos;)
 + &apos; - &apos; +
 IF( HOT_IsScreenInterpreterNew__c ,
-    &apos;Skjermtolk&apos;, Street)
+    &apos;Skjermtolk&apos;,  PostalCode )
 + 
 IF(City != &quot;&quot;, &apos;, &apos; + City, &quot;&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
