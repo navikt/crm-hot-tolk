@@ -1,4 +1,4 @@
-public without sharing class HOT_ReminderSMSService {
+public without sharing class HOT_SMSService {
     public static void reminderSMS(List<WorkOrder> workOrderList) {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(workOrderList);
         Map<Id, String> interpreterNames = interpreterNamesByWorkOrderIds(workOrderList);
@@ -61,7 +61,7 @@ public without sharing class HOT_ReminderSMSService {
         for (WorkOrder workOrder : workOrders) {
             String interpreterNames = '';
             List<ServiceAppointment> serviceAppointents = serviceAppointmentsByWorkOrderId.get(workOrder.Id);
-            if(serviceAppointents != null){
+            if (serviceAppointents != null) {
                 for (Integer i = 0; i < serviceAppointents.size(); i++) {
                     interpreterNames += serviceAppointents[i].HOT_ServiceResource__r.Name + ', ';
                 }
