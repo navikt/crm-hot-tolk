@@ -2,6 +2,9 @@
     <div class="portal-hilsen">
         <h2 class="typo-undertittel">Hei {name}</h2>
     </div>
+    <div>
+        <c-hot_my-notifications></c-hot_my-notifications>
+    </div>
     <div if:true={isFrilans} class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler-single">
@@ -66,11 +69,7 @@
                 <a class="panelMedBilde" href={pageLinks.newRequest}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={bestilleTolkImg}
-                                alt="Til ny bestilling"
-                            />
+                            <img class="illustrasjon" src={bestilleTolkImg} alt="Til ny bestilling" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
@@ -85,18 +84,15 @@
                 <a class="panelMedBilde" href={pageLinks.myRequests}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={mineBestillingerImg}
-                                alt="Til mine bestillinger"
-                            />
+                            <img class="illustrasjon" src={mineBestillingerImg} alt="Til mine bestillinger" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
                         <h2 class="typo-undertittel">Mine bestillinger</h2>
                         <div>
                             <p class="typo-normal">
-                                Her finner du oversikt over alle bestillinger du har sendt inn, og som andre har sendt inn på vegne av deg.
+                                Her finner du oversikt over alle bestillinger du har sendt inn, og som andre har sendt
+                                inn på vegne av deg.
                             </p>
                         </div>
                     </div>
@@ -104,11 +100,7 @@
                 <a class="panelMedBilde" href={pageLinks.myRequestsOther}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={minTidsplanImg}
-                                alt="Til bestillinger på vegne av andre"
-                            />
+                            <img class="illustrasjon" src={minTidsplanImg} alt="Til bestillinger på vegne av andre" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
@@ -123,30 +115,20 @@
                 <a class="panelMedBilde" href={pageLinks.myThreads}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={mineSamtalerImg}
-                                alt="Til mine samtaler"
-                            />
+                            <img class="illustrasjon" src={mineSamtalerImg} alt="Til mine samtaler" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
                         <h2 class="typo-undertittel">Mine samtaler</h2>
                         <div>
-                            <p class="typo-normal">
-                                Her finner du oversikt over samtalene dine.
-                            </p>
+                            <p class="typo-normal">Her finner du oversikt over samtalene dine.</p>
                         </div>
                     </div>
                 </a>
                 <a class="panelMedBilde" href={pageLinks.myPage}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={minSideImg}
-                                alt="Til min side"
-                            />
+                            <img class="illustrasjon" src={minSideImg} alt="Til min side" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
@@ -165,11 +147,7 @@
                 >
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={kunnskapsbankenImg}
-                                alt="Veiledning"
-                            />
+                            <img class="illustrasjon" src={kunnskapsbankenImg} alt="Veiledning" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">

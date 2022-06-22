@@ -56,6 +56,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             HOT_KRRCalloutQueuable krr = new HOT_KRRCalloutQueuable(requestsToGetContactInformationFor);
             System.enqueueJob(krr);
         }
+        HOT_UserNotification.notifyUser_requestCreated((List<HOT_Request__c>) records);
     }
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
@@ -362,7 +363,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             userInterpretationMethodList.add(request.UserInterpretationMethod__c);
         }
         Map<String, Id> workTypeIdByDeveloperName = new Map<String, Id>();
-        for (WorkType workType : [SELECT Id, HOT_DeveloperName__c FROM WorkType WHERE HOT_DeveloperName__c LIKE :userInterpretationMethodList]) {
+        for (WorkType workType : [
+            SELECT Id, HOT_DeveloperName__c
+            FROM WorkType
+            WHERE HOT_DeveloperName__c LIKE :userInterpretationMethodList
+        ]) {
             workTypeIdByDeveloperName.put(workType.HOT_DeveloperName__c, workType.Id);
         }
         for (HOT_Request__c request : requests) {
