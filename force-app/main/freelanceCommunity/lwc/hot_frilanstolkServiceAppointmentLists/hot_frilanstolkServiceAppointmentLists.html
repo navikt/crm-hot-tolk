@@ -9,6 +9,7 @@
                 <c-icon icon="Back"></c-icon>
                 <p style="margin-left: 0.25rem">Tilbake</p>
             </a>
+            <h2 class="header" tabindex="-1" autofocus>Oppdrag</h2>
             <c-list-filters-button
                 if:false={isServiceAppointmentDetails}
                 header="Filtrer søket"
@@ -28,7 +29,7 @@
                 <c-hot_my-service-appointments item-name="myServiceAppointments"> </c-hot_my-service-appointments>
             </lightning-tab>
 
-            <lightning-tab label="Ledig med lønn" value="wageClaim" onactive={setActiveTab}>
+            <lightning-tab label="Ledig på lønn" value="wageClaim" onactive={setActiveTab}>
                 <c-hot_wage-claim-list item-name="wageClaims"> </c-hot_wage-claim-list>
             </lightning-tab>
         </lightning-tabset>

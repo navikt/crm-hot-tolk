@@ -1,23 +1,22 @@
 <template>
     <div class="main-content">       
-        <div if:false={isServiceAppointmentDetails}>
-            <div if:false={noServiceAppointments}>
-                <c-table
-                    records={allServiceAppointments}
-                    columns={columns}
-                    onrowclick={goToRecordDetails}
-                ></c-table>
-            </div>
-            <div if:true={noServiceAppointments} style="text-align: center">
-                <br />
-                Det finnes ingen ledige oppdrag.
-            </div>
-        </div>
-        <div if:true={isServiceAppointmentDetails}>
+        <div if:true={isDetails}>
             <div class="record-details-container">
                 <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
                 {serviceAppointment.HOT_IsSerieoppdrag__c}
             </div>
+        </div>
+        <div if:false={noServiceAppointments}>
+            <c-table
+                if:true={showTable}
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+            ></c-table>
+        </div>
+        <div if:true={noServiceAppointments} style="text-align: center">
+            <br />
+            Det finnes ingen ledige oppdrag.
         </div>
     </div>
 </template>

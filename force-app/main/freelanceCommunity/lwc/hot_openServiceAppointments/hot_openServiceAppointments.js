@@ -24,13 +24,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    noServiceAppointments = true;
-    @track allServiceAppointmentsWired;
-    @track allServiceAppointments;
-    wiredAllServiceAppointmentsWiredResult;
+    noServiceAppointments = false;
+    initialServiceAppointments = [];
+    @track records = [];
+    @track allServiceAppointmentsWired = [];
+    wiredAllServiceAppointmentsResult;
     @wire(getOpenServiceAppointments)
     wiredAllServiceAppointmentsWired(result) {
-        this.wiredAllServiceAppointmentsWiredResult = result;
+        this.wiredAllServiceAppointmentsResult = result;
         if (result.data) {
             this.allServiceAppointmentsWired = result.data;
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
@@ -52,7 +53,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
             tempRec.HOT_ReleaseDate__c = this.allServiceAppointmentsWired[i].HOT_ReleaseDate__c.replaceAll('-', '.').split('.').reverse().join('.');
             tempServiceAppointments[i] = tempRec;
         }
-        this.allServiceAppointments = tempServiceAppointments;
+        this.records = tempServiceAppointments;
+        this.initialServiceAppointments = [...this.records];
     }
 
     setDateFormat(value) {
@@ -64,23 +66,33 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     connectedCallback() {
         this.setColumns();
-        refreshApex(this.wiredAllServiceAppointmentsWiredResult);
+        refreshApex(this.wiredAllServiceAppointmentsResult);
     }
 
     @track serviceAppointment;
-    isServiceAppointmentDetails = false;
+    isDetails = false;
+    isSeries = false;
+    showTable = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
         let recordId = result.detail.Id;
         this.urlStateParameterId = recordId;
-        this.isServiceAppointmentDetails = this.urlStateParameterId !== '';
-        for (let serviceAppointment of this.allServiceAppointments) {
+        this.isDetails = this.urlStateParameterId !== '';
+        for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
             }
         }
-        if (this.serviceAppointment.HOT_IsSerieoppdrag__c) {
-            // TODO: Set table records to all service appointments in series
+        this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
+        this.showTable = (this.isSeries && this.urlStateParameterId !== '') || this.urlStateParameterId === '';
+        if (this.isSeries) {
+            let tempRecords = [];
+            for (let record of this.records) {
+                if (record.HOT_RequestNumber__c == this.serviceAppointment.HOT_RequestNumber__c) {
+                    tempRecords.push(record);
+                }
+            }
+            this.records = [...tempRecords];
         }
         this.updateURL();
     }
@@ -97,7 +109,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
     @api goBack() {
         let recordIdToReturn = this.urlStateParameterId;
         this.urlStateParameterId = '';
-        this.isServiceAppointmentDetails = false;
+        this.isDetails = false;
+        this.showTable = true;
+        this.records = [...this.initialServiceAppointments];
         return {id: recordIdToReturn, tab: 'open'};
     }
 }

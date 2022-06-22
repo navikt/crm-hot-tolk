@@ -24,32 +24,34 @@ export default class Hot_interestedResourcesList extends LightningElement {
         }
     }
 
-    noInterestedResources = true;
-    @track interestedResourcesWired;
-    @track interestedResources;
+    noInterestedResources = false;
+    initialInterestedResources = [];
+    @track records = [];
+    @track allInterestedResourcesWired = [];
     wiredInterestedResourcesResult;
     @wire(getInterestedResources)
     wiredInterestedResources(result) {
         this.wiredInterestedResourcesResult = result;
         if (result.data) {
-            this.interestedResourcesWired = result.data;
-            this.noInterestedResources = this.interestedResourcesWired.length === 0;
+            this.allInterestedResourcesWired = result.data;
+            this.noInterestedResources = this.allInterestedResourcesWired.length === 0;
             this.error = undefined;
             this.setDateFormats();
         } else if (result.error) {
             this.error = result.error;
-            this.interestedResourcesWired = undefined;
+            this.allInterestedResourcesWired = undefined;
         }
     }
     setDateFormats() {
         var tempInterestedResources = [];
-        for (var i = 0; i < this.interestedResourcesWired.length; i++) {
-            let tempRec = Object.assign({}, this.interestedResourcesWired[i]);
-            tempRec.ServiceAppointmentEndTime__c = this.setDateFormat(this.interestedResourcesWired[i].ServiceAppointmentEndTime__c);
-            tempRec.ServiceAppointmentStartTime__c = this.setDateFormat(this.interestedResourcesWired[i].ServiceAppointmentStartTime__c);
+        for (var i = 0; i < this.allInterestedResourcesWired.length; i++) {
+            let tempRec = Object.assign({}, this.allInterestedResourcesWired[i]);
+            tempRec.ServiceAppointmentEndTime__c = this.setDateFormat(this.allInterestedResourcesWired[i].ServiceAppointmentEndTime__c);
+            tempRec.ServiceAppointmentStartTime__c = this.setDateFormat(this.allInterestedResourcesWired[i].ServiceAppointmentStartTime__c);
             tempInterestedResources[i] = tempRec;
         }
-        this.interestedResources = tempInterestedResources;
+        this.records = tempInterestedResources;
+        this.initialInterestedResources = [...this.records];
     }
 
     setDateFormat(value) {
@@ -65,20 +67,33 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
 
     @track interestedResource;
-    isInterestedResourceDetails = false;
+    isDetails = false;
+    isSeries = false;
+    showTable = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
         let recordId = result.detail.Id;
         this.urlStateParameterId = recordId;
-        this.isInterestedResourceDetails = this.urlStateParameterId !== '';
-        for (let interestedResource of this.interestedResources) {
+        this.isDetails = this.urlStateParameterId !== '';
+        for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
             }
         }
+        this.isSeries = this.interestedResource.ServiceAppointment__r.HOT_IsSerieoppdrag__c;
+        this.showTable = (this.isSeries && this.urlStateParameterId !== '') || this.urlStateParameterId === '';
+        if (this.isSeries) {
+            let tempRecords = [];
+            for (let record of this.records) {
+                if (record.ServiceAppointment__r.HOT_RequestNumber__c == this.interestedResource.ServiceAppointment__r.HOT_RequestNumber__c) {
+                    tempRecords.push(record);
+                }
+            }
+            this.records = [...tempRecords];
+        }
         this.updateURL();
     }
-
+    
     @track urlStateParameterId = '';
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
@@ -91,7 +106,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
     @api goBack() {
         let recordIdToReturn = this.urlStateParameterId;
         this.urlStateParameterId = '';
-        this.isInterestedResourceDetails = false;
+        this.isDetails = false;
+        this.showTable = true;
+        this.records = [...this.initialInterestedResources];
         return {id: recordIdToReturn, tab: 'interested'};
     }
     /*@track recordId;

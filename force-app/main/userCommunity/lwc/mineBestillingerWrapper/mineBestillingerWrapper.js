@@ -241,6 +241,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.setColumns();
         this.updateView();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        console.log(this.isWorkOrderDetails);
     }
 
     interpreter = 'Tolk';

@@ -35,6 +35,17 @@ lightning-tabset {
     z-index: 999;
 }
 
+.header {
+    flex: 2;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.header:focus {
+    outline: none;
+}
+
 @media (max-width: 576px) {
     .liste {
         padding: 1rem;

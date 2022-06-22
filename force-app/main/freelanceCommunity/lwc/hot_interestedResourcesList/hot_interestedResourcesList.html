@@ -1,22 +1,21 @@
 <template>
     <div class="main-content">
-        <div if:false={isInterestedResourceDetails}>
-            <div if:false={noInterestedResources}>
-                <c-table
-                    records={interestedResources}
-                    columns={columns}
-                    onrowclick={goToRecordDetails}
-                ></c-table>
-            </div>
-            <div if:true={noInterestedResources} style="text-align: center">
-                <br />
-                Du har ingen påmeldte oppdrag.
-            </div>
-        </div>
-        <div if:true={isInterestedResourceDetails}>
+        <div if:true={isDetails}>
             <div class="record-details-container">
                 <p>Tema: <span>{interestedResource.ServiceAppointmentFreelanceSubject__c}</span></p>
             </div>
+        </div>
+        <div if:false={noInterestedResources}>
+            <c-table
+                if:true={showTable}
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+            ></c-table>
+        </div>
+        <div if:true={noInterestedResources} style="text-align: center">
+            <br />
+            Du har ingen påmeldte oppdrag.
         </div>
     </div>
 </template>

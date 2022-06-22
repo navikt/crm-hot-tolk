@@ -14,7 +14,7 @@ export default class Hot_wageClaimList extends LightningElement {
         }
     }
 
-    noWageClaims = true;
+    noWageClaims = false;
     @track wageClaims = [];
     @track allWageClaimsWired = [];
     wiredWageClaimsResult;
