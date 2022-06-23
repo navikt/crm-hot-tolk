@@ -119,20 +119,16 @@ public without sharing class HOT_UserNotification {
         @AuraEnabled
         public Integer numberOfUnreads;
         @AuraEnabled
-        public Integer numberOfNotifications;
-        @AuraEnabled
         public List<Notification> notifications;
 
         Notifications() {
             this.numberOfUnreads = 0;
-            this.numberOfNotifications = 0;
             this.notifications = new List<Notification>();
         }
 
         void addNotification(Notification notification) {
             this.notifications.add(notification);
-            this.numberOfNotifications++;
-            this.numberOfNotifications += notification.isRead ? 0 : 1;
+            this.numberOfUnreads += notification.isRead ? 0 : 1;
         }
     }
     class Notification {
