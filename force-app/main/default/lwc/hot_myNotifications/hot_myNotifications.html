@@ -1,6 +1,9 @@
 <template>
     <div class="varsel-container">
         <button class="varsel-button" onclick={onHandleClickVarsler}>
+            <div class="unread-varsel-container">
+                <p>{notificationClass.numberOfUnreads}</p>
+            </div>
             <svg
                 width="1.5em"
                 height="1.5em"
@@ -22,9 +25,9 @@
             <ul>
                 <template for:each={notifications} for:item="element">
                     <li key={element} class="varsel-list-element">
-                        <h3 class="varsel-list-element-content">{element.messageTitle}</h3>
-                        <p class="varsel-list-element-content">{element.messageBody}</p>
-                        <p class="varsel-list-element-content datetime-stamp">{element.mostRecentActivityDate}</p>
+                        <h3 class="varsel-list-element-content">{element.title}</h3>
+                        <p class="varsel-list-element-content">{element.body}</p>
+                        <p class="varsel-list-element-content datetime-stamp">{element.timeSinceCreated}</p>
                     </li>
                 </template>
             </ul>

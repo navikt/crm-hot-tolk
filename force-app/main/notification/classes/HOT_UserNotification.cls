@@ -86,18 +86,21 @@ public without sharing class HOT_UserNotification {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<Object> getNotifications(String notificationTypeNames) {
+    public static Notifications getNotifications(String notificationTypeNames) {
         List<String> notificationTypes = notificationTypeNames.split(', ');
         Map<String, Id> notificationTypeMap = getNotificationTypeMap(notificationTypes);
         List<Object> notifications = getAllNotifications();
         List<Object> objects = new List<Object>();
+
+        Notifications notificationClass = new Notifications();
         for (Object obj : notifications) {
             Map<String, Object> objectMap = (Map<String, Object>) obj;
             if (notificationTypeMap.values().contains((String) objectMap.get('type')) || notificationTypeNames == '') {
                 objects.add(obj);
+                notificationClass.addNotification(new Notification((Map<String, Object>) obj));
             }
         }
-        return objects;
+        return notificationClass;
     }
 
     public static Map<String, Id> getNotificationTypeMap(List<String> notificationTypes) {
@@ -110,5 +113,50 @@ public without sharing class HOT_UserNotification {
             notificationTypeMap.put(notificationType.DeveloperName, notificationType.Id);
         }
         return notificationTypeMap;
+    }
+
+    class Notifications {
+        @AuraEnabled
+        public Integer numberOfUnreads;
+        @AuraEnabled
+        public Integer numberOfNotifications;
+        @AuraEnabled
+        public List<Notification> notifications;
+
+        Notifications() {
+            this.numberOfUnreads = 0;
+            this.numberOfNotifications = 0;
+            this.notifications = new List<Notification>();
+        }
+
+        void addNotification(Notification notification) {
+            this.notifications.add(notification);
+            this.numberOfNotifications++;
+            this.numberOfNotifications += notification.isRead ? 0 : 1;
+        }
+    }
+    class Notification {
+        @AuraEnabled
+        public String title;
+        @AuraEnabled
+        public String body;
+        @AuraEnabled
+        public Boolean isRead;
+        @AuraEnabled
+        public Datetime createdDate;
+        @AuraEnabled
+        public String timeSinceCreated;
+
+        Notification(Map<String, Object> notificationObject) {
+            this.title = (String) notificationObject.get('messageTitle');
+            this.body = (String) notificationObject.get('messageBody');
+            this.isRead = (Boolean) notificationObject.get('read');
+            //this.createdDate = (Datetime) notificationObject.get('mostRecentActivityDate');
+            this.timeSinceCreated = calculateTimeSinceCreated();
+        }
+
+        String calculateTimeSinceCreated() {
+            return '2 timer';
+        }
     }
 }
