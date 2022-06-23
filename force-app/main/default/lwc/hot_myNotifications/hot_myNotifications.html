@@ -2,7 +2,7 @@
     <div if:true={varslerPressed} class="fullscreen-overlay" onclick={onHandleClickVarsler}></div>
     <div class="varsel-container">
         <button class="varsel-button" onclick={onHandleClickVarsler}>
-            <div class="unread-varsel-container">
+            <div if:true={notificationClass.hasUnreads} class="unread-varsel-container">
                 <p>{notificationClass.numberOfUnreads}</p>
             </div>
             <svg
