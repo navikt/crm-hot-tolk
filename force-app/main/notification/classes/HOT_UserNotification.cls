@@ -63,8 +63,7 @@ public without sharing class HOT_UserNotification {
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) request);
     }
 
-    @AuraEnabled(cacheable=true)
-    public static String getNotifications() {
+    public static List<Object> getAllNotifications() {
         String sfdcURL = URL.getOrgDomainUrl().toExternalForm();
         String restAPIURL = sfdcURL + '/services/data/v51.0/connect/notifications';
         HttpRequest httpRequest = new HttpRequest();
@@ -74,17 +73,42 @@ public without sharing class HOT_UserNotification {
         httpRequest.setHeader('Authorization', 'OAuth ' + UserInfo.getSessionId());
         httpRequest.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionID());
         httpRequest.setEndpoint(restAPIURL);
-        String response = '';
         try {
             Http http = new Http();
             HttpResponse httpResponse = http.send(httpRequest);
-            response = httpResponse.getBody();
-            system.debug(' Connect Notifications---> ' + response);
+            Map<String, Object> response = (Map<String, Object>) JSON.deserializeUntyped(httpResponse.getBody());
 
-            return response;
+            return (List<Object>) response.get('notifications');
         } catch (System.Exception e) {
             System.debug('ERROR: ' + e);
             return null;
         }
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Object> getNotifications(String notificationTypeNames) {
+        List<String> notificationTypes = notificationTypeNames.split(', ');
+        Map<String, Id> notificationTypeMap = getNotificationTypeMap(notificationTypes);
+        List<Object> notifications = getAllNotifications();
+        List<Object> objects = new List<Object>();
+        for (Object obj : notifications) {
+            Map<String, Object> objectMap = (Map<String, Object>) obj;
+            if (notificationTypeMap.values().contains((String) objectMap.get('type')) || notificationTypeNames == '') {
+                objects.add(obj);
+            }
+        }
+        return objects;
+    }
+
+    public static Map<String, Id> getNotificationTypeMap(List<String> notificationTypes) {
+        Map<String, Id> notificationTypeMap = new Map<String, Id>();
+        for (CustomNotificationType notificationType : [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName IN :notificationTypes
+        ]) {
+            notificationTypeMap.put(notificationType.DeveloperName, notificationType.Id);
+        }
+        return notificationTypeMap;
     }
 }

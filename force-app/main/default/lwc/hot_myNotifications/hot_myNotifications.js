@@ -1,21 +1,22 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, track, wire, api } from 'lwc';
 import getNotifications from '@salesforce/apex/HOT_UserNotification.getNotifications';
 
 export default class Hot_myNotifications extends LightningElement {
-    @wire(getNotifications)
+    @wire(getNotifications, { notificationTypeNames: '' })
     handleWire(result) {
-        console.log(result);
         if (result.data) {
-            this.getParse(result.data).then((res) => {
-                this.notifications = res.notifications;
-                console.log(this.notifications);
-            });
-            console.log(this.notifications);
+            this.notifications = result.data;
+            console.log('All notifications ', this.notifications.length);
         }
     }
     @track notifications = [];
+    @api notificationTypes = '';
 
-    getParse(input) {
-        return JSON.parse(input);
+    @wire(getNotifications, { notificationTypeNames: '$notificationTypes' })
+    handlegetNotifications(result) {
+        if (result.data) {
+            this.res = result.data;
+            console.log('only user notifications ', this.res.length);
+        }
     }
 }

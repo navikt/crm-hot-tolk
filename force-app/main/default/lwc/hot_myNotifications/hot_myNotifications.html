@@ -1,7 +1,7 @@
 <template>
     <ul>
-        <template for:each={notofications} for:item="element">
-            <li key={it.element} style="border-bottom: 2px solid black">
+        <template for:each={notifications} for:item="element">
+            <li key={element} style="border-bottom: 2px solid black">
                 <h2>{element.messageTitle}</h2>
                 <p>{element.messageBody}</p>
             </li>
