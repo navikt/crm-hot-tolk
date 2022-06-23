@@ -1,7 +1,5 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getNotifications from '@salesforce/apex/HOT_UserNotification.getNotifications';
-import dekoratoren from '@salesforce/resourceUrl/dekoratoren';
-import { loadStyle } from 'lightning/platformResourceLoader';
 
 export default class Hot_myNotifications extends LightningElement {
     @wire(getNotifications, { notificationTypeNames: '' })
@@ -9,6 +7,7 @@ export default class Hot_myNotifications extends LightningElement {
         if (result.data) {
             this.notifications = result.data;
             console.log('All notifications ', this.notifications.length);
+            console.log('notificatiuon ', JSON.stringify(this.notifications[0]));
         }
     }
     @track notifications = [];
@@ -24,6 +23,7 @@ export default class Hot_myNotifications extends LightningElement {
 
     varslerPressed = false;
     onHandleClickVarsler() {
+        console.log('he');
         this.varslerPressed = !this.varslerPressed;
     }
 }

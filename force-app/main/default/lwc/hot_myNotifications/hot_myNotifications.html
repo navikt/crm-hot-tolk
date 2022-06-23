@@ -1,9 +1,9 @@
 <template>
-    <div if:false={varslerPressed}>
-        <button class="" onclick={onHandleClickVarsler}>
+    <div class="varsel-container">
+        <button class="varsel-button" onclick={onHandleClickVarsler}>
             <svg
-                width="1em"
-                height="1em"
+                width="1.5em"
+                height="1.5em"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -18,15 +18,16 @@
                 ></path>
             </svg>
         </button>
-    </div>
-    <div if:true={varslerPressed}>
-        <ul>
-            <template for:each={notifications} for:item="element">
-                <li key={element} style="border-bottom: 2px solid black">
-                    <h2>{element.messageTitle}</h2>
-                    <p>{element.messageBody}</p>
-                </li>
-            </template>
-        </ul>
+        <div if:true={varslerPressed} class="varsel-list-container">
+            <ul>
+                <template for:each={notifications} for:item="element">
+                    <li key={element} class="varsel-list-element">
+                        <h3 class="varsel-list-element-content">{element.messageTitle}</h3>
+                        <p class="varsel-list-element-content">{element.messageBody}</p>
+                        <p class="varsel-list-element-content datetime-stamp">{element.mostRecentActivityDate}</p>
+                    </li>
+                </template>
+            </ul>
+        </div>
     </div>
 </template>

@@ -1,0 +1,22 @@
+.varsel-container {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+.varsel-button {
+    background-color: transparent;
+    border: 0;
+}
+.varsel-list-container {
+    background-color: white;
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.varsel-list-element {
+    border-bottom: 2px solid black;
+    padding: 0.5rem;
+}
+.varsel-list-element-content {
+    text-align: left;
+}
