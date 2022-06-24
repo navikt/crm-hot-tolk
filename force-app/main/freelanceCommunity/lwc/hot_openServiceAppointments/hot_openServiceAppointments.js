@@ -1,5 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
+import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { columns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
@@ -113,5 +114,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.showTable = true;
         this.records = [...this.initialServiceAppointments];
         return {id: recordIdToReturn, tab: 'open'};
+    }
+
+    registerInterest() {
+        let checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
+        if (checkedServiceAppointments.length > 0) {
+            createInterestedResources({ serviceAppointmentIds: checkedServiceAppointments }).then(() => {
+                // TODO: Show confirmation to user?
+                refreshApex(this.wiredAllServiceAppointmentsResult);
+            });
+        }
     }
 }
