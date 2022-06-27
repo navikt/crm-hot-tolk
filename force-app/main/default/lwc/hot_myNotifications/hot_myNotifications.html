@@ -25,7 +25,7 @@
         <div if:true={varslerPressed} class="varsel-list-container">
             <ul>
                 <template for:each={notifications} for:item="element">
-                    <li key={element} class="varsel-list-element">
+                    <li key={element} class="varsel-list-element" onclick={gotoNotificationEndpoint}>
                         <h3 class="varsel-list-element-content">{element.title}</h3>
                         <p class="varsel-list-element-content">{element.body}</p>
                         <p class="varsel-list-element-content datetime-stamp">{element.timeSinceCreated}</p>

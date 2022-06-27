@@ -20,4 +20,5 @@ export default class Hot_myNotifications extends LightningElement {
     onHandleClickVarsler() {
         this.varslerPressed = !this.varslerPressed;
     }
+    gotoNotificationEndpoint(event) {}
 }
