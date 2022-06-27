@@ -21,7 +21,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track filters = [];
     @track breadcrumbs = [];
 
-
     get isMobile() {
         return window.screen.width < 576;
     }
@@ -29,18 +28,18 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     get buttonText() {
         return this.isMobile ? '+' : 'Ny bestilling';
     }
-    
+
     connectedCallback() {
         this.filters = defaultFilters();
-        this.breadcrumbs = [ 
-        {
-            label: 'Tolketjenesten',
-            href: ''
-        },
-        {
-            label: this.header,
-            href: 'mine-bestillinger'
-        }
+        this.breadcrumbs = [
+            {
+                label: 'Tolketjenesten',
+                href: ''
+            },
+            {
+                label: this.header,
+                href: 'mine-bestillinger'
+            }
         ];
     }
     renderedCallback() {
@@ -204,13 +203,25 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     setAddressFormat() {
         this.requestAddressToShow = this.request.IsScreenInterpreter__c
             ? 'Digitalt oppmøte'
-            : this.request.MeetingStreet__c + ', ' + this.request.MeetingPostalCode__c + ' ' + this.request.MeetingPostalCity__c;
+            : this.request.MeetingStreet__c +
+              ', ' +
+              this.request.MeetingPostalCode__c +
+              ' ' +
+              this.request.MeetingPostalCity__c;
         this.requestInterpretationAddressToShow = this.request.IsScreenInterpreter__c
             ? 'Digitalt oppmøte'
-            : this.request.InterpretationStreet__c + ', ' + this.request.InterpretationPostalCode__c + ' ' + this.request.InterpretationPostalCity__c;
+            : this.request.InterpretationStreet__c +
+              ', ' +
+              this.request.InterpretationPostalCode__c +
+              ' ' +
+              this.request.InterpretationPostalCity__c;
         this.workOrderInterpretationAddressToShow = this.request.IsScreenInterpreter__c
-        ? 'Digitalt oppmøte'
-        : this.workOrder.HOT_InterpretationStreet__c + ', ' + this.workOrder.HOT_InterpretationPostalCode__c + ' ' + this.workOrder.HOT_InterpretationPostalCity__c;
+            ? 'Digitalt oppmøte'
+            : this.workOrder.HOT_InterpretationStreet__c +
+              ', ' +
+              this.workOrder.HOT_InterpretationPostalCode__c +
+              ' ' +
+              this.workOrder.HOT_InterpretationPostalCity__c;
     }
 
     goBack() {
@@ -532,33 +543,34 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     navigateToThread(recordId) {
         this[NavigationMixin.Navigate]({
-                    type: 'standard__recordPage',
-                    attributes: {
-                        recordId: recordId,
-                        objectApiName: 'Thread__c',
-                        actionName: 'view'
-                    },
-                    state: {
-                        from: 'mine-bestillinger',
-                        recordId: this.urlStateParameters.id,
-                        level: this.urlStateParameters.level
-                    }
-                });
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: recordId,
+                objectApiName: 'Thread__c',
+                actionName: 'view'
+            },
+            state: {
+                from: 'mine-bestillinger',
+                recordId: this.urlStateParameters.id,
+                level: this.urlStateParameters.level
+            }
+        });
     }
 
     goToThread() {
-        console.log('this.request.Thread__c: ', this.request.Thread__c);
         if (this.request.Thread__c !== undefined) {
             this.navigateToThread(this.request.Thread__c);
         } else {
-            createThread({ recordId: this.request.Id, accountId: this.request.Account__c }).then((result) => {
-                this.navigateToThread(result.Id);
-                refreshApex(this.wiredgetWorkOrdersResult);
-            }).catch((error) => {
-                this.modalHeader = 'Noe gikk galt';
-                this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                this.noCancelButton = true;
-                this.showModal();
+            createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
+                .then((result) => {
+                    this.navigateToThread(result.Id);
+                    refreshApex(this.wiredgetWorkOrdersResult);
+                })
+                .catch((error) => {
+                    this.modalHeader = 'Noe gikk galt';
+                    this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                    this.noCancelButton = true;
+                    this.showModal();
                 });
         }
     }

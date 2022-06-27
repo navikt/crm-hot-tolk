@@ -2,8 +2,8 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
     public override void onBeforeInsert() {
         Map<Id, Thread__c> threadByRequestId = new Map<Id, Thread__c>();
         for (Thread__c thread : (List<Thread__c>) records) {
-            if (thread.CRM_Type__c == 'HOT_BRUKER-FORMIDLER' && thread.HOT_Request__c != null) {
-                threadByRequestId.put(thread.HOT_Request__c, thread);
+            if (thread.CRM_Type__c == 'HOT_BRUKER-FORMIDLER' && thread.CRM_Related_Object__c != null) {
+                threadByRequestId.put(thread.CRM_Related_Object__c, thread);
             }
         }
         if (!threadByRequestId.isEmpty()) {
@@ -13,7 +13,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
     public override void onAfterInsert() {
         Map<Id, Id> threadIdByRequestId = new Map<Id, Id>();
         for (Thread__c thread : (List<Thread__c>) records) {
-            if (thread.CRM_Type__c == 'HOT_BRUKER-FORMIDLER' && thread.HOT_Request__c != null) {
+            if (thread.CRM_Type__c == 'HOT_BRUKER-FORMIDLER' && thread.CRM_Related_Object__c != null) {
                 threadIdByRequestId.put(thread.HOT_Request__c, thread.Id);
             }
         }
@@ -30,7 +30,8 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         ];
         for (HOT_Request__c request : requests) {
             threadByRequestId.get(request.Id).OwnerId = request.OwnerId;
-            threadByRequestId.get(request.Id).Name = request.Subject__c;
+            threadByRequestId.get(request.Id).HOT_Request__c = request.Id;
+            threadByRequestId.get(request.Id).Name = request.Subject__c.left(80);
         }
     }
 
