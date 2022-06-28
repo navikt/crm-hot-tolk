@@ -12,6 +12,8 @@
                 columns={columns}
                 onrowclick={goToRecordDetails}
                 checkbox="true"
+                start-date-field="ServiceAppointmentStartTime__c"
+                end-date-field="ServiceAppointmentEndTime__c"
             ></c-table>
         </div>
         <div if:true={noInterestedResources} style="text-align: center">

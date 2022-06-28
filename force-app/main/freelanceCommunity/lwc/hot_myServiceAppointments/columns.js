@@ -1,55 +1,45 @@
 export let columns = [
     {
-        label: 'Bestilt starttid',
-        name: 'EarliestStartTime',
-        type: 'Datetime',
-    },
-    {
-        label: 'Bestilt sluttid',
-        name: 'DueDate',
-        type: 'Datetime',
+        label: 'Bestilt tid',
+        name: 'StartAndEndDate',
+        type: 'Datetime'
     },
     {
         label: 'Poststed',
         name: 'City',
-        type: 'String',
+        type: 'String'
     },
     {
         label: 'Tema',
         name: 'Subject',
-        type: 'String',
+        type: 'String'
     },
     {
         label: 'Tolkemetode',
         name: 'HOT_WorkTypeName__c',
-        type: 'String',
+        type: 'String'
     },
     {
         label: 'Status',
         name: 'Status',
-        type: 'String',
-    },
+        type: 'String'
+    }
 ];
 
 export let mobileColumns = [
     {
-        label: 'Bestilt starttid',
-        name: 'EarliestStartTime',
-        type: 'Datetime',
-    },
-    {
-        label: 'Bestilt sluttid',
-        name: 'DueDate',
-        type: 'Datetime',
+        label: 'Bestilt tid',
+        name: 'StartAndEndDate',
+        type: 'Datetime'
     },
     {
         label: 'Tema',
         name: 'Subject',
-        type: 'String',
+        type: 'String'
     },
     {
         label: 'Status',
         name: 'Status',
-        type: 'String',
-    },
+        type: 'String'
+    }
 ];
