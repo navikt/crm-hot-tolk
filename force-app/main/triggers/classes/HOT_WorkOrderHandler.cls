@@ -308,7 +308,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             update requests;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
         }
     }
