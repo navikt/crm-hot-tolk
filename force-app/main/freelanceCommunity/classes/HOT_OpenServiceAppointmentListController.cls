@@ -112,7 +112,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
     @AuraEnabled
     //public static void createInterestedResources(List<String> serviceAppointmentIds) {
-    public static void createInterestedResources(List<String> serviceAppointmentIds) {
+    public static void createInterestedResources(List<String> serviceAppointmentIds, List<String> comments) {
         Id userId = UserInfo.getUserId();
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
         List<HOT_InterestedResource__c> interestedResources = new List<Hot_InterestedResource__c>();
@@ -125,5 +125,9 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             interestedResources.add(IR);
         }
         insert interestedResources;
+
+        for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
+            HOT_InterestedResourcesListController.addComment(interestedResources[i].Id, comments[i]);
+        }
     }
 }
