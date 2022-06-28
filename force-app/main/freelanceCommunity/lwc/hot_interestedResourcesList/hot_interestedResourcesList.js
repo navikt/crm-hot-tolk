@@ -5,6 +5,7 @@ import { refreshApex } from '@salesforce/apex';
 //import retractInterests from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterests';
 //import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
 import { columns, mobileColumns } from './columns';
+import { defaultFilters, compare } from './filters';
 
 export default class Hot_interestedResourcesList extends LightningElement {
     @track columns = [];
@@ -14,6 +15,23 @@ export default class Hot_interestedResourcesList extends LightningElement {
         } else {
             this.columns = mobileColumns;
         }
+    }
+
+    @track filters = [];
+    connectedCallback() {
+        this.setColumns();
+        refreshApex(this.wiredInterestedResourcesResult);
+        this.filters = defaultFilters();
+        this.breadcrumbs = [
+            {
+                label: 'Tolketjenesten',
+                href: ''
+            },
+            {
+                label: 'oppdrag',
+                href: 'mine-oppdrag'
+            }
+        ];
     }
 
     @track serviceResource;
@@ -46,8 +64,12 @@ export default class Hot_interestedResourcesList extends LightningElement {
         var tempInterestedResources = [];
         for (var i = 0; i < this.allInterestedResourcesWired.length; i++) {
             let tempRec = Object.assign({}, this.allInterestedResourcesWired[i]);
-            tempRec.ServiceAppointmentEndTime__c = this.setDateFormat(this.allInterestedResourcesWired[i].ServiceAppointmentEndTime__c);
-            tempRec.ServiceAppointmentStartTime__c = this.setDateFormat(this.allInterestedResourcesWired[i].ServiceAppointmentStartTime__c);
+            tempRec.ServiceAppointmentEndTime__c = this.setDateFormat(
+                this.allInterestedResourcesWired[i].ServiceAppointmentEndTime__c
+            );
+            tempRec.ServiceAppointmentStartTime__c = this.setDateFormat(
+                this.allInterestedResourcesWired[i].ServiceAppointmentStartTime__c
+            );
             tempInterestedResources[i] = tempRec;
         }
         this.records = tempInterestedResources;
@@ -59,11 +81,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
         value = value.toLocaleString();
         value = value.substring(0, value.length - 3);
         return value;
-    }
-
-    connectedCallback() {
-        this.setColumns();
-        refreshApex(this.wiredInterestedResourcesResult);
     }
 
     @track interestedResource;
@@ -85,7 +102,10 @@ export default class Hot_interestedResourcesList extends LightningElement {
         if (this.isSeries) {
             let tempRecords = [];
             for (let record of this.records) {
-                if (record.ServiceAppointment__r.HOT_RequestNumber__c == this.interestedResource.ServiceAppointment__r.HOT_RequestNumber__c) {
+                if (
+                    record.ServiceAppointment__r.HOT_RequestNumber__c ==
+                    this.interestedResource.ServiceAppointment__r.HOT_RequestNumber__c
+                ) {
                     tempRecords.push(record);
                 }
             }
@@ -93,7 +113,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         }
         this.updateURL();
     }
-    
+
     @track urlStateParameterId = '';
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
@@ -109,7 +129,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.isDetails = false;
         this.showTable = true;
         this.records = [...this.initialInterestedResources];
-        return {id: recordIdToReturn, tab: 'interested'};
+        return { id: recordIdToReturn, tab: 'interested' };
     }
     /*@track recordId;
     sendComment() {

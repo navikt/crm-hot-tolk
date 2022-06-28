@@ -4,6 +4,7 @@ import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointme
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { columns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
+import { defaultFilters, compare } from './filters';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
@@ -13,6 +14,23 @@ export default class Hot_openServiceAppointments extends LightningElement {
         } else {
             this.columns = mobileColumns;
         }
+    }
+
+    @track filters = [];
+    connectedCallback() {
+        this.setColumns();
+        refreshApex(this.wiredAllServiceAppointmentsResult);
+        this.filters = defaultFilters();
+        this.breadcrumbs = [
+            {
+                label: 'Tolketjenesten',
+                href: ''
+            },
+            {
+                label: 'oppdrag',
+                href: 'mine-oppdrag'
+            }
+        ];
     }
 
     @track serviceResource;
@@ -50,8 +68,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
             let tempRec = Object.assign({}, this.allServiceAppointmentsWired[i]);
             tempRec.DueDate = this.setDateFormat(this.allServiceAppointmentsWired[i].DueDate);
             tempRec.EarliestStartTime = this.setDateFormat(this.allServiceAppointmentsWired[i].EarliestStartTime);
-            tempRec.HOT_DeadlineDate__c = this.allServiceAppointmentsWired[i].HOT_DeadlineDate__c.replaceAll('-', '.').split('.').reverse().join('.');
-            tempRec.HOT_ReleaseDate__c = this.allServiceAppointmentsWired[i].HOT_ReleaseDate__c.replaceAll('-', '.').split('.').reverse().join('.');
+            tempRec.HOT_DeadlineDate__c = this.allServiceAppointmentsWired[i].HOT_DeadlineDate__c.replaceAll('-', '.')
+                .split('.')
+                .reverse()
+                .join('.');
+            tempRec.HOT_ReleaseDate__c = this.allServiceAppointmentsWired[i].HOT_ReleaseDate__c.replaceAll('-', '.')
+                .split('.')
+                .reverse()
+                .join('.');
             tempServiceAppointments[i] = tempRec;
         }
         this.records = tempServiceAppointments;
@@ -63,11 +87,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         value = value.toLocaleString();
         value = value.substring(0, value.length - 3);
         return value;
-    }
-
-    connectedCallback() {
-        this.setColumns();
-        refreshApex(this.wiredAllServiceAppointmentsResult);
     }
 
     @track serviceAppointment;
@@ -113,16 +132,21 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.isDetails = false;
         this.showTable = true;
         this.records = [...this.initialServiceAppointments];
-        return {id: recordIdToReturn, tab: 'open'};
+        return { id: recordIdToReturn, tab: 'open' };
     }
 
     registerInterest() {
         let checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
         if (checkedServiceAppointments.length > 0) {
-            createInterestedResources({ serviceAppointmentIds: checkedServiceAppointments }).then(() => {
-                // TODO: Show confirmation to user?
-                refreshApex(this.wiredAllServiceAppointmentsResult);
+            let comments = [];
+            this.template.querySelectorAll('.comment-field').forEach((element) => {
+                comments.push(element.value);
             });
+            createInterestedResources({ serviceAppointmentIds: checkedServiceAppointments, comments: comments }).then(
+                () => {
+                    refreshApex(this.wiredAllServiceAppointmentsResult);
+                }
+            );
         }
     }
 }

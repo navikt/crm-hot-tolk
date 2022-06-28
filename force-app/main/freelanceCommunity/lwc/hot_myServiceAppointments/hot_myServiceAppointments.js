@@ -2,6 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { columns, mobileColumns } from './columns';
+import { defaultFilters, compare } from './filters';
 
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
@@ -13,10 +14,21 @@ export default class Hot_myServiceAppointments extends LightningElement {
         }
     }
 
+    @track filters = [];
     connectedCallback() {
         this.setColumns();
+        this.filters = defaultFilters();
+        this.breadcrumbs = [
+            {
+                label: 'Tolketjenesten',
+                href: ''
+            },
+            {
+                label: 'oppdrag',
+                href: 'mine-oppdrag'
+            }
+        ];
     }
-
     @track serviceResource;
     @wire(getServiceResource)
     wiredServiceresource(result) {
@@ -106,6 +118,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.isDetails = false;
         this.showTable = true;
         this.records = [...this.initialServiceAppointments];
-        return {id: recordIdToReturn, tab: 'my'};
+        return { id: recordIdToReturn, tab: 'my' };
     }
 }
