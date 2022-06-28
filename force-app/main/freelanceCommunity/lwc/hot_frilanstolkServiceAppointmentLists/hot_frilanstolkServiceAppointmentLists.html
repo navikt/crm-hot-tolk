@@ -1,8 +1,10 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
 <template>
     <div class="brodsmulesti">
         <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
     </div>
-    
+
     <div class="liste">
         <div class="header-buttons">
             <a class="back-link" onclick={goBack}>
@@ -16,22 +18,25 @@
                 filters={filters}
             ></c-list-filters-button>
         </div>
-        <lightning-tabset>
-            <lightning-tab label="Ledige oppdrag" value="open" onactive={setActiveTab}>
-                <c-hot_open-service-appointments item-name="openServiceAppointments"> </c-hot_open-service-appointments>
-            </lightning-tab>
-
-            <lightning-tab label="Påmeldte oppdrag" value="interested" onactive={setActiveTab}>
-                <c-hot_interested-resources-list item-name="interestedResources"> </c-hot_interested-resources-list>
-            </lightning-tab>
-
-            <lightning-tab label="Mine oppdrag" value="my" onactive={setActiveTab}>
-                <c-hot_my-service-appointments item-name="myServiceAppointments"> </c-hot_my-service-appointments>
-            </lightning-tab>
-
-            <lightning-tab label="Ledig på lønn" value="wageClaim" onactive={setActiveTab}>
-                <c-hot_wage-claim-list item-name="wageClaims"> </c-hot_wage-claim-list>
-            </lightning-tab>
-        </lightning-tabset>
+        <div class="tabset">
+            <button class="tab tab-button" data-id="open" onclick={setActiveTab}>Ledige oppdrag</button>
+            <button class="tab tab-button" data-id="interested" onclick={setActiveTab}>Påmeldte oppdrag</button>
+            <button class="tab tab-button" data-id="my" onclick={setActiveTab}>Mine oppdrag</button>
+            <button class="tab tab-button" data-id="wageClaim" onclick={setActiveTab}>Ledig på lønn</button>
+        </div>
+        <div class="tab-content">
+            <div if:true={tabs.open} class="tab-content_1">
+                <c-hot_open-service-appointments data-name="open"> </c-hot_open-service-appointments>
+            </div>
+            <div if:true={tabs.interested} class="tab-content_2">
+                <c-hot_interested-resources-list data-name="interested"> </c-hot_interested-resources-list>
+            </div>
+            <div if:true={tabs.my} class="tab-content_3">
+                <c-hot_my-service-appointments data-name="my"> </c-hot_my-service-appointments>
+            </div>
+            <div if:true={tabs.wageClaim} class="tab-content_4">
+                <c-hot_wage-claim-list data-name="wageClaim"> </c-hot_wage-claim-list>
+            </div>
+        </div>
     </div>
 </template>

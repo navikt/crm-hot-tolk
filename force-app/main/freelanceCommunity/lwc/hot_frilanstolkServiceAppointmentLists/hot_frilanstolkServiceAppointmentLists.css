@@ -1,7 +1,3 @@
-lightning-tabset {
-    width: 100%;
-}
-
 .liste {
     padding: 2rem;
     background-color: #fff !important;
@@ -50,4 +46,20 @@ lightning-tabset {
     .liste {
         padding: 1rem;
     }
+}
+
+.tab-butt2on {
+    all: unset;
+}
+
+.tab {
+    padding: 0.25rem 1rem;
+}
+.tab_active {
+    border-bottom: 4px blue solid;
+}
+
+.tabset {
+    display: flex;
+    flex-direction: row;
 }

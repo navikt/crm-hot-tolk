@@ -15,6 +15,10 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         }
     ];
 
+    connectedCallback() {
+        this.setActiveTab({ target: { dataset: { id: 'open' } } });
+    }
+
     @track urlStateParameterList = '';
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
@@ -24,20 +28,9 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
 
-    // TODO: When going back with browser button - set active tab is not working and go to home is not working
     goBack() {
-        let res;
-        if (this.activeTab === 'open') {
-            res = this.template.querySelector('c-hot_open-service-appointments').goBack();
-        } else if (this.activeTab === 'interested') {
-            res = this.template.querySelector('c-hot_interested-resources-list').goBack();
-        } else if (this.activeTab === 'my') {
-            res = this.template.querySelector('c-hot_my-service-appointments').goBack();
-        } else if (this.activeTab === 'wageClaim') {
-            res = this.template.querySelector('c-hot_wage-claim-list').goBack();
-        }
+        let res = this.template.querySelector('[data-name="' + this.activeTab + '"]').goBack();
         if (res.id === '') {
-            this.updateURL();
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
                 attributes: {
@@ -47,14 +40,25 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         }
         if (res.id && this.activeTab === res.tab) {
             this.updateURL();
-            this.template.querySelector('lightning-tabset').activeTabValue = res.tab;
         }
     }
 
-    @track activeTab;
+    @track tabs = {
+        open: false,
+        interested: false,
+        my: false,
+        wageClaim: false
+    };
+
     setActiveTab(event) {
-        this.activeTab = event.target.value;
-        this.urlStateParameterList = this.activeTab;
+        for (let tab in this.tabs) {
+            this.tabs[tab] = false;
+            if (tab === event.target.dataset.id) {
+                this.tabs[tab] = true;
+                this.urlStateParameterList = tab;
+                this.activeTab = tab;
+            }
+        }
         this.updateURL();
     }
 }
