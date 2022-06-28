@@ -1,5 +1,3 @@
-<!-- sldsValidatorIgnore -->
-<!-- sldsValidatorIgnore -->
 <template>
     <div class="brodsmulesti">
         <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
@@ -18,23 +16,27 @@
                 filters={filters}
             ></c-list-filters-button>
         </div>
-        <div class="tabset">
-            <button class="tab tab-button" data-id="open" onclick={setActiveTab}>Ledige oppdrag</button>
-            <button class="tab tab-button" data-id="interested" onclick={setActiveTab}>Påmeldte oppdrag</button>
-            <button class="tab tab-button" data-id="my" onclick={setActiveTab}>Mine oppdrag</button>
-            <button class="tab tab-button" data-id="wageClaim" onclick={setActiveTab}>Ledig på lønn</button>
+        <div class="tabset desktop-only">
+            <template for:each={tabs} for:item="tab">
+                <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
+                    {tab.label}
+                </button>
+            </template>
         </div>
-        <div class="tab-content">
-            <div if:true={tabs.open} class="tab-content_1">
+        <div class="tabset mobile-only">
+            <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
+        </div>
+        <div class="tab-content-wrapper">
+            <div if:true={tabMap.open} class="tab-content">
                 <c-hot_open-service-appointments data-name="open"> </c-hot_open-service-appointments>
             </div>
-            <div if:true={tabs.interested} class="tab-content_2">
+            <div if:true={tabMap.interested} class="tab-content">
                 <c-hot_interested-resources-list data-name="interested"> </c-hot_interested-resources-list>
             </div>
-            <div if:true={tabs.my} class="tab-content_3">
+            <div if:true={tabMap.my} class="tab-content">
                 <c-hot_my-service-appointments data-name="my"> </c-hot_my-service-appointments>
             </div>
-            <div if:true={tabs.wageClaim} class="tab-content_4">
+            <div if:true={tabMap.wageClaim} class="tab-content">
                 <c-hot_wage-claim-list data-name="wageClaim"> </c-hot_wage-claim-list>
             </div>
         </div>

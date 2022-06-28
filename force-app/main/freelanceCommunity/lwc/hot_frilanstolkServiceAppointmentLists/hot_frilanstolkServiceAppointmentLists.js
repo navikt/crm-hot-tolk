@@ -43,22 +43,48 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         }
     }
 
-    @track tabs = {
+    @track tabs = [
+        { name: 'open', label: 'Ledige oppdrag', selected: false },
+        { name: 'interested', label: 'Påmeldte oppdrag', selected: false },
+        { name: 'my', label: 'Mine oppdrag', selected: false },
+        { name: 'wageClaim', label: 'Ledig på lønn', selected: false }
+    ];
+
+    @track tabMap = {
         open: false,
         interested: false,
         my: false,
         wageClaim: false
     };
 
+    setActiveTabMobile(event) {
+        this.setActiveTab({ target: { dataset: { id: event.detail.name } } });
+    }
+
     setActiveTab(event) {
-        for (let tab in this.tabs) {
-            this.tabs[tab] = false;
-            if (tab === event.target.dataset.id) {
-                this.tabs[tab] = true;
-                this.urlStateParameterList = tab;
-                this.activeTab = tab;
+        for (let tab of this.tabs) {
+            tab.selected = false;
+            this.tabMap[tab.name] = false;
+            if (tab.name === event.target.dataset.id) {
+                tab.selected = true;
+                this.urlStateParameterList = tab.name;
+                this.activeTab = tab.name;
+                this.tabMap[tab.name] = true;
             }
         }
+        this.updateTabStyle();
         this.updateURL();
+    }
+
+    renderedCallback() {
+        this.updateTabStyle();
+    }
+    updateTabStyle() {
+        this.template.querySelectorAll('button.tab').forEach((element) => {
+            element.classList.remove('tab_active');
+            if (element.dataset.id === this.activeTab) {
+                element.classList.add('tab_active');
+            }
+        });
     }
 }
