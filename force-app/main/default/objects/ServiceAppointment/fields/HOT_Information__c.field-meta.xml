@@ -11,9 +11,9 @@ IF( HOT_Request__r.IsSerieoppdrag__c,
     &apos;&apos;)
 + &apos; - &apos; +
 IF( HOT_IsScreenInterpreterNew__c ,
-    &apos;Skjermtolk&apos;,  PostalCode )
+    &apos;Skjermtolk, &apos;,  PostalCode )
 + 
-IF(City != &quot;&quot;, &apos;, &apos; + City, &quot;&quot;)</formula>
+IF(City != &quot;&quot;, &apos; &apos; + City, &quot;&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Information</label>
     <required>false</required>

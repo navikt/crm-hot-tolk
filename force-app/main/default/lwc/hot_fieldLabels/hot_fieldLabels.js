@@ -123,7 +123,8 @@ export let interestedResourceFieldLabels = {
     AppointmentDeadlineDate__c: { label: 'Fristdato', type: 'date' },
     AppointmentServiceTerritory__c: { label: 'Region', type: 'string' },
     ServiceAppointmentFreelanceSubject__c: { label: 'Tema', type: 'string' },
-    WorkOrderCanceledDate__c: { label: 'Avlystdato', type: 'date' }
+    WorkOrderCanceledDate__c: { label: 'Avlystdato', type: 'date' },
+    HOT_TermsOfAgreement__c: { label: 'Avtalte betingelser', type: 'string' }
 };
 
 export let myServiceAppointmentFieldLabels = {
@@ -142,7 +143,7 @@ export let myServiceAppointmentFieldLabels = {
     HOT_WorkTypeName__c: { label: 'Tolkemetode', type: 'string' },
     HOT_TermsOfAgreement__c: { label: 'Avtalte betingelser', type: 'string' },
     Description: { label: 'Tilleggsopplysninger', type: 'string' },
-    HOT_Dispatcher__c: {label: 'Formidler', type: 'string'}
+    HOT_Dispatcher__c: { label: 'Formidler', type: 'string' }
 };
 
 export let workOrderFieldLabels = {

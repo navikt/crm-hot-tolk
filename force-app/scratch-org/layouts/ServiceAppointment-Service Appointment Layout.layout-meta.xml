@@ -223,10 +223,6 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>HOT_TermsOfAgreement__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>HOT_Processed__c</field>
             </layoutItems>
         </layoutColumns>
