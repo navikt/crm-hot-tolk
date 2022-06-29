@@ -17,6 +17,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
         }
     }
 
+    @api getFilters() {
+        return this.filters;
+    }
     @track filters = [];
     connectedCallback() {
         this.setColumns();

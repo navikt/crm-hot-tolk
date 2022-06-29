@@ -1,9 +1,21 @@
-import { LightningElement, track } from 'lwc';
-import { NavigationMixin } from 'lightning/navigation';
+import { LightningElement, track, wire } from 'lwc';
+import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 
 export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMixin(LightningElement) {
     // TODO: Send records from active tab to filter when pressed
     @track filters = [];
+
+    getFilters() {
+        console.log('getFilters');
+        let temp = this.template.querySelector('[data-name="' + this.activeTab + '"]');
+        console.log(temp);
+        try {
+            this.filters = temp.getFilters();
+        } catch (error) {
+            console.log('error', error);
+        }
+        this.filters = temp.getFilters();
+    }
     breadcrumbs = [
         {
             label: 'Tolketjenesten',
@@ -15,10 +27,16 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         }
     ];
 
-    connectedCallback() {
-        this.setActiveTab({ target: { dataset: { id: 'open' } } });
+    @track urlStateParameters;
+    @wire(CurrentPageReference)
+    getStateParameters(currentPageReference) {
+        if (currentPageReference && Object.keys(currentPageReference.state).length > 0) {
+            this.urlStateParameters = { ...currentPageReference.state };
+            this.setActiveTab({ target: { dataset: { id: this.urlStateParameters.list } } });
+        } else {
+            this.setActiveTab({ target: { dataset: { id: 'open' } } });
+        }
     }
-
     @track urlStateParameterList = '';
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
@@ -78,6 +96,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
     renderedCallback() {
         this.updateTabStyle();
+        this.getFilters();
     }
     updateTabStyle() {
         this.template.querySelectorAll('button.tab').forEach((element) => {

@@ -16,8 +16,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
+    @api getFilters() {
+        console.log('returning filters', this.filters);
+        return this.filters;
+    }
+
     @track filters = [];
     connectedCallback() {
+        console.log('open connected');
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
         this.filters = defaultFilters();
