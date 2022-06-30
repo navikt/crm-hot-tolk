@@ -5,6 +5,8 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { columns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare } from './filters';
+import { formatRecord } from 'c/hot_recordDetails';
+import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
@@ -141,18 +143,45 @@ export default class Hot_openServiceAppointments extends LightningElement {
         return { id: recordIdToReturn, tab: 'open' };
     }
 
+    @track checkedServiceAppointments = [];
     registerInterest() {
-        let checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
-        if (checkedServiceAppointments.length > 0) {
+        this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
+        if (this.checkedServiceAppointments.length > 0) {
             let comments = [];
             this.template.querySelectorAll('.comment-field').forEach((element) => {
                 comments.push(element.value);
             });
-            createInterestedResources({ serviceAppointmentIds: checkedServiceAppointments, comments: comments }).then(
-                () => {
-                    refreshApex(this.wiredAllServiceAppointmentsResult);
-                }
-            );
+            createInterestedResources({
+                serviceAppointmentIds: this.checkedServiceAppointments,
+                comments: comments
+            }).then(() => {
+                this.closeModal();
+                refreshApex(this.wiredAllServiceAppointmentsResult);
+            });
         }
+    }
+
+    @track serviceAppointmentCommentDetails = [];
+    sendInterest() {
+        this.checkedServiceAppointments = [];
+        this.serviceAppointmentCommentDetails = [];
+        this.template
+            .querySelector('c-table')
+            .getCheckedRows()
+            .forEach((row) => {
+                console.log(row);
+                this.checkedServiceAppointments.push(row);
+                this.serviceAppointmentCommentDetails.push(
+                    formatRecord(row, openServiceAppointmentFieldLabels.getSubFields('comment'))
+                );
+            });
+        let commentPage = this.template.querySelector('.commentPage');
+        commentPage.classList.remove('hidden');
+        commentPage.focus();
+        console.log(this.serviceAppointmentCommentDetails);
+    }
+
+    closeModal() {
+        this.template.querySelector('.commentPage').classList.add('hidden');
     }
 }

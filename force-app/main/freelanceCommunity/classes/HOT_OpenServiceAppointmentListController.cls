@@ -111,7 +111,6 @@ public without sharing class HOT_OpenServiceAppointmentListController {
     }
 
     @AuraEnabled
-    //public static void createInterestedResources(List<String> serviceAppointmentIds) {
     public static void createInterestedResources(List<String> serviceAppointmentIds, List<String> comments) {
         Id userId = UserInfo.getUserId();
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
