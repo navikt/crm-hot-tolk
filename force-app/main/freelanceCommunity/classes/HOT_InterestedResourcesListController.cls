@@ -30,6 +30,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
                 WorkOrderCanceledDate__c,
+                HOT_TermsOfAgreement__c,
                 HOT_DelPol_ToHideRecord__c
             FROM HOT_InterestedResource__c
             WHERE ServiceResource__c IN :serviceResource AND HOT_DelPol_ToHideRecord__c = FALSE
