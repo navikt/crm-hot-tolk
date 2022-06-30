@@ -19,13 +19,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     @api getFilters() {
-        console.log('returning filters', this.filters);
         return this.filters;
     }
 
     @track filters = [];
     connectedCallback() {
-        console.log('open connected');
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
         this.filters = defaultFilters();
@@ -169,19 +167,26 @@ export default class Hot_openServiceAppointments extends LightningElement {
             .querySelector('c-table')
             .getCheckedRows()
             .forEach((row) => {
-                console.log(row);
                 this.checkedServiceAppointments.push(row);
                 this.serviceAppointmentCommentDetails.push(
-                    formatRecord(row, openServiceAppointmentFieldLabels.getSubFields('comment'))
+                    formatRecord(this.getRecord(row), openServiceAppointmentFieldLabels.getSubFields('comment'))
                 );
             });
         let commentPage = this.template.querySelector('.commentPage');
         commentPage.classList.remove('hidden');
         commentPage.focus();
-        console.log(this.serviceAppointmentCommentDetails);
     }
 
     closeModal() {
         this.template.querySelector('.commentPage').classList.add('hidden');
+    }
+
+    getRecord(id) {
+        for (let record of this.records) {
+            if (record.Id === id) {
+                return record;
+            }
+        }
+        return null;
     }
 }

@@ -47,7 +47,7 @@
                 <div>
                     <h2 id="comment-header-id" class="typo-undertittel">Legg til kommentarer til oppdragene</h2>
 
-                    <template iterator:it={checkedServiceAppointments}>
+                    <template iterator:it={serviceAppointmentCommentDetails}>
                         <lightning-record-edit-form
                             class="comment-form"
                             key={it.value.Id}
