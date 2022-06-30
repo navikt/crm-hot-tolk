@@ -100,6 +100,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
+        this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
         window.scrollTo(0, 0);
         let recordId = result.detail.Id;
         this.urlStateParameterId = recordId;
