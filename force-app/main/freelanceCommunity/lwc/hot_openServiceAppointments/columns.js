@@ -1,10 +1,5 @@
 export let columns = [
     {
-        label: 'Frigitt dato',
-        name: 'HOT_ReleaseDate__c',
-        type: 'Datetime'
-    },
-    {
         label: 'Tid',
         name: 'StartAndEndDate',
         type: 'Datetime'
@@ -18,11 +13,6 @@ export let columns = [
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
         type: 'String'
-    },
-    {
-        label: 'Frist',
-        name: 'HOT_DeadlineDate__c',
-        type: 'Datetime'
     }
 ];
 
