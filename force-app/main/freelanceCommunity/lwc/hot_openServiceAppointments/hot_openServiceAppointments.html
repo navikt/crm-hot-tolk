@@ -11,8 +11,18 @@
         </c-button>
         <div if:true={isDetails}>
             <div class="record-details-container">
+                <p>Oppdragsnummer: <span>{serviceAppointment.Appointmentnumber}</span></p>
+                <p>Start tid: <span>{serviceAppointment.EarliestStartTime}</span></p>
+                <p>Slutt tid: <span>{serviceAppointment.DueDate}</span></p>
                 <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
-                {serviceAppointment.HOT_IsSerieoppdrag__c}
+                <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
+                <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
+                <p>Frigitt dato: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
+                <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
+                <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+                <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
             </div>
         </div>
         <div if:false={noServiceAppointments}>

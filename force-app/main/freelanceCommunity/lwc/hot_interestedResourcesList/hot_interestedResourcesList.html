@@ -2,7 +2,19 @@
     <div class="main-content">
         <div if:true={isDetails}>
             <div class="record-details-container">
+                <p>Oppdrag: <span>{interestedResource.AppointmentNumber__c}</span></p>
+                <p>Start tid: <span>{interestedResource.ServiceAppointmentStartTime__c}</span></p>
+                <p>Slutt tid: <span>{interestedResource.ServiceAppointmentEndTime__c}</span></p>
+                <p>Adresse: <span>{interestedResource.ServiceAppointmentAddress__c}</span></p>
+                <p>Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span></p>
+                <p>Oppdragstype: <span>{interestedResource.AssignmentType__c}</span></p>
+                <p>Status: <span>{interestedResource.Status__c}</span></p>
+                <p>Antall påmeldte: <span>{interestedResource.NumberOfInterestedResources__c}</span></p>
+                <p>Frist dato: <span>{interestedResource.AppointmentDeadlineDate__c}</span></p>
+                <p>Region: <span>{interestedResource.AppointmentServiceTerritory__c}</span></p>
                 <p>Tema: <span>{interestedResource.ServiceAppointmentFreelanceSubject__c}</span></p>
+                <p>Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span></p>
+                <p>Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span></p>
             </div>
         </div>
         <div if:false={noInterestedResources}>
