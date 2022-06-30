@@ -83,7 +83,7 @@ export default class Hot_wageClaimList extends LightningElement {
         let recordIdToReturn = this.urlStateParameterId;
         this.urlStateParameterId = '';
         this.isWageClaimDetails = false;
-        return {id: recordIdToReturn, tab: 'wageClaim'};
+        return { id: recordIdToReturn, tab: 'wageClaim' };
     }
 
     /*retractAvailability(row) {
@@ -101,4 +101,6 @@ export default class Hot_wageClaimList extends LightningElement {
             }
         }
     }*/
+    @api
+    getFilters() {}
 }
