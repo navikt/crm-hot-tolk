@@ -21,6 +21,13 @@
             <p>Region: <span>{wageClaim.ServiceTerritoryName__c}</span></p>
             <p>Status: <span>{wageClaim.Status__c}</span></p>
             <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+            <c-button
+                button-styling="primary"
+                button-label="Tilbaketrekk tilgjengelighet"
+                aria-label="Tilbaketrekk tilgjengelighet"
+                onbuttonclick={retractAvailability}
+            >
+            </c-button>
         </div>
     </div>
 </template>

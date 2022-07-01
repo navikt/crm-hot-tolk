@@ -1,7 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
-//import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
+import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import { columns, mobileColumns } from './columns';
 import { formatRecord } from 'c/datetimeFormatter';
 
@@ -74,21 +74,21 @@ export default class Hot_wageClaimList extends LightningElement {
         return { id: recordIdToReturn, tab: 'wageClaim' };
     }
 
-    /*retractAvailability(row) {
+    retractAvailability() {
         if (
             confirm(
                 'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.'
             )
         ) {
             try {
-                retractAvailability({ recordId: row.Id }).then(() => {
+                retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
                     refreshApex(this.wiredWageClaimsResult);
                 });
             } catch (error) {
                 alert(JSON.stringify(error));
             }
         }
-    }*/
+    }
     @api
     getFilters() {}
 }
