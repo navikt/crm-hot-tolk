@@ -4,7 +4,7 @@ export default class hot_recordDetails extends LightningElement {
     @api record;
 }
 
-export function formatRecord(record, fieldLabels) {
+export function formatRecordDetails(record, fieldLabels) {
     let fields = [];
     for (let field in record) {
         if (fieldLabels[field]) {

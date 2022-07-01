@@ -7,6 +7,7 @@ import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare } from './filters';
 import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 import { formatRecord } from 'c/datetimeFormatter';
+import { formatRecordDetails } from 'c/hot_recordDetails';
 import EarliestStartTime from '@salesforce/schema/ServiceAppointment.EarliestStartTime';
 import DueDate from '@salesforce/schema/ServiceAppointment.DueDate';
 
@@ -148,20 +149,30 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     @track serviceAppointmentCommentDetails = [];
     sendInterest() {
+        console.log('sending interest');
         this.checkedServiceAppointments = [];
         this.serviceAppointmentCommentDetails = [];
-        this.template
-            .querySelector('c-table')
-            .getCheckedRows()
-            .forEach((row) => {
-                this.checkedServiceAppointments.push(row);
-                this.serviceAppointmentCommentDetails.push(
-                    formatRecord(this.getRecord(row), openServiceAppointmentFieldLabels.getSubFields('comment'))
-                );
-            });
+        try {
+            this.template
+                .querySelector('c-table')
+                .getCheckedRows()
+                .forEach((row) => {
+                    this.checkedServiceAppointments.push(row);
+                    this.serviceAppointmentCommentDetails.push(
+                        formatRecordDetails(
+                            this.getRecord(row),
+                            openServiceAppointmentFieldLabels.getSubFields('comment')
+                        )
+                    );
+                });
+        } catch (error) {
+            console.log(error);
+        }
+        console.log('showing');
         let commentPage = this.template.querySelector('.commentPage');
         commentPage.classList.remove('hidden');
         commentPage.focus();
+        console.log('!!!!!!!!!!!!!');
     }
 
     closeModal() {

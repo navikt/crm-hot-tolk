@@ -6,14 +6,10 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     @track filters = [];
 
     getFilters() {
-        console.log('getFilters');
         let temp = this.template.querySelector('[data-name="' + this.activeTab + '"]');
-        console.log(temp);
         try {
             this.filters = temp.getFilters();
-        } catch (error) {
-            console.log('error', error);
-        }
+        } catch (error) {}
         this.filters = temp.getFilters();
     }
     breadcrumbs = [
