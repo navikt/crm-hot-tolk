@@ -16,6 +16,30 @@
                 <p>Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span></p>
                 <p>Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span></p>
             </div>
+            <section style="margin-bottom: 2rem">
+                <div style="padding: 1rem">
+                    <br />
+                    <div>
+                        <h2 class="typo-undertittel ikke-sensitive-opplysninger__label">Dialog med formidler</h2>
+                        <p>{interestedResource.Comments__c}</p>
+                    </div>
+                    <lightning-textarea
+                        label="Legg til ny kommentar"
+                        style="margin-bottom: 1rem"
+                        class="newComment"
+                        name="newComment"
+                    >
+                    </lightning-textarea>
+                    <lightning-button
+                        onclick={sendComment}
+                        class="slds-m-left_x-small"
+                        variant="brand"
+                        type="submit"
+                        label="Send inn"
+                    >
+                    </lightning-button>
+                </div>
+            </section>
         </div>
         <div if:false={noInterestedResources}>
             <c-table

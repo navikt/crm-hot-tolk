@@ -5,6 +5,8 @@ import { refreshApex } from '@salesforce/apex';
 import { columns, mobileColumns } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
+import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
+import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
 
 export default class Hot_interestedResourcesList extends LightningElement {
     @track columns = [];
@@ -129,5 +131,14 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.showTable = true;
         this.records = [...this.initialInterestedResources];
         return { id: recordIdToReturn, tab: 'interested' };
+    }
+
+    sendComment() {
+        console.log('sending comment');
+        let interestedResourceId = this.interestedResource.Id;
+        let newComment = this.template.querySelector('.newComment').value;
+        addComment({ interestedResourceId, newComment }).then(() => {
+            refreshApex(this.wiredInterestedResourcesResult);
+        });
     }
 }
