@@ -23,11 +23,6 @@ export let columns = [
         label: 'Status',
         name: 'Status__c',
         type: 'String'
-    },
-    {
-        label: 'Ny kommentar',
-        name: 'IsNewComment__c',
-        type: 'boolean'
     }
 ];
 
