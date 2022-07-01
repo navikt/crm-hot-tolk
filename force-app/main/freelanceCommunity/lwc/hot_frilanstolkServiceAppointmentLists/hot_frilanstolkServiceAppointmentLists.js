@@ -32,10 +32,31 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     getStateParameters(currentPageReference) {
         if (currentPageReference && Object.keys(currentPageReference.state).length > 0) {
             this.urlStateParameters = { ...currentPageReference.state };
-            this.setActiveTab({ target: { dataset: { id: this.urlStateParameters.list } } });
+            this.updateTab({ target: { dataset: { id: this.urlStateParameters.list } } });
         } else {
-            this.setActiveTab({ target: { dataset: { id: 'open' } } });
+            this.updateTab({ target: { dataset: { id: 'open' } } });
         }
+    }
+    setActiveTabMobile(event) {
+        this.setActiveTab({ target: { dataset: { id: event.detail.name } } });
+    }
+
+    setActiveTab(event) {
+        this.updateTab(event);
+        this.updateURL();
+    }
+    updateTab(event) {
+        for (let tab of this.tabs) {
+            tab.selected = false;
+            this.tabMap[tab.name] = false;
+            if (tab.name === event.target.dataset.id) {
+                tab.selected = true;
+                this.urlStateParameterList = tab.name;
+                this.activeTab = tab.name;
+                this.tabMap[tab.name] = true;
+            }
+        }
+        this.updateTabStyle();
     }
     @track urlStateParameterList = '';
     updateURL() {
@@ -74,25 +95,6 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         my: false,
         wageClaim: false
     };
-
-    setActiveTabMobile(event) {
-        this.setActiveTab({ target: { dataset: { id: event.detail.name } } });
-    }
-
-    setActiveTab(event) {
-        for (let tab of this.tabs) {
-            tab.selected = false;
-            this.tabMap[tab.name] = false;
-            if (tab.name === event.target.dataset.id) {
-                tab.selected = true;
-                this.urlStateParameterList = tab.name;
-                this.activeTab = tab.name;
-                this.tabMap[tab.name] = true;
-            }
-        }
-        this.updateTabStyle();
-        this.updateURL();
-    }
 
     renderedCallback() {
         this.updateTabStyle();
