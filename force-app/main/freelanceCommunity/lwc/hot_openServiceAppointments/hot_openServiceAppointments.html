@@ -1,14 +1,5 @@
 <template>
     <div class="main-content">
-        <c-button
-            button-styling="primary"
-            button-label="Meld interesse"
-            aria-label="Meld interesse"
-            onbuttonclick={sendInterest}
-            desktop-style="width: 12rem; justify-content: center; margin-bottom: 1rem;"
-            mobile-style="width: 12rem; justify-content: center; margin-bottom: 1rem;"
-        >
-        </c-button>
         <div if:true={isDetails}>
             <div class="record-details-container">
                 <p>Oppdragsnummer: <span>{serviceAppointment.Appointmentnumber}</span></p>
@@ -25,6 +16,16 @@
                 <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
             </div>
         </div>
+        <c-button
+            if:true={showTable}
+            button-styling="primary"
+            button-label="Meld interesse"
+            aria-label="Meld interesse"
+            onbuttonclick={sendInterest}
+            desktop-style="width: 12rem; justify-content: center; margin-bottom: 1rem;"
+            mobile-style="width: 12rem; justify-content: center; margin-bottom: 1rem;"
+        >
+        </c-button>
         <div if:false={noServiceAppointments}>
             <c-table
                 if:true={showTable}
