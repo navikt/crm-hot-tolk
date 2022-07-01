@@ -3,6 +3,7 @@ import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentL
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { columns, mobileColumns } from './columns';
 import { defaultFilters, compare } from './filters';
+import { formatRecord } from 'c/datetimeFormatter';
 
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
@@ -49,34 +50,29 @@ export default class Hot_myServiceAppointments extends LightningElement {
     wiredMyServiceAppointments(result) {
         this.wiredMyServiceAppointmentsResult = result;
         if (result.data) {
-            this.allMyServiceAppointmentsWired = result.data;
+            let tempRecords = [];
+            for (let record of result.data) {
+                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+            }
+            this.allMyServiceAppointmentsWired = tempRecords;
             this.noServiceAppointments = this.allMyServiceAppointmentsWired.length === 0;
             this.error = undefined;
-            this.setDateFormats();
+            this.records = tempRecords;
+            this.initialServiceAppointments = [...this.records];
         } else if (result.error) {
             this.error = result.error;
             this.allMyServiceAppointmentsWired = undefined;
         }
     }
-
-    setDateFormats() {
-        var tempServiceAppointments = [];
-        for (var i = 0; i < this.allMyServiceAppointmentsWired.length; i++) {
-            let tempRec = Object.assign({}, this.allMyServiceAppointmentsWired[i]);
-            tempRec.DueDate = this.setDateFormat(this.allMyServiceAppointmentsWired[i].DueDate);
-            tempRec.EarliestStartTime = this.setDateFormat(this.allMyServiceAppointmentsWired[i].EarliestStartTime);
-            tempServiceAppointments[i] = tempRec;
-        }
-        this.records = tempServiceAppointments;
-        this.initialServiceAppointments = [...this.records];
-    }
-
-    setDateFormat(value) {
-        value = new Date(value);
-        value = value.toLocaleString();
-        value = value.substring(0, value.length - 3);
-        return value;
-    }
+    datetimeFields = [
+        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
+        { name: 'EarliestStartTime', type: 'datetime' },
+        { name: 'DueDate', type: 'datetime' },
+        { name: 'ActualStartTime', type: 'datetime' },
+        { name: 'ActualEndTime', type: 'datetime' },
+        { name: 'HOT_DeadlineDate__c', type: 'date' },
+        { name: 'HOT_ReleaseDate__c', type: 'date' }
+    ];
 
     @track serviceAppointment;
     isDetails = false;

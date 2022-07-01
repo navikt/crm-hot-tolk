@@ -3,6 +3,7 @@ import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
 //import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import { columns, mobileColumns } from './columns';
+import { formatRecord } from 'c/datetimeFormatter';
 
 export default class Hot_wageClaimList extends LightningElement {
     @track columns = [];
@@ -25,34 +26,21 @@ export default class Hot_wageClaimList extends LightningElement {
             this.allWageClaimsWired = result.data;
             this.noWageClaims = this.allWageClaimsWired.length === 0;
             this.error = undefined;
-            this.setDateFormats();
+            let tempRecords = [];
+            for (let record of result.data) {
+                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+            }
+            this.wageClaims = tempRecords;
         } else if (result.error) {
             this.error = result.error;
             this.allWageClaimsWired = undefined;
         }
     }
 
+    datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredWageClaimsResult);
-    }
-
-    setDateFormats() {
-        let tempWageClaims = [];
-        for (var i = 0; i < this.allWageClaimsWired.length; i++) {
-            let tempRec = Object.assign({}, this.allWageClaimsWired[i]);
-            tempRec.StartTime__c = this.setDateFormat(this.allWageClaimsWired[i].StartTime__c);
-            tempRec.EndTime__c = this.setDateFormat(this.allWageClaimsWired[i].EndTime__c);
-            tempWageClaims[i] = tempRec;
-        }
-        this.wageClaims = tempWageClaims;
-    }
-
-    setDateFormat(value) {
-        value = new Date(value);
-        value = value.toLocaleString();
-        value = value.substring(0, value.length - 3);
-        return value;
     }
 
     @track wageClaim;

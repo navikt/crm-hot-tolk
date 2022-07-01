@@ -17,8 +17,7 @@
         </div>
         <div if:true={isWageClaimDetails}>
             <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
-            <p>Start: <span>{wageClaim.StartTime__c}</span></p>
-            <p>Slutt: <span>{wageClaim.EndTime__c}</span></p>
+            <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
             <p>Region: <span>{wageClaim.ServiceTerritoryName__c}</span></p>
             <p>Status: <span>{wageClaim.Status__c}</span></p>
             <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>

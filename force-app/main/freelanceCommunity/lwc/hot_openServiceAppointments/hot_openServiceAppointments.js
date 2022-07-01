@@ -5,8 +5,10 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { columns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare } from './filters';
-import { formatRecord } from 'c/hot_recordDetails';
 import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
+import { formatRecord } from 'c/datetimeFormatter';
+import EarliestStartTime from '@salesforce/schema/ServiceAppointment.EarliestStartTime';
+import DueDate from '@salesforce/schema/ServiceAppointment.DueDate';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
@@ -58,42 +60,26 @@ export default class Hot_openServiceAppointments extends LightningElement {
     wiredAllServiceAppointmentsWired(result) {
         this.wiredAllServiceAppointmentsResult = result;
         if (result.data) {
-            this.allServiceAppointmentsWired = result.data;
-            this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             this.error = undefined;
-            this.setDateFormats();
+            this.allServiceAppointmentsWired = [...result.data];
+            this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
+            let tempRecords = [];
+            for (let record of result.data) {
+                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+            }
+            this.records = tempRecords;
+            this.initialServiceAppointments = [...this.records];
         } else if (result.error) {
             this.error = result.error;
             this.allServiceAppointmentsWired = undefined;
         }
     }
 
-    setDateFormats() {
-        let tempServiceAppointments = [];
-        for (let i = 0; i < this.allServiceAppointmentsWired.length; i++) {
-            let tempRec = Object.assign({}, this.allServiceAppointmentsWired[i]);
-            tempRec.DueDate = this.setDateFormat(this.allServiceAppointmentsWired[i].DueDate);
-            tempRec.EarliestStartTime = this.setDateFormat(this.allServiceAppointmentsWired[i].EarliestStartTime);
-            tempRec.HOT_DeadlineDate__c = this.allServiceAppointmentsWired[i].HOT_DeadlineDate__c.replaceAll('-', '.')
-                .split('.')
-                .reverse()
-                .join('.');
-            tempRec.HOT_ReleaseDate__c = this.allServiceAppointmentsWired[i].HOT_ReleaseDate__c.replaceAll('-', '.')
-                .split('.')
-                .reverse()
-                .join('.');
-            tempServiceAppointments[i] = tempRec;
-        }
-        this.records = tempServiceAppointments;
-        this.initialServiceAppointments = [...this.records];
-    }
-
-    setDateFormat(value) {
-        value = new Date(value);
-        value = value.toLocaleString();
-        value = value.substring(0, value.length - 3);
-        return value;
-    }
+    datetimeFields = [
+        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
+        { name: 'HOT_DeadlineDate__c', type: 'date' },
+        { name: 'HOT_ReleaseDate__c', type: 'date' }
+    ];
 
     @track serviceAppointment;
     isDetails = false;

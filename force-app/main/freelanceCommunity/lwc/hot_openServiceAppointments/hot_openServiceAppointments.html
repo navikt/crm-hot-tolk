@@ -3,8 +3,7 @@
         <div if:true={isDetails}>
             <div class="record-details-container">
                 <p>Oppdragsnummer: <span>{serviceAppointment.Appointmentnumber}</span></p>
-                <p>Start tid: <span>{serviceAppointment.EarliestStartTime}</span></p>
-                <p>Slutt tid: <span>{serviceAppointment.DueDate}</span></p>
+                <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
                 <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
                 <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
                 <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
