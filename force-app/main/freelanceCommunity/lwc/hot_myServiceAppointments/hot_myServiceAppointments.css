@@ -1,88 +1,29 @@
-.filter-list-checkbox {
-    width: 100%;
-}
-
 .main-content {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    width: 100%;
     font-family: 'Source Sans Pro', Arial, sans-serif;
     align-items: center;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+    padding-top: 0.5rem;
 }
 
-.action-container {
-    margin-bottom: 1rem;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-}
-
-.left-content {
-    width: 50%;
+.record-details-container {
+    margin: 2rem 0;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    align-items: flex-start;
 }
 
-.right-content {
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-end;
+p {
+    font-weight: bold;
+}
+
+span {
+    font-weight: normal;
 }
 
 @media (max-width: 576px) {
-    .action-container {
-        margin-bottom: 1rem;
-        width: 100%;
-        display: flex;
-        justify-content: space-around;
-        flex-direction: column-reverse;
+    .record-details-container {
+        margin: 5vw 0;
     }
-    .left-content {
-        width: 100%;
-        margin: 1rem 0;
-    }
-    .right-content {
-        width: unset;
-    }
-    .slds-button_brand,
-    .slds-button--brand {
-        width: 100%;
-    }
-    .liste {
-        padding: 1rem 1rem 1rem 1rem;
-        margin: 1rem auto 1rem auto;
-    }
-    div.liste.liste-max-width > div > lightning-radio-group {
-        width: 50%;
-    }
-
-    .filter-list-checkbox {
-        width: 50%;
-    }
-}
-
-.comments-dialog-container {
-    all: unset;
-    background-color: #fff;
-    display: block;
-    padding: 5rem;
-    border-radius: 4px;
-    position: relative;
-    flex-grow: 0;
-    overflow-x: auto;
-    max-height: 100%;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    z-index: 1010;
-    max-width: 432px;
-    max-height: 75%;
-    width: 100%;
-}
-
-.hidden {
-    display: none;
 }

@@ -61,7 +61,9 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_FreelanceSubject__c,
                 HOT_DelPol_IsHideFilesFromFreelance__c,
                 HOT_DelPol_ToHideRecord__c,
-                HOT_Dispatcher__c
+                HOT_Dispatcher__c,
+                HOT_RequestNumber__c,
+                HOT_IsSerieoppdrag__c
             FROM ServiceAppointment
             WHERE
                 Id IN :serviceAppointmentIds

@@ -1,28 +1,44 @@
 <template>
     <div class="brodsmulesti">
-        <lightning-breadcrumbs class="liste-max-width">
-            <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
-            <lightning-breadcrumb label="Oppdrag" href="/tolketjenesten/s/mine-oppdrag"> </lightning-breadcrumb>
-        </lightning-breadcrumbs>
+        <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
     </div>
 
-    <div class="liste liste-max-width">
-        <lightning-tabset active-tab-value={activeTab}>
-            <lightning-tab label="Ledige oppdrag" value="open" onactive={onOpen}>
-                <c-hot_open-service-appointments item-name="openServiceAppointments"> </c-hot_open-service-appointments>
-            </lightning-tab>
-
-            <lightning-tab label="Påmeldte oppdrag" value="interested" onactive={onInterested}>
-                <c-hot_interested-resources-list item-name="interestedResources"> </c-hot_interested-resources-list>
-            </lightning-tab>
-
-            <lightning-tab label="Mine oppdrag" value="my" onactive={onMy}>
-                <c-hot_my-service-appointments item-name="myServiceAppointments"> </c-hot_my-service-appointments>
-            </lightning-tab>
-
-            <lightning-tab label="Ledig på lønn" value="wageClaim" onactive={onWageClaim}>
-                <c-hot_wage-claim-list item-name="wageClaims"> </c-hot_wage-claim-list>
-            </lightning-tab>
-        </lightning-tabset>
+    <div class="liste">
+        <div class="header-buttons">
+            <a class="back-link" onclick={goBack}>
+                <c-icon icon="Back"></c-icon>
+                <p style="margin-left: 0.25rem">Tilbake</p>
+            </a>
+            <h2 class="header" tabindex="-1" autofocus>Oppdrag</h2>
+            <c-list-filters-button
+                if:false={isServiceAppointmentDetails}
+                header="Filtrer søket"
+                filters={filters}
+            ></c-list-filters-button>
+        </div>
+        <div class="tabset desktop-only">
+            <template for:each={tabs} for:item="tab">
+                <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
+                    {tab.label}
+                </button>
+            </template>
+        </div>
+        <div class="tabset mobile-only">
+            <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
+        </div>
+        <div class="tab-content-wrapper">
+            <div if:true={tabMap.open} class="tab-content">
+                <c-hot_open-service-appointments data-name="open"> </c-hot_open-service-appointments>
+            </div>
+            <div if:true={tabMap.interested} class="tab-content">
+                <c-hot_interested-resources-list data-name="interested"> </c-hot_interested-resources-list>
+            </div>
+            <div if:true={tabMap.my} class="tab-content">
+                <c-hot_my-service-appointments data-name="my"> </c-hot_my-service-appointments>
+            </div>
+            <div if:true={tabMap.wageClaim} class="tab-content">
+                <c-hot_wage-claim-list data-name="wageClaim"> </c-hot_wage-claim-list>
+            </div>
+        </div>
     </div>
 </template>
