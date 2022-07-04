@@ -21,8 +21,13 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    @api getFilters() {
-        return this.filters;
+    sendFilters() {
+        const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
+        this.dispatchEvent(eventToSend);
+    }
+    sendRecords() {
+        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
+        this.dispatchEvent(eventToSend);
     }
 
     @track filters = [];
@@ -70,6 +75,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
             this.records = tempRecords;
             this.initialServiceAppointments = [...this.records];
+            this.sendFilters();
+            this.sendRecords();
         } else if (result.error) {
             this.error = result.error;
             this.allServiceAppointmentsWired = undefined;
@@ -149,7 +156,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     @track serviceAppointmentCommentDetails = [];
     sendInterest() {
-        console.log('sending interest');
         this.checkedServiceAppointments = [];
         this.serviceAppointmentCommentDetails = [];
         try {
@@ -168,11 +174,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
         } catch (error) {
             console.log(error);
         }
-        console.log('showing');
         let commentPage = this.template.querySelector('.commentPage');
         commentPage.classList.remove('hidden');
         commentPage.focus();
-        console.log('!!!!!!!!!!!!!');
     }
 
     closeModal() {
@@ -186,5 +190,30 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
         return null;
+    }
+
+    filteredRecordsLength = 0;
+    @api
+    applyFilter(event) {
+        let setRecords = event.detail.setRecords;
+        this.filters = event.detail.filterArray;
+
+        let filteredRecords = [];
+        let records = this.initialServiceAppointments;
+        for (let record of records) {
+            let includeRecord = true;
+            for (let filter of this.filters) {
+                includeRecord *= compare(filter, record);
+            }
+            if (includeRecord) {
+                filteredRecords.push(record);
+            }
+        }
+        this.filteredRecordsLength = filteredRecords.length;
+
+        if (setRecords) {
+            this.records = filteredRecords;
+        }
+        return this.filteredRecordsLength;
     }
 }
