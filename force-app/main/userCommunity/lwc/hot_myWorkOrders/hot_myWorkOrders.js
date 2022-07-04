@@ -9,7 +9,7 @@ import getWorkOrdersFromRequest from '@salesforce/apex/HOT_WorkOrderListControll
 import getMyWorkOrders from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrders';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
 import { workOrderFieldLabels } from 'c/hot_fieldLabels';
-import { formatRecord } from 'c/hot_recordDetails';
+import { formatRecordDetails } from 'c/hot_recordDetails';
 
 export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) {
     @track columns = [
@@ -189,7 +189,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
     @track isDetails = false;
     @track workOrderDetails = null;
     showDetails(row) {
-        this.workOrderDetails = formatRecord(row, workOrderFieldLabels);
+        this.workOrderDetails = formatRecordDetails(row, workOrderFieldLabels);
         let detailPage = this.template.querySelector('.detailPage');
         detailPage.classList.remove('hidden');
         detailPage.focus();

@@ -1,94 +1,45 @@
 <template>
     <div class="main-content">
-        <div class="action-container">
-            <div class="left-content">
-                <div style="display: flex; flex-direction: row">
-                    <lightning-button
-                        if:true={isSeriesSelected}
-                        label="Vis alle"
-                        name="filterRegionButton"
-                        onclick={handleBackToFullList}
-                    >
-                    </lightning-button>
-                    <lightning-button
-                        if:false={isSeriesSelected}
-                        label="Regioner"
-                        name="filterRegionButton"
-                        onclick={handleShowRegionFilter}
-                    >
-                    </lightning-button>
-                </div>
-                <template if:false={isSeriesSelected}>
-                    <br />
-                    <c-picklist
-                        master-label="Type oppdrag"
-                        choices={choices}
-                        onpicklistvaluechange={handlePicklist}
-                    ></c-picklist>
-                </template>
-            </div>
-            <div class="right-content">
-                <lightning-button title="Meld interesse" variant="brand" label="Meld interesse" onclick={sendInterest}>
-                </lightning-button>
+        <div if:true={isDetails}>
+            <div class="record-details-container">
+                <p>Oppdragsnummer: <span>{serviceAppointment.Appointmentnumber}</span></p>
+                <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
+                <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
+                <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
+                <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
+                <p>Frigitt dato: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
+                <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
+                <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+                <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
             </div>
         </div>
-
-        <div class="mobile-only" style="margin-bottom: 0.5rem; width: 100%">
-            <c-picklist
-                master-label="Sorter etter"
-                choices={sortingOptions}
-                onpicklistvaluechange={onHandleSort}
-            ></c-picklist>
-        </div>
-        <lightning-datatable
-            key-field="AppointmentNumber"
-            data={allServiceAppointmentsFiltered}
-            columns={columns}
-            default-sort-direction={defaultSortDirection}
-            sorted-direction={sortDirection}
-            sorted-by={sortedBy}
-            onsort={onHandleSort}
-            onrowaction={handleRowAction}
-            onrowselection={getSelectedName}
+        <c-button
+            if:true={showTable}
+            button-styling="primary"
+            button-label="Meld interesse"
+            aria-label="Meld interesse"
+            onbuttonclick={sendInterest}
+            desktop-style="width: 12rem; justify-content: center; margin-bottom: 1rem;"
+            mobile-style="width: 12rem; justify-content: center; margin-bottom: 1rem;"
         >
-        </lightning-datatable>
-
-        <div class="action-container">
-            <div class="left-content"></div>
-            <div class="right-content" style="margin-top: 1rem">
-                <lightning-button title="Meld interesse" variant="brand" label="Meld interesse" onclick={sendInterest}>
-                </lightning-button>
-            </div>
+        </c-button>
+        <div if:false={noServiceAppointments}>
+            <c-table
+                if:true={showTable}
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                checkbox="true"
+                checked-rows={checkedServiceAppointments}
+                start-date-field="EarliestStartTime"
+                end-date-field="DueDate"
+            ></c-table>
         </div>
-    </div>
-
-    <div
-        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay regionPage hidden"
-        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
-        tabindex="-1"
-    >
-        <div
-            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-            role="dialog"
-            aria-labelledby="regions-header-id"
-        >
-            <section>
-                <h2 id="regions-header-id" class="typo-undertittel">Regioner</h2>
-                <lightning-record-edit-form
-                    class="no-padding"
-                    object-api-name="ServiceResource"
-                    density="comfy"
-                    onsubmit={handleSubmit}
-                    record-id={serviceResourceId}
-                >
-                    <lightning-input-field field-name="HOT_PreferredRegions__c"> </lightning-input-field>
-                    <br />
-                    <lightning-button title="Lagre" variant="brand" label="Lagre" type="submit"> </lightning-button>
-                </lightning-record-edit-form>
-            </section>
-            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={handleHideRegionFilter}>
-                <span class="text-hide">Lukk</span>
-            </button>
+        <div if:true={noServiceAppointments} style="text-align: center">
+            <br />
+            Det finnes ingen ledige oppdrag.
         </div>
     </div>
 
@@ -128,32 +79,12 @@
                         variant="brand"
                         type="submit"
                         label="Send inn"
-                        onclick={confirmSendingInterest}
+                        onclick={registerInterest}
                     >
                     </lightning-button>
                 </div>
             </section>
-            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortSendingInterest}>
-                <span class="text-hide">Lukk</span>
-            </button>
-        </div>
-    </div>
-
-    <div
-        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay detailPage hidden"
-        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
-        tabindex="-1"
-    >
-        <div
-            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-            role="dialog"
-            aria-labelledby="details-header-id"
-        >
-            <section>
-                <h2 id="details-header-id" class="typo-undertittel">Detaljer</h2>
-                <c-hot_record-details record={serviceAppointmentDetails}></c-hot_record-details>
-            </section>
-            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={abortShowDetails}>
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
                 <span class="text-hide">Lukk</span>
             </button>
         </div>

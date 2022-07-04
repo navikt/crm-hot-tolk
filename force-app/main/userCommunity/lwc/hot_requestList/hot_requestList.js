@@ -11,7 +11,7 @@ import getAssignedResources from '@salesforce/apex/HOT_Utility.getAssignedResour
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { sortList, getMobileSortingOptions } from 'c/sortController';
 import { requestFieldLabels } from 'c/hot_fieldLabels';
-import { formatRecord } from 'c/hot_recordDetails';
+import { formatRecordDetails } from 'c/hot_recordDetails';
 
 export default class RequestList extends NavigationMixin(LightningElement) {
     rerenderCallback() {
@@ -414,10 +414,10 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         this.companyForm = this.record.Type__c === 'Company' || this.record.Type__c === 'PublicEvent';
         this.publicEvent = this.record.Type__c === 'PublicEvent';
 
-        this.userFields = formatRecord(this.record, requestFieldLabels.getSubFields('user'));
-        this.ordererFields = formatRecord(this.record, requestFieldLabels.getSubFields('orderer'));
-        this.companyFields = formatRecord(this.record, requestFieldLabels.getSubFields('company'));
-        this.requestFields = formatRecord(this.record, requestFieldLabels.getSubFields('request'));
+        this.userFields = formatRecordDetails(this.record, requestFieldLabels.getSubFields('user'));
+        this.ordererFields = formatRecordDetails(this.record, requestFieldLabels.getSubFields('orderer'));
+        this.companyFields = formatRecordDetails(this.record, requestFieldLabels.getSubFields('company'));
+        this.requestFields = formatRecordDetails(this.record, requestFieldLabels.getSubFields('request'));
         let detailPage = this.template.querySelector('.ReactModal__Overlay');
         detailPage.classList.remove('hidden');
         detailPage.focus();

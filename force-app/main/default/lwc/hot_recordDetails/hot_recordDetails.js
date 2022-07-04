@@ -4,7 +4,7 @@ export default class hot_recordDetails extends LightningElement {
     @api record;
 }
 
-export function formatRecord(record, fieldLabels) {
+export function formatRecordDetails(record, fieldLabels) {
     let fields = [];
     for (let field in record) {
         if (fieldLabels[field]) {
@@ -25,23 +25,24 @@ export function formatRecord(record, fieldLabels) {
 }
 
 function formatDatetime(datetimeString) {
-    let sub = datetimeString.substr(0, datetimeString.length - 1);
-    let datetime = new Date(sub);
-    let year = datetime.getFullYear().toString();
-    let month = (datetime.getMonth() + 1).toString();
-    let day = datetime.getDate();
-    let hour = datetime.getHours() - datetime.getTimezoneOffset() / 60;
-    if (hour >= 24) {
-        hour = hour - 24;
-        day = day + 1;
-    }
-    day = day.toString();
-    hour = hour.toString();
-    hour = hour.length === 1 ? '0' + hour : hour;
-    let minute = datetime.getMinutes().toString();
-    minute = minute.length === 1 ? '0' + minute : minute;
-    let formated = day + '.' + month + '.' + year + ' ' + hour + ':' + minute;
-    return formated;
+    return datetimeString;
+    //let sub = datetimeString.substr(0, datetimeString.length - 1);
+    //let datetime = new Date(sub);
+    //let year = datetime.getFullYear().toString();
+    //let month = (datetime.getMonth() + 1).toString();
+    //let day = datetime.getDate();
+    //let hour = datetime.getHours() - datetime.getTimezoneOffset() / 60;
+    //if (hour >= 24) {
+    //    hour = hour - 24;
+    //    day = day + 1;
+    //}
+    //day = day.toString();
+    //hour = hour.toString();
+    //hour = hour.length === 1 ? '0' + hour : hour;
+    //let minute = datetime.getMinutes().toString();
+    //minute = minute.length === 1 ? '0' + minute : minute;
+    //let formated = day + '.' + month + '.' + year + ' ' + hour + ':' + minute;
+    //return formated;
 }
 
 function formatDate(dateString) {
