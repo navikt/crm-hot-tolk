@@ -19,6 +19,7 @@ export let filterArray = [
     {
         name: 'HOT_WorkTypeName__c',
         label: 'Tolkemetode',
+        isCheckboxgroup: true,
         value: [
             {
                 name: 'All records',

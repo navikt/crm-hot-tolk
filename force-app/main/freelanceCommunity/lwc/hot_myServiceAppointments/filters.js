@@ -38,7 +38,7 @@ export let filterArray = [
     {
         name: 'HOT_WorkTypeName__c',
         label: 'Tolkemetode',
-        isDateInterval: true,
+        isCheckboxgroup: true,
         value: [
             {
                 name: 'All records',

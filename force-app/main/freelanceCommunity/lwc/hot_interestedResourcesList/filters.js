@@ -58,7 +58,7 @@ export let filterArray = [
     {
         name: 'WorkTypeName__c',
         label: 'Tolkemetode',
-        isDateInterval: true,
+        isCheckboxgroup: true,
         value: [
             {
                 name: 'All records',
