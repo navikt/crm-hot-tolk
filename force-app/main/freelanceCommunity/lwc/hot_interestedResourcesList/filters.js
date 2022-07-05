@@ -3,11 +3,8 @@ export let filterArray = [
         name: 'Status__c',
         label: 'Status',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'Interested',
                 label: 'Påmeldt'
@@ -59,11 +56,8 @@ export let filterArray = [
         name: 'WorkTypeName__c',
         label: 'Tolkemetode',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'TS - Tegnspråk',
                 label: 'TS - Tegnspråk'
@@ -94,11 +88,8 @@ export let filterArray = [
         name: 'AssignmentType__c',
         label: 'Anledning',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'Private',
                 label: 'Dagligliv'
@@ -125,11 +116,8 @@ export let filterArray = [
         name: 'AppointmentServiceTerritory__c',
         label: 'Region',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'Agder',
                 label: 'Agder'

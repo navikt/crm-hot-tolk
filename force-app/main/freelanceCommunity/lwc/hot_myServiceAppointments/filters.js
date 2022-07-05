@@ -5,10 +5,6 @@ export let filterArray = [
         isCheckboxgroup: true,
         value: [
             {
-                name: 'All records',
-                label: ''
-            },
-            {
                 name: 'Dispatched',
                 label: 'Tildelt'
             },
@@ -39,11 +35,8 @@ export let filterArray = [
         name: 'HOT_WorkTypeName__c',
         label: 'Tolkemetode',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'TS - Tegnspråk',
                 label: 'TS - Tegnspråk'
@@ -74,11 +67,8 @@ export let filterArray = [
         name: 'HOT_AssignmentType__c',
         label: 'Anledning',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'Private',
                 label: 'Dagligliv'
@@ -105,11 +95,8 @@ export let filterArray = [
         name: 'HOT_ServiceTerritoryName__c',
         label: 'Region',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'Agder',
                 label: 'Agder'

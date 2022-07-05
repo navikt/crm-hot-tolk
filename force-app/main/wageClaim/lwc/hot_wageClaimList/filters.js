@@ -5,10 +5,6 @@ export let filterArray = [
         isCheckboxgroup: true,
         value: [
             {
-                name: 'All records',
-                label: ''
-            },
-            {
                 name: 'Åpen',
                 label: 'Åpen'
             },
@@ -43,11 +39,8 @@ export let filterArray = [
         name: 'AssignmentType__c',
         label: 'Anledning',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'Private',
                 label: 'Dagligliv'
