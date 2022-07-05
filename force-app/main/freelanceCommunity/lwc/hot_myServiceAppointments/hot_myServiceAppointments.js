@@ -15,9 +15,15 @@ export default class Hot_myServiceAppointments extends LightningElement {
         }
     }
 
-    @api getFilters() {
-        return this.filters;
+    sendFilters() {
+        const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
+        this.dispatchEvent(eventToSend);
     }
+    sendRecords() {
+        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
+        this.dispatchEvent(eventToSend);
+    }
+
     @track filters = [];
     connectedCallback() {
         this.setColumns();
@@ -59,11 +65,19 @@ export default class Hot_myServiceAppointments extends LightningElement {
             this.error = undefined;
             this.records = tempRecords;
             this.initialServiceAppointments = [...this.records];
+            this.refresh();
         } else if (result.error) {
             this.error = result.error;
             this.allMyServiceAppointmentsWired = undefined;
         }
     }
+
+    refresh() {
+        this.sendRecords();
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+    }
+
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
         { name: 'EarliestStartTime', type: 'datetime' },
@@ -118,5 +132,29 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.showTable = true;
         this.records = [...this.initialServiceAppointments];
         return { id: recordIdToReturn, tab: 'my' };
+    }
+    filteredRecordsLength = 0;
+    @api
+    applyFilter(event) {
+        let setRecords = event.detail.setRecords;
+        this.filters = event.detail.filterArray;
+
+        let filteredRecords = [];
+        let records = this.initialServiceAppointments;
+        for (let record of records) {
+            let includeRecord = true;
+            for (let filter of this.filters) {
+                includeRecord *= compare(filter, record);
+            }
+            if (includeRecord) {
+                filteredRecords.push(record);
+            }
+        }
+        this.filteredRecordsLength = filteredRecords.length;
+
+        if (setRecords) {
+            this.records = filteredRecords;
+        }
+        return this.filteredRecordsLength;
     }
 }

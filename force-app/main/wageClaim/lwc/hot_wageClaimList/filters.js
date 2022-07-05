@@ -1,15 +1,19 @@
 export let filterArray = [
     {
-        name: 'HOT_ExternalWorkOrderStatus__c',
+        name: 'Status__c',
         label: 'Status',
         isCheckboxgroup: true,
         value: [
             {
-                name: 'Dispatched',
-                label: 'Tildelt'
+                name: 'Åpen',
+                label: 'Åpen'
             },
             {
-                name: 'Completed',
+                name: 'Tilbaketrukket tilgjengelighet',
+                label: 'Tilbaketrukket tilgjengelighet'
+            },
+            {
+                name: 'Dekket',
                 label: 'Dekket'
             }
         ]
@@ -20,51 +24,19 @@ export let filterArray = [
         isDateInterval: true,
         value: [
             {
-                name: 'EarliestStartDate',
+                name: 'StartTime__c',
                 label: 'Start dato',
                 labelprefix: 'Fra: '
             },
             {
-                name: 'DueDate',
+                name: 'EndTime__c',
                 label: 'Slutt dato',
                 labelprefix: 'Til: '
             }
         ]
     },
     {
-        name: 'HOT_WorkTypeName__c',
-        label: 'Tolkemetode',
-        isCheckboxgroup: true,
-        showMarkAllCheckbox: true,
-        value: [
-            {
-                name: 'TS - Tegnspråk',
-                label: 'TS - Tegnspråk'
-            },
-            {
-                name: 'SK - Skrivetolking',
-                label: 'SK - Skrivetolking'
-            },
-            {
-                name: 'TSS - Tegn Som Støtte Til Munnavlesning',
-                label: 'TSS - Tegn Som Støtte Til Munnavlesning'
-            },
-            {
-                name: 'TSBS - Tegnspråk I Begrenset Synsfelt',
-                label: 'TSBS - Tegnspråk I Begrenset Synsfelt'
-            },
-            {
-                name: 'TT - Taletolking',
-                label: 'TT - Taletolking'
-            },
-            {
-                name: 'TTS - Taktilt Tegnspråk',
-                label: 'TTS - Taktilt Tegnspråk'
-            }
-        ]
-    },
-    {
-        name: 'HOT_AssignmentType__c',
+        name: 'AssignmentType__c',
         label: 'Anledning',
         isCheckboxgroup: true,
         showMarkAllCheckbox: true,
@@ -88,62 +60,6 @@ export let filterArray = [
             {
                 name: 'Interpreter at Work',
                 label: 'Tolk på arbeidsplass - TPA'
-            }
-        ]
-    },
-    {
-        name: 'HOT_ServiceTerritoryName__c',
-        label: 'Region',
-        isCheckboxgroup: true,
-        showMarkAllCheckbox: true,
-        value: [
-            {
-                name: 'Agder',
-                label: 'Agder'
-            },
-            {
-                name: 'Innlandet',
-                label: 'Innlandet'
-            },
-            {
-                name: 'More_og_Romsdal',
-                label: 'Møre og Romsdal'
-            },
-            {
-                name: 'Nordland',
-                label: 'Nordland'
-            },
-            {
-                name: 'Oslo',
-                label: 'Oslo'
-            },
-            {
-                name: 'Rogaland',
-                label: 'Rogaland'
-            },
-            {
-                name: 'Tromso',
-                label: 'Troms og Finnmark'
-            },
-            {
-                name: 'Trondelag',
-                label: 'Trøndelag'
-            },
-            {
-                name: 'Vestfold_og_Telemark',
-                label: 'Vestfold og Telemark'
-            },
-            {
-                name: 'Vestland',
-                label: 'Vestland'
-            },
-            {
-                name: 'Vest_Viken',
-                label: 'Vest-Viken'
-            },
-            {
-                name: 'Ost_Viken',
-                label: 'Øst-Viken'
             }
         ]
     }
