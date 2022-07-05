@@ -1,28 +1,80 @@
-lightning-tabset {
-    width: 100%;
-}
-
-.liste-max-width {
-    max-width: 1480px;
-    width: 100%;
-    padding: 0 3.25rem;
-}
-
 .liste {
-    padding: 3.25rem 3.25rem 3.25rem 3.25rem;
+    padding: 2rem;
     background-color: #fff !important;
     font-family: 'Source Sans Pro', Arial, sans-serif;
     margin: 1rem auto 1rem auto;
     border-radius: 0.5rem;
-    align-items: center;
     display: flex;
     justify-content: center;
     flex-direction: column;
+    max-width: 1400px; /*200px wider than Mine Bestillinger to give more columns to freelance interpreters */
+    width: 100%;
+}
+
+.skjema-max-width {
+    width: 100%;
+    max-width: 1400px;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    width: 100%;
+    max-width: fit-content;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    z-index: 999;
+}
+
+.header {
+    flex: 2;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.header:focus {
+    outline: none;
 }
 
 @media (max-width: 576px) {
     .liste {
-        padding: 1rem 1rem 1rem 1rem;
-        margin: 1rem auto 1rem auto;
+        padding: 1rem;
+    }
+}
+
+.tab-button {
+    all: unset;
+}
+.tab-button:hover {
+    cursor: pointer;
+}
+
+.tab {
+    padding: 0.25rem 1rem;
+}
+.tab_active {
+    box-shadow: inset 0 -3px 0 0 #2196f3;
+    font-weight: bold;
+}
+
+.tabset {
+    display: flex;
+    flex-direction: row;
+}
+
+@media (max-width: 576px) {
+    .desktop-only {
+        display: none;
+    }
+}
+@media (min-width: 576px) {
+    .mobile-only {
+        display: none;
     }
 }

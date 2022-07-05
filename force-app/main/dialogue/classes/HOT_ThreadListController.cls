@@ -10,6 +10,7 @@ public with sharing class HOT_ThreadListController {
                 AND CRM_Account__c != NULL
                 AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
                 AND HOT_Request__c != NULL
+                AND CRM_Number_of_Messages__c > 0
                 AND (HOT_Request__r.IsDone__c = FALSE
                 OR CRM_Number_of_unread_Messages__c > 0)
         ];
