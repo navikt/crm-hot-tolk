@@ -17,10 +17,15 @@ export default class Hot_interestedResourcesList extends LightningElement {
             this.columns = mobileColumns;
         }
     }
-
-    @api getFilters() {
-        return this.filters;
+    sendFilters() {
+        const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
+        this.dispatchEvent(eventToSend);
     }
+    sendRecords() {
+        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
+        this.dispatchEvent(eventToSend);
+    }
+
     @track filters = [];
     connectedCallback() {
         this.setColumns();
@@ -65,6 +70,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
             }
             this.records = tempRecords;
             this.initialInterestedResources = [...this.records];
+            this.sendFilters();
+            this.sendRecords();
         } else if (result.error) {
             this.error = result.error;
             this.allInterestedResourcesWired = undefined;
@@ -140,5 +147,29 @@ export default class Hot_interestedResourcesList extends LightningElement {
         addComment({ interestedResourceId, newComment }).then(() => {
             refreshApex(this.wiredInterestedResourcesResult);
         });
+    }
+    filteredRecordsLength = 0;
+    @api
+    applyFilter(event) {
+        let setRecords = event.detail.setRecords;
+        this.filters = event.detail.filterArray;
+
+        let filteredRecords = [];
+        let records = this.initialInterestedResources;
+        for (let record of records) {
+            let includeRecord = true;
+            for (let filter of this.filters) {
+                includeRecord *= compare(filter, record);
+            }
+            if (includeRecord) {
+                filteredRecords.push(record);
+            }
+        }
+        this.filteredRecordsLength = filteredRecords.length;
+
+        if (setRecords) {
+            this.records = filteredRecords;
+        }
+        return this.filteredRecordsLength;
     }
 }
