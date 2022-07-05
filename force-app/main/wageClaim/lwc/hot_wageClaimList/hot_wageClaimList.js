@@ -4,6 +4,7 @@ import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyW
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import { columns, mobileColumns } from './columns';
 import { formatRecord } from 'c/datetimeFormatter';
+import { defaultFilters, compare } from './filters';
 
 export default class Hot_wageClaimList extends LightningElement {
     @track columns = [];
