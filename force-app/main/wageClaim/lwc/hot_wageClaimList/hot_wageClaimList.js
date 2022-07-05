@@ -4,9 +4,11 @@ import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyW
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import { columns, mobileColumns } from './columns';
 import { formatRecord } from 'c/datetimeFormatter';
+import { defaultFilters, compare } from './filters';
 
 export default class Hot_wageClaimList extends LightningElement {
     @track columns = [];
+    @track filters = [];
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -31,15 +33,23 @@ export default class Hot_wageClaimList extends LightningElement {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
             }
             this.wageClaims = tempRecords;
+            this.refresh();
         } else if (result.error) {
             this.error = result.error;
             this.allWageClaimsWired = undefined;
         }
     }
 
+    refresh() {
+        this.sendRecords();
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+    }
+
     datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
     connectedCallback() {
         this.setColumns();
+        this.filters = defaultFilters();
         refreshApex(this.wiredWageClaimsResult);
     }
 
@@ -89,6 +99,36 @@ export default class Hot_wageClaimList extends LightningElement {
             }
         }
     }
+    sendFilters() {
+        const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
+        this.dispatchEvent(eventToSend);
+    }
+    sendRecords() {
+        const eventToSend = new CustomEvent('sendrecords', { detail: this.allWageClaimsWired });
+        this.dispatchEvent(eventToSend);
+    }
+    filteredRecordsLength = 0;
     @api
-    getFilters() {}
+    applyFilter(event) {
+        let setRecords = event.detail.setRecords;
+        this.filters = event.detail.filterArray;
+
+        let filteredRecords = [];
+        let records = this.allWageClaimsWired;
+        for (let record of records) {
+            let includeRecord = true;
+            for (let filter of this.filters) {
+                includeRecord *= compare(filter, record);
+            }
+            if (includeRecord) {
+                filteredRecords.push(record);
+            }
+        }
+        this.filteredRecordsLength = filteredRecords.length;
+
+        if (setRecords) {
+            this.wageClaims = filteredRecords;
+        }
+        return this.filteredRecordsLength;
+    }
 }

@@ -3,11 +3,8 @@ export let filterArray = [
         name: 'Status__c',
         label: 'Status',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'Interested',
                 label: 'Påmeldt'
@@ -58,12 +55,9 @@ export let filterArray = [
     {
         name: 'WorkTypeName__c',
         label: 'Tolkemetode',
-        isDateInterval: true,
+        isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'TS - Tegnspråk',
                 label: 'TS - Tegnspråk'
@@ -94,11 +88,8 @@ export let filterArray = [
         name: 'AssignmentType__c',
         label: 'Anledning',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'Private',
                 label: 'Dagligliv'
@@ -125,11 +116,8 @@ export let filterArray = [
         name: 'AppointmentServiceTerritory__c',
         label: 'Region',
         isCheckboxgroup: true,
+        showMarkAllCheckbox: true,
         value: [
-            {
-                name: 'All records',
-                label: ''
-            },
             {
                 name: 'Agder',
                 label: 'Agder'
@@ -139,7 +127,7 @@ export let filterArray = [
                 label: 'Innlandet'
             },
             {
-                name: 'Møre og Romsdal',
+                name: 'More_og_Romsdal',
                 label: 'Møre og Romsdal'
             },
             {
@@ -155,15 +143,15 @@ export let filterArray = [
                 label: 'Rogaland'
             },
             {
-                name: 'Troms og Finnmark',
+                name: 'Tromso',
                 label: 'Troms og Finnmark'
             },
             {
-                name: 'Trøndelag',
+                name: 'Trondelag',
                 label: 'Trøndelag'
             },
             {
-                name: 'Vestfold og Telemark',
+                name: 'Vestfold_og_Telemark',
                 label: 'Vestfold og Telemark'
             },
             {
@@ -171,11 +159,11 @@ export let filterArray = [
                 label: 'Vestland'
             },
             {
-                name: 'Vest-Viken',
+                name: 'Vest_Viken',
                 label: 'Vest-Viken'
             },
             {
-                name: 'Øst-Viken',
+                name: 'Ost_Viken',
                 label: 'Øst-Viken'
             }
         ]

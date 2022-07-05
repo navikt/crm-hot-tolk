@@ -4,7 +4,7 @@ import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointme
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { columns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
-import { defaultFilters, compare } from './filters';
+import { defaultFilters, compare, setDefaultFilters } from './filters';
 import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 import { formatRecord } from 'c/datetimeFormatter';
 import { formatRecordDetails } from 'c/hot_recordDetails';
@@ -21,8 +21,13 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    @api getFilters() {
-        return this.filters;
+    sendFilters() {
+        const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
+        this.dispatchEvent(eventToSend);
+    }
+    sendRecords() {
+        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
+        this.dispatchEvent(eventToSend);
     }
 
     @track filters = [];
@@ -49,6 +54,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
         if (result.data) {
             this.serviceResource = result.data;
             this.serviceResourceId = this.serviceResource.Id;
+            this.filters = setDefaultFilters(this.serviceResource.HOT_PreferredRegions__c);
+            if (this.wiredAllServiceAppointmentsResult !== null) {
+                this.refresh();
+            }
         }
     }
 
@@ -70,10 +79,19 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
             this.records = tempRecords;
             this.initialServiceAppointments = [...this.records];
+            if (this.serviceResource !== null) {
+                this.refresh();
+            }
         } else if (result.error) {
             this.error = result.error;
             this.allServiceAppointmentsWired = undefined;
         }
+    }
+
+    refresh() {
+        this.sendRecords();
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
     datetimeFields = [
@@ -149,7 +167,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     @track serviceAppointmentCommentDetails = [];
     sendInterest() {
-        console.log('sending interest');
         this.checkedServiceAppointments = [];
         this.serviceAppointmentCommentDetails = [];
         try {
@@ -168,11 +185,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
         } catch (error) {
             console.log(error);
         }
-        console.log('showing');
         let commentPage = this.template.querySelector('.commentPage');
         commentPage.classList.remove('hidden');
         commentPage.focus();
-        console.log('!!!!!!!!!!!!!');
     }
 
     closeModal() {
@@ -186,5 +201,30 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
         return null;
+    }
+
+    filteredRecordsLength = 0;
+    @api
+    applyFilter(event) {
+        let setRecords = event.detail.setRecords;
+        this.filters = event.detail.filterArray;
+
+        let filteredRecords = [];
+        let records = this.initialServiceAppointments;
+        for (let record of records) {
+            let includeRecord = true;
+            for (let filter of this.filters) {
+                includeRecord *= compare(filter, record);
+            }
+            if (includeRecord) {
+                filteredRecords.push(record);
+            }
+        }
+        this.filteredRecordsLength = filteredRecords.length;
+
+        if (setRecords) {
+            this.records = filteredRecords;
+        }
+        return this.filteredRecordsLength;
     }
 }

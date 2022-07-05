@@ -2,16 +2,9 @@ import { LightningElement, track, wire } from 'lwc';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 
 export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMixin(LightningElement) {
-    // TODO: Send records from active tab to filter when pressed
     @track filters = [];
+    @track records = [];
 
-    getFilters() {
-        let temp = this.template.querySelector('[data-name="' + this.activeTab + '"]');
-        try {
-            this.filters = temp.getFilters();
-        } catch (error) {}
-        this.filters = temp.getFilters();
-    }
     breadcrumbs = [
         {
             label: 'Tolketjenesten',
@@ -22,6 +15,14 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
             href: 'mine-oppdrag'
         }
     ];
+
+    handleFilters(event) {
+        this.filters = event.detail;
+    }
+
+    handleRecords(event) {
+        this.records = event.detail;
+    }
 
     @track urlStateParameters;
     @wire(CurrentPageReference)
@@ -94,7 +95,6 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
     renderedCallback() {
         this.updateTabStyle();
-        this.getFilters();
     }
     updateTabStyle() {
         this.template.querySelectorAll('button.tab').forEach((element) => {
@@ -103,5 +103,16 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
                 element.classList.add('tab_active');
             }
         });
+    }
+
+    applyFilter(event) {
+        this.filters = event.detail.filterArray;
+        let recordListLength = this.template.querySelector('[data-name="' + this.activeTab + '"]').applyFilter(event);
+        return recordListLength;
+    }
+
+    sendFilteredRecordsLength(event) {
+        let recordListLength = this.applyFilter(event);
+        this.template.querySelector('c-list-filters-button').setFilteredRecordsLength(recordListLength);
     }
 }
