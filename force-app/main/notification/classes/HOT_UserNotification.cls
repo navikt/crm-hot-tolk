@@ -1,6 +1,4 @@
 public with sharing class HOT_UserNotification {
-
-    
     public static void notifyUser_requestCreated(List<HOT_Request__c> requests) {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -9,13 +7,11 @@ public with sharing class HOT_UserNotification {
         ];
 
         for (HOT_Request__c request : requests) {
-
-            if (request.Account__c != null && request.Person__r.HOT_NotificationChannel__c) {
+            if (request.Account__c != null && request.Person__r.HOT_NotificationChannel__c != null) {
                 requestCreatedForYou(notificationType, request, null);
             }
         }
     }
-
 
     public static void requestCreatedForYou(
         CustomNotificationType notificationType,
