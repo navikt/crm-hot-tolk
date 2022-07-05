@@ -65,13 +65,19 @@ export default class Hot_myServiceAppointments extends LightningElement {
             this.error = undefined;
             this.records = tempRecords;
             this.initialServiceAppointments = [...this.records];
-            this.sendFilters();
-            this.sendRecords();
+            this.refresh();
         } else if (result.error) {
             this.error = result.error;
             this.allMyServiceAppointmentsWired = undefined;
         }
     }
+
+    refresh() {
+        this.sendRecords();
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+    }
+
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
         { name: 'EarliestStartTime', type: 'datetime' },

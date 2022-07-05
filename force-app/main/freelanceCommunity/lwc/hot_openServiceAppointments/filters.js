@@ -91,7 +91,7 @@ export let filterArray = [
                 label: 'Innlandet'
             },
             {
-                name: 'Møre og Romsdal',
+                name: 'More_og_Romsdal',
                 label: 'Møre og Romsdal'
             },
             {
@@ -107,15 +107,15 @@ export let filterArray = [
                 label: 'Rogaland'
             },
             {
-                name: 'Troms og Finnmark',
+                name: 'Tromso',
                 label: 'Troms og Finnmark'
             },
             {
-                name: 'Trøndelag',
+                name: 'Trondelag',
                 label: 'Trøndelag'
             },
             {
-                name: 'Vestfold og Telemark',
+                name: 'Vestfold_og_Telemark',
                 label: 'Vestfold og Telemark'
             },
             {
@@ -123,16 +123,29 @@ export let filterArray = [
                 label: 'Vestland'
             },
             {
-                name: 'Vest-Viken',
+                name: 'Vest_Viken',
                 label: 'Vest-Viken'
             },
             {
-                name: 'Øst-Viken',
+                name: 'Ost_Viken',
                 label: 'Øst-Viken'
             }
         ]
     }
 ];
+export function setDefaultFilters(regions) {
+    filterArray[0].value[0].value = new Date().toISOString().split('T')[0];
+    let localTimeValue = filterArray[1].value[0].localTimeValue;
+    localTimeValue = new Date().toLocaleString();
+    filterArray[0].value[0].localTimeValue = localTimeValue.substring(0, localTimeValue.length - 10);
+    filterArray[3].value.forEach((element) => {
+        if (regions.includes(element.name)) {
+            element.value = true;
+            element.checked = true;
+        }
+    });
+    return filterArray;
+}
 
 export function defaultFilters() {
     filterArray[0].value[0].value = new Date().toISOString().split('T')[0];

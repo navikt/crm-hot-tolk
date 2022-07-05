@@ -33,12 +33,17 @@ export default class Hot_wageClaimList extends LightningElement {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
             }
             this.wageClaims = tempRecords;
-            this.sendFilters();
-            this.sendRecords();
+            this.refresh();
         } else if (result.error) {
             this.error = result.error;
             this.allWageClaimsWired = undefined;
         }
+    }
+
+    refresh() {
+        this.sendRecords();
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
     datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];

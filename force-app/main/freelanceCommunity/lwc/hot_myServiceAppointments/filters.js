@@ -106,7 +106,7 @@ export let filterArray = [
                 label: 'Innlandet'
             },
             {
-                name: 'Møre og Romsdal',
+                name: 'More_og_Romsdal',
                 label: 'Møre og Romsdal'
             },
             {
@@ -122,15 +122,15 @@ export let filterArray = [
                 label: 'Rogaland'
             },
             {
-                name: 'Troms og Finnmark',
+                name: 'Tromso',
                 label: 'Troms og Finnmark'
             },
             {
-                name: 'Trøndelag',
+                name: 'Trondelag',
                 label: 'Trøndelag'
             },
             {
-                name: 'Vestfold og Telemark',
+                name: 'Vestfold_og_Telemark',
                 label: 'Vestfold og Telemark'
             },
             {
@@ -138,11 +138,11 @@ export let filterArray = [
                 label: 'Vestland'
             },
             {
-                name: 'Vest-Viken',
+                name: 'Vest_Viken',
                 label: 'Vest-Viken'
             },
             {
-                name: 'Øst-Viken',
+                name: 'Ost_Viken',
                 label: 'Øst-Viken'
             }
         ]

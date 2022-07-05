@@ -17,14 +17,10 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     ];
 
     handleFilters(event) {
-        console.log('handleFilters');
-        //console.log('filters', JSON.stringify(event.detail));
         this.filters = event.detail;
     }
 
     handleRecords(event) {
-        console.log('handleRecords');
-        //console.log('records', JSON.stringify(event.detail));
         this.records = event.detail;
     }
 

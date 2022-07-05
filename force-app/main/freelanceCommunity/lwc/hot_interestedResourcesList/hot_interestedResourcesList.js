@@ -70,12 +70,17 @@ export default class Hot_interestedResourcesList extends LightningElement {
             }
             this.records = tempRecords;
             this.initialInterestedResources = [...this.records];
-            this.sendFilters();
-            this.sendRecords();
+            this.refresh();
         } else if (result.error) {
             this.error = result.error;
             this.allInterestedResourcesWired = undefined;
         }
+    }
+
+    refresh() {
+        this.sendRecords();
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
     datetimeFields = [
@@ -141,7 +146,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
 
     sendComment() {
-        console.log('sending comment');
         let interestedResourceId = this.interestedResource.Id;
         let newComment = this.template.querySelector('.newComment').value;
         addComment({ interestedResourceId, newComment }).then(() => {
