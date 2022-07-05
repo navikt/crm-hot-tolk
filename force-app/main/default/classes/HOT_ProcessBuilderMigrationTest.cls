@@ -132,9 +132,9 @@ public class HOT_ProcessBuilderMigrationTest {
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
         WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert workOrderLineItem;
         workOrderLineItem.StartDate = Datetime.now().addDays(1);
-        workOrderLineItem.EndDate = Datetime.now().addDays(1).addHours(1);
+        workOrderLineItem.EndDate = workOrderLineItem.StartDate.addHours(1);
+        insert workOrderLineItem;
 
         workOrderLineItem = [
             SELECT Duration, StartDate, EndDate
