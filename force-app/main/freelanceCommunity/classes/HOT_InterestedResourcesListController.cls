@@ -24,10 +24,13 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointmentCity__c,
                 ServiceAppointment__r.ServiceTerritory.Name,
                 ServiceAppointment__r.HOT_AssignmentType__c,
+                ServiceAppointment__r.HOT_IsSerieoppdrag__c,
+                ServiceAppointment__r.HOT_RequestNumber__c,
                 AssignmentType__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
                 WorkOrderCanceledDate__c,
+                HOT_TermsOfAgreement__c,
                 HOT_DelPol_ToHideRecord__c
             FROM HOT_InterestedResource__c
             WHERE ServiceResource__c IN :serviceResource AND HOT_DelPol_ToHideRecord__c = FALSE

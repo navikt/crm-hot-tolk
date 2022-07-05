@@ -1,79 +1,44 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
-import { myServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
-import { formatRecord } from 'c/hot_recordDetails';
-import { sortList, getMobileSortingOptions } from 'c/sortController';
-
-var actions = [{ label: 'Detaljer', name: 'details' }];
+import { columns, mobileColumns } from './columns';
+import { defaultFilters, compare } from './filters';
+import { formatRecord } from 'c/datetimeFormatter';
 
 export default class Hot_myServiceAppointments extends LightningElement {
-    @track columns = [
-        {
-            label: 'Bestilt starttid',
-            fieldName: 'EarliestStartTime',
-            type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }
-        },
-        {
-            label: 'Bestilt sluttid',
-            fieldName: 'DueDate',
-            type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }
-        },
-        {
-            label: 'Poststed',
-            fieldName: 'City',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Tema',
-            fieldName: 'Subject',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Tolkemetode',
-            fieldName: 'HOT_WorkTypeName__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Status',
-            fieldName: 'Status',
-            type: 'text',
-            sortable: true
-        },
-        {
-            type: 'action',
-            typeAttributes: { rowActions: actions }
+    @track columns = [];
+    setColumns() {
+        if (window.screen.width > 576) {
+            this.columns = columns;
+        } else {
+            this.columns = mobileColumns;
         }
-    ];
+    }
 
-    @track choices = [
-        { name: 'Alle', label: 'Alle' },
-        { name: 'Fremtidige', label: 'Fremtidige' },
-        { name: 'Tildelt', label: 'Tildelt' },
-        { name: 'Dekket', label: 'Dekket' }
-    ];
+    sendFilters() {
+        const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
+        this.dispatchEvent(eventToSend);
+    }
+    sendRecords() {
+        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
+        this.dispatchEvent(eventToSend);
+    }
 
+    @track filters = [];
+    connectedCallback() {
+        this.setColumns();
+        this.filters = defaultFilters();
+        this.breadcrumbs = [
+            {
+                label: 'Tolketjenesten',
+                href: ''
+            },
+            {
+                label: 'oppdrag',
+                href: 'mine-oppdrag'
+            }
+        ];
+    }
     @track serviceResource;
     @wire(getServiceResource)
     wiredServiceresource(result) {
@@ -82,87 +47,114 @@ export default class Hot_myServiceAppointments extends LightningElement {
         }
     }
 
-    @track myServiceAppointments;
-    @track myServiceAppointmentsFiltered;
+    noServiceAppointments = false;
+    initialServiceAppointments = [];
+    @track records = [];
+    @track allMyServiceAppointmentsWired = [];
     wiredMyServiceAppointmentsResult;
     @wire(getMyServiceAppointments)
     wiredMyServiceAppointments(result) {
         this.wiredMyServiceAppointmentsResult = result;
         if (result.data) {
-            this.myServiceAppointments = result.data;
+            let tempRecords = [];
+            for (let record of result.data) {
+                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+            }
+            this.allMyServiceAppointmentsWired = tempRecords;
+            this.noServiceAppointments = this.allMyServiceAppointmentsWired.length === 0;
             this.error = undefined;
-            this.filterServiceAppointments();
+            this.records = tempRecords;
+            this.initialServiceAppointments = [...this.records];
+            this.refresh();
         } else if (result.error) {
             this.error = result.error;
-            this.myServiceAppointments = undefined;
+            this.allMyServiceAppointmentsWired = undefined;
         }
     }
 
-    filterServiceAppointments() {
-        var tempServiceAppointments = [];
-        for (var i = 0; i < this.myServiceAppointments.length; i++) {
-            let status = this.myServiceAppointments[i].Status;
-            if (this.picklistValue === 'Alle') {
-                tempServiceAppointments.push(this.myServiceAppointments[i]);
-            } else if (
-                this.picklistValue === 'Fremtidige' &&
-                status !== 'Avlyst' &&
-                this.myServiceAppointments[i].SchedEndTime > new Date().toISOString().substring(0, 10)
-            ) {
-                tempServiceAppointments.push(this.myServiceAppointments[i]);
-                // Covers 'Tildelt' and 'Dekket'
-            } else if (this.picklistValue === status) {
-                tempServiceAppointments.push(this.myServiceAppointments[i]);
+    refresh() {
+        this.sendRecords();
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+    }
+
+    datetimeFields = [
+        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
+        { name: 'EarliestStartTime', type: 'datetime' },
+        { name: 'DueDate', type: 'datetime' },
+        { name: 'ActualStartTime', type: 'datetime' },
+        { name: 'ActualEndTime', type: 'datetime' },
+        { name: 'HOT_DeadlineDate__c', type: 'date' },
+        { name: 'HOT_ReleaseDate__c', type: 'date' }
+    ];
+
+    @track serviceAppointment;
+    isDetails = false;
+    isSeries = false;
+    showTable = true;
+    goToRecordDetails(result) {
+        window.scrollTo(0, 0);
+        let recordId = result.detail.Id;
+        this.urlStateParameterId = recordId;
+        this.isDetails = this.urlStateParameterId !== '';
+        for (let serviceAppointment of this.records) {
+            if (recordId === serviceAppointment.Id) {
+                this.serviceAppointment = serviceAppointment;
             }
         }
-        this.myServiceAppointmentsFiltered = tempServiceAppointments;
-    }
-
-    @track picklistValue = 'Alle';
-    handlePicklist(event) {
-        this.picklistValue = event.detail.name;
-        this.filterServiceAppointments();
-    }
-
-    //Sorting methods
-    @track defaultSortDirection = 'asc';
-    @track sortDirection = 'asc';
-    @track sortedBy = 'EarliestStartTime';
-
-    get sortingOptions() {
-        return getMobileSortingOptions(this.columns);
-    }
-
-    onHandleSort(event) {
-        this.sortDirection = event.detail.sortDirection;
-        this.sortedBy = event.detail.fieldName;
-        this.myServiceAppointments = sortList(this.myServiceAppointments, this.sortedBy, this.sortDirection);
-        this.filterServiceAppointments();
-    }
-
-    //Row action methods
-    handleRowAction(event) {
-        const actionName = event.detail.action.name;
-        const row = event.detail.row;
-        switch (actionName) {
-            case 'details':
-                this.showDetails(row);
-                break;
-            default:
+        this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
+        this.showTable = (this.isSeries && this.urlStateParameterId !== '') || this.urlStateParameterId === '';
+        if (this.isSeries) {
+            let tempRecords = [];
+            for (let record of this.records) {
+                if (record.HOT_RequestNumber__c == this.serviceAppointment.HOT_RequestNumber__c) {
+                    tempRecords.push(record);
+                }
+            }
+            this.records = [...tempRecords];
         }
+        this.updateURL();
     }
 
-    @track recordId;
-    @track serviceAppointmentDetails;
-    showDetails(row) {
-        this.recordId = row.HOT_DelPol_IsHideFilesFromFreelance__c ? null : row.Id;
-        this.serviceAppointmentDetails = formatRecord(row, myServiceAppointmentFieldLabels);
-        let detailPage = this.template.querySelector('.detailPage');
-        detailPage.classList.remove('hidden');
-        detailPage.focus();
+    @track urlStateParameterId = '';
+    updateURL() {
+        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        if (this.urlStateParameterId !== '') {
+            baseURL += '?list=my' + '&id=' + this.urlStateParameterId;
+        }
+        window.history.pushState({ path: baseURL }, '', baseURL);
     }
 
-    abortShowDetails() {
-        this.template.querySelector('.detailPage').classList.add('hidden');
+    @api goBack() {
+        let recordIdToReturn = this.urlStateParameterId;
+        this.urlStateParameterId = '';
+        this.isDetails = false;
+        this.showTable = true;
+        this.records = [...this.initialServiceAppointments];
+        return { id: recordIdToReturn, tab: 'my' };
+    }
+    filteredRecordsLength = 0;
+    @api
+    applyFilter(event) {
+        let setRecords = event.detail.setRecords;
+        this.filters = event.detail.filterArray;
+
+        let filteredRecords = [];
+        let records = this.initialServiceAppointments;
+        for (let record of records) {
+            let includeRecord = true;
+            for (let filter of this.filters) {
+                includeRecord *= compare(filter, record);
+            }
+            if (includeRecord) {
+                filteredRecords.push(record);
+            }
+        }
+        this.filteredRecordsLength = filteredRecords.length;
+
+        if (setRecords) {
+            this.records = filteredRecords;
+        }
+        return this.filteredRecordsLength;
     }
 }

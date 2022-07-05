@@ -2,93 +2,46 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
-import retractInterests from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterests';
+import { columns, mobileColumns } from './columns';
+import { defaultFilters, compare } from './filters';
+import { formatRecord } from 'c/datetimeFormatter';
 import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
 import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
-import { interestedResourceFieldLabels } from 'c/hot_fieldLabels';
-import { formatRecord } from 'c/hot_recordDetails';
-import { sortList, getMobileSortingOptions } from 'c/sortController';
-
-var actions = [
-    //{ label: 'Kommenter', name: 'comment' },
-    { label: 'Detaljer', name: 'details' }
-];
 
 export default class Hot_interestedResourcesList extends LightningElement {
-    @track columns = [
-        {
-            label: 'Start tid',
-            fieldName: 'ServiceAppointmentStartTime__c',
-            type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }
-        },
-        {
-            label: 'Slutt tid',
-            fieldName: 'ServiceAppointmentEndTime__c',
-            type: 'date',
-            sortable: true,
-            typeAttributes: {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }
-        },
-        {
-            label: 'Poststed',
-            fieldName: 'ServiceAppointmentCity__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Tema',
-            fieldName: 'ServiceAppointmentFreelanceSubject__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Tolkemetode',
-            fieldName: 'WorkTypeName__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Status',
-            fieldName: 'Status__c',
-            type: 'text',
-            sortable: true
-        },
-        {
-            label: 'Ny kommentar',
-            fieldName: 'IsNewComment__c',
-            type: 'boolean'
-        },
-        {
-            type: 'action',
-            typeAttributes: { rowActions: actions }
+    @track columns = [];
+    setColumns() {
+        if (window.screen.width > 576) {
+            this.columns = columns;
+        } else {
+            this.columns = mobileColumns;
         }
-    ];
+    }
+    sendFilters() {
+        const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
+        this.dispatchEvent(eventToSend);
+    }
+    sendRecords() {
+        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
+        this.dispatchEvent(eventToSend);
+    }
 
-    @track choices = [
-        { name: 'Alle', label: 'Alle' },
-        { name: 'Påmeldt', label: 'Påmeldt' },
-        { name: 'Tildelt', label: 'Tildelt' },
-        { name: 'Ikke tildelt deg', label: 'Ikke tildelt deg' },
-        { name: 'Tilbaketrukket påmelding', label: 'Tilbaketrukket påmelding' },
-        { name: 'Avlyst', label: 'Avlyst' },
-        { name: 'Oppdrag tilbaketrukket', label: 'Oppdrag tilbaketrukket' },
-        { name: 'Avlyst av tolk', label: 'Avlyst av tolk' }
-    ];
+    @track filters = [];
+    connectedCallback() {
+        this.setColumns();
+        refreshApex(this.wiredInterestedResourcesResult);
+        this.filters = defaultFilters();
+        this.breadcrumbs = [
+            {
+                label: 'Tolketjenesten',
+                href: ''
+            },
+            {
+                label: 'oppdrag',
+                href: 'mine-oppdrag'
+            }
+        ];
+    }
 
     @track serviceResource;
     @wire(getServiceResource)
@@ -98,128 +51,129 @@ export default class Hot_interestedResourcesList extends LightningElement {
         }
     }
 
-    @track interestedResources;
-    @track interestedResourcesFiltered;
+    noInterestedResources = false;
+    initialInterestedResources = [];
+    @track records = [];
+    @track allInterestedResourcesWired = [];
     wiredInterestedResourcesResult;
     @wire(getInterestedResources)
     wiredInterestedResources(result) {
         this.wiredInterestedResourcesResult = result;
         if (result.data) {
-            this.interestedResources = result.data;
+            this.noInterestedResources = this.allInterestedResourcesWired.length === 0;
             this.error = undefined;
-            this.filterInterestedResources();
+            this.allInterestedResourcesWired = [...result.data];
+            this.noInterestedResources = this.allInterestedResourcesWired.length === 0;
+            let tempRecords = [];
+            for (let record of result.data) {
+                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+            }
+            this.records = tempRecords;
+            this.initialInterestedResources = [...this.records];
+            this.refresh();
         } else if (result.error) {
             this.error = result.error;
-            this.interestedResources = undefined;
+            this.allInterestedResourcesWired = undefined;
         }
     }
-    filterInterestedResources() {
-        var tempInterestedResources = [];
-        for (var i = 0; i < this.interestedResources.length; i++) {
-            if (this.picklistValue === 'Alle') {
-                tempInterestedResources.push(this.interestedResources[i]);
-                // Covers statuses: 'Tildelt', 'Påmeldt', 'Ikke tildelt deg', 'Tilbaketrukket påmelding', 'Avlyst', 'Oppdrag tilbaketrukket' and 'Avlyst av tolk'
-            } else if (this.picklistValue === this.interestedResources[i].Status__c) {
-                tempInterestedResources.push(this.interestedResources[i]);
+
+    refresh() {
+        this.sendRecords();
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+    }
+
+    datetimeFields = [
+        {
+            name: 'StartAndEndDate',
+            type: 'datetimeinterval',
+            start: 'ServiceAppointmentStartTime__c',
+            end: 'ServiceAppointmentEndTime__c'
+        },
+        { name: 'ServiceAppointmentStartTime__c', type: 'datetime' },
+        { name: 'ServiceAppointmentEndTime__c', type: 'datetime' },
+        { name: 'WorkOrderCanceledDate__c', type: 'date' },
+        { name: 'HOT_ReleaseDate__c', type: 'date' }
+    ];
+
+    @track interestedResource;
+    isDetails = false;
+    isSeries = false;
+    showTable = true;
+    goToRecordDetails(result) {
+        window.scrollTo(0, 0);
+        let recordId = result.detail.Id;
+        this.urlStateParameterId = recordId;
+        this.isDetails = this.urlStateParameterId !== '';
+        for (let interestedResource of this.records) {
+            if (recordId === interestedResource.Id) {
+                this.interestedResource = interestedResource;
             }
         }
-        this.interestedResourcesFiltered = tempInterestedResources;
-    }
-
-    @track picklistValue = 'Alle';
-    handlePicklist(event) {
-        this.picklistValue = event.detail.name;
-        this.filterInterestedResources();
-    }
-
-    connectedCallback() {
-        refreshApex(this.wiredInterestedResourcesResult);
-    }
-
-    //Sorting methods
-    @track defaultSortDirection = 'asc';
-    @track sortDirection = 'asc';
-    @track sortedBy = 'ServiceAppointmentStartTime__c';
-
-    get sortingOptions() {
-        return getMobileSortingOptions(this.columns);
-    }
-
-    onHandleSort(event) {
-        this.sortDirection = event.detail.sortDirection;
-        this.sortedBy = event.detail.fieldName;
-        this.interestedResources = sortList(this.interestedResources, this.sortedBy, this.sortDirection);
-        this.filterInterestedResources();
-    }
-
-    //Row action methods
-    handleRowAction(event) {
-        const actionName = event.detail.action.name;
-        const row = event.detail.row;
-        switch (actionName) {
-            case 'comment':
-                this.openComments(row);
-                break;
-            case 'details':
-                this.openDetails(row);
-                break;
-            default:
+        this.isSeries = this.interestedResource.ServiceAppointment__r.HOT_IsSerieoppdrag__c;
+        this.showTable = (this.isSeries && this.urlStateParameterId !== '') || this.urlStateParameterId === '';
+        if (this.isSeries) {
+            let tempRecords = [];
+            for (let record of this.records) {
+                if (
+                    record.ServiceAppointment__r.HOT_RequestNumber__c ==
+                    this.interestedResource.ServiceAppointment__r.HOT_RequestNumber__c
+                ) {
+                    tempRecords.push(record);
+                }
+            }
+            this.records = [...tempRecords];
         }
+        this.updateURL();
     }
 
-    @track appointmentNumber = 'Ingen detaljer';
-    @track recordId;
-    @track prevComments = ['Ingen tidligere kommentarer'];
+    @track urlStateParameterId = '';
+    updateURL() {
+        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        if (this.urlStateParameterId !== '') {
+            baseURL += '?list=interested' + '&id=' + this.urlStateParameterId;
+        }
+        window.history.pushState({ path: baseURL }, '', baseURL);
+    }
+
+    @api goBack() {
+        let recordIdToReturn = this.urlStateParameterId;
+        this.urlStateParameterId = '';
+        this.isDetails = false;
+        this.showTable = true;
+        this.records = [...this.initialInterestedResources];
+        return { id: recordIdToReturn, tab: 'interested' };
+    }
+
     sendComment() {
-        let interestedResourceId = this.recordId;
-        var newComment = this.template.querySelector('.newComment').value;
+        let interestedResourceId = this.interestedResource.Id;
+        let newComment = this.template.querySelector('.newComment').value;
         addComment({ interestedResourceId, newComment }).then(() => {
             refreshApex(this.wiredInterestedResourcesResult);
         });
-        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
     }
+    filteredRecordsLength = 0;
+    @api
+    applyFilter(event) {
+        let setRecords = event.detail.setRecords;
+        this.filters = event.detail.filterArray;
 
-    @track deadlineDate;
-    @track interestedResourceDetails;
-    openDetails(row) {
-        this.interestedResourceDetails = formatRecord(row, interestedResourceFieldLabels);
-        let detailPage = this.template.querySelector('.ReactModal__Overlay');
-        detailPage.classList.remove('hidden');
-        detailPage.focus();
-
-        this.recordId = row.Id;
-        if (row['Comments__c'] != undefined) {
-            this.prevComments = row.Comments__c.split('\n\n');
-        } else {
-            this.prevComments = '';
-        }
-        let interestedResourceId = this.recordId;
-        readComment({ interestedResourceId }).then(() => {
-            refreshApex(this.wiredInterestedResourcesResult);
-        });
-    }
-    abortShowDetails() {
-        this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-    }
-
-    @track selectedRows = [];
-    getSelectedName(event) {
-        this.selectedRows = event.detail.selectedRows;
-    }
-
-    retractInterest() {
-        if (this.selectedRows.length > 0) {
-            let retractionIds = [];
-            for (var i = 0; i < this.selectedRows.length; i++) {
-                retractionIds.push(this.selectedRows[i].Id);
+        let filteredRecords = [];
+        let records = this.initialInterestedResources;
+        for (let record of records) {
+            let includeRecord = true;
+            for (let filter of this.filters) {
+                includeRecord *= compare(filter, record);
             }
-            if (confirm('Er du sikker på at du vil tilbaketrekke interesse for valgte oppdrag?')) {
-                retractInterests({ retractionIds }).then(() => {
-                    refreshApex(this.wiredInterestedResourcesResult);
-                });
+            if (includeRecord) {
+                filteredRecords.push(record);
             }
-        } else {
-            alert('Velg oppdrag du ønsker å tilbaketrekke interesse for, så trykk på knappen.');
         }
+        this.filteredRecordsLength = filteredRecords.length;
+
+        if (setRecords) {
+            this.records = filteredRecords;
+        }
+        return this.filteredRecordsLength;
     }
 }
