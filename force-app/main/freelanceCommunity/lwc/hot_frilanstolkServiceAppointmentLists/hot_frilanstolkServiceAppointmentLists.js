@@ -111,7 +111,12 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
     applyFilter(event) {
         this.filters = event.detail.filterArray;
-        let res = this.template.querySelector('[data-name="' + this.activeTab + '"]').applyFilter(event);
-        this.template.querySelector('c-list-filters-button').setFilteredRecordsLength(res);
+        let recordListLength = this.template.querySelector('[data-name="' + this.activeTab + '"]').applyFilter(event);
+        return recordListLength;
+    }
+
+    sendFilteredRecordsLength(event) {
+        let recordListLength = this.applyFilter(event);
+        this.template.querySelector('c-list-filters-button').setFilteredRecordsLength(recordListLength);
     }
 }
