@@ -13,6 +13,7 @@ import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkORder.HOT_IsNoti
 import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import { refreshApex } from '@salesforce/apex';
+import { formatRecord } from 'c/datetimeFormatter';
 import { updateRecord } from 'lightning/uiRecordApi';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
@@ -63,12 +64,23 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     wiredgetWorkOrdersHandler(result) {
         this.wiredgetWorkOrdersResult = result;
         if (result.data) {
-            this.records = [...result.data];
+            let tempRecords = [];
+            for (let record of result.data) {
+                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+            }
+            this.records = tempRecords;
             this.noWorkOrders = this.records.length === 0;
-            this.allRecords = [...result.data];
+            this.allRecords = [...tempRecords];
             this.refresh(false);
         }
     }
+    datetimeFields = [
+        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartDate', end: 'EndDate' },
+        { name: 'HOT_Request__r.SeriesStartDate__c', type: 'date' },
+        { name: 'HOT_Request__r.SeriesEndDate__c', type: 'date' },
+        { name: 'HOT_Request__r.StartTime__c', type: 'date' },
+        { name: 'HOT_Request__r.EndTime__c', type: 'date' }
+    ];
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {

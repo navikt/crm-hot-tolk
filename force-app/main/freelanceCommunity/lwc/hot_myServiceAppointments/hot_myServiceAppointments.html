@@ -21,14 +21,7 @@
             </div>
         </div>
         <div if:false={noServiceAppointments}>
-            <c-table
-                if:true={showTable}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                start-date-field="EarliestStartTime"
-                end-date-field="DueDate"
-            ></c-table>
+            <c-table if:true={showTable} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
             <br />

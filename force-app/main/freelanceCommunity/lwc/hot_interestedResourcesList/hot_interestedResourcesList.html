@@ -42,14 +42,7 @@
             </section>
         </div>
         <div if:false={noInterestedResources}>
-            <c-table
-                if:true={showTable}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                start-date-field="ServiceAppointmentStartTime__c"
-                end-date-field="ServiceAppointmentEndTime__c"
-            ></c-table>
+            <c-table if:true={showTable} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
         </div>
         <div if:true={noInterestedResources} style="text-align: center">
             <br />
