@@ -38,13 +38,28 @@
                 </c-hot_open-service-appointments>
             </div>
             <div if:true={tabMap.interested} class="tab-content">
-                <c-hot_interested-resources-list data-name="interested"> </c-hot_interested-resources-list>
+                <c-hot_interested-resources-list
+                    data-name="interested"
+                    onsendfilters={handleFilters}
+                    onsendrecords={handleRecords}
+                >
+                </c-hot_interested-resources-list>
             </div>
             <div if:true={tabMap.my} class="tab-content">
-                <c-hot_my-service-appointments data-name="my"> </c-hot_my-service-appointments>
+                <c-hot_my-service-appointments
+                    data-name="my"
+                    onsendfilters={handleFilters}
+                    onsendrecords={handleRecords}
+                >
+                </c-hot_my-service-appointments>
             </div>
             <div if:true={tabMap.wageClaim} class="tab-content">
-                <c-hot_wage-claim-list data-name="wageClaim"> </c-hot_wage-claim-list>
+                <c-hot_wage-claim-list
+                    data-name="wageClaim"
+                    onsendfilters={handleFilters}
+                    onsendrecords={handleRecords}
+                >
+                </c-hot_wage-claim-list>
             </div>
         </div>
     </div>

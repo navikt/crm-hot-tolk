@@ -5,7 +5,7 @@ export let filterArray = [
         isDateInterval: true,
         value: [
             {
-                name: 'EarliestStartDate',
+                name: 'EarliestStartTime',
                 label: 'Start dato',
                 labelprefix: 'Fra: '
             },
@@ -139,7 +139,7 @@ export function setDefaultFilters(regions) {
     localTimeValue = new Date().toLocaleString();
     filterArray[0].value[0].localTimeValue = localTimeValue.substring(0, localTimeValue.length - 10);
     filterArray[3].value.forEach((element) => {
-        if (regions.includes(element.name)) {
+        if (regions?.includes(element.name)) {
             element.value = true;
             element.checked = true;
         }
@@ -181,6 +181,7 @@ function dateBetween(filter, record) {
     if (startVal.value !== undefined && startVal.value !== false) {
         let recordStartDate = new Date(record[startVal.name]);
         let startDate = new Date(startVal.value);
+
         startDate.setHours(0);
         startDate.setMinutes(0);
         if (recordStartDate < startDate) {

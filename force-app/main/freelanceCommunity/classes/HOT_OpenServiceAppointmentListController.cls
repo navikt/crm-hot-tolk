@@ -68,7 +68,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 AND HOT_DeadlineDate__c >= :DATE.TODAY()
                 AND Id NOT IN :interestedServiceAppointmentIds
                 AND ServiceTerritoryId != NULL
-            ORDER BY HOT_ReleaseDate__c DESC
+            ORDER BY EarliestStartTime ASC
         ];
 
         //Getting the required Skills for each workType
