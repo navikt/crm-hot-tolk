@@ -27,7 +27,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
     @track filters = [];
     connectedCallback() {
         this.setColumns();
-        this.filters = defaultFilters();
         this.breadcrumbs = [
             {
                 label: 'Tolketjenesten',
@@ -73,6 +72,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     }
 
     refresh() {
+        this.filters = defaultFilters();
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });

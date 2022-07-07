@@ -41,6 +41,7 @@ export default class Hot_wageClaimList extends LightningElement {
     }
 
     refresh() {
+        this.filters = defaultFilters();
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -49,7 +50,6 @@ export default class Hot_wageClaimList extends LightningElement {
     datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
     connectedCallback() {
         this.setColumns();
-        this.filters = defaultFilters();
         refreshApex(this.wiredWageClaimsResult);
     }
 

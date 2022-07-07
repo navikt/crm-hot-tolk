@@ -52,6 +52,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 HOT_ReleasedBy__c,
                 ServiceTerritory.Name,
                 ServiceTerritory.HOT_DeveloperName__c,
+                HOT_ServiceTerritoryDeveloperName__c,
                 HOT_ServiceTerritoryName__c,
                 HOT_ReleaseDate__c,
                 City,

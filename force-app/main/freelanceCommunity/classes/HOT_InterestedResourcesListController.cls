@@ -29,6 +29,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 AssignmentType__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
+                AppointmentServiceTerritoryDeveloperName__c,
                 WorkOrderCanceledDate__c,
                 HOT_TermsOfAgreement__c,
                 HOT_DelPol_ToHideRecord__c

@@ -10,6 +10,7 @@ import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.
 
 export default class Hot_interestedResourcesList extends LightningElement {
     @track columns = [];
+    @track filters = [];
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -22,15 +23,13 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.dispatchEvent(eventToSend);
     }
     sendRecords() {
-        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
+        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialInterestedResources });
         this.dispatchEvent(eventToSend);
     }
 
-    @track filters = [];
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredInterestedResourcesResult);
-        this.filters = defaultFilters();
         this.breadcrumbs = [
             {
                 label: 'Tolketjenesten',
@@ -78,6 +77,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
 
     refresh() {
+        this.filters = defaultFilters();
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -90,8 +90,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
             start: 'ServiceAppointmentStartTime__c',
             end: 'ServiceAppointmentEndTime__c'
         },
-        { name: 'ServiceAppointmentStartTime__c', type: 'datetime' },
-        { name: 'ServiceAppointmentEndTime__c', type: 'datetime' },
         { name: 'WorkOrderCanceledDate__c', type: 'date' },
         { name: 'HOT_ReleaseDate__c', type: 'date' }
     ];
@@ -125,6 +123,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
             this.records = [...tempRecords];
         }
         this.updateURL();
+        if (this.interestedResource.IsNewComment__c) {
+            readComment({ interestedResourceId: this.interestedResource.Id });
+        }
     }
 
     @track urlStateParameterId = '';

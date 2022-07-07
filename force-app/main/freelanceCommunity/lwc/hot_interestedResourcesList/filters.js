@@ -113,7 +113,7 @@ export let filterArray = [
         ]
     },
     {
-        name: 'AppointmentServiceTerritory__c',
+        name: 'AppointmentServiceTerritoryDeveloperName__c',
         label: 'Region',
         isCheckboxgroup: true,
         showMarkAllCheckbox: true,
