@@ -92,7 +92,7 @@ export let filterArray = [
         ]
     },
     {
-        name: 'HOT_ServiceTerritoryName__c',
+        name: 'HOT_ServiceTerritoryDeveloperName__c',
         label: 'Region',
         isCheckboxgroup: true,
         showMarkAllCheckbox: true,

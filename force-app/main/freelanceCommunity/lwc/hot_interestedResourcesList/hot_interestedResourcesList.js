@@ -123,6 +123,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
             this.records = [...tempRecords];
         }
         this.updateURL();
+        if (this.interestedResource.IsNewComment__c) {
+            readComment({ interestedResourceId: this.interestedResource.Id });
+        }
     }
 
     @track urlStateParameterId = '';
