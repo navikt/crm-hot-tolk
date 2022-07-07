@@ -90,8 +90,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
             start: 'ServiceAppointmentStartTime__c',
             end: 'ServiceAppointmentEndTime__c'
         },
-        { name: 'ServiceAppointmentStartTime__c', type: 'datetime' },
-        { name: 'ServiceAppointmentEndTime__c', type: 'datetime' },
         { name: 'WorkOrderCanceledDate__c', type: 'date' },
         { name: 'HOT_ReleaseDate__c', type: 'date' }
     ];
