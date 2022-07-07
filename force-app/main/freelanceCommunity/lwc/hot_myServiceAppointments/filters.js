@@ -20,7 +20,7 @@ export let filterArray = [
         isDateInterval: true,
         value: [
             {
-                name: 'EarliestStartDate',
+                name: 'EarliestStartTime',
                 label: 'Start dato',
                 labelprefix: 'Fra: '
             },
