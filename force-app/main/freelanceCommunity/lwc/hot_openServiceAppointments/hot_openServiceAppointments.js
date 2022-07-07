@@ -34,7 +34,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
-        this.filters = defaultFilters();
         this.breadcrumbs = [
             {
                 label: 'Tolketjenesten',
@@ -89,6 +88,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     refresh() {
+        this.filters = defaultFilters();
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });

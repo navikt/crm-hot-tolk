@@ -10,6 +10,7 @@ import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.
 
 export default class Hot_interestedResourcesList extends LightningElement {
     @track columns = [];
+    @track filters = [];
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -22,15 +23,13 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.dispatchEvent(eventToSend);
     }
     sendRecords() {
-        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
+        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialInterestedResources });
         this.dispatchEvent(eventToSend);
     }
 
-    @track filters = [];
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredInterestedResourcesResult);
-        this.filters = defaultFilters();
         this.breadcrumbs = [
             {
                 label: 'Tolketjenesten',
@@ -78,6 +77,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
 
     refresh() {
+        this.filters = defaultFilters();
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
