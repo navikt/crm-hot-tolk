@@ -2,13 +2,7 @@
     <div class="main-content">
         <div if:false={isWageClaimDetails}>
             <div if:false={noWageClaims}>
-                <c-table
-                    records={wageClaims}
-                    columns={columns}
-                    onrowclick={goToRecordDetails}
-                    start-date-field="StartTime__c"
-                    end-date-field="EndTime__c"
-                ></c-table>
+                <c-table records={wageClaims} columns={columns} onrowclick={goToRecordDetails}></c-table>
             </div>
             <div if:true={noWageClaims} style="text-align: center">
                 <br />
