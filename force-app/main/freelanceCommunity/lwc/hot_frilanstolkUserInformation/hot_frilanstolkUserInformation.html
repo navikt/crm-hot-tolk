@@ -26,6 +26,7 @@
                                 field-name="HOT_IsAvailableForAcuteAssignments__c"
                             ></lightning-output-field>
                             <lightning-output-field field-name="HOT_MobileDevice__c"></lightning-output-field>
+                            <lightning-output-field field-name="HOT_PreferredRegions__c"></lightning-output-field>
                         </div>
                     </div>
                 </lightning-record-view-form>
@@ -64,24 +65,28 @@
                                 field-name="HOT_MobileDevice__c"
                                 style="margin-bottom: 5px"
                             ></lightning-input-field>
+                            <lightning-input-field
+                                field-name="HOT_PreferredRegions__c"
+                                style="margin-bottom: 5px"
+                            ></lightning-input-field>
                         </div>
                     </div>
                     <div class="button-class">
                         <c-button
-                        button-label="Lagre"
-                        button-styling="primary"
-                        desktop-style="width: 8rem; justify-content: center"
-                        mobile-style="width: 8rem; justify-content: center"
-                        onbuttonclick={handleSubmit}
-                    ></c-button>
-                    <c-button
-                        button-label="Avbryt"
-                        button-styling="secondary"
-                        style="padding-left: 1rem;"
-                        desktop-style="width: 8rem; justify-content: center"
-                        mobile-style="width: 8rem; justify-content: center"
-                        onbuttonclick={handleAbort}
-                    ></c-button>
+                            button-label="Lagre"
+                            button-styling="primary"
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center"
+                            onbuttonclick={handleSubmit}
+                        ></c-button>
+                        <c-button
+                            button-label="Avbryt"
+                            button-styling="secondary"
+                            style="padding-left: 1rem"
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center"
+                            onbuttonclick={handleAbort}
+                        ></c-button>
                     </div>
                 </lightning-record-edit-form>
             </section>

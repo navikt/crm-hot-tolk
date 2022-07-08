@@ -23,6 +23,10 @@ export default class Hot_myServiceAppointments extends LightningElement {
         const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
         this.dispatchEvent(eventToSend);
     }
+    sendDetail() {
+        const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
+        this.dispatchEvent(eventToSend);
+    }
 
     @track filters = [];
     connectedCallback() {
@@ -80,8 +84,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
-        { name: 'EarliestStartTime', type: 'datetime' },
-        { name: 'DueDate', type: 'datetime' },
         { name: 'ActualStartTime', type: 'datetime' },
         { name: 'ActualEndTime', type: 'datetime' },
         { name: 'HOT_DeadlineDate__c', type: 'date' },
@@ -102,18 +104,8 @@ export default class Hot_myServiceAppointments extends LightningElement {
                 this.serviceAppointment = serviceAppointment;
             }
         }
-        this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
-        this.showTable = (this.isSeries && this.urlStateParameterId !== '') || this.urlStateParameterId === '';
-        if (this.isSeries) {
-            let tempRecords = [];
-            for (let record of this.records) {
-                if (record.HOT_RequestNumber__c == this.serviceAppointment.HOT_RequestNumber__c) {
-                    tempRecords.push(record);
-                }
-            }
-            this.records = [...tempRecords];
-        }
         this.updateURL();
+        this.sendDetail();
     }
 
     @track urlStateParameterId = '';
@@ -130,7 +122,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.urlStateParameterId = '';
         this.isDetails = false;
         this.showTable = true;
-        this.records = [...this.initialServiceAppointments];
+        this.sendDetail();
         return { id: recordIdToReturn, tab: 'my' };
     }
     filteredRecordsLength = 0;

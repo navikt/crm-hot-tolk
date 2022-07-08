@@ -115,4 +115,9 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         let recordListLength = this.applyFilter(event);
         this.template.querySelector('c-list-filters-button').setFilteredRecordsLength(recordListLength);
     }
+
+    isDetails = false;
+    handleDetails(event) {
+        this.isDetails = event.detail;
+    }
 }

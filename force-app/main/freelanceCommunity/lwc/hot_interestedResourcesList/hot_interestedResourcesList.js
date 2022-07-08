@@ -26,6 +26,10 @@ export default class Hot_interestedResourcesList extends LightningElement {
         const eventToSend = new CustomEvent('sendrecords', { detail: this.initialInterestedResources });
         this.dispatchEvent(eventToSend);
     }
+    sendDetail() {
+        const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
+        this.dispatchEvent(eventToSend);
+    }
 
     connectedCallback() {
         this.setColumns();
@@ -108,21 +112,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
                 this.interestedResource = interestedResource;
             }
         }
-        this.isSeries = this.interestedResource.ServiceAppointment__r.HOT_IsSerieoppdrag__c;
-        this.showTable = (this.isSeries && this.urlStateParameterId !== '') || this.urlStateParameterId === '';
-        if (this.isSeries) {
-            let tempRecords = [];
-            for (let record of this.records) {
-                if (
-                    record.ServiceAppointment__r.HOT_RequestNumber__c ==
-                    this.interestedResource.ServiceAppointment__r.HOT_RequestNumber__c
-                ) {
-                    tempRecords.push(record);
-                }
-            }
-            this.records = [...tempRecords];
-        }
         this.updateURL();
+        this.sendDetail();
         if (this.interestedResource.IsNewComment__c) {
             readComment({ interestedResourceId: this.interestedResource.Id });
         }
@@ -142,7 +133,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.urlStateParameterId = '';
         this.isDetails = false;
         this.showTable = true;
-        this.records = [...this.initialInterestedResources];
+        this.sendDetail();
         return { id: recordIdToReturn, tab: 'interested' };
     }
 

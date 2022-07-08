@@ -8,8 +8,6 @@ import { defaultFilters, compare, setDefaultFilters } from './filters';
 import { openServiceAppointmentFieldLabels } from 'c/hot_fieldLabels';
 import { formatRecord } from 'c/datetimeFormatter';
 import { formatRecordDetails } from 'c/hot_recordDetails';
-import EarliestStartTime from '@salesforce/schema/ServiceAppointment.EarliestStartTime';
-import DueDate from '@salesforce/schema/ServiceAppointment.DueDate';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
@@ -27,6 +25,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
     sendRecords() {
         const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
+        this.dispatchEvent(eventToSend);
+    }
+    sendDetail() {
+        const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
         this.dispatchEvent(eventToSend);
     }
 
@@ -115,18 +117,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 this.serviceAppointment = serviceAppointment;
             }
         }
-        this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
-        this.showTable = (this.isSeries && this.urlStateParameterId !== '') || this.urlStateParameterId === '';
-        if (this.isSeries) {
-            let tempRecords = [];
-            for (let record of this.records) {
-                if (record.HOT_RequestNumber__c == this.serviceAppointment.HOT_RequestNumber__c) {
-                    tempRecords.push(record);
-                }
-            }
-            this.records = [...tempRecords];
-        }
         this.updateURL();
+        this.sendDetail();
     }
 
     @track urlStateParameterId = '';
@@ -143,7 +135,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.urlStateParameterId = '';
         this.isDetails = false;
         this.showTable = true;
-        this.records = [...this.initialServiceAppointments];
+        this.sendDetail();
         return { id: recordIdToReturn, tab: 'open' };
     }
 

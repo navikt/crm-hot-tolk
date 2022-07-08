@@ -54,6 +54,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 City,
                 ServiceTerritory.Name,
                 HOT_ServiceTerritoryName__c,
+                HOT_ServiceTerritoryDeveloperName__c,
                 HOT_DegreeOfHearingAndVisualImpairment__c,
                 HOT_HapticCommunication__c,
                 HOT_Escort__c,

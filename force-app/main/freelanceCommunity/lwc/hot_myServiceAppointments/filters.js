@@ -5,11 +5,11 @@ export let filterArray = [
         isCheckboxgroup: true,
         value: [
             {
-                name: 'Dispatched',
+                name: 'Tildelt',
                 label: 'Tildelt'
             },
             {
-                name: 'Completed',
+                name: 'Dekket',
                 label: 'Dekket'
             }
         ]
@@ -70,23 +70,23 @@ export let filterArray = [
         showMarkAllCheckbox: true,
         value: [
             {
-                name: 'Private',
+                name: 'Dagligliv',
                 label: 'Dagligliv'
             },
             {
-                name: 'Work',
+                name: 'Arbeidsliv',
                 label: 'Arbeidsliv'
             },
             {
-                name: 'Health Services',
+                name: 'Helsetjenester',
                 label: 'Helsetjenester'
             },
             {
-                name: 'Education',
+                name: 'Utdanning',
                 label: 'Utdanning'
             },
             {
-                name: 'Interpreter at Work',
+                name: 'Tolk på arbeidsplass - TPA',
                 label: 'Tolk på arbeidsplass - TPA'
             }
         ]

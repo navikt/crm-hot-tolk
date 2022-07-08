@@ -3,9 +3,8 @@
         <div if:true={isDetails}>
             <div class="record-details-container">
                 <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
-                <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
-                <p>Bestilt starttid: <span>{serviceAppointment.EarliestStartTime}</span></p>
-                <p>Bestilt sluttid: <span>{serviceAppointment.DueDate}</span></p>
+                <p>Tema: <span>{serviceAppointment.Subject}</span></p>
+                <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
                 <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
                 <p>faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
                 <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
@@ -21,7 +20,7 @@
             </div>
         </div>
         <div if:false={noServiceAppointments}>
-            <c-table if:true={showTable} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
+            <c-table if:false={isDetails} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
             <br />
