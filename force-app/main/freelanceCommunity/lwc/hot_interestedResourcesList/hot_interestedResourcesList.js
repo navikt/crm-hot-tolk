@@ -2,7 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
-import { columns, mobileColumns } from './columns';
+import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
 import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
@@ -11,6 +11,7 @@ import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.
 export default class Hot_interestedResourcesList extends LightningElement {
     @track columns = [];
     @track filters = [];
+    @track iconByValue = iconByValue;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -24,6 +25,10 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
     sendRecords() {
         const eventToSend = new CustomEvent('sendrecords', { detail: this.initialInterestedResources });
+        this.dispatchEvent(eventToSend);
+    }
+    sendDetail() {
+        const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
         this.dispatchEvent(eventToSend);
     }
 
@@ -108,21 +113,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
                 this.interestedResource = interestedResource;
             }
         }
-        this.isSeries = this.interestedResource.ServiceAppointment__r.HOT_IsSerieoppdrag__c;
-        this.showTable = (this.isSeries && this.urlStateParameterId !== '') || this.urlStateParameterId === '';
-        if (this.isSeries) {
-            let tempRecords = [];
-            for (let record of this.records) {
-                if (
-                    record.ServiceAppointment__r.HOT_RequestNumber__c ==
-                    this.interestedResource.ServiceAppointment__r.HOT_RequestNumber__c
-                ) {
-                    tempRecords.push(record);
-                }
-            }
-            this.records = [...tempRecords];
-        }
+        this.fixComments();
         this.updateURL();
+        this.sendDetail();
         if (this.interestedResource.IsNewComment__c) {
             readComment({ interestedResourceId: this.interestedResource.Id });
         }
@@ -142,7 +135,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.urlStateParameterId = '';
         this.isDetails = false;
         this.showTable = true;
-        this.records = [...this.initialInterestedResources];
+        this.sendDetail();
         return { id: recordIdToReturn, tab: 'interested' };
     }
 
@@ -176,5 +169,15 @@ export default class Hot_interestedResourcesList extends LightningElement {
             this.records = filteredRecords;
         }
         return this.filteredRecordsLength;
+    }
+
+    @track prevComments = '';
+    fixComments() {
+        if (this.interestedResource.Comments__c != undefined) {
+            this.prevComments = this.interestedResource.Comments__c.split('\n\n');
+        } else {
+            this.prevComments = '';
+        }
+        console.log(this.prevComments);
     }
 }

@@ -20,7 +20,10 @@
                     <br />
                     <div>
                         <h2 class="typo-undertittel ikke-sensitive-opplysninger__label">Dialog med formidler</h2>
-                        <p>{interestedResource.Comments__c}</p>
+                        <template iterator:it={prevComments}>
+                            <p class="typo-normal" key={it.value}>{it.value}</p>
+                            <p style="color: transparent" key={it.value}>.</p>
+                        </template>
                     </div>
                     <lightning-textarea
                         label="Legg til ny kommentar"
@@ -41,7 +44,13 @@
             </section>
         </div>
         <div if:false={noInterestedResources}>
-            <c-table if:true={showTable} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
+            <c-table
+                if:false={isDetails}
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                icon-by-value={iconByValue}
+            ></c-table>
         </div>
         <div if:true={noInterestedResources} style="text-align: center">
             <br />

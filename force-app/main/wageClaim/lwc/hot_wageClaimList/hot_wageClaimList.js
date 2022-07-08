@@ -31,8 +31,10 @@ export default class Hot_wageClaimList extends LightningElement {
             let tempRecords = [];
             for (let record of result.data) {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+                console.log(tempRecords[tempRecords.length - 1].StartAndEndDate);
             }
             this.wageClaims = tempRecords;
+            this.allWageClaimsWired = this.wageClaims;
             this.refresh();
         } else if (result.error) {
             this.error = result.error;
@@ -66,6 +68,7 @@ export default class Hot_wageClaimList extends LightningElement {
             }
         }
         this.updateURL();
+        this.sendDetail();
     }
 
     @track urlStateParameterId = '';
@@ -81,6 +84,7 @@ export default class Hot_wageClaimList extends LightningElement {
         let recordIdToReturn = this.urlStateParameterId;
         this.urlStateParameterId = '';
         this.isWageClaimDetails = false;
+        this.sendDetail();
         return { id: recordIdToReturn, tab: 'wageClaim' };
     }
 
@@ -105,6 +109,10 @@ export default class Hot_wageClaimList extends LightningElement {
     }
     sendRecords() {
         const eventToSend = new CustomEvent('sendrecords', { detail: this.allWageClaimsWired });
+        this.dispatchEvent(eventToSend);
+    }
+    sendDetail() {
+        const eventToSend = new CustomEvent('senddetail', { detail: this.isWageClaimDetails });
         this.dispatchEvent(eventToSend);
     }
     filteredRecordsLength = 0;

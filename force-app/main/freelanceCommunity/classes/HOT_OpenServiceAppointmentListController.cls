@@ -34,7 +34,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         List<ServiceAppointment> serviceAppointments = [
             SELECT
                 Id,
-                AppointmentNumber,
+                HOT_ServiceAppointmentNumber__c,
                 ServiceTerritoryId,
                 EarliestStartTime,
                 DueDate,

@@ -23,6 +23,12 @@ export let columns = [
         label: 'Status',
         name: 'Status__c',
         type: 'String'
+    },
+    {
+        name: 'IsNewComment__c',
+        label: '',
+        type: 'String',
+        svg: true
     }
 ];
 
@@ -43,3 +49,15 @@ export let mobileColumns = [
         type: 'String'
     }
 ];
+
+export let iconByValue = {
+    true: {
+        icon: 'Information',
+        fill: '',
+        ariaLabel: 'Ny melding'
+    },
+    false: {
+        icon: '',
+        fill: ''
+    }
+};

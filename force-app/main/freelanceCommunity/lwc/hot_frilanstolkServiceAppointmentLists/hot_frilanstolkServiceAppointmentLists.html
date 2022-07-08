@@ -18,7 +18,7 @@
                 ongetfilteredrecordslength={sendFilteredRecordsLength}
             ></c-list-filters-button>
         </div>
-        <div class="tabset desktop-only">
+        <div if:false={isDetails} class="tabset desktop-only">
             <template for:each={tabs} for:item="tab">
                 <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
                     {tab.label}
@@ -34,6 +34,7 @@
                     data-name="open"
                     onsendfilters={handleFilters}
                     onsendrecords={handleRecords}
+                    onsenddetail={handleDetails}
                 >
                 </c-hot_open-service-appointments>
             </div>
@@ -42,6 +43,7 @@
                     data-name="interested"
                     onsendfilters={handleFilters}
                     onsendrecords={handleRecords}
+                    onsenddetail={handleDetails}
                 >
                 </c-hot_interested-resources-list>
             </div>
@@ -50,6 +52,7 @@
                     data-name="my"
                     onsendfilters={handleFilters}
                     onsendrecords={handleRecords}
+                    onsenddetail={handleDetails}
                 >
                 </c-hot_my-service-appointments>
             </div>
@@ -58,6 +61,7 @@
                     data-name="wageClaim"
                     onsendfilters={handleFilters}
                     onsendrecords={handleRecords}
+                    onsenddetail={handleDetails}
                 >
                 </c-hot_wage-claim-list>
             </div>

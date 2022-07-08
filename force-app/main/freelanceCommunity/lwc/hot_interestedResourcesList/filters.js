@@ -6,31 +6,31 @@ export let filterArray = [
         showMarkAllCheckbox: true,
         value: [
             {
-                name: 'Interested',
+                name: 'Påmeldt',
                 label: 'Påmeldt'
             },
             {
-                name: 'Assigned',
+                name: 'Tildelt',
                 label: 'Tildelt'
             },
             {
-                name: 'Not Assigned',
+                name: 'Ikke tildelt deg',
                 label: 'Ikke tildelt deg'
             },
             {
-                name: 'Retracted Interest',
+                name: 'Tilbaketrukket påmelding',
                 label: 'Tilbaketrukket påmelding'
             },
             {
-                name: 'Canceled',
+                name: 'Avlyst',
                 label: 'Avlyst'
             },
             {
-                name: 'Service Appointment Retracted',
+                name: 'Oppdrag tilbaketrukket',
                 label: 'Oppdrag tilbaketrukket'
             },
             {
-                name: 'Canceled by Interpreter',
+                name: 'Avlyst av tolk',
                 label: 'Avlyst av tolk'
             }
         ]
@@ -91,23 +91,23 @@ export let filterArray = [
         showMarkAllCheckbox: true,
         value: [
             {
-                name: 'Private',
+                name: 'Dagligliv',
                 label: 'Dagligliv'
             },
             {
-                name: 'Work',
+                name: 'Arbeidsliv',
                 label: 'Arbeidsliv'
             },
             {
-                name: 'Health Services',
+                name: 'Helsetjenester',
                 label: 'Helsetjenester'
             },
             {
-                name: 'Education',
+                name: 'Utdanning',
                 label: 'Utdanning'
             },
             {
-                name: 'Interpreter at Work',
+                name: 'Tolk på arbeidsplass - TPA',
                 label: 'Tolk på arbeidsplass - TPA'
             }
         ]

@@ -2,13 +2,13 @@
     <div class="main-content">
         <div if:true={isDetails}>
             <div class="record-details-container">
-                <p>Oppdragsnummer: <span>{serviceAppointment.Appointmentnumber}</span></p>
+                <p>Oppdragsnummer: <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span></p>
                 <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
                 <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
                 <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
                 <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                 <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
-                <p>Frigitt dato: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
+                <p>Frigitt dato: <span>{serviceAppointment.HOT_ReleaseDate__c}</span></p>
                 <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
                 <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
                 <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
@@ -16,7 +16,7 @@
             </div>
         </div>
         <c-button
-            if:true={showTable}
+            if:false={isDetails}
             button-styling="primary"
             button-label="Meld interesse"
             aria-label="Meld interesse"
@@ -27,7 +27,7 @@
         </c-button>
         <div if:false={noServiceAppointments}>
             <c-table
-                if:true={showTable}
+                if:false={isDetails}
                 records={records}
                 columns={columns}
                 onrowclick={goToRecordDetails}
@@ -63,7 +63,25 @@
                             object-api-name="HOT_InterestedResource__c"
                             density="comfy"
                         >
-                            <c-hot_record-details record={it.value}></c-hot_record-details>
+                            <div class="record-details-container">
+                                <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
+                                <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
+                                <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
+                                <p>
+                                    Antall påmeldte:
+                                    <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span>
+                                </p>
+                                <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                                <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
+                                <p>Frigitt dato: <span>{serviceAppointment.HOT_ReleaseDate__c}</span></p>
+                                <p>
+                                    Antall påmeldte:
+                                    <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span>
+                                </p>
+                                <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                                <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+                                <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
+                            </div>
                             <lightning-input-field
                                 class="ikke-sensitive-opplysninger comment-field"
                                 field-name="Comments__c"
