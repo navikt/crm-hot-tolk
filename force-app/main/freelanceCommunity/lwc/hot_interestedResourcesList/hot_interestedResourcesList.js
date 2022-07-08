@@ -1,5 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
+import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterest';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
 import { columns, mobileColumns, iconByValue } from './columns';
@@ -178,6 +179,10 @@ export default class Hot_interestedResourcesList extends LightningElement {
         } else {
             this.prevComments = '';
         }
-        console.log(this.prevComments);
+    }
+    retractInterest() {
+        retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
+            refreshApex(this.wiredInterestedResourcesResult);
+        });
     }
 }
