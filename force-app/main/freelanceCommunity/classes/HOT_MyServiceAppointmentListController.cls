@@ -64,7 +64,12 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_DelPol_ToHideRecord__c,
                 HOT_Dispatcher__c,
                 HOT_RequestNumber__c,
-                HOT_IsSerieoppdrag__c
+                HOT_IsSerieoppdrag__c,
+                (
+                    SELECT Id, HOT_TermsOfAgreement__c
+                    FROM ServiceAppointment.InterestedResources__r
+                    WHERE ServiceResource__c = :serviceResource.Id
+                )
             FROM ServiceAppointment
             WHERE
                 Id IN :serviceAppointmentIds

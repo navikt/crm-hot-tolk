@@ -2,7 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
-import { columns, mobileColumns } from './columns';
+import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
 import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
@@ -11,6 +11,7 @@ import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.
 export default class Hot_interestedResourcesList extends LightningElement {
     @track columns = [];
     @track filters = [];
+    @track iconByValue = iconByValue;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;

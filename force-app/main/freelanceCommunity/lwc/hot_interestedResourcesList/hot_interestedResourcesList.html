@@ -41,7 +41,13 @@
             </section>
         </div>
         <div if:false={noInterestedResources}>
-            <c-table if:false={isDetails} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
+            <c-table
+                if:false={isDetails}
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                icon-by-value={iconByValue}
+            ></c-table>
         </div>
         <div if:true={noInterestedResources} style="text-align: center">
             <br />

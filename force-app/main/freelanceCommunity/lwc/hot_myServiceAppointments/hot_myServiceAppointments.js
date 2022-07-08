@@ -91,6 +91,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     ];
 
     @track serviceAppointment;
+    @track interestedResource;
     isDetails = false;
     isSeries = false;
     showTable = true;
@@ -102,6 +103,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
+                this.interestedResource = serviceAppointment.InterestedResources__r[0];
             }
         }
         this.updateURL();

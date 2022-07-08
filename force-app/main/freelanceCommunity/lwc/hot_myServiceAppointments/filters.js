@@ -1,6 +1,6 @@
 export let filterArray = [
     {
-        name: 'HOT_ExternalWorkOrderStatus__c',
+        name: 'Status',
         label: 'Status',
         isCheckboxgroup: true,
         value: [

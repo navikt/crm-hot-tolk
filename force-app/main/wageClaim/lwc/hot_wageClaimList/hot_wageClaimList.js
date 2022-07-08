@@ -112,7 +112,7 @@ export default class Hot_wageClaimList extends LightningElement {
         this.dispatchEvent(eventToSend);
     }
     sendDetail() {
-        const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
+        const eventToSend = new CustomEvent('senddetail', { detail: this.isWageClaimDetails });
         this.dispatchEvent(eventToSend);
     }
     filteredRecordsLength = 0;
