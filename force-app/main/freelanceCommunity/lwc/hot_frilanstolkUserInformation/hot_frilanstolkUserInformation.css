@@ -40,15 +40,16 @@
 .form-wrapper {
     width: 100%;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .form-section {
     margin: 0 1rem;
 }
 
 .button-class {
-    text-align: center; 
+    text-align: center;
     margin-top: 1.5rem;
 }
 
