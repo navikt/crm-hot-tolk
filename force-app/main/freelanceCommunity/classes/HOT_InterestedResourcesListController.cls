@@ -41,6 +41,18 @@ public without sharing class HOT_InterestedResourcesListController {
     }
 
     @AuraEnabled
+    public static void retractInterest(String interestedResourceId) {
+        HOT_InterestedResource__c interestedResources = [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :interestedResourceId
+        ];
+        if (interestedResources.Status__c == 'Interested') {
+            interestedResources.Status__c = 'Retracted Interest';
+        }
+        update interestedResources;
+    }
+    @AuraEnabled
     public static void retractInterests(List<String> retractionIds) {
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT Id, Status__c
