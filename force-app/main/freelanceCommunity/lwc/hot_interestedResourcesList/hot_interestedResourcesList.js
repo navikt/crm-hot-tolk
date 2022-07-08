@@ -113,6 +113,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
                 this.interestedResource = interestedResource;
             }
         }
+        this.fixComments();
         this.updateURL();
         this.sendDetail();
         if (this.interestedResource.IsNewComment__c) {
@@ -168,5 +169,15 @@ export default class Hot_interestedResourcesList extends LightningElement {
             this.records = filteredRecords;
         }
         return this.filteredRecordsLength;
+    }
+
+    @track prevComments = '';
+    fixComments() {
+        if (this.interestedResource.Comments__c != undefined) {
+            this.prevComments = this.interestedResource.Comments__c.split('\n\n');
+        } else {
+            this.prevComments = '';
+        }
+        console.log(this.prevComments);
     }
 }
