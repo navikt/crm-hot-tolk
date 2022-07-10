@@ -15,14 +15,13 @@
                 <p>Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span></p>
                 <p>Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span></p>
             </div>
-            <lightning-button
-                onclick={retractInterest}
-                class="slds-m-left_x-small"
-                variant="brand"
-                type="submit"
-                label="Tilbaketrekk interesse"
+            <c-button
+                onbuttonclick={retractInterest}
+                button-styling="Secondary"
+                type="Submit"
+                button-label="Tilbaketrekk interesse"
             >
-            </lightning-button>
+            </c-button>
             <section style="margin-bottom: 2rem">
                 <div style="padding: 1rem">
                     <br />

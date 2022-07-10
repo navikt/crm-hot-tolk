@@ -21,6 +21,15 @@
                 </p>
                 <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
                 <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
+                <div class="files-container">
+                    <c-record-files-with-sharing
+                        record-id={serviceAppointment.Id}
+                        is-get-all="true"
+                        is-delete-option="false"
+                        title="Vedlegg"
+                        delete-file-on-button-click="false"
+                    ></c-record-files-with-sharing>
+                </div>
             </div>
         </div>
         <div if:false={noServiceAppointments}>

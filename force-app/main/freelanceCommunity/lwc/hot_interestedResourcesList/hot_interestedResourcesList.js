@@ -183,6 +183,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     retractInterest() {
         retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
             refreshApex(this.wiredInterestedResourcesResult);
+            this.interestedResource.Status__c = 'Tilbaketrukket påmelding';
         });
     }
 }
