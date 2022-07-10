@@ -21,6 +21,9 @@ p {
 span {
     font-weight: normal;
 }
+.files-container {
+    margin-top: 1rem;
+}
 
 @media (max-width: 576px) {
     .record-details-container {
