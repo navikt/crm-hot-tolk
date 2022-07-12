@@ -167,12 +167,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 .getCheckedRows()
                 .forEach((row) => {
                     this.checkedServiceAppointments.push(row);
-                    this.serviceAppointmentCommentDetails.push(
-                        formatRecordDetails(
-                            this.getRecord(row),
-                            openServiceAppointmentFieldLabels.getSubFields('comment')
-                        )
-                    );
+                    this.serviceAppointmentCommentDetails.push(this.getRecord(row));
                 });
         } catch (error) {
             console.log(error);
