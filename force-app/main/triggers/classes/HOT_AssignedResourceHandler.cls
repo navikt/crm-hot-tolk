@@ -211,7 +211,9 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     EarliestStartTime,
                     DueDate,
                     SchedStartTime,
-                    SchedEndTime
+                    SchedEndTime,
+                    Subject,
+                    HOT_FreelanceSubject__c
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
@@ -240,6 +242,12 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 currentServiceAppointment.HOT_IsReleasedToFreelance__c = currentServiceResource
                     .HOT_IsFreelanceInterpreter__c;
                 serviceAppointmentsToUpdate.put(assignedResource.ServiceAppointmentId, currentServiceAppointment);
+            }
+            if (
+                currentServiceAppointment.HOT_IsReleasedToFreelance__c == true &&
+                currentServiceAppointment.HOT_FreelanceSubject__c == null
+            ) {
+                currentServiceAppointment.HOT_FreelanceSubject__c = currentServiceAppointment.Subject;
             }
             // Set ServiceTerritory
             if (currentServiceAppointment.ServiceTerritoryId != currentServiceResource.HOT_ServiceTerritory__c) {
