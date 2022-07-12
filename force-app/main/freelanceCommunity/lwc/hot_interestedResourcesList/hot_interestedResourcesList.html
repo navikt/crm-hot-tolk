@@ -16,6 +16,7 @@
                 <p>Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span></p>
             </div>
             <c-button
+                disabled={isNotRetractable}
                 onbuttonclick={retractInterest}
                 button-styling="Secondary"
                 type="Submit"

@@ -114,6 +114,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
                 this.interestedResource = interestedResource;
             }
         }
+        this.isNotRetractable = this.interestedResource.Status__c !== 'Påmeldt';
         this.fixComments();
         this.updateURL();
         this.sendDetail();
@@ -180,6 +181,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
             this.prevComments = '';
         }
     }
+    isNotRetractable = false;
     retractInterest() {
         retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
             refreshApex(this.wiredInterestedResourcesResult);
