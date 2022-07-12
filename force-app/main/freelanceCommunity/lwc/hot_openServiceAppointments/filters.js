@@ -131,6 +131,17 @@ export let filterArray = [
                 label: 'Øst-Viken'
             }
         ]
+    },
+    {
+        name: 'ReleaseDate',
+        label: 'Frigitt fra og med',
+        isDateInterval: true,
+        value: [
+            {
+                name: 'HOT_ReleaseDate__c',
+                label: 'Fra og med'
+            }
+        ]
     }
 ];
 export function setDefaultFilters(regions) {
@@ -181,14 +192,13 @@ function dateBetween(filter, record) {
     if (startVal.value !== undefined && startVal.value !== false) {
         let recordStartDate = new Date(record[startVal.name]);
         let startDate = new Date(startVal.value);
-
         startDate.setHours(0);
         startDate.setMinutes(0);
         if (recordStartDate < startDate) {
             return false;
         }
     }
-    if (endVal.value !== undefined && endVal.value !== false) {
+    if (endVal?.value !== undefined && endVal?.value !== false) {
         let recordEndDate = new Date(record[endVal.name]);
         recordEndDate.setHours(0);
         recordEndDate.setMinutes(0);
