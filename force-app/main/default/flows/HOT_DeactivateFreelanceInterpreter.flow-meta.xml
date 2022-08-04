@@ -121,7 +121,7 @@
             <name>HasPermission</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Permission.HOT_DeactivateFreelanceInterpreter</leftValueReference>
+                <leftValueReference>$Permission.DeactivateFreelanceInterpreter</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
