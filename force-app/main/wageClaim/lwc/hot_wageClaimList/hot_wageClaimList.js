@@ -31,7 +31,6 @@ export default class Hot_wageClaimList extends LightningElement {
             let tempRecords = [];
             for (let record of result.data) {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
-                console.log(tempRecords[tempRecords.length - 1].StartAndEndDate);
             }
             this.wageClaims = tempRecords;
             this.allWageClaimsWired = this.wageClaims;

@@ -23,6 +23,8 @@
             onbuttonclick={sendInterest}
             desktop-style="width: 12rem; justify-content: center; margin-bottom: 1rem;"
             mobile-style="width: 12rem; justify-content: center; margin-bottom: 1rem;"
+            title="Huk av sjekkboks i listen over oppdrag for å melde interesse"
+            disabled={sendInterestedButtonDisabled}
         >
         </c-button>
         <div if:false={noServiceAppointments}>
@@ -33,6 +35,7 @@
                 onrowclick={goToRecordDetails}
                 checkbox="true"
                 checked-rows={checkedServiceAppointments}
+                onamountofcheckedrows={setSendInterestedButtonState}
             ></c-table>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
@@ -53,7 +56,7 @@
             aria-labelledby="comment-header-id"
         >
             <section>
-                <div>
+                <div class="comment-details">
                     <h2 id="comment-header-id" class="typo-undertittel">Legg til kommentarer til oppdragene</h2>
 
                     <template iterator:it={serviceAppointmentCommentDetails}>
@@ -89,16 +92,56 @@
                             </lightning-input-field>
                         </lightning-record-edit-form>
                     </template>
-
-                    <lightning-button
-                        class="slds-m-left_x-small"
-                        variant="brand"
-                        type="submit"
-                        label="Send inn"
-                        onclick={registerInterest}
-                    >
-                    </lightning-button>
                 </div>
+                <div class="submit">
+                    <div class="submitted-true hidden">
+                        <lightning-icon
+                            icon-name="utility:success"
+                            alternative-text="Suksess"
+                            title="Suksess"
+                            variant="success"
+                            size="large"
+                        >
+                        </lightning-icon>
+                        <br />
+                        <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1" role="alert" aria-live="polite">
+                            Interesse er meldt.
+                        </h2>
+                        <br/>
+                        <c-button
+                            button-styling="primary"
+                            button-label="OK"
+                            onbuttonclick={closeModal}
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center"
+                        ></c-button>
+                    </div>
+                    <div class="submitted-loading hidden">
+                            <h2 class="typo-undertittel h2-loadingMessage" id="loadingMessage" tabindex="-1" role="alert" aria-live="polite">
+                                Melder interesse...
+                            </h2>
+                            <br/>
+                            <div if:true={spin} class="loader"></div>
+                            <br />
+                    </div>
+                    <div class="submitted-error hidden">
+                        <h2 class="typo-undertittel h2-loadingMessage" id="errorMessage" tabindex="-1" role="alert" aria-live="polite">
+                            Noe gikk galt under melding av interesse.
+                        </h2>
+                        <br/>
+                        <h3>Feilmelding: {errorMessage}</h3>
+                        <br />
+                    </div>
+                </div>
+                    <c-button
+                        class="send-inn-button"
+                        button-styling="primary"
+                        button-label="Send inn"
+                        type="submit"
+                        onbuttonclick={registerInterest}
+                        desktop-style="width: 8rem; justify-content: center"
+                        mobile-style="width: 8rem; justify-content: center"
+                    ></c-button>
             </section>
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
                 <span class="text-hide">Lukk</span>
