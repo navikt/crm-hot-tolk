@@ -6,7 +6,7 @@
                 <p>Tema: <span>{serviceAppointment.Subject}</span></p>
                 <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
                 <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
-                <p>faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
+                <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
                 <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
                 <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
                 <p>Status: <span>{serviceAppointment.Status}</span></p>
@@ -14,7 +14,9 @@
                 <p if:true={serviceAppointment.HOT_Escort__c}>
                     Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
                 </p>
-                <p>Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span></p>
+                <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                    Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
+                </p>
                 <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                 <p if:true={interestedResource}>
                     Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>

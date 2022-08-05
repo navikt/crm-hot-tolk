@@ -18,6 +18,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     disconnectedCallback() {
+        // Going back with browser back or back button on mouse forces page refresh and a disconnect
         // Save filters on disconnect to exist only within the current browser tab
         sessionStorage.setItem('filters', JSON.stringify(this.filters))
     }
@@ -175,13 +176,16 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 this.spin = false;
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
+                this.template.querySelector('c-table').unsetCheckboxes();
+                this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
+                refreshApex(this.wiredAllServiceAppointmentsResult);
             }).catch((error) => {
                 this.spin = false;
+                this.sendInterestedButtonDisabled = false;
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-error').classList.remove('hidden');
                 this.errorMessage = error;
             });
-            refreshApex(this.wiredAllServiceAppointmentsResult);
         }
     }
 
@@ -190,6 +194,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.template.querySelector('.send-inn-button').classList.remove('hidden');
     }
 
+    // Set button state when checkbox clicked
     setSendInterestedButtonState(event) {
         this.sendInterestedButtonDisabled = event.detail > 0 ? false : true;
     }
