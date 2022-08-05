@@ -178,7 +178,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
                 this.template.querySelector('c-table').unsetCheckboxes();
                 this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
-                refreshApex(this.wiredAllServiceAppointmentsResult);
+                let currentFilters = this.filters;
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
+                    // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
+                    // Apply previous filter
+                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true }});
+                });
             }).catch((error) => {
                 this.spin = false;
                 this.sendInterestedButtonDisabled = false;
