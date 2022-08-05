@@ -27,6 +27,24 @@ export default class Hot_myServiceAppointments extends LightningElement {
         const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
         this.dispatchEvent(eventToSend);
     }
+    
+    setPreviousFiltersOnRefresh() {
+        if (sessionStorage.getItem('myfilters')) {
+            this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('myfilters')), setRecords: true }});
+            sessionStorage.clear();
+        }
+        this.sendFilters();
+    }
+
+    disconnectedCallback() {
+        // Going back with browser back or back button on mouse forces page refresh and a disconnect
+        // Save filters on disconnect to exist only within the current browser tab
+        sessionStorage.setItem('myfilters', JSON.stringify(this.filters))
+    }
+
+    renderedCallback() {
+        this.setPreviousFiltersOnRefresh();
+    }
 
     @track filters = [];
     connectedCallback() {

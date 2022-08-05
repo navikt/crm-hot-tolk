@@ -48,6 +48,24 @@ export default class Hot_wageClaimList extends LightningElement {
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
+    setPreviousFiltersOnRefresh() {
+        if (sessionStorage.getItem('wageclaimfilters')) {
+            this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('wageclaimfilters')), setRecords: true }});
+            sessionStorage.clear();
+        }
+        this.sendFilters();
+    }
+
+    disconnectedCallback() {
+        // Going back with browser back or back button on mouse forces page refresh and a disconnect
+        // Save filters on disconnect to exist only within the current browser tab
+        sessionStorage.setItem('wageclaimfilters', JSON.stringify(this.filters))
+    }
+
+    renderedCallback() {
+        this.setPreviousFiltersOnRefresh();
+    }
+
     datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
     connectedCallback() {
         this.setColumns();

@@ -17,12 +17,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    disconnectedCallback() {
-        // Going back with browser back or back button on mouse forces page refresh and a disconnect
-        // Save filters on disconnect to exist only within the current browser tab
-        sessionStorage.setItem('filters', JSON.stringify(this.filters))
-    }
-
     sendFilters() {
         const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
         this.dispatchEvent(eventToSend);
@@ -37,11 +31,17 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     setPreviousFiltersOnRefresh() {
-        if (sessionStorage.getItem('filters')) {
-            this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('filters')), setRecords: true }});
+        if (sessionStorage.getItem('openfilters')) {
+            this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('openfilters')), setRecords: true }});
             sessionStorage.clear();
         }
         this.sendFilters();
+    }
+
+    disconnectedCallback() {
+        // Going back with browser back or back button on mouse forces page refresh and a disconnect
+        // Save filters on disconnect to exist only within the current browser tab
+        sessionStorage.setItem('openfilters', JSON.stringify(this.filters))
     }
 
     renderedCallback() {
