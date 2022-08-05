@@ -44,7 +44,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     disconnectedCallback() {
         // Going back with browser back or back button on mouse forces page refresh and a disconnect
         // Save filters on disconnect to exist only within the current browser tab
-        sessionStorage.setItem('interestedfilters', JSON.stringify(this.filters))
+        sessionStorage.setItem('interestedfilters', JSON.stringify(this.filters));
     }
 
     renderedCallback() {
