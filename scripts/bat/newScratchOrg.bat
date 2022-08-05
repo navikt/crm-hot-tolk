@@ -11,7 +11,7 @@ echo "Installerer crm-platform-access-control ver. 0.101"
 call sfdx force:package:install --package 04t7U000000TpqbQAC -r -k %3 --wait 10 --publishwait 10
 
 echo "Installerer crm-community-base ver. 0.69"
-call sfdx force:package:install --package 04t7U000000Tq9TQAS -r -k %3 --wait 10 --publishwait 10
+call sfdx force:package:install --package 04t7U000000TqARQA0 -r -k %3 --wait 10 --publishwait 10
 
 echo "Installerer crm-platform-reporting ver. 0.25"
 call sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k %3 --wait 10 --publishwait 10
