@@ -33,7 +33,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('openfilters')) {
             this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('openfilters')), setRecords: true }});
-            sessionStorage.clear();
+            sessionStorage.removeItem('openfilters');
         }
         this.sendFilters();
     }
@@ -115,7 +115,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
         { name: 'HOT_DeadlineDate__c', type: 'date' },
-        { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
+        { name: 'HOT_ReleaseDate__c', type: 'date' }
     ];
 
     @track serviceAppointment;

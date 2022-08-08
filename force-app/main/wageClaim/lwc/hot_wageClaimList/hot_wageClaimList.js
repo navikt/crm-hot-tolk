@@ -51,7 +51,7 @@ export default class Hot_wageClaimList extends LightningElement {
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('wageclaimfilters')) {
             this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('wageclaimfilters')), setRecords: true }});
-            sessionStorage.clear();
+            sessionStorage.removeItem('wageclaimfilters');
         }
         this.sendFilters();
     }
