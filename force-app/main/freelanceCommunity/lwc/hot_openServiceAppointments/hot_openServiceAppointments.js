@@ -164,6 +164,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         return { id: recordIdToReturn, tab: 'open' };
     }
 
+    sendInterestAllComplete = false;
     errorMessage = '';
     spin = false;
     @track checkedServiceAppointments = [];
@@ -197,6 +198,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.template.querySelector('c-table').unsetCheckboxes();
             this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
             let currentFilters = this.filters;
+            if (this.sendInterestAll) {
+                this.sendInterestAllComplete = true;
+                return; // If series -> refresh after closeModal() to avoid showing weird data behind popup
+            }
             refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
                 // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
                 // Apply previous filter
@@ -245,10 +250,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     sendInterestAll = false;
     sendInterestSeries() {
-        this.serviceAppointmentCommentDetails = [];
-        this.sendInterestAll = true;
         this.hideSubmitIndicators();
         this.showCommentSection();
+        this.serviceAppointmentCommentDetails = [];
+        this.sendInterestAll = true;
         this.serviceAppointmentCommentDetails.push(...this.seriesRecords);
         this.showCommentPage();
     }
@@ -266,7 +271,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     closeModal() {
         if (this.sendInterestAll) {
-            this.goBack();
+            refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
+                // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
+                // Apply previous filter
+                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true }});
+            });
+            if (this.sendInterestAllComplete) {
+                this.goBack();
+            }
+            this.sendInterestAllComplete = false;
             this.sendInterestAll = false;
         }
         this.template.querySelector('.commentPage').classList.add('hidden');
