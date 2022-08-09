@@ -164,7 +164,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         return { id: recordIdToReturn, tab: 'open' };
     }
 
-    sendInterestAllComplete = false;
     errorMessage = '';
     spin = false;
     @track checkedServiceAppointments = [];
@@ -248,6 +247,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.showCommentPage();
     }
 
+    sendInterestAllComplete = false;
     sendInterestAll = false;
     sendInterestSeries() {
         this.hideSubmitIndicators();
