@@ -31,7 +31,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('myfilters')) {
             this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('myfilters')), setRecords: true }});
-            sessionStorage.clear();
+            sessionStorage.removeItem('myfilters');
         }
         this.sendFilters();
     }

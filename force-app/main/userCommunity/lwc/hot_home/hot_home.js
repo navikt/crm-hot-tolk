@@ -28,6 +28,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
 
     @track pageLinks = {};
     connectedCallback() {
+        sessionStorage.clear(); // Clear session storage when on home
         window.scrollTo(0, 0);
         let baseURLArray = window.location.pathname.split('/');
         baseURLArray.pop();

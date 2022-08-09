@@ -36,7 +36,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('interestedfilters')) {
             this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('interestedfilters')), setRecords: true }});
-            sessionStorage.clear();
+            sessionStorage.removeItem('interestedfilters');
         }
         this.sendFilters();
     }
