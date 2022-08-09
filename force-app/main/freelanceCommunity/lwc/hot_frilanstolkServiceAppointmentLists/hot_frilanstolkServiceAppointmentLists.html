@@ -11,7 +11,7 @@
             </a>
             <h2 class="header" tabindex="-1" autofocus>Oppdrag</h2>
             <c-list-filters-button
-                if:false={isServiceAppointmentDetails}
+                if:false={isDetails}
                 header="Filtrer søket"
                 filters={filters}
                 onapplyfilter={applyFilter}
@@ -28,6 +28,7 @@
         <div class="tabset mobile-only">
             <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
         </div>
+        <br if:false={isDetails}/>
         <div class="tab-content-wrapper">
             <div if:true={tabMap.open} class="tab-content">
                 <c-hot_open-service-appointments

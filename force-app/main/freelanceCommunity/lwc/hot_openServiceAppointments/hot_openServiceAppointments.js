@@ -121,18 +121,27 @@ export default class Hot_openServiceAppointments extends LightningElement {
     @track serviceAppointment;
     isDetails = false;
     isSeries = false;
+    seriesRecords = [];
     showTable = true;
     goToRecordDetails(result) {
-        this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
         window.scrollTo(0, 0);
+        this.seriesRecords = [];
+        this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
         let recordId = result.detail.Id;
         this.urlStateParameterId = recordId;
         this.isDetails = this.urlStateParameterId !== '';
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
+                this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
             }
         }
+        for (let serviceAppointment of this.records) {
+            if (this.serviceAppointment.HOT_Request__c === serviceAppointment.HOT_Request__c) {
+                this.seriesRecords.push(serviceAppointment);
+            }
+        }
+        this.isSeries = this.seriesRecords.length <= 1 ? false : true;
         this.updateURL();
         this.sendDetail();
     }
@@ -159,44 +168,48 @@ export default class Hot_openServiceAppointments extends LightningElement {
     spin = false;
     @track checkedServiceAppointments = [];
     registerInterest() {
-        this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
-        if (this.checkedServiceAppointments.length > 0) {
-            let comments = [];
-            this.template.querySelectorAll('.comment-field').forEach((element) => {
-                comments.push(element.value);
+        if (this.sendInterestAll) {
+            this.serviceAppointmentCommentDetails.forEach((element) => {
+                this.checkedServiceAppointments.push(element.Id);
             });
-            this.spin = true;
-            this.template.querySelector('.comment-details').classList.add('hidden');
-            this.template.querySelector('.send-inn-button').classList.add('hidden');
-            this.template.querySelector('.submitted-loading').classList.remove('hidden');
-            createInterestedResources({
-                serviceAppointmentIds: this.checkedServiceAppointments,
-                comments: comments
-            }).then(() => {
-                this.spin = false;
-                this.template.querySelector('.submitted-loading').classList.add('hidden');
-                this.template.querySelector('.submitted-true').classList.remove('hidden');
-                this.template.querySelector('c-table').unsetCheckboxes();
-                this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
-                let currentFilters = this.filters;
-                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                    // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
-                    // Apply previous filter
-                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true }});
-                });
-            }).catch((error) => {
-                this.spin = false;
-                this.sendInterestedButtonDisabled = false;
-                this.template.querySelector('.submitted-loading').classList.add('hidden');
-                this.template.querySelector('.submitted-error').classList.remove('hidden');
-                this.errorMessage = error;
-            });
+        } else {
+            this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
         }
-    }
-
-    showCommentSection() {
-        this.template.querySelector('.comment-details').classList.remove('hidden');
-        this.template.querySelector('.send-inn-button').classList.remove('hidden');
+        if (this.checkedServiceAppointments.length === 0) {
+            this.closeModal();
+            return;
+        }
+        let comments = [];
+        this.template.querySelectorAll('.comment-field').forEach((element) => {
+            comments.push(element.value);
+        });
+        this.spin = true;
+        this.template.querySelector('.comment-details').classList.add('hidden');
+        this.template.querySelector('.send-inn-button').classList.add('hidden');
+        this.template.querySelector('.submitted-loading').classList.remove('hidden');
+        createInterestedResources({
+            serviceAppointmentIds: this.checkedServiceAppointments,
+            comments: comments
+        }).then(() => {
+            this.spin = false;
+            this.template.querySelector('.submitted-loading').classList.add('hidden');
+            this.template.querySelector('.submitted-true').classList.remove('hidden');
+            this.template.querySelector('c-table').unsetCheckboxes();
+            this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
+            let currentFilters = this.filters;
+            refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
+                // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
+                // Apply previous filter
+                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true }});
+            });
+        }).catch((error) => {
+            this.spin = false;
+            this.sendInterestedButtonDisabled = false;
+            this.template.querySelector('.submitted-loading').classList.add('hidden');
+            this.template.querySelector('.submitted-error').classList.remove('hidden');
+            this.errorMessage = error;
+            this.sendInterestAll = false;
+        });
     }
 
     // Set button state when checkbox clicked
@@ -207,9 +220,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     sendInterestedButtonDisabled = true;
     @track serviceAppointmentCommentDetails = [];
     sendInterest() {
-        this.template.querySelector('.submitted-error').classList.add('hidden');
-        this.template.querySelector('.submitted-loading').classList.add('hidden');
-        this.template.querySelector('.submitted-true').classList.add('hidden');
+        this.hideSubmitIndicators();
         this.showCommentSection();
         this.checkedServiceAppointments = [];
         this.serviceAppointmentCommentDetails = [];
@@ -229,13 +240,41 @@ export default class Hot_openServiceAppointments extends LightningElement {
             return;
         }
         this.sendInterestedButtonDisabled = false;
-        let commentPage = this.template.querySelector('.commentPage');
-        commentPage.classList.remove('hidden');
-        commentPage.focus();
+        this.showCommentPage();
+    }
+
+    sendInterestAll = false;
+    sendInterestSeries() {
+        this.serviceAppointmentCommentDetails = [];
+        this.sendInterestAll = true;
+        this.hideSubmitIndicators();
+        this.showCommentSection();
+        this.serviceAppointmentCommentDetails.push(...this.seriesRecords);
+        this.showCommentPage();
+    }
+
+    showCommentPage() {
+        this.template.querySelector('.commentPage').classList.remove('hidden');
+        this.template.querySelector('.commentPage').focus();
+    }
+
+    hideSubmitIndicators() {
+        this.template.querySelector('.submitted-error').classList.add('hidden');
+        this.template.querySelector('.submitted-loading').classList.add('hidden');
+        this.template.querySelector('.submitted-true').classList.add('hidden');
     }
 
     closeModal() {
+        if (this.sendInterestAll) {
+            this.goBack();
+            this.sendInterestAll = false;
+        }
         this.template.querySelector('.commentPage').classList.add('hidden');
+    }
+
+    showCommentSection() {
+        this.template.querySelector('.comment-details').classList.remove('hidden');
+        this.template.querySelector('.send-inn-button').classList.remove('hidden');
     }
 
     getRecord(id) {
