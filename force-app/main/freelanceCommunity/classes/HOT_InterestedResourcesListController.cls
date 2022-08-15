@@ -29,15 +29,29 @@ public without sharing class HOT_InterestedResourcesListController {
                 AssignmentType__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
+                AppointmentServiceTerritoryDeveloperName__c,
                 WorkOrderCanceledDate__c,
                 HOT_TermsOfAgreement__c,
                 HOT_DelPol_ToHideRecord__c
             FROM HOT_InterestedResource__c
             WHERE ServiceResource__c IN :serviceResource AND HOT_DelPol_ToHideRecord__c = FALSE
+            ORDER BY ServiceAppointmentStartTime__c ASC
         ];
         return interestedResources;
     }
 
+    @AuraEnabled
+    public static void retractInterest(String interestedResourceId) {
+        HOT_InterestedResource__c interestedResources = [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :interestedResourceId
+        ];
+        if (interestedResources.Status__c == 'Interested') {
+            interestedResources.Status__c = 'Retracted Interest';
+        }
+        update interestedResources;
+    }
     @AuraEnabled
     public static void retractInterests(List<String> retractionIds) {
         List<HOT_InterestedResource__c> interestedResources = [

@@ -23,11 +23,32 @@ export default class Hot_myServiceAppointments extends LightningElement {
         const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
         this.dispatchEvent(eventToSend);
     }
+    sendDetail() {
+        const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
+        this.dispatchEvent(eventToSend);
+    }
+    
+    setPreviousFiltersOnRefresh() {
+        if (sessionStorage.getItem('myfilters')) {
+            this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('myfilters')), setRecords: true }});
+            sessionStorage.removeItem('myfilters');
+        }
+        this.sendFilters();
+    }
+
+    disconnectedCallback() {
+        // Going back with browser back or back button on mouse forces page refresh and a disconnect
+        // Save filters on disconnect to exist only within the current browser tab
+        sessionStorage.setItem('myfilters', JSON.stringify(this.filters));
+    }
+
+    renderedCallback() {
+        this.setPreviousFiltersOnRefresh();
+    }
 
     @track filters = [];
     connectedCallback() {
         this.setColumns();
-        this.filters = defaultFilters();
         this.breadcrumbs = [
             {
                 label: 'Tolketjenesten',
@@ -73,6 +94,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     }
 
     refresh() {
+        this.filters = defaultFilters();
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -80,8 +102,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
-        { name: 'EarliestStartTime', type: 'datetime' },
-        { name: 'DueDate', type: 'datetime' },
         { name: 'ActualStartTime', type: 'datetime' },
         { name: 'ActualEndTime', type: 'datetime' },
         { name: 'HOT_DeadlineDate__c', type: 'date' },
@@ -89,6 +109,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     ];
 
     @track serviceAppointment;
+    @track interestedResource;
     isDetails = false;
     isSeries = false;
     showTable = true;
@@ -100,20 +121,11 @@ export default class Hot_myServiceAppointments extends LightningElement {
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
+                this.interestedResource = serviceAppointment.InterestedResources__r[0];
             }
-        }
-        this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
-        this.showTable = (this.isSeries && this.urlStateParameterId !== '') || this.urlStateParameterId === '';
-        if (this.isSeries) {
-            let tempRecords = [];
-            for (let record of this.records) {
-                if (record.HOT_RequestNumber__c == this.serviceAppointment.HOT_RequestNumber__c) {
-                    tempRecords.push(record);
-                }
-            }
-            this.records = [...tempRecords];
         }
         this.updateURL();
+        this.sendDetail();
     }
 
     @track urlStateParameterId = '';
@@ -130,7 +142,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.urlStateParameterId = '';
         this.isDetails = false;
         this.showTable = true;
-        this.records = [...this.initialServiceAppointments];
+        this.sendDetail();
         return { id: recordIdToReturn, tab: 'my' };
     }
     filteredRecordsLength = 0;

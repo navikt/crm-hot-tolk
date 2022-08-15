@@ -1,15 +1,15 @@
 export let filterArray = [
     {
-        name: 'HOT_ExternalWorkOrderStatus__c',
+        name: 'Status',
         label: 'Status',
         isCheckboxgroup: true,
         value: [
             {
-                name: 'Dispatched',
+                name: 'Tildelt',
                 label: 'Tildelt'
             },
             {
-                name: 'Completed',
+                name: 'Dekket',
                 label: 'Dekket'
             }
         ]
@@ -20,7 +20,7 @@ export let filterArray = [
         isDateInterval: true,
         value: [
             {
-                name: 'EarliestStartDate',
+                name: 'EarliestStartTime',
                 label: 'Start dato',
                 labelprefix: 'Fra: '
             },
@@ -70,29 +70,29 @@ export let filterArray = [
         showMarkAllCheckbox: true,
         value: [
             {
-                name: 'Private',
+                name: 'Dagligliv',
                 label: 'Dagligliv'
             },
             {
-                name: 'Work',
+                name: 'Arbeidsliv',
                 label: 'Arbeidsliv'
             },
             {
-                name: 'Health Services',
+                name: 'Helsetjenester',
                 label: 'Helsetjenester'
             },
             {
-                name: 'Education',
+                name: 'Utdanning',
                 label: 'Utdanning'
             },
             {
-                name: 'Interpreter at Work',
+                name: 'Tolk på arbeidsplass - TPA',
                 label: 'Tolk på arbeidsplass - TPA'
             }
         ]
     },
     {
-        name: 'HOT_ServiceTerritoryName__c',
+        name: 'HOT_ServiceTerritoryDeveloperName__c',
         label: 'Region',
         isCheckboxgroup: true,
         showMarkAllCheckbox: true,

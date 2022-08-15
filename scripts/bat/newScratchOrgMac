@@ -3,17 +3,17 @@
 # Oppretter scratch org
 sfdx force:org:create -f config/project-scratch-def.json --setalias $1 --durationdays $2 --setdefaultusername --json --loglevel fatal  --wait 10
 
-# Installer crm-platform-base ver. 0.152
-sfdx force:package:install --package 04t7U000000Tp27QAC -r -k $3 --wait 10 --publishwait 10
+# Installer crm-platform-base ver. 0.168
+sfdx force:package:install --package 04t7U000000Tq8fQAC -r -k $3 --wait 10 --publishwait 10
 
 # Installer crm-platform-integration ver. 0.78
 sfdx force:package:install --package 04t7U000000Tp4DQAS -r -k $3 --wait 10 --publishwait 10
 
-# Installer crm-platform-access-control ver. 0.90
-sfdx force:package:install --package 04t7U000000Tp3jQAC -r -k $3 --wait 10 --publishwait 10
+# Installer crm-platform-access-control ver. 0.101
+sfdx force:package:install --package 04t7U000000TpqbQAC -r -k $3 --wait 10 --publishwait 10
 
-# Installer crm-community-base ver. 0.67
-sfdx force:package:install --package 04t7U000000TpwoQAC -r -k $3 --wait 10 --publishwait 10
+# Installer crm-community-base ver. 0.69
+sfdx force:package:install --package 04t7U000000TqARQA0 -r -k $3 --wait 10 --publishwait 10
 
 # Installer crm-platform-reporting ver. 0.25
 sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k $3 --wait 10 --publishwait 10

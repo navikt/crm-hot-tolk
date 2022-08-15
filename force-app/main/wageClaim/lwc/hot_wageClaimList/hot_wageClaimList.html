@@ -2,25 +2,21 @@
     <div class="main-content">
         <div if:false={isWageClaimDetails}>
             <div if:false={noWageClaims}>
-                <c-table
-                    records={wageClaims}
-                    columns={columns}
-                    onrowclick={goToRecordDetails}
-                    start-date-field="StartTime__c"
-                    end-date-field="EndTime__c"
-                ></c-table>
+                <c-table records={wageClaims} columns={columns} onrowclick={goToRecordDetails}></c-table>
             </div>
             <div if:true={noWageClaims} style="text-align: center">
                 <br />
-                Du har ingen ledig med lønn oppdrag.
+                Du har ingen ledig på lønn oppdrag.
             </div>
         </div>
         <div if:true={isWageClaimDetails}>
-            <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
-            <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
-            <p>Region: <span>{wageClaim.ServiceTerritoryName__c}</span></p>
-            <p>Status: <span>{wageClaim.Status__c}</span></p>
-            <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+            <div class="record-details-container">
+                <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
+                <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
+                <p>Region: <span>{wageClaim.ServiceTerritoryName__c}</span></p>
+                <p>Status: <span>{wageClaim.Status__c}</span></p>
+                <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+            </div>
             <c-button
                 button-styling="primary"
                 button-label="Tilbaketrekk tilgjengelighet"

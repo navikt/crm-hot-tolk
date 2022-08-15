@@ -34,7 +34,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         List<ServiceAppointment> serviceAppointments = [
             SELECT
                 Id,
-                AppointmentNumber,
+                HOT_ServiceAppointmentNumber__c,
                 ServiceTerritoryId,
                 EarliestStartTime,
                 DueDate,
@@ -52,6 +52,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 HOT_ReleasedBy__c,
                 ServiceTerritory.Name,
                 ServiceTerritory.HOT_DeveloperName__c,
+                HOT_ServiceTerritoryDeveloperName__c,
                 HOT_ServiceTerritoryName__c,
                 HOT_ReleaseDate__c,
                 City,
@@ -68,7 +69,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 AND HOT_DeadlineDate__c >= :DATE.TODAY()
                 AND Id NOT IN :interestedServiceAppointmentIds
                 AND ServiceTerritoryId != NULL
-            ORDER BY HOT_ReleaseDate__c DESC
+            ORDER BY EarliestStartTime ASC
         ];
 
         //Getting the required Skills for each workType

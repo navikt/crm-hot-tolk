@@ -3,8 +3,7 @@
         <div if:true={isDetails}>
             <div class="record-details-container">
                 <p>Oppdrag: <span>{interestedResource.AppointmentNumber__c}</span></p>
-                <p>Start tid: <span>{interestedResource.ServiceAppointmentStartTime__c}</span></p>
-                <p>Slutt tid: <span>{interestedResource.ServiceAppointmentEndTime__c}</span></p>
+                <p>Tid: <span>{interestedResource.StartAndEndDate}</span></p>
                 <p>Adresse: <span>{interestedResource.ServiceAppointmentAddress__c}</span></p>
                 <p>Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span></p>
                 <p>Oppdragstype: <span>{interestedResource.AssignmentType__c}</span></p>
@@ -13,15 +12,30 @@
                 <p>Frist dato: <span>{interestedResource.AppointmentDeadlineDate__c}</span></p>
                 <p>Region: <span>{interestedResource.AppointmentServiceTerritory__c}</span></p>
                 <p>Tema: <span>{interestedResource.ServiceAppointmentFreelanceSubject__c}</span></p>
-                <p>Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span></p>
-                <p>Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span></p>
+                <p if:true={interestedResource.WorkOrderCanceledDate__c}>
+                    Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span>
+                </p>
+                <p if:true={interestedResource.HOT_TermsOfAgreement__c}>
+                    Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                </p>
             </div>
+            <c-button
+                disabled={isNotRetractable}
+                onbuttonclick={retractInterest}
+                button-styling="Primary"
+                type="Submit"
+                button-label="Tilbaketrekk interesse"
+            >
+            </c-button>
             <section style="margin-bottom: 2rem">
                 <div style="padding: 1rem">
                     <br />
                     <div>
                         <h2 class="typo-undertittel ikke-sensitive-opplysninger__label">Dialog med formidler</h2>
-                        <p>{interestedResource.Comments__c}</p>
+                        <template iterator:it={prevComments}>
+                            <p class="typo-normal" key={it.value}>{it.value}</p>
+                            <p style="color: transparent" key={it.value}>.</p>
+                        </template>
                     </div>
                     <lightning-textarea
                         label="Legg til ny kommentar"
@@ -43,12 +57,11 @@
         </div>
         <div if:false={noInterestedResources}>
             <c-table
-                if:true={showTable}
+                if:false={isDetails}
                 records={records}
                 columns={columns}
                 onrowclick={goToRecordDetails}
-                start-date-field="ServiceAppointmentStartTime__c"
-                end-date-field="ServiceAppointmentEndTime__c"
+                icon-by-value={iconByValue}
             ></c-table>
         </div>
         <div if:true={noInterestedResources} style="text-align: center">

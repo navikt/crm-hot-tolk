@@ -11,14 +11,14 @@
             </a>
             <h2 class="header" tabindex="-1" autofocus>Oppdrag</h2>
             <c-list-filters-button
-                if:false={isServiceAppointmentDetails}
+                if:false={isDetails}
                 header="Filtrer søket"
                 filters={filters}
                 onapplyfilter={applyFilter}
                 ongetfilteredrecordslength={sendFilteredRecordsLength}
             ></c-list-filters-button>
         </div>
-        <div class="tabset desktop-only">
+        <div if:false={isDetails} class="tabset desktop-only">
             <template for:each={tabs} for:item="tab">
                 <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
                     {tab.label}
@@ -28,23 +28,43 @@
         <div class="tabset mobile-only">
             <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
         </div>
+        <br if:false={isDetails}/>
         <div class="tab-content-wrapper">
             <div if:true={tabMap.open} class="tab-content">
                 <c-hot_open-service-appointments
                     data-name="open"
                     onsendfilters={handleFilters}
                     onsendrecords={handleRecords}
+                    onsenddetail={handleDetails}
                 >
                 </c-hot_open-service-appointments>
             </div>
             <div if:true={tabMap.interested} class="tab-content">
-                <c-hot_interested-resources-list data-name="interested"> </c-hot_interested-resources-list>
+                <c-hot_interested-resources-list
+                    data-name="interested"
+                    onsendfilters={handleFilters}
+                    onsendrecords={handleRecords}
+                    onsenddetail={handleDetails}
+                >
+                </c-hot_interested-resources-list>
             </div>
             <div if:true={tabMap.my} class="tab-content">
-                <c-hot_my-service-appointments data-name="my"> </c-hot_my-service-appointments>
+                <c-hot_my-service-appointments
+                    data-name="my"
+                    onsendfilters={handleFilters}
+                    onsendrecords={handleRecords}
+                    onsenddetail={handleDetails}
+                >
+                </c-hot_my-service-appointments>
             </div>
             <div if:true={tabMap.wageClaim} class="tab-content">
-                <c-hot_wage-claim-list data-name="wageClaim"> </c-hot_wage-claim-list>
+                <c-hot_wage-claim-list
+                    data-name="wageClaim"
+                    onsendfilters={handleFilters}
+                    onsendrecords={handleRecords}
+                    onsenddetail={handleDetails}
+                >
+                </c-hot_wage-claim-list>
             </div>
         </div>
     </div>

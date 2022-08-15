@@ -5,7 +5,7 @@ export let filterArray = [
         isDateInterval: true,
         value: [
             {
-                name: 'EarliestStartDate',
+                name: 'EarliestStartTime',
                 label: 'Start dato',
                 labelprefix: 'Fra: '
             },
@@ -77,7 +77,7 @@ export let filterArray = [
         ]
     },
     {
-        name: 'HOT_ServiceTerritoryName__c',
+        name: 'HOT_ServiceTerritoryDeveloperName__c',
         label: 'Region',
         isCheckboxgroup: true,
         showMarkAllCheckbox: true,
@@ -131,6 +131,17 @@ export let filterArray = [
                 label: 'Øst-Viken'
             }
         ]
+    },
+    {
+        name: 'ReleaseDate',
+        label: 'Frigitt fra og med',
+        isDateInterval: true,
+        value: [
+            {
+                name: 'HOT_ReleaseDate__c',
+                label: 'Fra og med'
+            }
+        ]
     }
 ];
 export function setDefaultFilters(regions) {
@@ -139,7 +150,7 @@ export function setDefaultFilters(regions) {
     localTimeValue = new Date().toLocaleString();
     filterArray[0].value[0].localTimeValue = localTimeValue.substring(0, localTimeValue.length - 10);
     filterArray[3].value.forEach((element) => {
-        if (regions.includes(element.name)) {
+        if (regions?.includes(element.name)) {
             element.value = true;
             element.checked = true;
         }
@@ -187,7 +198,7 @@ function dateBetween(filter, record) {
             return false;
         }
     }
-    if (endVal.value !== undefined && endVal.value !== false) {
+    if (endVal?.value !== undefined && endVal?.value !== false) {
         let recordEndDate = new Date(record[endVal.name]);
         recordEndDate.setHours(0);
         recordEndDate.setMinutes(0);

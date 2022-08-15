@@ -3,32 +3,39 @@
         <div if:true={isDetails}>
             <div class="record-details-container">
                 <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
-                <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
-                <p>Bestilt starttid: <span>{serviceAppointment.EarliestStartTime}</span></p>
-                <p>Bestilt sluttid: <span>{serviceAppointment.DueDate}</span></p>
+                <p>Tema: <span>{serviceAppointment.Subject}</span></p>
+                <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
                 <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
-                <p>faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
+                <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
                 <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
                 <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
                 <p>Status: <span>{serviceAppointment.Status}</span></p>
                 <p>Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span></p>
-                <p>Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span></p>
-                <p>Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span></p>
+                <p if:true={serviceAppointment.HOT_Escort__c}>
+                    Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
+                </p>
+                <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                    Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
+                </p>
                 <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                <p>Avtalte betingelser: <span>{serviceAppointment.HOT_TermsOfAgreement__c}</span></p>
+                <p if:true={interestedResource}>
+                    Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                </p>
                 <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
                 <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
+                <div class="files-container">
+                    <c-record-files-with-sharing
+                        record-id={serviceAppointment.Id}
+                        is-get-all="true"
+                        is-delete-option="false"
+                        title="Vedlegg"
+                        delete-file-on-button-click="false"
+                    ></c-record-files-with-sharing>
+                </div>
             </div>
         </div>
         <div if:false={noServiceAppointments}>
-            <c-table
-                if:true={showTable}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                start-date-field="EarliestStartTime"
-                end-date-field="DueDate"
-            ></c-table>
+            <c-table if:false={isDetails} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
             <br />

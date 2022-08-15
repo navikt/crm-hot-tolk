@@ -63,7 +63,7 @@ public without sharing class HOT_Utility {
         User user = [
             SELECT AccountId, Account.CRM_Person__r.CRM_FullName__c, Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM User
-            WHERE Id = :UserInfo.getUserId()
+            WHERE Id = :UserInfo.getUserId() AND Account.CRM_Person__r.INT_Confidential__C = 'UGRADERT'
         ];
         return user;
     }

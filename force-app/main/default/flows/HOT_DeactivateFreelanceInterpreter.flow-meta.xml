@@ -34,31 +34,6 @@
         </connector>
     </assignments>
     <decisions>
-        <name>Access</name>
-        <label>Access?</label>
-        <locationX>441</locationX>
-        <locationY>460</locationY>
-        <defaultConnector>
-            <targetReference>No_Access_Screen</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
-        <rules>
-            <name>Yes</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Create_Community_Plus_User_Permission_Set_Assigment_Id</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>StartScreen</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>CheckIfFoundResource</name>
         <label>CheckIfFoundResource</label>
         <locationX>456</locationX>
@@ -133,6 +108,31 @@
             <label>Is not freelance</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>CheckPermission</name>
+        <label>CheckPermission</label>
+        <locationX>448</locationX>
+        <locationY>267</locationY>
+        <defaultConnector>
+            <targetReference>No_Access_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>HasPermission</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Permission.DeactivateFreelanceInterpreter</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>StartScreen</targetReference>
+            </connector>
+            <label>Has Permisson</label>
+        </rules>
+    </decisions>
     <formulas>
         <name>currentUser</name>
         <dataType>String</dataType>
@@ -182,59 +182,6 @@
         <object>PermissionSetAssignment</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
-    <recordLookups>
-        <name>Get_Current_User_Permission_Set_Assignment</name>
-        <label>Get Current User Permission Set Assignment</label>
-        <locationX>456</locationX>
-        <locationY>326</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Access</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>AssigneeId</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>currentUser</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>PermissionSetId</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Permission_Set.Id</elementReference>
-            </value>
-        </filters>
-        <object>PermissionSetAssignment</object>
-        <outputAssignments>
-            <assignToReference>Create_Community_Plus_User_Permission_Set_Assigment_Id</assignToReference>
-            <field>Id</field>
-        </outputAssignments>
-        <sortField>Id</sortField>
-        <sortOrder>Asc</sortOrder>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Permission_Set</name>
-        <label>Get Permission Set</label>
-        <locationX>456</locationX>
-        <locationY>206</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_Current_User_Permission_Set_Assignment</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Name</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Create_Community_Plus_User</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>PermissionSet</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <recordLookups>
         <name>GetCurrentResource</name>
         <label>GetCurrentResource</label>
@@ -367,8 +314,8 @@
     <screens>
         <name>No_Access_Screen</name>
         <label>No Access</label>
-        <locationX>190</locationX>
-        <locationY>458</locationY>
+        <locationX>256</locationX>
+        <locationY>265</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -469,7 +416,7 @@
         <locationX>330</locationX>
         <locationY>48</locationY>
         <connector>
-            <targetReference>Get_Permission_Set</targetReference>
+            <targetReference>CheckPermission</targetReference>
         </connector>
     </start>
     <status>Active</status>
