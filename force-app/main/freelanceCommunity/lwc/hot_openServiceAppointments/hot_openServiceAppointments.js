@@ -32,7 +32,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('openfilters')) {
-            this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('openfilters')), setRecords: true }});
+            this.applyFilter({
+                detail: { filterArray: JSON.parse(sessionStorage.getItem('openfilters')), setRecords: true }
+            });
             sessionStorage.removeItem('openfilters');
         }
         this.sendFilters();
@@ -115,7 +117,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
         { name: 'HOT_DeadlineDate__c', type: 'date' },
-        { name: 'HOT_ReleaseDate__c', type: 'date' }
+        { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
     ];
 
     @track serviceAppointment;
@@ -169,6 +171,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     @track checkedServiceAppointments = [];
     registerInterest() {
         if (this.sendInterestAll) {
+            this.checkedServiceAppointments = [];
             this.serviceAppointmentCommentDetails.forEach((element) => {
                 this.checkedServiceAppointments.push(element.Id);
             });
@@ -190,30 +193,32 @@ export default class Hot_openServiceAppointments extends LightningElement {
         createInterestedResources({
             serviceAppointmentIds: this.checkedServiceAppointments,
             comments: comments
-        }).then(() => {
-            this.spin = false;
-            this.template.querySelector('.submitted-loading').classList.add('hidden');
-            this.template.querySelector('.submitted-true').classList.remove('hidden');
-            this.template.querySelector('c-table').unsetCheckboxes();
-            this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
-            let currentFilters = this.filters;
-            if (this.sendInterestAll) {
-                this.sendInterestAllComplete = true;
-                return; // If series -> refresh after closeModal() to avoid showing weird data behind popup
-            }
-            refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
-                // Apply previous filter
-                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true }});
+        })
+            .then(() => {
+                this.spin = false;
+                this.template.querySelector('.submitted-loading').classList.add('hidden');
+                this.template.querySelector('.submitted-true').classList.remove('hidden');
+                this.template.querySelector('c-table').unsetCheckboxes();
+                this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
+                let currentFilters = this.filters;
+                if (this.sendInterestAll) {
+                    this.sendInterestAllComplete = true;
+                    return; // If series -> refresh after closeModal() to avoid showing weird data behind popup
+                }
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
+                    // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
+                    // Apply previous filter
+                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
+                });
+            })
+            .catch((error) => {
+                this.spin = false;
+                this.sendInterestedButtonDisabled = false;
+                this.template.querySelector('.submitted-loading').classList.add('hidden');
+                this.template.querySelector('.submitted-error').classList.remove('hidden');
+                this.errorMessage = JSON.stringify(error);
+                this.sendInterestAll = false;
             });
-        }).catch((error) => {
-            this.spin = false;
-            this.sendInterestedButtonDisabled = false;
-            this.template.querySelector('.submitted-loading').classList.add('hidden');
-            this.template.querySelector('.submitted-error').classList.remove('hidden');
-            this.errorMessage = error;
-            this.sendInterestAll = false;
-        });
     }
 
     // Set button state when checkbox clicked
@@ -274,7 +279,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
                 // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
                 // Apply previous filter
-                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true }});
+                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
             });
             this.goBack();
         }
