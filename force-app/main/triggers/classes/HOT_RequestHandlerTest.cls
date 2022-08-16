@@ -210,13 +210,21 @@ private class HOT_RequestHandlerTest {
         request.Source__c = 'Community';
         request.InterpretationMethod__c = null;
         request.UserInterpretationMethod__c = 'TS';
-        
+
         Test.startTest();
         insert request;
         Test.stopTest();
 
-        request = [SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c FROM HOT_Request__c WHERE Id = :request.Id];
-        System.assertEquals(request.InterpretationMethod__r.HOT_DeveloperName__c, request.UserInterpretationMethod__c, 'Request.InterpretationMethod__r.HOT_DeveloperName__c field is not equal to UserInterpretationMethod__c field.');
+        request = [
+            SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+        System.assertEquals(
+            request.InterpretationMethod__r.HOT_DeveloperName__c,
+            request.UserInterpretationMethod__c,
+            'Request.InterpretationMethod__r.HOT_DeveloperName__c field is not equal to UserInterpretationMethod__c field.'
+        );
     }
 
     @isTest
@@ -235,7 +243,40 @@ private class HOT_RequestHandlerTest {
         insert request;
         Test.stopTest();
 
-        request = [SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c FROM HOT_Request__c WHERE Id = :request.Id];
-        System.assertNotEquals(request.InterpretationMethod__r.HOT_DeveloperName__c, request.UserInterpretationMethod__c, 'InterpretationMethod__c field should not be equal to UserInterpretationMethod__c field in this case.');
+        request = [
+            SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+        System.assertNotEquals(
+            request.InterpretationMethod__r.HOT_DeveloperName__c,
+            request.UserInterpretationMethod__c,
+            'InterpretationMethod__c field should not be equal to UserInterpretationMethod__c field in this case.'
+        );
+    }
+
+    @isTest
+    public static void multipleRequestsApproved() {
+        WorkType workType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        insert workType;
+
+        HOT_Request__c request1 = HOT_TestDataFactory.createRequest('Request 1', workType);
+        insert request1;
+        HOT_Request__c request2 = HOT_TestDataFactory.createRequest('Request 2', workType);
+        insert request2;
+
+        Test.startTest();
+        request1.Status__c = 'Godkjent';
+        request2.Status__c = 'Godkjent';
+
+        update new List<HOT_Request__c>{ request1, request2 };
+        Test.stopTest();
+
+        List<ServiceAppointment> serviceAppointments = [SELECT Id FROM ServiceAppointment];
+        System.assertEquals(
+            2,
+            serviceAppointments.size(),
+            'Could not create the correct ampint of Service Appointments'
+        );
     }
 }
