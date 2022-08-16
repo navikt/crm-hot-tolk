@@ -1,10 +1,26 @@
 <template>
     <template if:true={hasSecurityMeasures}>
-        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+        <div
+            class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
+            role="alert"
+            style="display: block"
+        >
             <span class="slds-assistive-text">Advarsel</span>
-            <lightning-icon icon-name="utility:error" size="x-small" class="slds-m-right--x-small" variant="inverse">
-            </lightning-icon>
-            <h2>Det er følgende sikkerhetstiltak på brukeren: {securityMeasures}</h2>
+            <div style="display: inline-flex">
+                <lightning-icon
+                    icon-name="utility:error"
+                    size="x-small"
+                    class="slds-m-right--x-small"
+                    variant="inverse"
+                >
+                </lightning-icon>
+                <h2>Det er følgende sikkerhetstiltak på brukeren:</h2>
+            </div>
+            <div style="display: block">
+                <template for:each={securityMeasures} for:item="sm">
+                    <p key={sm}>{sm}</p>
+                </template>
+            </div>
         </div>
     </template>
     <template if:true={hasReservations}>
