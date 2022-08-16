@@ -171,6 +171,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     @track checkedServiceAppointments = [];
     registerInterest() {
         if (this.sendInterestAll) {
+            this.checkedServiceAppointments = [];
             this.serviceAppointmentCommentDetails.forEach((element) => {
                 this.checkedServiceAppointments.push(element.Id);
             });
@@ -215,7 +216,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 this.sendInterestedButtonDisabled = false;
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-error').classList.remove('hidden');
-                this.errorMessage = error;
+                this.errorMessage = JSON.stringify(error);
                 this.sendInterestAll = false;
             });
     }
