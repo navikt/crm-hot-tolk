@@ -8,12 +8,12 @@
                 <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
                 <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                 <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
-                <p>Frigitt dato: <span>{serviceAppointment.HOT_ReleaseDate__c}</span></p>
+                <p>Frigitt dato: <span>{serviceAppointment.ReleaseDate}</span></p>
                 <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
                 <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
                 <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
                 <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
-                <br/>
+                <br />
             </div>
             <div if:true={isSeries}>
                 <c-button
@@ -26,11 +26,7 @@
                     title="Meld interesse til alle oppdrag i serien"
                 >
                 </c-button>
-                <c-table
-                    records={seriesRecords}
-                    columns={columns}
-                    onrowclick={goToRecordDetails}
-                ></c-table>
+                <c-table records={seriesRecords} columns={columns} onrowclick={goToRecordDetails}></c-table>
             </div>
         </div>
         <c-button
@@ -92,7 +88,7 @@
                                 <p>Frigitt av: <span>{it.value.HOT_ReleasedBy__c}</span></p>
                                 <p>Frigitt dato: <span>{it.value.HOT_ReleaseDate__c}</span></p>
                                 <p>
-                                    Antall påmeldte: 
+                                    Antall påmeldte:
                                     <span>{it.value.HOT_NumberOfInterestedResources__c}</span>
                                 </p>
                                 <p>Region: <span>{it.value.HOT_ServiceTerritoryName__c}</span></p>
@@ -118,10 +114,16 @@
                         >
                         </lightning-icon>
                         <br />
-                        <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1" role="alert" aria-live="polite">
+                        <h2
+                            class="typo-undertittel h2-successMessage"
+                            id="successMessage"
+                            tabindex="-1"
+                            role="alert"
+                            aria-live="polite"
+                        >
                             Interesse er meldt.
                         </h2>
-                        <br/>
+                        <br />
                         <c-button
                             button-styling="primary"
                             button-label="OK"
@@ -131,18 +133,30 @@
                         ></c-button>
                     </div>
                     <div class="submitted-loading hidden">
-                            <h2 class="typo-undertittel h2-loadingMessage" id="loadingMessage" tabindex="-1" role="alert" aria-live="polite">
-                                Melder interesse...
-                            </h2>
-                            <br/>
-                            <div if:true={spin} class="loader"></div>
-                            <br />
+                        <h2
+                            class="typo-undertittel h2-loadingMessage"
+                            id="loadingMessage"
+                            tabindex="-1"
+                            role="alert"
+                            aria-live="polite"
+                        >
+                            Melder interesse...
+                        </h2>
+                        <br />
+                        <div if:true={spin} class="loader"></div>
+                        <br />
                     </div>
                     <div class="submitted-error hidden">
-                        <h2 class="typo-undertittel h2-loadingMessage" id="errorMessage" tabindex="-1" role="alert" aria-live="polite">
+                        <h2
+                            class="typo-undertittel h2-loadingMessage"
+                            id="errorMessage"
+                            tabindex="-1"
+                            role="alert"
+                            aria-live="polite"
+                        >
                             Noe gikk galt under melding av interesse.
                         </h2>
-                        <br/>
+                        <br />
                         <h3>Feilmelding: {errorMessage}</h3>
                         <br />
                     </div>
