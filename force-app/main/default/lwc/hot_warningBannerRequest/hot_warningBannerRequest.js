@@ -4,6 +4,7 @@ import securityMeasures from '@salesforce/schema/HOT_Request__c.Account__r.CRM_P
 import reservations from '@salesforce/schema/HOT_Request__c.Account__r.CRM_Person__r.HOT_Reservations__c';
 import ACCOUNT_ID from '@salesforce/schema/HOT_Request__c.Account__c';
 import getOverlappingRecordsFromRequestId from '@salesforce/apex/HOT_DuplicateHandler.getOverlappingRecordsFromRequestId';
+import { formatDate } from 'c/datetimeFormatter';
 
 export default class Hot_warningBannerRequest extends LightningElement {
     @api recordId;
@@ -22,7 +23,21 @@ export default class Hot_warningBannerRequest extends LightningElement {
     }
 
     get securityMeasures() {
-        return getFieldValue(this.record.data, securityMeasures).replace(/;/g, ', ');
+        let secMeasures = JSON.parse(getFieldValue(this.record.data, securityMeasures));
+        let securityMeasuresFormatted = [];
+        secMeasures.forEach((sm) => {
+            console.log(sm.tiltaksType);
+            securityMeasuresFormatted.push(
+                sm.beskrivelse +
+                    ' (' +
+                    sm.tiltaksType +
+                    '), gyldig: ' +
+                    formatDate(sm.gyldigFraOgMed) +
+                    ' - ' +
+                    formatDate(sm.gyldigTilOgMed)
+            );
+        });
+        return securityMeasuresFormatted;
     }
 
     get hasSecurityMeasures() {
