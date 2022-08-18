@@ -142,6 +142,21 @@ export let filterArray = [
                 label: 'Fra og med'
             }
         ]
+    },
+    {
+        name: 'Search',
+        label: 'Søk',
+        isSearch: true,
+        value: [
+            { name: 'HOT_FreelanceSubject__c' },
+            { name: 'HOT_ServiceAppointmentNumber__c' },
+            { name: 'StartAndEndDate' },
+            { name: 'HOT_AddressFormated__c' },
+            { name: 'HOT_WorkTypeName__c' },
+            { name: 'HOT_ServiceTerritoryName__c' },
+            { name: 'HOT_AssignmentType__c' },
+            { name: 'HOT_Information__c' }
+        ]
     }
 ];
 export function setDefaultFilters(regions) {
@@ -155,6 +170,8 @@ export function setDefaultFilters(regions) {
             element.checked = true;
         }
     });
+    filterArray[5].searchTerm = '';
+
     return filterArray;
 }
 
@@ -169,6 +186,8 @@ export function defaultFilters() {
 export function compare(filter, record) {
     if (filter.isDateInterval) {
         return dateBetween(filter, record);
+    } else if (filter.isSearch) {
+        return searchRecord(filter, record);
     }
     return equals(filter, record);
 }
@@ -208,4 +227,16 @@ function dateBetween(filter, record) {
         }
     }
     return true;
+}
+
+function searchRecord(filter, record) {
+    if (filter.searchTerm === '') {
+        return true;
+    }
+    for (let field of filter.value) {
+        if (record[field.name]?.toLowerCase()?.indexOf(filter.searchTerm.toLowerCase()) !== -1) {
+            return true;
+        }
+    }
+    return false;
 }
