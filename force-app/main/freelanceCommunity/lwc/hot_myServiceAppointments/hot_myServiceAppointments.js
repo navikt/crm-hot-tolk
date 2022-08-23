@@ -27,10 +27,12 @@ export default class Hot_myServiceAppointments extends LightningElement {
         const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
         this.dispatchEvent(eventToSend);
     }
-    
+
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('myfilters')) {
-            this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('myfilters')), setRecords: true }});
+            this.applyFilter({
+                detail: { filterArray: JSON.parse(sessionStorage.getItem('myfilters')), setRecords: true }
+            });
             sessionStorage.removeItem('myfilters');
         }
         this.sendFilters();
@@ -116,8 +118,8 @@ export default class Hot_myServiceAppointments extends LightningElement {
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
         let recordId = result.detail.Id;
-        this.urlStateParameterId = recordId;
-        this.isDetails = this.urlStateParameterId !== '';
+        this.recordId = recordId;
+        this.isDetails = this.recordId !== '';
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
@@ -128,18 +130,18 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.sendDetail();
     }
 
-    @track urlStateParameterId = '';
+    @track recordId = '';
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        if (this.urlStateParameterId !== '') {
-            baseURL += '?list=my' + '&id=' + this.urlStateParameterId;
+        if (this.recordId !== '') {
+            baseURL += '?list=my' + '&id=' + this.recordId;
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
 
     @api goBack() {
-        let recordIdToReturn = this.urlStateParameterId;
-        this.urlStateParameterId = '';
+        let recordIdToReturn = this.recordId;
+        this.recordId = '';
         this.isDetails = false;
         this.showTable = true;
         this.sendDetail();

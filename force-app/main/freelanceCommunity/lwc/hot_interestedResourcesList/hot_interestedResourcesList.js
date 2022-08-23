@@ -35,7 +35,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('interestedfilters')) {
-            this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('interestedfilters')), setRecords: true }});
+            this.applyFilter({
+                detail: { filterArray: JSON.parse(sessionStorage.getItem('interestedfilters')), setRecords: true }
+            });
             sessionStorage.removeItem('interestedfilters');
         }
         this.sendFilters();
@@ -125,8 +127,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
         let recordId = result.detail.Id;
-        this.urlStateParameterId = recordId;
-        this.isDetails = this.urlStateParameterId !== '';
+        this.recordId = recordId;
+        this.isDetails = this.recordId !== '';
         for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
@@ -141,18 +143,18 @@ export default class Hot_interestedResourcesList extends LightningElement {
         }
     }
 
-    @track urlStateParameterId = '';
+    @track recordId = '';
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        if (this.urlStateParameterId !== '') {
-            baseURL += '?list=interested' + '&id=' + this.urlStateParameterId;
+        if (this.recordId !== '') {
+            baseURL += '?list=interested' + '&id=' + this.recordId;
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
 
     @api goBack() {
-        let recordIdToReturn = this.urlStateParameterId;
-        this.urlStateParameterId = '';
+        let recordIdToReturn = this.recordId;
+        this.recordId = '';
         this.isDetails = false;
         this.showTable = true;
         this.sendDetail();

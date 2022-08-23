@@ -130,8 +130,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.seriesRecords = [];
         this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
         let recordId = result.detail.Id;
-        this.urlStateParameterId = recordId;
-        this.isDetails = this.urlStateParameterId !== '';
+        this.recordId = recordId;
+        this.isDetails = this.recordId !== '';
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
@@ -148,18 +148,18 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.sendDetail();
     }
 
-    @track urlStateParameterId = '';
+    @track recordId = '';
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        if (this.urlStateParameterId !== '') {
-            baseURL += '?list=open' + '&id=' + this.urlStateParameterId;
+        if (this.recordId !== '') {
+            baseURL += '?list=open' + '&id=' + this.recordId;
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
 
     @api goBack() {
-        let recordIdToReturn = this.urlStateParameterId;
-        this.urlStateParameterId = '';
+        let recordIdToReturn = this.recordId;
+        this.recordId = '';
         this.isDetails = false;
         this.showTable = true;
         this.sendDetail();
