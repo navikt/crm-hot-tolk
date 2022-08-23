@@ -8,8 +8,16 @@ import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
 import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
 import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
+import { CurrentPageReference } from 'lightning/navigation';
 
 export default class Hot_interestedResourcesList extends LightningElement {
+    @track urlStateParameters;
+    @wire(CurrentPageReference)
+    getStateParameters(currentPageReference) {
+        if (currentPageReference && Object.keys(currentPageReference.state).length > 0) {
+            this.urlStateParameters = { ...currentPageReference.state };
+        }
+    }
     @track columns = [];
     @track filters = [];
     @track iconByValue = iconByValue;
@@ -105,6 +113,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     refresh() {
         this.filters = defaultFilters();
         this.sendRecords();
+        this.goToRecordDetails({ detail: { Id: this.urlStateParameters.id } });
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
@@ -126,20 +135,22 @@ export default class Hot_interestedResourcesList extends LightningElement {
     showTable = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
-        let recordId = result.detail.Id;
-        this.recordId = recordId;
-        this.isDetails = this.recordId !== '';
-        for (let interestedResource of this.records) {
-            if (recordId === interestedResource.Id) {
-                this.interestedResource = interestedResource;
+        let recordId = result?.detail?.Id;
+        if (recordId) {
+            this.recordId = recordId;
+            this.isDetails = this.recordId !== '';
+            for (let interestedResource of this.records) {
+                if (recordId === interestedResource.Id) {
+                    this.interestedResource = interestedResource;
+                }
             }
-        }
-        this.isNotRetractable = this.interestedResource.Status__c !== 'Påmeldt';
-        this.fixComments();
-        this.updateURL();
-        this.sendDetail();
-        if (this.interestedResource.IsNewComment__c) {
-            readComment({ interestedResourceId: this.interestedResource.Id });
+            this.isNotRetractable = this.interestedResource.Status__c !== 'Påmeldt';
+            this.fixComments();
+            this.updateURL();
+            this.sendDetail();
+            if (this.interestedResource.IsNewComment__c) {
+                readComment({ interestedResourceId: this.interestedResource.Id });
+            }
         }
     }
 
