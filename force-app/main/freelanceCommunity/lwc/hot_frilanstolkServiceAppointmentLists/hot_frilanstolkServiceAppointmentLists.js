@@ -4,6 +4,7 @@ import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMixin(LightningElement) {
     @track filters = [];
     @track records = [];
+    @track checkedRows = [];
 
     breadcrumbs = [
         {
@@ -19,9 +20,11 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     handleFilters(event) {
         this.filters = event.detail;
     }
-
     handleRecords(event) {
         this.records = event.detail;
+    }
+    handleRowChecked(event) {
+        this.checkedRows = event.detail;
     }
 
     recordId;

@@ -49,7 +49,7 @@
                 onrowclick={goToRecordDetails}
                 checkbox="true"
                 checked-rows={checkedServiceAppointments}
-                onamountofcheckedrows={setSendInterestedButtonState}
+                oncheckedrows={handleRowChecked}
             ></c-table>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
