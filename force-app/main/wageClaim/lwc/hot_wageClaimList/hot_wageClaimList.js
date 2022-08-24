@@ -5,16 +5,8 @@ import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.re
 import { columns, mobileColumns } from './columns';
 import { formatRecord } from 'c/datetimeFormatter';
 import { defaultFilters, compare } from './filters';
-import { CurrentPageReference } from 'lightning/navigation';
 
 export default class Hot_wageClaimList extends LightningElement {
-    @track urlStateParameters;
-    @wire(CurrentPageReference)
-    getStateParameters(currentPageReference) {
-        if (currentPageReference && Object.keys(currentPageReference.state).length > 0) {
-            this.urlStateParameters = { ...currentPageReference.state };
-        }
-    }
     @track columns = [];
     @track filters = [];
     setColumns() {
@@ -52,7 +44,6 @@ export default class Hot_wageClaimList extends LightningElement {
     refresh() {
         this.filters = defaultFilters();
         this.sendRecords();
-        this.goToRecordDetails({ detail: { Id: this.urlStateParameters.id } });
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
@@ -87,18 +78,16 @@ export default class Hot_wageClaimList extends LightningElement {
     isWageClaimDetails = false;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
-        let recordId = result?.detail?.Id;
-        if (recordId) {
-            this.recordId = recordId;
-            this.isWageClaimDetails = this.recordId !== '';
-            for (let wageClaim of this.wageClaims) {
-                if (recordId === wageClaim.Id) {
-                    this.wageClaim = wageClaim;
-                }
+        let recordId = result.detail.Id;
+        this.recordId = recordId;
+        this.isWageClaimDetails = this.recordId !== '';
+        for (let wageClaim of this.wageClaims) {
+            if (recordId === wageClaim.Id) {
+                this.wageClaim = wageClaim;
             }
-            this.updateURL();
-            this.sendDetail();
         }
+        this.updateURL();
+        this.sendDetail();
     }
 
     @track recordId = '';

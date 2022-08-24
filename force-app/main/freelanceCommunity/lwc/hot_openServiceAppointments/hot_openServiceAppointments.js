@@ -6,17 +6,8 @@ import { columns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
-import { CurrentPageReference } from 'lightning/navigation';
 
 export default class Hot_openServiceAppointments extends LightningElement {
-    @track urlStateParameters;
-    @wire(CurrentPageReference)
-    getStateParameters(currentPageReference) {
-        if (currentPageReference && Object.keys(currentPageReference.state).length > 0) {
-            this.urlStateParameters = { ...currentPageReference.state };
-        }
-    }
-
     @track columns = [];
     setColumns() {
         if (window.screen.width > 576) {
@@ -119,7 +110,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
     refresh() {
         this.filters = defaultFilters();
         this.sendRecords();
-        this.goToRecordDetails({ detail: { Id: this.urlStateParameters.id } });
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
@@ -138,26 +128,24 @@ export default class Hot_openServiceAppointments extends LightningElement {
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
         this.seriesRecords = [];
-        this.checkedServiceAppointments = this.template.querySelector('c-table')?.getCheckedRows();
-        let recordId = result?.detail?.Id;
-        if (recordId) {
-            this.recordId = recordId;
-            this.isDetails = this.recordId !== '';
-            for (let serviceAppointment of this.records) {
-                if (recordId === serviceAppointment.Id) {
-                    this.serviceAppointment = serviceAppointment;
-                    this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
-                }
+        this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
+        let recordId = result.detail.Id;
+        this.recordId = recordId;
+        this.isDetails = this.recordId !== '';
+        for (let serviceAppointment of this.records) {
+            if (recordId === serviceAppointment.Id) {
+                this.serviceAppointment = serviceAppointment;
+                this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
             }
-            for (let serviceAppointment of this.records) {
-                if (this.serviceAppointment.HOT_Request__c === serviceAppointment.HOT_Request__c) {
-                    this.seriesRecords.push(serviceAppointment);
-                }
-            }
-            this.isSeries = this.seriesRecords.length <= 1 ? false : true;
-            this.updateURL();
-            this.sendDetail();
         }
+        for (let serviceAppointment of this.records) {
+            if (this.serviceAppointment.HOT_Request__c === serviceAppointment.HOT_Request__c) {
+                this.seriesRecords.push(serviceAppointment);
+            }
+        }
+        this.isSeries = this.seriesRecords.length <= 1 ? false : true;
+        this.updateURL();
+        this.sendDetail();
     }
 
     @track recordId = '';
