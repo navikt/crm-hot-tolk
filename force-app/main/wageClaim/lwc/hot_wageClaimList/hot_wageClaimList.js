@@ -43,10 +43,10 @@ export default class Hot_wageClaimList extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
+        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
-        this.goToRecordDetails({ detail: { Id: this.recordId } });
     }
 
     setPreviousFiltersOnRefresh() {

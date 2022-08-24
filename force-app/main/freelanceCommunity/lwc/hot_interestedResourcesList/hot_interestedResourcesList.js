@@ -104,10 +104,10 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
+        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
-        this.goToRecordDetails({ detail: { Id: this.recordId } });
     }
 
     datetimeFields = [
@@ -129,6 +129,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
         window.scrollTo(0, 0);
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
+        console.log(this.recordId);
+        console.log(result.detail.Id);
         this.recordId = recordId;
         this.isDetails = !!this.recordId;
         for (let interestedResource of this.records) {
@@ -197,8 +199,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     @track prevComments = '';
     fixComments() {
-        if (this.interestedResource.Comments__c != undefined) {
-            this.prevComments = this.interestedResource.Comments__c.split('\n\n');
+        if (this.interestedResource?.Comments__c != undefined) {
+            this.prevComments = this.interestedResource?.Comments__c.split('\n\n');
         } else {
             this.prevComments = '';
         }
