@@ -234,7 +234,7 @@ function searchRecord(filter, record) {
         return true;
     }
     for (let field of filter.value) {
-        if (record[field.name]?.toLowerCase()?.indexOf(filter.searchTerm.toLowerCase()) !== -1) {
+        if (record[field.name]?.toLowerCase()?.indexOf(filter.searchTerm.toLowerCase()) > -1) {
             return true;
         }
     }
