@@ -100,6 +100,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        this.goToRecordDetails({ detail: { Id: this.recordId } });
     }
 
     datetimeFields = [
@@ -117,23 +118,25 @@ export default class Hot_myServiceAppointments extends LightningElement {
     showTable = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
+        this.serviceAppointment = undefined;
+        this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        this.isDetails = this.recordId !== '';
+        this.isDetails = !!this.recordId;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
-                this.interestedResource = serviceAppointment.InterestedResources__r[0];
+                this.interestedResource = serviceAppointment?.InterestedResources__r[0];
             }
         }
         this.updateURL();
         this.sendDetail();
     }
 
-    @track recordId = '';
+    @api recordId;
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        if (this.recordId !== '') {
+        if (this.recordId) {
             baseURL += '?list=my' + '&id=' + this.recordId;
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
@@ -141,7 +144,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     @api goBack() {
         let recordIdToReturn = this.recordId;
-        this.recordId = '';
+        this.recordId = undefined;
         this.isDetails = false;
         this.showTable = true;
         this.sendDetail();

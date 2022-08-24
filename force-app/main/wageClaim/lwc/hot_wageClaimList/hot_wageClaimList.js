@@ -46,6 +46,7 @@ export default class Hot_wageClaimList extends LightningElement {
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        this.goToRecordDetails({ detail: { Id: this.recordId } });
     }
 
     setPreviousFiltersOnRefresh() {
@@ -78,9 +79,10 @@ export default class Hot_wageClaimList extends LightningElement {
     isWageClaimDetails = false;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
+        this.wageClaim = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        this.isWageClaimDetails = this.recordId !== '';
+        this.isWageClaimDetails = !!this.recordId;
         for (let wageClaim of this.wageClaims) {
             if (recordId === wageClaim.Id) {
                 this.wageClaim = wageClaim;
@@ -90,10 +92,10 @@ export default class Hot_wageClaimList extends LightningElement {
         this.sendDetail();
     }
 
-    @track recordId = '';
+    @api recordId;
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        if (this.recordId !== '') {
+        if (this.recordId) {
             baseURL += '?list=wageClaim' + '&id=' + this.recordId;
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
@@ -101,7 +103,7 @@ export default class Hot_wageClaimList extends LightningElement {
 
     @api goBack() {
         let recordIdToReturn = this.recordId;
-        this.recordId = '';
+        this.recordId = undefined;
         this.isWageClaimDetails = false;
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'wageClaim' };

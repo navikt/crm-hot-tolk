@@ -107,6 +107,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        this.goToRecordDetails({ detail: { Id: this.recordId } });
     }
 
     datetimeFields = [
@@ -126,27 +127,28 @@ export default class Hot_interestedResourcesList extends LightningElement {
     showTable = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
+        this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        this.isDetails = this.recordId !== '';
+        this.isDetails = !!this.recordId;
         for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
             }
         }
-        this.isNotRetractable = this.interestedResource.Status__c !== 'Påmeldt';
+        this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
         this.fixComments();
         this.updateURL();
         this.sendDetail();
-        if (this.interestedResource.IsNewComment__c) {
-            readComment({ interestedResourceId: this.interestedResource.Id });
+        if (this.interestedResource?.IsNewComment__c) {
+            readComment({ interestedResourceId: this.interestedResource?.Id });
         }
     }
 
-    @track recordId = '';
+    @api recordId;
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        if (this.recordId !== '') {
+        if (this.recordId) {
             baseURL += '?list=interested' + '&id=' + this.recordId;
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
@@ -154,7 +156,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     @api goBack() {
         let recordIdToReturn = this.recordId;
-        this.recordId = '';
+        this.recordId = undefined;
         this.isDetails = false;
         this.showTable = true;
         this.sendDetail();
