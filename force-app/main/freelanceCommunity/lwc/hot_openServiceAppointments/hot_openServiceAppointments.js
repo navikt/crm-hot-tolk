@@ -30,7 +30,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.dispatchEvent(eventToSend);
     }
     sendCheckedRows() {
-        this.sendInterestedButtonDisabled = this.checkedServiceAppointments.length > 0 ? false : true;
+        this.showSendInterest = this.checkedServiceAppointments.length > 0 && !this.isDetails;
         const eventToSend = new CustomEvent('sendcheckedrows', { detail: this.checkedServiceAppointments });
         this.dispatchEvent(eventToSend);
     }
@@ -229,7 +229,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             })
             .catch((error) => {
                 this.spin = false;
-                this.sendInterestedButtonDisabled = false;
+                this.showSendInterest = true;
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-error').classList.remove('hidden');
                 this.errorMessage = JSON.stringify(error);
@@ -242,7 +242,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.sendCheckedRows();
     }
 
-    sendInterestedButtonDisabled = true;
+    showSendInterest = false;
     @track serviceAppointmentCommentDetails = [];
     sendInterest() {
         this.hideSubmitIndicators();
@@ -261,10 +261,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
             console.log(error);
         }
         if (this.checkedServiceAppointments.length === 0) {
-            this.sendInterestedButtonDisabled = true;
+            this.showSendInterest = false;
             return;
         }
-        this.sendInterestedButtonDisabled = false;
+        this.showSendInterest = false;
         this.showCommentPage();
     }
 
