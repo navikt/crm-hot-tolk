@@ -29,6 +29,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
         const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
         this.dispatchEvent(eventToSend);
     }
+    sendCheckedRows() {
+        this.sendInterestedButtonDisabled = this.checkedServiceAppointments.length > 0 ? false : true;
+        const eventToSend = new CustomEvent('sendcheckedrows', { detail: this.checkedServiceAppointments });
+        this.dispatchEvent(eventToSend);
+    }
 
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('openfilters')) {
@@ -39,15 +44,24 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
         this.sendFilters();
     }
+    setCheckedRowsOnRefresh() {
+        if (sessionStorage.getItem('checkedrows') && !this.isDetails) {
+            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrows'));
+            sessionStorage.removeItem('checkedrows');
+        }
+        this.sendCheckedRows();
+    }
 
     disconnectedCallback() {
         // Going back with browser back or back button on mouse forces page refresh and a disconnect
         // Save filters on disconnect to exist only within the current browser tab
         sessionStorage.setItem('openfilters', JSON.stringify(this.filters));
+        sessionStorage.setItem('checkedrows', JSON.stringify(this.checkedServiceAppointments));
     }
 
     renderedCallback() {
         this.setPreviousFiltersOnRefresh();
+        this.setCheckedRowsOnRefresh();
     }
 
     @track filters = [];
@@ -109,8 +123,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
+        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
+        this.sendCheckedRows();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
@@ -127,11 +143,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
     showTable = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
+        this.serviceAppointment = undefined;
         this.seriesRecords = [];
-        this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
         let recordId = result.detail.Id;
-        this.urlStateParameterId = recordId;
-        this.isDetails = this.urlStateParameterId !== '';
+        this.recordId = recordId;
+        this.isDetails = !!this.recordId;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
@@ -139,7 +155,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
         for (let serviceAppointment of this.records) {
-            if (this.serviceAppointment.HOT_Request__c === serviceAppointment.HOT_Request__c) {
+            if (this.serviceAppointment?.HOT_Request__c === serviceAppointment?.HOT_Request__c) {
                 this.seriesRecords.push(serviceAppointment);
             }
         }
@@ -148,18 +164,18 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.sendDetail();
     }
 
-    @track urlStateParameterId = '';
+    @api recordId;
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        if (this.urlStateParameterId !== '') {
-            baseURL += '?list=open' + '&id=' + this.urlStateParameterId;
+        if (this.recordId) {
+            baseURL += '?list=open' + '&id=' + this.recordId;
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
 
     @api goBack() {
-        let recordIdToReturn = this.urlStateParameterId;
-        this.urlStateParameterId = '';
+        let recordIdToReturn = this.recordId;
+        this.recordId = undefined;
         this.isDetails = false;
         this.showTable = true;
         this.sendDetail();
@@ -221,9 +237,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
             });
     }
 
-    // Set button state when checkbox clicked
-    setSendInterestedButtonState(event) {
-        this.sendInterestedButtonDisabled = event.detail > 0 ? false : true;
+    handleRowChecked(event) {
+        this.checkedServiceAppointments = event.detail.checkedRows;
+        this.sendCheckedRows();
     }
 
     sendInterestedButtonDisabled = true;

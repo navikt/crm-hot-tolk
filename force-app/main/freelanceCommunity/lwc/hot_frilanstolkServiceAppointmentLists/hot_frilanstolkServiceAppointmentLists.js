@@ -4,6 +4,7 @@ import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMixin(LightningElement) {
     @track filters = [];
     @track records = [];
+    @track checkedRows = [];
 
     breadcrumbs = [
         {
@@ -19,17 +20,21 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     handleFilters(event) {
         this.filters = event.detail;
     }
-
     handleRecords(event) {
         this.records = event.detail;
     }
+    handleRowChecked(event) {
+        this.checkedRows = event.detail;
+    }
 
+    recordId;
     @track urlStateParameters;
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference && Object.keys(currentPageReference.state).length > 0) {
             this.urlStateParameters = { ...currentPageReference.state };
             this.updateTab({ target: { dataset: { id: this.urlStateParameters.list } } });
+            this.recordId = this.urlStateParameters.id;
         } else {
             this.updateTab({ target: { dataset: { id: 'open' } } });
         }
@@ -66,7 +71,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
     goBack() {
         let res = this.template.querySelector('[data-name="' + this.activeTab + '"]').goBack();
-        if (res.id === '') {
+        if (!res.id) {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
                 attributes: {
@@ -119,5 +124,8 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     isDetails = false;
     handleDetails(event) {
         this.isDetails = event.detail;
+        if (!this.isDetails) {
+            this.recordId = undefined;
+        }
     }
 }

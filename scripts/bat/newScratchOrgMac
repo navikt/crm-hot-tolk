@@ -12,8 +12,8 @@ sfdx force:package:install --package 04t7U000000Tp4DQAS -r -k $3 --wait 10 --pub
 # Installer crm-platform-access-control ver. 0.101
 sfdx force:package:install --package 04t7U000000TpqbQAC -r -k $3 --wait 10 --publishwait 10
 
-# Installer crm-community-base ver. 0.69
-sfdx force:package:install --package 04t7U000000TqARQA0 -r -k $3 --wait 10 --publishwait 10
+# Installer crm-community-base ver. 0.70
+sfdx force:package:install --package 04t7U000000TqGeQAK -r -k $3 --wait 10 --publishwait 10
 
 # Installer crm-platform-reporting ver. 0.25
 sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k $3 --wait 10 --publishwait 10

@@ -43,6 +43,7 @@ export default class Hot_wageClaimList extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
+        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -50,7 +51,9 @@ export default class Hot_wageClaimList extends LightningElement {
 
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('wageclaimfilters')) {
-            this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('wageclaimfilters')), setRecords: true }});
+            this.applyFilter({
+                detail: { filterArray: JSON.parse(sessionStorage.getItem('wageclaimfilters')), setRecords: true }
+            });
             sessionStorage.removeItem('wageclaimfilters');
         }
         this.sendFilters();
@@ -76,9 +79,10 @@ export default class Hot_wageClaimList extends LightningElement {
     isWageClaimDetails = false;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
+        this.wageClaim = undefined;
         let recordId = result.detail.Id;
-        this.urlStateParameterId = recordId;
-        this.isWageClaimDetails = this.urlStateParameterId !== '';
+        this.recordId = recordId;
+        this.isWageClaimDetails = !!this.recordId;
         for (let wageClaim of this.wageClaims) {
             if (recordId === wageClaim.Id) {
                 this.wageClaim = wageClaim;
@@ -88,18 +92,18 @@ export default class Hot_wageClaimList extends LightningElement {
         this.sendDetail();
     }
 
-    @track urlStateParameterId = '';
+    @api recordId;
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        if (this.urlStateParameterId !== '') {
-            baseURL += '?list=wageClaim' + '&id=' + this.urlStateParameterId;
+        if (this.recordId) {
+            baseURL += '?list=wageClaim' + '&id=' + this.recordId;
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
 
     @api goBack() {
-        let recordIdToReturn = this.urlStateParameterId;
-        this.urlStateParameterId = '';
+        let recordIdToReturn = this.recordId;
+        this.recordId = undefined;
         this.isWageClaimDetails = false;
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'wageClaim' };

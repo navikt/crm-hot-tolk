@@ -35,7 +35,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('interestedfilters')) {
-            this.applyFilter({ detail: { filterArray: JSON.parse(sessionStorage.getItem('interestedfilters')), setRecords: true }});
+            this.applyFilter({
+                detail: { filterArray: JSON.parse(sessionStorage.getItem('interestedfilters')), setRecords: true }
+            });
             sessionStorage.removeItem('interestedfilters');
         }
         this.sendFilters();
@@ -102,6 +104,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
+        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -124,35 +127,38 @@ export default class Hot_interestedResourcesList extends LightningElement {
     showTable = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
+        this.interestedResource = undefined;
         let recordId = result.detail.Id;
-        this.urlStateParameterId = recordId;
-        this.isDetails = this.urlStateParameterId !== '';
+        console.log(this.recordId);
+        console.log(result.detail.Id);
+        this.recordId = recordId;
+        this.isDetails = !!this.recordId;
         for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
             }
         }
-        this.isNotRetractable = this.interestedResource.Status__c !== 'Påmeldt';
+        this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
         this.fixComments();
         this.updateURL();
         this.sendDetail();
-        if (this.interestedResource.IsNewComment__c) {
-            readComment({ interestedResourceId: this.interestedResource.Id });
+        if (this.interestedResource?.IsNewComment__c) {
+            readComment({ interestedResourceId: this.interestedResource?.Id });
         }
     }
 
-    @track urlStateParameterId = '';
+    @api recordId;
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        if (this.urlStateParameterId !== '') {
-            baseURL += '?list=interested' + '&id=' + this.urlStateParameterId;
+        if (this.recordId) {
+            baseURL += '?list=interested' + '&id=' + this.recordId;
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
 
     @api goBack() {
-        let recordIdToReturn = this.urlStateParameterId;
-        this.urlStateParameterId = '';
+        let recordIdToReturn = this.recordId;
+        this.recordId = undefined;
         this.isDetails = false;
         this.showTable = true;
         this.sendDetail();
@@ -193,8 +199,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     @track prevComments = '';
     fixComments() {
-        if (this.interestedResource.Comments__c != undefined) {
-            this.prevComments = this.interestedResource.Comments__c.split('\n\n');
+        if (this.interestedResource?.Comments__c != undefined) {
+            this.prevComments = this.interestedResource?.Comments__c.split('\n\n');
         } else {
             this.prevComments = '';
         }

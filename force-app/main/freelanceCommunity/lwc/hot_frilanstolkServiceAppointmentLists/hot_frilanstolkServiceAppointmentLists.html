@@ -28,19 +28,22 @@
         <div class="tabset mobile-only">
             <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
         </div>
-        <br if:false={isDetails}/>
+        <br if:false={isDetails} />
         <div class="tab-content-wrapper">
             <div if:true={tabMap.open} class="tab-content">
                 <c-hot_open-service-appointments
+                    record-id={recordId}
                     data-name="open"
                     onsendfilters={handleFilters}
                     onsendrecords={handleRecords}
                     onsenddetail={handleDetails}
+                    onsendcheckedrows={handleRowChecked}
                 >
                 </c-hot_open-service-appointments>
             </div>
             <div if:true={tabMap.interested} class="tab-content">
                 <c-hot_interested-resources-list
+                    record-id={recordId}
                     data-name="interested"
                     onsendfilters={handleFilters}
                     onsendrecords={handleRecords}
@@ -50,6 +53,7 @@
             </div>
             <div if:true={tabMap.my} class="tab-content">
                 <c-hot_my-service-appointments
+                    record-id={recordId}
                     data-name="my"
                     onsendfilters={handleFilters}
                     onsendrecords={handleRecords}
@@ -59,6 +63,7 @@
             </div>
             <div if:true={tabMap.wageClaim} class="tab-content">
                 <c-hot_wage-claim-list
+                    record-id={recordId}
                     data-name="wageClaim"
                     onsendfilters={handleFilters}
                     onsendrecords={handleRecords}
