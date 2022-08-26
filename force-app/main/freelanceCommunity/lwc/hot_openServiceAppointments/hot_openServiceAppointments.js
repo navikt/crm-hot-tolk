@@ -31,9 +31,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
     sendCheckedRows() {
         this.showSendInterest = this.checkedServiceAppointments.length > 0 && !this.isDetails;
+        this.sendInterestButtonLabel = 'Meld interesse til ' + this.checkedServiceAppointments.length + ' oppdrag';
         const eventToSend = new CustomEvent('sendcheckedrows', { detail: this.checkedServiceAppointments });
         this.dispatchEvent(eventToSend);
     }
+    sendInterestButtonLabel = '';
 
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('openfilters')) {

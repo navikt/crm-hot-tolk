@@ -59,6 +59,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 Street,
                 PostalCode,
                 HOT_AssignmentType__c,
+                HOT_AssignmentCategory__c,
                 HOT_Information__c,
                 HOT_IsScreenInterpreterNew__c,
                 HOT_Request__r.IsFellesOppdrag__c
