@@ -77,6 +77,25 @@ export let filterArray = [
         ]
     },
     {
+        name: 'HOT_AssignmentCategory__c',
+        label: 'Type oppdrag',
+        isCheckboxgroup: true,
+        value: [
+            {
+                name: 'Oppmøtetolk',
+                label: 'Oppmøtetolk'
+            },
+            {
+                name: 'Skjermtolk',
+                label: 'Skjermtolk'
+            },
+            {
+                name: 'Fellesoppdrag',
+                label: 'Fellesoppdrag'
+            }
+        ]
+    },
+    {
         name: 'HOT_ServiceTerritoryDeveloperName__c',
         label: 'Region',
         isCheckboxgroup: true,
@@ -164,13 +183,13 @@ export function setDefaultFilters(regions) {
     let localTimeValue = filterArray[1].value[0].localTimeValue;
     localTimeValue = new Date().toLocaleString();
     filterArray[0].value[0].localTimeValue = localTimeValue.substring(0, localTimeValue.length - 10);
-    filterArray[3].value.forEach((element) => {
+    filterArray[4].value.forEach((element) => {
         if (regions?.includes(element.name)) {
             element.value = true;
             element.checked = true;
         }
     });
-    filterArray[5].searchTerm = '';
+    filterArray[6].searchTerm = '';
 
     return filterArray;
 }
