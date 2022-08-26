@@ -45,7 +45,6 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
     setActiveTab(event) {
         this.updateTab(event);
-        this.updateURL();
     }
     updateTab(event) {
         for (let tab of this.tabs) {

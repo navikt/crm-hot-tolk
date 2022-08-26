@@ -168,9 +168,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     @api recordId;
     updateURL() {
-        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=open';
         if (this.recordId) {
-            baseURL += '?list=open' + '&id=' + this.recordId;
+            baseURL += '&id=' + this.recordId;
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
