@@ -10,6 +10,7 @@ public without sharing class HOT_WageClaimListController {
                 WorkTypeName__c,
                 toLabel(Status__c),
                 ServiceTerritoryName__c,
+                ServiceAppointmentCity__c,
                 ServiceAppointmentName__c,
                 ParentWageClaim__c,
                 DegreeOfHearingAndVisualImpairment__c

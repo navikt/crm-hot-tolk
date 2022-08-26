@@ -15,8 +15,8 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Region',
-        name: 'ServiceTerritoryName__c',
+        label: 'Poststed',
+        name: 'ServiceAppointmentCity__c',
         type: 'String'
     },
     {
