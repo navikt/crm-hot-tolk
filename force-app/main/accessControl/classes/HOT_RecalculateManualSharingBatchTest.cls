@@ -48,7 +48,7 @@ private class HOT_RecalculateManualSharingBatchTest {
 
     @isTest
     static void schedulableTest() {
-        String cron_exp = '0 0 0 3 9 ? 2022';
+        String cron_exp = '0 0 0 3 9 ? 2024';
         Test.startTest();
         String jobId = System.schedule(
             'HOT_RecalculateManualSharingBatch',
