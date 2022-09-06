@@ -30,7 +30,7 @@ private class HOT_ReminderSMSBatchTest {
 
     @isTest
     static void schedulableTest() {
-        String cron_exp = '0 0 0 3 9 ? 2022';
+        String cron_exp = '0 0 0 3 9 ? 2024';
         Test.startTest();
         String jobId = System.schedule('HOT_ReminderSMSBatch', cron_exp, new HOT_ReminderSMSBatch());
         Test.stopTest();
