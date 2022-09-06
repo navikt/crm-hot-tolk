@@ -136,14 +136,14 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                 if (
                     (numberOfScheduled > 0 && numberOfNone + numberOfScheduled == numberOfServiceAppointments) ||
                     (numberOfNone + numberOfScheduled > 0 &&
-                    numberOfNone + numberOfScheduled + numberOfDispatched + numberOfCannotComplete ==
+                    numberOfNone + numberOfScheduled + numberOfDispatched + numberOfCannotComplete + numberOfCanceled ==
                     numberOfServiceAppointments)
                 ) {
                     workOrderLineItem.Status = 'Scheduled';
                     continue;
                 }
                 if (
-                    numberOfDispatched + numberOfCannotComplete == numberOfServiceAppointments &&
+                    numberOfDispatched + numberOfCannotComplete + numberOfCanceled == numberOfServiceAppointments &&
                     numberOfDispatched > 0
                 ) {
                     workOrderLineItem.Status = 'Dispatched';
@@ -153,7 +153,10 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                     workOrderLineItem.Status = 'In Progress';
                     continue;
                 }
-                if (numberOfCompleted > 0 && numberOfCompleted + numberOfDispatched == numberOfServiceAppointments) {
+                if (
+                    numberOfCompleted > 0 &&
+                    numberOfCompleted + numberOfDispatched + numberOfCanceled == numberOfServiceAppointments
+                ) {
                     workOrderLineItem.Status = 'Completed';
                     continue;
                 }
@@ -168,7 +171,8 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                 if (
                     numberOfCompleted > 0 &&
                     numberOfCannotComplete > 0 &&
-                    numberOfCompleted + numberOfCannotComplete + numberOfDispatched == numberOfServiceAppointments
+                    numberOfCompleted + numberOfCannotComplete + numberOfDispatched + numberOfCanceled ==
+                    numberOfServiceAppointments
                 ) {
                     workOrderLineItem.Status = 'Partially Complete';
                     continue;

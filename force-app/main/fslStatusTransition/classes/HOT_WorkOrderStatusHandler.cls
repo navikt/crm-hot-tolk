@@ -172,14 +172,14 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 if (
                     (numberOfScheduled > 0 && numberOfNew + numberOfScheduled == numberOfWorkOrderLineItem) ||
                     (numberOfNew + numberOfScheduled > 0 &&
-                    numberOfNew + numberOfScheduled + numberOfDispatched + numberOfCannotComplete ==
+                    numberOfNew + numberOfScheduled + numberOfDispatched + numberOfCannotComplete + numberOfCanceled ==
                     numberOfWorkOrderLineItem)
                 ) {
                     workOrder.Status = 'Scheduled';
                     continue;
                 }
                 if (
-                    numberOfDispatched + numberOfCannotComplete == numberOfWorkOrderLineItem &&
+                    numberOfDispatched + numberOfCannotComplete + numberOfCanceled == numberOfWorkOrderLineItem &&
                     numberOfDispatched > 0
                 ) {
                     workOrder.Status = 'Dispatched';
@@ -189,7 +189,7 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                     workOrder.Status = 'In Progress';
                     continue;
                 }
-                if (numberOfCompleted > 0 && numberOfCompleted + numberOfDispatched == numberOfWorkOrderLineItem) {
+                if (numberOfCompleted > 0 && numberOfCompleted + numberOfDispatched + numberOfCanceled == numberOfWorkOrderLineItem) {
                     workOrder.Status = 'Completed';
                     continue;
                 }
@@ -204,9 +204,9 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 if (
                     (numberOfCompleted > 0 &&
                     numberOfCannotComplete > 0 &&
-                    numberOfCompleted + numberOfCannotComplete + numberOfDispatched == numberOfWorkOrderLineItem) ||
+                    numberOfCompleted + numberOfCannotComplete + numberOfDispatched + numberOfCanceled== numberOfWorkOrderLineItem) ||
                     (numberOfPartiallyComplete > 0 &&
-                    numberOfPartiallyComplete + numberOfCompleted + numberOfCannotComplete + numberOfDispatched ==
+                    numberOfPartiallyComplete + numberOfCompleted + numberOfCannotComplete + numberOfDispatched + numberOfCanceled ==
                     numberOfWorkOrderLineItem)
                 ) {
                     workOrder.Status = 'Partially Complete';
