@@ -29,7 +29,7 @@ public with sharing class HOT_GroupMembersServiceSchedulableTest {
         }
     }
 
-    private static String CRON_EXP = '0 0 0 3 9 ? 2022';
+    private static String CRON_EXP = '0 0 0 3 9 ? 2024';
 
     @IsTest
     private static void execute() {
