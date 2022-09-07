@@ -56,7 +56,12 @@
             </div>
         </template>
 
-        <c-checkbox label="Gjentagende" oncheckboxclick={advancedTimes} name="Gjentagende" aria-label="Gjentagende bestilling?"></c-checkbox>
+        <c-checkbox
+            label="Gjentagende"
+            oncheckboxclick={advancedTimes}
+            name="Gjentagende"
+            aria-label="Gjentagende bestilling?"
+        ></c-checkbox>
         <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live>
             <c-picklist
                 name="Gjenta"
