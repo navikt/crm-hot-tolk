@@ -65,7 +65,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
     }
     setStartTime(index) {
         let dateTime = new Date();
-        let timeString = this.dateTimeToTimeString(dateTime);
+        let timeString = this.dateTimeToTimeString(dateTime, false);
         let combinedDateTime = this.combineDateTimes(this.times[index].dateMilliseconds, dateTime);
         this.times[index].startTime = combinedDateTime.getTime();
 
@@ -82,7 +82,7 @@ export default class Hot_recurringTimeInput extends LightningElement {
         if (this.times[index].endTimeString === null || this.times[index].startTime > this.times[index].endTime) {
             let dateTime = new Date(this.times[index].startTime);
             dateTime.setHours(dateTime.getHours() + 1);
-            let timeString = this.dateTimeToTimeString(dateTime);
+            let timeString = this.dateTimeToTimeString(dateTime, false);
             this.times[index].endTimeString = timeString;
             this.times[index].endTime = dateTime.getTime();
             let endTimeElements = this.template.querySelectorAll('[data-id="endTime"]');
@@ -98,9 +98,14 @@ export default class Hot_recurringTimeInput extends LightningElement {
         this.times[index].endTime = combinedDateTime.getTime();
     }
 
-    dateTimeToTimeString(dateTime) {
+    dateTimeToTimeString(dateTime, isLoadingDatetimes) {
         let hours = dateTime.getHours();
-        return (hours < 10 ? '0' + hours.toString() : hours.toString()) + ':00';
+        let minutes = isLoadingDatetimes ? dateTime.getMinutes() : 0;
+        return (
+            (hours < 10 ? '0' + hours.toString() : hours.toString()) +
+            ':' +
+            (minutes < 10 ? '0' + minutes.toString() : minutes.toString())
+        );
     }
     timeStringToDateTime(dateTime, timeString) {
         let hoursMinutes = timeString.split(':');
@@ -324,12 +329,12 @@ export default class Hot_recurringTimeInput extends LightningElement {
                 for (let timeMap of result.data) {
                     let timeObject = new Object(this.setTimesValue(timeMap));
                     timeObject.dateMilliseconds = new Date(timeMap.date).getTime();
-                    timeObject.startTimeString = this.dateTimeToTimeString(new Date(Number(timeMap.startTime)));
+                    timeObject.startTimeString = this.dateTimeToTimeString(new Date(Number(timeMap.startTime)), true);
                     timeObject.startTime = this.timeStringToDateTime(
                         timeObject.dateMilliseconds,
                         timeObject.startTimeString
                     ).getTime();
-                    timeObject.endTimeString = this.dateTimeToTimeString(new Date(Number(timeMap.endTime)));
+                    timeObject.endTimeString = this.dateTimeToTimeString(new Date(Number(timeMap.endTime)), true);
                     timeObject.endTime = this.timeStringToDateTime(
                         timeObject.dateMilliseconds +
                             (timeObject.endTimeString < timeObject.startTimeString ? 86400000 : 0),
