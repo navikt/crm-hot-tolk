@@ -279,4 +279,133 @@ private class HOT_RequestHandlerTest {
             'Could not create the correct ampint of Service Appointments'
         );
     }
+    @isTest
+    public static void setInterpretationAdressSameAsMeetingadress() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        insert person;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request1 = HOT_TestDataFactory.createRequest('Request 1', workType);
+        request1.MeetingStreet__c = 'Sommerveien 2';
+        request1.MeetingPostalCity__c = 'Oslo';
+        request1.MeetingPostalCode__c = '0166';
+
+        person = [SELECT Id, CRM_Account__c FROM Person__c WHERE Id = :person.Id];
+
+        request1.Account__c = person.CRM_Account__c;
+        insert request1;
+
+        List<HOT_Request__c> requester = [
+            SELECT InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c
+            FROM HOT_Request__c
+            WHERE Id = :request1.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals(
+            'Sommerveien 2',
+            requester[0].InterpretationStreet__c,
+            'Interpetration and Meeting street is not the same'
+        );
+        System.assertEquals(
+            'Oslo',
+            requester[0].InterpretationPostalCity__c,
+            'Interpetration and Meeting postalcity is not the same'
+        );
+        System.assertEquals(
+            '0166',
+            requester[0].InterpretationPostalCode__c,
+            'Interpetration and Meeting postalcode is not the same'
+        );
+    }
+    @isTest
+    public static void setMeetingadressSameAsInterpretationAdress() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        insert person;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request1 = HOT_TestDataFactory.createRequest('Request 1', workType);
+        request1.InterpretationStreet__c = 'Sommerveien 2';
+        request1.InterpretationPostalCity__c = 'Oslo';
+        request1.InterpretationPostalCode__c = '0166';
+
+        person = [SELECT Id, CRM_Account__c FROM Person__c WHERE Id = :person.Id];
+
+        request1.Account__c = person.CRM_Account__c;
+        insert request1;
+
+        List<HOT_Request__c> requester = [
+            SELECT MeetingPostalCity__c, MeetingPostalCode__c, MeetingStreet__c
+            FROM HOT_Request__c
+            WHERE Id = :request1.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals(
+            'Sommerveien 2',
+            requester[0].MeetingStreet__c,
+            'Interpetration and Meeting street is not the same'
+        );
+        System.assertEquals(
+            'Oslo',
+            requester[0].MeetingPostalCity__c,
+            'Interpetration and Meeting postalcity is not the same'
+        );
+        System.assertEquals(
+            '0166',
+            requester[0].MeetingPostalCode__c,
+            'Interpetration and Meeting postalcode is not the same'
+        );
+    }
+    @isTest
+    public static void shouldNotSetSameAdressWhenBothIsFilled() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        insert person;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request1 = HOT_TestDataFactory.createRequest('Request 1', workType);
+        request1.InterpretationStreet__c = 'Sommerveien 2';
+        request1.InterpretationPostalCity__c = 'Oslo';
+        request1.InterpretationPostalCode__c = '0166';
+        request1.MeetingStreet__c = 'Tromsø 8';
+        request1.MeetingPostalCity__c = 'Tromsø';
+        request1.MeetingPostalCode__c = '8888';
+
+        person = [SELECT Id, CRM_Account__c FROM Person__c WHERE Id = :person.Id];
+
+        request1.Account__c = person.CRM_Account__c;
+        insert request1;
+
+        List<HOT_Request__c> requester = [
+            SELECT
+                MeetingPostalCity__c,
+                MeetingPostalCode__c,
+                MeetingStreet__c,
+                InterpretationStreet__c,
+                InterpretationPostalCode__c,
+                InterpretationPostalCity__c
+            FROM HOT_Request__c
+            WHERE Id = :request1.Id
+            LIMIT 1
+        ];
+
+        System.assertNotEquals(
+            'Tromsø 8',
+            requester[0].InterpretationStreet__c,
+            'Both adresses was changed to the same'
+        );
+        System.assertNotEquals(
+            'Tromsø',
+            requester[0].InterpretationPostalCity__c,
+            'Both adresses was changed to the same'
+        );
+        System.assertNotEquals(
+            '8888',
+            requester[0].InterpretationPostalCode__c,
+            'Both adresses was changed to the same'
+        );
+        System.assertNotEquals('Sommerveien 2', requester[0].MeetingStreet__c, 'Both adresses was changed to the same');
+        System.assertNotEquals('Oslo', requester[0].MeetingPostalCity__c, 'Both adresses was changed to the same');
+        System.assertNotEquals('0166', requester[0].MeetingPostalCode__c, 'Both adresses was changed to the same');
+    }
 }
