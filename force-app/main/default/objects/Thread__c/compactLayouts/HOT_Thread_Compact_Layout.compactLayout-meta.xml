@@ -5,4 +5,5 @@
     <fields>CRM_Account__c</fields>
     <fields>HOT_Request__c</fields>
     <fields>CRM_Number_of_unread_Messages_by_NAV__c</fields>
+    <label>HOT_Thread_Compact_Layout</label>
 </CompactLayout>
