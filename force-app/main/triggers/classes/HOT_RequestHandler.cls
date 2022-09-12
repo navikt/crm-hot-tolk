@@ -3,6 +3,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         setStatusDefault((List<HOT_Request__c>) records);
         setOrdererField((List<HOT_Request__c>) records);
         setServiceTerritory((List<HOT_Request__c>) records);
+        setMeetingStreet((List<HOT_Request__c>) records);
         setFieldsToBlank(
             (List<HOT_Request__c>) records,
             new List<String>{
@@ -32,6 +33,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             setInterpretationMethod(requestsWithUserInterpretationMethod);
         }
     }
+
+
 
     public override void onAfterInsert() {
         List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
@@ -369,4 +372,23 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             request.InterpretationMethod__c = workTypeIdByDeveloperName.get(request.UserInterpretationMethod__c);
         }
     }
+
+    public static void setMeetingStreet(List<HOT_Request__c> requests){
+        for (HOT_Request__C request : requests) {
+            if(request.MeetingStreet__c == null && request.InterpretationStreet__c != null){
+                request.MeetingStreet__c = request.InterpretationStreet__c;
+                request.MeetingPostalCity__c = request.InterpretationPostalCity__c;
+                request.MeetingPostalCode__c = request.InterpretationPostalCode__c;
+            }
+
+            if(request.InterpretationStreet__c == null && request.MeetingStreet__c != null){
+                request.InterpretationStreet__c = request.MeetingStreet__c;
+                request.InterpretationPostalCity__c = request.MeetingPostalCity__c;
+                request.InterpretationPostalCode__c = request.MeetingPostalCode__c;
+            }
+        }
+    }
+
 }
+
+
