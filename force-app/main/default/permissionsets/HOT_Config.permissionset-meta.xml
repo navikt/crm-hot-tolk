@@ -339,12 +339,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_InterestedResource__c.AppointmentServiceTerritory__c</field>
+        <field>HOT_InterestedResource__c.AppointmentServiceTerritoryDeveloperName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_InterestedResource__c.AppointmentServiceTerritoryDeveloperName__c</field>
+        <field>HOT_InterestedResource__c.AppointmentServiceTerritory__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -909,12 +909,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_ServiceTerritoryName__c</field>
+        <field>ServiceAppointment.HOT_ServiceTerritoryDeveloperName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_ServiceTerritoryDeveloperName__c</field>
+        <field>ServiceAppointment.HOT_ServiceTerritoryName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1070,6 +1070,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ShiftTemplate.CRM_Domain__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Thread__c.HOT_Dispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Thread__c.HOT_Request__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
