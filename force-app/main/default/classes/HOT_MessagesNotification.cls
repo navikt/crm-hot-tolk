@@ -11,6 +11,7 @@ public with sharing class HOT_MessagesNotification {
             WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
 
+
         for(Thread__c thread: threads){
             Messaging.CustomNotification notification = new Messaging.CustomNotification();
             notification.setTitle('Ny melding');
@@ -29,15 +30,16 @@ public with sharing class HOT_MessagesNotification {
             if(thread.HOT_Dispatcher__c==null){
                 List<Id>ownerIds=new List<Id>();
                 ownerIds.add(thread.OwnerId);
-                Map<Id, ID> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(ownerIds);
-
-
+            
                 Set<String> recipientsqueue=new Set<String>();
-                recipientsqueue.add(thread.HOT_Dispatcher__c);
-                for(Id owner: groupByQueue.keySet()){
+                recipientsqueue.add(thread.HOT_Dispatcher__c); 
+            }
+        }
+        if(!ownerIds.isEmpty()){
+            Map<Id, ID> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(ownerIds);
+            for(Id owner: groupByQueue.keySet()){
                     recipientsqueue.add(owner);
                     HOT_NotificationHandler.sendNotification(notification, recipientsqueue, thread);
-                }
             }
         }
     }
