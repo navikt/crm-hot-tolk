@@ -3,7 +3,7 @@ public with sharing class HOT_MessagesNotification {
         
     }
     public static void Notification(Id threadId){
-        Thread__c thread=[SELECT Id, HOT_Dispatcher__c, HOT_Subject__c FROM Thread__c WHERE Id IN :threadId];
+        Thread__c thread=[SELECT Id, HOT_Dispatcher__c, HOT_Subject__c FROM Thread__c WHERE Id=:threadId LIMIT 1];
 
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
