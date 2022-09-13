@@ -80,20 +80,6 @@ public without sharing class HOT_UserNotificationService {
         notification.send(recipients);
     }
 
-    public static void testNotification(Id threadId) {
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
-        Thread__c thread = new Thread__c(Id = threadId);
-        Set<String> recipients = new Set<String>{ '0051X00000Cryk9QAB' };
-
-        WorkOrder workOrder = [SELECT Id, StartDate, EndDate FROM workOrder WHERE Id = '0WO1X000001WGGbWAO'];
-        newMessageNotification(notificationType, thread, recipients);
-        newWorkOrderNotification(notificationType, workOrder, recipients);
-    }
-
     public static void newMessageNotification(
         CustomNotificationType notificationType,
         Thread__c thread,
