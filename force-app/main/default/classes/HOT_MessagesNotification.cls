@@ -39,7 +39,6 @@ public with sharing class HOT_MessagesNotification {
                     HOT_NotificationHandler.sendNotification(notification, recipientsqueue, thread);
                 }
             }
-            }
-        
+        }
     }
 }

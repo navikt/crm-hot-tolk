@@ -6,7 +6,8 @@ public with sharing class HOT_MessageHandler extends MyTriggers{
                 inThreads.add(message.CRM_Thread__c); 
             }
         }
-        HOT_MessagesNotification.Notification(inThreads);
+        if(!inThreads.isEmpty()){
+            HOT_MessagesNotification.Notification(inThreads);
+        }
     }
-    
 }
