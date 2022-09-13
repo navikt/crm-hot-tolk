@@ -1,20 +1,20 @@
 public without sharing class HOT_UserNotificationService {
-    public static void newRequestNotification(
+    public static void newWorkOrderNotification(
         CustomNotificationType notificationType,
-        HOT_Request__c request,
+        WorkOrder workOrder,
         Set<String> recipients
     ) {
         String title = 'Andre har lagt inn en bestilling for deg';
         String body =
             'Det er bestilt tolk til deg. Dato: ' +
-            request.StartTime__c?.format('d.M.yyyy, hh:mm') +
+            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
             ' - ' +
-            request.EndTime__c?.format('hh:mm') +
+            workOrder.EndDate?.format('hh:mm') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        Id targetId = request.Id;
-        String targetPageRef = getTargetPageRef(request.Id, 'R');
+        Id targetId = workOrder.Id;
+        String targetPageRef = getTargetPageRef(workOrder.Id, 'R');
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
@@ -80,6 +80,20 @@ public without sharing class HOT_UserNotificationService {
         notification.send(recipients);
     }
 
+    public static void testNotification(Id threadId) {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        Thread__c thread = new Thread__c(Id = threadId);
+        Set<String> recipients = new Set<String>{ '0051X00000Cryk9QAB' };
+
+        WorkOrder workOrder = [SELECT Id, StartDate, EndDate FROM workOrder WHERE Id = '0WO1X000001WGGbWAO'];
+        newMessageNotification(notificationType, thread, recipients);
+        newWorkOrderNotification(notificationType, workOrder, recipients);
+    }
+
     public static void newMessageNotification(
         CustomNotificationType notificationType,
         Thread__c thread,
@@ -94,6 +108,7 @@ public without sharing class HOT_UserNotificationService {
         notification.setTitle(title);
         notification.setBody(body);
         notification.setNotificationTypeId(notificationTypeId);
+        //notification.setTargetId('a0T1X000004EOdMUAW');
         notification.setTargetPageRef(targetPageRef);
 
         notification.send(recipients);
@@ -106,14 +121,15 @@ public without sharing class HOT_UserNotificationService {
             '", level: "' +
             level +
             '"}}';
+
         return pageRef;
     }
 
     private static String getTargetPageRefThread(Id targetId) {
         String pageRef =
-            '{type: " comm__externalRecordPage",attributes: {recordId: ' +
+            '{type: "standard__recordPage",attributes: {recordId: "' +
             targetId +
-            ', objectType: "Thread__c"}}';
+            '", objectApiName: "Thread__c", actionName: "view"}}';
         return pageRef;
     }
 }
