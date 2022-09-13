@@ -3,7 +3,7 @@ public with sharing class HOT_MessagesNotification {
         
     }
     public static void Notification(List<Id> threadIds){
-        List<Thread__c> threads=[SELECT Id, HOT_Dispatcher__c, HOT_Subject__c FROM Thread__c WHERE Id IN:threadIds];
+        List<Thread__c> threads=[SELECT Id, OwnerId, HOT_Dispatcher__c, HOT_Subject__c FROM Thread__c WHERE Id IN:threadIds];
 
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -11,36 +11,29 @@ public with sharing class HOT_MessagesNotification {
             WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
 
+        List<Id> ownerIds=new List<Id>();
+        for(Thread__c thread : threads){
+                ownerIds.add(thread.OwnerId);
+        }
+        Map<Id, ID> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(ownerIds);
 
-        for(Thread__c thread: threads){
+        for(Thread__c thread : threads){
+            Set<String> recipients = new Set<String>();
+            if(thread.HOT_Dispatcher__c!=null){
+                recipients.add(thread.HOT_Dispatcher__c);
+            }
+            else {
+                recipients.add(groupByQueue.get(thread.OwnerId));
+            }
+
             Messaging.CustomNotification notification = new Messaging.CustomNotification();
             notification.setTitle('Ny melding');
             notification.setBody(thread.HOT_Subject__c);
             notification.setNotificationTypeId(notificationType.Id);
             notification.setTargetId(thread.Id);
-
-            Set<String> recipients=new Set<String>();
-            recipients.add(thread.HOT_Dispatcher__c);
-
-            if(thread.HOT_Dispatcher__c!=null){
-
-                HOT_NotificationHandler.sendNotification(notification, recipients, thread);
+            HOT_NotificationHandler.sendNotification(notification, recipients, thread);
                 
-            }
-            if(thread.HOT_Dispatcher__c==null){
-                List<Id>ownerIds=new List<Id>();
-                ownerIds.add(thread.OwnerId);
-            
-                Set<String> recipientsqueue=new Set<String>();
-                recipientsqueue.add(thread.HOT_Dispatcher__c); 
-            }
         }
-        if(!ownerIds.isEmpty()){
-            Map<Id, ID> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(ownerIds);
-            for(Id owner: groupByQueue.keySet()){
-                    recipientsqueue.add(owner);
-                    HOT_NotificationHandler.sendNotification(notification, recipientsqueue, thread);
-            }
-        }
+        
     }
 }
