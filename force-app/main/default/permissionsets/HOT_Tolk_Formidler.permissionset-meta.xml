@@ -2057,10 +2057,10 @@
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
         <object>ServiceTerritory</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
