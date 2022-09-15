@@ -485,4 +485,27 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             'Could not set multiple HOT_Interpreters__c onAfterUpdate'
         );
     }
+
+    @isTest 
+    static void isHotInterpretersEmptyOnNewAssignment() {
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__r.WorkOrderId, HOT_IsScreenInterpreterNew__c, HOT_ServiceResource__r.Name
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+
+        WorkOrder workOrder = [
+            SELECT Status
+            FROM WorkOrder
+            WHERE Id = :ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
+
+        workOrder.HOT_Interpreters__c = 'Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader';
+        workOrder.Status = 'Incomplete';
+        HOT_InterpreterOnWorkOrderService.appendInterpreterName(workOrder, serviceAppointment);
+        
+        System.assertEquals(workOrder.HOT_Interpreters__c, 'Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader ...' , 'Expected Interpreters to have 3 dots ( ...) after their names');
+    }
 }

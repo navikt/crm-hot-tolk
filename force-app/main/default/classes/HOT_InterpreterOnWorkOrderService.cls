@@ -54,17 +54,21 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
         return serviceAppointmentsByWorkOrderId;
     }
 
-    private static WorkOrder appendInterpreterName(WorkOrder workOrder, ServiceAppointment serviceAppointment) {
+    public static WorkOrder appendInterpreterName(WorkOrder workOrder, ServiceAppointment serviceAppointment) {
         String oldInterpreters = workOrder.HOT_Interpreters__c;
         String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
-        workOrder.HOT_Interpreters__c =
-            (workOrder.HOT_Interpreters__c == null ? '' : workOrder.HOT_Interpreters__c) +
-            serviceAppointment.HOT_ServiceResource__r.Name +
-            screenInterpreter +
-            ', ';
-        if (workOrder.HOT_Interpreters__c.length() > 255) {
-            workOrder.HOT_Interpreters__c = oldInterpreters + ' ...';
-        }
+
+            if(workOrder.HOT_Interpreters__c == null){
+                workOrder.HOT_Interpreters__c = '';
+            } 
+
+            if(workOrder.HOT_Interpreters__c != null){
+                workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c + serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter + ', ';
+            }
+            
+            if (workOrder.HOT_Interpreters__c.length() > 100) {
+                workOrder.HOT_Interpreters__c = oldInterpreters + ' ...';
+            }
 
         return workOrder;
     }
