@@ -55,7 +55,7 @@ public with sharing class HOT_MessagehandlerTest {
     @isTest
     static void messageHandlerTestWithDispatcher(){
 
-        Profile pro= [SELECT Id FROM Profile WHERE Name = 'NAV Administrator'];
+        Profile pro= [SELECT Id, Name FROM Profile WHERE Name = 'NAV Administrator'];
         User user = HOT_TestDataFactory.createUser('Lastname',pro);
         insert user;
         String personAccountRecordTypeId = Schema.getGlobalDescribe()
@@ -99,9 +99,9 @@ public with sharing class HOT_MessagehandlerTest {
         m.CRM_Message_Text__c = 'YOYOYOYO';
 
         test.startTest();
-        
+
             insert m;
-        
+
         test.stopTest();
     }
 }
