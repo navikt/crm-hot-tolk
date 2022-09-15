@@ -1,7 +1,4 @@
 public with sharing class HOT_MessagesNotification {
-    public HOT_MessagesNotification() {
-        
-    }
     public static void Notification(List<Id> threadIds){
         List<Thread__c> threads=[SELECT Id, OwnerId, HOT_Dispatcher__c, HOT_Subject__c FROM Thread__c WHERE Id IN:threadIds];
 
@@ -25,7 +22,6 @@ public with sharing class HOT_MessagesNotification {
             else {
                 recipients.add(groupByQueue.get(thread.OwnerId));
             }
-
             Messaging.CustomNotification notification = new Messaging.CustomNotification();
             notification.setTitle('Ny melding');
             notification.setBody(thread.HOT_Subject__c);
@@ -34,6 +30,5 @@ public with sharing class HOT_MessagesNotification {
             HOT_NotificationHandler.sendNotification(notification, recipients, thread);
                 
         }
-        
     }
 }
