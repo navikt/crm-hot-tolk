@@ -487,7 +487,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
     }
 
     @isTest 
-    static void isHotInterpretersEmptyOnNewAssignment() {
+    static void appendInterpretersTest() {
 
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__r.WorkOrderId, HOT_IsScreenInterpreterNew__c, HOT_ServiceResource__r.Name
@@ -503,6 +503,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         ];
 
         workOrder.HOT_Interpreters__c = 'Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader';
+        
         workOrder.Status = 'Incomplete';
         HOT_InterpreterOnWorkOrderService.appendInterpreterName(workOrder, serviceAppointment);
         
