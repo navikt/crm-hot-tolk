@@ -47,7 +47,6 @@ public with sharing class HOT_MessagehandlerTest {
 
         test.startTest();
         insert m;
-
         test.stopTest();
     }
     @isTest
