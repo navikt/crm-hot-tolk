@@ -9,7 +9,6 @@ export let requestFieldLabels = {
     OrganizationNumber__c: { label: 'Organisasjonsnummer', type: 'string' },
     InvoiceReference__c: { label: 'Deres fakturareferanse', type: 'string' },
     AdditionalInvoiceText__c: { label: 'Tilleggsinformajon', type: 'string' },
-    EventType__c: { label: 'Type arrangement', type: 'string' },
     Subject__c: { label: 'Tema', type: 'string' },
     Description__c: { label: 'Tilleggsinformasjon', type: 'string' },
     MeetingStreet__c: { label: 'Oppmøteadresse', type: 'string' },
@@ -48,7 +47,6 @@ export let requestFieldLabels = {
             return {
                 Name: this.Name,
                 ExternalRequestStatus__c: this.ExternalRequestStatus__c,
-                EventType__c: this.EventType__c,
                 Subject__c: this.Subject__c,
                 Description__c: this.Description__c,
                 MeetingStreet__c: this.MeetingStreet__c,

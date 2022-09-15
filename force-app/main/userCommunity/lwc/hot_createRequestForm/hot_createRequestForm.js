@@ -137,8 +137,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         OrdererEmail__c: '',
         OrdererPhone__c: '',
         Source__c: 'Community',
-        Type__c: '',
-        EventType__c: ''
+        Type__c: ''
     };
 
     @track isPersonNumberValid = true;
@@ -507,7 +506,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
     @track showInformationSharingText = true;
     onHandleNeste() {
         this.fieldValues.Type__c = this.currentRequestType;
-        this.fieldValues.EventType__c = this.eventType;
 
         let radioButtonGroup = this.template.querySelector('.skjema').querySelector('.requestTypeChoice');
 
@@ -750,11 +748,6 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
                     requestIds.push(this.fieldValues.Id);
                     this.requestIds = requestIds;
                     refreshApex(this.wiredTimesValue);
-                }
-
-                if (this.fieldValues.Type__c === 'PublicEvent') {
-                    this.fieldValues.EventType__c =
-                        this.fieldValues.EventType__c === 'Annet' ? 'OtherEvent' : 'SportingEvent';
                 }
             }
         }

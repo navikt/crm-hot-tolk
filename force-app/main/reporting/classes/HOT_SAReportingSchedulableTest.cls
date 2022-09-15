@@ -12,7 +12,7 @@ private class HOT_SAReportingSchedulableTest {
         update request;
     }
 
-    @IsTest
+    @isTest
     private static void execute() {
         Test.startTest();
         String jobId = System.schedule('HOT_SAReportingSchedulable', CRON_EXP, new HOT_SAReportingSchedulable());
