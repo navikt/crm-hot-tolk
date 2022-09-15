@@ -42,17 +42,8 @@ public with sharing class HOT_MessagehandlerTest {
         t.CRM_Related_Object__c = con.Id;
         t.CRM_Account__r=account;
         t.OwnerId=user.Id;
-        t.HOT_Dispatcher__c=null;
-    
-
-        Thread__c t2 = HOT_TestDataFactory.createThread();
-        t2.CRM_Related_Object__c = con.Id;
-
         
-        Thread__c t3 = HOT_TestDataFactory.createThread();
-        t3.CRM_Related_Object__c =con.Id;
-
-        insert new List<Thread__c>{ t, t2, t3 };
+        insert t;
 
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
@@ -62,12 +53,9 @@ public with sharing class HOT_MessagehandlerTest {
         
 
         test.startTest();
-        try{
+      
              insert m;
-        }
-        catch(Exception e){
-            System.debug('Problem uten dispatcher'+e.getMessage());
-        }
+       
 
        
 
@@ -117,14 +105,7 @@ public with sharing class HOT_MessagehandlerTest {
         t.CRM_Account__r=account;
         t.HOT_Dispatcher__c=user.Id;
 
-        Thread__c t2 = HOT_TestDataFactory.createThread();
-        t2.CRM_Related_Object__c = con.Id;
-
-        
-        Thread__c t3 = HOT_TestDataFactory.createThread();
-        t3.CRM_Related_Object__c =con.Id;
-
-        insert new List<Thread__c>{ t, t2, t3 };
+        insert t;
 
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
@@ -133,12 +114,9 @@ public with sharing class HOT_MessagehandlerTest {
 
         test.startTest();
 
-        try{
+        
             insert m;
-       }
-       catch(Exception e){
-           System.debug('Problem uten dispatcher'+e.getMessage());
-       }
+       
 
         test.stopTest();
     }

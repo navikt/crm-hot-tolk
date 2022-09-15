@@ -1,4 +1,5 @@
 public with sharing class HOT_MessagesNotification {
+
     public static void Notification(List<Id> threadIds){
         List<Thread__c> threads=[SELECT Id, OwnerId, HOT_Dispatcher__c, HOT_Subject__c FROM Thread__c WHERE Id IN:threadIds];
 
