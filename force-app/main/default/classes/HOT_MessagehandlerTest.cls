@@ -2,7 +2,7 @@
 public with sharing class HOT_MessagehandlerTest {
     @isTest
     public static void messageHandlerTestWithoutDispatcher(){
-        
+
         Profile pro= [SELECT Id FROM Profile WHERE Name = 'NAV Administrator'];
         User user = HOT_TestDataFactory.createUser('Nøff',pro);
         insert user;
@@ -47,12 +47,8 @@ public with sharing class HOT_MessagehandlerTest {
         m.CRM_Message_Text__c = 'YOYOYOYO';
 
         test.startTest();
-        try{
             insert m;
-        }
-        catch(Exception e){
-            System.debug('Error when no dispatcher '+e.getMessage());
-        }
+       
         test.stopTest();
 
     }
@@ -103,12 +99,9 @@ public with sharing class HOT_MessagehandlerTest {
         m.CRM_Message_Text__c = 'YOYOYOYO';
 
         test.startTest();
- 		try{
+        
             insert m;
-        }
-        catch(Exception e){
-            System.debug('Error with dispatcher '+e.getMessage());
-        }
+        
         test.stopTest();
     }
 }
