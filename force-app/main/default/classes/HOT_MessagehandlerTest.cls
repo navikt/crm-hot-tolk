@@ -1,11 +1,8 @@
 @isTest
 public with sharing class HOT_MessagehandlerTest {
-    public HOT_MessagehandlerTest() {
-        
-    }
     @isTest
     public static void messageHandlerTestWithoutDispatcher(){
-
+        
         Profile pro= [SELECT Id FROM Profile WHERE Name = 'NAV Administrator'];
         User user = HOT_TestDataFactory.createUser('Nøff',pro);
         insert user;
@@ -23,7 +20,6 @@ public with sharing class HOT_MessagehandlerTest {
                 PersonEmail = 'HOT_testaccount@nav.hot.no'
             );
             insert Account;
-        
 
         Person__c person = new Person__c();
         person.INT_Confidential__c = 'UGRADERT';
@@ -48,22 +44,16 @@ public with sharing class HOT_MessagehandlerTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_From_Contact__c=con.Id;
-        m.CRM_Message_Text__c = 'LOLOLOLOL';
-
-        
+        m.CRM_Message_Text__c = 'YOYOYOYO';
 
         test.startTest();
-      
-             insert m;
-       
-
-       
-
+        try{
+            insert m;
+        }
+        catch(Exception e){
+            System.debug('Error when no dispatcher '+e.getMessage());
+        }
         test.stopTest();
-
-        // Message__c message=[SELECT Id from Message__c where Message__c.CRM_Thread__c=:t.Id];
-
-        // System.assertEquals(message.Id, m.Id, 'Feil');
 
     }
     @isTest
@@ -110,14 +100,15 @@ public with sharing class HOT_MessagehandlerTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_From_Contact__c=con.Id;
-        m.CRM_Message_Text__c = 'LOLOLOLOL';
+        m.CRM_Message_Text__c = 'YOYOYOYO';
 
         test.startTest();
-
-        
+ 		try{
             insert m;
-       
-
+        }
+        catch(Exception e){
+            System.debug('Error with dispatcher '+e.getMessage());
+        }
         test.stopTest();
     }
 }
