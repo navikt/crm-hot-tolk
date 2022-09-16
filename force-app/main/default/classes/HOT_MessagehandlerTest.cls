@@ -2,11 +2,12 @@
 public with sharing class HOT_MessagehandlerTest {
     @isTest
     public static void messageHandlerTestWithoutDispatcher() {
-        List<Profile> pro = [SELECT Id FROM Profile WHERE Name = 'NAV Administrator'];
-        if (pro.size() > 0) {
+        List<Profile> pro = [SELECT Id, Name FROM Profile WHERE Name = 'NAV Administrator'];
+        
             User user = HOT_TestDataFactory.createUser('Nøff', pro[0]);
             insert user;
-        }
+        
+        
 
         String personAccountRecordTypeId = Schema.getGlobalDescribe()
             .get('Account')
@@ -55,10 +56,10 @@ public with sharing class HOT_MessagehandlerTest {
     @isTest
     static void messageHandlerTestWithDispatcher() {
         List<Profile> pro = [SELECT Id FROM Profile WHERE Name = 'NAV Administrator'];
-        if (pro.size() > 0) {
-            User user = HOT_TestDataFactory.createUser('Lastname', pro[0]);
+        
+            User user = HOT_TestDataFactory.createUser('Nøff', pro[0]);
             insert user;
-        }
+        
         String personAccountRecordTypeId = Schema.getGlobalDescribe()
             .get('Account')
             .getDescribe()
