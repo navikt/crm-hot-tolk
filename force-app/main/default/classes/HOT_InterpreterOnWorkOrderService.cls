@@ -66,7 +66,7 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
                 workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c + serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter + ', ';
             }
             
-            if (workOrder.HOT_Interpreters__c.length() > 100) {
+            if (workOrder.HOT_Interpreters__c.length() > 255) {
                 workOrder.HOT_Interpreters__c = oldInterpreters + ' ...';
             }
 
