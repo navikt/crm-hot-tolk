@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -694,12 +694,6 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.HOT_OverrideRate__c</fieldItem>
-                <identifier>RecordHOT_OverrideRate__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
                 <fieldItem>Record.Company__c</fieldItem>
                 <identifier>RecordCompany__cField</identifier>
             </fieldInstance>
@@ -708,12 +702,6 @@
             <fieldInstance>
                 <fieldItem>Record.OrganizationNumber__c</fieldItem>
                 <identifier>RecordOrganizationNumber__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.EventType__c</fieldItem>
-                <identifier>RecordEventType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-11d43f78-ea2a-47db-ad38-e09a131df8c2</name>
@@ -1273,7 +1261,8 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>richTextValue</name>
-                    <value>&lt;p&gt;Forespørselen er ikke koblet til en bruker, og det kan derfor ikke føres en samtale.&lt;/p&gt;</value>
+                    <value
+                    >&lt;p&gt;Forespørselen er ikke koblet til en bruker, og det kan derfor ikke føres en samtale.&lt;/p&gt;</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:richText</componentName>
                 <identifier>flexipage_richText1</identifier>
