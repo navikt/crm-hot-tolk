@@ -3,7 +3,7 @@ public with sharing class HOT_MessagehandlerTest {
     @isTest
     public static void messageHandlerTestWithoutDispatcher(){
 
-        Profile pro= [SELECT Id FROM Profile WHERE Name = 'NAV Administrator'];
+        Profile pro= [SELECT Id, Name FROM Profile WHERE Name = 'NAV Administrator']; 
         User user = HOT_TestDataFactory.createUser('Nøff',pro);
         insert user;
 
