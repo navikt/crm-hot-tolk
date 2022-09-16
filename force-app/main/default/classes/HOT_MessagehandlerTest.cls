@@ -72,7 +72,6 @@ public with sharing class HOT_MessagehandlerTest {
             );
             insert Account;
     
-
         Person__c person = new Person__c();
         person.INT_Confidential__c = 'UGRADERT';
         person.Name = 'Nasse';
