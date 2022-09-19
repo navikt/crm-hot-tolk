@@ -58,17 +58,31 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
         String oldInterpreters = workOrder.HOT_Interpreters__c;
         String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';
 
-            if(workOrder.HOT_Interpreters__c == null){
-                workOrder.HOT_Interpreters__c = '';
-            } 
+            // if(workOrder.HOT_Interpreters__c == null){
+            //     workOrder.HOT_Interpreters__c = '';
+            // }
 
-            if(workOrder.HOT_Interpreters__c != null){
-                workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c + serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter + ', ';
-            }
-            
+            // if(workOrder.HOT_Interpreters__c != null){
+            //     if (workOrder.HOT_Interpreters__c.length() > 250) {
+            //         workOrder.HOT_Interpreters__c = oldInterpreters.substring(0, 251) + ' ...';
+            //     }else {
+            //         workOrder.HOT_Interpreters__c = workOrder.HOT_Interpreters__c + serviceAppointment.HOT_ServiceResource__r.Name + screenInterpreter + ', ';
+            //     }
+            // }
+
+            workOrder.HOT_Interpreters__c =
+            ((workOrder.HOT_Interpreters__c == null ? '' : workOrder.HOT_Interpreters__c) +
+            serviceAppointment.HOT_ServiceResource__r.Name +
+            screenInterpreter +
+            ', ');
+
+
+            //Denne if-sjekken trigges ikke. 
             if (workOrder.HOT_Interpreters__c.length() > 255) {
-                workOrder.HOT_Interpreters__c = oldInterpreters + ' ...';
+                workOrder.HOT_Interpreters__c = oldInterpreters.substring(0, 230) + ' ...';
             }
+
+            
 
         return workOrder;
     }

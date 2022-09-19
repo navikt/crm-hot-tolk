@@ -502,11 +502,18 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             WHERE Id = :ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
 
-        workOrder.HOT_Interpreters__c = 'Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader';
+
+        String newInterpreter = '';
         
-        workOrder.Status = 'Incomplete';
+        for(Integer i = 0; i < 255; i++){
+            newInterpreter += 'a';
+        }
+
+        workOrder.HOT_Interpreters__c = newInterpreter;
+
+        update workOrder;
         HOT_InterpreterOnWorkOrderService.appendInterpreterName(workOrder, serviceAppointment);
         
-        System.assertEquals(workOrder.HOT_Interpreters__c, 'Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader Darth Vader ...' , 'Expected Interpreters to have 3 dots ( ...) after their names');
+        System.assertEquals(workOrder.HOT_Interpreters__c,  newInterpreter, 'Expected Interpreters to have 3 dots ( ...) after their names length was: ' + workOrder.HOT_Interpreters__c.length());
     }
 }
