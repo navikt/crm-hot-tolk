@@ -513,7 +513,11 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
 
         update workOrder;
         HOT_InterpreterOnWorkOrderService.appendInterpreterName(workOrder, serviceAppointment);
-        
-        System.assertEquals(workOrder.HOT_Interpreters__c,  newInterpreter, 'Expected Interpreters to have 3 dots ( ...) after their names length was: ' + workOrder.HOT_Interpreters__c.length());
+
+
+        //System.assertEquals(workOrder.HOT_Interpreters__c,  newInterpreter, 'Expected Interpreters to have 3 dots ( ...) after their names length was: ' + workOrder.HOT_Interpreters__c.length());
+       
+        String newnew=newInterpreter.substring(0, 230) + ' ...';
+        System.assertEquals(newnew, workOrder.HOT_Interpreters__c, 'Expected Interpreters to have 3 dots ( ...) after their names length was: ' + workOrder.HOT_Interpreters__c.length());
     }
 }

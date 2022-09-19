@@ -70,15 +70,16 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
             //     }
             // }
 
+            //Denne gjør akkuratt det samme som grønn tekst over
             workOrder.HOT_Interpreters__c =
             ((workOrder.HOT_Interpreters__c == null ? '' : workOrder.HOT_Interpreters__c) +
             serviceAppointment.HOT_ServiceResource__r.Name +
             screenInterpreter +
             ', ');
-
+            //slutt
 
             //Denne if-sjekken trigges ikke. 
-            if (workOrder.HOT_Interpreters__c.length() > 255) {
+            if (workOrder.HOT_Interpreters__c.length() >= 255) {
                 workOrder.HOT_Interpreters__c = oldInterpreters.substring(0, 230) + ' ...';
             }
 
