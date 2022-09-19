@@ -23,7 +23,6 @@ public without sharing class HOT_FreelanceQualificationsController {
             SELECT EffectiveStartDate, SkillId, EffectiveEndDate, ServiceResourceId, Id
             FROM ServiceResourceSkill
             WHERE ServiceResourceId = :freelanceResource.Id
-            WITH SECURITY_ENFORCED
         ];
         Map<Id, ServiceResourceSkill> skillMap = new Map<Id, ServiceResourceSkill>();
         for (ServiceResourceSkill srs : freelanceServiceResourceSkill) {
@@ -54,9 +53,12 @@ public without sharing class HOT_FreelanceQualificationsController {
             // Create Skill not yet existing on user
             if (!serviceResourceSkills.keySet().contains(skill.Id)) {
                 serviceResourceSkillsToCreate.add(setResourceSkill(serviceResource, skill));
-            } 
+            }
             // Set Skill EffectiveEndDate to null if Skill already exists on user
-            if (serviceResourceSkills.keySet().contains(skill.Id) && serviceResourceSkills.get(skill.Id).EffectiveEndDate != null) {
+            if (
+                serviceResourceSkills.keySet().contains(skill.Id) &&
+                serviceResourceSkills.get(skill.Id).EffectiveEndDate != null
+            ) {
                 serviceResourceSkills.get(skill.Id).EffectiveEndDate = null;
                 serviceResourceSkillsToUpdateEndDate.add(serviceResourceSkills.get(skill.Id));
             }
