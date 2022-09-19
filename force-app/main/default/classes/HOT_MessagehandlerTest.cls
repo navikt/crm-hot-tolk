@@ -1,116 +1,61 @@
 @isTest
 public with sharing class HOT_MessagehandlerTest {
-    @isTest
-    public static void messageHandlerTestWithoutDispatcher() {
-        List<Profile> pro = [
-            SELECT Id, Name
-            FROM Profile
-            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
-        ];
-        
-            User user = HOT_TestDataFactory.createUser('Nøff', pro[0]);
-            insert user;
-        
-        
-
+    @TestSetup
+    static void makeData() {
         String personAccountRecordTypeId = Schema.getGlobalDescribe()
             .get('Account')
             .getDescribe()
             .getRecordTypeInfosByDeveloperName()
             .get('PersonAccount')
             .getRecordTypeId();
-        Account account = new Account(
-            RecordTypeId = personAccountRecordTypeId,
-            FirstName = 'Test',
-            LastName = 'User',
-            PersonEmail = 'HOT_testaccount@nav.hot.no'
-        );
-        insert Account;
 
         Person__c person = new Person__c();
         person.INT_Confidential__c = 'UGRADERT';
-        person.Name = 'Nasse';
-        person.INT_LastName__c = 'Nasse';
-        person.INT_FirstName__c = 'Nøff';
-
+        person.Name = '01010100001';
+        person.INT_LastName__c = 'Test';
+        person.INT_FirstName__c = 'User';
         insert person;
+    }
 
-        Contact con = new contact();
-        con.LastName = 'Nøff';
-        con.FirstName = 'Nasse';
-        insert con;
+    @isTest
+    public static void messageHandlerTestWithoutDispatcher() {
+        Account account = [SELECT Id, PersonContactId FROM Account];
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = account.PersonContactId;
+        thread.CRM_Account__c = account.Id;
 
-        Thread__c t = HOT_TestDataFactory.createThread();
-        t.CRM_Related_Object__c = con.Id;
-        t.CRM_Account__r = account;
-        t.OwnerId = user.Id;
-
-        insert t;
-
-        Message__c m = new Message__c();
-        m.CRM_Thread__c = t.Id;
-        m.CRM_From_Contact__c = con.Id;
-        m.CRM_Message_Text__c = 'YOYOYOYO';
+        insert thread;
+        Message__c message = new Message__c();
+        message.CRM_Thread__c = thread.Id;
+        message.CRM_From_Contact__c = account.PersonContactId;
+        message.CRM_Message_Text__c = 'Dette er en testmelding';
 
         test.startTest();
-        insert m;
-
+        insert message;
         test.stopTest();
+
+        List<Message__c> messages = [SELECT Id FROM Message__c];
+        System.assertEquals(1, messages.size(), 'Could not create message');
     }
     @isTest
     static void messageHandlerTestWithDispatcher() {
-        List<Profile> pro = [
-            SELECT Id, Name
-            FROM Profile
-            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
-        ];
-        
-            User user = HOT_TestDataFactory.createUser('Nøff', pro[0]);
-            insert user;
-        
-        String personAccountRecordTypeId = Schema.getGlobalDescribe()
-            .get('Account')
-            .getDescribe()
-            .getRecordTypeInfosByDeveloperName()
-            .get('PersonAccount')
-            .getRecordTypeId();
-        Account account = new Account(
-            RecordTypeId = personAccountRecordTypeId,
-            FirstName = 'Test',
-            LastName = 'User',
-            PersonEmail = 'HOT_testaccount@nav.hot.no'
-        );
-        insert Account;
+        Account account = [SELECT Id, PersonContactId FROM Account];
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = account.PersonContactId;
+        thread.CRM_Account__c = account.Id;
+        thread.HOT_Dispatcher__c = UserInfo.getUserId();
 
-        Person__c person = new Person__c();
-        person.INT_Confidential__c = 'UGRADERT';
-        person.Name = 'Nasse';
-        person.INT_LastName__c = 'Nasse';
-        person.INT_FirstName__c = 'Nøff';
-
-        insert person;
-
-        Contact con = new contact();
-        con.LastName = 'Nøff';
-        con.FirstName = 'Nasse';
-        insert con;
-
-        Thread__c t = HOT_TestDataFactory.createThread();
-        t.CRM_Related_Object__c = con.Id;
-        t.CRM_Account__r = account;
-        t.HOT_Dispatcher__c = user.Id;
-
-        insert t;
-
-        Message__c m = new Message__c();
-        m.CRM_Thread__c = t.Id;
-        m.CRM_From_Contact__c = con.Id;
-        m.CRM_Message_Text__c = 'YOYOYOYO';
+        insert thread;
+        Message__c message = new Message__c();
+        message.CRM_Thread__c = thread.Id;
+        message.CRM_From_Contact__c = account.PersonContactId;
+        message.CRM_Message_Text__c = 'Dette er en testmelding';
 
         test.startTest();
-
-        insert m;
-
+        insert message;
         test.stopTest();
+
+        List<Message__c> messages = [SELECT Id FROM Message__c];
+        System.assertEquals(1, messages.size(), 'Could not create message');
     }
 }
