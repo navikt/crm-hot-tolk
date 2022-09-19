@@ -130,10 +130,6 @@
                 <behavior>Edit</behavior>
                 <field>HOT_Reservations__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>HOT_NotificationChannel__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
