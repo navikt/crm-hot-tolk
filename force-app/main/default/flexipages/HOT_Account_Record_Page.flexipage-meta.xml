@@ -54,15 +54,72 @@
                 <identifier>force_relatedListSingleContainer</identifier>
             </componentInstance>
         </itemInstances>
+<<<<<<< Updated upstream
         <name>Facet-abc13be6-b717-4f03-b1dd-6b806bc24dc0</name>
+=======
+        <name>Facet-8310a729-60cf-442f-a2b7-5e2caa764f4c</name>
+>>>>>>> Stashed changes
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+<<<<<<< Updated upstream
                     <name>body</name>
                     <value>Facet-abc13be6-b717-4f03-b1dd-6b806bc24dc0</value>
+=======
+                    <name>parentFieldApiName</name>
+                    <value>Account.Id</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>relatedListApiName</name>
+                    <value>HOT_ServiceAppointments__r</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>relatedListComponentOverride</name>
+                    <value>ADVGRID</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>rowsToDisplay</name>
+                    <value>10</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showActionBar</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentName>force:relatedListSingleContainer</componentName>
+                <identifier>force_relatedListSingleContainer2</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-7bc7cd1f-c1d2-44eb-a57d-a01e00244c93</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>active</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-8310a729-60cf-442f-a2b7-5e2caa764f4c</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>Forespørsler</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tab</componentName>
+                <identifier>flexipage_tab</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-7bc7cd1f-c1d2-44eb-a57d-a01e00244c93</value>
+>>>>>>> Stashed changes
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
@@ -72,7 +129,11 @@
                 <identifier>flexipage_tab2</identifier>
             </componentInstance>
         </itemInstances>
+<<<<<<< Updated upstream
         <name>Facet-5035dd49-dcf7-40c9-865a-012a13df792e</name>
+=======
+        <name>Facet-1dc3ccdf-a0e5-437d-bdba-a4d06de47f7c</name>
+>>>>>>> Stashed changes
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -80,7 +141,11 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>tabs</name>
+<<<<<<< Updated upstream
                     <value>Facet-5035dd49-dcf7-40c9-865a-012a13df792e</value>
+=======
+                    <value>Facet-1dc3ccdf-a0e5-437d-bdba-a4d06de47f7c</value>
+>>>>>>> Stashed changes
                 </componentInstanceProperties>
                 <componentName>flexipage:tabset</componentName>
                 <identifier>flexipage_tabset</identifier>
