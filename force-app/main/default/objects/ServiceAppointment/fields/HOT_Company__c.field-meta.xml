@@ -6,7 +6,7 @@
     <label>HOT_Company</label>
     <referenceTo>Account</referenceTo>
     <relationshipLabel>Service Appointments (HOT_Company)</relationshipLabel>
-    <relationshipName>Service_Appointments</relationshipName>
+    <relationshipName>HOT_CompanyServiceAppointments</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <type>Lookup</type>
