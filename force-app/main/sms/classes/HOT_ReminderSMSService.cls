@@ -78,7 +78,7 @@ public without sharing class HOT_ReminderSMSService {
         message += 'Dato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate) + '\n';
         message += 'Tolk er: ';
         message += interpreterNames;
-        message += '\n\nGi beskjed dersom du har symptomer på Korona. For mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh NAV Tolketjeneste';
         return message;
     }
@@ -120,10 +120,10 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     private static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
-        String message = 'INFO\nStatus på din bestilling er: ';
+        String message = 'INFO\nStatus på din bestilling er:\n';
         if (workOrder.Status == 'Dispatched') {
             message += 'Du har fått tolk. ';
-            message += 'Tolk er ';
+            message += 'Tolk er: ';
             message += interpreterNames;
         } else if (workOrder.Status == 'Cannot Complete') {
             message += 'Ikke ledig tolk';
