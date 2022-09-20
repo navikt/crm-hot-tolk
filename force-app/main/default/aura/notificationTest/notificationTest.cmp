@@ -1,0 +1,3 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes">
+    <forceCommunity:notifications />
+</aura:component>
