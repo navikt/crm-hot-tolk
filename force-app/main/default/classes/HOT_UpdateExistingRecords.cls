@@ -12,10 +12,13 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
 
         List<ServiceAppointment> ServiceAppointments = [SELECT Id, HOT_Request__r.Company__c FROM ServiceAppointment WHERE  HOT_Request__r.Company__c != null];
         for(ServiceAppointment sa: ServiceAppointments){
-            sa.HOT_Company__c = sa.HOT_Request__r.Company__c;
+            if(sa.HOT_Company__c!=null){
+                sa.HOT_Company__c = sa.HOT_Request__r.Company__c;
+            }
+            
         }
         update ServiceAppointments;
-        
+
     }
     public void finish(Database.BatchableContext bc) {
         // execute any post-processing operations
