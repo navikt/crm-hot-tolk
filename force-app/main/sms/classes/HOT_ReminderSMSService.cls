@@ -137,7 +137,7 @@ public without sharing class HOT_ReminderSMSService {
     private static String formatTimePeriod(Datetime startDate, Datetime endDate) {
         String timePeriod =
             startDate.date().format() +
-            ', kl. ' +
+            '\nKlokkeslett: ' +
             (startDate.hour() < 10 ? '0' + String.valueOf(startDate.hour()) : String.valueOf(startDate.hour())) +
             '.' +
             (startDate.minute() < 10 ? '0' + String.valueOf(startDate.minute()) : String.valueOf(startDate.minute())) +
