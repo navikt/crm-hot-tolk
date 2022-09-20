@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <excludeButtons>AccountHierarchy</excludeButtons>
     <excludeButtons>ChangeOwnerOne</excludeButtons>
@@ -84,9 +84,9 @@
         <detailHeading>true</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns />
-        <layoutColumns />
-        <layoutColumns />
+        <layoutColumns/>
+        <layoutColumns/>
+        <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
     <platformActionList>
@@ -102,7 +102,7 @@
             <sortOrder>1</sortOrder>
         </platformActionListItems>
     </platformActionList>
-    <quickActionList />
+    <quickActionList/>
     <relatedLists>
         <fields>NAME</fields>
         <fields>Status__c</fields>
@@ -113,6 +113,14 @@
         <fields>EndTime__c</fields>
         <relatedList>HOT_Request__c.Company__c</relatedList>
     </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Account</fields>
+        <fields>EarliestStartTime</fields>
+        <fields>LatestEndTime</fields>
+        <fields>Status</fields>
+        <relatedList>ServiceAppointment.HOT_Company__c</relatedList>
+    </relatedLists>
     <relatedObjects>ParentId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>true</showHighlightsPanel>
@@ -120,7 +128,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h3N0000029s0A</masterLabel>
+        <masterLabel>00h1X000005BSNm</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
