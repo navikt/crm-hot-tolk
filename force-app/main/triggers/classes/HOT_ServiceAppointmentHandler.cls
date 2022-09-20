@@ -169,6 +169,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsWithActualTimeSet.add(serviceAppointment);
             }
+            if(
+                serviceAppointment.Status == 'Completed' && 
+                serviceAppointment.ActualStartTime == null && 
+                serviceAppointment.ActualEndTime == null &&
+                serviceAppointment.SchedStartTime != null &&
+                serviceAppointment.SchedEndTime != null
+            ){
+                serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime;
+                serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime;
+            }
             updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
 
