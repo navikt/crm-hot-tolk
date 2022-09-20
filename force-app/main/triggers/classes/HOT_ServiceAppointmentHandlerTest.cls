@@ -939,5 +939,11 @@ private class HOT_ServiceAppointmentHandlerTest {
             serviceAppointment.ActualStartTime, 
             'Expected SchedStartTime and ActualStartTime to be the same'
         );
+        System.assertEquals(
+            serviceAppointment.SchedEndTime, 
+            serviceAppointment.ActualEndTime, 
+            'Expected SchedEndTime and ActualEndTime to be the same'
+        );
+
     }
 }
