@@ -9,6 +9,13 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public void execute(Database.BatchableContext bc, List<WorkOrder> records) {
         Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(records);
         HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrder(workOrderMap.keySet());
+
+        List<ServiceAppointment> ServiceAppointments = [SELECT Id, HOT_Request__r.Company__c FROM ServiceAppointment WHERE  HOT_Request__r.Company__c != null];
+        for(ServiceAppointment sa: ServiceAppointments){
+            sa.HOT_Company__c = sa.HOT_Request__r.Company__c;
+        }
+        update ServiceAppointments;
+        
     }
     public void finish(Database.BatchableContext bc) {
         // execute any post-processing operations
