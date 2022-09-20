@@ -129,7 +129,7 @@ public without sharing class HOT_ReminderSMSService {
             message += 'Ikke ledig tolk';
         }
         message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
-        message += '\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh NAV Tolketjeneste';
         return message;
     }
