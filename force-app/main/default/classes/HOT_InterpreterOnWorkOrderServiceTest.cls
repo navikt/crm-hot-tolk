@@ -485,4 +485,41 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
             'Could not set multiple HOT_Interpreters__c onAfterUpdate'
         );
     }
+
+    @isTest
+    static void appendInterpretersTest() {
+        ServiceAppointment serviceAppointment = [
+            SELECT
+                Id,
+                HOT_ServiceResource__c,
+                Status,
+                HOT_WorkOrderLineItem__r.WorkOrderId,
+                HOT_IsScreenInterpreterNew__c,
+                HOT_ServiceResource__r.Name
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+
+        WorkOrder workOrder = [
+            SELECT Status
+            FROM WorkOrder
+            WHERE Id = :ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
+
+        String newInterpreter = '';
+        for (Integer i = 0; i < 255; i++) {
+            newInterpreter += 'a';
+        }
+
+        workOrder.HOT_Interpreters__c = newInterpreter;
+
+        HOT_InterpreterOnWorkOrderService.appendInterpreterName(workOrder, serviceAppointment);
+
+        System.assert(
+            workOrder.HOT_Interpreters__c.endsWith('...'),
+            'Expected Interpreters to have 3 dots (...) after their names'
+        );
+        System.debug(workOrder.HOT_Interpreters__c);
+    }
 }
