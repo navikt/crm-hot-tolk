@@ -3,7 +3,7 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
         Datetime now = Datetime.now();
 
         return Database.getQueryLocator(
-            'SELECT Id, Status, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Status = "Completed" AND ActualStartTime = null AND ActualEndTime = null AND SchedStartTime != null AND SchedEndTime != null'
+            'SELECT Id, Status, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Status = \'Completed\' AND ActualStartTime = null AND ActualEndTime = null AND SchedStartTime != null AND SchedEndTime != null'
         );
     }
 
