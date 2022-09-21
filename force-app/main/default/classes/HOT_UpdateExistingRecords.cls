@@ -1,12 +1,9 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
-        // return Database.getQueryLocator(
-        //     'SELECT Id, HOT_Interpreters__c FROM WorkOrder WHERE (Status = \'Completed\' OR Status = \'Partially Complete\' OR Status = \'Dispatched\') AND HOT_Interpreters__c = null'
-        // );
 
         return Database.getQueryLocator(
-            'SELECT Id, HOT_Interpreters__c FROM WorkOrder WHERE (Status = \'Completed\' AND ActualStartTime = null OR ActualEndTime = null'
+            'SELECT Id, HOT_Interpreters__c FROM WorkOrder WHERE Status = \'Completed\' AND (ActualStartTime = null OR ActualEndTime = null)'
         );
     }
 
