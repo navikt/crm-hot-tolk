@@ -8,7 +8,13 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     }
 
     public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
-        HOT_ServiceAppointmentHandler.setActualTime(records);
+        List<ServiceAppointment> saList = new List<ServiceAppointment>();
+        for (ServiceAppointment sa : records) {
+            sa.ActualStartTime = sa.SchedStartTime;
+            sa.ActualEndTime = sa.SchedEndTime;
+            saList.add(sa);
+        }
+        update saList;
     }
     public void finish(Database.BatchableContext bc) {
         // execute any post-processing operations
