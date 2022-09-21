@@ -53,16 +53,6 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
         return serviceAppointmentsByWorkOrderId;
     }
 
-    //Eksempler
-    // Ola Norman
-    // Ola Norman, Kari Haugen (skjermtolk)
-    //
-    // Tolkmedveldiglangtnavn, Ola Norman, ...
-
-    // Tolkmedveldiglangtnavn, Ola Norman
-    // Kari Haugen (skjermtolk)
-
-    //Tolkmedveldiglangtnavn, Ola Norman, Kari Ha...
     public static WorkOrder appendInterpreterName(WorkOrder workOrder, ServiceAppointment serviceAppointment) {
         String oldInterpreters = workOrder.HOT_Interpreters__c;
         String screenInterpreter = serviceAppointment.HOT_IsScreenInterpreterNew__c ? ' (skjermtolk)' : '';

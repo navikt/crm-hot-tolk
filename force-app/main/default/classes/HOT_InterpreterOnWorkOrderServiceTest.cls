@@ -516,11 +516,9 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
 
         HOT_InterpreterOnWorkOrderService.appendInterpreterName(workOrder, serviceAppointment);
 
-        String expected = newInterpreter.substring(0, 230) + '...';
         System.assert(
             workOrder.HOT_Interpreters__c.endsWith('...'),
-            'Expected Interpreters to have 3 dots (...) after their names length was: ' +
-            workOrder.HOT_Interpreters__c.length()
+            'Expected Interpreters to have 3 dots (...) after their names'
         );
         System.debug(workOrder.HOT_Interpreters__c);
     }
