@@ -3,13 +3,12 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
         Datetime now = Datetime.now();
 
         return Database.getQueryLocator(
-            'SELECT Id, HOT_Interpreters__c FROM WorkOrder WHERE Status = \'Completed\' AND (ActualStartTime = null OR ActualEndTime = null)'
+            'SELECT Id, Status, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Status = "Completed" AND ActualStartTime = null AND ActualEndTime = null AND SchedStartTime != null AND SchedEndTime != null'
         );
     }
 
-    public void execute(Database.BatchableContext bc, List<WorkOrder> records) {
-        Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(records);
-        HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrder(workOrderMap.keySet());
+    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
+        HOT_ServiceAppointmentHandler.setActualTime(records);
     }
     public void finish(Database.BatchableContext bc) {
         // execute any post-processing operations
