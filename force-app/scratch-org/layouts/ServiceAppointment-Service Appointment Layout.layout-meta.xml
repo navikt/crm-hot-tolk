@@ -62,6 +62,10 @@
                 <behavior>Edit</behavior>
                 <field>HOT_AutoDispatch__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_Company__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -252,9 +256,9 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns />
-        <layoutColumns />
-        <layoutColumns />
+        <layoutColumns/>
+        <layoutColumns/>
+        <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
     <layoutSections>
@@ -317,7 +321,7 @@
             <sortOrder>5</sortOrder>
         </platformActionListItems>
     </platformActionList>
-    <quickActionList />
+    <quickActionList/>
     <relatedLists>
         <fields>ServiceResource</fields>
         <fields>Name</fields>
@@ -350,7 +354,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h3O000001Emmw</masterLabel>
+        <masterLabel>00h1X000005BSLr</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
