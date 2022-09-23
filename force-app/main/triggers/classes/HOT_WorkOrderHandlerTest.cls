@@ -52,6 +52,7 @@ private class HOT_WorkOrderHandlerTest {
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.Account__c = account.Id;
+        
         request.Description__c = 'Description';
         request.InterpretationStreet__c = 'Street 1';
         request.InterpretationPostalCode__c = '1111';
@@ -65,8 +66,10 @@ private class HOT_WorkOrderHandlerTest {
 
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         workOrder.AccountId=account.Id;
+        
     
         insert workOrder;
+        
     }
 
     @isTest
