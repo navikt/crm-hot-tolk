@@ -66,9 +66,10 @@ private class HOT_WorkOrderHandlerTest {
 
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         workOrder.AccountId=account.Id;
-        
-    
+
+        Test.startTest();
         insert workOrder;
+        Test.stopTest();
         
     }
 
