@@ -50,7 +50,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         ];
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
             Set<String> recipients = new Set<String>();
-            if(WorkOrder.HOT_Request__r.type__c=='User'){
+            if(WorkOrder.HOT_Request__r.type__c=='Bestiller på vegne av bruker'){
                 recipients.add(workOrder.HOT_Request__r.Account__c);
 
                 HOT_UserNotificationService.newWorkOrderNotification(notificationType, workOrder, recipients);
