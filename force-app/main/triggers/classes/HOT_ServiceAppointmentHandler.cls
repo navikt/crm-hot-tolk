@@ -24,6 +24,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithHoursToSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToSetToDefault = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithActualTimeSet = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithoutActualTimeSet = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsToChangeOwnerToArchive = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithStatusNone = new List<ServiceAppointment>();
 
@@ -169,6 +170,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsWithActualTimeSet.add(serviceAppointment);
             }
+            if (
+                serviceAppointment.Status == 'Completed' &&
+                serviceAppointment.ActualStartTime == null &&
+                serviceAppointment.ActualEndTime == null &&
+                serviceAppointment.SchedStartTime != null &&
+                serviceAppointment.SchedEndTime != null
+            ) {
+                serviceAppointmentsWithoutActualTimeSet.add(serviceAppointment);
+            }
             updateDuration(serviceAppointment);
             allServiceAppointments.add(serviceAppointment);
 
@@ -242,6 +252,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsWithActualTimeSet.size() > 0) {
             setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
+        }
+        if (serviceAppointmentsWithoutActualTimeSet.size() > 0) {
+            setActualTime(serviceAppointmentsWithoutActualTimeSet);
         }
         if (serviceAppointmentsChangedOrderedTime.size() > 0) {
             preserveSchedulesTimes(serviceAppointmentsChangedOrderedTime, triggerOldMap);
