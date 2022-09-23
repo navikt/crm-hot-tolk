@@ -39,19 +39,17 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     public override void onAfterInsert() {
         List<Id> requestIds = new List<Id>();
-        for (WorkOrder workOrder : (List<WorkOrder>) records) {
-            requestIds.add(workOrder.HOT_Request__c);
-        }
-       
+        
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
+            requestIds.add(workOrder.HOT_Request__c);
             Set<String> recipients = new Set<String>();
-            if(WorkOrder.HOT_Request__r.type__c=='User'){
-                recipients.add(workOrder.HOT_Request__r.Account__c);
+            if(WorkOrder.HOT_Request__r.Type__c=='User'){
+                recipients.add(workOrder.AccountId);
 
                 HOT_UserNotificationService.newWorkOrderNotification(notificationType, workOrder, recipients);
             }
