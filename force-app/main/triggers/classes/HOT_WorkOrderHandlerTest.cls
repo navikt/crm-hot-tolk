@@ -61,24 +61,16 @@ private class HOT_WorkOrderHandlerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.Account__c = account.Id;
         request.Type__c='User';
-        request.Description__c = 'Description';
-        request.InterpretationStreet__c = 'Street 1';
-        request.InterpretationPostalCode__c = '1111';
-        request.InterpretationPostalCity__c = 'City 1';
-        request.MeetingStreet__c = 'Street 2';
-        request.MeetingPostalCode__c = '2222';
-        request.MeetingPostalCity__c = 'City 2';
-        
-        
+
         insert request;
 
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        workOrder.AccountId=account.Id;
+        request.Status__c = 'Godkjent';
 
-        
+        // WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        // workOrder.AccountId=account.Id;
 
         Test.startTest();
-        insert workOrder;
+        update request;
         Test.stopTest();
         
     }
