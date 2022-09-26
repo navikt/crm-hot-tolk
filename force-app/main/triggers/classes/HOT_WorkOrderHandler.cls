@@ -39,6 +39,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     public override void onAfterInsert() {
         List<Id> requestIds = new List<Id>();
+        List<Id> accountIds = new List<Id>();
         
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -47,15 +48,29 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         ];
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
             requestIds.add(workOrder.HOT_Request__c);
+            accountIds.add(workOrder.AccountId);
         
         }
-        List<WorkOrder> workorders = [SELECT Id, Account.OwnerId, HOT_Request__r.Id FROM WorkOrder WHERE (HOT_Request__r.Id IN :requestIds AND HOT_Request__r.Type__c='User')];
-         if(!workorders.isEmpty()){
+ //hente ut users hvor account id = account id på workorderne
+ // SELECT USERS WHERE ACCOUNTID IN LIST AV ACCOUNTIDS 
+        List<WorkOrder> workorders = [SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c FROM WorkOrder WHERE (HOT_Request__c IN :requestIds AND HOT_Request__r.Type__c='User')];
+        
+        List<User> users=[SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
+
+        if(!workorders.isEmpty()){
              for(WorkOrder wo: workorders){
-                Set<String> recipients = new Set<String>();
-                 recipients.add(wo.Account.OwnerId);
- 
-                 HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
+                for(User user: users){
+                    if(wo.AccountId==user.AccountId){
+                        Set<String> recipients = new Set<String>();
+                        recipients.add(user.Id);
+                        HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
+                    }
+                }
+                
+
+
+                // HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
+                 
              }
              
          }
