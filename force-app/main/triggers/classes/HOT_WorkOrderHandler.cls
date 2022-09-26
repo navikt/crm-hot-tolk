@@ -48,7 +48,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
             requestIds.add(workOrder.HOT_Request__c);
             Set<String> recipients = new Set<String>();
-            if(WorkOrder.HOT_Request__r.Type__c=='User'){
+            if(WorkOrder.HOT_Request__r.Type__c=='User')
+            {
                 recipients.add(workOrder.AccountId);
 
                 HOT_UserNotificationService.newWorkOrderNotification(notificationType, workOrder, recipients);
