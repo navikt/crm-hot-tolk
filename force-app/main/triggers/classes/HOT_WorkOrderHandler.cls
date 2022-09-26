@@ -47,14 +47,19 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         ];
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
             requestIds.add(workOrder.HOT_Request__c);
-            Set<String> recipients = new Set<String>();
-            if(WorkOrder.HOT_Request__r.Type__c=='User')
-            {
-                recipients.add(workOrder.AccountId);
-
-                HOT_UserNotificationService.newWorkOrderNotification(notificationType, workOrder, recipients);
-            }
+        
         }
+        List<WorkOrder> workorders = [SELECT Id, Account.OwnerId FROM WorkOrder WHERE (HOT_Request__r.Id IN :requestIds AND HOT_Request__r.Type__c='User')];
+         if(!workorders.isEmpty()){
+             for(WorkOrder wo: workorders){
+                Set<String> recipients = new Set<String>();
+                 recipients.add(wo.Account.OwnerId);
+ 
+                 HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
+             }
+             
+         }
+            
 
         List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
