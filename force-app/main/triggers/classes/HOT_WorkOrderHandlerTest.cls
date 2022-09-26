@@ -50,6 +50,14 @@ private class HOT_WorkOrderHandlerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user =HOT_TestDataFactory.createUser('Vader', profile);
+        insert user;
+
+        account.OwnerId=user.Id;
+        update account;
+
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.Account__c = account.Id;
         request.Type__c='User';
