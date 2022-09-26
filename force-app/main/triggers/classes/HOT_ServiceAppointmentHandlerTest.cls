@@ -912,4 +912,38 @@ private class HOT_ServiceAppointmentHandlerTest {
             'SA HOT_Account__c was not set correctly.'
         );
     }
+
+    @isTest
+    public static void actualStartTimesShouldBeSchedStartTimesTest(){
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AccountId, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, Status 
+            FROM ServiceAppointment 
+            LIMIT 1];
+
+        serviceAppointment.ActualStartTime = null;
+        serviceAppointment.ActualEndTime = null;
+        serviceAppointment.Status = 'Completed';
+        
+        Test.startTest();
+        update serviceAppointment;
+        Test.stopTest();
+
+        serviceAppointment = [
+            SELECT Id, SchedStartTime, SchedEndTime, ActualStartTime, ActualEndTime, Status
+            FROM serviceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        
+        System.assertEquals(
+            serviceAppointment.SchedStartTime, 
+            serviceAppointment.ActualStartTime, 
+            'Expected SchedStartTime and ActualStartTime to be the same'
+        );
+        System.assertEquals(
+            serviceAppointment.SchedEndTime, 
+            serviceAppointment.ActualEndTime, 
+            'Expected SchedEndTime and ActualEndTime to be the same'
+        );
+
+    }
 }
