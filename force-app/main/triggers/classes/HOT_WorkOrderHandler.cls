@@ -51,8 +51,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             accountIds.add(workOrder.AccountId);
         
         }
- //hente ut users hvor account id = account id på workorderne
- // SELECT USERS WHERE ACCOUNTID IN LIST AV ACCOUNTIDS 
         List<WorkOrder> workorders = [SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c FROM WorkOrder WHERE (HOT_Request__c IN :requestIds AND HOT_Request__r.Type__c='User')];
         
         List<User> users=[SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
@@ -66,10 +64,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                         HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
                     }
                 }
-                
-
-
-                // HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
                  
              }
              
