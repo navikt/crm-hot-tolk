@@ -62,12 +62,10 @@ private class HOT_WorkOrderHandlerTest {
 
         insert request;
 
-        //request.Status__c = 'Godkjent';
-
+        
         Test.startTest();
-         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-         workOrder.AccountId=account.Id;
-         insert workOrder;
+        request.Status__c = 'Godkjent';
+        update request;
         Test.stopTest();
         
     }
