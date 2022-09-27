@@ -46,17 +46,15 @@ private class HOT_WorkOrderHandlerTest {
     private static void notifyUserWhenMadeRequesOnBehalfForUser() {
 
         Account account = HOT_TestDataFactory.createAccount(true);
+        
         insert account;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user =HOT_TestDataFactory.createUser('Vader', profile);
+        User user=HOT_TestDataFactory.createUser(profile, account);
         insert user;
-
-        account.OwnerId=user.Id;
-        update account;
-
+            
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.Account__c = account.Id;
@@ -66,10 +64,9 @@ private class HOT_WorkOrderHandlerTest {
 
         //request.Status__c = 'Godkjent';
 
+        Test.startTest();
          WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
          workOrder.AccountId=account.Id;
-
-        Test.startTest();
          insert workOrder;
         Test.stopTest();
         
