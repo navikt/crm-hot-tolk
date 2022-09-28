@@ -37,19 +37,27 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         }
     }
     public static void notifyUserWhenThereIsNewWorkorder(List<WorkOrder> workOrders){
-        List<Id> requestIds = new List<Id>();
+       
+    }
+
+    public override void onAfterInsert() {
+        
         List<Id> accountIds = new List<Id>();
+        List<Id> requestIds = new List<Id>();
+
+        for (WorkOrder workOrder : (List<WorkOrder>) records) {
+            requestIds.add(workOrder.HOT_Request__c);
+            accountIds.add(workOrder.AccountId);
+        
+        }
+
         
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        for (WorkOrder workOrder : workOrders) {
-            requestIds.add(workOrder.HOT_Request__c);
-            accountIds.add(workOrder.AccountId);
-        
-        }
+       
         List<WorkOrder> workordersList = [SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c FROM WorkOrder WHERE (HOT_Request__c IN :requestIds AND HOT_Request__r.Type__c='User')];
         
         List<User> users=[SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
@@ -59,7 +67,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             userIdByAccountId.put(user.AccountId,user.Id);
         }
     
-        if(!workorders.isEmpty()){
+        if(!workordersList.isEmpty()){
              for(WorkOrder wo: workordersList){
                         Set<String> recipients = new Set<String>();
                         recipients.add(userIdByAccountId.get(wo.AccountId));
@@ -67,17 +75,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
              }
              
          }
-    }
-
-    public override void onAfterInsert() {
-        
-        notifyUsersWhenNewWorkorder((List<WorkOrder>) records);
-        
-        List<Id> requestIds = new List<Id>();
-        for (WorkOrder workOrder : (List<WorkOrder>) records) {
-            requestIds.add(workOrder.HOT_Request__c);
-        
-        }
         List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
             [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
