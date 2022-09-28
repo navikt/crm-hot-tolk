@@ -301,7 +301,7 @@ Mvh NAV Hjelpemiddelsentral, tolkeformidling</text>
         <name>quicktext2</name>
         <isViewedAsPlainText>true</isViewedAsPlainText>
         <text>Hei!
-Du har fått tolk til din bestilling for&amp;nbsp;[dato,klokkeslett]. For mer informasjon, logg inn på tolkebestilling.nav.no.Du kan ikke svare på denne meldingen. 
+Du har fått tolk til din bestilling for [dato,klokkeslett]. For mer informasjon, logg inn på tolkebestilling.nav.no. Du kan ikke svare på denne meldingen. 
 Mvh NAV Hjelpemiddelsentral, tolkeformidling</text>
     </textTemplates>
     <variables>
