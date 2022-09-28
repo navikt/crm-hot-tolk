@@ -2,10 +2,27 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>51.0</apiVersion>
     <assignments>
+        <description>Assign the value of the choosen  quick text radio button</description>
+        <name>Assign_radio_button_value</name>
+        <label>Assign radio button value</label>
+        <locationX>50</locationX>
+        <locationY>518</locationY>
+        <assignmentItems>
+            <assignToReference>choosen_quick_text</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>choose_quick_text</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Type_message</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>ErrorAssignment</name>
         <label>ErrorAssignment</label>
         <locationX>314</locationX>
-        <locationY>758</locationY>
+        <locationY>998</locationY>
         <assignmentItems>
             <assignToReference>error</assignToReference>
             <operator>Assign</operator>
@@ -21,7 +38,7 @@
         <name>SetSMSValues</name>
         <label>SetSMSValues</label>
         <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationY>758</locationY>
         <assignmentItems>
             <assignToReference>sms.Account__c</assignToReference>
             <operator>Assign</operator>
@@ -61,6 +78,22 @@
             <targetReference>createSMSRecord</targetReference>
         </connector>
     </assignments>
+    <choices>
+        <name>quicktextchoice1</name>
+        <choiceText>{!quicktext1}</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <elementReference>quicktext1</elementReference>
+        </value>
+    </choices>
+    <choices>
+        <name>quicktextchoice2</name>
+        <choiceText>{!quicktext2}</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <elementReference>quicktext2</elementReference>
+        </value>
+    </choices>
     <decisions>
         <name>CheckRecipient</name>
         <label>CheckRecipient</label>
@@ -81,12 +114,13 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Type_message</targetReference>
+                <targetReference>quicktextScreen</targetReference>
             </connector>
             <label>Has value</label>
         </rules>
     </decisions>
-    <description>Flow to send a custom message to the phone number Account.INT_KrrMobilePhone__c</description>
+    <description>Flow to send a custom message to the phone number Account.INT_KrrMobilePhone__c
+Also includes quick-text</description>
     <interviewLabel>HOT_SendSMS {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Send SMS To Account</label>
     <processMetadataValues>
@@ -112,7 +146,7 @@
         <name>createSMSRecord</name>
         <label>createSMSRecord</label>
         <locationX>50</locationX>
-        <locationY>638</locationY>
+        <locationY>878</locationY>
         <faultConnector>
             <targetReference>ErrorAssignment</targetReference>
         </faultConnector>
@@ -139,6 +173,7 @@
         <object>Person__c</object>
         <queriedFields>Id</queriedFields>
         <queriedFields>INT_KrrMobilePhone__c</queriedFields>
+        <queriedFields>CRM_Account__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <runInMode>SystemModeWithoutSharing</runInMode>
@@ -146,7 +181,7 @@
         <name>Error_message_0</name>
         <label>Error message</label>
         <locationX>314</locationX>
-        <locationY>878</locationY>
+        <locationY>1118</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -154,6 +189,34 @@
             <name>error_0</name>
             <fieldText>&lt;p&gt;{!error}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>quicktextScreen</name>
+        <label>Quick Text</label>
+        <locationX>50</locationX>
+        <locationY>398</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Assign_radio_button_value</targetReference>
+        </connector>
+        <fields>
+            <name>info</name>
+            <fieldText>&lt;p&gt;Velg en hurtigtekst eller bare gå videre&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>choose_quick_text</name>
+            <choiceReferences>quicktextchoice1</choiceReferences>
+            <choiceReferences>quicktextchoice2</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Velg en hurtigtekst</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -178,7 +241,7 @@
         <name>Type_message</name>
         <label>Type message</label>
         <locationX>50</locationX>
-        <locationY>398</locationY>
+        <locationY>638</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -187,6 +250,9 @@
         </connector>
         <fields>
             <name>Message</name>
+            <defaultValue>
+                <stringValue>{!choosen_quick_text}</stringValue>
+            </defaultValue>
             <fieldText>Melding</fieldText>
             <fieldType>LargeTextArea</fieldType>
             <helpText>&lt;p&gt;Ikke skriv sensitive opplysninger! Meldingen vil bli sendt til nummeret brukeren har registrert i kontakt og reservasjonsregisteret.&lt;/p&gt;</helpText>
@@ -202,7 +268,28 @@
             <targetReference>GetPersonRecord</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
+    <textTemplates>
+        <name>quicktext1</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Det har dessverre ikke latt seg gjøre å skaffe tolk til din bestilling i dag. Du kan ikke svare på denne meldingen. 
+Mvh NAV Hjelpemiddelsentral, tolkeformidling</text>
+    </textTemplates>
+    <textTemplates>
+        <name>quicktext2</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Hei!
+Du har fått tolk til din bestilling for [dato,klokkeslett]. 
+For mer informasjon, logg inn på tolkebestilling.nav.no. Du kan ikke svare på denne meldingen. 
+Mvh NAV Hjelpemiddelsentral, tolkeformidling</text>
+    </textTemplates>
+    <variables>
+        <name>choosen_quick_text</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
     <variables>
         <name>error</name>
         <dataType>String</dataType>
