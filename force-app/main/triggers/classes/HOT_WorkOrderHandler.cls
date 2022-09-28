@@ -36,10 +36,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             setDuration(setDurationWorkOrders);
         }
     }
-    public static void notifyUserWhenThereIsNewWorkorder(List<WorkOrder> workOrders){
-       
-    }
-
+    
     public override void onAfterInsert() {
         
         List<Id> accountIds = new List<Id>();
