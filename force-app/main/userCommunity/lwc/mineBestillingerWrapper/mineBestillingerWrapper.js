@@ -388,6 +388,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             else{
                 this.modalContent = 'Er du sikker på at du vil avlyse bestillingen?\nDato: '+this.workOrder.StartAndEndDate;
             }
+            this.isCancel = true;
             this.noCancelButton = false;
             this.showModal();
         } else {
@@ -532,13 +533,15 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         updateRecord(recordInput);
     }
 
+    isCancel = false;
     noCancelButton = true;
     modalHeader = 'Varsel';
     modalContent = 'Noe gikk galt';
     isAlertdialogConfirm = false;
     handleAlertDialogClick(event) {
-        if (event.detail === 'confirm' && this.modalContent === 'Er du sikker på at du vil avlyse bestillingen?') {
+        if (event.detail === 'confirm' && this.isCancel) {
             this.cancelAndRefreshApex();
+            this.isCancel = false;
         }
         if (event.detail === 'confirm' && this.modalContent === 'Bestillingen er avlyst.') {
             this[NavigationMixin.Navigate]({
