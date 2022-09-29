@@ -28,7 +28,7 @@ public with sharing class HOT_MessagesNotification {
             notification.setBody(thread.HOT_Subject__c);
             notification.setNotificationTypeId(notificationType.Id);
             notification.setTargetId(thread.Id);
-            HOT_NotificationHandler.sendNotification(notification, recipients, thread);
+            HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread);
                 
         }
     }
