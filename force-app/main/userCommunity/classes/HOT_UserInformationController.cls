@@ -31,7 +31,8 @@ public without sharing class HOT_UserInformationController {
                 HOT_Escort__c,
                 HOT_DegreeOfHearingAndVisualImpairment__c,
                 INT_SecurityMeasures__c,
-                HOT_SIPAddress__c
+                HOT_SIPAddress__c,
+                HOT_NotificationChannel__c
             FROM Person__c
             WHERE Id = :currentUser.Account.CRM_Person__c
         ];
