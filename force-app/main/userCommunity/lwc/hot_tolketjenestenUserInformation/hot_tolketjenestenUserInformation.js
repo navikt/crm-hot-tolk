@@ -24,7 +24,5 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     }
     selectionChangeHandler(event) {
         changeUserNotificationsetting({ personId: this.recordId, newNotificationValue: event.target.value });
-        //this.newSelectedOption = event.target.value;
-        document.getElementById('notificationtext').textContent(event.target.value);
     }
 }
