@@ -64,9 +64,10 @@ public without sharing class HOT_UserInformationController {
                 FROM Person__c
                 WHERE Id = :personId
         ];
+         if(person!=null){
              person.HOT_NotificationChannel__c=newNotificationValue;
              update person;
-         
+         }
         return person.Id;
     }
 }

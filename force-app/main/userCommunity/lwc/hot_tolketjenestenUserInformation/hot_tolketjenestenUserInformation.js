@@ -22,7 +22,7 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
             });
         }
     }
-    selectionChangeHandler() {
+    selectionChangeHandler(event) {
         alert('Du endret til: ' + event.target.value + ' Personid: ' + this.recordId);
         const data = '';
         data = changeUserNotificationsetting({ personId: this.recordId, newNotificationValue: event.target.value });
