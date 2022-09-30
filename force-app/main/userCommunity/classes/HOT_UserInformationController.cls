@@ -55,4 +55,18 @@ public without sharing class HOT_UserInformationController {
 		}     
         return options;
     }
+    @AuraEnabled
+    public static String changeUserNotificationsetting(String personId, String newNotificationValue) {
+        Person__c person = [
+            SELECT
+                Id,
+                HOT_NotificationChannel__c
+                FROM Person__c
+                WHERE Id = :personId
+        ];
+             person.HOT_NotificationChannel__c=newNotificationValue;
+             update person;
+         
+        return person.Id;
+    }
 }

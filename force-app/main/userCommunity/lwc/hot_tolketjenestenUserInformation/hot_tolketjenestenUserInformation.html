@@ -68,13 +68,9 @@
                         <h2 style="font-size: 1.25rem">Varslingsinnstillinger</h2>
                         <div class="slds-grid slds-gutters">
                             <div class="slds-col slds-size_1-of-2">
+                                <p>Velg hvor du vil få varsler</p>
                                 <!-- Legg feltet inni her -->
-                                <select
-                                    class="slds-select"
-                                    onchange={selectionChangeHandler}
-                                    disabled={isPicklistDisabled}
-                                    required={isAttributeRequired}
-                                >
+                                <select class="slds-select" onchange={selectionChangeHandler}>
                                     <option value={selectedOption}>{selectedOption}</option>
                                     <template for:each={options} for:item="option">
                                         <option key={option.label} class="uiInputSelectOption" value={option.value}>
