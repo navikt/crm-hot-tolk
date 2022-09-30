@@ -8,7 +8,6 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     @track recordId;
     @track options;
     @track selectedOption;
-    @track newSelectedOption;
     @wire(getPerson)
     wiredGetPerson(result) {
         if (result.data) {
