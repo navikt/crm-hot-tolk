@@ -38,4 +38,21 @@ public without sharing class HOT_UserInformationController {
         ];
         return person;
     }
+    @AuraEnabled
+    public static List < Map < String, String >> getNotificationPickListValues(String chosen) {
+        List < Map < String, String >> options = new List < Map < String, String >> ();
+        
+        Schema.DescribeFieldResult fieldResult = Person__c.HOT_NotificationChannel__c.getDescribe();
+		List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+		for( Schema.PicklistEntry f : ple){
+            if(chosen!=f.getLabel()){
+                Map < String, String > values = new Map < String, String > {
+                    'label' => f.getLabel(),
+                    'value' => f.getValue()
+                };
+                options.add(values);
+            }
+		}     
+        return options;
+    }
 }

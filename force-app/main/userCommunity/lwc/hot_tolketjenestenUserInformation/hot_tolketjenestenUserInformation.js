@@ -1,5 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getPerson from '@salesforce/apex/HOT_UserInformationController.getPerson';
+import getNotificationPickListValues from '@salesforce/apex/HOT_UserInformationController.getNotificationPickListValues';
 
 export default class hot_tolketjenestenUserInformation extends LightningElement {
     @track person;
@@ -13,5 +14,10 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
             this.recordId = this.person.Id;
             this.selectedOption = this.person.HOT_NotificationChannel__c;
         }
+        getNotificationPickListValues({
+            chosen: this.selectedOption
+        }).then((data) => {
+            this.options = data;
+        });
     }
 }
