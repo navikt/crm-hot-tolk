@@ -8,7 +8,7 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     @track recordId;
     @track options;
     @track selectedOption;
-    @track testtest;
+    @track newSelectedOption;
     @wire(getPerson)
     wiredGetPerson(result) {
         if (result.data) {
@@ -23,9 +23,8 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
         }
     }
     selectionChangeHandler(event) {
-        alert('Du endret til: ' + event.target.value + ' Personid: ' + this.recordId);
-        const data = '';
-        data = changeUserNotificationsetting({ personId: this.recordId, newNotificationValue: event.target.value });
-        alert(data);
+        changeUserNotificationsetting({ personId: this.recordId, newNotificationValue: event.target.value });
+        //this.newSelectedOption = event.target.value;
+        document.getElementById('notificationtext').textContent(event.target.value);
     }
 }
