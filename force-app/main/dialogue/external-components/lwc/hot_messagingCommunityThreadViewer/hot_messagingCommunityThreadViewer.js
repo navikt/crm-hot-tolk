@@ -203,6 +203,18 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             }
         });
     }
+    goToWO() {
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'mine-bestillinger'
+            },
+            state: {
+                id: this.requestId,
+                level: 'WO'
+            }
+        });
+    }
 
     navigationId = '';
     navigationLevel = '';

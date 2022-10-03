@@ -16,8 +16,7 @@ public with sharing class HOT_MessageHelper {
     }
     @AuraEnabled (cacheable=true)
     public static Id getRequestId(Id recordId) {
-         return [SELECT Id FROM HOT_Request__c WHERE Thread__c= :recordId]?.Id;
-       //return '303';
+        return [SELECT Id FROM WorkOrder WHERE WorkOrder.HOT_Request__r.Thread__c=:recordId]?.Id;
     }
 
     @AuraEnabled(cacheable=true)

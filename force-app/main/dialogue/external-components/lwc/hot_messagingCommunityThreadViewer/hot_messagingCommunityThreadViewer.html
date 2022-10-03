@@ -7,7 +7,11 @@
             <c-icon icon="Back"></c-icon>
             <p style="margin-left: 0.25rem">Tilbake</p>
         </a>
+        <a class="link" onclick={goToWO}>
+            <p style="margin-left: 0.25rem">Gå til bestilling</p>
+        </a>
     </div>
+
     <div class="decorator-wrapper">
         <div class="header" style="text-align: center">
             <h1 class="typo-sidetittel">{name}</h1>
@@ -45,9 +49,6 @@
                                         class="inputTextbox slds-var-m-bottom_medium"
                                         ontextchanged={handleTextChange}
                                     ></c-hot_community-textarea>
-                                    <button disabled={buttonisdisabled} class="knapp">
-                                        Gå til bestillingen {requestId}
-                                    </button>
                                     <button
                                         disabled={buttonisdisabled}
                                         type="submit"
