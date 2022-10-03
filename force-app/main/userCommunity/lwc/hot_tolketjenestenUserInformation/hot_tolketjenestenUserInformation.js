@@ -1,7 +1,7 @@
 import { LightningElement, wire, track } from 'lwc';
 import getPerson from '@salesforce/apex/HOT_UserInformationController.getPerson';
 import getNotificationPickListValues from '@salesforce/apex/HOT_UserInformationController.getNotificationPickListValues';
-import changeUserNotificationsetting from '@salesforce/apex/HOT_UserInformationController.changeUserNotificationsetting';
+import changeUserNotificationSetting from '@salesforce/apex/HOT_UserInformationController.changeUserNotificationSetting';
 
 export default class hot_tolketjenestenUserInformation extends LightningElement {
     @track person;
@@ -22,6 +22,6 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
         }
     }
     selectionChangeHandler(event) {
-        changeUserNotificationsetting({ personId: this.recordId, newNotificationValue: event.target.value });
+        changeUserNotificationSetting({ personId: this.recordId, newNotificationValue: event.target.value });
     }
 }

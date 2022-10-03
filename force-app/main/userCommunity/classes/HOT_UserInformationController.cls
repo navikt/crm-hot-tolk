@@ -56,7 +56,7 @@ public without sharing class HOT_UserInformationController {
         return options;
     }
     @AuraEnabled
-    public static boolean changeUserNotificationsetting(String personId, String newNotificationValue) {
+    public static boolean changeUserNotificationSetting(String personId, String newNotificationValue) {
         Person__c person = [
             SELECT
                 Id,
