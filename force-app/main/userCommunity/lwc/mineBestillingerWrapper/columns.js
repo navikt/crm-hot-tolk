@@ -103,7 +103,7 @@ export let iconByValue = {
     Avlyst: {
         icon: 'Canceled',
         fill: '',
-        ariaLabel: 'Avlyst'
+        ariaLabel: 'Avbestilt'
     },
     'Under behandling': {
         icon: 'Scheduled',

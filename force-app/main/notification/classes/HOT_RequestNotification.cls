@@ -34,13 +34,13 @@ public without sharing class HOT_RequestNotification {
         HOT_Request__c request,
         Set<String> recipients
     ) {
-        String title = request.Name + ' - ' + request.StartTime__c?.format('d.M.yyyy') + ' - ' + 'Avlyst';
+        String title = request.Name + ' - ' + request.StartTime__c?.format('d.M.yyyy') + ' - ' + 'Avbestilt';
         String body =
             'Forespørselen ' +
             request.Name +
             ' som skulle vært gjennomført ' +
             request.StartTime__c?.format('d.M.yyyy') +
-            ' ble avlyst.';
+            ' ble avbestilt.';
 
         Id notificationTypeId = notificationType.Id;
         Id targetId = request.Id;
