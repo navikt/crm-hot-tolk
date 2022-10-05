@@ -23,7 +23,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         List<HOT_Request__c> avslaattRequests = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
-            // Filter for Avlyst requests
+            // Filter for Avbestilt requests
             if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avbestilt') {
                 avlystRequests.add(request);
             }

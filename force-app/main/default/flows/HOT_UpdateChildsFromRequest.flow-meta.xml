@@ -119,7 +119,7 @@
                 <leftValueReference>getRequest.Status__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <stringValue>Avlyst</stringValue>
+                    <stringValue>Avbestilt</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
@@ -237,7 +237,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>cannotUpdateText</name>
-            <fieldText>&lt;p&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status Avlyst eller Annullert.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status Avbestilt eller Annullert.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>

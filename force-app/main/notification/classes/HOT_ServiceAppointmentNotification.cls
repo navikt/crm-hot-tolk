@@ -26,7 +26,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             if (oldServiceAppointment.HOT_AssignedResourceId__c != null) {
                 Set<String> recipients = new Set<String>{ oldServiceAppointment.HOT_AssignedResourceId__c };
 
-                // Varsel ved avlyst av bruker
+                // Varsel ved avbestillt av bruker
                 if (
                     serviceAppointment.Status == 'Canceled' &&
                     oldServiceAppointment.Status != 'Canceled' &&
@@ -126,7 +126,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 resourceCanceled(notificationType, serviceAppointment, recipients);
             }
 
-            // Varsel ved avlyst på vegne av bruker
+            // Varsel ved avbestilt på vegne av bruker
             if (serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled') {
                 canceledByUser(notificationType, serviceAppointment, recipients);
             }

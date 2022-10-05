@@ -2,7 +2,7 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignments>
         <name>Assign_new_values_Avlyst_Bruker</name>
-        <label>Assign new values - Avlyst - Bruker</label>
+        <label>Assign new values - Avbestilt - Bruker</label>
         <locationX>1282</locationX>
         <locationY>1334</locationY>
         <assignmentItems>
@@ -191,8 +191,8 @@
         <dataType>String</dataType>
     </choices>
     <choices>
-        <name>Status_Avlyst</name>
-        <choiceText>Avlyst av bruker</choiceText>
+        <name>Status_Avbestilt</name>
+        <choiceText>Avbestilt av bruker</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>Canceled</stringValue>
@@ -371,19 +371,19 @@
             <label>Pågår</label>
         </rules>
         <rules>
-            <name>Avlyst</name>
+            <name>Avbestilt</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>New_status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>Status_Avlyst</elementReference>
+                    <elementReference>Status_Avbestilt</elementReference>
                 </rightValue>
             </conditions>
             <connector>
                 <targetReference>Set_Cancel_Comment_Bruker</targetReference>
             </connector>
-            <label>Avlyst</label>
+            <label>Avbestilt</label>
         </rules>
         <rules>
             <name>TolkAvlyst</name>
@@ -451,7 +451,7 @@
     <processType>FieldServiceMobile</processType>
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Avlyst_Bruker</name>
-        <label>Create Historically Assigned Resource - Avlyst av bruker</label>
+        <label>Create Historically Assigned Resource - Avbestilt av bruker</label>
         <locationX>1282</locationX>
         <locationY>1214</locationY>
         <connector>
@@ -478,7 +478,7 @@
         <inputAssignments>
             <field>Status__c</field>
             <value>
-                <stringValue>Avlyst av bruker</stringValue>
+                <stringValue>Avbestilt av bruker</stringValue>
             </value>
         </inputAssignments>
         <object>HOT_HistoricallyAssignedResource__c</object>
