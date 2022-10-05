@@ -1,17 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Begrunnelse for avlysning av bruker</label>
+    <label>Begrunnelse for avbestilling av bruker</label>
     <name>HOT_CancelComment__c</name>
     <picklistValues>
         <masterLabel>Annet</masterLabel>
-        <translation><!-- Annet --></translation>
+        <translation>
+            <!-- Annet -->
+        </translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Bruker ikke møtt</masterLabel>
-        <translation><!-- Bruker ikke møtt --></translation>
+        <translation>
+            <!-- Bruker ikke møtt -->
+        </translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Tekniske problemer</masterLabel>
-        <translation><!-- Tekniske problemer --></translation>
+        <translation>
+            <!-- Tekniske problemer -->
+        </translation>
     </picklistValues>
 </CustomFieldTranslation>

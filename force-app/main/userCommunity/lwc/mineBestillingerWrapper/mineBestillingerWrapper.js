@@ -196,16 +196,16 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     editButtonLabel = 'Rediger';
     copyButtonLabel = 'Kopier';
-    cancelButtonLabel = 'Avlys';
+    cancelButtonLabel = 'Avbestill';
     setButtonLabels() {
         if (this.urlStateParameters.level === 'R') {
             this.editButtonLabel = 'Rediger serie';
             this.copyButtonLabel = 'Kopier serie';
-            this.cancelButtonLabel = 'Avlys serie';
+            this.cancelButtonLabel = 'Avbestill serie';
         } else {
             this.editButtonLabel = 'Rediger';
             this.copyButtonLabel = 'Kopier';
-            this.cancelButtonLabel = 'Avlys';
+            this.cancelButtonLabel = 'Avbestill';
         }
     }
 

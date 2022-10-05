@@ -78,7 +78,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
     getRowActions(row, doneCallback) {
         let actions = [];
         if (row.HOT_IsCancelable__c) {
-            actions.push({ label: 'Avlys', name: 'delete' });
+            actions.push({ label: 'Avbestill', name: 'delete' });
         }
         actions.push({ label: 'Detaljer', name: 'details' });
         doneCallback(actions);

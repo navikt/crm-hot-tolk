@@ -122,7 +122,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 row['Status__c'] !== 'Delvis dekket' &&
                 tempEndDate.getTime() > Date.now()
             ) {
-                actions.push({ label: 'Avlys', name: 'delete' });
+                actions.push({ label: 'Avbestill', name: 'delete' });
             }
             if (row['Status__c'] === 'Åpen') {
                 actions.push({ label: 'Rediger', name: 'edit_order' });

@@ -23,7 +23,7 @@ export let filterArray = [
             },
             {
                 name: 'Avlyst',
-                label: 'Avlyst'
+                label: 'Avbestilt'
             },
             {
                 name: 'Oppdrag tilbaketrukket',
