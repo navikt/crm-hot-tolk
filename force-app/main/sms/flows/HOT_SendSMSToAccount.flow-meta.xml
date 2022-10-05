@@ -78,6 +78,11 @@
         </connector>
     </assignments>
     <choices>
+        <name>IngenHurtigtekst</name>
+        <choiceText>Ingen hurtigtekst</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
         <name>quicktextchoice1</name>
         <choiceText>{!quicktext1}</choiceText>
         <dataType>String</dataType>
@@ -232,6 +237,7 @@
         </connector>
         <fields>
             <name>choose_quick_text</name>
+            <choiceReferences>IngenHurtigtekst</choiceReferences>
             <choiceReferences>quicktextchoice1</choiceReferences>
             <choiceReferences>quicktextchoice2</choiceReferences>
             <dataType>String</dataType>
