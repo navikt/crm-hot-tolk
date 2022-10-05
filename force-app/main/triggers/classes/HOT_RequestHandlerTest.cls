@@ -20,7 +20,7 @@ private class HOT_RequestHandlerTest {
         update request;
 
         // To trigger the update of child records
-        request.Status__c = 'Avbestilt';
+        request.Status__c = 'Avlyst';
         update request;
 
         List<WorkOrder> workOrders = [SELECT Status FROM WorkOrder];

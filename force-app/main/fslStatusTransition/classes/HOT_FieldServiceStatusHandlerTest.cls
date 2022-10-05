@@ -350,7 +350,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         update request;
 
         Test.startTest();
-        request.Status__c = 'Avbestilt';
+        request.Status__c = 'Avlyst';
         update request;
         Test.stopTest();
 
@@ -487,7 +487,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Canceled', workOrder.Status, 'Status on the work order did not update to correct value');
 
         request = [SELECT Id, Status__c FROM HOT_Request__c WHERE Id = :request.Id];
-        System.assertEquals('Avbestilt', request.Status__c, 'Status on the request did not update to correct value');
+        System.assertEquals('Avlyst', request.Status__c, 'Status on the request did not update to correct value');
     }
 
     @isTest

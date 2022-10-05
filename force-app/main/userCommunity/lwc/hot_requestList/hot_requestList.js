@@ -117,7 +117,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         let tempEndDate = new Date(row['EndTime__c']);
         if (row['Orderer__c'] === row['TempAccountId__c']) {
             if (
-                row['Status__c'] !== 'Avbestilt' &&
+                row['Status__c'] !== 'Avlyst' &&
                 row['Status__c'] !== 'Dekket' &&
                 row['Status__c'] !== 'Delvis dekket' &&
                 tempEndDate.getTime() > Date.now()
@@ -205,7 +205,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 tempRequests = this.allRequests; // Already set correctly in handleRequestType
             } else if (pickListValue === 'Fremtidige') {
                 if (
-                    status !== 'Avbestilt' &&
+                    status !== 'Avlyst' &&
                     (this.allRequests[i].SeriesEndDate__c > new Date().toISOString().substring(0, 10) ||
                         this.allRequests[i].EndTime__c > new Date().toISOString().substring(0, 10))
                 ) {
@@ -327,7 +327,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         if (index !== -1) {
             let tempEndDate = new Date(this.requests[index].EndTime__c);
             if (
-                this.requests[index].ExternalRequestStatus__c != 'Avbestilt' &&
+                this.requests[index].ExternalRequestStatus__c != 'Avlyst' &&
                 this.requests[index].ExternalRequestStatus__c != 'Dekket' &&
                 tempEndDate.getTime() > Date.now()
             ) {
