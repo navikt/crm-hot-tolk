@@ -38,7 +38,7 @@
     <customValue>
         <fullName>Avlyst</fullName>
         <default>false</default>
-        <label>Avlyst</label>
+        <label>Avbestilt</label>
     </customValue>
     <customValue>
         <fullName>Avslått</fullName>
