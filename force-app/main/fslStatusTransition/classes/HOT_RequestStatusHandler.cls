@@ -58,7 +58,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         statusMap.put('Completed', 'Dekket');
         statusMap.put('Partially Complete', 'Delvis dekket');
         statusMap.put('Cannot Complete', 'Udekket');
-        statusMap.put('Canceled', 'Avlyst');
+        statusMap.put('Canceled', 'Avbestilt');
 
         List<WorkOrder> workOrders = [
             SELECT HOT_Request__c, Status
