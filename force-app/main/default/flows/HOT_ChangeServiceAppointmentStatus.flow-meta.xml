@@ -793,7 +793,7 @@
             <name>New_status</name>
             <choiceReferences>Status_Pagar</choiceReferences>
             <choiceReferences>Status_Dekket</choiceReferences>
-            <choiceReferences>Status_Avlyst</choiceReferences>
+            <choiceReferences>Status_Avbestilt</choiceReferences>
             <choiceReferences>Status_TolkAvlyst</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Status</fieldText>

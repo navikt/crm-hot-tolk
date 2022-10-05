@@ -6,7 +6,7 @@
     ISPICKVAL(Status__c, &quot;Dekket&quot;),
     ISPICKVAL(Status__c, &quot;Delvis dekket&quot;),
     ISPICKVAL(Status__c, &quot;Udekket&quot;),
-    ISPICKVAL(Status__c, &quot;Avlyst&quot;),
+    ISPICKVAL(Status__c, &quot;Avbestilt&quot;),
     ISPICKVAL(Status__c, &quot;Avslått&quot;),
     ISPICKVAL(Status__c, &quot;Annullert&quot;)
 )</formula>
