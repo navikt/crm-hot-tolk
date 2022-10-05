@@ -49,7 +49,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
             if (
                 requests.get(workOrder.HOT_Request__c).Status__c != 'Åpen' &&
-                requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
+                requests.get(workOrder.HOT_Request__c).Status__c != 'Avbestilt' &&
                 requests.get(workOrder.HOT_Request__c).Status__c != 'Annullert'
             ) {
                 approvedWorkOrders.add(workOrder);
@@ -271,7 +271,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
             }
 
-            if (request.Status__c != 'Avlyst') {
+            if (request.Status__c != 'Avbestilt') {
                 request.StartTime__c = null;
                 request.EndTime__c = null;
                 request.SeriesStartDate__c = null;

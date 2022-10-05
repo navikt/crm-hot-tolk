@@ -204,7 +204,7 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
         const index = this.findRowIndexById(Id);
         if (index !== -1) {
             if (
-                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Avlyst' &&
+                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Avbestilt' &&
                 this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Dekket'
             ) {
                 if (confirm('Er du sikker på at du vil avlyse?')) {

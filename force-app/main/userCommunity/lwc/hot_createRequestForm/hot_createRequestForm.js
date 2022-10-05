@@ -39,7 +39,7 @@ export default class RecordFormCreateExample extends NavigationMixin(LightningEl
         let tempRequests = [];
         for (let i = 0; i < this.allRequests.length; i++) {
             if (
-                this.allRequests[i].ExternalRequestStatus__c !== 'Avlyst' &&
+                this.allRequests[i].ExternalRequestStatus__c !== 'Avbestilt' &&
                 this.allRequests[i].ExternalRequestStatus__c !== 'Dekket' &&
                 this.allRequests[i].ExternalRequestStatus__c !== 'Udekket'
             ) {

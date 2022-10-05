@@ -97,7 +97,7 @@ public class HOT_WorkOrderToRequestStatusTest {
 
         request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
 
-        System.assertEquals('Avlyst', request.Status__c, 'Status on the request did not update to correct value');
+        System.assertEquals('Avbestilt', request.Status__c, 'Status on the request did not update to correct value');
     }
     @isTest
     private static void test_all_CannotComplete() {
