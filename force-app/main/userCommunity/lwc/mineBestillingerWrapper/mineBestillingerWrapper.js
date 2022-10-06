@@ -148,11 +148,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             : new Date(this.workOrder.EndDate);
         this.isRequestEditButtonDisabled = this.request.Status__c === 'Åpen' ? false : true;
         this.isRequestCancelButtonDisabled =
-            this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() ? true : false;
-        this.isRequestAddFilesButtonDisabled = this.request.Status__c !== 'Avlyst' ? false : true;
+            this.request.Status__c === 'Avbestilt' || tempEndDate.getTime() < Date.now() ? true : false;
+        this.isRequestAddFilesButtonDisabled = this.request.Status__c !== 'Avbestilt' ? false : true;
         this.isWOEditButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Åpen' ? false : true;
-        this.isWOCancelButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst' ? true : false;
-        this.isWOAddFilesButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c !== 'Avlyst' ? false : true;
+        this.isWOCancelButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avbestilt' ? true : false;
+        this.isWOAddFilesButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c !== 'Avbestilt' ? false : true;
     }
 
     headerToShow = '';
@@ -377,16 +377,15 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             ? new Date(this.request.SeriesEndDate__c)
             : new Date(this.workOrder.EndDate);
         if (
-            this.request.ExternalRequestStatus__c !== 'Avlyst' &&
+            this.request.ExternalRequestStatus__c !== 'Avbestilt' &&
             this.request.ExternalRequestStatus__c !== 'Dekket' &&
             tempEndDate.getTime() > Date.now()
-        )
-        {
-            if(this.urlStateParameters.level === 'R'){
+        ) {
+            if (this.urlStateParameters.level === 'R') {
                 this.modalContent = 'Er du sikker på at du vil avlyse alle datoer i bestillingen?';
-            }
-            else{
-                this.modalContent = 'Er du sikker på at du vil avlyse bestillingen?\nDato: '+this.workOrder.StartAndEndDate;
+            } else {
+                this.modalContent =
+                    'Er du sikker på at du vil avlyse bestillingen?\nDato: ' + this.workOrder.StartAndEndDate;
             }
             this.isCancel = true;
             this.noCancelButton = false;
@@ -419,7 +418,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         const fields = {};
         if (this.urlStateParameters.level === 'R') {
             fields[REQUEST_ID.fieldApiName] = this.request.Id;
-            fields[STATUS.fieldApiName] = 'Avlyst';
+            fields[STATUS.fieldApiName] = 'Avbestilt';
             fields[NOTIFY_DISPATCHER.fieldApiName] = true;
         } else {
             fields[WORKORDER_ID.fieldApiName] = this.workOrder.Id;
@@ -433,7 +432,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 this.noCancelButton = true;
                 this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
                 this.template.querySelector('.loader').classList.add('hidden');
-                this.modalContent = 'Bestillingen er avlyst.';
+                this.modalContent = 'Bestillingen er avbestilt.';
                 this.showModal();
             })
             .catch(() => {
@@ -543,7 +542,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.cancelAndRefreshApex();
             this.isCancel = false;
         }
-        if (event.detail === 'confirm' && this.modalContent === 'Bestillingen er avlyst.') {
+        if (event.detail === 'confirm' && this.modalContent === 'Bestillingen er avbestilt.') {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
                 attributes: {

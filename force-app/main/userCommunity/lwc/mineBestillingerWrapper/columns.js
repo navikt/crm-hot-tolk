@@ -100,10 +100,10 @@ export let iconByValue = {
         fill: 'Red',
         ariaLabel: 'Ikke ledig tolk'
     },
-    Avlyst: {
+    Avbestilt: {
         icon: 'Canceled',
         fill: '',
-        ariaLabel: 'Avlyst'
+        ariaLabel: 'Avbestilt'
     },
     'Under behandling': {
         icon: 'Scheduled',

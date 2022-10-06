@@ -28,7 +28,7 @@ public without sharing class HOT_WorkOrderNotification {
             if (
                 workOrder.Status == 'Canceled' &&
                 oldWorkOrder.Status != 'Canceled' &&
-                requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
+                requests.get(workOrder.HOT_Request__c).Status__c != 'Avbestilt' &&
                 requests.get(workOrder.HOT_Request__c).Status__c != 'Åpen'
             ) {
                 canceledByUser(notificationType, workOrder, recipients);
@@ -41,13 +41,13 @@ public without sharing class HOT_WorkOrderNotification {
         WorkOrder workOrder,
         Set<String> recipients
     ) {
-        String title = workorder.WorkOrderNumber + ' - ' + workorder.StartDate?.format('d.M.yyyy') + ' - ' + ' Avlyst';
+        String title = workorder.WorkOrderNumber + ' - ' + workorder.StartDate?.format('d.M.yyyy') + ' - ' + ' Avbestilt';
         String body =
             'Arbeidsordren ' +
             workorder.WorkOrderNumber +
             ' som skulle vært gjennomført ' +
             workorder.StartDate?.format('d.M.yyyy') +
-            ' er avlyst.';
+            ' er avbestilt.';
 
         Id notificationTypeId = notificationType.Id;
         Id targetId = workorder.Id;

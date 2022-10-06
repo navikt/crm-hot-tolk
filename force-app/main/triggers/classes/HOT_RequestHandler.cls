@@ -73,7 +73,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 ownerChangedRequests.add(request);
             }
             // Filter for Avlyst requests
-            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avbestilt') {
                 avlystRequests.add(request);
             }
             // Notify Dispatcher: Avlyst requests

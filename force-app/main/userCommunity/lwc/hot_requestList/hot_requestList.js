@@ -25,7 +25,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         { name: 'Du har fått tolk', label: 'Du har fått tolk' },
         { name: 'Ikke ledig tolk', label: 'Ikke ledig tolk' },
         { name: 'Se tidsplan', label: 'Serieoppdrag' }, // "Se tidsplan"
-        { name: 'Avlyst', label: 'Avlyst' },
+        { name: 'Avbestilt', label: 'Avbestilt' },
         { name: 'Ferdig', label: 'Ferdig' }
     ];
 
@@ -117,7 +117,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         let tempEndDate = new Date(row['EndTime__c']);
         if (row['Orderer__c'] === row['TempAccountId__c']) {
             if (
-                row['Status__c'] !== 'Avlyst' &&
+                row['Status__c'] !== 'Avbestilt' &&
                 row['Status__c'] !== 'Dekket' &&
                 row['Status__c'] !== 'Delvis dekket' &&
                 tempEndDate.getTime() > Date.now()
@@ -205,7 +205,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 tempRequests = this.allRequests; // Already set correctly in handleRequestType
             } else if (pickListValue === 'Fremtidige') {
                 if (
-                    status !== 'Avlyst' &&
+                    status !== 'Avbestilt' &&
                     (this.allRequests[i].SeriesEndDate__c > new Date().toISOString().substring(0, 10) ||
                         this.allRequests[i].EndTime__c > new Date().toISOString().substring(0, 10))
                 ) {
@@ -327,14 +327,14 @@ export default class RequestList extends NavigationMixin(LightningElement) {
         if (index !== -1) {
             let tempEndDate = new Date(this.requests[index].EndTime__c);
             if (
-                this.requests[index].ExternalRequestStatus__c != 'Avlyst' &&
+                this.requests[index].ExternalRequestStatus__c != 'Avbestilt' &&
                 this.requests[index].ExternalRequestStatus__c != 'Dekket' &&
                 tempEndDate.getTime() > Date.now()
             ) {
                 if (confirm('Er du sikker på at du vil avlyse bestillingen?')) {
                     const fields = {};
                     fields[REQUEST_ID.fieldApiName] = Id;
-                    fields[STATUS.fieldApiName] = 'Avlyst';
+                    fields[STATUS.fieldApiName] = 'Avbestilt';
                     fields[NOTIFY_DISPATCHER.fieldApiName] = true;
                     const recordInput = { fields };
                     updateRecord(recordInput)

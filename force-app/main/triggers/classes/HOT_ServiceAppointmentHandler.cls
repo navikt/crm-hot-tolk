@@ -763,7 +763,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (status == 'Annul')
             return 'Annullert';
         if (status == 'Canceled')
-            return 'Avlyst av bruker';
+            return 'Avbestilt av bruker';
         if (status == 'Cannot Complete')
             return 'Udekket';
         if (status == 'Completed')

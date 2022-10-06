@@ -17,8 +17,8 @@ export let filterArray = [
                 label: 'Under behandling'
             },
             {
-                name: 'Avlyst',
-                label: 'Avlyst'
+                name: 'Avbestilt',
+                label: 'Avbestilt'
             },
             {
                 name: 'Du har fått tolk',

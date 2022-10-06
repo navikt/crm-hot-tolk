@@ -165,14 +165,14 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' - ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
             ' - ' +
-            ' Avlyst'
+            ' AvlyAvbestilt'
         );
         notification.setBody(
             'Oppdraget ' +
             serviceAppointment.AppointmentNumber +
             ' som skulle vært gjennomført ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-            ' er avlyst.'
+            ' er avbestilt.'
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);

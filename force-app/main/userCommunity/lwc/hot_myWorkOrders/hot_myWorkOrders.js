@@ -204,10 +204,10 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
         const index = this.findRowIndexById(Id);
         if (index !== -1) {
             if (
-                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Avlyst' &&
+                this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Avbestilt' &&
                 this.workOrders[index].HOT_ExternalWorkOrderStatus__c !== 'Dekket'
             ) {
-                if (confirm('Er du sikker på at du vil avlyse?')) {
+                if (confirm('Er du sikker på at du vil avbestille?')) {
                     const fields = {};
                     fields[WORKORDER_ID.fieldApiName] = Id;
                     fields[STATUS.fieldApiName] = 'Canceled';
@@ -218,11 +218,11 @@ export default class Hot_myWorkOrders extends NavigationMixin(LightningElement) 
                             refreshApex(this.wiredWorkOrderResult);
                         })
                         .catch((error) => {
-                            alert('Kunne ikke avlyse.');
+                            alert('Kunne ikke avbestille.');
                         });
                 }
             } else {
-                alert('Du kan ikke avlyse denne bestillingen.');
+                alert('Du kan ikke avbestille denne bestillingen.');
             }
         }
     }

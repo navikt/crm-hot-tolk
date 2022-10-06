@@ -482,7 +482,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         Map<String, String> correctStatuses = new Map<String, String>();
         correctStatuses.put('', '');
         correctStatuses.put('Annul', 'Annullert');
-        correctStatuses.put('Canceled', 'Avlyst av bruker');
+        correctStatuses.put('Canceled', 'Avbestilt av bruker');
         correctStatuses.put('Cannot Complete', 'Udekket');
         correctStatuses.put('Completed', 'Dekket');
         correctStatuses.put('Dispatched', 'Tildelt');

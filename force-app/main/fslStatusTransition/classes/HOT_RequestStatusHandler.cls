@@ -24,7 +24,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Avlyst requests
-            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avlyst') {
+            if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avbestilt') {
                 avlystRequests.add(request);
             }
             // Filter for Annullert requests
@@ -58,7 +58,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         statusMap.put('Completed', 'Dekket');
         statusMap.put('Partially Complete', 'Delvis dekket');
         statusMap.put('Cannot Complete', 'Udekket');
-        statusMap.put('Canceled', 'Avlyst');
+        statusMap.put('Canceled', 'Avbestilt');
 
         List<WorkOrder> workOrders = [
             SELECT HOT_Request__c, Status

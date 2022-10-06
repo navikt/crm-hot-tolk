@@ -50,6 +50,11 @@
         <default>false</default>
         <label>Annullert</label>
     </customValue>
+    <customValue>
+        <fullName>Avbestilt</fullName>
+        <default>false</default>
+        <label>Avbestilt</label>
+    </customValue>
     <masterLabel>Interpreter Status</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>
