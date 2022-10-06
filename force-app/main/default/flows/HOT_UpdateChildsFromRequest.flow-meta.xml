@@ -119,7 +119,7 @@
                 <leftValueReference>getRequest.Status__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <stringValue>Avlyst</stringValue>
+                    <stringValue>Avbestilt</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
