@@ -1,9 +1,9 @@
 public without sharing class HOT_UserInformationController {
     @AuraEnabled(cacheable=true)
-    public static Person__c getPersonPhoneEmail() {
+    public static Person__c getPersonPhoneEmailAndStatus() {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         Person__c person = [
-            SELECT Id, INT_KrrEmail__c, INT_KrrMobilePhone__c
+            SELECT Id, INT_KrrEmail__c, INT_KrrMobilePhone__c, INT_KrrIntegrationStatus__c
             FROM Person__c
             WHERE Id = :currentUser.Account.CRM_Person__c
         ];
