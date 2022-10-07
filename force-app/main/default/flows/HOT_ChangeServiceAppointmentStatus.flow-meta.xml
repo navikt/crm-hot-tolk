@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignments>
-        <name>Assign_new_values_Avbestilt_Bruker</name>
-        <label>Assign new values - Avbestilt - Bruker</label>
+        <name>Assign_new_values_Avlyst_Bruker</name>
+        <label>Assign new values - Avlyst - Bruker</label>
         <locationX>1282</locationX>
         <locationY>1334</locationY>
         <assignmentItems>
@@ -191,8 +191,8 @@
         <dataType>String</dataType>
     </choices>
     <choices>
-        <name>Status_Avbestilt</name>
-        <choiceText>Avbestilt av bruker</choiceText>
+        <name>Status_Avlyst</name>
+        <choiceText>Avlyst av bruker</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>Canceled</stringValue>
@@ -371,19 +371,19 @@
             <label>Pågår</label>
         </rules>
         <rules>
-            <name>Avbestilt</name>
+            <name>Avlyst</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>New_status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>Status_Avbestilt</elementReference>
+                    <elementReference>Status_Avlyst</elementReference>
                 </rightValue>
             </conditions>
             <connector>
                 <targetReference>Set_Cancel_Comment_Bruker</targetReference>
             </connector>
-            <label>Avbestilt</label>
+            <label>Avlyst</label>
         </rules>
         <rules>
             <name>TolkAvlyst</name>
@@ -450,12 +450,12 @@
     </processMetadataValues>
     <processType>FieldServiceMobile</processType>
     <recordCreates>
-        <name>Create_Historically_Assigned_Resource_Avbestilt_Bruker</name>
-        <label>Create Historically Assigned Resource - Avbestilt av bruker</label>
+        <name>Create_Historically_Assigned_Resource_Avlyst_Bruker</name>
+        <label>Create Historically Assigned Resource - Avlyst av bruker</label>
         <locationX>1282</locationX>
         <locationY>1214</locationY>
         <connector>
-            <targetReference>Assign_new_values_Avbestilt_Bruker</targetReference>
+            <targetReference>Assign_new_values_Avlyst_Bruker</targetReference>
         </connector>
         <inputAssignments>
             <field>ServiceAppointment__c</field>
@@ -478,7 +478,7 @@
         <inputAssignments>
             <field>Status__c</field>
             <value>
-                <stringValue>Avbestilt av bruker</stringValue>
+                <stringValue>Avlyst av bruker</stringValue>
             </value>
         </inputAssignments>
         <object>HOT_HistoricallyAssignedResource__c</object>
@@ -721,7 +721,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>Create_Historically_Assigned_Resource_Avbestilt_Bruker</targetReference>
+            <targetReference>Create_Historically_Assigned_Resource_Avlyst_Bruker</targetReference>
         </connector>
         <fields>
             <name>Cancel_Comment_Bruker_Picklist</name>
@@ -729,7 +729,7 @@
             <choiceReferences>Bruker_Ikke_Mott</choiceReferences>
             <choiceReferences>Annet</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Oppgi en begrunnelse for å avbestille</fieldText>
+            <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
@@ -793,7 +793,7 @@
             <name>New_status</name>
             <choiceReferences>Status_Pagar</choiceReferences>
             <choiceReferences>Status_Dekket</choiceReferences>
-            <choiceReferences>Status_Avbestilt</choiceReferences>
+            <choiceReferences>Status_Avlyst</choiceReferences>
             <choiceReferences>Status_TolkAvlyst</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Status</fieldText>
