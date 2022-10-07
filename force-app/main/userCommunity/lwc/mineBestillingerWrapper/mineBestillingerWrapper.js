@@ -196,16 +196,16 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     editButtonLabel = 'Rediger';
     copyButtonLabel = 'Kopier';
-    cancelButtonLabel = 'Avlys';
+    cancelButtonLabel = 'Avbestill';
     setButtonLabels() {
         if (this.urlStateParameters.level === 'R') {
             this.editButtonLabel = 'Rediger serie';
             this.copyButtonLabel = 'Kopier serie';
-            this.cancelButtonLabel = 'Avlys serie';
+            this.cancelButtonLabel = 'Avbestill serie';
         } else {
             this.editButtonLabel = 'Rediger';
             this.copyButtonLabel = 'Kopier';
-            this.cancelButtonLabel = 'Avlys';
+            this.cancelButtonLabel = 'Avbestill';
         }
     }
 
@@ -382,16 +382,16 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             tempEndDate.getTime() > Date.now()
         ) {
             if (this.urlStateParameters.level === 'R') {
-                this.modalContent = 'Er du sikker på at du vil avlyse alle datoer i bestillingen?';
+                this.modalContent = 'Er du sikker på at du vil avbestille alle datoer i bestillingen?';
             } else {
                 this.modalContent =
-                    'Er du sikker på at du vil avlyse bestillingen?\nDato: ' + this.workOrder.StartAndEndDate;
+                    'Er du sikker på at du vil avbestille denne bestillingen?\nDato: ' + this.workOrder.StartAndEndDate;
             }
             this.isCancel = true;
             this.noCancelButton = false;
             this.showModal();
         } else {
-            this.modalContent = 'Du kan ikke avlyse denne bestillingen.';
+            this.modalContent = 'Du kan ikke avbestille denne bestillingen.';
             this.noCancelButton = true;
             this.showModal();
         }
@@ -439,7 +439,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 this.noCancelButton = true;
                 this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
                 this.template.querySelector('.loader').classList.add('hidden');
-                this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
+                this.modalContent = 'Kunne ikke avbestille denne bestillingen.';
                 this.showModal();
             });
     }

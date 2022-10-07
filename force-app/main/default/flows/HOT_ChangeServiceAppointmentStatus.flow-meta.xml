@@ -729,7 +729,7 @@
             <choiceReferences>Bruker_Ikke_Mott</choiceReferences>
             <choiceReferences>Annet</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
+            <fieldText>Oppgi en begrunnelse for å avbestille</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>

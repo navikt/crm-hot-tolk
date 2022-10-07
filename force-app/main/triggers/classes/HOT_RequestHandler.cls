@@ -72,11 +72,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (request.OwnerId != triggerOldMap.get(request.Id).get('OwnerId')) {
                 ownerChangedRequests.add(request);
             }
-            // Filter for Avlyst requests
+            // Filter for Avbestilt requests
             if (request.Status__c != triggerOldMap.get(request.Id).get('Status__c') && request.Status__c == 'Avbestilt') {
                 avlystRequests.add(request);
             }
-            // Notify Dispatcher: Avlyst requests
+            // Notify Dispatcher: Avbestilt requests
             if (
                 request.IsNotifyDispatcher__c != triggerOldMap.get(request.Id).get('IsNotifyDispatcher__c') &&
                 request.IsNotifyDispatcher__c == true

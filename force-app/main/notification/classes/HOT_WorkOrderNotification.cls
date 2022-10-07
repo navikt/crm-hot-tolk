@@ -24,7 +24,7 @@ public without sharing class HOT_WorkOrderNotification {
 
             Set<String> recipients = new Set<String>{ (String) groupByQueue.get(workOrder.OwnerId) };
 
-            // Varsel ved avlyst av bruker
+            // Varsel ved avbestilt av bruker
             if (
                 workOrder.Status == 'Canceled' &&
                 oldWorkOrder.Status != 'Canceled' &&

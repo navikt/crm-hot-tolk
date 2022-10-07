@@ -3,6 +3,6 @@
     <help>
         <!-- Settes automatisk til dagens dato når forespørselen blir satt til avbestilt. Kan endres til en annen dato etter status er satt til Avbestilt hvis det er aktuelt. -->
     </help>
-    <label>Avlyst av bruker (dato)</label>
+    <label>Avbestilt av bruker (dato)</label>
     <name>CanceledDate__c</name>
 </CustomFieldTranslation>

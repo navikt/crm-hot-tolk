@@ -331,7 +331,7 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                 this.requests[index].ExternalRequestStatus__c != 'Dekket' &&
                 tempEndDate.getTime() > Date.now()
             ) {
-                if (confirm('Er du sikker på at du vil avlyse bestillingen?')) {
+                if (confirm('Er du sikker på at du vil avbestille denne bestillingen?')) {
                     const fields = {};
                     fields[REQUEST_ID.fieldApiName] = Id;
                     fields[STATUS.fieldApiName] = 'Avbestilt';
@@ -342,11 +342,11 @@ export default class RequestList extends NavigationMixin(LightningElement) {
                             refreshApex(this.wiredRequestsResult);
                         })
                         .catch(() => {
-                            alert('Kunne ikke avlyse bestilling.');
+                            alert('Kunne ikke avbestille denne bestillingen.');
                         });
                 }
             } else {
-                alert('Du kan ikke avlyse denne bestillingen.');
+                alert('Du kan ikke avbestille denne bestillingen.');
             }
         }
     }
