@@ -898,11 +898,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>ServiceAppointment.HOT_PreferredResource__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>ServiceAppointment.HOT_ReleaseDate__c</field>
         <readable>true</readable>
     </fieldPermissions>

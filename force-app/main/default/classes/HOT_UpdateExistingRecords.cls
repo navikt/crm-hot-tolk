@@ -1,17 +1,18 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
+        Datetime now = Datetime.now();
+
         return Database.getQueryLocator(
-            'SELECT Id, HOT_Request__r.Company__c, HOT_Company__c FROM ServiceAppointment WHERE (HOT_Request__r.Company__c != null AND HOT_Company__c==null)'
+            'SELECT Id, Status, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Status = \'Completed\' AND ActualStartTime = null AND ActualEndTime = null AND SchedStartTime != null AND SchedEndTime != null'
         );
     }
 
-    public void execute(Database.BatchableContext bc, List<ServiceAppointment> ServiceAppointments) {
-        for(ServiceAppointment sa: ServiceAppointments){
-            if(sa.HOT_Company__c==null){
-                sa.HOT_Company__c = sa.HOT_Request__r.Company__c;
-            }
+    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
+        for (ServiceAppointment sa : records) {
+            sa.ActualStartTime = sa.SchedStartTime;
+            sa.ActualEndTime = sa.SchedEndTime;
         }
-        update ServiceAppointments;
+        update records;
     }
     public void finish(Database.BatchableContext bc) {
         // execute any post-processing operations
