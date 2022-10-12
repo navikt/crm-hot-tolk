@@ -10,6 +10,7 @@ import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
+import getRequestId from '@salesforce/apex/HOT_MessageHelper.getRequestId';
 
 const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD]; //Extract the name of the thread record
 
@@ -18,6 +19,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     messages = [];
     buttonisdisabled = false;
     @api recordId;
+    @api requestId;
     @track msgVal;
     userContactId;
     thread;
@@ -43,7 +45,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             });
     }
 
-    @track breadcrumbs = [ 
+    @track breadcrumbs = [
         {
             label: 'Tolketjenesten',
             href: ''
@@ -90,6 +92,12 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     get isclosed() {
         return getFieldValue(this.thread.data, THREADCLOSED_FIELD);
     }
+    @wire(getRequestId, { recordId: '$recordId' })
+    wiredRequest({ error, data }) {
+        console.log(data);
+        this.requestId = data;
+    }
+
     /**
      * Blanks out all text fields, and enables the submit-button again.
      * @Author lars Petter Johnsen
@@ -117,8 +125,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 {
                     Id: 1,
                     EventItem: '',
-                    Text:
-                        'Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her. Husk å kopiere det du har skrevet.'
+                    Text: 'Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her. Husk å kopiere det du har skrevet.'
                 }
             ]
         };
@@ -202,20 +209,32 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             }
         });
     }
+    goToWO() {
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'mine-bestillinger'
+            },
+            state: {
+                id: this.requestId,
+                level: 'WO'
+            }
+        });
+    }
 
     navigationId = '';
     navigationLevel = '';
     navigationBaseUrl = '';
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
-            if (parsed_params.from && parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
-                this.navigationBaseUrl = parsed_params.from;
-                this.navigationId = parsed_params.recordId;
-                this.navigationLevel = parsed_params.level;
-                this.breadcrumbs[1] = {
-                    label: 'Mine bestillinger',
-                    href: 'mine-bestillinger'
-                };
+        if (parsed_params.from && parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
+            this.navigationBaseUrl = parsed_params.from;
+            this.navigationId = parsed_params.recordId;
+            this.navigationLevel = parsed_params.level;
+            this.breadcrumbs[1] = {
+                label: 'Mine bestillinger',
+                href: 'mine-bestillinger'
+            };
         } else {
             this.navigationBaseUrl = 'mine-samtaler';
         }
