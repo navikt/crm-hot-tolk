@@ -7,6 +7,10 @@ public without sharing class HOT_UserInformationController {
             FROM Person__c
             WHERE Id = :currentUser.Account.CRM_Person__c
         ];
+        
+        
+        //person.INT_KrrIntegrationStatus__c = 'Queued';
+        //update person;
         return person;
     }
 
@@ -36,5 +40,20 @@ public without sharing class HOT_UserInformationController {
             WHERE Id = :currentUser.Account.CRM_Person__c
         ];
         return person;
+    }
+
+    @AuraEnabled
+    public static void updateKrrStatusToQueued(Person__c person) {
+        person = [
+                SELECT Id, INT_KrrEmail__c, INT_KrrMobilePhone__c, INT_KrrIntegrationStatus__c
+                FROM Person__c
+            ];
+
+        person.INT_KrrIntegrationStatus__c = 'Queued';
+        try {
+            update person;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 }
