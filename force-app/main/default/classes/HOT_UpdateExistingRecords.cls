@@ -3,14 +3,13 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
         Datetime now = Datetime.now();
 
         return Database.getQueryLocator(
-            'SELECT Id, Status, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Status = \'Completed\' AND ActualStartTime = null AND ActualEndTime = null AND SchedStartTime != null AND SchedEndTime != null'
+            'SELECT Id, HOT_NotificationChannel__c FROM Person__c WHERE HOT_HasEntitlement__c =true'
         );
     }
 
-    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
-        for (ServiceAppointment sa : records) {
-            sa.ActualStartTime = sa.SchedStartTime;
-            sa.ActualEndTime = sa.SchedEndTime;
+    public void execute(Database.BatchableContext bc, List<Person__c> records) {
+        for (Person__c person : records) {
+            person.HOT_NotificationChannel__c='SMS';
         }
         update records;
     }
