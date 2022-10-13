@@ -136,7 +136,7 @@ private class HOT_ServiceAppointmentNotificationTest {
             'Could not set HOT_CanceledByInterpreter__c'
         );
 
-        //Avbestiøt på vegne av bruker
+        //Avbestilt på vegne av bruker
         serviceAppointment.HOT_IsNotifyDispatcher__c = true;
         serviceAppointment.Status = 'Canceled';
         update serviceAppointment;

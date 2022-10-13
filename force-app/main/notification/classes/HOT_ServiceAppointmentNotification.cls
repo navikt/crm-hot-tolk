@@ -165,7 +165,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' - ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
             ' - ' +
-            ' AvlyAvbestilt'
+            ' Avbestilt'
         );
         notification.setBody(
             'Oppdraget ' +
