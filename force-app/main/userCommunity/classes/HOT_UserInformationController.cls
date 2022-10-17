@@ -50,10 +50,6 @@ public without sharing class HOT_UserInformationController {
             ];
 
         person.INT_KrrIntegrationStatus__c = 'Queued';
-        try {
-            update person;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+        update person;
     }
 }
