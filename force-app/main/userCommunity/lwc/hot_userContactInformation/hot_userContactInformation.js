@@ -23,7 +23,6 @@ export default class hot_userContactInformation extends LightningElement {
     }
 
     get isKrrQueued (){
-        return INT_KrrIntegrationStatus__c == 'Queued' ? true : false;
+        return this.person.INT_KrrIntegrationStatus__c == 'Queued' ? true : false;
     }
-
 }

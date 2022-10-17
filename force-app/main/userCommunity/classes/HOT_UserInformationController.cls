@@ -47,6 +47,7 @@ public without sharing class HOT_UserInformationController {
         person = [
                 SELECT Id, INT_KrrEmail__c, INT_KrrMobilePhone__c, INT_KrrIntegrationStatus__c
                 FROM Person__c
+                WHERE Id = :UserInfo.getUserId()
             ];
 
         person.INT_KrrIntegrationStatus__c = 'Queued';
