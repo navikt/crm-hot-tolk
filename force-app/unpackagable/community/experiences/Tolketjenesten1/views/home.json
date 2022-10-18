@@ -28,6 +28,13 @@
       "type" : "component"
     }, {
       "componentAttributes" : { },
+      "componentName" : "c:notificationTest",
+      "id" : "2d454b33-0b6f-4cb9-b72c-89ac56f1135f",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : { },
       "componentName" : "c:hot_home",
       "id" : "d19e8491-9698-4c04-a35c-71721b105397",
       "renderPriority" : "NEUTRAL",

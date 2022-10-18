@@ -86,11 +86,11 @@
       "components" : [ {
         "componentAttributes" : {
           "NavigationMenuEditorRefresh" : "",
-          "hideAppLauncher" : true,
-          "hideHomeText" : true
+          "hideAppLauncher" : false,
+          "hideHomeText" : false
         },
         "componentName" : "forceCommunity:globalNavigation",
-        "id" : "5cf003f1-d9c4-48ae-b72a-a7eb377a0078",
+        "id" : "8e989b46-bcbe-4740-a173-aae0c91540e4",
         "renditionMap" : { },
         "type" : "component"
       } ],
