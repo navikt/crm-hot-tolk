@@ -6,11 +6,10 @@ export default class Hot_isDeceasedBannerRequest extends LightningElement {
     @track isDeceased;
     @api recordId;
 
-    connectedCallback() {
-        isDeceased({
-            requestId: this.recordId
-        }).then((data) => {
+    @wire(isDeceased)
+    wiredIsDeceased(result) {
+        if (result.data) {
             this.isDeceased = data;
-        });
+        }
     }
 }
