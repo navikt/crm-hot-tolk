@@ -26,7 +26,7 @@
             <assignToReference>choosenQuickText</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>choose_quick_text</elementReference>
+                <elementReference>Choose_quick_text_radiobuttons</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -77,6 +77,11 @@
             <targetReference>createSMSRecord</targetReference>
         </connector>
     </assignments>
+    <choices>
+        <name>IngenHurtigtekst</name>
+        <choiceText>Ingen hurtigtekst</choiceText>
+        <dataType>String</dataType>
+    </choices>
     <choices>
         <name>quicktextchoice1</name>
         <choiceText>{!quicktext1}</choiceText>
@@ -224,18 +229,20 @@
         <label>Quick Text</label>
         <locationX>50</locationX>
         <locationY>398</locationY>
-        <allowBack>true</allowBack>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
             <targetReference>Set_choosen_quick_text</targetReference>
         </connector>
         <fields>
-            <name>choose_quick_text</name>
+            <name>Choose_quick_text_radiobuttons</name>
+            <choiceReferences>IngenHurtigtekst</choiceReferences>
             <choiceReferences>quicktextchoice1</choiceReferences>
             <choiceReferences>quicktextchoice2</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Velg en hurtigtekst</fieldText>
+            <defaultSelectedChoiceReference>IngenHurtigtekst</defaultSelectedChoiceReference>
+            <fieldText>Velg en hurtigtekst eller bare gå videre</fieldText>
             <fieldType>RadioButtons</fieldType>
             <isRequired>false</isRequired>
         </fields>
@@ -263,7 +270,7 @@
         <label>Type message</label>
         <locationX>50</locationX>
         <locationY>638</locationY>
-        <allowBack>true</allowBack>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
@@ -308,11 +315,8 @@ Mvh NAV Hjelpemiddelsentral, tolkeformidling</text>
         <name>choosenQuickText</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
-        <value>
-            <elementReference>choose_quick_text</elementReference>
-        </value>
     </variables>
     <variables>
         <name>error</name>

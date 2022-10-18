@@ -1,0 +1,59 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "539432c8-f05f-4b4e-bc9c-fb19d474f4f2",
+  "label" : "Calendar",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "fe46b0cc-4312-4508-b319-49de417d3e0d",
+          "columns" : [ {
+            "UUID" : "092c991d-eb3f-4db2-a151-cfa3be38ee4a",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "fe46b0cc-4312-4508-b319-49de417d3e0d",
+      "regions" : [ {
+        "id" : "092c991d-eb3f-4db2-a151-cfa3be38ee4a",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "29cc1201-b90a-48aa-a0c3-b9edc9e55f7f",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Calendar"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "06481b7d-703f-4053-9c90-c6b4717a20a7",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "3947a325-7973-45e0-8892-ed3e4265aaa4",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-calendar"
+}
