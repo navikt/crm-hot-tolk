@@ -35,7 +35,8 @@ public without sharing class HOT_UserInformationController {
                 HOT_Escort__c,
                 HOT_DegreeOfHearingAndVisualImpairment__c,
                 INT_SecurityMeasures__c,
-                HOT_SIPAddress__c
+                HOT_SIPAddress__c,
+                HOT_NotificationChannel__c
             FROM Person__c
             WHERE Id = :currentUser.Account.CRM_Person__c
         ];
@@ -52,5 +53,38 @@ public without sharing class HOT_UserInformationController {
 
         person.INT_KrrIntegrationStatus__c = 'Queued';
         update person;
+
+    @AuraEnabled
+    public static List < Map < String, String >> getNotificationPickListValues(String chosen) {
+        List < Map < String, String >> options = new List < Map < String, String >> ();
+        
+        Schema.DescribeFieldResult fieldResult = Person__c.HOT_NotificationChannel__c.getDescribe();
+		List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+		for( Schema.PicklistEntry f : ple){
+            if(chosen!=f.getLabel()){
+                Map < String, String > values = new Map < String, String > {
+                    'label' => f.getLabel(),
+                    'value' => f.getValue()
+                };
+                options.add(values);
+            }
+		}     
+        return options;
+    }
+    
+    @AuraEnabled
+    public static boolean changeUserNotificationSetting(String personId, String newNotificationValue) {
+        Person__c person = [
+            SELECT
+                Id,
+                HOT_NotificationChannel__c
+                FROM Person__c
+                WHERE Id = :personId
+        ];
+         if(person!=null){
+             person.HOT_NotificationChannel__c=newNotificationValue;
+             update person;
+         }
+        return true;
     }
 }

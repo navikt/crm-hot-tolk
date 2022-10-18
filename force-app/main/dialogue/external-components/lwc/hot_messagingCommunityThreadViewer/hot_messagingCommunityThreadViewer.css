@@ -1,6 +1,6 @@
 .decorator-wrapper {
 }
-.body-wrapper{
+.body-wrapper {
     padding: 1rem;
 }
 .back-link {
@@ -9,7 +9,16 @@
     text-decoration: none;
     max-width: fit-content;
 }
+.goToWO-link {
+    position: absolute;
+    display: flex;
+    align-items: center;
+
+    max-width: fit-content;
+    right: 5rem;
+}
 .back-link-div {
+    display: flex;
     max-width: 80em;
     margin: auto;
     padding-top: 2rem;
@@ -56,6 +65,9 @@ p {
 @media (max-width: 576px) {
     .back-link {
         padding-left: 2rem;
+    }
+    .goToWO-link {
+        padding-right: 2rem;
     }
     .brodsmulesti {
         padding: 1rem;

@@ -27,6 +27,7 @@ private class HOT_MySAListControllerTest {
         }
         update myServiceAppointment;
 
+        Test.startTest();
         myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
 
         System.assertEquals(
@@ -68,6 +69,8 @@ private class HOT_MySAListControllerTest {
 
         myServiceAppointment = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
 
+        Test.stopTest();
+
         System.assertEquals(
             0,
             myServiceAppointment.size(),
@@ -76,7 +79,9 @@ private class HOT_MySAListControllerTest {
     }
     @isTest
     static void getParentWorkOrderLineItemsTest() {
+        Test.startTest();
         List<WorkOrderLineItem> workOrderLineItem = HOT_MyServiceAppointmentListController.getParentWorkOrderLineItems();
+        Test.stopTest();
         System.assertEquals(1, workOrderLineItem.size(), 'Could not fetch parent WorkOrderLineItems');
     }
 
@@ -97,6 +102,7 @@ private class HOT_MySAListControllerTest {
         request2.Status__c = 'Godkjent';
         update request2;
 
+        Test.startTest();
         List<ServiceAppointment> allSAs = [
             SELECT Id, Status, HOT_DelPol_ToHideRecord__c, SchedEndTime
             FROM ServiceAppointment
@@ -108,7 +114,6 @@ private class HOT_MySAListControllerTest {
 
         update allSAs;
 
-        Test.startTest();
         List<ServiceAppointment> myServiceAppointmentsafter = HOT_MyServiceAppointmentListController.getMyServiceAppointments();
         Test.stopTest();
 
