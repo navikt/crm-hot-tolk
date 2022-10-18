@@ -1,0 +1,8 @@
+<template>
+    <!-- <p>Record Id: {recordId}, Død: {tt}</p> -->
+    <template if:true={isDeceased}>
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+            <p>Denne brukeren er død</p>
+        </div>
+    </template>
+</template>
