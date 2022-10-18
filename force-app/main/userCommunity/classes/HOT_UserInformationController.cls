@@ -53,6 +53,7 @@ public without sharing class HOT_UserInformationController {
 
         person.INT_KrrIntegrationStatus__c = 'Queued';
         update person;
+    }
 
     @AuraEnabled
     public static List < Map < String, String >> getNotificationPickListValues(String chosen) {
