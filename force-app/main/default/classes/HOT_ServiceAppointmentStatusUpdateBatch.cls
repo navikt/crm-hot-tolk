@@ -1,4 +1,4 @@
-public without sharing class HOT_ServiceAppointmentStatusUpdateBatch implements Database.Batchable<sObject>, Schedulable {
+public without sharing class HOT_ServiceAppointmentStatusUpdateBatch implements Database.Batchable<sObject>, Schedulable, Database.AllowsCallouts {
     public void execute(SchedulableContext sc) {
         HOT_ServiceAppointmentStatusUpdateBatch instance = new HOT_ServiceAppointmentStatusUpdateBatch();
         database.executebatch(instance, 10);
@@ -13,6 +13,7 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBatch implements 
         for (ServiceAppointment sa : records) {
             sa.Status = 'Cannot Complete';
         }
+
         update records;
     }
     public void finish(Database.BatchableContext bc) {
