@@ -85,9 +85,9 @@ jobs:
       # Authenticate integration-sandbox
       - name: Authenticate integration-sandbox
         run: |
-          echo ${{ secrets.INTEGRATION_SANDBOX_SFDX_URL}} > ./INTEGRATION_SANDBOX_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./INTEGRATION_SANDBOX_SFDX_URL.txt -a integration-sandbox -s
-          rm -f ./INTEGRATION_SANDBOX_SFDX_URL.txt
+          echo ${{ secrets.CRM_SIT_SFDX_URL}} > ./CRM_SIT_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./CRM_SIT_SFDX_URL.txt -a integration-sandbox -s
+          rm -f ./CRM_SIT_SFDX_URL.txt
 
       # Install new package version into integration org
       - name: Install new package version into integration org
