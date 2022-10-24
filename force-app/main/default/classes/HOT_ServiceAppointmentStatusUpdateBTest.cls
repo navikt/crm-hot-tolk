@@ -18,6 +18,7 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
             sa.HOT_Request__c = request.Id;
             insert sa;
         }
+        Test.startTest();
 
         List<ServiceAppointment> salist = [SELECT Id, Status FROM ServiceAppointment];
         for (ServiceAppointment sa : salist) {
@@ -28,7 +29,6 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
         update saList;
 
         HOT_ServiceAppointmentStatusUpdateBatch instance = new HOT_ServiceAppointmentStatusUpdateBatch();
-        Test.startTest();
         database.executebatch(instance);
         Test.stopTest();
 
