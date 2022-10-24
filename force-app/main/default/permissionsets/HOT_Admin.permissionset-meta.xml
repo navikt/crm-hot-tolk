@@ -880,7 +880,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_WageClaim__c.isAvailableForAcute__c</field>
+        <field>HOT_WageClaim__c.IsAvailableForAcute__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
