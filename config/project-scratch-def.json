@@ -67,6 +67,9 @@
         },
         "omniChannelSettings": {
             "enableOmniChannel": true
+        },
+        "userManagementSettings": {
+            "permsetsInFieldCreation": true
         }
     }
 }
