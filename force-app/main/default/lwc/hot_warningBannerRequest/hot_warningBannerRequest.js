@@ -2,7 +2,6 @@ import { LightningElement, wire, api, track } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import securityMeasures from '@salesforce/schema/HOT_Request__c.Account__r.CRM_Person__r.INT_SecurityMeasures__c';
 import reservations from '@salesforce/schema/HOT_Request__c.Account__r.CRM_Person__r.HOT_Reservations__c';
-//import isDeceased from '@salesforce/schema/HOT_Request__c.Person__r.INT_IsDeceased__c';
 import isDeceased from '@salesforce/schema/HOT_Request__c.Account__r.CRM_Person__r.INT_IsDeceased__c';
 import ACCOUNT_ID from '@salesforce/schema/HOT_Request__c.Account__c';
 import getOverlappingRecordsFromRequestId from '@salesforce/apex/HOT_DuplicateHandler.getOverlappingRecordsFromRequestId';
@@ -22,7 +21,6 @@ export default class Hot_warningBannerRequest extends LightningElement {
         this.record = result;
         if (result.data) {
             this.getDuplicates();
-            console.log('  data --> ' + JSON.stringify(result.data));
             this.isDeceased = this.checkIsDeceased();
         }
     }
