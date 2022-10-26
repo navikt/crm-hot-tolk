@@ -1,7 +1,5 @@
 import { LightningElement, wire, track } from 'lwc';
 import getPersonPhoneEmailAndStatus from '@salesforce/apex/HOT_UserInformationController.getPersonPhoneEmailAndStatus';
-import { updateRecord } from 'lightning/uiRecordApi';
-import INT_KrrIntegrationStatus__c from '@salesforce/schema/Person__ChangeEvent.INT_KrrIntegrationStatus__c';
 import updateKrrStatus from '@salesforce/apex/HOT_UserInformationController.updateKrrStatus';
 
 export default class hot_userContactInformation extends LightningElement {
@@ -9,6 +7,7 @@ export default class hot_userContactInformation extends LightningElement {
     @track recordId;
     @wire(getPersonPhoneEmailAndStatus)
     wiredPerson(result) {
+        this.wiredPersonResult = result;
         if (result.data) {
             this.person = result.data;
             this.recordId = this.person.Id;
@@ -26,11 +25,7 @@ export default class hot_userContactInformation extends LightningElement {
     }
 
     get isKrrQueued() {
-        try {
-            let status = this.person?.INT_KrrIntegrationStatus__c == 'Queued' ? true : false;
-            return status;
-        } catch (error) {
-            console.log(error);
-        }
+        console.log('IsKrrQueued called');
+        return this.person?.INT_KrrIntegrationStatus__c == 'Queued';
     }
 }
