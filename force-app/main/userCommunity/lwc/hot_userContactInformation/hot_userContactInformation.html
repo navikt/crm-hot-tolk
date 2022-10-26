@@ -1,6 +1,12 @@
 <template>
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
+            <div class="back-link-div">
+                <a class="back-link" onclick={goBack}>
+                    <c-icon icon="Back"></c-icon>
+                    <p style="margin-left: 0.25rem">Tilbake</p>
+                </a>
+            </div>
             <section>
                 <lightning-record-view-form object-api-name="Person__c" record-id={recordId}>
                     <section class="bruker-info-skjema sub-form">

@@ -11,4 +11,14 @@ export default class hot_userContactInformation extends LightningElement {
             this.recordId = this.person.Id;
         }
     }
+
+    goBack() {
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'home'
+            }
+        });
+        alert('knapp fungerer');
+    }
 }

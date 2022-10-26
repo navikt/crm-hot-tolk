@@ -14,7 +14,6 @@
     flex-grow: 0;
     overflow-x: auto;
     margin-bottom: 1rem;
-    margin-top: 1rem;
     max-width: 800px;
     width: 100%;
 }
@@ -31,4 +30,17 @@
 .sub-form > form > slot > lightning-output-field > .slds-form-element__label {
     background-color: red;
     display: none !important;
+}
+.back-link {
+    display: flex;
+    align-items: left;
+    text-decoration: none;
+    max-width: fit-content;
+}
+.back-link-div {
+    left: 0;
+    margin-top: 0;
+    padding: 0;
+    max-width: 800px;
+    width: 100%;
 }
