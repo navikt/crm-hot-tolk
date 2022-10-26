@@ -40,16 +40,19 @@ private class HOT_WageClaimServiceTest {
         HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
 
         Test.startTest();
+        
         HOT_WageClaimService.assign(wageClaim.Id, assignedResource.serviceAppointmentId);
-        Test.stopTest();
-
+        
         List<AssignedResource> assignedResources = [
             SELECT Id
             FROM AssignedResource
             WHERE
-                ServiceAppointmentId = :assignedResource.ServiceAppointmentId
-                AND ServiceResourceId = :wageClaim.ServiceResource__c
-        ];
+            ServiceAppointmentId = :assignedResource.ServiceAppointmentId
+            AND ServiceResourceId = :wageClaim.ServiceResource__c
+            ];
+
+        Test.stopTest();
+
         System.assertEquals(
             1,
             assignedResources.size(),
