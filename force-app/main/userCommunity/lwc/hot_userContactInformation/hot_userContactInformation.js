@@ -1,6 +1,8 @@
 import { LightningElement, wire, track } from 'lwc';
 import getPersonPhoneEmailAndStatus from '@salesforce/apex/HOT_UserInformationController.getPersonPhoneEmailAndStatus';
 import { updateRecord } from 'lightning/uiRecordApi';
+import INT_KrrIntegrationStatus__c from '@salesforce/schema/Person__ChangeEvent.INT_KrrIntegrationStatus__c';
+import updateKrrStatus from '@salesforce/apex/HOT_UserInformationController.updateKrrStatus';
 
 export default class hot_userContactInformation extends LightningElement {
     @track person;
@@ -14,18 +16,18 @@ export default class hot_userContactInformation extends LightningElement {
     }
 
     setKrrIntegrationStatusToQueued() {
+        var personCloned = JSON.parse(JSON.stringify(this.person));
         try {
-            this.person.INT_KrrIntegrationStatus__c = 'Queued';
+            personCloned.INT_KrrIntegrationStatus__c = 'Queued';
+            updateKrrStatus({ receivedPerson: personCloned });
         } catch (error) {
             console.log(error);
         }
-        updateRecord({ person: this.person });
     }
 
     get isKrrQueued() {
         try {
             let status = this.person?.INT_KrrIntegrationStatus__c == 'Queued' ? true : false;
-            console.log(status);
             return status;
         } catch (error) {
             console.log(error);
