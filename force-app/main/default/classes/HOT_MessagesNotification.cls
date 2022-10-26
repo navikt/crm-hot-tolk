@@ -1,9 +1,9 @@
 public with sharing class HOT_MessagesNotification {
 
-    public static void Notification(List<Id> threadIds){
+    public static void notifyDispatcher(List<Id> threadIds){
         List<Thread__c> threads=[SELECT Id, OwnerId, HOT_Dispatcher__c, HOT_Subject__c FROM Thread__c WHERE Id IN:threadIds];
 
-        CustomNotificationType notificationType = [
+        CustomNotificationType notificationTypeDispatcher = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyDispatcher'
@@ -25,10 +25,10 @@ public with sharing class HOT_MessagesNotification {
             }
             Messaging.CustomNotification notification = new Messaging.CustomNotification();
             notification.setTitle('Ny melding');
-            notification.setBody(thread.HOT_Subject__c);
-            notification.setNotificationTypeId(notificationType.Id);
-            notification.setTargetId(thread.Id);
-            HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread);
+            notification.setBody(thread.HOT_Subject__c);// send med parameter for denne
+            notification.setNotificationTypeId(notificationTypeDispatcher.Id); // send med parameter for denne
+            notification.setTargetId(thread.Id);// send med parameter for denne
+            HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread);// send med parameter for denne
                 
         }
     }
