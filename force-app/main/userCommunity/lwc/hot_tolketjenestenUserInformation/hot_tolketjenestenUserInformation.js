@@ -13,7 +13,6 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
         if (result.data) {
             this.person = result.data;
             this.recordId = this.person.Id;
-            this.selectedOption = this.person.HOT_NotificationChannel__c;
             getNotificationPickListValues({
                 chosen: this.selectedOption
             }).then((data) => {
