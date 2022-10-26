@@ -25,7 +25,6 @@ export default class hot_userContactInformation extends LightningElement {
     }
 
     get isKrrQueued() {
-        console.log('IsKrrQueued called');
         return this.person?.INT_KrrIntegrationStatus__c == 'Queued';
     }
 }
