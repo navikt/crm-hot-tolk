@@ -749,6 +749,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_WageClaim__c.IsAvailableForAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Person__c.CRM_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1260,6 +1265,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_WorkOrderNumber__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_WorkOrder__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
