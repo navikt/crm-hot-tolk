@@ -38,8 +38,8 @@ private class HOT_WageClaimServiceTest {
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
 
         HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
-
         Test.startTest();
+
         
         HOT_WageClaimService.assign(wageClaim.Id, assignedResource.serviceAppointmentId);
         
@@ -64,10 +64,10 @@ private class HOT_WageClaimServiceTest {
     static void getServiceAppointmentsTest() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
-
+        Test.startTest();
         HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
         List<ServiceAppointment> serviceAppointments = HOT_WageClaimService.getServiceAppointments(wageClaim.Id);
-
+        Test.stopTest();
         System.assertEquals(
             1,
             serviceAppointments.size(),
