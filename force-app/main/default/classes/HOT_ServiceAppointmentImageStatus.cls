@@ -7,7 +7,7 @@ public without sharing class HOT_ServiceAppointmentImageStatus implements Databa
         DateTime today = Datetime.now();
       
         return Database.getQueryLocator([
-    SELECT Id, HOT_Request__c FROM ServiceAppointment WHERE (Status='Dispatched' AND HOT_IsImageInterpreter__c=true) AND SchedEndTime<today
+    SELECT Id, HOT_Request__c FROM ServiceAppointment WHERE (Status='Dispatched' AND HOT_IsImageInterpreter__c=true) AND SchedEndTime<:today
 ]);
     }
     public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {

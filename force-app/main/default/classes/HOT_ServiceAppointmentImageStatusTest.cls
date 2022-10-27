@@ -25,16 +25,16 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
             request.Type__c = 'ImageInterpreter';
         }
         update requestlist;
-        Test.startTest();
-
+        
         List<ServiceAppointment> salist = [SELECT Id, Status FROM ServiceAppointment];
         for (ServiceAppointment sa : salist) {
             sa.Status = 'Dispatched';
-            sa.SchedStartTime = Datetime.now();
-            sa.SchedEndTime = sa.SchedStartTime.AddHours(1);
+            sa.SchedStartTime = Datetime.now().AddHours(-1);
+            sa.SchedEndTime = sa.SchedStartTime;
             
         }
         update saList;
+        Test.startTest();
 
         HOT_ServiceAppointmentImageStatus instance = new HOT_ServiceAppointmentImageStatus();
         database.executebatch(instance);
