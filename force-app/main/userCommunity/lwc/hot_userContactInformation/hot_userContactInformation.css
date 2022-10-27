@@ -8,7 +8,7 @@
 .user-info-tile {
     background-color: #fff;
     display: block;
-    padding: 4rem 2rem;
+    padding: 3rem 2rem;
     border-radius: 4px;
     position: relative;
     flex-grow: 0;
@@ -38,9 +38,12 @@
     max-width: fit-content;
 }
 .back-link-div {
-    left: 0;
-    margin-top: 0;
-    padding: 0;
+    display: flex;
+
     max-width: 800px;
+
     width: 100%;
+}
+.back-link:hover {
+    text-decoration: underline;
 }

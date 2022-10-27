@@ -1,9 +1,6 @@
 <template>
     <div class="brodsmulesti">
-        <lightning-breadcrumbs class="liste-max-width">
-            <lightning-breadcrumb label="Tolketjenesten" href="/s/"> </lightning-breadcrumb>
-            <lightning-breadcrumb label="Min side"></lightning-breadcrumb>
-        </lightning-breadcrumbs>
+        <c-breadcrumbs url-list={breadcrumbs} class="liste-max-width"></c-breadcrumbs>
     </div>
 
     <c-hot_user-contact-information item-name="contactInformation"> </c-hot_user-contact-information>

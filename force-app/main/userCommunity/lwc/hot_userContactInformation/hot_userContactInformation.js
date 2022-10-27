@@ -1,7 +1,8 @@
 import { LightningElement, wire, track } from 'lwc';
 import getPersonPhoneEmail from '@salesforce/apex/HOT_UserInformationController.getPersonPhoneEmail';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class hot_userContactInformation extends LightningElement {
+export default class hot_userContactInformation extends NavigationMixin(LightningElement) {
     @track person;
     @track recordId;
     @wire(getPersonPhoneEmail)
@@ -19,6 +20,5 @@ export default class hot_userContactInformation extends LightningElement {
                 pageName: 'home'
             }
         });
-        alert('knapp fungerer');
     }
 }
