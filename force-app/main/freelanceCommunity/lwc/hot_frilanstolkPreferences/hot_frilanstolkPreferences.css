@@ -1,0 +1,64 @@
+.center-content {
+    align-items: center;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+.user-info-tile {
+    background-color: #fff;
+    display: block;
+    padding: 4rem 2rem;
+    border-radius: 4px;
+    position: relative;
+    flex-grow: 0;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    max-width: 800px;
+    width: 100%;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+
+.sub-form > form {
+    padding: 0 1rem;
+}
+
+.sub-form > form > slot {
+    display: flex;
+    flex-direction: row;
+}
+
+.sub-form > form > slot > lightning-output-field > .slds-form-element__label {
+    background-color: red;
+    display: none !important;
+}
+
+.viewQualifications {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button-class {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+h1 {
+    font-weight: 600;
+    font-size: 1.5rem;
+    font-family: 'Source Sans Pro', Arial, Sans serif;
+}
+
+@media (max-width: 576px) {
+    .button-spaced {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    lightning-button {
+        display: flex;
+        justify-content: center;
+    }
+}

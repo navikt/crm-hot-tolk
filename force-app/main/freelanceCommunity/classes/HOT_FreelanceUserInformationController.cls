@@ -15,7 +15,8 @@ public without sharing class HOT_FreelanceUserInformationController {
                 HOT_MobilePhone__c,
                 HOT_MobilePhoneOverride__c,
                 HOT_MobileDevice__c,
-                HOT_PreferredRegions__c
+                HOT_PreferredRegions__c, 
+                HOT_MoreInformation__c
             FROM ServiceResource
             WHERE RelatedRecordId = :userId
         ];
