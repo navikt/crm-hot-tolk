@@ -4,6 +4,7 @@ import getServiceAppointments from '@salesforce/apex/HOT_ServiceAppointmentContr
 export default class Hot_matchingServiceAppointmentsFromSA extends LightningElement {
     @api recordId;
     @track showList = true;
+    @track empty = false;
     @track columns = [
         {
             label: 'Appointment Number',
@@ -75,7 +76,12 @@ export default class Hot_matchingServiceAppointmentsFromSA extends LightningElem
                 tempRecord.SAppointmentNumber = '/' + tempRecord.Id;
                 tempServiceAppointments.push(tempRecord);
             });
-            this.serviceAppointments = tempServiceAppointments;
+            if (tempServiceAppointments.length === 0) {
+                this.showList = false;
+                this.empty = true;
+            } else {
+                this.serviceAppointments = tempServiceAppointments;
+            }
         }
     }
 }
