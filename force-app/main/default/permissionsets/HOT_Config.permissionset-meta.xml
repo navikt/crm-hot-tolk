@@ -728,6 +728,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_WageClaim__c.IsAvailableForAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>JobProfile.Description</field>
         <readable>true</readable>
@@ -1010,6 +1015,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceResource.HOT_MobilePhone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_MoreInformation__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
