@@ -1,0 +1,50 @@
+<template>
+    <div class="user-info-wrapper center-content">
+        <div class="user-info-tile center-content">
+            <h1>Diverse</h1>
+            <section class="viewUserInformation center-content" if:true={viewUserPreference} aria-live="polite">
+                <lightning-record-view-form object-api-name="ServiceResource" record-id={recordId} mode="view">
+                    <div class="form-wrapper">
+                        <lightning-output-field field-name="HOT_MoreInformation__c" label="Mer informasjon">
+                        </lightning-output-field>
+                    </div>
+                </lightning-record-view-form>
+                <c-button
+                    button-label="Rediger preferanser"
+                    button-styling="primary"
+                    desktop-style="width: 20rem; justify-content: center"
+                    mobile-style="width: 16rem; justify-content: center"
+                    onclick={editUserPreferenceBtn}
+                    style="margin-top: 1.5rem"
+                ></c-button>
+            </section>
+            <section class="editUserInformation" if:true={editUserPreference} aria-live="polite">
+                <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
+                    <div class="form-wrapper">
+                        <lightning-input-field
+                            field-name="HOT_MoreInformation__c"
+                            label="Mer informasjon"
+                        ></lightning-input-field>
+                    </div>
+                    <div class="button-class">
+                        <c-button
+                            button-label="Lagre"
+                            button-styling="primary"
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center"
+                            onbuttonclick={handleSubmit}
+                        ></c-button>
+                        <c-button
+                            button-label="Avbryt"
+                            button-styling="secondary"
+                            style="padding-left: 1rem"
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center"
+                            onbuttonclick={handleAbort}
+                        ></c-button>
+                    </div>
+                </lightning-record-edit-form>
+            </section>
+        </div>
+    </div>
+</template>
