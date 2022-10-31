@@ -204,16 +204,29 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         });
     }
     goToWO() {
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName: 'mine-bestillinger'
-            },
-            state: {
-                id: this.requestId,
-                level: 'WO'
-            }
-        });
+        if (this.navigationLevel == 'R') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-bestillinger'
+                },
+                state: {
+                    id: this.navigationId,
+                    level: 'R'
+                }
+            });
+        } else {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-bestillinger'
+                },
+                state: {
+                    id: this.navigationId,
+                    level: 'WO'
+                }
+            });
+        }
     }
 
     navigationId = '';
