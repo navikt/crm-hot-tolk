@@ -20,7 +20,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
             }
             Map<String, KRRCalloutService.Person> krrResponseByPersonalNumber = new Map<String, KRRCalloutService.Person>();
             List<String> personNumbers = new List<String>(personIdByPersonalNumber.keySet());
-            List<KRRCalloutService.Person> personResponse = KrrCalloutService.doPersonOppslag(personNumbers, null);
+            List<KRRCalloutService.Person> personResponse = KrrCalloutService.doPersonOppslag2(personNumbers, null);
 
             // KrrCalloutService.doPersonOppslag() fails in 25% of cases. We are rerunning the Callout, to see if there are some irregularities with the integration
             if (personResponse == null) {
