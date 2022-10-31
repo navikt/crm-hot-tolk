@@ -3,7 +3,6 @@ import { NavigationMixin } from 'lightning/navigation';
 import getPersonPhoneEmailAndStatus from '@salesforce/apex/HOT_UserInformationController.getPersonPhoneEmailAndStatus';
 import updateKrrStatus from '@salesforce/apex/HOT_UserInformationController.updateKrrStatus';
 
-
 export default class hot_userContactInformation extends NavigationMixin(LightningElement) {
     @track person;
     @track recordId;
@@ -22,7 +21,7 @@ export default class hot_userContactInformation extends NavigationMixin(Lightnin
                 pageName: 'home'
             }
         });
-
+    }
     setKrrIntegrationStatusToQueued() {
         var personCloned = JSON.parse(JSON.stringify(this.person));
         try {
