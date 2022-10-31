@@ -514,6 +514,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.IsAccountEqualOrderer__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.IsAccountNotNull__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -723,6 +728,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_WageClaim__c.IsAvailableForAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>JobProfile.Description</field>
         <readable>true</readable>
@@ -745,6 +755,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.HOT_MobilePhoneStripped__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Person__c.HOT_NotificationChannel__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -938,6 +953,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_WorkOrder__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.AccountId</field>
         <readable>true</readable>
@@ -995,6 +1015,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceResource.HOT_MobilePhone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_MoreInformation__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

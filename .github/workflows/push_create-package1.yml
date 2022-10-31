@@ -25,9 +25,9 @@ jobs:
       # Authenticate prod
       - name: Authenticate prod
         run: |
-          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
-          rm -f ./PROD_SFDX_URL.txt
+          echo ${{ secrets.CRM_PROD_SFDX_URL}} > ./CRM_PROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./CRM_PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./CRM_PROD_SFDX_URL.txt
 
       # Delete unpackagable and scratch-org folder
       - name: Delete unpackagable
@@ -40,7 +40,7 @@ jobs:
       - name: Create package version
         id: package-version-create
         run: |
-          sfdx force:package:version:create -f config/project-scratch-def.json -p $(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].package' -r) -k ${{ secrets.PACKAGE_KEY }} -w 90 -c --json | tee output
+          sfdx force:package:beta:version:create -f config/project-scratch-def.json -p $(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].package' -r) -k ${{ secrets.PACKAGE_KEY }} -w 90 -c --json | tee output
 
           if [ $(cat output |jq '.status') == "1" ]; then
             exit 125
@@ -78,16 +78,16 @@ jobs:
       # Authenticate prod
       - name: Authenticate prod
         run: |
-          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
-          rm -f ./PROD_SFDX_URL.txt
+          echo ${{ secrets.CRM_PROD_SFDX_URL}} > ./CRM_PROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./CRM_PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./CRM_PROD_SFDX_URL.txt
 
       # Authenticate integration-sandbox
       - name: Authenticate integration-sandbox
         run: |
-          echo ${{ secrets.INTEGRATION_SANDBOX_SFDX_URL}} > ./INTEGRATION_SANDBOX_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./INTEGRATION_SANDBOX_SFDX_URL.txt -a integration-sandbox -s
-          rm -f ./INTEGRATION_SANDBOX_SFDX_URL.txt
+          echo ${{ secrets.CRM_SIT_SFDX_URL}} > ./CRM_SIT_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./CRM_SIT_SFDX_URL.txt -a integration-sandbox -s
+          rm -f ./CRM_SIT_SFDX_URL.txt
 
       # Install new package version into integration org
       - name: Install new package version into integration org
@@ -169,9 +169,9 @@ jobs:
       # Authenticate prod
       - name: Authenticate prod
         run: |
-          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
-          rm -f ./PROD_SFDX_URL.txt
+          echo ${{ secrets.CRM_PROD_SFDX_URL}} > ./CRM_PROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./CRM_PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./CRM_PROD_SFDX_URL.txt
 
       # Authenticate dev sandbox
       - name: Authenticate dev sandbox
@@ -185,9 +185,9 @@ jobs:
       - name: Authenticate UAT sandbox
         if: ${{ needs.check-deployment-secrets.outputs.deployToUAT == 'true' }}
         run: |
-          echo ${{ secrets.UAT_SFDX_URL}} > ./UAT_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./UAT_SFDX_URL.txt -a uat -s
-          rm -f ./UAT_SFDX_URL.txt
+          echo ${{ secrets.CRM_UAT_SFDX_URL}} > ./CRM_UAT_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./CRM_UAT_SFDX_URL.txt -a uat -s
+          rm -f ./CRM_UAT_SFDX_URL.txt
 
       # Install sfpowerkit plugin used to install multiple packages only by version number
       - name: Install sfpowerkit plugin

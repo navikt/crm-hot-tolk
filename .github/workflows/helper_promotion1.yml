@@ -37,9 +37,9 @@ jobs:
       # Authenticate prod
       - name: Authenticate prod
         run: |
-          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
-          rm -f ./PROD_SFDX_URL.txt
+          echo ${{ secrets.CRM_PROD_SFDX_URL}} > ./CRM_PROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./CRM_PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./CRM_PROD_SFDX_URL.txt
 
       # Promote package
       - name: Promote package
@@ -57,9 +57,9 @@ jobs:
       # Authenticate preprod
       - name: Authenticate preprod
         run: |
-          echo ${{ secrets.PREPROD_SFDX_URL}} > ./PREPROD_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./PREPROD_SFDX_URL.txt -a preprod -s
-          rm -f ./PREPROD_SFDX_URL.txt
+          echo ${{ secrets.CRM_PREPROD_SFDX_URL}} > ./CRM_PREPROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./CRM_PREPROD_SFDX_URL.txt -a preprod -s
+          rm -f ./CRM_PREPROD_SFDX_URL.txt
 
       # Install package version to preprod
       - name: Install package version to preprod
@@ -116,7 +116,7 @@ jobs:
         uses: juliangruber/merge-pull-request-action@v1
         with:
           # ! USES CUSTOM PAT TO INITIATE STATUS CHECKS (SEE "Require status checks to pass before merging" IN BRANCHES SETTINGS IN REPO)
-          github-token: ${{ secrets.DEPLOYMENT_PAT }}
+          github-token: ${{ secrets.CRM_DEPLOYMENT_PAT }}
           number: ${{ env.PULL_REQUEST_NUMBER }}
           method: squash
 
@@ -139,9 +139,9 @@ jobs:
       # Authenticate prod
       - name: Authenticate prod
         run: |
-          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
-          rm -f ./PROD_SFDX_URL.txt
+          echo ${{ secrets.CRM_PROD_SFDX_URL}} > ./CRM_PROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./CRM_PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./CRM_PROD_SFDX_URL.txt
 
       # Set release variables
       - name: Set release fields

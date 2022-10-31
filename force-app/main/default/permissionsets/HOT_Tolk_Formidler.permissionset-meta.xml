@@ -749,6 +749,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_WageClaim__c.IsAvailableForAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Person__c.CRM_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -870,6 +875,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.INT_Confidential__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.INT_IsDeceased__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1264,6 +1274,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_WorkOrder__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_WorkTypeName__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1375,6 +1390,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceResource.HOT_MobilePhone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_MoreInformation__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

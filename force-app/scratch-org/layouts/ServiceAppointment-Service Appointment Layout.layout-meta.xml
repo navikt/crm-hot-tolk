@@ -11,6 +11,10 @@
                 <field>AppointmentNumber</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HOT_WorkOrder__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Required</behavior>
                 <field>ParentRecordId</field>
             </layoutItems>
@@ -354,7 +358,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1X000005BSLr</masterLabel>
+        <masterLabel>00h5E00000222yd</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
