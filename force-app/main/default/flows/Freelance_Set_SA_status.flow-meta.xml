@@ -120,8 +120,8 @@
             <targetReference>assignVariables</targetReference>
         </connector>
         <fields>
-            <name>test</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;{!GetSA.EarliestStartTime} - {!GetSA.DueDate}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;{!GetSA.AppointmentNumber}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <name>header</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Endre status på Oppdraget til dekket&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -150,7 +150,7 @@
             <defaultValue>
                 <elementReference>GetSA.EarliestStartTime</elementReference>
             </defaultValue>
-            <fieldText>Faktisk starttid</fieldText>
+            <fieldText>Faktisk start</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
             <validationRule>
@@ -174,7 +174,7 @@
             <defaultValue>
                 <elementReference>GetSA.DueDate</elementReference>
             </defaultValue>
-            <fieldText>Faktisk slutttid</fieldText>
+            <fieldText>Faktisk slutt</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
             <validationRule>
@@ -194,7 +194,7 @@
         </fields>
         <nextOrFinishButtonLabel>Endre</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <start>
         <locationX>50</locationX>
