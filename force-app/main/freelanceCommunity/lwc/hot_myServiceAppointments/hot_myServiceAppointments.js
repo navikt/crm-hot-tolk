@@ -7,6 +7,7 @@ import { formatRecord } from 'c/datetimeFormatter';
 
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
+    @track isNotEditable = true;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -114,19 +115,27 @@ export default class Hot_myServiceAppointments extends LightningElement {
     @track serviceAppointment;
     @track interestedResource;
     isDetails = false;
+    isflow = false;
     isSeries = false;
     showTable = true;
+    showEditButton = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
+        var today = new Date();
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
         this.isDetails = !!this.recordId;
+        this.showEditButton = true;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
+                var duedate = new Date(this.serviceAppointment.DueDate);
+                if (duedate < today && this.serviceAppointment.Status == 'Dispatched') {
+                    this.isNotEditable = false;
+                }
             }
         }
         this.updateURL();
@@ -147,6 +156,8 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.recordId = undefined;
         this.isDetails = false;
         this.showTable = true;
+        this.isflow = false;
+        this.isNotEditable = true;
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'my' };
     }
@@ -173,5 +184,21 @@ export default class Hot_myServiceAppointments extends LightningElement {
             this.records = filteredRecords;
         }
         return this.filteredRecordsLength;
+    }
+    changeStatus() {
+        this.isflow = true;
+        this.isNotEditable = true;
+        this.isDetails = true;
+        this.showEditButton = false;
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+    get flowVariables() {
+        return [
+            {
+                name: 'recordId',
+                type: 'String',
+                value: this.recordId
+            }
+        ];
     }
 }

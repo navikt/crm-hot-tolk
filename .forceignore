@@ -87,6 +87,10 @@
 
 # Community
 **/audience/*
+**/aura/*
+**/components/*
+**/pages/*
+**/classes/*
 **/networks/*
 **/documents/*
 **/networkBranding/*

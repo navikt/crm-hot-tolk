@@ -33,6 +33,22 @@
                     ></c-record-files-with-sharing>
                 </div>
             </div>
+            <div if:true={showEditButton}>
+                <c-button
+                    disabled={isNotEditable}
+                    onbuttonclick={changeStatus}
+                    button-styling="Primary"
+                    type="Submit"
+                    button-label="Endre status til dekket"
+                >
+                </c-button>
+            </div>
+        </div>
+        <div if:true={isflow} class="flow-container">
+            <lightning-flow
+                flow-api-name="Freelance_Set_SA_status"
+                flow-input-variables={flowVariables}
+            ></lightning-flow>
         </div>
         <div if:false={noServiceAppointments}>
             <c-table if:false={isDetails} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
