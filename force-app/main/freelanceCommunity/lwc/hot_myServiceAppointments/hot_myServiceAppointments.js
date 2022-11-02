@@ -190,7 +190,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.isNotEditable = true;
         this.isDetails = true;
         this.showEditButton = false;
-        window.scrollTo(0, document.body.scrollHeight);
     }
     get flowVariables() {
         return [

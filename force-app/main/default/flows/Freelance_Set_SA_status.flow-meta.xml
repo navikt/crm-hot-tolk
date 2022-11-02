@@ -120,8 +120,8 @@
             <targetReference>assignVariables</targetReference>
         </connector>
         <fields>
-            <name>header</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;Endre status på Oppdraget til dekket&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <name>head</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Endre status på oppdraget til dekket&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
