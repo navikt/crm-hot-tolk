@@ -14,7 +14,7 @@ private class HOT_UserInformationControllerTest {
     }
 
     @isTest
-    static void getPersonPhoneEmailTest() {
+    static void getPersonPhoneEmailAndStatus() {
         Test.startTest();
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
@@ -25,7 +25,10 @@ private class HOT_UserInformationControllerTest {
         person.INT_Confidential__c = 'Ugradert';
         person.INT_FirstName__c = 'Tolk';
         person.INT_LastName__c = 'Bruker';
+        person.INT_KrrIntegrationStatus__c = 'Queued';
         insert person;
+
+        
 
         Account account = [
             SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
@@ -43,8 +46,9 @@ private class HOT_UserInformationControllerTest {
         Test.stopTest();
 
         System.runAs(user) {
-            person = HOT_UserInformationController.getPersonPhoneEmail();
-            System.assertEquals('getpersontest@nav.no', person.INT_KrrEmail__c);
+            person = HOT_UserInformationController.getPersonPhoneEmailAndStatus();
+            System.assertEquals('getpersontest@nav.no', person.INT_KrrEmail__c, 'Expected email to be "getpersontest@nav.no"');
+            System.assertEquals('Queued', person.INT_KrrIntegrationStatus__c, 'Expected KrrIntegrationStatus to be "Queued"');
         }
     }
     @isTest

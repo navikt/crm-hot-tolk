@@ -1,0 +1,18 @@
+name: "[HELPER] Deploy to Production"
+on:
+  workflow_dispatch:
+    inputs:
+      packageId:
+        description: "Package ID"
+        required: true
+        type: string
+    
+jobs:
+  deploy-to-production:
+    name: Deploy to Production
+    uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@master
+    with:
+      packageId: ${{ inputs.packageId }}
+      org: prod
+      unpackagable: ./force-app/unpackagable-with-auto-deploy
+    secrets: inherit

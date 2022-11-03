@@ -1,6 +1,12 @@
 <template>
     <div class="user-info-wrapper center-content">
         <div class="user-info-tile center-content">
+            <div class="back-link-div">
+                <a class="back-link" onclick={goBack}>
+                    <c-icon icon="Back"></c-icon>
+                    <p style="margin-left: 0.25rem">Tilbake</p>
+                </a>
+            </div>
             <section>
                 <lightning-record-view-form object-api-name="Person__c" record-id={recordId}>
                     <section class="bruker-info-skjema sub-form">
@@ -17,13 +23,20 @@
                 </lightning-record-view-form>
                 <br />
                 <p class="typo-normal">
-                    <a href="https://brukerprofil.difi.no/minprofil" class="lenke kilde__lenke lenke" target="_blank">
+                    <a
+                        href="https://brukerprofil.difi.no/minprofil"
+                        class="lenke kilde__lenke lenke"
+                        target="_blank"
+                        onclick={setKrrIntegrationStatusToQueued}
+                    >
                         <span class="kilde__icon" style="padding-right: 0.5rem">
                             <img style="width: 1rem" src="/s/sfsites/c/resource/1595245347000/linkNAV" alt="" />
                         </span>
                         Endre i Kontakt- og reservasjonsregisteret
                     </a>
                 </p>
+                <br />
+                <p if:true={isKrrQueued}>Kontaktinformasjonen vil bli oppdatert innen 24 timer</p>
             </section>
         </div>
     </div>
