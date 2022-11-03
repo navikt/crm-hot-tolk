@@ -79,7 +79,7 @@ public without sharing class HOT_ReminderSMSService {
         message += 'Tolk er: ';
         message += interpreterNames;
         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-        message += '\nMvh NAV Tolketjeneste';
+        message += '\nMvh tolketjenesten i NAV';
         return message;
     }
 
@@ -130,7 +130,7 @@ public without sharing class HOT_ReminderSMSService {
         }
         message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-        message += '\nMvh NAV Tolketjeneste';
+        message += '\nMvh tolketjenesten i NAV';
         return message;
     }
 
