@@ -100,13 +100,18 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
+            <name>head2</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Endre status på oppdraget til dekket&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>text</name>
             <fieldText>&lt;p&gt;Oppdraget ble endret&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>Ferdig</nextOrFinishButtonLabel>
         <showFooter>false</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>test1</name>
