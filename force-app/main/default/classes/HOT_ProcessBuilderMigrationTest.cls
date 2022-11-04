@@ -137,20 +137,32 @@ public class HOT_ProcessBuilderMigrationTest {
         insert workOrderLineItem;
 
         workOrderLineItem = [
-            SELECT Duration, StartDate, EndDate
+            SELECT Duration, StartDate, EndDate 
             FROM workOrderLineItem
-            WHERE Id = :workOrderLineItem.Id
+            WHERE Id = :workOrderLineItem.Id 
         ];
-        System.assertEquals(1, workOrderLineItem.Duration, 'Could not correctly calculate Duration');
+        System.assertEquals(1, workOrderLineItem.Duration, 'Could not correctly calculate Duration'); 
 
-        workOrderLineItem.StartDate = workOrderLineItem.StartDate.addMinutes(30);
-        update workOrderLineItem;
+        // workOrderLineItem.StartDate = workOrderLineItem.StartDate.addMinutes(30);
+        // update workOrderLineItem; 
+        // workOrderLineItem = [
+        //     SELECT Duration, StartDate, EndDate, DurationInMinutes
+        //     FROM workOrderLineItem
+        //     WHERE Id = :workOrderLineItem.Id
+        // ];
+        // System.assertEquals(30, workOrderLineItem.DurationInMinutes, 'Could not correctly calculate Duration');
+
+        //workOrderLineItem.StartDate = workOrderLineItem.StartDate.addMinutes(30);
+        //workOrderLineItem.StartDate.addMinutes(30);
+        workOrderLineItem.StartDate.addMinutes(30);
+        update workOrderLineItem; 
         workOrderLineItem = [
             SELECT Duration, StartDate, EndDate
             FROM workOrderLineItem
             WHERE Id = :workOrderLineItem.Id
         ];
-        System.assertEquals(0.5, workOrderLineItem.Duration, 'Could not correctly calculate Duration');
+        System.assertEquals(1.5, workOrderLineItem.Duration, 'Could not correctly calculate Duration');
+
         workOrderLineItem.EndDate = workOrderLineItem.EndDate.addHours(23);
         update workOrderLineItem;
         workOrderLineItem = [
