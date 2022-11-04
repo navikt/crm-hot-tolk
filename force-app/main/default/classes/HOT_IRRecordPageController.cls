@@ -22,7 +22,7 @@ public with sharing class HOT_IRRecordPageController {
                 OR Status = 'Released to Freelance')
                 AND Id != :interestedResource.ServiceAppointment__c
                 AND ServiceTerritoryId = :interestedResource.ServiceAppointment__r.ServiceTerritoryId
-                AND WorkTypeId = :interestedResource.ServiceAppointment__r.WorkTypeId
+                AND WorkTypeId = :interestedResource.ServiceAppointment__r.WorkTypeId ORDER BY EarliestStartTime ASC
         ];
         return ServiceAppointments;
     }
