@@ -1,5 +1,5 @@
 <template>
-    <p if:true={empty}>Ingen relevante oppdrag funnet</p>
+    <p if:false={showList}>Ingen relevante oppdrag funnet</p>
     <lightning-datatable
         if:true={showList}
         key-field="Id"

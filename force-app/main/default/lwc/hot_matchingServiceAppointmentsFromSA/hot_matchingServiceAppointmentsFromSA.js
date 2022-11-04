@@ -1,21 +1,20 @@
 import { LightningElement, wire, track, api } from 'lwc';
-import getServiceAppointments from '@salesforce/apex/HOT_ServiceAppointmentController.getServiceAppointments';
+import getServiceAppointments from '@salesforce/apex/HOT_IRRecordPageController.getRelevantServiceAppointments';
 
 export default class Hot_matchingServiceAppointmentsFromSA extends LightningElement {
     @api recordId;
     @track showList = true;
-    @track empty = false;
     @track columns = [
         {
             label: 'Appointment Number',
-            fieldName: 'SAppointmentNumber',
+            fieldName: 'ServiceAppointmentNumber',
             type: 'url',
             typeAttributes: { label: { fieldName: 'AppointmentNumber' }, target: '_blank' },
             sortable: true
         },
         {
             label: 'Start tid',
-            fieldName: 'SchedStartTime',
+            fieldName: 'EarliestStartTime',
             type: 'date',
             sortable: true,
             typeAttributes: {
@@ -29,7 +28,7 @@ export default class Hot_matchingServiceAppointmentsFromSA extends LightningElem
         },
         {
             label: 'Slutt tid',
-            fieldName: 'SchedEndTime',
+            fieldName: 'DueDate',
             type: 'date',
             sortable: true,
             typeAttributes: {
@@ -73,12 +72,11 @@ export default class Hot_matchingServiceAppointmentsFromSA extends LightningElem
             let tempServiceAppointments = [];
             result.data.forEach((record) => {
                 let tempRecord = Object.assign({}, record);
-                tempRecord.SAppointmentNumber = '/' + tempRecord.Id;
+                tempRecord.ServiceAppointmentNumber = '/' + tempRecord.Id;
                 tempServiceAppointments.push(tempRecord);
             });
             if (tempServiceAppointments.length === 0) {
                 this.showList = false;
-                this.empty = true;
             } else {
                 this.serviceAppointments = tempServiceAppointments;
             }

@@ -1,6 +1,6 @@
-public without sharing class HOT_ServiceAppointmentController {
-    @AuraEnabled(cacheable=true)
-    public static List<ServiceAppointment> getServiceAppointments(String recordId) {
+public with sharing class HOT_IRRecordPageController {
+       @AuraEnabled(cacheable=true)
+    public static List<ServiceAppointment> getRelevantServiceAppointments(String recordId) {
         HOT_InterestedResource__c interestedResource = [
             SELECT ServiceAppointment__c, ServiceAppointment__r.ServiceTerritoryId, ServiceAppointment__r.WorkTypeId
             FROM HOT_InterestedResource__c
@@ -10,8 +10,8 @@ public without sharing class HOT_ServiceAppointmentController {
             SELECT
                 Id,
                 AppointmentNumber,
-                SchedStartTime,
-                SchedEndTime,
+                EarliestStartTime,
+                DueDate,
                 HOT_WorkTypeName__c,
                 HOT_ServiceTerritoryName__c,
                 Status,
