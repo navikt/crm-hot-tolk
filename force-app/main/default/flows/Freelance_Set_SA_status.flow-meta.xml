@@ -101,7 +101,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>head2</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Endre status på oppdraget til dekket&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Sett status på oppdraget til dekket&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -136,7 +136,7 @@
             <inputParameters>
                 <name>label</name>
                 <value>
-                    <stringValue>Sett faktisk tid som planlagt tid</stringValue>
+                    <stringValue>Sett faktisk tid til planlagt tid</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
