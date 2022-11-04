@@ -1,5 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getServiceAppointments from '@salesforce/apex/HOT_IRRecordPageController.getRelevantServiceAppointments';
+import { sortList } from 'c/sortController';
 
 export default class Hot_matchingServiceAppointmentsFromSA extends LightningElement {
     @api recordId;
@@ -65,6 +66,10 @@ export default class Hot_matchingServiceAppointmentsFromSA extends LightningElem
             sortable: true
         }
     ];
+    @track defaultSortDirection = 'asc';
+    @track sortDirection = 'asc';
+    @track sortedBy = 'EarliestStartTime';
+
     @track serviceAppointments;
     @wire(getServiceAppointments, { recordId: '$recordId' })
     wiredServiceAppointments(result) {
@@ -81,5 +86,10 @@ export default class Hot_matchingServiceAppointmentsFromSA extends LightningElem
                 this.serviceAppointments = tempServiceAppointments;
             }
         }
+    }
+    onHandleSort(event) {
+        this.sortDirection = event.detail.sortDirection;
+        this.sortedBy = event.detail.fieldName;
+        this.serviceAppointments = sortList(this.serviceAppointments, this.sortedBy, this.sortDirection);
     }
 }
