@@ -1,0 +1,112 @@
+name: "Quick Package Create"
+on:
+  workflow_call:
+
+jobs:
+  # ################################################################# #
+  # ######################## CREATE PACKAGE ######################### #
+  # ################################################################# #
+  create-package:
+    name: Create Package
+    runs-on: ubuntu-latest
+    outputs:
+      packageId: ${{ steps.package-version-create.outputs.packageId }}
+      alphaVersionNumber: ${{ steps.package-version-create.outputs.alphaVersionNumber }}
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # Install SFDX
+      - name: Install SFDX
+        uses: navikt/crm-workflows-base/.github/actions/installSFDX@master
+
+      # Authenticate prod
+      - name: Authorize PROD
+        uses: navikt/crm-workflows-base/.github/actions/authenticateOrg@master
+        with:
+          auth-url: ${{ secrets.CRM_PROD_SFDX_URL }}
+          alias: prod
+          setDefaultUsername: true
+          setDefaultDevhubUsername: true
+
+      # Delete unpackagable and scratch-org folder
+      - name: Delete unpackagable
+        run: |
+          rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/unpackagable-with-auto-deploy
+          rm -rf ./force-app/scratch-org
+
+      # Create package version
+      - name: Create package version
+        id: package-version-create
+        run: |
+          sfdx force:package:beta:version:create -f config/project-scratch-def.json -p $(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].package' -r) -k ${{ secrets.PACKAGE_KEY }} -w 90  --skipvalidation --json | tee output
+
+          if [ $(cat output |jq '.status') == "1" ]; then
+            exit 125
+          fi
+
+          packageId=$(cat output | jq -r '.result.SubscriberPackageVersionId')
+          echo "packageId=$(echo $packageId)" >> $GITHUB_OUTPUT
+          echo "alphaVersionNumber=$(cat sfdx-project.json | jq -r '.packageAliases | keys_unsorted[-1]' | sed 's/.*-//')" >> $GITHUB_OUTPUT
+
+          echo
+          echo Package ID: $packageId
+
+
+  # ################################################################# #
+  # ######################### CREATE RELEASE ######################## #
+  # ################################################################# #
+  create-release:
+    name: Create alpha release
+    needs: [create-package]
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # set release variables
+      - name: Set release fields
+        id: release-fields
+        run: |
+          versionNumber=$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')
+          alphaVersionNumber=${{ needs.create-package.outputs.alphaVersionNumber }}
+
+          echo "tagName=v$(echo $versionNumber)-alpha$(echo $alphaVersionNumber)" >> $GITHUB_OUTPUT
+          echo "releaseName=$(echo $versionNumber)-alpha$(echo $alphaVersionNumber)" >> $GITHUB_OUTPUT
+          echo "bodyVersion=$(echo $versionNumber).$(echo $alphaVersionNumber)" >> $GITHUB_OUTPUT
+          echo "bodyPackage=${{ needs.create-package.outputs.packageId }}" >> $GITHUB_OUTPUT
+
+          echo "packageCreation=✅ Package Creation" >> $GITHUB_OUTPUT
+
+      # Generate changelog from commits
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v0.4.3
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # create github release
+      - name: Create Release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release-fields.outputs.tagName }}
+          release_name: ${{ steps.release-fields.outputs.releaseName }}
+          body: |
+            **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
+            **Package ID**: ${{ steps.release-fields.outputs.bodyPackage }}
+            **ALPHA**
+
+            **Author**: ${{ github.actor }}
+
+            ${{ steps.release-fields.outputs.packageCreation }}
+
+            ## Changelog
+
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: true
