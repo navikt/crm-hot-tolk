@@ -133,7 +133,7 @@ public class HOT_ProcessBuilderMigrationTest {
         insert workOrder;
         WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
         workOrderLineItem.StartDate = Datetime.now().addDays(1);
-        workOrderLineItem.EndDate = workOrderLineItem.StartDate.addHours(1);
+        workOrderLineItem.EndDate = workOrderLineItem.StartDate.addHours(2);
         insert workOrderLineItem;
 
         workOrderLineItem = [
@@ -141,20 +141,9 @@ public class HOT_ProcessBuilderMigrationTest {
             FROM workOrderLineItem
             WHERE Id = :workOrderLineItem.Id 
         ];
-        System.assertEquals(1, workOrderLineItem.Duration, 'Could not correctly calculate Duration'); 
+        System.assertEquals(2, workOrderLineItem.Duration, 'Could not correctly calculate Duration'); 
 
-        // workOrderLineItem.StartDate = workOrderLineItem.StartDate.addMinutes(30);
-        // update workOrderLineItem; 
-        // workOrderLineItem = [
-        //     SELECT Duration, StartDate, EndDate, DurationInMinutes
-        //     FROM workOrderLineItem
-        //     WHERE Id = :workOrderLineItem.Id
-        // ];
-        // System.assertEquals(30, workOrderLineItem.DurationInMinutes, 'Could not correctly calculate Duration');
-
-        //workOrderLineItem.StartDate = workOrderLineItem.StartDate.addMinutes(30);
-        //workOrderLineItem.StartDate.addMinutes(30);
-        workOrderLineItem.StartDate.addMinutes(30);
+        workOrderLineItem.StartDate = workOrderLineItem.StartDate.addMinutes(30);
         update workOrderLineItem; 
         workOrderLineItem = [
             SELECT Duration, StartDate, EndDate
@@ -170,6 +159,6 @@ public class HOT_ProcessBuilderMigrationTest {
             FROM workOrderLineItem
             WHERE Id = :workOrderLineItem.Id
         ];
-        System.assertEquals(23.5, workOrderLineItem.Duration, 'Could not correctly calculate Duration');
+        System.assertEquals(24.5, workOrderLineItem.Duration, 'Could not correctly calculate Duration');
     }
 }
