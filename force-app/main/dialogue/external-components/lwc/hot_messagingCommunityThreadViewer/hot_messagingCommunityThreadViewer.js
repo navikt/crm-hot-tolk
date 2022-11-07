@@ -210,8 +210,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 pageName: 'mine-bestillinger'
             },
             state: {
-                id: this.requestId,
-                level: 'WO'
+                id: this.navigationId,
+                level: this.navigationLevel
             }
         });
     }
@@ -227,7 +227,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             this.navigationLevel = parsed_params.level;
             this.breadcrumbs[1] = {
                 label: 'Mine bestillinger',
-                href: 'mine-bestillinger'
+                href: 'mine-bestillinger/?'
             };
         } else {
             this.navigationBaseUrl = 'mine-samtaler';
