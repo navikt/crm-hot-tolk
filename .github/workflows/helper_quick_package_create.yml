@@ -1,0 +1,18 @@
+name: "[HELPER] Quick Package Create"
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    name: Debug Information
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print values
+        run: |
+          echo running on branch ${GITHUB_REF##*/}
+          echo "Initiator: ${{ github.actor }}"
+
+  quick-package-create:
+    name: Quick Create Package
+    uses: navikt/crm-workflows-base/.github/workflows/quickPackageCreate.yml@master
+    secrets: inherit
