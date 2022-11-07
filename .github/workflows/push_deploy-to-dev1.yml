@@ -43,7 +43,7 @@ jobs:
         run: |
           keys=""
           for p in $(jq '.result | .[].Name' -r <<< "$(sfdx force:package:list --json)"); do
-              keys+=$p":${{ secrets.PACKAGE_KEY }} "
+              keys+=$p":${{ secrets.CRM_PACKAGE_KEY }} "
           done
 
           echo "::set-output name=keys::$(echo $keys)"
