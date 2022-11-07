@@ -5,9 +5,16 @@ on:
       packageId:
         description: "Package ID"
         required: true
+        type: string
       org:
-        description: "Org (prod, preprod, dev, uat, sit)"
+        description: "Org (preprod, dev, uat, sit)"
         required: true
+        type: choice
+        options:
+        - preprod
+        - sit
+        - uat
+        - dev
 jobs:
   debug:
     name: Debug Information
@@ -15,52 +22,15 @@ jobs:
     steps:
       - name: Print input values
         run: |
-          echo "Org: ${{ github.event.inputs.org }}"
-          echo "Package ID: ${{ github.event.inputs.packageId }}"
+          echo "Org: ${{ inputs.org }}"
+          echo "Package ID: ${{ inputs.packageId }}"
           echo "Initiator: ${{ github.actor }}"
 
   deploy-package:
-    runs-on: ubuntu-latest
-    steps:
-      # Set SFDX Auth URL
-      - name: Set SFDX Auth URL
-        id: auth-url
-        run: |
-          if [ ${{ github.event.inputs.org }} == "prod" ];then
-            echo "::set-output name=target::$(echo ${{ secrets.CRM_PROD_SFDX_URL }})"
-            echo "'prod' was set"
-          elif [ ${{ github.event.inputs.org }} == "preprod" ];then
-            echo "::set-output name=target::$(echo ${{ secrets.CRM_PREPROD_SFDX_URL }})"
-            echo "'preprod' was set"
-          elif [ ${{ github.event.inputs.org }} == "dev" ];then
-            echo "::set-output name=target::$(echo ${{ secrets.DEV_SFDX_URL }})"
-            echo "'dev' was set"
-          elif [ ${{ github.event.inputs.org }} == "uat" ];then
-            echo "::set-output name=target::$(echo ${{ secrets.CRM_UAT_SFDX_URL }})"
-            echo "'preprod' was set"
-          elif [ ${{ github.event.inputs.org }} == "sit" ];then
-            echo "::set-output name=target::$(echo ${{ secrets.CRM_SIT_SFDX_URL }})"
-            echo "'preprod' was set"
-          fi
-
-      # Authorize SFDX
-      - name: Authorize SFDX
-        uses: sfdx-actions/setup-sfdx@v1
-        with:
-          sfdx-auth-url: ${{ steps.auth-url.outputs.target }}
-
-      # Install package in target org
-      - name: Install package in target org
-        run: sfdx force:package:install --package ${{ github.event.inputs.packageId }} -k ${{ secrets.PACKAGE_KEY }} -w 10 -b 10 -r
-
-      # Checkout source code
-      - name: Checkout source code from master
-        uses: actions/checkout@v2
-
-      # Deploy unpackagable content
-      - name: Deploy unpackagable content
-        run: |
-          if [ -d "./force-app/unpackagable-with-auto-deploy" ]; then
-            echo "Starting deployment of ./force-app/unpackagable-with-auto-deploy"
-            sfdx force:source:deploy -p ./force-app/unpackagable-with-auto-deploy -l RunLocalTests
-          fi
+    name: Deploy Package
+    uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@master
+    with:
+      packageId: ${{ inputs.packageId }}
+      org: ${{ inputs.org }}
+      unpackagable: ./force-app/unpackagable-with-auto-deploy
+    secrets: inherit

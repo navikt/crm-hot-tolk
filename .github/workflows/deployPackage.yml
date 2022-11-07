@@ -1,0 +1,147 @@
+name: Deploy package
+on:
+  workflow_call:
+    inputs:
+      packageId:
+        description: "Package ID"
+        required: true
+        type: string
+      org:
+        description: "Org (prod, preprod, dev, uat, sit)"
+        required: true
+        type: string
+      unpackagable:
+        description: "Path to unpackageable folder"
+        required: false
+        type: string
+    outputs:
+      successfullyInstalledPackage:
+        value: ${{ jobs.deploy-package.outputs.successfullyInstalledPackage }}
+      deployMetadata:
+        value: ${{ jobs.deploy-package.outputs.deployMetadata }}
+      successfullyDeployedMetadata:
+        value: ${{ jobs.deploy-package.outputs.successfullyDeployedMetadata }}
+jobs:
+  deploy-package:
+    name: Deploy Package
+    runs-on: ubuntu-latest
+    outputs:
+      successfullyInstalledPackage: ${{ steps.installPackage.outputs.successfullyInstalled }}
+      installPackageOutput: ${{ steps.installPackage.outputs.installOutput }}
+      installMetadata: ${{ steps.deployMetadata.outputs.deployMetadata }}
+      successfullyDeployedMetadata: ${{ steps.deployMetadata.outputs.successfullyDeployedMetadata }}
+      deployMetadataOutput: ${{ steps.deployMetadata.outputs.deployOutput }}
+    steps:
+      # Set SFDX Auth URL
+      - name: Set SFDX Auth URL
+        id: auth-url
+        run: |
+          if [ ${{ inputs.org }} == "prod" ];then
+            echo "target=$(echo ${{ secrets.CRM_PROD_SFDX_URL }})" >> $GITHUB_ENV
+            echo "'prod' was set"
+          elif [ ${{ inputs.org }} == "preprod" ];then
+            echo "target=$(echo ${{ secrets.CRM_PREPROD_SFDX_URL }})" >> $GITHUB_ENV
+            echo "'preprod' was set"
+          elif [ ${{ inputs.org }} == "dev" ];then
+            echo "target=$(echo ${{ secrets.DEV_SFDX_URL }})" >> $GITHUB_ENV
+            echo "'dev' was set"
+          elif [ ${{ inputs.org }} == "uat" ];then
+            echo "target=$(echo ${{ secrets.CRM_UAT_SFDX_URL }})" >> $GITHUB_ENV
+            echo "'uat' was set"
+          elif [ ${{ inputs.org }} == "sit" ];then
+            echo "target=$(echo ${{ secrets.CRM_SIT_SFDX_URL }})" >> $GITHUB_ENV
+            echo "'sit' was set"
+          else
+            echo "target=$(echo ${{ github.event.inputs.org }})" >> $GITHUB_ENV
+            echo "input org was set to input"
+          fi
+
+      # Install SFDX
+      - name: Install SFDX
+        uses: navikt/crm-workflows-base/.github/actions/installSFDX@master
+
+      # Authorize SFDX
+      - name: Authorize SFDX
+        uses: navikt/crm-workflows-base/.github/actions/authenticateOrg@master
+        with:
+          auth-url: ${{ env.target }}
+          alias: targetOrg
+          setDefaultUsername: true
+          setDefaultDevhubUsername: false
+
+      # Install package in target org
+      - name: Install package in target org
+        id: installPackage
+        run: |
+          sfdx force:package:install --package ${{ inputs.packageId }} --installationkey ${{ secrets.CRM_PACKAGE_KEY }} --wait 10 --publishwait 10 --noprompt --json | tee output.json
+          echo "installOutput=$(jq '.message' output.json)" >> $GITHUB_OUTPUT
+          if [[ $(jq '.status' output.json) == 0 ]]; then
+            echo "successfullyInstalled=true" >> $GITHUB_OUTPUT
+          else
+            echo "successfullyInstalled=false" >> $GITHUB_OUTPUT
+          fi
+          rm output.json
+
+      # Checkout source code
+      - name: Checkout source code from master
+        uses: actions/checkout@v3
+
+      # Deploy unpackagable content
+      - name: Deploy unpackagable content
+        id: deployMetadata
+        run: |
+          if [ -d "${{ inputs.unpackagable }}" ]; then
+            echo "Starting deployment of ${{ inputs.unpackagable }}"
+            echo "deployMetadata=true" >> $GITHUB_OUTPUT
+            sfdx force:source:deploy --sourcepath ${{ inputs.unpackagable }} --testlevel RunLocalTests --json | tee output.json
+            echo "deployOutput=$(jq -r '.message' output.json)" >> $GITHUB_OUTPUT
+            if [ $(jq -r '.status' output.json) == "0" ]; then
+              echo "successfullyDeployedMetadata=true" >> $GITHUB_OUTPUT
+            else
+              echo "successfullyDeployedMetadata=false" >> $GITHUB_OUTPUT
+            fi
+            rm output.json
+          else
+            echo "deployMetadata=false" >> $GITHUB_OUTPUT
+            echo "successfullyDeployedMetadata=true" >> $GITHUB_OUTPUT
+          fi
+
+  report-deploy-status:
+    name: Report install
+    needs: [deploy-package]
+    runs-on: ubuntu-latest
+    steps:
+      # Report Status
+      - name: Report Package Install Status
+        run: |
+          if [ ${{ needs.deploy-package.outputs.successfullyInstalledPackage }} == "true" ]; then
+            echo
+            echo SUCCESSFUL INSTALLATION OF PACKAGE
+            echo
+          else
+            echo
+            echo FAILED TO INSTALL PACKAGE
+            echo
+            echo ${{ needs.deploy-package.outputs.installOutput }}
+
+            exit 125
+          fi
+
+      - name: Report Metadata Install Status
+        run: |
+          if [ ${{ needs.deploy-package.outputs.deployMetadata }}  == "false" ]; then
+            echo
+            echo NO METADATA TO DEPLOY
+            echo
+          elif [ ${{ needs.deploy-package.outputs.successfullyDeployedMetadata }} == "true" ]; then
+            echo
+            echo SUCCESSFUL DEPLOYMENT OF UNPACKAGED METADATA
+            echo
+          else
+            echo
+            echo FAILED TO DEPLOY UNPACKAGED METADATA
+            echo
+            echo ${{ needs.deploy-package.outputs.deployOutput }}
+
+            exit 125
+          fi
