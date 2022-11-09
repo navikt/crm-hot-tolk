@@ -146,7 +146,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>HOT_ReservationAgainstAppNotification__c</field>
+                <field>HOT_ReservationAgainstAppNotifications__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>

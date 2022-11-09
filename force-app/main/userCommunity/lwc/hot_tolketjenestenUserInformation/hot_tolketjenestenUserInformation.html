@@ -77,7 +77,66 @@
                             </div>
                         </div>
                     </section>
+                    <h2 style="font-size: 1.25rem">Varslingsinnstillinger</h2>
+                    <section
+                        class="bruker-info-skjema sub-form"
+                        style="margin-bottom: 4rem"
+                        if:true={viewUserNotificationSettings}
+                    >
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning-output-field
+                                    class="checkbox-inline"
+                                    field-name="HOT_ReservationAgainstAppNotifications__c"
+                                ></lightning-output-field>
+                            </div>
+                        </div>
+                        <div class="button-class">
+                            <c-button
+                                button-label="Rediger varslingsinnstillinger"
+                                button-styling="primary"
+                                desktop-style="width: 20rem; justify-content: center"
+                                mobile-style="width: 16rem; justify-content: center"
+                                onclick={editUserNotificationBtn}
+                                style="margin-top: 2rem"
+                            ></c-button>
+                        </div>
+                    </section>
                 </lightning-record-view-form>
+                <section
+                    class="bruker-info-skjema"
+                    style="margin-bottom: 4rem"
+                    if:true={editUserNotification}
+                    aria-live="polite"
+                >
+                    <lightning-record-edit-form object-api-name="Person__c" record-id={recordId}>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning-input-field
+                                    style="display: flex"
+                                    field-name="HOT_ReservationAgainstAppNotifications__c"
+                                ></lightning-input-field>
+                            </div>
+                        </div>
+                        <div class="button-class">
+                            <c-button
+                                button-label="Lagre"
+                                button-styling="primary"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                                onbuttonclick={handleSubmit}
+                            ></c-button>
+                            <c-button
+                                button-label="Avbryt"
+                                button-styling="secondary"
+                                style="padding-left: 1rem"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                                onbuttonclick={handleAbort}
+                            ></c-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </section>
             </section>
         </div>
     </div>

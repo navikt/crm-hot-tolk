@@ -8,6 +8,9 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     @track recordId;
     @track options;
     @track selectedOption;
+
+    viewUserNotificationSettings = true;
+    editUserNotification = false;
     @wire(getPerson)
     wiredGetPerson(result) {
         if (result.data) {
@@ -22,5 +25,18 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     }
     selectionChangeHandler(event) {
         changeUserNotificationSetting({ personId: this.recordId, newNotificationValue: event.target.value });
+    }
+    editUserNotificationBtn() {
+        this.viewUserNotificationSettings = false;
+        this.editUserNotification = true;
+    }
+    handleAbort() {
+        this.viewUserNotificationSettings = true;
+        this.editUserNotification = false;
+    }
+    handleSubmit() {
+        this.template.querySelector('lightning-record-edit-form').submit();
+        this.viewUserNotificationSettings = true;
+        this.editUserNotification = false;
     }
 }
