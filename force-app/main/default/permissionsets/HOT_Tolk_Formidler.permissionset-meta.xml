@@ -683,6 +683,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_WageClaim__c.IsAvailableForAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_WageClaim__c.ParentWageClaim__c</field>
         <readable>true</readable>
@@ -745,11 +750,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_WageClaim__c.WorkType__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_WageClaim__c.IsAvailableForAcute__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
