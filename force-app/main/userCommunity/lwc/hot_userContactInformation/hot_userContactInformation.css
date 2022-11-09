@@ -8,13 +8,12 @@
 .user-info-tile {
     background-color: #fff;
     display: block;
-    padding: 4rem 2rem;
+    padding: 3rem 2rem;
     border-radius: 4px;
     position: relative;
     flex-grow: 0;
     overflow-x: auto;
     margin-bottom: 1rem;
-    margin-top: 1rem;
     max-width: 800px;
     width: 100%;
 }
@@ -31,4 +30,18 @@
 .sub-form > form > slot > lightning-output-field > .slds-form-element__label {
     background-color: red;
     display: none !important;
+}
+.back-link {
+    display: flex;
+    align-items: left;
+    text-decoration: none;
+    max-width: fit-content;
+}
+.back-link-div {
+    display: flex;
+    max-width: 800px;
+    width: 100%;
+}
+.back-link:hover {
+    text-decoration: underline;
 }

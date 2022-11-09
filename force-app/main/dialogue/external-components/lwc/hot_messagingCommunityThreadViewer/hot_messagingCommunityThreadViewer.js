@@ -216,8 +216,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 pageName: 'mine-bestillinger'
             },
             state: {
-                id: this.requestId,
-                level: 'WO'
+                id: this.navigationId,
+                level: this.navigationLevel
             }
         });
     }

@@ -1,0 +1,167 @@
+name: "Promote Package"
+on:
+  workflow_call:
+    inputs:
+      packageId:
+        description: "Package ID"
+        required: true
+        type: string
+      comment:
+        description: "Release Comment"
+        required: true
+        type: string
+jobs:
+  debug:
+    name: Debug Information
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print input values
+        run: |
+          echo "Package ID: ${{ github.event.inputs.packageId }}"
+          echo "Initiator: ${{ github.actor }}"
+          echo "Comment: ${{ github.event.inputs.comment }}"
+
+  install-package-preprod:
+    name: Validate install in PREPROD
+    uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@master
+    with:
+      packageId: ${{ github.event.inputs.packageId  }}
+      org: preprod
+      unpackagable: ./force-app/unpackagable-with-auto-deploy
+    secrets: inherit
+  
+  promote-package:
+    name: Promote Package
+    needs: [install-package-preprod]
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - name: Checkout source code from master
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+
+      # Install SFDX
+      - name: Install SFDX
+        uses: navikt/crm-workflows-base/.github/actions/installSFDX@master
+
+      # Authenticate prod
+      - name: Authorize PROD
+        uses: navikt/crm-workflows-base/.github/actions/authenticateOrg@master
+        with:
+          auth-url: ${{ secrets.CRM_PROD_SFDX_URL }}
+          alias: prod
+          setDefaultUsername: true
+          setDefaultDevhubUsername: true
+
+      # Promote package
+      - name: Promote package
+        run: sfdx force:package:version:promote --package ${{ github.event.inputs.packageId }} --noprompt
+
+
+  push-new-version-number-to-master:
+    name: Push new version number to master
+    runs-on: ubuntu-latest
+    needs: promote-package
+    steps:
+      # Checkout source code
+      - name: Checkout source code from master
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+
+      # Update version number
+      - name: Update version number
+        id: packaging-updater
+        uses: navikt/crm-workflows-base/.github/actions/packageMinorVersionUpdater@master
+
+      # Create commit message by extracting the latest version number from sfdx-project.json
+      - name: Build commit message
+        id: build-commit-message
+        run: |
+          echo "message=(CI) Updated to new version number $(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')" >> $GITHUB_OUTPUT
+          cat sfdx-project.json
+
+      # The main branch is protected
+      - name: Create new branch and pull request for updated package version ID
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: "Added new package version ID"
+          commit-message: ${{steps.build-commit-message.outputs.message}}
+          branch: "auto/package-version-update"
+
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Merge pull request
+      - name: Merge pull request
+        uses: juliangruber/merge-pull-request-action@v1
+        with:
+          # ! USES CUSTOM PAT TO INITIATE STATUS CHECKS (SEE "Require status checks to pass before merging" IN BRANCHES SETTINGS IN REPO)
+          github-token: ${{ secrets.CRM_DEPLOYMENT_PAT }}
+          number: ${{ env.PULL_REQUEST_NUMBER }}
+          method: squash
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: promote-package
+    steps:
+      # Checkout source code
+      - name: Checkout source code from master
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: true # ! set to true to be able to checkout correctly
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+
+      # Install SFDX
+      - name: Install SFDX
+        uses: navikt/crm-workflows-base/.github/actions/installSFDX@master
+
+      # Authenticate prod
+      - name: Authorize PROD
+        uses: navikt/crm-workflows-base/.github/actions/authenticateOrg@master
+        with:
+          auth-url: ${{ secrets.CRM_PROD_SFDX_URL }}
+          alias: prod
+          setDefaultUsername: true
+          setDefaultDevhubUsername: true
+          
+      # Set release variables
+      - name: Set release fields
+        id: release-fields
+        run: |
+          echo "tagName=v$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')" >> $GITHUB_OUTPUT
+          echo "releaseName=$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')" >> $GITHUB_OUTPUT
+          echo "bodyVersion=$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')" >> $GITHUB_OUTPUT
+          echo "codeCoverage=$( sfdx force:package:version:report -p ${{ github.event.inputs.packageId }} --json | jq '.result.CodeCoverage.apexCodeCoveragePercentage' -r )" >> $GITHUB_OUTPUT
+
+      # Generate changelog from commits
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v0.4.3
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # create github release
+      - name: Create GitHub Release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{steps.release-fields.outputs.tagName}}
+          release_name: ${{steps.release-fields.outputs.releaseName}}
+          body: |
+            **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
+            **Package ID**: ${{ github.event.inputs.packageId }}
+            **Code Coverage**: ${{ steps.release-fields.outputs.codeCoverage }}%
+
+            **Author**: ${{ github.actor }}
+            **Comment**: ${{ github.event.inputs.comment }}
+
+            ## Changelog
+
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
