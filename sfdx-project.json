@@ -40,7 +40,7 @@
             "path": "force-app",
             "default": false,
             "package": "crm-hot-dev",
-            "versionNumber": "1.175.0.NEXT",
+            "versionNumber": "1.174.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
