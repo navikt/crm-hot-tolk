@@ -44,7 +44,7 @@ public without sharing class HOT_ServiceResourceHandler {
             Boolean isFreelance = user.ProfileId == freelanceProfileId;
             ServiceResource serviceResource = new ServiceResource();
             serviceResource.RelatedRecordId = Test.isRunningTest() ? UserInfo.getUserId() : user.Id;
-            serviceResource.Name = user.Name + ' ' + user.MiddleName + ' ' + user.LastName;
+            serviceResource.Name = user.Firstname + ' ' + user.MiddleName + ' ' + user.LastName;
             serviceResource.ResourceType = 'T';
             serviceResource.IsActive = true;
             serviceResource.HOT_IsEmployedInterpreter__c = !isFreelance;
