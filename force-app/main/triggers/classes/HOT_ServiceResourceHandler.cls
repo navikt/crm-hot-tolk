@@ -6,7 +6,7 @@ public without sharing class HOT_ServiceResourceHandler {
         String serviceTerritoryDeveloperName
     ) {
         List<User> users = [
-            SELECT Id, Name, ProfileId, Department
+            SELECT Id, Name, MiddleName, ProfileId, Department
             FROM User
             WHERE Account.INT_PersonIdent__c IN :personIdents
         ];

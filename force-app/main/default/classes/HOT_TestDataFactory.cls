@@ -197,7 +197,7 @@ public class HOT_TestDataFactory {
         User user = new User(
             Username = 'HOT.' + firstName + middleName + lastName + '@nav.hot.no',
             FirstName = firstName,
-            MiddleName = MiddleName,
+            MiddleName = middleName,
             LastName = lastName,
             Email = 'HOT_testuser@nav.hot.no',
             Alias = lastName,
