@@ -61,6 +61,10 @@
                 <behavior>Edit</behavior>
                 <field>Recipient__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>RecipientFormatted__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

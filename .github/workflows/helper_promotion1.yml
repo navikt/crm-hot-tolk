@@ -20,7 +20,7 @@ jobs:
 
   run-package-promotion:
     name: Promote Package
-    uses: navikt/crm-workflows-base/.github/workflows/quickPackageCreate.yml@master
+    uses: navikt/crm-workflows-base/.github/workflows/packagePromotion.yml@master
     with:
       packageId: ${{ inputs.packageId }}
       comment: ${{ inputs.comment }}
