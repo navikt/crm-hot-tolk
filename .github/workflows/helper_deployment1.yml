@@ -7,13 +7,14 @@ on:
         required: true
         type: string
       org:
-        description: "Org (preprod, dev, uat, sit)"
+        description: "Org (preprod, dev, uat, uathot, sit)"
         required: true
         type: choice
         options:
         - preprod
         - sit
         - uat
+        - uathot
         - dev
 jobs:
   debug:
