@@ -7,7 +7,7 @@ on:
         required: true
         type: string
       org:
-        description: "Org (prod, preprod, dev, uat, uathot, sit)"
+        description: "Org (prod, preprod, dev, uat, sit)"
         required: true
         type: string
       unpackagable:
@@ -48,9 +48,6 @@ jobs:
           elif [ ${{ inputs.org }} == "uat" ];then
             echo "target=$(echo ${{ secrets.CRM_UAT_SFDX_URL }})" >> $GITHUB_ENV
             echo "'uat' was set"
-          elif [ ${{ inputs.org }} == "uathot" ];then
-            echo "target=$(echo ${{ secrets.UATHOT_SFDX_URL }})" >> $GITHUB_ENV
-            echo "'uathot' was set"
           elif [ ${{ inputs.org }} == "sit" ];then
             echo "target=$(echo ${{ secrets.CRM_SIT_SFDX_URL }})" >> $GITHUB_ENV
             echo "'sit' was set"
