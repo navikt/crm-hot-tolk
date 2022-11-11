@@ -193,6 +193,25 @@ public class HOT_TestDataFactory {
         return user;
     }
 
+    public static User createUserWithAllNames(String firstname, String middleName, String lastName, Profile profile) {
+        User user = new User(
+            Username = 'HOT.' + firstName + middleName + lastName + '@nav.hot.no',
+            FirstName = firstName,
+            MiddleName = middleName,
+            LastName = lastName,
+            Email = 'HOT_testuser@nav.hot.no',
+            Alias = lastName,
+            CommunityNickname = lastName,
+            TimeZoneSidKey = 'Europe/Paris',
+            LocaleSidKey = 'no_NO',
+            EmailEncodingKey = 'UTF-8',
+            LanguageLocaleKey = 'no',
+            ProfileId = profile.id
+        );
+
+        return user;
+    }
+
     public static AssignedResource createAssignedResource(Id serviceAppointmentId, Id serviceResourceId) {
         AssignedResource assignedResource = new AssignedResource(
             ServiceAppointmentId = serviceAppointmentId,
