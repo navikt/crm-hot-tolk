@@ -6,7 +6,7 @@ public without sharing class HOT_ServiceResourceHandler {
         String serviceTerritoryDeveloperName
     ) {
         List<User> users = [
-            SELECT Id, Name, ProfileId, Department
+            SELECT Id, Name, FirstName, MiddleName, LastName, ProfileId, Department
             FROM User
             WHERE Account.INT_PersonIdent__c IN :personIdents
         ];
@@ -44,7 +44,7 @@ public without sharing class HOT_ServiceResourceHandler {
             Boolean isFreelance = user.ProfileId == freelanceProfileId;
             ServiceResource serviceResource = new ServiceResource();
             serviceResource.RelatedRecordId = Test.isRunningTest() ? UserInfo.getUserId() : user.Id;
-            serviceResource.Name = user.Name;
+            serviceResource.Name = user.MiddleName != null ? (user.Firstname + ' ' + user.MiddleName + ' ' + user.LastName) : (user.Firstname + ' ' + user.LastName);
             serviceResource.ResourceType = 'T';
             serviceResource.IsActive = true;
             serviceResource.HOT_IsEmployedInterpreter__c = !isFreelance;
