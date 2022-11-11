@@ -24,7 +24,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
 
             // KrrCalloutService.doPersonOppslag() fails in 25% of cases. We are rerunning the Callout, to see if there are some irregularities with the integration
             if (personResponse == null) {
-                throw new KRRException('(HOTHimage.pngOT) KrrCalloutService.doPersonOppslag return null.');
+                throw new KRRException('(HOT) KrrCalloutService.doPersonOppslag return null.');
             }
 
             for (KRRCalloutService.Person person : personResponse) {
