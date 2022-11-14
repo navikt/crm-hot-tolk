@@ -29,7 +29,7 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
 
     selectionChangeHandler(event) {
         this.newSelectedOption = event.target.value;
-        //alert(event.detail.label);
+        alert(event.taget.name);
     }
     editUserNotificationBtn() {
         this.viewUserNotificationSettings = false;
