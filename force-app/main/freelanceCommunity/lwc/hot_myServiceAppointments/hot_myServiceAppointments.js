@@ -7,7 +7,7 @@ import { formatRecord } from 'c/datetimeFormatter';
 
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
-    @track isEditButtonDisabled = true;
+    @track isEditButtonDisabled = false;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -131,8 +131,8 @@ export default class Hot_myServiceAppointments extends LightningElement {
                 this.serviceAppointment = serviceAppointment;
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
                 let duedate = new Date(this.serviceAppointment.DueDate);
-                if (duedate < today && this.serviceAppointment.Status == 'Dispatched') {
-                    this.isEditButtonDisabled = false;
+                if (this.serviceAppointment.Status == 'Completed') {
+                    this.isEditButtonDisabled = true;
                 }
             }
         }
