@@ -54,6 +54,15 @@ public without sharing class HOT_UserInformationController {
         
         Schema.DescribeFieldResult fieldResult = Person__c.HOT_NotificationChannel__c.getDescribe();
 		List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+        for( Schema.PicklistEntry f : ple){
+            if(chosen==f.getLabel()){
+                Map < String, String > values = new Map < String, String > {
+                    'label' => f.getLabel(),
+                    'value' => f.getValue()
+                };
+                options.add(values);
+            }
+		}   
 		for( Schema.PicklistEntry f : ple){
             if(chosen!=f.getLabel()){
                 Map < String, String > values = new Map < String, String > {

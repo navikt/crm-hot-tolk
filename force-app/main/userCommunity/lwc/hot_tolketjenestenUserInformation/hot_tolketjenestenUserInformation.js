@@ -8,6 +8,7 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     @track recordId;
     @track options;
     @track selectedOption;
+    @track newSelectedOption;
 
     viewUserNotificationSettings = true;
     editUserNotification = false;
@@ -16,6 +17,8 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
         if (result.data) {
             this.person = result.data;
             this.recordId = this.person.Id;
+            this.selectedOption = this.person.HOT_NotificationChannel__c;
+            this.newSelectedOption = this.selectedOption;
             getNotificationPickListValues({
                 chosen: this.selectedOption
             }).then((data) => {
@@ -23,8 +26,10 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
             });
         }
     }
+
     selectionChangeHandler(event) {
-        changeUserNotificationSetting({ personId: this.recordId, newNotificationValue: event.target.value });
+        this.newSelectedOption = event.target.value;
+        //alert(event.detail.label);
     }
     editUserNotificationBtn() {
         this.viewUserNotificationSettings = false;
@@ -38,5 +43,13 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
         this.template.querySelector('lightning-record-edit-form').submit();
         this.viewUserNotificationSettings = true;
         this.editUserNotification = false;
+
+        changeUserNotificationSetting({ personId: this.recordId, newNotificationValue: this.newSelectedOption });
+        getNotificationPickListValues({
+            chosen: this.newSelectedOption
+        }).then((data) => {
+            this.options = data;
+            this.selectedOption = this.newSelectedOption;
+        });
     }
 }
