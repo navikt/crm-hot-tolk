@@ -121,7 +121,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     showEditButton = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
-        var today = new Date();
+        let today = new Date();
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
@@ -132,7 +132,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
-                var duedate = new Date(this.serviceAppointment.DueDate);
+                let duedate = new Date(this.serviceAppointment.DueDate);
                 if (duedate < today && this.serviceAppointment.Status == 'Dispatched') {
                     this.isNotEditable = false;
                 }
