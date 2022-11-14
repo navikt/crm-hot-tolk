@@ -12,6 +12,11 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
 
     viewUserNotificationSettings = true;
     editUserNotification = false;
+
+    picklistOptions = [
+        { name: 'SMS', label: 'SMS', selected: false },
+        { name: 'Push-varsel i appen', label: 'Push-varsel i appen', selected: false }
+    ];
     @wire(getPerson)
     wiredGetPerson(result) {
         if (result.data) {
@@ -28,8 +33,7 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     }
 
     selectionChangeHandler(event) {
-        this.newSelectedOption = event.target.value;
-        alert(event.taget.name);
+        this.newSelectedOption = event.detail.name;
     }
     editUserNotificationBtn() {
         this.viewUserNotificationSettings = false;
