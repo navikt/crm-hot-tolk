@@ -28,12 +28,26 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
                 chosen: this.selectedOption
             }).then((data) => {
                 this.options = data;
+                this.picklistOptions.forEach((element) => {
+                    if (element.name === this.selectedOption) {
+                        element.selected = true;
+                    } else {
+                        element.selected = false;
+                    }
+                });
             });
         }
     }
 
     selectionChangeHandler(event) {
         this.newSelectedOption = event.detail.name;
+        this.picklistOptions.forEach((element) => {
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            } else {
+                element.selected = false;
+            }
+        });
     }
     editUserNotificationBtn() {
         this.viewUserNotificationSettings = false;
@@ -42,6 +56,13 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     handleAbort() {
         this.viewUserNotificationSettings = true;
         this.editUserNotification = false;
+        this.picklistOptions.forEach((element) => {
+            if (element.name === this.selectedOption) {
+                element.selected = true;
+            } else {
+                element.selected = false;
+            }
+        });
     }
     handleSubmit() {
         this.template.querySelector('lightning-record-edit-form').submit();
