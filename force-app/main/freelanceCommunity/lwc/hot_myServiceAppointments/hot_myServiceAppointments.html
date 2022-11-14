@@ -33,13 +33,13 @@
                     ></c-record-files-with-sharing>
                 </div>
             </div>
-            <div if:true={showEditButton}>
+            <div>
                 <c-button
-                    disabled={isNotEditable}
+                    disabled={isEditButtonDisabled}
                     onbuttonclick={changeStatus}
                     button-styling="Primary"
                     type="Submit"
-                    button-label="Sett status til dekket"
+                    button-label="Endre status"
                 >
                 </c-button>
             </div>

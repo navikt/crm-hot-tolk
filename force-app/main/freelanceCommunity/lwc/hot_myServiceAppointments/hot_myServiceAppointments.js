@@ -7,7 +7,7 @@ import { formatRecord } from 'c/datetimeFormatter';
 
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
-    @track isNotEditable = true;
+    @track isEditButtonDisabled = true;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -118,7 +118,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
     isflow = false;
     isSeries = false;
     showTable = true;
-    showEditButton = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
         let today = new Date();
@@ -127,14 +126,13 @@ export default class Hot_myServiceAppointments extends LightningElement {
         let recordId = result.detail.Id;
         this.recordId = recordId;
         this.isDetails = !!this.recordId;
-        this.showEditButton = true;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
                 let duedate = new Date(this.serviceAppointment.DueDate);
                 if (duedate < today && this.serviceAppointment.Status == 'Dispatched') {
-                    this.isNotEditable = false;
+                    this.isEditButtonDisabled = false;
                 }
             }
         }
@@ -157,7 +155,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.isDetails = false;
         this.showTable = true;
         this.isflow = false;
-        this.isNotEditable = true;
+        this.isEditButtonDisabled = true;
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'my' };
     }
@@ -187,9 +185,8 @@ export default class Hot_myServiceAppointments extends LightningElement {
     }
     changeStatus() {
         this.isflow = true;
-        this.isNotEditable = true;
+        this.isEditButtonDisabled = true;
         this.isDetails = true;
-        this.showEditButton = false;
     }
     get flowVariables() {
         return [
