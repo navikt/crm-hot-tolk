@@ -1,5 +1,7 @@
 # .forceignore v2
 
+**/readMe.md
+
 # Profiles
 **/profiles/*
 !**/profiles/Admin.profile-meta.xml
