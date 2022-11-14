@@ -17,7 +17,7 @@ jobs:
     needs: [create-package]
     uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@master
     with:
-      packageId: ${{ create-package.outputs.packageId }}
+      packageId: ${{ needs.create-package.outputs.packageId }}
       org: uat
       unpackagable: ./force-app/unpackagable-with-auto-deploy
     secrets: inherit
