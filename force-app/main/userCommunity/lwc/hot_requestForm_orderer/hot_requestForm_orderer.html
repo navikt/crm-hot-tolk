@@ -9,7 +9,6 @@
             <h2 class="header" tabindex="-1" autofocus>Kontaktinformasjon</h2>
             <c-helptext
                 text="For å kunne kontakte deg ved behov for ytterligere opplysninger, vil dine kontaktopplysninger bli knyttet til denne tolkebestillingen."
-                hover-text="Hjelpeknapp for kontaktinformasjon."
             ></c-helptext>
         </div>
         <br />
@@ -39,7 +38,8 @@
             type="tel"
         ></c-input>
         <c-checkbox
-            label="Ønsker SMS-varsel ved statusendring på bestillingen"
+            label="Ønsker varsel ved statusendring på bestillingen"
+            helptext-content="Varslingskanal kan endres på Min side."
             oncheckboxclick={handleSMSCheckbox}
             name="IsOrdererWantStatusUpdateOnSMS__c"
             form="tolk-skjema-input"
