@@ -100,14 +100,6 @@
                                         </option>
                                     </template>
                                 </select>
-
-                                <!-- <c-picklist
-                                    disabled="disabled"
-                                    name=""
-                                    master-label="Velg hvor du vil få varsler"
-                                    choices={componentValues.notificationChoices}
-                                    onpicklistvaluechange={selectionChangeHandler}
-                                ></c-picklist> -->
                             </div>
                         </div>
                         <div class="button-class">
@@ -137,15 +129,6 @@
                                 ></lightning-input-field>
                             </div>
                             <div class="slds-col slds-size_1-of-2">
-                                <!-- <p>Velg hvor du vil ha varsler</p>
-                                <select class="slds-select" onchange={selectionChangeHandler}>
-                                    <option value={selectedOption}>{selectedOption}</option>
-                                    <template for:each={options} for:item="option">
-                                        <option key={option.label} class="uiInputSelectOption" value={option.value}>
-                                            {option.value}
-                                        </option>
-                                    </template>
-                                </select> -->
                                 <c-picklist
                                     master-label="Velg hvor du vil få varsler"
                                     choices={picklistOptions}
