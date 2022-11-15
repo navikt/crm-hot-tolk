@@ -44,6 +44,12 @@
                         <div class="body-wrapper">
                             <div class="example__inner">
                                 <div class="">
+                                    <c-helptext
+                                        class="helpText"
+                                        if:true={isHelpText}
+                                        text={helptextContent}
+                                        hover-text={helptextHovertext}
+                                    ></c-helptext>
                                     <c-hot_community-textarea
                                         max-length={maxLength}
                                         class="inputTextbox slds-var-m-bottom_medium"

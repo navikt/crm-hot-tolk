@@ -1,5 +1,7 @@
 # .forceignore v2
 
+**/readMe.md
+
 # Profiles
 **/profiles/*
 !**/profiles/Admin.profile-meta.xml
@@ -86,17 +88,7 @@
 **/appMenus/AppSwitcher.appMenu-meta.xml
 
 # Community
-**/audience/*
-**/networks/*
-**/documents/*
-**/networkBranding/*
-**/experiences/*
-**/siteDotComSites/*
-**/sites/*
-**/community/pages/*
-**/classes/ChangePasswordController*
-**/classes/CommunitiesLandingController*
-**/classes/MyProfilePageController*
+BetaUser.audience-meta.xml
 
 # MyTriggers
 **/classes/MyTriggers*

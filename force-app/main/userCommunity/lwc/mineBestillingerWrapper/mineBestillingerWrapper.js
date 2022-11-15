@@ -90,7 +90,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.isNavigatingAway === false
         ) {
             this.urlStateParameters = { ...currentPageReference.state };
-            this.refresh(false);
+        } else {
+            this.urlStateParameters = { level: '', id: '' };
         }
     }
     @track request = { MeetingStreet__c: '', Subject__c: '' };
@@ -380,13 +381,12 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.request.ExternalRequestStatus__c !== 'Avlyst' &&
             this.request.ExternalRequestStatus__c !== 'Dekket' &&
             tempEndDate.getTime() > Date.now()
-        )
-        {
-            if(this.urlStateParameters.level === 'R'){
+        ) {
+            if (this.urlStateParameters.level === 'R') {
                 this.modalContent = 'Er du sikker på at du vil avlyse alle datoer i bestillingen?';
-            }
-            else{
-                this.modalContent = 'Er du sikker på at du vil avlyse bestillingen?\nDato: '+this.workOrder.StartAndEndDate;
+            } else {
+                this.modalContent =
+                    'Er du sikker på at du vil avlyse bestillingen?\nDato: ' + this.workOrder.StartAndEndDate;
             }
             this.isCancel = true;
             this.noCancelButton = false;

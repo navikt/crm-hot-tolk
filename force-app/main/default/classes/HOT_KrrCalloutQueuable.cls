@@ -9,6 +9,8 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
     public void execute(QueueableContext context) {
         Map<String, Id> personIdByPersonalNumber = new Map<String, Id>();
         Map<Id, Person__c> personByPersonId = new Map<Id, Person__c>();
+        CRM_DatabaseOperations cdo = new CRM_DatabaseOperations();
+        cdo.setDomain(CRM_ApplicationDomain.Domain.HOT);
         for (HOT_Request__c request : requests) {
             personIdByPersonalNumber.put(String.valueOf(request.Person__r.Name), request.Person__c);
             personByPersonId.put(request.Person__c, request.Person__r);
@@ -20,7 +22,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
             }
             Map<String, KRRCalloutService.Person> krrResponseByPersonalNumber = new Map<String, KRRCalloutService.Person>();
             List<String> personNumbers = new List<String>(personIdByPersonalNumber.keySet());
-            List<KRRCalloutService.Person> personResponse = KrrCalloutService.doPersonOppslag2(personNumbers, null);
+            List<KRRCalloutService.Person> personResponse = KrrCalloutService.doPersonOppslag2(personNumbers, null, true);
 
             // KrrCalloutService.doPersonOppslag() fails in 25% of cases. We are rerunning the Callout, to see if there are some irregularities with the integration
             if (personResponse == null) {
@@ -48,13 +50,12 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                     personsToUpdate.add(person);
                 }                    
             }
-            HOT_DatabaseOperations.updateRecords(personsToUpdate);            
+            cdo.updateRecords(personsToUpdate);            
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, requests[0], CRM_ApplicationDomain.Domain.HOT);
             logger.publish();
 
-            System.debug('Exception: ' + e.getMessage());
             List<Person__c> personsToUpdate = new List<Person__c>();
             for (Id personId : personIdByPersonalNumber.values()) {
                 Person__c person = new Person__c();
@@ -65,7 +66,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                 person.HOT_KrrIntegrationErrorCounter__c = errorCounter != null ? errorCounter+1 : 1;
                 personsToUpdate.add(person);
             }
-            HOT_DatabaseOperations.updateRecords(personsToUpdate);
+            cdo.updateRecords(personsToUpdate);
         }
     }
 }
