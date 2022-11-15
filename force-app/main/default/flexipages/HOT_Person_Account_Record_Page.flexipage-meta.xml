@@ -51,7 +51,7 @@
                     <name>adminFilters</name>
                     <valueList>
                         <valueListItems>
-                            <value>StartTime__c|GREATER_OR_EQUAL|TODAY</value>
+                            <value>EndTime__c|GREATER_OR_EQUAL|TODAY</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -134,7 +134,7 @@
                     <name>adminFilters</name>
                     <valueList>
                         <valueListItems>
-                            <value>Status__c|EQUALS|[&quot;Udekket&quot;,&quot;Dekket&quot;]</value>
+                            <value>Status__c|EQUALS|[&quot;Udekket&quot;,&quot;Dekket&quot;,&quot;Avlyst&quot;,&quot;Annullert&quot;,&quot;Avslått&quot;]</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -182,7 +182,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListLabel</name>
-                    <value>Forespørsler med sluttstatus</value>
+                    <value>Historiske forespørsler</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showActionBar</name>
