@@ -8,7 +8,7 @@
       "default": true,
       "package": "crm-hot",
       "versionName": "ver 0.1",
-      "versionNumber": "1.177.0.NEXT",
+      "versionNumber": "1.179.0.NEXT",
       "dependencies": [
         {
           "package": "crm-platform-base",
@@ -16,7 +16,7 @@
         },
         {
           "package": "crm-platform-integration",
-          "versionNumber": "0.88.0.LATEST"
+          "versionNumber": "0.91.0.LATEST"
         },
         {
           "package": "crm-platform-access-control",
@@ -48,7 +48,7 @@
         },
         {
           "package": "crm-platform-integration",
-          "versionNumber": "0.88.0.LATEST"
+          "versionNumber": "0.91.0.LATEST"
         },
         {
           "package": "crm-platform-access-control",

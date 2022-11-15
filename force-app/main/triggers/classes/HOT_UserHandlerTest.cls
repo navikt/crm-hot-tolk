@@ -31,4 +31,19 @@ private class HOT_UserHandlerTest {
             System.assertEquals(1, serviceResources.size());
         }
     }
+    @isTest
+    static void createAnsattTolkWithMiddleNameIncluded() {
+        List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
+        if (profiles.size() > 0) {
+            Profile profileId = profiles[0];
+            User user = HOT_TestDataFactory.createUserWithAllNames('First', 'Middle', 'Last' , profileId);
+            Test.startTest();
+            insert user;
+            Test.stopTest();
+
+            List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource];
+            System.assertEquals(1, serviceResources.size());
+            System.assertEquals('First Middle Last', serviceResources[0].Name, 'Name not set correctly');
+        }
+    }
 }
