@@ -1145,12 +1145,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>SMS__c.Recipient__c</field>
+        <field>SMS__c.RecipientFormatted__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>SMS__c.RecipientFormatted__c</field>
+        <field>SMS__c.Recipient__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1501,6 +1501,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_ResetToDefault__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_ResourceType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

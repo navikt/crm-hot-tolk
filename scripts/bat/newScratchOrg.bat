@@ -1,11 +1,11 @@
 echo "Oppretter scratch org"
 call sfdx force:org:create -f config\project-scratch-def.json --setalias %1 --durationdays %2 --setdefaultusername --json --loglevel fatal  --wait 10
 
-echo "Installerer crm-platform-base ver. 0.176"
-call sfdx force:package:install --package 04t7U000000TqsTQAS -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-platform-base ver. 0.177"
+call sfdx force:package:install --package 04t7U0000008qY8QAI -r -k %3 --wait 10 --publishwait 10
 
-echo "Installerer crm-platform-integration ver. 0.88"
-call sfdx force:package:install --package 04t7U0000008qVdQAI -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-platform-integration ver. 0.91"
+call sfdx force:package:install --package 04t7U0000008qXUQAY -r -k %3 --wait 10 --publishwait 10
 
 echo "Installerer crm-platform-access-control ver. 0.101"
 call sfdx force:package:install --package 04t7U000000TpqbQAC -r -k %3 --wait 10 --publishwait 10
@@ -24,6 +24,9 @@ call sfdx force:source:push
 
 echo "Tildeler tilatelsessett til brukeren"
 call sfdx force:user:permset:assign --permsetname HOT_admin
+
+echo "Publish Experience Site"
+call sfdx force:community:publish --name Tolketjenesten
 
 echo "Oppretter testdata"
 call sfdx force:apex:execute -f scripts/apex/createTestData.apex

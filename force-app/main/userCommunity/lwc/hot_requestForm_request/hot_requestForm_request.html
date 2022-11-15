@@ -9,7 +9,6 @@
             value={fieldValues.Subject__c}
             error-text="Tema og sted må fylles ut."
             helptext-content="Beskriv hva du trenger tolk til og hvor, f.eks. legetime ved xx-legesenter, forelesning ved xx-universitet osv."
-            helptext-hovertext="Hjelpeknapp for tema og sted."
         ></c-input>
         <br />
         <c-hot_recurring-time-input request-ids={requestIds}></c-hot_recurring-time-input>
@@ -98,12 +97,12 @@
             value={fieldValues.Description__c}
             form="tolk-skjema-input"
             helptext-content="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende)."
-            helptext-hovertext="Hjelpeknapp for mer informasjon om bestillingen."
         ></c-textarea>
         <br />
         <c-checkbox
             if:true={isRequestTypeMe}
-            label="Ønsker SMS-varsel ved statusendring på bestillingen"
+            label="Ønsker varsel ved statusendring på bestillingen"
+            helptext-content="Varslingskanal kan endres på Min side."
             oncheckboxclick={handleSMSCheckbox}
             name="IsOrdererWantStatusUpdateOnSMS__c"
             form="tolk-skjema-input"

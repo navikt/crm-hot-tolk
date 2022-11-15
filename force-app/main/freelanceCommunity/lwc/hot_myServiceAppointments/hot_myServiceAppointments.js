@@ -7,6 +7,7 @@ import { formatRecord } from 'c/datetimeFormatter';
 
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
+    @track isEditButtonDisabled = false;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -114,10 +115,12 @@ export default class Hot_myServiceAppointments extends LightningElement {
     @track serviceAppointment;
     @track interestedResource;
     isDetails = false;
+    isflow = false;
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
+        let today = new Date();
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
@@ -127,6 +130,10 @@ export default class Hot_myServiceAppointments extends LightningElement {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
+                let duedate = new Date(this.serviceAppointment.DueDate);
+                if (this.serviceAppointment.Status == 'Completed') {
+                    this.isEditButtonDisabled = true;
+                }
             }
         }
         this.updateURL();
@@ -147,6 +154,8 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.recordId = undefined;
         this.isDetails = false;
         this.showTable = true;
+        this.isflow = false;
+        this.isEditButtonDisabled = true;
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'my' };
     }
@@ -173,5 +182,19 @@ export default class Hot_myServiceAppointments extends LightningElement {
             this.records = filteredRecords;
         }
         return this.filteredRecordsLength;
+    }
+    changeStatus() {
+        this.isflow = true;
+        this.isEditButtonDisabled = true;
+        this.isDetails = true;
+    }
+    get flowVariables() {
+        return [
+            {
+                name: 'recordId',
+                type: 'String',
+                value: this.recordId
+            }
+        ];
     }
 }

@@ -423,6 +423,7 @@
             <label>SF</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <formulas>
         <name>currentUserId</name>
         <dataType>String</dataType>
@@ -694,7 +695,7 @@
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>SA_Not_Started_Error</name>
@@ -734,7 +735,7 @@
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>Set_Cancel_Comment_Tolk</name>
@@ -755,7 +756,7 @@
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>Set_Completed_Comment</name>
@@ -776,7 +777,7 @@
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>Set_status</name>
@@ -835,7 +836,7 @@
             <isRequired>false</isRequired>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <start>
         <locationX>545</locationX>
