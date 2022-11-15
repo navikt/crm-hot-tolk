@@ -62,6 +62,14 @@ p {
 .largePadding {
     padding-bottom: 5.5em;
 }
+
+.helpText {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-bottom: 3vmin;
+}
+
 @media (max-width: 576px) {
     .back-link {
         padding-left: 2rem;

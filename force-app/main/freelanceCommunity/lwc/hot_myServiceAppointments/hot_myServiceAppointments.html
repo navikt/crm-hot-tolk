@@ -33,6 +33,22 @@
                     ></c-record-files-with-sharing>
                 </div>
             </div>
+            <div>
+                <c-button
+                    disabled={isEditButtonDisabled}
+                    onbuttonclick={changeStatus}
+                    button-styling="Primary"
+                    type="Submit"
+                    button-label="Endre status"
+                >
+                </c-button>
+            </div>
+        </div>
+        <div if:true={isflow} class="flow-container">
+            <lightning-flow
+                flow-api-name="HOT_ChangeServiceAppointmentStatus"
+                flow-input-variables={flowVariables}
+            ></lightning-flow>
         </div>
         <div if:false={noServiceAppointments}>
             <c-table if:false={isDetails} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
