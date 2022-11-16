@@ -9,6 +9,8 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     @track options;
     @track selectedOption;
     @track newSelectedOption;
+    @track isReservedAgainsAppNotifications;
+    @track newIsReservedAgainsAppNotifications;
 
     viewUserNotificationSettings = true;
     editUserNotification = false;
@@ -23,6 +25,7 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
             this.person = result.data;
             this.recordId = this.person.Id;
             this.selectedOption = this.person.HOT_NotificationChannel__c;
+            this.isReservedAgainsAppNotifications = this.person.HOT_ReservationAgainstAppNotifications__c;
             this.newSelectedOption = this.selectedOption;
             getNotificationPickListValues({
                 chosen: this.selectedOption
@@ -64,17 +67,20 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
             }
         });
     }
+    handleOptionalCheckbox(event) {
+        this.newIsReservedAgainsAppNotifications = event.detail;
+    }
     handleSubmit() {
-        this.template.querySelector('lightning-record-edit-form').submit();
         this.viewUserNotificationSettings = true;
         this.editUserNotification = false;
 
-        changeUserNotificationSetting({ personId: this.recordId, newNotificationValue: this.newSelectedOption });
-        getNotificationPickListValues({
-            chosen: this.newSelectedOption
-        }).then((data) => {
-            this.options = data;
+        changeUserNotificationSetting({
+            personId: this.recordId,
+            newNotificationValue: this.newSelectedOption,
+            isReservedAgainstAppNotifications: this.newIsReservedAgainsAppNotifications
+        }).then(() => {
             this.selectedOption = this.newSelectedOption;
+            this.isReservedAgainsAppNotifications = this.newIsReservedAgainsAppNotifications;
         });
     }
 }

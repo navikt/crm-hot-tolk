@@ -76,7 +76,7 @@ public without sharing class HOT_UserInformationController {
     }
     
     @AuraEnabled
-    public static boolean changeUserNotificationSetting(String personId, String newNotificationValue) {
+    public static boolean changeUserNotificationSetting(String personId, String newNotificationValue, Boolean isReservedAgainstAppNotifications) {
         Person__c person = [
             SELECT
                 Id,
@@ -86,6 +86,7 @@ public without sharing class HOT_UserInformationController {
         ];
          if(person!=null){
              person.HOT_NotificationChannel__c=newNotificationValue;
+             person.HOT_ReservationAgainstAppNotifications__c=isReservedAgainstAppNotifications;
              update person;
          }
         return true;
