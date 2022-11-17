@@ -36,10 +36,20 @@
             <div>
                 <c-button
                     disabled={isEditButtonDisabled}
+                    hidden={isEditButtonHidden}
                     onbuttonclick={changeStatus}
                     button-styling="Primary"
                     type="Submit"
                     button-label="Endre status"
+                >
+                </c-button>
+                <c-button
+                    hidden={isCancelButtonHidden}
+                    onbuttonclick={cancelStatusFlow}
+                    button-styling="Secondary"
+                    type="Submit"
+                    style="margin: 2rem 0"
+                    button-label="Avbryt"
                 >
                 </c-button>
             </div>

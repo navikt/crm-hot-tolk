@@ -11,6 +11,8 @@ import { refreshApex } from '@salesforce/apex';
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
     @track isEditButtonDisabled = false;
+    @track isCancelButtonHidden = true;
+    @track isEditButtonHidden = false;
     @track flowfeedback;
     @track isFlowFeedback;
     setColumns() {
@@ -131,6 +133,8 @@ export default class Hot_myServiceAppointments extends LightningElement {
         let recordId = result.detail.Id;
         this.recordId = recordId;
         this.isDetails = !!this.recordId;
+        this.isEditButtonHidden = false;
+        this.isCancelButtonHidden = true;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
@@ -193,7 +197,16 @@ export default class Hot_myServiceAppointments extends LightningElement {
     changeStatus() {
         this.isflow = true;
         this.isEditButtonDisabled = true;
+        this.isCancelButtonHidden = false;
         this.isDetails = true;
+        this.isEditButtonHidden = true;
+    }
+    cancelStatusFlow() {
+        this.isflow = false;
+        this.isEditButtonDisabled = false;
+        this.isCancelButtonHidden = true;
+        this.isDetails = true;
+        this.isEditButtonHidden = false;
     }
     get flowVariables() {
         return [
@@ -216,11 +229,13 @@ export default class Hot_myServiceAppointments extends LightningElement {
                     this.flowfeedback =
                         'Det er ikke mulig å oppdatere statusen etter at oppdraget er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om oppdraget.';
                     this.isflow = false;
+                    this.isCancelButtonHidden = true;
                 }
                 if (data.Status == 'Canceled') {
                     this.isFlowFeedback = true;
                     this.flowfeedback = 'Oppdraget er avlyst';
                     this.isflow = false;
+                    this.isCancelButtonHidden = true;
                 }
             });
             refreshApex(this.wiredMyServiceAppointmentsResult);
