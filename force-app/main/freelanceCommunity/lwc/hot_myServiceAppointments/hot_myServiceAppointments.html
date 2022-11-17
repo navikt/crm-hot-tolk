@@ -48,8 +48,10 @@
             <lightning-flow
                 flow-api-name="HOT_ChangeServiceAppointmentStatus"
                 flow-input-variables={flowVariables}
+                onstatuschange={handleStatusChange}
             ></lightning-flow>
         </div>
+        <div><p>{flowfeedback}</p></div>
         <div if:false={noServiceAppointments}>
             <c-table if:false={isDetails} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
         </div>

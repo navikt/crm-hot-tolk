@@ -4,10 +4,12 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { columns, mobileColumns } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
+import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
     @track isEditButtonDisabled = false;
+    @track flowfeedback;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -155,7 +157,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.isDetails = false;
         this.showTable = true;
         this.isflow = false;
-        this.isEditButtonDisabled = true;
+        this.isEditButtonDisabled = false;
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'my' };
     }
@@ -196,5 +198,14 @@ export default class Hot_myServiceAppointments extends LightningElement {
                 value: this.recordId
             }
         ];
+    }
+    handleStatusChange(event) {
+        console.log('handleStatusChange', event.detail);
+        if (event.detail.interviewStatus == 'FINISHED') {
+            refreshApex(this.wiredMyServiceAppointmentsResult);
+            this.flowfeedback =
+                'Det er ikke mulig å oppdatere statusen etter at oppdraget er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om oppdraget.';
+            this.isflow = false;
+        }
     }
 }
