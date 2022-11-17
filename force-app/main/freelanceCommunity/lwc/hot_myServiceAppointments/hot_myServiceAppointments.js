@@ -1,6 +1,8 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
+import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
+
 import { columns, mobileColumns } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
@@ -10,6 +12,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
     @track isEditButtonDisabled = false;
     @track flowfeedback;
+    @track isFlowFeedback;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -158,6 +161,8 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.showTable = true;
         this.isflow = false;
         this.isEditButtonDisabled = false;
+        this.isFlowFeedback = false;
+        this.flowfeedback = '';
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'my' };
     }
@@ -202,10 +207,23 @@ export default class Hot_myServiceAppointments extends LightningElement {
     handleStatusChange(event) {
         console.log('handleStatusChange', event.detail);
         if (event.detail.interviewStatus == 'FINISHED') {
+            getServiceAppointment({
+                recordId: this.recordId
+            }).then((data) => {
+                console.log(data.Status);
+                if (data.Status == 'Completed') {
+                    this.isFlowFeedback = true;
+                    this.flowfeedback =
+                        'Det er ikke mulig å oppdatere statusen etter at oppdraget er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om oppdraget.';
+                    this.isflow = false;
+                }
+                if (data.Status == 'Canceled') {
+                    this.isFlowFeedback = true;
+                    this.flowfeedback = 'Oppdraget er avlyst';
+                    this.isflow = false;
+                }
+            });
             refreshApex(this.wiredMyServiceAppointmentsResult);
-            this.flowfeedback =
-                'Det er ikke mulig å oppdatere statusen etter at oppdraget er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om oppdraget.';
-            this.isflow = false;
         }
     }
 }

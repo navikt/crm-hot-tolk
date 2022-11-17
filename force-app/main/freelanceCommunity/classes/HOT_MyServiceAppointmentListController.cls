@@ -17,6 +17,15 @@ public without sharing class HOT_MyServiceAppointmentListController {
         ];
         return workOrderLineItems;
     }
+    @AuraEnabled(cacheable=true)
+    public static ServiceAppointment getServiceAppointment(String recordId) {
+        ServiceAppointment sa= [
+            SELECT Status
+            FROM ServiceAppointment
+            WHERE Id = :recordId LIMIT 1
+        ];
+        return sa;
+    }
 
     @AuraEnabled(cacheable=true)
     public static List<ServiceAppointment> getMyServiceAppointments() {
