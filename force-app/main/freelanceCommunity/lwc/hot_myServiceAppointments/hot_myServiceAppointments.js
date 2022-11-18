@@ -236,6 +236,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
                     this.flowfeedback = 'Oppdraget er avlyst';
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'Canceled';
                 }
             });
             refreshApex(this.wiredMyServiceAppointmentsResult);
