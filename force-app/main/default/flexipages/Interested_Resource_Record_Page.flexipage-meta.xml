@@ -8,6 +8,10 @@
                     <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>enableActionsConfiguration</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>hideChatterActions</name>
                     <value>false</value>
                 </componentInstanceProperties>
@@ -23,6 +27,12 @@
             <componentInstance>
                 <componentName>hot_registerDispatcherReadComment</componentName>
                 <identifier>hot_registerDispatcherReadComment</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_InterestedResourceWarningBanner</componentName>
+                <identifier>c_hot_InterestedResourceWarningBanner</identifier>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>
