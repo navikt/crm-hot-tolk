@@ -1,4 +1,4 @@
-public with sharing class HOT_InterestedResourceBannerController {
+public without sharing class HOT_InterestedResourceBannerController {
     @AuraEnabled
     public static List<ServiceAppointment> checkForOverlap(String recordId){
         HOT_InterestedResource__c interestedResource=[SELECT ServiceResource__c,ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c FROM HOT_InterestedResource__c WHERE Id=:recordId LIMIT 1];
