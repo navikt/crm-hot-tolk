@@ -20,9 +20,9 @@ public without sharing class HOT_MyServiceAppointmentListController {
     @AuraEnabled(cacheable=true)
     public static ServiceAppointment getServiceAppointment(String recordId) {
         ServiceAppointment sa= [
-            SELECT Status
+            SELECT Status, HOT_CanceledByInterpreter__c
             FROM ServiceAppointment
-            WHERE Id = :recordId LIMIT 1
+            WHERE Id = :recordId
         ];
         return sa;
     }

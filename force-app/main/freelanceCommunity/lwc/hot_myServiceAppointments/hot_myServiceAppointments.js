@@ -238,6 +238,13 @@ export default class Hot_myServiceAppointments extends LightningElement {
                     this.isCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'Canceled';
                 }
+                if (data.HOT_CanceledByInterpreter__c) {
+                    this.isFlowFeedback = true;
+                    this.flowfeedback = 'Du er nå ikke lenger tildelt oppdraget';
+                    this.isflow = false;
+                    this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'None';
+                }
             });
             refreshApex(this.wiredMyServiceAppointmentsResult);
         }
