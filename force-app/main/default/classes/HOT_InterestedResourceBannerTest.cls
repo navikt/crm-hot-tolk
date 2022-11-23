@@ -3,8 +3,8 @@ public with sharing class HOT_InterestedResourceBannerTest {
     @TestSetup
     static void makeData(){
         Test.startTest();
-         Profile profile = [SELECT Id FROM Profile WHERE Name='System Administrator'];
-         User user1 = new User(alias = 'TestUser', email='HOT_testaccount@nav.hot.no',
+        Profile profile = [SELECT Id FROM Profile WHERE Name='System Administrator'];
+        User user1 = new User(alias = 'TestUser', email='HOT_testaccount@nav.hot.no',
         emailencodingkey='UTF-8', lastname='Testing', languagelocalekey='en_US',
         localesidkey='en_US', profileid = profile.Id , country='Norway',IsActive =true, timezonesidkey='Europe/Paris', username='HOT_testaccount@nav.hot.no');
         
@@ -21,23 +21,16 @@ public with sharing class HOT_InterestedResourceBannerTest {
    static void OneOverlap() {
         
       User user1=[SELECT Id from User WHERE email='HOT_testaccount@nav.hot.no' LIMIT 1];
-        //OPPSETT AV TOLK RESSURS, WORKTYPE
+
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
         insert resource1;
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-         //LAGE OPP OPPDRAG MED TILHØRENDE ASSIGNED RESOURCE. TID: SKAL VÆRE LANGT UNNA TIDEN TIL DE NESTE FORESPØRSLENE
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-
-        //OPPDATER TIDEN PÅ REQUEST
-        request.StartTime__c=Datetime.now().addDays(50);
-        request.EndTime__c=request.StartTime__c.addHours(2);
         insert request;
 
-        // request.Status__c = 'Godkjent';
-        // update request;
         WorkOrder workOrder= HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
         WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder,workType);
@@ -51,10 +44,7 @@ public with sharing class HOT_InterestedResourceBannerTest {
         AssignedResource assignedResource=HOT_TestDataFactory.createAssignedResource(ServiceAppointment.Id,resource1.Id);
         insert assignedResource;
         
-         //3 - DET ANDRE OPPDRAGET FÅR TILDELT RESSURS
-         HOT_Request__c request4 = HOT_TestDataFactory.createRequest('TEST', workType);
-        request4.StartTime__c=Datetime.now().addDays(52);
-        request4.EndTime__c=request4.StartTime__c.addHours(2);
+        HOT_Request__c request4 = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request4;
         Test.startTest(); 
         WorkOrder workOrder4= HOT_TestDataFactory.createWorkOrder(request4, workType);
@@ -71,7 +61,6 @@ public with sharing class HOT_InterestedResourceBannerTest {
         AssignedResource assignedResource3=HOT_TestDataFactory.createAssignedResource(ServiceAppointment3.Id,resource1.Id);
         insert assignedResource3;
 
-        //2 - LAGE EN FORESPØRSEL
         HOT_Request__c request3 = HOT_TestDataFactory.createRequest('TEST', workType);
         request3.StartTime__c=Datetime.now().addDays(52);
         request3.EndTime__c=request3.StartTime__c.addHours(2);
@@ -82,7 +71,6 @@ public with sharing class HOT_InterestedResourceBannerTest {
         WorkOrderLineItem WorkOrderLineItem3 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder3,workType);
         insert WorkOrderLineItem3;
 
-        //OPPDRAGET FÅR INTERESSERT RESSURS
         ServiceAppointment ServiceAppointment2 =HOT_TestDataFactory.createServiceAppointment(WorkOrderLineItem3);
         ServiceAppointment2.EarliestStartTime=Datetime.now().addDays(52);
         ServiceAppointment2.DueDate=ServiceAppointment2.EarliestStartTime.addHours(2);
@@ -97,17 +85,15 @@ public with sharing class HOT_InterestedResourceBannerTest {
         Test.stopTest();
     }
       @isTest
-   static void NoOverlap() {
-     User user1=[SELECT Id from User WHERE email='HOT_testaccount@nav.hot.no' LIMIT 1];
+    static void NoOverlap() {
+        User user1=[SELECT Id from User WHERE email='HOT_testaccount@nav.hot.no' LIMIT 1];
 
-             //OPPSETT AV TOLK RESSURS, WORKTYPE
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
         insert resource1;
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-         //LAGE OPP OPPDRAG MED TILHØRENDE ASSIGNED RESOURCE. TID: NOEN DAGER I FREMTIDEN
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
         WorkOrder workOrder= HOT_TestDataFactory.createWorkOrder(request, workType);
@@ -122,8 +108,7 @@ public with sharing class HOT_InterestedResourceBannerTest {
         insert ServiceAppointment;
         AssignedResource assignedResource=HOT_TestDataFactory.createAssignedResource(ServiceAppointment.Id,resource1.Id);
         insert assignedResource;
-        
-        //2 - LAGE NY FORESPØRSEL MED EN ANNEN TID
+
         HOT_Request__c request2 = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request2;
         WorkOrder workOrder2= HOT_TestDataFactory.createWorkOrder(request2, workType);
@@ -131,7 +116,6 @@ public with sharing class HOT_InterestedResourceBannerTest {
         WorkOrderLineItem WorkOrderLineItem2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder2,workType);
         insert WorkOrderLineItem2;
 
-        //DENTTE OPPDRAGET FÅR INTERESSERT RESSURS
         ServiceAppointment ServiceAppointment2 =HOT_TestDataFactory.createServiceAppointment(WorkOrderLineItem2);
         ServiceAppointment2.EarliestStartTime=Datetime.now().addDays(53);
         ServiceAppointment2.DueDate=ServiceAppointment2.EarliestStartTime.addHours(2);
@@ -141,7 +125,6 @@ public with sharing class HOT_InterestedResourceBannerTest {
         HOT_InterestedResource__c interestedResource=HOT_TestDataFactory.createInterestedResource(ServiceAppointment2.Id, resource1.Id);
         insert interestedResource;
 
-
         List<ServiceAppointment> result= HOT_InterestedResourceBannerController.checkForOverlap(interestedResource.Id);
         Test.startTest();
             System.assertEquals(0, result.size(), 'Er 0 oppdrag som skal vises som overlappende');
@@ -149,22 +132,14 @@ public with sharing class HOT_InterestedResourceBannerTest {
    }
    @isTest
    static void checkTwoOverlap() {
-        //DET SKAL LAGES TO OPPDRAG SOM HAR LITT MELLOMROM MELLOM HVERANDRE START OG SLUTT. DISSE SKAL FÅ ASSIGNED
-        //MELLOM DER SKAL DET VÆRE ET OPPDRAG SOM OVERLAPPER BEGGE TO. ALTSÅ OVERLAPPER LITT AV DEN FØRSTES SLUTT OG DEN SISTE BEGYNNELSEN. DENNE SKAL
-        //SETTES SOM INTERESTED RESOURCE OG SKAL DA FÅ TILBAKE TO OVERLAPP
-
-        //TID FØRSTE: DATETIME NOW - DATETIME NOW +3 TIMER
-        //TID ANDRE: DATIME NOW+6 TIMER - DATETIME NOW + 8 TIMER
-        //TID 3 IR: DATETIME NOW+2 TIMER - DATETIME NOW + 7 TIMER
        User user1=[SELECT Id from User WHERE email='HOT_testaccount@nav.hot.no' LIMIT 1];
-             //OPPSETT AV TOLK RESSURS, WORKTYPE
+    
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
         insert resource1;
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-         //FØRSTE OPPDRAG
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
@@ -182,7 +157,6 @@ public with sharing class HOT_InterestedResourceBannerTest {
         AssignedResource assignedResource=HOT_TestDataFactory.createAssignedResource(ServiceAppointment.Id,resource1.Id);
         insert assignedResource;
         
-        //ANDRE OPPDRAG
         HOT_Request__c request2 = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request2;
         Test.startTest();
@@ -200,7 +174,6 @@ public with sharing class HOT_InterestedResourceBannerTest {
         AssignedResource assignedResource2=HOT_TestDataFactory.createAssignedResource(ServiceAppointment2.Id,resource1.Id);
         insert assignedResource2;
 
-        //TREDJE OPPDRAG
         HOT_Request__c request3 = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request3;
     
