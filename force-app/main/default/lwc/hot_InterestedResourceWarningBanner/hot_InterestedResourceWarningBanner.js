@@ -23,9 +23,9 @@ export default class Hot_InterestedResourceWarningBanner extends LightningElemen
                     '.' +
                     startTimeFormatted.getFullYear() +
                     ' ' +
-                    startTimeFormatted.getHours() +
+                    ('0' + startTimeFormatted.getHours()).substr(-2) +
                     ':' +
-                    endTimeFormatted.getMinutes() +
+                    ('0' + startTimeFormatted.getMinutes()).substr(-2) +
                     ' - ' +
                     endTimeFormatted.getDate() +
                     '.' +
@@ -33,9 +33,9 @@ export default class Hot_InterestedResourceWarningBanner extends LightningElemen
                     '.' +
                     endTimeFormatted.getFullYear() +
                     ' ' +
-                    endTimeFormatted.getHours() +
+                    ('0' + endTimeFormatted.getHours()).substr(-2) +
                     ':' +
-                    endTimeFormatted.getMinutes();
+                    ('0' + endTimeFormatted.getMinutes()).substr(-2);
                 this.serviceAppointments.push(record);
             }
             this.hasOverlap = this.serviceAppointments.length > 0;
