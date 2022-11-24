@@ -46,23 +46,18 @@
 **/pages/ForgotPasswordConfirm.page
 **/pages/CommunitiesSelfRegConfirm.page
 **/pages/SiteRegisterConfirm.page
-**/pages/BandwidthExceeded.page
 **/pages/IdeasHome.page
 **/pages/CommunitiesTemplate.page
 **/pages/SiteTemplate.page
 #          **/pages/ChangePassword.page
-**/pages/InMaintenance.page
-**/pages/Exception.page
 **/pages/StdExceptionTemplate.page
 #          **/pages/CommunitiesLanding.page
 **/pages/MyProfilePage.page
-**/pages/FileNotFound.page
 **/pages/Unauthorized.page
 **/pages/CommunitiesLogin.page
 **/pages/SiteLogin.page
 **/pages/ForgotPassword.page
 **/pages/UnderConstruction.page
-**/pages/CommunitiesSelfReg.page
 **/pages/SiteRegister.page
 **/aura/forgotPassword
 **/aura/loginForm
