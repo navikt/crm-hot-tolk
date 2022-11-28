@@ -10,5 +10,5 @@ Løsningen benytter seg av
 - Field Service
 
 ## Lenker
-[https://confluence.adeo.no/display/DigiHoT/Team+Tolketjeneste]
-[https://confluence.adeo.no/display/PTC/Plattform+Team+CRM]
+- https://confluence.adeo.no/display/DigiHoT/Team+Tolketjeneste
+- https://confluence.adeo.no/display/PTC/Plattform+Team+CRM
