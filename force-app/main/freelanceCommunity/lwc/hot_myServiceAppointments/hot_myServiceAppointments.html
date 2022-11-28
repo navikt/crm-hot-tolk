@@ -61,7 +61,6 @@
                 onstatuschange={handleStatusChange}
             ></lightning-flow>
         </div>
-        <div if:true={isFlowFeedback}><p>{flowfeedback}</p></div>
         <div if:false={noServiceAppointments}>
             <c-table if:false={isDetails} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
         </div>

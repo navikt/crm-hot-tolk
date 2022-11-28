@@ -13,8 +13,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
     @track isEditButtonDisabled = false;
     @track isCancelButtonHidden = true;
     @track isEditButtonHidden = false;
-    @track flowfeedback;
-    @track isFlowFeedback;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -165,8 +163,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.showTable = true;
         this.isflow = false;
         this.isEditButtonDisabled = false;
-        this.isFlowFeedback = false;
-        this.flowfeedback = '';
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'my' };
     }
@@ -225,18 +221,15 @@ export default class Hot_myServiceAppointments extends LightningElement {
             }).then((data) => {
                 console.log(data.Status);
                 if (data.Status == 'Completed') {
-                    this.isFlowFeedback = true;
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
                 }
                 if (data.Status == 'Canceled') {
-                    this.isFlowFeedback = true;
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'Canceled';
                 }
                 if (data.HOT_CanceledByInterpreter__c) {
-                    this.isFlowFeedback = true;
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'None';
