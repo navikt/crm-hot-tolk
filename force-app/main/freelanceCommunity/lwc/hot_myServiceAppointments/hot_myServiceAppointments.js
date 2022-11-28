@@ -226,21 +226,17 @@ export default class Hot_myServiceAppointments extends LightningElement {
                 console.log(data.Status);
                 if (data.Status == 'Completed') {
                     this.isFlowFeedback = true;
-                    this.flowfeedback =
-                        'Det er ikke mulig å oppdatere statusen etter at oppdraget er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om oppdraget.';
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
                 }
                 if (data.Status == 'Canceled') {
                     this.isFlowFeedback = true;
-                    this.flowfeedback = 'Oppdraget er avlyst';
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'Canceled';
                 }
                 if (data.HOT_CanceledByInterpreter__c) {
                     this.isFlowFeedback = true;
-                    this.flowfeedback = 'Du er nå ikke lenger tildelt oppdraget';
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'None';
