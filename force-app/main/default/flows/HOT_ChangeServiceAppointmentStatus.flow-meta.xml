@@ -3,8 +3,8 @@
     <assignments>
         <name>Assign_new_values_Avlyst_Bruker</name>
         <label>Assign new values - Avlyst - Bruker</label>
-        <locationX>1282</locationX>
-        <locationY>1334</locationY>
+        <locationX>1546</locationX>
+        <locationY>1574</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
             <operator>Assign</operator>
@@ -40,8 +40,8 @@
     <assignments>
         <name>Assign_new_values_Avlyst_Tolk</name>
         <label>Assign new values - Avlyst - Tolk</label>
-        <locationX>1634</locationX>
-        <locationY>1910</locationY>
+        <locationX>1898</locationX>
+        <locationY>2150</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
@@ -91,8 +91,8 @@
     <assignments>
         <name>Assign_new_values_dekket</name>
         <label>Assign new values - Dekket</label>
-        <locationX>446</locationX>
-        <locationY>1790</locationY>
+        <locationX>710</locationX>
+        <locationY>2030</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
@@ -128,8 +128,8 @@
     <assignments>
         <name>Assign_new_values_Pagar</name>
         <label>Assign new values - Pågår</label>
-        <locationX>1018</locationX>
-        <locationY>1214</locationY>
+        <locationX>1282</locationX>
+        <locationY>1454</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
@@ -151,7 +151,7 @@
     <assignments>
         <name>Set_Record_Id_0</name>
         <label>Set Record Id</label>
-        <locationX>539</locationX>
+        <locationX>360</locationX>
         <locationY>278</locationY>
         <assignmentItems>
             <assignToReference>Id</assignToReference>
@@ -167,8 +167,8 @@
     <assignments>
         <name>setInterestedResourceStatus</name>
         <label>setInterestedResourceStatus</label>
-        <locationX>1722</locationX>
-        <locationY>1574</locationY>
+        <locationX>1986</locationX>
+        <locationY>1814</locationY>
         <assignmentItems>
             <assignToReference>interestedResource.Status__c</assignToReference>
             <operator>Assign</operator>
@@ -230,8 +230,8 @@
     <decisions>
         <name>Changed_Start_or_End_Time</name>
         <label>Changed Start or End Time?</label>
-        <locationX>446</locationX>
-        <locationY>1334</locationY>
+        <locationX>710</locationX>
+        <locationY>1574</locationY>
         <defaultConnector>
             <targetReference>Create_Historically_Assigned_Resource_Dekket</targetReference>
         </defaultConnector>
@@ -262,8 +262,8 @@
     <decisions>
         <name>Interested_Resource</name>
         <label>Interested Resource?</label>
-        <locationX>1634</locationX>
-        <locationY>1454</locationY>
+        <locationX>1898</locationX>
+        <locationY>1694</locationY>
         <defaultConnector>
             <targetReference>setInterestedResourceStatus</targetReference>
         </defaultConnector>
@@ -287,8 +287,8 @@
     <decisions>
         <name>isCompleted</name>
         <label>Completed?</label>
-        <locationX>671</locationX>
-        <locationY>734</locationY>
+        <locationX>935</locationX>
+        <locationY>974</locationY>
         <defaultConnector>
             <targetReference>Set_status</targetReference>
         </defaultConnector>
@@ -310,10 +310,35 @@
         </rules>
     </decisions>
     <decisions>
+        <name>My_Service_Appointment</name>
+        <label>My Service Appointment</label>
+        <locationX>492</locationX>
+        <locationY>854</locationY>
+        <defaultConnector>
+            <targetReference>isCompleted</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>My Service Appointment</defaultConnectorLabel>
+        <rules>
+            <name>NOT_my_service_appointment</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>currentUserId</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>serviceResource.RelatedRecordId</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>NOT_your_SA</targetReference>
+            </connector>
+            <label>NOT my service appointment</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Startet</name>
         <label>Startet?</label>
-        <locationX>600</locationX>
-        <locationY>1094</locationY>
+        <locationX>864</locationX>
+        <locationY>1334</locationY>
         <defaultConnector>
             <targetReference>SA_Not_Started_Error</targetReference>
         </defaultConnector>
@@ -337,8 +362,8 @@
     <decisions>
         <name>Status</name>
         <label>Status</label>
-        <locationX>1293</locationX>
-        <locationY>974</locationY>
+        <locationX>1557</locationX>
+        <locationY>1214</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Dekket</name>
@@ -404,7 +429,7 @@
     <decisions>
         <name>Which_App</name>
         <label>Which App?</label>
-        <locationX>671</locationX>
+        <locationX>492</locationX>
         <locationY>158</locationY>
         <defaultConnector>
             <targetReference>Get_ServiceAppointment_0_0_0</targetReference>
@@ -453,8 +478,8 @@
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Avlyst_Bruker</name>
         <label>Create Historically Assigned Resource - Avlyst av bruker</label>
-        <locationX>1282</locationX>
-        <locationY>1214</locationY>
+        <locationX>1546</locationX>
+        <locationY>1454</locationY>
         <connector>
             <targetReference>Assign_new_values_Avlyst_Bruker</targetReference>
         </connector>
@@ -487,8 +512,8 @@
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Avlyst_Tolk</name>
         <label>Create Historically Assigned Resource - Avlyst av tolk</label>
-        <locationX>1634</locationX>
-        <locationY>1214</locationY>
+        <locationX>1898</locationX>
+        <locationY>1454</locationY>
         <connector>
             <targetReference>getInterestedResource</targetReference>
         </connector>
@@ -521,8 +546,8 @@
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Dekket</name>
         <label>Create Historically Assigned Resource - Dekket</label>
-        <locationX>446</locationX>
-        <locationY>1670</locationY>
+        <locationX>710</locationX>
+        <locationY>1910</locationY>
         <connector>
             <targetReference>Assign_new_values_dekket</targetReference>
         </connector>
@@ -555,8 +580,8 @@
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Pagar</name>
         <label>Create Historically Assigned Resource - Pågår</label>
-        <locationX>1018</locationX>
-        <locationY>1094</locationY>
+        <locationX>1282</locationX>
+        <locationY>1334</locationY>
         <connector>
             <targetReference>Assign_new_values_Pagar</targetReference>
         </connector>
@@ -583,11 +608,11 @@
     <recordLookups>
         <name>Get_Assigned_Resource</name>
         <label>Get Assigned Resource</label>
-        <locationX>671</locationX>
+        <locationX>492</locationX>
         <locationY>614</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>isCompleted</targetReference>
+            <targetReference>Get_Service_Resource</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -604,9 +629,31 @@
         </outputAssignments>
     </recordLookups>
     <recordLookups>
+        <name>Get_Service_Resource</name>
+        <label>Get Service Resource</label>
+        <locationX>492</locationX>
+        <locationY>734</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>My_Service_Appointment</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>ServiceResourceId</elementReference>
+            </value>
+        </filters>
+        <object>ServiceResource</object>
+        <outputReference>serviceResource</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>RelatedRecordId</queriedFields>
+    </recordLookups>
+    <recordLookups>
         <name>Get_ServiceAppointment_0_0_0</name>
         <label>Get ServiceAppointment</label>
-        <locationX>671</locationX>
+        <locationX>492</locationX>
         <locationY>494</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -635,8 +682,8 @@
     <recordLookups>
         <name>getInterestedResource</name>
         <label>getInterestedResource</label>
-        <locationX>1634</locationX>
-        <locationY>1334</locationY>
+        <locationX>1898</locationX>
+        <locationY>1574</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Interested_Resource</targetReference>
@@ -666,15 +713,15 @@
     <recordUpdates>
         <name>Save_Service_Appointment</name>
         <label>Save Service Appointment</label>
-        <locationX>1293</locationX>
-        <locationY>2126</locationY>
+        <locationX>1557</locationX>
+        <locationY>2366</locationY>
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
     <recordUpdates>
         <name>updateInterestedResource</name>
         <label>updateInterestedResource</label>
-        <locationX>1722</locationX>
-        <locationY>1694</locationY>
+        <locationX>1986</locationX>
+        <locationY>1934</locationY>
         <connector>
             <targetReference>Assign_new_values_Avlyst_Tolk</targetReference>
         </connector>
@@ -684,8 +731,8 @@
     <screens>
         <name>Already_Completed</name>
         <label>Already Completed</label>
-        <locationX>50</locationX>
-        <locationY>854</locationY>
+        <locationX>314</locationX>
+        <locationY>1094</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -698,10 +745,26 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>NOT_your_SA</name>
+        <label>NOT your SA</label>
+        <locationX>50</locationX>
+        <locationY>974</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>notYourSAText</name>
+            <fieldText>&lt;p&gt;Du kan ikke endre status på dette oppdraget, ettersom det ikke er ditt.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>SA_Not_Started_Error</name>
         <label>SA Not Started Error</label>
-        <locationX>754</locationX>
-        <locationY>1214</locationY>
+        <locationX>1018</locationX>
+        <locationY>1454</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -716,8 +779,8 @@
     <screens>
         <name>Set_Cancel_Comment_Bruker</name>
         <label>Set Cancel Comment - Bruker</label>
-        <locationX>1282</locationX>
-        <locationY>1094</locationY>
+        <locationX>1546</locationX>
+        <locationY>1334</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -740,8 +803,8 @@
     <screens>
         <name>Set_Cancel_Comment_Tolk</name>
         <label>Set Cancel Comment - Tolk</label>
-        <locationX>1634</locationX>
-        <locationY>1094</locationY>
+        <locationX>1898</locationX>
+        <locationY>1334</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -761,8 +824,8 @@
     <screens>
         <name>Set_Completed_Comment</name>
         <label>Set Completed Comment</label>
-        <locationX>314</locationX>
-        <locationY>1454</locationY>
+        <locationX>578</locationX>
+        <locationY>1694</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -782,8 +845,8 @@
     <screens>
         <name>Set_status</name>
         <label>Set status</label>
-        <locationX>1293</locationX>
-        <locationY>854</locationY>
+        <locationX>1557</locationX>
+        <locationY>1094</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -807,8 +870,8 @@
     <screens>
         <name>Set_Time_Dekket</name>
         <label>Set Time-  Dekket</label>
-        <locationX>446</locationX>
-        <locationY>1214</locationY>
+        <locationX>710</locationX>
+        <locationY>1454</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -839,7 +902,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>545</locationX>
+        <locationX>366</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Which_App</targetReference>
@@ -875,6 +938,14 @@
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>serviceResource</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>ServiceResource</objectType>
     </variables>
     <variables>
         <name>ServiceResourceId</name>
