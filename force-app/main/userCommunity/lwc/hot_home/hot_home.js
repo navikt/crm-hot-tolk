@@ -1,24 +1,8 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import { getRecord } from 'lightning/uiRecordApi';
-import USER_ID from '@salesforce/user/Id';
-import NAME_FIELD from '@salesforce/schema/User.FirstName';
-import checkAssignedPermissionSet from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSet';
-import checkAssignedPermissionSetGroup from '@salesforce/apex/HOT_Utility.checkAssignedPermissionSetGroup';
 import HOT_HOME_LOGOS from '@salesforce/resourceUrl/hot_home_logos';
 
 export default class Hot_home extends NavigationMixin(LightningElement) {
-    @track name;
-    @wire(getRecord, {
-        recordId: USER_ID,
-        fields: [NAME_FIELD]
-    })
-    wireuser({ data }) {
-        if (data) {
-            this.name = data.fields.FirstName.value;
-        }
-    }
-
     mineSamtalerImg = HOT_HOME_LOGOS + '/MineSamtaler.svg';
     mineBestillingerImg = HOT_HOME_LOGOS + '/MineBestillinger.svg';
     minSideImg = HOT_HOME_LOGOS + '/MinSide.svg';
@@ -38,23 +22,7 @@ export default class Hot_home extends NavigationMixin(LightningElement) {
             myRequests: baseURL + '/mine-bestillinger',
             myRequestsOther: baseURL + '/mine-bestillinger-andre',
             myPage: baseURL + '/min-side',
-            myThreads: baseURL + '/mine-samtaler',
-            myServiceAppointments: baseURL + '/mine-oppdrag',
-            freelanceMyPage: baseURL + '/frilanstolk-min-side'
+            myThreads: baseURL + '/mine-samtaler'
         };
-    }
-
-    @track isFrilans = false;
-    @wire(checkAssignedPermissionSetGroup, {
-        permissionSetGroupName: 'HOT_Tolk_Frilans_Gruppe'
-    })
-    async wireIsFrilans({ data }) {
-        this.isFrilans = data;
-    }
-    @wire(checkAssignedPermissionSet, { permissionSetName: 'HOT_Admin' }) //Use this when developing/testing
-    wireIsAdmin({ data }) {
-        if (!this.isFrilans) {
-            this.isFrilans = data;
-        }
     }
 }
