@@ -1,0 +1,15 @@
+<template>
+    <p if:false={showList}>Ingen relevante oppdrag funnet</p>
+    <lightning-datatable
+        if:true={showList}
+        key-field="Id"
+        data={serviceAppointments}
+        columns={columns}
+        hide-checkbox-column="true"
+        default-sort-direction={defaultSortDirection}
+        sorted-direction={sortDirection}
+        sorted-by={sortedBy}
+        onsort={onHandleSort}
+    >
+    </lightning-datatable>
+</template>
