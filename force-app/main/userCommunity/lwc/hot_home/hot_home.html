@@ -1,76 +1,11 @@
 <template>
-    <div class="portal-hilsen">
-        <h2 class="typo-undertittel">Hei {name}</h2>
-    </div>
-    <div if:true={isFrilans} class="informasjonstavle__body">
-        <div class="informasjonstavle__content">
-            <div class="informasjonstavle__bildepaneler-single">
-                <a class="panelMedBilde panelMedBilde-single" href={pageLinks.myServiceAppointments}>
-                    <div class="panelMedBilde__imageOnPanel-single">
-                        <div class="panelMedBilde__svgContainer-single">
-                            <img
-                                style="height: 60%"
-                                src="/s/sfsites/c/resource/1590665878000/OppdragIkon"
-                                alt="Til mine oppdrag"
-                            />
-                        </div>
-                    </div>
-                    <div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
-                        <h2 class="typo-undertittel">Oppdrag</h2>
-                        <div>
-                            <p class="typo-normal">
-                                <span>
-                                    Se oversikt over dine oppdrag, og åpne oppdrag som du kan melde interesse om.</span
-                                >
-                            </p>
-                        </div>
-                    </div>
-                    <div class="panelMedBilde__imageOnPanel-single">
-                        <div class="panelMedBilde__svgContainer-single">
-                            <img src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
-                        </div>
-                    </div>
-                </a>
-                <a class="panelMedBilde panelMedBilde-single" href={pageLinks.freelanceMyPage}>
-                    <div class="panelMedBilde__imageOnPanel-single">
-                        <div class="panelMedBilde__svgContainer-single">
-                            <lightning-icon
-                                icon-name="utility:user"
-                                alternative-text="Til frilanstolk min side"
-                                style="height: 60%"
-                                title="Min side frilanstolk"
-                            ></lightning-icon>
-                        </div>
-                    </div>
-                    <div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
-                        <h2 class="typo-undertittel">Frilanstolk min side</h2>
-                        <div>
-                            <p class="typo-normal">
-                                <span> Se og rediger kontaktinformasjon og kvalifikasjoner.</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="panelMedBilde__imageOnPanel-single">
-                        <div class="panelMedBilde__svgContainer-single">
-                            <img src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-
     <div class="informasjonstavle__body">
         <div class="informasjonstavle__content">
             <div class="informasjonstavle__bildepaneler">
                 <a class="panelMedBilde" href={pageLinks.newRequest}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={bestilleTolkImg}
-                                alt="Til ny bestilling"
-                            />
+                            <img class="illustrasjon" src={bestilleTolkImg} alt="Til ny bestilling" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
@@ -85,18 +20,15 @@
                 <a class="panelMedBilde" href={pageLinks.myRequests}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={mineBestillingerImg}
-                                alt="Til mine bestillinger"
-                            />
+                            <img class="illustrasjon" src={mineBestillingerImg} alt="Til mine bestillinger" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
                         <h2 class="typo-undertittel">Mine bestillinger</h2>
                         <div>
                             <p class="typo-normal">
-                                Her finner du oversikt over alle bestillinger du har sendt inn, og som andre har sendt inn på vegne av deg.
+                                Her finner du oversikt over alle bestillinger du har sendt inn, og som andre har sendt
+                                inn på vegne av deg.
                             </p>
                         </div>
                     </div>
@@ -104,11 +36,7 @@
                 <a class="panelMedBilde" href={pageLinks.myRequestsOther}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={minTidsplanImg}
-                                alt="Til bestillinger på vegne av andre"
-                            />
+                            <img class="illustrasjon" src={minTidsplanImg} alt="Til bestillinger på vegne av andre" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
@@ -123,30 +51,20 @@
                 <a class="panelMedBilde" href={pageLinks.myThreads}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={mineSamtalerImg}
-                                alt="Til mine samtaler"
-                            />
+                            <img class="illustrasjon" src={mineSamtalerImg} alt="Til mine samtaler" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
                         <h2 class="typo-undertittel">Mine samtaler</h2>
                         <div>
-                            <p class="typo-normal">
-                                Her finner du oversikt over samtalene dine.
-                            </p>
+                            <p class="typo-normal">Her finner du oversikt over samtalene dine.</p>
                         </div>
                     </div>
                 </a>
                 <a class="panelMedBilde" href={pageLinks.myPage}>
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={minSideImg}
-                                alt="Til min side"
-                            />
+                            <img class="illustrasjon" src={minSideImg} alt="Til min side" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
@@ -165,11 +83,7 @@
                 >
                     <div class="tolketjenesten panelMedBilde__imageOnPanel">
                         <div class="panelMedBilde__svgContainer">
-                            <img
-                                class="illustrasjon"
-                                src={kunnskapsbankenImg}
-                                alt="Veiledning"
-                            />
+                            <img class="illustrasjon" src={kunnskapsbankenImg} alt="Veiledning" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel">
