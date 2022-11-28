@@ -25,7 +25,7 @@ sfdx force:package:install --package 04t7U000000Tqf5QAC -r -k $3 --wait 10 --pub
 sfdx force:source:push
 
 # Tildel tilatelsessett til brukeren
-sfdx force:user:permset:assign --permsetname HOT_admin
+sfdx force:user:permset:assign --permsetname HOT_admin, HOT_Config
 
 # Publish Experience Site
 sfdx force:community:publish --name Tolketjenesten
