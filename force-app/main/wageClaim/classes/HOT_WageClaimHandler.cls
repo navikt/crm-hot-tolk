@@ -9,6 +9,7 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
         }
         if (!wageClaimsWithServiceResource.isEmpty()) {
             setServiceTerritoryBasedOnServiceResource(wageClaimsWithServiceResource);
+            createShiftAndSetLookup(wageClaimsWithServiceResource.keySet());
         }
     }
     public override void onAfterInsert() {
@@ -24,6 +25,7 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
     }
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_WageClaim__c> retractedWageClaims = new List<HOT_WageClaim__c>();
+        List<HOT_WageClaim__c> closedWageClaims = new List<HOT_WageClaim__c>();
         for (HOT_WageClaim__c wageClaim : (List<HOT_WageClaim__c>) records) {
             if (
                 wageClaim.Status__c != triggerOldMap.get(wageClaim.Id).get('Status__c') &&
@@ -31,9 +33,18 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
             ) {
                 retractedWageClaims.add(wageClaim);
             }
+            if (
+                wageClaim.Status__c != triggerOldMap.get(wageClaim.Id).get('Status__c') &&
+                wageClaim.Status__c != 'Open'
+            ) {
+                closedWageClaims.add(wageClaim);
+            }
         }
         if (retractedWageClaims.size() > 0) {
             retractChildWageClaims(retractedWageClaims);
+        }
+        if (closedWageClaims.size() > 0) {
+            deleteShifts(closedWageClaims);
         }
     }
 
@@ -87,6 +98,26 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
 
         for (HOT_WageClaim__c wageClaim : wageClaimWithServiceResourceMap.keySet()) {
             wageClaim.ServiceTerritory__c = serviceResources.get(wageClaim.ServiceResource__c).HOT_ServiceTerritory__c;
+        }
+    }
+
+    public static void createShiftAndSetLookup(Set<HOT_WageClaim__c> wageClaims) {
+        List<Shift> shifts = new List<Shift>();
+        for (HOT_WageClaim__c wageClaim : wageClaims) {
+            Shift shift = new Shift();
+            shift.StartTime = wageClaim.StartTime__c;
+            shift.EndTime = wageClaim.EndTime__c;
+            shift.ServiceResourceId = wageClaim.ServiceResource__c;
+            shift.Label = 'Ledig på lønn: ' + wageClaim.Name;
+            shift.HOT_WageClaim__c = wageClaim.Id;
+            shifts.add(shift);
+        }
+        insert shifts;
+    }
+    public static void deleteShifts(List<HOT_WageClaim__c> wageClaims) {
+        List<Shift> shifts = [SELECT Id FROM Shift WHERE HOT_WageClaim__c IN :wageClaims];
+        if (shifts.size() > 0) {
+            delete shifts;
         }
     }
 }

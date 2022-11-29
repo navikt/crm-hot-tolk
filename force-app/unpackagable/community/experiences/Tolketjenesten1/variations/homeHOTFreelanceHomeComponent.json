@@ -1,0 +1,13 @@
+{
+  "componentVariants" : [ {
+    "id" : "99c7fbfd-ced7-40c2-af81-d541305f3212",
+    "propertyOverrides" : {
+      "isVisible" : true
+    },
+    "targetId" : "a6350c05-408b-4e86-8002-630dd28ff63d",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Home_HOT_Freelance_Home_Component",
+  "id" : "49d56211-a440-4abc-871a-93638c558aed",
+  "type" : "experienceVariation"
+}
