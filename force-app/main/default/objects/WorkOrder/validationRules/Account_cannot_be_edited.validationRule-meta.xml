@@ -4,7 +4,7 @@
     <active>true</active>
     <errorConditionFormula>ISCHANGED(AccountId) 
 &amp;&amp;
-PRIORVALUE(AccountId) != null
+PRIORVALUE(AccountId) != null  || HOT_Request__r.Account__c != AccountId
 &amp;&amp;
 !$Permission.Validation_Override</errorConditionFormula>
     <errorDisplayField>AccountId</errorDisplayField>
