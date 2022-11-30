@@ -8,5 +8,5 @@ PRIORVALUE(AccountId) != null  || HOT_Request__r.Account__c != AccountId
 &amp;&amp;
 !$Permission.Validation_Override</errorConditionFormula>
     <errorDisplayField>AccountId</errorDisplayField>
-    <errorMessage>Bruker kan ikke endres.</errorMessage>
+    <errorMessage>Bruker må være den samme som på forespørsel.</errorMessage>
 </ValidationRule>

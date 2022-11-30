@@ -5,5 +5,5 @@
     <errorConditionFormula>ISCHANGED(AccountId) &amp;&amp; HOT_Request__r.Account__c != HOT_Account__c
         &amp;&amp; 
         !$Permission.Validation_Override</errorConditionFormula>
-    <errorMessage>Konto kan ikke endres.</errorMessage>
+    <errorMessage>Bruker må være den samme som på forespørsel.</errorMessage>
 </ValidationRule>
