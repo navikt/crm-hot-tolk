@@ -3,9 +3,8 @@
     <assignments>
         <name>Assign_new_values_Avlyst_Bruker</name>
         <label>Assign new values - Avlyst - Bruker</label>
-        <locationX>1282</locationX>
-        <locationY>1574</locationY>
-
+        <locationX>1509</locationX>
+        <locationY>1742</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
             <operator>Assign</operator>
@@ -129,8 +128,8 @@
     <assignments>
         <name>Set_Record_Id_0</name>
         <label>Set Record Id</label>
-        <locationX>327</locationX>
-        <locationY>278</locationY>
+        <locationX>324</locationX>
+        <locationY>326</locationY>
         <assignmentItems>
             <assignToReference>Id</assignToReference>
             <operator>Assign</operator>
@@ -182,14 +181,6 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Completed</stringValue>
-        </value>
-    </choices>
-    <choices>
-        <name>Status_Pagar</name>
-        <choiceText>Pågår</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>In Progress</stringValue>
         </value>
     </choices>
     <choices>
@@ -790,7 +781,6 @@
         </connector>
         <fields>
             <name>New_status</name>
-            <choiceReferences>Status_Pagar</choiceReferences>
             <choiceReferences>Status_Dekket</choiceReferences>
             <choiceReferences>Status_Avlyst</choiceReferences>
             <choiceReferences>Status_TolkAvlyst</choiceReferences>
