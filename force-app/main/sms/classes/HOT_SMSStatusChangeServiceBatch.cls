@@ -7,7 +7,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
         String query = 'SELECT ';
-        query += 'Id, HOT_Request__r.Orderer__c, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Type__c, Status, StartDate, EndDate, HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c, AccountId, Account.CRM_Person__c, Account.CRM_Person__r.INT_KrrMobilePhone__c ';
+        query += 'Id, HOT_Request__r.Orderer__c, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Type__c, Status, StartDate, EndDate, HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c, AccountId, Account.CRM_Person__c, Account.CRM_Person__r.INT_KrrMobilePhone__c, Account.CRM_Person__r.HOT_Notificationchannel__c, Account.OwnerId ';
         query += 'FROM WorkOrder ';
         query += 'WHERE HOT_SendSMSNotificationOnStatusChanged__c = TRUE ';
 
@@ -15,7 +15,22 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
     }
 
     public void execute(Database.BatchableContext bc, List<WorkOrder> records) {
+        List<WorkOrder> smsNotificationList= new List<WorkOrder>();
+         CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
         try {
+            for(WorkOrder wo: records){
+                if(wo.Account.CRM_Person__r.HOT_Notificationchannel__c=='SMS'){
+                    smsNotificationList.add(wo);
+                   }
+                   else{
+                       Set<String> recipients = new Set<String>{ wo.Account.OwnerId };
+                       HOT_UserNotificationService.statusChangeNotification(notificationType, wo, recipients);
+                }
+            }
             HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(records);
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
