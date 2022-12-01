@@ -2,9 +2,8 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Account_cannot_be_edited</fullName>
     <active>true</active>
-    <errorConditionFormula>ISCHANGED(AccountId)
-        &amp;&amp;
-        !$Permission.Validation_Override
-    </errorConditionFormula>
-    <errorMessage>Konto kan ikke endres.</errorMessage>
+    <errorConditionFormula>ISCHANGED(AccountId) &amp;&amp; HOT_Request__r.Account__c != HOT_Account__c
+        &amp;&amp; 
+        !$Permission.Validation_Override</errorConditionFormula>
+    <errorMessage>Bruker må være den samme som på forespørsel.</errorMessage>
 </ValidationRule>

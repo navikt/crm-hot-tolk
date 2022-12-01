@@ -1,13 +1,18 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
+import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
+
 import { columns, mobileColumns } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
+import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
     @track isEditButtonDisabled = false;
+    @track isCancelButtonHidden = true;
+    @track isEditButtonHidden = false;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -126,6 +131,8 @@ export default class Hot_myServiceAppointments extends LightningElement {
         let recordId = result.detail.Id;
         this.recordId = recordId;
         this.isDetails = !!this.recordId;
+        this.isEditButtonHidden = false;
+        this.isCancelButtonHidden = true;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
@@ -155,7 +162,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.isDetails = false;
         this.showTable = true;
         this.isflow = false;
-        this.isEditButtonDisabled = true;
+        this.isEditButtonDisabled = false;
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'my' };
     }
@@ -186,7 +193,16 @@ export default class Hot_myServiceAppointments extends LightningElement {
     changeStatus() {
         this.isflow = true;
         this.isEditButtonDisabled = true;
+        this.isCancelButtonHidden = false;
         this.isDetails = true;
+        this.isEditButtonHidden = true;
+    }
+    cancelStatusFlow() {
+        this.isflow = false;
+        this.isEditButtonDisabled = false;
+        this.isCancelButtonHidden = true;
+        this.isDetails = true;
+        this.isEditButtonHidden = false;
     }
     get flowVariables() {
         return [
@@ -196,5 +212,30 @@ export default class Hot_myServiceAppointments extends LightningElement {
                 value: this.recordId
             }
         ];
+    }
+    handleStatusChange(event) {
+        console.log('handleStatusChange', event.detail);
+        if (event.detail.interviewStatus == 'FINISHED') {
+            getServiceAppointment({
+                recordId: this.recordId
+            }).then((data) => {
+                console.log(data.Status);
+                if (data.Status == 'Completed') {
+                    this.isflow = false;
+                    this.isCancelButtonHidden = true;
+                }
+                if (data.Status == 'Canceled') {
+                    this.isflow = false;
+                    this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'Canceled';
+                }
+                if (data.HOT_CanceledByInterpreter__c) {
+                    this.isflow = false;
+                    this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'None';
+                }
+            });
+            refreshApex(this.wiredMyServiceAppointmentsResult);
+        }
     }
 }
