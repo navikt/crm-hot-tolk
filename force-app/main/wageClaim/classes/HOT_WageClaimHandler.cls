@@ -9,7 +9,7 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
         }
         if (!wageClaimsWithServiceResource.isEmpty()) {
             setServiceTerritoryBasedOnServiceResource(wageClaimsWithServiceResource);
-            //createShiftAndSetLookup(wageClaimsWithServiceResource.keySet());
+            createShiftAndSetLookup(wageClaimsWithServiceResource.keySet());
         }
     }
     public override void onAfterInsert() {
@@ -44,7 +44,7 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
             retractChildWageClaims(retractedWageClaims);
         }
         if (closedWageClaims.size() > 0) {
-            //deleteShifts(closedWageClaims);
+            deleteShifts(closedWageClaims);
         }
     }
 
