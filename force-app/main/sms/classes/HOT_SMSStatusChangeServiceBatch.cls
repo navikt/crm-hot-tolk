@@ -31,7 +31,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                        HOT_UserNotificationService.statusChangeNotification(notificationType, wo, recipients);
                 }
             }
-            HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(records);
+            HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(smsNotificationList);
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
