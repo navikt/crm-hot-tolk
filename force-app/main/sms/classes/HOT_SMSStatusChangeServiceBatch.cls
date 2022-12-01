@@ -16,6 +16,8 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
 
     public void execute(Database.BatchableContext bc, List<WorkOrder> records) {
         List<WorkOrder> smsNotificationList= new List<WorkOrder>();
+        List<WorkOrder> pushNotificationList= new List<WorkOrder>();
+        List<Id> accountIds = new List<Id>();
          CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
@@ -25,13 +27,28 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
             for(WorkOrder wo: records){
                 if(wo.Account.CRM_Person__r.HOT_Notificationchannel__c=='SMS'){
                     smsNotificationList.add(wo);
+                    
                    }
                    else{
-                       Set<String> recipients = new Set<String>{ wo.Account.OwnerId };
-                       HOT_UserNotificationService.statusChangeNotification(notificationType, wo, recipients);
+                    pushNotificationList.add(wo);
+                    accountIds.add(wo.AccountId);
                 }
             }
-            HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(smsNotificationList);
+            List<User> users=[SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
+            Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
+            for (User user : users) {
+                userIdByAccountId.put(user.AccountId, user.Id);
+            }
+            if (!pushNotificationList.isEmpty()) {
+            for (WorkOrder wo : pushNotificationList) {
+                Set<String> recipients = new Set<String>();
+                recipients.add(userIdByAccountId.get(wo.AccountId));
+                if (recipients.size() != 0) {
+                    HOT_UserNotificationService.statusChangeNotification(notificationType, wo, recipients);
+                }
+            }
+        }
+        HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(records);
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
