@@ -23,7 +23,7 @@ echo "Dytter kildekoden til scratch org'en"
 call sfdx force:source:push
 
 echo "Tildeler tilatelsessett til brukeren"
-call sfdx force:user:permset:assign --permsetname HOT_admin
+call sfdx force:user:permset:assign --permsetname "HOT_admin, HOT_Config"
 
 echo "Publish Experience Site"
 call sfdx force:community:publish --name Tolketjenesten
