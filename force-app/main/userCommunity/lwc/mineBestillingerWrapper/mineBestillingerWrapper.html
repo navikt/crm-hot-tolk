@@ -179,6 +179,15 @@
                     mobile-style="justify-content: center"
                     onbuttonclick={goToThread}
                 ></c-button>
+                <c-button
+                    if:true={isUserAccount}
+                    button-label="Samtale med tolk"
+                    button-styling="primary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="justify-content: center"
+                    mobile-style="justify-content: center"
+                    onbuttonclick={goToThreadInterpeter}
+                ></c-button>
             </div>
             <div class="record-details-container" if:false={noWorkOrders}>
                 <c-table

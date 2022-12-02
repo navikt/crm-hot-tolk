@@ -594,4 +594,23 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 });
         }
     }
+    goToThreadInterpeter() {
+        if (this.workOrder.Thread__c !== undefined) {
+            console.log('finnes samtale fra før');
+            //this.navigateToThread(this.workOrder.Thread__c);
+        } else {
+            //     createThread({ recordId: this.workOrder.Id, accountId: this.workOrder.Account__c })
+            //         .then((result) => {
+            //             this.navigateToThread(result.Id);
+            //             refreshApex(this.wiredgetWorkOrdersResult);
+            //         })
+            //         .catch((error) => {
+            //             this.modalHeader = 'Noe gikk galt';
+            //             this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+            //             this.noCancelButton = true;
+            //             this.showModal();
+            //         });
+            console.log('finnes ingen samtale fra før');
+        }
+    }
 }

@@ -1199,6 +1199,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>WorkOrder.Thread__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>WorkOrderLineItem.HOT_IsUpdateStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>

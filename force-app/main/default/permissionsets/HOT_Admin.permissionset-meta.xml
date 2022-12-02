@@ -2034,6 +2034,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.Thread__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.TotalPrice</field>
         <readable>true</readable>

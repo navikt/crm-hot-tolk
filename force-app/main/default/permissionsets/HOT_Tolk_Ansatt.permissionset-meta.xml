@@ -572,6 +572,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Person__c.HOT_NotificationChannel__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.HOT_RemoteInterpreter__c</field>
         <readable>true</readable>
@@ -1299,6 +1304,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.Tax</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.Thread__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
