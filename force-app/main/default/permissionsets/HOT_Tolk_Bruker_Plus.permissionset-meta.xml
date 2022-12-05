@@ -528,11 +528,6 @@
         <field>WorkOrder.HOT_IsNotifyDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>WorkOrder.Thread__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT Tolk Bruker Plus</label>
     <license>Customer Community Plus</license>

@@ -9,10 +9,9 @@ public with sharing class HOT_ThreadListController {
                 CRM_Account__c = :user.AccountId
                 AND CRM_Account__c != NULL
                 AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
-                // AND HOT_Request__c != NULL
-                // AND CRM_Number_of_Messages__c > 0
-                // AND (HOT_Request__r.IsDone__c = FALSE
-                // OR CRM_Number_of_unread_Messages__c > 0)
+                AND (CRM_Number_of_Messages__c > 0
+                OR CRM_Number_of_unread_Messages__c > 0)
+                AND HOT_IsDone__c=false
         ];
         return threads;
     }

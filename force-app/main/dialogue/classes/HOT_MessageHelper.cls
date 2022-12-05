@@ -102,6 +102,7 @@ public with sharing class HOT_MessageHelper {
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
             thread.CRM_Account__c = accountId;
             thread.HOT_Subject__c='Samtale med tolk: '+workOrder.Subject;
+            thread.HOT_WorkOrder__c=recordId;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='HOT_Request__c'){

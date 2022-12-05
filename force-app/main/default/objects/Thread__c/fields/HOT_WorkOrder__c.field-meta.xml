@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Thread__c</fullName>
+    <fullName>HOT_WorkOrder__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
     <externalId>false</externalId>
-    <label>Thread</label>
-    <referenceTo>Thread__c</referenceTo>
-    <relationshipLabel>Work Orders</relationshipLabel>
-    <relationshipName>Work_Orders</relationshipName>
+    <label>WorkOrder</label>
+    <referenceTo>WorkOrder</referenceTo>
+    <relationshipLabel>Threads</relationshipLabel>
+    <relationshipName>Threads</relationshipName>
     <required>false</required>
-    <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>
