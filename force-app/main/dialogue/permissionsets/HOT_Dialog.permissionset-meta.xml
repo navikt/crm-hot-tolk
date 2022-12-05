@@ -73,11 +73,6 @@
         <field>Thread__c.HOT_Request__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Thread__c.HOT_Subject__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT Dialog</label>
     <license>Salesforce</license>
