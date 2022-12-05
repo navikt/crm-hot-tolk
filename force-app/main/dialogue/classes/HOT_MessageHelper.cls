@@ -25,6 +25,11 @@ public with sharing class HOT_MessageHelper {
     }
 
     @AuraEnabled(cacheable=true)
+    public static Id getAccountOnWorkOrder(Id recordId) {
+        return [SELECT AccountId FROM WorkOrder WHERE Id = :recordId]?.AccountId;
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadsCollection(Id recordId, Boolean singleThread) {
         if (singleThread == false) {
             return getThreads(recordId);

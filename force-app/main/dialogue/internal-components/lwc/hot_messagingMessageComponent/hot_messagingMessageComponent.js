@@ -3,6 +3,7 @@ import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreadsCollection'
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
+import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
 import { refreshApex } from '@salesforce/apex';
 
 export default class CrmMessagingMessageComponent extends LightningElement {
@@ -45,11 +46,24 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     }
 
     handlenewpressed() {
-        createThread({ recordId: this.recordId, accountId: this.accountId })
-            .then(() => {
-                return refreshApex(this._threadsforRefresh);
-            })
-            .catch((error) => {});
+        if (this.accountId == undefined) {
+            getAccountOnWorkOrder({ recordId: this.recordId })
+                .then((result) => {
+                    this.accountId = result;
+                    createThread({ recordId: this.recordId, accountId: this.accountId })
+                        .then(() => {
+                            return refreshApex(this._threadsforRefresh);
+                        })
+                        .catch((error) => {});
+                })
+                .catch((error) => {});
+        } else {
+            createThread({ recordId: this.recordId, accountId: this.accountId })
+                .then(() => {
+                    return refreshApex(this._threadsforRefresh);
+                })
+                .catch((error) => {});
+        }
     }
 
     get showSpinner() {

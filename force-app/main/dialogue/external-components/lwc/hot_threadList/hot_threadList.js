@@ -4,7 +4,7 @@ import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreads
 import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_threadList extends NavigationMixin(LightningElement) {
-    breadcrumbs = [ 
+    breadcrumbs = [
         {
             label: 'Tolketjenesten',
             href: ''
@@ -25,9 +25,9 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
             icon: 'SuccessFilled',
             fill: 'Green',
             ariaLabel: 'Ingen nye meldinger'
-        },
+        }
     };
-    
+
     @track columns = [
         {
             label: 'Tema',
@@ -38,10 +38,10 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
             label: 'Status',
             name: 'read',
             type: 'boolean',
-            svg: true,
-        },
+            svg: true
+        }
     ];
-        
+
     openThread(event) {
         this[NavigationMixin.Navigate]({
             type: 'standard__recordPage',
@@ -60,7 +60,10 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
     wiredThreads(result) {
         this.wiredThreadsResult = result;
         if (result.data) {
-            this.threads = result.data.map(x => ({...x, read: x.CRM_Number_of_unread_Messages__c > 0 ? false : true}));
+            this.threads = result.data.map((x) => ({
+                ...x,
+                read: x.CRM_Number_of_unread_Messages__c > 0 ? false : true
+            }));
             this.noThreads = this.threads.length === 0;
         }
     }
@@ -68,11 +71,11 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
     get isMobile() {
         return window.screen.width < 576;
     }
-    
+
     connectedCallback() {
         refreshApex(this.wiredThreadsResult);
     }
-    
+
     goBack() {
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
