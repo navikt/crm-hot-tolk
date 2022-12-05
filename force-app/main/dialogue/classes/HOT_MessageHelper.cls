@@ -93,11 +93,25 @@ public with sharing class HOT_MessageHelper {
 
     @AuraEnabled(cacheable=false)
     public static Thread__c createThread(Id recordId, Id accountId) {
+        //Finne ut om det er request eller workorder object
         Thread__c thread = new Thread__c();
-        thread.CRM_Related_Object__c = recordId;
-        thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
-        thread.CRM_Account__c = accountId;
-        HOT_DatabaseOperations.insertRecords(thread);
+        String objectType=String.valueOf(recordId.getsobjecttype());
+        if(objectType=='WorkOrder'){
+            WorkOrder workOrder=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+            thread.CRM_Account__c = accountId;
+            thread.HOT_Subject__c='Samtale med tolk: '+workOrder.Subject;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
+        if(objectType=='HOT_Request__c'){
+            HOT_Request__c request=[SELECT Subject__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+            thread.CRM_Account__c = accountId;
+            thread.HOT_Subject__c= request.Subject__c;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
         return thread;
     }
 
