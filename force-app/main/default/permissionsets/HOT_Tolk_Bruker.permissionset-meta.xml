@@ -524,7 +524,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>Thread__c.HOT_Subject__c</field>
         <readable>true</readable>
     </fieldPermissions>
