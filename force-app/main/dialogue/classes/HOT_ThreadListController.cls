@@ -8,7 +8,7 @@ public with sharing class HOT_ThreadListController {
             WHERE
                 CRM_Account__c = :user.AccountId
                 AND CRM_Account__c != NULL
-                AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
+                AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK')
                 AND (CRM_Number_of_Messages__c > 0
                 OR CRM_Number_of_unread_Messages__c > 0)
                 AND HOT_IsDone__c=false
