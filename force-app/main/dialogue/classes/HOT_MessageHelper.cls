@@ -47,7 +47,7 @@ public with sharing class HOT_MessageHelper {
             threadList = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
+                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK')
             ];
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
@@ -65,7 +65,7 @@ public with sharing class HOT_MessageHelper {
             Thread__c t = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
+                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK')
                 LIMIT 1
             ];
 
@@ -99,7 +99,7 @@ public with sharing class HOT_MessageHelper {
         if(objectType=='WorkOrder'){
             WorkOrder workOrder=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
-            thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+            thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
             thread.CRM_Account__c = accountId;
             thread.HOT_Subject__c='Samtale med tolk: '+workOrder.Subject;
             thread.HOT_WorkOrder__c=recordId;
