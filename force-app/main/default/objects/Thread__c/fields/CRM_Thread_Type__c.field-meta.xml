@@ -57,6 +57,12 @@
                 <default>false</default>
                 <label>HOT_BRUKER-TOLK</label>
             </value>
+            <value>
+                <fullName>HOT_BRUKER-FRILANS</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>HOT_BRUKER-FRILANS</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

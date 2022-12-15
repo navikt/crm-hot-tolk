@@ -37,6 +37,7 @@
                 <c-button
                     disabled={isEditButtonDisabled}
                     hidden={isEditButtonHidden}
+                    style="padding-right: 1vw; padding-bottom: 1vw"
                     onbuttonclick={changeStatus}
                     button-styling="Primary"
                     type="Submit"
@@ -48,12 +49,21 @@
                     onbuttonclick={cancelStatusFlow}
                     button-styling="Secondary"
                     type="Submit"
-                    style="margin: 2rem 0"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
                     button-label="Avbryt"
+                >
+                </c-button>
+                <c-button
+                    button-styling="Primary"
+                    type="Submit"
+                    onbuttonclick={goToThreadFreelance}
+                    button-label="Samtale med bruker"
+                    disabled={isGoToThreadButtonDisabled}
                 >
                 </c-button>
             </div>
         </div>
+
         <div if:true={isflow} class="flow-container">
             <lightning-flow
                 flow-api-name="HOT_ChangeServiceAppointmentStatus"

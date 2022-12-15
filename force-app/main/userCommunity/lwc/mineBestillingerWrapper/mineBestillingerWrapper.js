@@ -206,15 +206,21 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     editButtonLabel = 'Rediger';
     copyButtonLabel = 'Kopier';
     cancelButtonLabel = 'Avlys';
+    isThreadButtonDisabled = false;
+    isInterpreterThreadButtonDisabled = false;
     setButtonLabels() {
         if (this.urlStateParameters.level === 'R') {
             this.editButtonLabel = 'Rediger serie';
             this.copyButtonLabel = 'Kopier serie';
             this.cancelButtonLabel = 'Avlys serie';
+            this.isThreadButtonDisabled = false;
+            this.isInterpreterThreadButtonDisabled = false;
         } else {
             this.editButtonLabel = 'Rediger';
             this.copyButtonLabel = 'Kopier';
             this.cancelButtonLabel = 'Avlys';
+            this.isThreadButtonDisabled = false;
+            this.isInterpreterThreadButtonDisabled = false;
         }
     }
 
@@ -586,6 +592,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goToThread() {
+        this.isThreadButtonDisabled = true;
         if (this.request.Thread__c !== undefined) {
             this.navigateToThread(this.request.Thread__c);
         } else {
@@ -603,6 +610,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
     }
     goToThreadInterpreter() {
+        this.isInterpreterThreadButtonDisabled = true;
         if (this.workOrderThreadId !== undefined) {
             this.navigateToThread(this.workOrderThreadId);
         } else {

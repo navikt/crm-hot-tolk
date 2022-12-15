@@ -93,7 +93,7 @@ public with sharing class HOT_MessageHelper {
 
     @AuraEnabled(cacheable=false)
     public static Thread__c createThread(Id recordId, Id accountId) {
-        //Finne ut om det er request eller workorder object
+       
         Thread__c thread = new Thread__c();
         String objectType=String.valueOf(recordId.getsobjecttype());
         if(objectType=='WorkOrder'){
@@ -101,7 +101,7 @@ public with sharing class HOT_MessageHelper {
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
             thread.CRM_Account__c = accountId;
-            thread.HOT_Subject__c='Samtale med tolk: '+workOrder.Subject;
+            thread.HOT_Subject__c='Samtale tolk: '+workOrder.Subject;
             thread.HOT_WorkOrder__c=recordId;
             HOT_DatabaseOperations.insertRecords(thread);
         }
@@ -113,6 +113,15 @@ public with sharing class HOT_MessageHelper {
             thread.HOT_Subject__c= request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
+        if(objectType=='ServiceAppointment'){
+            ServiceAppointment serviceAppointment=[SELECT Subject, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:recordId LIMIT 1];
+            thread.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
+            thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+            thread.CRM_Account__c = serviceAppointment.HOT_Account__c; //?
+            thread.HOT_Subject__c= 'Samtale frilanstolk: '+serviceAppointment.Subject;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
+        //Finne ut om det er request eller workorder object
         return thread;
     }
 
@@ -177,6 +186,15 @@ public with sharing class HOT_MessageHelper {
             throw new AuraHandledException(e.getMessage());
         }
     }
+     @AuraEnabled
+    public static boolean isUserOwnerOfLastMessage(Id threadId) {
+        Message__c message=[SELECT Id, CRM_From_Contact__c FROM Message__c WHERE CRM_Thread__c=:threadId ORDER BY Id DESC LIMIT 1];
+        User user = [SELECT Id, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
+        if(message.CRM_From_Contact__c==user.ContactId){
+            return true;
+        }
+        return false;
+    }
     /**
      * Method for marking unread messages by NAV
      * @Eirik Fladby
@@ -211,7 +229,9 @@ public with sharing class HOT_MessageHelper {
         m.CRM_Message_Text__c = messageText;
         m.CRM_Thread__c = threadId;
         m.CRM_From_Contact__c = fromContactId;
-        m.CRM_Read__c = true;
+
+        
+        m.CRM_Read__c = false;
         m.CRM_Read_Datetime__c = DateTime.now();
 
         Thread__c t = [SELECT Id, CRM_isActive__c FROM Thread__c WHERE Id = :threadId LIMIT 1][0];
@@ -222,8 +242,20 @@ public with sharing class HOT_MessageHelper {
         try {
             insert m;
             return true;
+        
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
+    }
+    @AuraEnabled
+    public static void setLastMessageFrom(String threadId, String fromContactId) {
+        Thread__c t = [SELECT Id, HOT_Last_message_from__c FROM Thread__c WHERE Id = :threadId];
+        if(fromContactId=='tolk'){
+            t.HOT_Last_message_from__c=null;
+        }
+        else{
+            t.HOT_Last_message_from__c=fromContactId;
+        }
+        update t;
     }
 }

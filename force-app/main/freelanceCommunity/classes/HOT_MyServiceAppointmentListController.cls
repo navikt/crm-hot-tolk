@@ -88,4 +88,22 @@ public without sharing class HOT_MyServiceAppointmentListController {
         ];
         return serviceAppointments;
     }
+    @AuraEnabled(cacheable=true)
+    public static String getThreadFreelanceId(String serviceAppointmentId) {
+         String Id='';
+        ServiceAppointment serviceAppointment=[SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        try{
+
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId LIMIT 1];
+             if (thread.Id != null) {
+               Id=thread.Id;
+               return Id;
+             }
+             
+            return Id;
+        }catch(Exception E){
+
+        }
+        return Id;
+    }
 }

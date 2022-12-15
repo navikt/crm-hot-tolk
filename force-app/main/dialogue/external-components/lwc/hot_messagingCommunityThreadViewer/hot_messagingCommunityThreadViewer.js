@@ -11,6 +11,8 @@ import { getParametersFromURL } from 'c/hot_URIDecoder';
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import getRequestId from '@salesforce/apex/HOT_MessageHelper.getRequestId';
+import isUserOwnerOfLastMessage from '@salesforce/apex/HOT_MessageHelper.isUserOwnerOfLastMessage';
+import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 
 const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD]; //Extract the name of the thread record
 
@@ -36,7 +38,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
 
     connectedCallback() {
         this.getParams();
-        markAsRead({ threadId: this.recordId });
         getContactId({})
             .then((contactId) => {
                 this.userContactId = contactId;
@@ -45,6 +46,14 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             .catch((error) => {
                 //Apex error
             });
+        isUserOwnerOfLastMessage({ threadId: this.recordId }).then((result) => {
+            if (result != true) {
+                markAsRead({ threadId: this.recordId });
+                console.log('Du har ikke sent den siste meldingen');
+            } else {
+                console.log('Du har sent den siste meldingen');
+            }
+        });
     }
 
     @track breadcrumbs = [
@@ -147,6 +156,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         createmsg({ threadId: this.recordId, messageText: this.msgVal, fromContactId: this.userContactId })
             .then((result) => {
                 if (result === true) {
+                    setLastMessageFrom({ threadId: this.recordId, fromContactId: this.userContactId });
+                    console.log('hahaha');
                     this.handlesuccess();
                 } else {
                     this.handleMessageFailed();
@@ -222,6 +233,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 level: this.navigationLevel
             }
         });
+        console.log('Navigation id: ' + this.navigationId);
+        console.log('Navigation level: ' + this.navigationId);
     }
 
     navigationId = '';
