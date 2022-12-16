@@ -90,6 +90,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         return this.helptextContent !== '' && this.helptextContent !== undefined ? true : false;
     }
 
+    //er noe feil med denne metoden under.
     @wire(getmessages, { threadId: '$recordId' }) //Calls apex and extracts messages related to this record
     wiremessages(result) {
         this._mySendForSplitting = result;
