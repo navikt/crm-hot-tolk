@@ -9,6 +9,10 @@ public with sharing class HOT_MessagesNotification {
             WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
 
+        //AccountId = tolkebruker
+        //OwnerId = den som startet meldingen
+        //LastMessage from (Thread) = den som sendte siste melding
+
         List<Id> ownerIds=new List<Id>();
         for(Thread__c thread : threads){
                 ownerIds.add(thread.OwnerId);

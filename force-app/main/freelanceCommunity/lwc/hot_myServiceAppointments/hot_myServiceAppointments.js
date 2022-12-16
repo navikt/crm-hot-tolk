@@ -236,10 +236,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         getThreadFreelanceId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
             if (result != '') {
                 this.freelanceThreadId = result;
-                console.log('Thread id: ' + this.freelanceThreadId);
                 this.navigateToThread(this.freelanceThreadId);
             } else {
-                console.log('fail');
                 createThread({ recordId: this.serviceAppointment.Id, accountId: this.serviceAppointment.accountId })
                     .then((result) => {
                         this.navigateToThread(result.Id);
@@ -253,7 +251,6 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                     });
             }
         });
-        console.log('knapp funker');
     }
     handleStatusChange(event) {
         console.log('handleStatusChange', event.detail);

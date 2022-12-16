@@ -63,7 +63,6 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
     wiredThreads(result) {
         this.wiredThreadsResult = result;
         if (result.data) {
-            console.log(result.data);
             getContactId({})
                 .then((contactId) => {
                     this.userContactId = contactId;
