@@ -107,4 +107,45 @@ private class HOT_RequestListControllerTest {
         Boolean hasFile = file.size() > 0;
         System.assertEquals(true, hasFile, 'File was not uploaded');
     }
+     @isTest
+    private static void updateRelatedWorkOrdersCancel() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        List<WorkOrder> workOrders = new List<WorkOrder>();
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.StartDate = workOrder.StartDate.addDays(-10);
+        workOrder.EndDate = workOrder.EndDate.addDays(-10);
+        workOrders.add(workOrder);
+
+        WorkOrder workOrder1 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder1.StartDate = workOrder1.StartDate.addDays(1);
+        workOrder1.EndDate = workOrder1.EndDate.addDays(1);
+        workOrders.add(workOrder1);
+
+        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder2.StartDate = workOrder2.StartDate.addDays(2);
+        workOrder2.EndDate = workOrder2.EndDate.addDays(2);
+        workOrders.add(workOrder2);
+
+        WorkOrder workOrder3 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder3.StartDate = workOrder3.StartDate.addDays(3);
+        workOrder3.EndDate = workOrder3.EndDate.addDays(3);
+        workOrders.add(workOrder3);
+
+        Test.startTest();
+        insert workOrders;
+    
+        HOT_RequestListController.updateRelatedWorkOrders(request.Id);
+
+        List<WorkOrder> workOrdersCancelled=[Select Id, Status FROM WorkOrder WHERE Status='Canceled'];
+        
+        DateTime now=DateTime.now().addHours(3);
+        System.assertEquals(workOrdersCancelled.size(), 3, 'Ikke riktig avlyst');
+
+        Test.stopTest();
+    }
 }
