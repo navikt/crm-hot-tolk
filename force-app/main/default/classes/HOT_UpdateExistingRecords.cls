@@ -3,13 +3,17 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
         Datetime now = Datetime.now();
 
         return Database.getQueryLocator(
-            'SELECT Id, HOT_NotificationChannel__c FROM Person__c WHERE HOT_HasEntitlement__c =true'
+            'SELECT Id, AccountId, HOT_Request__c FROM WorkOrder WHERE HOT_Request__c =  \'a147U000000YlY8QAK\' OR HOT_Request__c =  \'a147U000000YfhsQAC\''
         );
     }
 
-    public void execute(Database.BatchableContext bc, List<Person__c> records) {
-        for (Person__c person : records) {
-            person.HOT_NotificationChannel__c='SMS';
+    public void execute(Database.BatchableContext bc, List<WorkOrder> records) {
+        for (WorkOrder wo : records) {
+            if (wo.HOT_Request__c = 'a147U000000YlY8QAK') {
+                wo.AccountId = '0012o00002p2f6YAAQ';
+            } else {
+                wo.AccountId = '0012o00002oZOguAAG';
+            }
         }
         update records;
     }
