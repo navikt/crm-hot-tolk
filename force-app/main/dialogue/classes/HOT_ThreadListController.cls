@@ -2,19 +2,7 @@ public with sharing class HOT_ThreadListController {
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getMyThreads() {
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        List<Thread__c> threads = [
-            SELECT Id, HOT_Subject__c, CRM_Number_of_unread_Messages__c, HOT_Last_message_from__c
-            FROM Thread__c
-            WHERE
-                CRM_Account__c = :user.AccountId
-                AND CRM_Account__c != NULL
-                AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK')
-                AND (CRM_Number_of_Messages__c > 0
-                OR CRM_Number_of_unread_Messages__c > 0)
-                AND HOT_IsDone__c=false
-        ];
-
-        List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource WHERE AccountId=:user.AccountId];
+         List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource WHERE AccountId=:user.AccountId];
         List<ServiceAppointment> serviceAppointments = [SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_ServiceResource__c IN :serviceResources];
 
         Map<Id, ServiceAppointment> saMap = new Map<Id, ServiceAppointment>(serviceAppointments);
@@ -22,10 +10,18 @@ public with sharing class HOT_ThreadListController {
             for (ServiceAppointment sa : saMap.values()) {
             workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);
         }
+        List<Thread__c> threads = [
+            SELECT Id, HOT_Subject__c, CRM_Number_of_unread_Messages__c, HOT_Last_message_from__c, CRM_Registered_Datetime_Formula__c
+            FROM Thread__c
+            WHERE
+                (CRM_Account__c = :user.AccountId OR CRM_Related_Object__c IN :workOrderIds)
+                AND CRM_Account__c != NULL
+                AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK')
+                AND (CRM_Number_of_Messages__c > 0
+                OR CRM_Number_of_unread_Messages__c > 0)
+                AND HOT_IsDone__c=false ORDER BY CRM_Number_of_unread_Messages__c DESC, CRM_Registered_Datetime_Formula__c DESC
+        ];
 
-        List<Thread__c> interpreterthreads = [SELECT Id, HOT_Subject__c, CRM_Number_of_unread_Messages__c, HOT_Last_message_from__c FROM Thread__c WHERE CRM_Related_Object__c IN :workOrderIds AND CRM_Type__c = 'HOT_BRUKER-TOLK' AND (CRM_Number_of_Messages__c > 0 OR CRM_Number_of_unread_Messages__c > 0) AND HOT_IsDone__c=false];
-
-        threads.addAll(interpreterthreads);
         return threads;
     }
 }
