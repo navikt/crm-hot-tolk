@@ -6,8 +6,8 @@
     <externalId>false</externalId>
     <label>Last message from</label>
     <referenceTo>Contact</referenceTo>
-    <relationshipLabel>Threads</relationshipLabel>
-    <relationshipName>Threads</relationshipName>
+    <relationshipLabel>LastMessage</relationshipLabel>
+    <relationshipName>LastMessage</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
