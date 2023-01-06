@@ -14,8 +14,6 @@ public with sharing class HOT_ThreadListController {
                 AND HOT_IsDone__c=false
         ];
 
-        //Gå gjennom alle trådene med unread messages. Om den siste meldingen som er sendt er eid av denne brukeren så sett unread messages til null
-
         List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource WHERE AccountId=:user.AccountId];
         List<ServiceAppointment> serviceAppointments = [SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_ServiceResource__c IN :serviceResources];
 
