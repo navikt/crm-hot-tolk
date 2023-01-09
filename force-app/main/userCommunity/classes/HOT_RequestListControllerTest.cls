@@ -107,7 +107,7 @@ private class HOT_RequestListControllerTest {
         Boolean hasFile = file.size() > 0;
         System.assertEquals(true, hasFile, 'File was not uploaded');
     }
-     @isTest
+    @isTest
     private static void updateRelatedWorkOrdersCancel() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -136,16 +136,13 @@ private class HOT_RequestListControllerTest {
         workOrder3.EndDate = workOrder3.EndDate.addDays(3);
         workOrders.add(workOrder3);
 
-        Test.startTest();
         insert workOrders;
-    
+
+        Test.startTest();
         HOT_RequestListController.updateRelatedWorkOrders(request.Id);
-
-        List<WorkOrder> workOrdersCancelled=[Select Id, Status FROM WorkOrder WHERE Status='Canceled'];
-        
-        DateTime now=DateTime.now().addHours(3);
-        System.assertEquals(workOrdersCancelled.size(), 3, 'Ikke riktig avlyst');
-
+        List<WorkOrder> workOrdersCancelled = [SELECT Id, Status FROM WorkOrder WHERE Status = 'Canceled'];
         Test.stopTest();
+
+        System.assertEquals(workOrdersCancelled.size(), 3, 'Ikke riktig avlyst');
     }
 }

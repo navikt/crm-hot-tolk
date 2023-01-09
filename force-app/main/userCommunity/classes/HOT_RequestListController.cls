@@ -205,21 +205,21 @@ public without sharing class HOT_RequestListController {
         return times;
     }
     @AuraEnabled
-    public static void updateRelatedWorkOrders(String requestId){
-          List<WorkOrder> workOrders = [
+    public static void updateRelatedWorkOrders(String requestId) {
+        List<WorkOrder> workOrders = [
             SELECT Id, Status, StartDate, EndDate
             FROM WorkOrder
             WHERE HOT_Request__r.Id = :requestId
         ];
         for (WorkOrder workOrder : workOrders) {
-            if(workOrder.StartDate > Datetime.now()){
+            if (workOrder.StartDate > Datetime.now()) {
                 workOrder.Status = 'Canceled';
             }
         }
         update workOrders;
-        HOT_Request__c request=[Select IsNotifyDispatcher__c, Status__c FROM HOT_Request__c WHERE Id=:requestId];
-       // request.Status__c='Avlyst';
-        request.IsNotifyDispatcher__c=true;
+
+        HOT_Request__c request = [SELECT IsNotifyDispatcher__c, Status__c FROM HOT_Request__c WHERE Id = :requestId];
+        request.IsNotifyDispatcher__c = true;
         update request;
     }
 }
