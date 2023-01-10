@@ -206,22 +206,19 @@ public without sharing class HOT_RequestListController {
     }
     @AuraEnabled
     public static void updateRelatedWorkOrders(String requestId) {
+        List<WorkOrder> workOrdersToUpdate = new List<WorkOrder>();
         List<WorkOrder> workOrders = [
             SELECT Id, Status, StartDate, EndDate
             FROM WorkOrder
             WHERE HOT_Request__r.Id = :requestId
         ];
         for (WorkOrder workOrder : workOrders) {
-            if (
-                !(workOrder.StartDate < Datetime.now()) &&
-                workOrder.Status != 'Dispatched' &&
-                workOrder.Status != 'Completed' &&
-                workOrder.Status != 'Cannot Complete'
-            ) {
+            if (workOrder.StartDate > Datetime.now()) {
                 workOrder.Status = 'Canceled';
+                workOrdersToUpdate.add(workOrder);
             }
         }
-        update workOrders;
+        update workOrdersToUpdate;
 
         HOT_Request__c request = [SELECT IsNotifyDispatcher__c, Status__c FROM HOT_Request__c WHERE Id = :requestId];
         request.IsNotifyDispatcher__c = true;
