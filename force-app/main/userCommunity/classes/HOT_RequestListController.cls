@@ -213,10 +213,10 @@ public without sharing class HOT_RequestListController {
         ];
         for (WorkOrder workOrder : workOrders) {
             if (
-                workOrder.StartDate > Datetime.now() &&
+                !(workOrder.StartDate < Datetime.now()) &&
                 workOrder.Status != 'Dispatched' &&
                 workOrder.Status != 'Completed' &&
-                workOrder.Status != 'Cannot complete'
+                workOrder.Status != 'Cannot Complete'
             ) {
                 workOrder.Status = 'Canceled';
             }
