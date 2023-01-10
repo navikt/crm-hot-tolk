@@ -1,4 +1,4 @@
-import { LightningElement, api, wire } from 'lwc';
+import { LightningElement, api, wire, track } from 'lwc';
 import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreadsCollection';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
@@ -19,6 +19,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     setCardTitle;
     hasError = false;
     @api englishTextTemplate;
+    @track errorMessage;
 
     @api textTemplate; //Support for conditional text template
 
@@ -28,8 +29,8 @@ export default class CrmMessagingMessageComponent extends LightningElement {
 
         if (result.error) {
             this.error = result.error;
+            this.errorMessage = this.error.body.message;
             this.hasError = true;
-            console.log(JSON.stringify(result.error, null, 2));
         } else if (result.data) {
             this.threads = result.data;
         }

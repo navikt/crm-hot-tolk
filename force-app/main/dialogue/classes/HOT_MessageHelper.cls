@@ -31,6 +31,18 @@ public with sharing class HOT_MessageHelper {
 
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadsCollection(Id recordId, Boolean singleThread) {
+        //Sjekker om bruker har tillatelse til å se samtalen
+        if (recordId.getSobjectType() == WorkOrder.sObjectType) {
+            User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+            ServiceResource serviceResource =[Select Id, AccountId FROM ServiceResource WHERE AccountId=:currentUser.AccountId];
+            if(serviceResource!=null){
+                List<ServiceAppointment> serviceAppointments=[Select HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_ServiceResource__c=:serviceResource.Id AND HOT_WorkOrderLineItem__r.WorkOrderId=:recordId];
+                if(serviceAppointments.size()==0){
+                    throw new AuraHandledException('Du har ikke tilgang til denne samtalen');
+                }
+            }
+        }
+        // ---//
         if (singleThread == false) {
             return getThreads(recordId);
         } else {
