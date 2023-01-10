@@ -1,6 +1,7 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
 import getThreadInterpreterId from '@salesforce/apex/HOT_WorkOrderListController.getThreadInterpreterId';
+import updateRelatedWorkOrders from '@salesforce/apex/HOT_RequestListController.updateRelatedWorkOrders';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
@@ -432,31 +433,44 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.template.querySelector('.loader').classList.remove('hidden');
         const fields = {};
         if (this.urlStateParameters.level === 'R') {
-            fields[REQUEST_ID.fieldApiName] = this.request.Id;
-            fields[STATUS.fieldApiName] = 'Avlyst';
-            fields[NOTIFY_DISPATCHER.fieldApiName] = true;
+            updateRelatedWorkOrders({ requestId: this.request.Id })
+                .then((result) => {
+                    refreshApex(this.wiredgetWorkOrdersResult);
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Bestillingen er avlyst.';
+                    this.showModal();
+                })
+                .catch((error) => {
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
+                    this.showModal();
+                });
         } else {
             fields[WORKORDER_ID.fieldApiName] = this.workOrder.Id;
             fields[WORKORDER_STATUS.fieldApiName] = 'Canceled';
             fields[WORKORDER_NOTIFY_DISPATCHER.fieldApiName] = true;
+            const recordInput = { fields };
+            updateRecord(recordInput)
+                .then(() => {
+                    refreshApex(this.wiredgetWorkOrdersResult);
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Bestillingen er avlyst.';
+                    this.showModal();
+                })
+                .catch(() => {
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
+                    this.showModal();
+                });
         }
-        const recordInput = { fields };
-        updateRecord(recordInput)
-            .then(() => {
-                refreshApex(this.wiredgetWorkOrdersResult);
-                this.noCancelButton = true;
-                this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-                this.template.querySelector('.loader').classList.add('hidden');
-                this.modalContent = 'Bestillingen er avlyst.';
-                this.showModal();
-            })
-            .catch(() => {
-                this.noCancelButton = true;
-                this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-                this.template.querySelector('.loader').classList.add('hidden');
-                this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
-                this.showModal();
-            });
     }
 
     showUploadFilesComponent = false;
