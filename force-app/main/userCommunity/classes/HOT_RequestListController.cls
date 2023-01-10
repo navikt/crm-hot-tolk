@@ -212,7 +212,12 @@ public without sharing class HOT_RequestListController {
             WHERE HOT_Request__r.Id = :requestId
         ];
         for (WorkOrder workOrder : workOrders) {
-            if (workOrder.StartDate > Datetime.now()) {
+            if (
+                !(workOrder.StartDate < Datetime.now()) &&
+                workOrder.Status != 'Dispatched' &&
+                workOrder.Status != 'Completed' &&
+                workOrder.Status != 'Cannot Complete'
+            ) {
                 workOrder.Status = 'Canceled';
             }
         }
