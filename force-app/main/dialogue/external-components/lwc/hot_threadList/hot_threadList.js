@@ -109,7 +109,6 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     this.threads = [];
                     this.unmappedInterpreterThreads = [];
                     result.data.forEach((element) => {
-                        console.log(element.Id);
                         if (element.CRM_Type__c == 'HOT_BRUKER-TOLK') {
                             this.unmappedInterpreterThreads.push(element);
                         }
@@ -131,7 +130,6 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                                 ? false
                                 : true
                     }));
-                    // console.log(result.data);
                     this.noThreads = this.threads.length === 0;
                     this.noInterpreterThreads = this.interpreterThreads.length === 0;
                 })

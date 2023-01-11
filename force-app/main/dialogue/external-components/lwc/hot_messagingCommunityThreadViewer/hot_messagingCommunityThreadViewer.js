@@ -106,7 +106,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
     @wire(getRequestId, { recordId: '$recordId' })
     wiredRequest({ error, data }) {
-        console.log(data);
         this.requestId = data;
     }
 
@@ -158,7 +157,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             .then((result) => {
                 if (result === true) {
                     setLastMessageFrom({ threadId: this.recordId, fromContactId: this.userContactId });
-                    console.log('hahaha');
                     this.handlesuccess();
                 } else {
                     this.handleMessageFailed();
@@ -234,8 +232,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 level: this.navigationLevel
             }
         });
-        console.log('Navigation id: ' + this.navigationId);
-        console.log('Navigation level: ' + this.navigationId);
     }
 
     navigationId = '';
