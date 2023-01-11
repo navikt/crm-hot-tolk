@@ -11,7 +11,7 @@ public with sharing class HOT_ThreadListController {
             workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);
         }
         List<Thread__c> threads = [
-            SELECT Id, HOT_Subject__c, CRM_Number_of_unread_Messages__c, HOT_Last_message_from__c, CRM_Registered_Datetime_Formula__c
+            SELECT Id, HOT_Subject__c, CRM_Type__c, CRM_Number_of_unread_Messages__c, HOT_Last_message_from__c, CRM_Registered_Datetime_Formula__c
             FROM Thread__c
             WHERE
                 (CRM_Account__c = :user.AccountId OR CRM_Related_Object__c IN :workOrderIds)

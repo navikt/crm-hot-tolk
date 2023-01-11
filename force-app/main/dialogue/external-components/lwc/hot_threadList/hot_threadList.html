@@ -20,17 +20,43 @@
                 </div>
                 <div class="empty"></div>
             </div>
-            <div class="record-details-container" if:false={noThreads}>
-                <c-table
-                    records={threads}
-                    columns={columns}
-                    onrowclick={openThread}
-                    icon-by-value={iconByValue}
-                ></c-table>
+            <div class="tabset desktop-only">
+                <template for:each={tabs} for:item="tab">
+                    <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
+                        {tab.label}
+                    </button>
+                </template>
             </div>
-            <div if:true={noThreads} style="text-align: center">
-                <br />
-                Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+            <div class="tabset mobile-only">
+                <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
+            </div>
+            <div if:true={showMythreads}>
+                <div class="record-details-container" if:false={noThreads}>
+                    <c-table
+                        records={threads}
+                        columns={columns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-table>
+                </div>
+                <div if:true={noThreads} style="text-align: center">
+                    <br />
+                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                </div>
+            </div>
+            <div if:true={showInterpreterthreads}>
+                <div class="record-details-container" if:false={noInterpreterThreads}>
+                    <c-table
+                        records={interpreterThreads}
+                        columns={columns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-table>
+                </div>
+                <div if:true={noInterpreterThreads} style="text-align: center">
+                    <br />
+                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                </div>
             </div>
         </div>
     </main>
