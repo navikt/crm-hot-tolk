@@ -113,7 +113,7 @@ public with sharing class HOT_MessageHelper {
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
             thread.CRM_Account__c = accountId;
-            thread.HOT_Subject__c='Samtale tolk: '+workOrder.Subject;
+            thread.HOT_Subject__c='Samtale med tolk: '+workOrder.Subject;
             thread.HOT_WorkOrder__c=recordId;
             HOT_DatabaseOperations.insertRecords(thread);
         }
@@ -122,7 +122,7 @@ public with sharing class HOT_MessageHelper {
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
             thread.CRM_Account__c = accountId;
-            thread.HOT_Subject__c= request.Subject__c;
+            thread.HOT_Subject__c= 'Samtale med formidler: '+request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='ServiceAppointment'){
@@ -130,7 +130,7 @@ public with sharing class HOT_MessageHelper {
             thread.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
             thread.CRM_Account__c = serviceAppointment.HOT_Account__c; //?
-            thread.HOT_Subject__c= 'Samtale frilanstolk: '+serviceAppointment.Subject;
+            thread.HOT_Subject__c= 'Samtale med tolk: '+serviceAppointment.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         //Finne ut om det er request eller workorder object
