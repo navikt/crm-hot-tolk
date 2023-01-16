@@ -173,7 +173,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
 
     private static void updateChildRecords(List<HOT_Request__c> changedRequests, String newStatus) {
         List<WorkOrder> workOrders = [
-            SELECT Status
+            SELECT Status, StartDate
             FROM WorkOrder
             WHERE
                 HOT_Request__c IN :changedRequests
@@ -184,7 +184,9 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         ];
 
         for (WorkOrder workOrder : workOrders) {
-            workOrder.Status = newStatus;
+            if(workOrder.StartDate > Datetime.now()){
+                workOrder.Status = newStatus;
+            }
         }
         if (workOrders.size() > 0) {
             update workOrders;
