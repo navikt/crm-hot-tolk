@@ -177,6 +177,10 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                     workOrderLineItem.Status = 'Partially Complete';
                     continue;
                 }
+                if (numberOfServiceAppointments > 1 && numberOfCanceled + numberOfCannotComplete == numberOfServiceAppointments) {
+                    workOrderLineItem.Status = 'Cannot Complete';
+                    continue;
+                }
             }
         }
     }
