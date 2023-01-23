@@ -29,21 +29,7 @@ export default class Hot_warningBannerRequest extends LightningElement {
     }
 
     get securityMeasures() {
-        let secMeasures = JSON.parse(getFieldValue(this.record.data, securityMeasures));
-        let securityMeasuresFormatted = [];
-        secMeasures.forEach((sm) => {
-            console.log(sm.tiltaksType);
-            securityMeasuresFormatted.push(
-                sm.beskrivelse +
-                    ' (' +
-                    sm.tiltaksType +
-                    '), gyldig: ' +
-                    formatDate(sm.gyldigFraOgMed) +
-                    ' - ' +
-                    formatDate(sm.gyldigTilOgMed)
-            );
-        });
-        return securityMeasuresFormatted;
+        return getFieldValue(this.record.data, securityMeasures);
     }
 
     get hasSecurityMeasures() {
