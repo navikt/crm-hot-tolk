@@ -56,6 +56,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     @track filters = [];
     connectedCallback() {
+        refreshApex(this.wiredMyServiceAppointmentsResult);
         this.setColumns();
         this.breadcrumbs = [
             {
