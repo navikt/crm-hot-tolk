@@ -14,12 +14,7 @@
                     variant="inverse"
                 >
                 </lightning-icon>
-                <h2>Det er følgende sikkerhetstiltak på brukeren:</h2>
-            </div>
-            <div style="display: block">
-                <template for:each={securityMeasures} for:item="sm">
-                    <p key={sm}>{sm}</p>
-                </template>
+                <h2>Det er følgende sikkerhetstiltak på brukeren: {securityMeasures}</h2>
             </div>
         </div>
     </template>

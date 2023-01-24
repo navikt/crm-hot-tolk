@@ -32,6 +32,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     connectedCallback() {
+        refreshApex(this.wiredgetWorkOrdersResult);
         this.filters = defaultFilters();
         this.breadcrumbs = [
             {
