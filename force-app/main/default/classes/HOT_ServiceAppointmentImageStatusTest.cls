@@ -1,7 +1,6 @@
 @isTest
 public with sharing class HOT_ServiceAppointmentImageStatusTest {
-
-     @isTest
+    @isTest
     public static void todaysServiceAppointmentsAreSupposedtoBeChanged() {
         for (Integer i = 0; i < 3; i++) {
             WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
@@ -25,13 +24,12 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
             request.Type__c = 'ImageInterpreter';
         }
         update requestlist;
-        
+
         List<ServiceAppointment> salist = [SELECT Id, Status FROM ServiceAppointment];
         for (ServiceAppointment sa : salist) {
             sa.Status = 'Dispatched';
             sa.SchedStartTime = Datetime.now().AddHours(-1);
             sa.SchedEndTime = sa.SchedStartTime;
-            
         }
         update saList;
         Test.startTest();
@@ -42,12 +40,9 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
 
         List<ServiceAppointment> ls = [SELECT Id, Status FROM ServiceAppointment];
 
-        System.assertEquals('Completed', ls[0].Status, 'Alle skulle ha blitt omgort til dekket');
-        System.assertEquals('Completed', ls[1].Status, 'Alle skulle ha blitt omgort til dekket');
-        System.assertEquals('Completed', ls[2].Status, 'Alle skulle ha blitt omgort til dekket');
-        System.assertEquals('Completed', ls[3].Status, 'Alle skulle ha blitt omgort til dekket');
-        System.assertEquals('Completed', ls[4].Status, 'Alle skulle ha blitt omgort til dekket');
-        System.assertEquals('Completed', ls[5].Status, 'Alle skulle ha blitt omgort til dekket');
+        for (ServiceAppointment sa : ls) {
+            System.assertEquals('Completed', sa.Status, 'Status ikke omgjort til "Dekket"');
+        }
     }
     @isTest
     public static void futureServiceAppointmentsAreNotSupposedToBeChanged() {
@@ -90,16 +85,13 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
 
         List<ServiceAppointment> ls = [SELECT Id, Status FROM ServiceAppointment];
 
-        System.assertEquals('Dispatched', ls[0].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Dispatched', ls[1].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Dispatched', ls[2].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Dispatched', ls[3].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Dispatched', ls[4].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Dispatched', ls[5].Status, 'Skulle ikke blitt endret');
+        for (ServiceAppointment sa : ls) {
+            System.assertEquals('Dispatched', sa.Status, 'Status ikke omgjort til "Tildelt"');
+        }
     }
-     @isTest
+    @isTest
     public static void wrongStatusButOldIsNotSupposedToChange() {
-          for (Integer i = 0; i < 3; i++) {
+        for (Integer i = 0; i < 3; i++) {
             WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
             workType.HOT_DeveloperName__c = 'BTV';
             insert workType;
@@ -137,14 +129,11 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
 
         List<ServiceAppointment> ls = [SELECT Id, Status FROM ServiceAppointment];
 
-        System.assertEquals('Scheduled', ls[0].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Scheduled', ls[1].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Scheduled', ls[2].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Scheduled', ls[3].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Scheduled', ls[4].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Scheduled', ls[5].Status, 'Skulle ikke blitt endret');
+        for (ServiceAppointment sa : ls) {
+            System.assertEquals('Scheduled', sa.Status, 'Status ikke omgjort til "Reservert"');
+        }
     }
-     @isTest
+    @isTest
     static void schedulableTest() {
         String cron_exp = '0 0 0 3 9 ? 2024';
         Test.startTest();
@@ -157,6 +146,3 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
         System.assert(jobId != null);
     }
 }
-    
-
-
