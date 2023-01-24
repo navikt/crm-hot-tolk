@@ -34,13 +34,11 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
 
         List<ServiceAppointment> ls = [SELECT Id, Status FROM ServiceAppointment];
 
-        System.assertEquals('Cannot Complete', ls[0].Status, 'Alle skulle ha blitt omgort til udekket');
-        System.assertEquals('Cannot Complete', ls[1].Status, 'Alle skulle ha blitt omgort til udekket');
-        System.assertEquals('Cannot Complete', ls[2].Status, 'Alle skulle ha blitt omgort til udekket');
-        System.assertEquals('Cannot Complete', ls[3].Status, 'Alle skulle ha blitt omgort til udekket');
-        System.assertEquals('Cannot Complete', ls[4].Status, 'Alle skulle ha blitt omgort til udekket');
-        System.assertEquals('Cannot Complete', ls[5].Status, 'Alle skulle ha blitt omgort til udekket');
+        for (ServiceAppointment sa : ls) {
+            System.assertEquals('Cannot Complete', sa.Status, 'Status ikke omgjort til "Udekket"');
+        }
     }
+
     @isTest
     public static void futureServiceAppointmentsAreNotSupposedToBeChanged() {
         for (Integer i = 0; i < 3; i++) {
@@ -65,7 +63,7 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
         for (ServiceAppointment sa : salist) {
             sa.Status = 'None';
             sa.SchedStartTime = Datetime.now().addDays(3).addHours(1);
-            sa.SchedEndTime = sa.SchedStartTime.addHours(2);  
+            sa.SchedEndTime = sa.SchedStartTime.addHours(2);
         }
         update saList;
 
@@ -73,18 +71,14 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
         database.executebatch(instance);
         Test.stopTest();
 
-       
         List<ServiceAppointment> ls = [SELECT Id, Status FROM ServiceAppointment];
 
-
-        System.assertEquals('None', ls[0].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('None', ls[1].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('None', ls[2].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('None', ls[3].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('None', ls[4].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('None', ls[5].Status, 'Skulle ikke blitt endret');
+        for (ServiceAppointment sa : ls) {
+            System.assertEquals('None', sa.Status, 'Status skulle ikke blitt omgjort"');
+        }
     }
-     @isTest
+
+    @isTest
     public static void oldServiceAppointmentsWithWrongStatusAreNotSupposedToBeChanged() {
         for (Integer i = 0; i < 3; i++) {
             WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -116,21 +110,17 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
         database.executebatch(instance);
         Test.stopTest();
 
-       
         List<ServiceAppointment> ls = [SELECT Id, Status FROM ServiceAppointment];
 
-
-        System.assertEquals('Canceled', ls[0].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Canceled', ls[1].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Canceled', ls[2].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Canceled', ls[3].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Canceled', ls[4].Status, 'Skulle ikke blitt endret');
-        System.assertEquals('Canceled', ls[5].Status, 'Skulle ikke blitt endret');
+        for (ServiceAppointment sa : ls) {
+            System.assertEquals('Canceled', sa.Status, 'Status skulle ikke blitt "Avlyst"');
+        }
     }
+
     @isTest
     static void schedulableTest() {
         String cron_exp = '0 0 0 3 9 ? 2024';
-        
+
         Test.startTest();
         String jobId = System.schedule(
             'HOT_ServiceAppointmentStatusUpdateBatch',
