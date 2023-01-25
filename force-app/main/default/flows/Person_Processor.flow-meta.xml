@@ -298,7 +298,7 @@
         <object>Account</object>
     </recordUpdates>
     <startElementReference>isChangedDecision2_myRule_1_INT_LastUpdatedFromKRR_c</startElementReference>
-    <status>Draft</status>
+    <status>Obsolete</status>
     <variables>
         <name>myVariable_current</name>
         <dataType>SObject</dataType>
