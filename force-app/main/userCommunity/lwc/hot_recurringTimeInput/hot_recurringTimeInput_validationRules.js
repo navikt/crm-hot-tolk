@@ -3,6 +3,7 @@ let nowDate = new Date();
 export function requireInput(input, label) {
     return input === '' || input === undefined || input === null ? label + ' må fylles ut.' : '';
 }
+
 export function dateInPast(date) {
     date = new Date(date);
     let today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
