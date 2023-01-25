@@ -10,7 +10,7 @@ export function dateInPast(date) {
     return date.getTime() < today.getTime() ? 'Du kan ikke bestille tid i fortiden' : '';
 }
 
-export function requireDifferentTimes(startDate, endDate) {
+export function endAfterStart(startDate, endDate) {
     startDate = new Date(startDate);
     endDate = new Date(endDate);
     return endDate.getTime() === startDate.getTime() ? 'Sluttid må være etter starttid.' : '';
