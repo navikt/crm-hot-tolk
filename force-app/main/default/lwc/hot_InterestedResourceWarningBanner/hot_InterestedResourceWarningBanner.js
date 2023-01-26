@@ -15,9 +15,6 @@ export default class Hot_InterestedResourceWarningBanner extends LightningElemen
             for (let record of data) {
                 let startTimeFormatted = new Date(record.SchedStartTime);
                 let endTimeFormatted = new Date(record.SchedEndTime);
-                console.log(startTimeFormatted);
-                console.log(endTimeFormatted);
-                console.log(startTimeFormatted.getMonth());
                 record.Link = '/lightning/r/' + record.Id + '/view';
                 record.oppdragsInfo =
                     startTimeFormatted.getDate() +
