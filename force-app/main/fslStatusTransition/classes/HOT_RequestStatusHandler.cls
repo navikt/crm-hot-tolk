@@ -212,7 +212,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
             for (Id saId : serviceAppointmentMap.keySet()) {
                 ServiceAppointment sa = serviceAppointmentMap.get(saId);
                 if(sa.HOT_Request__c == request.Id) {
-                    if(sa.Status=='Released to Freelance'){
+                    if(sa.Status=='Released to Freelance' || sa.Status=='Cannot Complete'){
                         numberOfReleasedToFreelance++;
                     }
                     numberOfServiceAppointments++;
@@ -223,7 +223,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
             for (Id woId : workOrderMap.keySet()) {
                 WorkOrder wo = workOrderMap.get(woId);
                 if(wo.HOT_Request__c == request.Id) {
-                    if(wo.Status=='New'){
+                    if(wo.Status=='New' || wo.Status=='Cannot Complete'){
                         numberOfOpenWorkOrders++;
                     }
                     numberOfWorkOrders++;
