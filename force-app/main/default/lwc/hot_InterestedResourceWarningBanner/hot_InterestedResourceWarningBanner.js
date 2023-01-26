@@ -15,11 +15,14 @@ export default class Hot_InterestedResourceWarningBanner extends LightningElemen
             for (let record of data) {
                 let startTimeFormatted = new Date(record.SchedStartTime);
                 let endTimeFormatted = new Date(record.SchedEndTime);
+                console.log(startTimeFormatted);
+                console.log(endTimeFormatted);
+                console.log(startTimeFormatted.getMonth());
                 record.Link = '/lightning/r/' + record.Id + '/view';
                 record.oppdragsInfo =
                     startTimeFormatted.getDate() +
                     '.' +
-                    startTimeFormatted.getMonth() +
+                    (startTimeFormatted.getMonth() + 1) +
                     '.' +
                     startTimeFormatted.getFullYear() +
                     ' ' +
@@ -29,7 +32,7 @@ export default class Hot_InterestedResourceWarningBanner extends LightningElemen
                     ' - ' +
                     endTimeFormatted.getDate() +
                     '.' +
-                    endTimeFormatted.getMonth() +
+                    (endTimeFormatted.getMonth() + 1) +
                     '.' +
                     endTimeFormatted.getFullYear() +
                     ' ' +
