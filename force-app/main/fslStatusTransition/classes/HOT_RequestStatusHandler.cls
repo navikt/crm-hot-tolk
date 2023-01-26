@@ -203,6 +203,9 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointments = [SELECT Id, Status, HOT_Request__c FROM ServiceAppointment WHERE HOT_Request__c IN :changedRequests];
         Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(serviceAppointments);
 
+        List<WorkOrder> workOrders = [SELECT Id, Status, HOT_Request__c FROM WorkOrder WHERE HOT_Request__c IN :changedRequests];
+        Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(workOrders);
+
         for(HOT_Request__c request : changedRequests){
         Integer numberOfReleasedToFreelance = 0;
         Integer numberOfServiceAppointments = 0;
@@ -215,7 +218,19 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                     numberOfServiceAppointments++;
                 }
             }
-            if(numberOfServiceAppointments == numberOfReleasedToFreelance){
+        Integer numberOfOpenWorkOrders = 0;
+        Integer numberOfWorkOrders = 0;
+            for (Id woId : workOrderMap.keySet()) {
+                WorkOrder wo = workOrderMap.get(woId);
+                if(wo.HOT_Request__c == request.Id) {
+                    if(wo.Status=='New'){
+                        numberOfOpenWorkOrders++;
+                    }
+                    numberOfWorkOrders++;
+                }
+            }
+
+            if(numberOfServiceAppointments == numberOfReleasedToFreelance || numberOfOpenWorkOrders == numberOfWorkOrders){
                 for (Id saId : serviceAppointmentMap.keySet()) {
                     ServiceAppointment sa = serviceAppointmentMap.get(saId);
                     if(sa.HOT_Request__c == request.Id) {
@@ -224,7 +239,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                 }
                 update serviceAppointmentMap.values();
             } else {
-                request.addError('Alle oppdrag må være Frigitt til frilans for at du skal kunne sette hele forespørselen til Udekket.');
+                request.addError('Alle oppdrag må være Frigitt til frilans, eller alle arbeidsordre må være Åpen for at du skal kunne sette hele forespørselen til Udekket.');
             }
         }
     }
