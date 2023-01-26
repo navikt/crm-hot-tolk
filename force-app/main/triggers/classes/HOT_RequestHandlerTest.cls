@@ -408,4 +408,147 @@ private class HOT_RequestHandlerTest {
         System.assertNotEquals('Oslo', requester[0].MeetingPostalCity__c, 'Both adresses was changed to the same');
         System.assertNotEquals('0166', requester[0].MeetingPostalCode__c, 'Both adresses was changed to the same');
     }
+   @isTest
+    public static void shouldOnlyChangeStatusToCannotCompleteIfAllSAIsReleased() {
+     WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder1 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder1;
+        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder2;
+        WorkOrderLineItem workOrderLineItem1 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder1, workType);
+        insert workOrderLineItem1;
+        WorkOrderLineItem workOrderLineItem2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder2, workType);
+        insert workOrderLineItem2;
+        ServiceAppointment sa1 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem1);
+        sa1.HOT_Request__c = request.Id;
+        ServiceAppointment sa2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
+        sa2.HOT_Request__c = request.Id;
+        insert sa1;
+        insert sa2;
+        
+        sa1.Status = 'Released to Freelance';
+        sa2.Status = 'Released to Freelance';
+        update sa1;
+        update sa2;
+        update new List<WorkOrder>{ workOrder1, workOrder2 };
+
+        request.Status__c = 'Udekket';
+        update request;
+        request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+        System.assertEquals('Udekket', request.Status__c, 'Status on the request did not update to correct value');
+    }
+    @isTest
+    public static void statusIsNotSupposedToChangeBecauseSAIsNotReleasedToFreelance() {
+     WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder1 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder1;
+        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder2;
+        WorkOrderLineItem workOrderLineItem1 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder1, workType);
+        insert workOrderLineItem1;
+        WorkOrderLineItem workOrderLineItem2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder2, workType);
+        insert workOrderLineItem2;
+        ServiceAppointment sa1 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem1);
+        sa1.HOT_Request__c = request.Id;
+        ServiceAppointment sa2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
+        sa2.HOT_Request__c = request.Id;
+        insert sa1;
+        insert sa2;
+        request.Status__c = 'Godkjent';
+        update request;
+        sa1.Status = 'Dispatched';
+        sa2.Status = 'Released to Freelance';
+        update sa1;
+        update sa2;
+        update new List<WorkOrder>{ workOrder1, workOrder2 };
+
+        request.Status__c = 'Udekket';
+        try{
+            update request;
+        }
+        catch(Exception e){
+            Boolean expectedException =  e.getMessage().contains('Alle oppdrag må være Frigitt til frilans, eller alle arbeidsordre må være Åpen for at du skal kunne sette hele forespørselen til Udekket.') ? true : false;
+            System.AssertEquals(expectedException, true);
+} 
+        
+        
+    }
+     @isTest
+    public static void statusShouldChangeWhenAllWorkOrdersAreSetToNew() {
+     WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder1 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder1;
+        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder2;
+        WorkOrderLineItem workOrderLineItem1 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder1, workType);
+        insert workOrderLineItem1;
+        WorkOrderLineItem workOrderLineItem2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder2, workType);
+        insert workOrderLineItem2;
+        ServiceAppointment sa1 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem1);
+        sa1.HOT_Request__c = request.Id;
+        ServiceAppointment sa2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
+        sa2.HOT_Request__c = request.Id;
+        insert sa1;
+        insert sa2;
+        request.Status__c = 'Godkjent';
+        update request;
+        workOrder1.Status = 'New';
+        workOrder2.Status = 'New';
+        update workOrder1;
+        update workOrder2;
+
+        request.Status__c = 'Udekket';
+        update request;
+        request = [SELECT Status__c FROM HOT_Request__c WHERE Id = :request.Id];
+
+        System.assertEquals('Udekket', request.Status__c, 'Status on the request was supposed to be changed');
+    }
+      @isTest
+    public static void statusShouldNotChangeWhenAllWorkOrdersAreNotSetNew() {
+
+        //feil i den her
+     WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder1 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder1;
+        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder2;
+        WorkOrderLineItem workOrderLineItem1 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder1, workType);
+        insert workOrderLineItem1;
+        WorkOrderLineItem workOrderLineItem2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder2, workType);
+        insert workOrderLineItem2;
+        ServiceAppointment sa1 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem1);
+        sa1.HOT_Request__c = request.Id;
+        ServiceAppointment sa2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem2);
+        sa2.HOT_Request__c = request.Id;
+        insert sa1;
+        insert sa2;
+        request.Status__c = 'Godkjent';
+        update request;
+        workOrder1.Status = 'Scheduled';
+        workOrder2.Status = 'New';
+        update workOrder1;
+        update workOrder2;
+
+        request.Status__c = 'Udekket';
+         try{
+            update request;
+        }
+        catch(Exception e){
+            Boolean expectedException =  e.getMessage().contains('Alle oppdrag må være Frigitt til frilans, eller alle arbeidsordre må være Åpen for at du skal kunne sette hele forespørselen til Udekket.') ? true : false;
+            System.AssertEquals(expectedException, true);
+} 
+    }
 }
