@@ -70,6 +70,7 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
         return workOrder;
     }
 
+    @Future
     public static void setInterpreterOnWorkOrderFromServiceAppointment(Set<Id> serviceAppointmentIds) {
         Set<Id> workOrderIds = new Set<Id>();
         for (ServiceAppointment serviceAppointment : [
