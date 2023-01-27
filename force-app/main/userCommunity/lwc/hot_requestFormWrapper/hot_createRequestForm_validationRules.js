@@ -1,8 +1,8 @@
 import { require } from 'c/validationController';
 
 export let startDateValidations = [dateInPast, require];
-export let endDateValidations = [endAfterStart, require];
-export let endTimeValidations = [startBeforeEnd, require];
+export let endDateValidations = [startBeforeEnd, require];
+export let endTimeValidations = [endAfterStart, require];
 export let recurringTypeValidations = [require];
 export let recurringDaysValidations = [requireDaysBasedOnRecurringType];
 export let recurringEndDateValidations = [
