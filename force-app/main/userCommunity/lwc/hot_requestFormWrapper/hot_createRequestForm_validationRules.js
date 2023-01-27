@@ -23,7 +23,9 @@ function startBeforeEnd(endDate, args) {
 
 function endAfterStart(startDate, args) {
     let endDate = args[0];
-    return new Date(endDate).getTime() === new Date(startDate) ? 'Slutt tid kan ikke være samme som start tid.' : '';
+    return new Date(endDate).getTime() === new Date(startDate)
+        ? 'Slutt tid kan ikke være den samme som start tid.'
+        : '';
 }
 
 function requireDaysBasedOnRecurringType(days, ...args) {
