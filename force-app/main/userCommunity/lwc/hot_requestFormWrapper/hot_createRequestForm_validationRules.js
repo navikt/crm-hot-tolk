@@ -1,7 +1,8 @@
 import { require } from 'c/validationController';
 
 export let startDateValidations = [dateInPast, require];
-export let endDateValidations = [startBeforeEnd, require];
+export let endDateValidations = [endAfterStart, require];
+export let endTimeValidations = [startBeforeEnd, require];
 export let recurringTypeValidations = [require];
 export let recurringDaysValidations = [requireDaysBasedOnRecurringType];
 export let recurringEndDateValidations = [
@@ -14,9 +15,15 @@ export let recurringEndDateValidations = [
 function dateInPast(date) {
     return new Date(date).getTime() < new Date().now() ? 'Du kan ikke bestille tid i fortiden' : '';
 }
+
 function startBeforeEnd(endDate, args) {
     let startDate = args[0];
     return new Date(startDate).getTime() < new Date(endDate) ? 'Start tid må være før slutt tid.' : '';
+}
+
+function endAfterStart(startDate, args) {
+    let endDate = args[0];
+    return new Date(endDate).getTime() === new Date(startDate) ? 'Slutt tid kan ikke være samme som start tid.' : '';
 }
 
 function requireDaysBasedOnRecurringType(days, ...args) {
