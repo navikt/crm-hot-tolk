@@ -141,7 +141,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
             }
         }
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
-        alert(this.interestedResource.Status__c);
         this.fixComments();
         this.updateURL();
         //this.sendDetail();
@@ -214,6 +213,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
             refreshApex(this.wiredInterestedResourcesResult);
             this.interestedResource.Status__c = 'Tilbaketrukket påmelding';
+            this.isNotRetractable = true;
         });
     }
     closeModal() {
