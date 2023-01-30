@@ -256,10 +256,10 @@ export default class Hot_recurringTimeInput extends LightningElement {
     validateEndTime() {
         let hasErrors = false;
         this.template.querySelectorAll('[data-id="endTime"]').forEach((element, index) => {
-            if (this.times[0].startTime === this.times[0].endTime) {
-                let errorMessage = 'Start- og sluttid må være ulike.';
-            }
             let errorMessage = requireInput(element.getValue(), 'Sluttid');
+            if (this.times[0].startTime === this.times[0].endTime) {
+                errorMessage = 'Start- og sluttid må være ulike.';
+            }
             element.sendErrorMessage(errorMessage);
             hasErrors += errorMessage !== '';
         });

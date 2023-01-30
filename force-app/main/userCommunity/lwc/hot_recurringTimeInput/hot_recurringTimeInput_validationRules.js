@@ -7,7 +7,7 @@ export function requireInput(input, label) {
 export function dateInPast(date) {
     date = new Date(date);
     let today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
-    return date.getTime() < today.getTime() ? 'Du kan ikke bestille tid i fortiden' : '';
+    return date.getTime() < today.getTime() ? 'Du kan ikke bestille tid i fortiden.' : '';
 }
 
 export function startBeforeEnd(endDate, startDate) {
