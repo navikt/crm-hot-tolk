@@ -5,7 +5,6 @@ import {
     dateInPast,
     requireRecurringDays,
     startDateBeforeRecurringEndDate,
-    startBeforeEnd,
     restrictTheNumberOfDays,
     chosenDaysWithinPeriod
 } from './hot_recurringTimeInput_validationRules';
