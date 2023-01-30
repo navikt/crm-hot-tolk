@@ -5,6 +5,7 @@ import {
     dateInPast,
     requireRecurringDays,
     startDateBeforeRecurringEndDate,
+    startBeforeEnd,
     restrictTheNumberOfDays,
     chosenDaysWithinPeriod
 } from './hot_recurringTimeInput_validationRules';
@@ -79,7 +80,11 @@ export default class Hot_recurringTimeInput extends LightningElement {
         }
     }
     setEndTimeBasedOnStartTime(index) {
-        if (this.times[index].endTimeString === null || this.times[index].startTime > this.times[index].endTime) {
+        if (
+            this.times[index].endTimeString === null ||
+            this.times[index].endTime === this.times[index].startTime ||
+            this.times[index].startTime > this.times[index].endTime
+        ) {
             let dateTime = new Date(this.times[index].startTime);
             dateTime.setHours(dateTime.getHours() + 1);
             let timeString = this.dateTimeToTimeString(dateTime, false);
