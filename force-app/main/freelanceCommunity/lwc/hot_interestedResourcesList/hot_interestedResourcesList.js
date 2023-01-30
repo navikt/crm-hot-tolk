@@ -141,6 +141,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
             }
         }
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
+        alert(this.interestedResource.Status__c);
         this.fixComments();
         this.updateURL();
         //this.sendDetail();
