@@ -127,6 +127,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     showTable = true;
     goToRecordDetails(result) {
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').focus();
         window.scrollTo(0, 0);
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
@@ -141,7 +142,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         }
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
         this.fixComments();
-        //this.updateURL();
+        this.updateURL();
         //this.sendDetail();
         if (this.interestedResource?.IsNewComment__c) {
             readComment({ interestedResourceId: this.interestedResource?.Id });
