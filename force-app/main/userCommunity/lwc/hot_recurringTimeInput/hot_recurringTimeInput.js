@@ -251,9 +251,10 @@ export default class Hot_recurringTimeInput extends LightningElement {
         return hasErrors;
     }
     validateEndTime() {
+        let errorMessage = '';
         let hasErrors = false;
         this.template.querySelectorAll('[data-id="endTime"]').forEach((element, index) => {
-            let errorMessage = requireInput(element.getValue(), 'Sluttid');
+            errorMessage = requireInput(element.getValue(), 'Sluttid');
             if (errorMessage === '') {
                 errorMessage = startBeforeEnd(this.times[0].endTime, this.times[0].startTime);
             }
