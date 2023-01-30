@@ -30,7 +30,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.dispatchEvent(eventToSend);
     }
     sendCheckedRows() {
-        this.showSendInterest = this.checkedServiceAppointments.length > 0 && !this.isDetails;
+        this.showSendInterest = this.checkedServiceAppointments.length > 0;
         this.sendInterestButtonLabel = 'Meld interesse til ' + this.checkedServiceAppointments.length + ' oppdrag';
         const eventToSend = new CustomEvent('sendcheckedrows', { detail: this.checkedServiceAppointments });
         this.dispatchEvent(eventToSend);
@@ -125,7 +125,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
-        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
         this.sendCheckedRows();
@@ -144,7 +143,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
     seriesRecords = [];
     showTable = true;
     goToRecordDetails(result) {
-        window.scrollTo(0, 0);
         this.serviceAppointment = undefined;
         this.seriesRecords = [];
         let recordId = result.detail.Id;
@@ -162,8 +160,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
         this.isSeries = this.seriesRecords.length <= 1 ? false : true;
-        this.updateURL();
-        this.sendDetail();
+        this.showServiceAppointmentDetails();
+    }
+    showServiceAppointmentDetails() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').focus();
     }
 
     @api recordId;
@@ -221,6 +222,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 let currentFilters = this.filters;
                 if (this.sendInterestAll) {
                     this.sendInterestAllComplete = true;
+                    this.checkedServiceAppointments = [];
                     return; // If series -> refresh after closeModal() to avoid showing weird data behind popup
                 }
                 refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
@@ -273,6 +275,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     sendInterestAllComplete = false;
     sendInterestAll = false;
     sendInterestSeries() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
         this.hideSubmitIndicators();
         this.showCommentSection();
         this.serviceAppointmentCommentDetails = [];
@@ -304,6 +307,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.sendInterestAllComplete = false;
         this.sendInterestAll = false;
         this.template.querySelector('.commentPage').classList.add('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
     }
 
     showCommentSection() {
