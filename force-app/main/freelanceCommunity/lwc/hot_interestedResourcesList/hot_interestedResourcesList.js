@@ -172,6 +172,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         let newComment = this.template.querySelector('.newComment').value;
         addComment({ interestedResourceId, newComment }).then(() => {
             refreshApex(this.wiredInterestedResourcesResult);
+            this.template.querySelector('.newComment').value = '';
         });
     }
     filteredRecordsLength = 0;
