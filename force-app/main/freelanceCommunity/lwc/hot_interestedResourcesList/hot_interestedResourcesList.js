@@ -8,6 +8,7 @@ import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
 import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
 import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
+import getComments from '@salesforce/apex/HOT_InterestedResourcesListController.getComments';
 
 export default class Hot_interestedResourcesList extends LightningElement {
     @track columns = [];
@@ -128,11 +129,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
     goToRecordDetails(result) {
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
         this.template.querySelector('.serviceAppointmentDetails').focus();
-        window.scrollTo(0, 0);
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
-        console.log(this.recordId);
-        console.log(result.detail.Id);
         this.recordId = recordId;
         this.isDetails = !!this.recordId;
         for (let interestedResource of this.records) {
@@ -173,6 +171,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
         addComment({ interestedResourceId, newComment }).then(() => {
             refreshApex(this.wiredInterestedResourcesResult);
             this.template.querySelector('.newComment').value = '';
+            this.fixComments();
         });
     }
     filteredRecordsLength = 0;
@@ -202,11 +201,14 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     @track prevComments = '';
     fixComments() {
-        if (this.interestedResource?.Comments__c != undefined) {
-            this.prevComments = this.interestedResource?.Comments__c.split('\n\n');
-        } else {
-            this.prevComments = '';
-        }
+        getComments({ interestedResourceId: this.recordId }).then((result) => {
+            console.log(result.Comments__c);
+            if (result.Comments__c != undefined || result.Comments__c != '') {
+                this.prevComments = result.Comments__c.split('\n\n');
+            } else {
+                this.prevComments = '';
+            }
+        });
     }
     isNotRetractable = false;
     retractInterest() {

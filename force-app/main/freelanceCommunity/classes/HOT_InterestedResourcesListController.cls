@@ -39,7 +39,15 @@ public without sharing class HOT_InterestedResourcesListController {
         ];
         return interestedResources;
     }
-
+    @AuraEnabled
+    public static HOT_InterestedResource__c getComments(String interestedResourceId) {
+        HOT_InterestedResource__c interestedResource = [
+            SELECT Id, Comments__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :interestedResourceId
+        ];
+        return interestedResource;
+    }
     @AuraEnabled
     public static void retractInterest(String interestedResourceId) {
         HOT_InterestedResource__c interestedResources = [
