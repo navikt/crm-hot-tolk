@@ -12,8 +12,9 @@ export let recurringEndDateValidations = [
 ];
 
 function dateInPast(date) {
-    return new Date(date).getTime() < new Date().now() ? 'Du kan ikke bestille tid i fortiden' : '';
+    return new Date(date).getTime() < new Date().now() ? 'Du kan ikke bestille tid i fortiden.' : '';
 }
+
 function startBeforeEnd(endDate, args) {
     let startDate = args[0];
     return new Date(startDate).getTime() < new Date(endDate) ? 'Start tid må være før slutt tid.' : '';
