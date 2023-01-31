@@ -191,7 +191,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         ];
 
         for (WorkOrder workOrder : workOrders) {
-            if(workOrder.StartDate > Datetime.now()){
+            if (workOrder.StartDate > Datetime.now()) {
                 workOrder.Status = newStatus;
             }
         }
@@ -200,46 +200,59 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         }
     }
     private static void updateServiceAppointments(List<HOT_Request__c> changedRequests, String newStatus) {
-        List<ServiceAppointment> serviceAppointments = [SELECT Id, Status, HOT_Request__c FROM ServiceAppointment WHERE HOT_Request__c IN :changedRequests];
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, Status, HOT_Request__c
+            FROM ServiceAppointment
+            WHERE HOT_Request__c IN :changedRequests
+        ];
         Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(serviceAppointments);
 
-        List<WorkOrder> workOrders = [SELECT Id, Status, HOT_Request__c FROM WorkOrder WHERE HOT_Request__c IN :changedRequests];
+        List<WorkOrder> workOrders = [
+            SELECT Id, Status, HOT_Request__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :changedRequests
+        ];
         Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(workOrders);
 
-        for(HOT_Request__c request : changedRequests){
-        Integer numberOfReleasedToFreelance = 0;
-        Integer numberOfServiceAppointments = 0;
+        for (HOT_Request__c request : changedRequests) {
+            Integer numberOfReleasedToFreelance = 0;
+            Integer numberOfServiceAppointments = 0;
             for (Id saId : serviceAppointmentMap.keySet()) {
                 ServiceAppointment sa = serviceAppointmentMap.get(saId);
-                if(sa.HOT_Request__c == request.Id) {
-                    if(sa.Status=='Released to Freelance' || sa.Status=='Cannot Complete'){
+                if (sa.HOT_Request__c == request.Id) {
+                    if (sa.Status == 'Released to Freelance' || sa.Status == 'Cannot Complete') {
                         numberOfReleasedToFreelance++;
                     }
                     numberOfServiceAppointments++;
                 }
             }
-        Integer numberOfOpenWorkOrders = 0;
-        Integer numberOfWorkOrders = 0;
+            Integer numberOfOpenWorkOrders = 0;
+            Integer numberOfWorkOrders = 0;
             for (Id woId : workOrderMap.keySet()) {
                 WorkOrder wo = workOrderMap.get(woId);
-                if(wo.HOT_Request__c == request.Id) {
-                    if(wo.Status=='New' || wo.Status=='Cannot Complete'){
+                if (wo.HOT_Request__c == request.Id) {
+                    if (wo.Status == 'New' || wo.Status == 'Cannot Complete') {
                         numberOfOpenWorkOrders++;
                     }
                     numberOfWorkOrders++;
                 }
             }
 
-            if(numberOfServiceAppointments == numberOfReleasedToFreelance || numberOfOpenWorkOrders == numberOfWorkOrders){
+            if (
+                numberOfServiceAppointments == numberOfReleasedToFreelance ||
+                numberOfOpenWorkOrders == numberOfWorkOrders
+            ) {
                 for (Id saId : serviceAppointmentMap.keySet()) {
                     ServiceAppointment sa = serviceAppointmentMap.get(saId);
-                    if(sa.HOT_Request__c == request.Id) {
+                    if (sa.HOT_Request__c == request.Id) {
                         sa.Status = 'Cannot Complete';
                     }
                 }
                 update serviceAppointmentMap.values();
             } else {
-                request.addError('Alle oppdrag må være Frigitt til frilans, eller alle arbeidsordre må være Åpen for at du skal kunne sette hele forespørselen til Udekket.');
+                request.addError(
+                    'Alle oppdrag må være Frigitt til frilans, eller alle arbeidsordre må være Åpen for at du skal kunne sette hele forespørselen til Udekket.'
+                );
             }
         }
     }
