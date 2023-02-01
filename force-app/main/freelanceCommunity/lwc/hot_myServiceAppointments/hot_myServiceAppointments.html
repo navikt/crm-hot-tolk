@@ -1,98 +1,72 @@
 <template>
     <div class="main-content">
+        <div if:true={isDetails}>
+            <div class="record-details-container">
+                <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
+                <p>Tema: <span>{serviceAppointment.Subject}</span></p>
+                <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
+                <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
+                <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
+                <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
+                <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                <p>Status: <span>{serviceAppointment.Status}</span></p>
+                <p>Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span></p>
+                <p if:true={serviceAppointment.HOT_Escort__c}>
+                    Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
+                </p>
+                <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                    Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
+                </p>
+                <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                <p if:true={interestedResource}>
+                    Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                </p>
+                <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
+                <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
+                <div class="files-container">
+                    <c-record-files-with-sharing
+                        record-id={serviceAppointment.Id}
+                        is-get-all="true"
+                        is-delete-option="false"
+                        title="Vedlegg"
+                        delete-file-on-button-click="false"
+                    ></c-record-files-with-sharing>
+                </div>
+            </div>
+            <div>
+                <c-button
+                    disabled={isEditButtonDisabled}
+                    hidden={isEditButtonHidden}
+                    onbuttonclick={changeStatus}
+                    button-styling="Primary"
+                    type="Submit"
+                    button-label="Endre status"
+                >
+                </c-button>
+                <c-button
+                    hidden={isCancelButtonHidden}
+                    onbuttonclick={cancelStatusFlow}
+                    button-styling="Secondary"
+                    type="Submit"
+                    style="margin: 2rem 0"
+                    button-label="Avbryt"
+                >
+                </c-button>
+            </div>
+        </div>
+        <div if:true={isflow} class="flow-container">
+            <lightning-flow
+                flow-api-name="HOT_ChangeServiceAppointmentStatus"
+                flow-input-variables={flowVariables}
+                onstatuschange={handleStatusChange}
+            ></lightning-flow>
+        </div>
         <div if:false={noServiceAppointments}>
-            <c-table
-                if:false={noServiceAppointments}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-            ></c-table>
+            <c-table if:false={isDetails} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
             <br />
             Du har ingen oppdrag.
-        </div>
-        <div
-            class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay serviceAppointmentDetails hidden"
-            style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
-            tabindex="-1"
-            aria-label="Informasjon om oppdrag"
-        >
-            <div
-                class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-                role="dialog"
-                aria-labelledby="comment-header-id"
-            >
-                <section>
-                    <div>
-                        <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
-                    </div>
-                    <div if:true={isDetails}>
-                        <div class="record-details-container">
-                            <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
-                            <p>Tema: <span>{serviceAppointment.Subject}</span></p>
-                            <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
-                            <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
-                            <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
-                            <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
-                            <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
-                            <p>Status: <span>{serviceAppointment.Status}</span></p>
-                            <p>Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span></p>
-                            <p if:true={serviceAppointment.HOT_Escort__c}>
-                                Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
-                            </p>
-                            <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
-                                Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
-                            </p>
-                            <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                            <p if:true={interestedResource}>
-                                Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
-                            </p>
-                            <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
-                            <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
-                            <div class="files-container">
-                                <c-record-files-with-sharing
-                                    record-id={serviceAppointment.Id}
-                                    is-get-all="true"
-                                    is-delete-option="false"
-                                    title="Vedlegg"
-                                    delete-file-on-button-click="false"
-                                ></c-record-files-with-sharing>
-                            </div>
-                        </div>
-                        <div>
-                            <c-button
-                                disabled={isEditButtonDisabled}
-                                hidden={isEditButtonHidden}
-                                onbuttonclick={changeStatus}
-                                button-styling="Primary"
-                                type="Submit"
-                                button-label="Endre status"
-                            >
-                            </c-button>
-                            <c-button
-                                hidden={isCancelButtonHidden}
-                                onbuttonclick={cancelStatusFlow}
-                                button-styling="Secondary"
-                                type="Submit"
-                                style="margin: 2rem 0"
-                                button-label="Avbryt"
-                            >
-                            </c-button>
-                        </div>
-                        <div if:true={isflow} class="flow-container">
-                            <lightning-flow
-                                flow-api-name="HOT_ChangeServiceAppointmentStatus"
-                                flow-input-variables={flowVariables}
-                                onstatuschange={handleStatusChange}
-                            ></lightning-flow>
-                        </div>
-                    </div>
-                </section>
-                <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
-                    <span class="text-hide">Lukk</span>
-                </button>
-            </div>
         </div>
     </div>
 </template>
