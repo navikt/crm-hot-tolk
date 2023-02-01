@@ -19,7 +19,7 @@ export default class Hot_InterestedResourceWarningBanner extends LightningElemen
                 record.oppdragsInfo =
                     startTimeFormatted.getDate() +
                     '.' +
-                    startTimeFormatted.getMonth() +
+                    (startTimeFormatted.getMonth() + 1) +
                     '.' +
                     startTimeFormatted.getFullYear() +
                     ' ' +
@@ -29,7 +29,7 @@ export default class Hot_InterestedResourceWarningBanner extends LightningElemen
                     ' - ' +
                     endTimeFormatted.getDate() +
                     '.' +
-                    endTimeFormatted.getMonth() +
+                    (endTimeFormatted.getMonth() + 1) +
                     '.' +
                     endTimeFormatted.getFullYear() +
                     ' ' +
