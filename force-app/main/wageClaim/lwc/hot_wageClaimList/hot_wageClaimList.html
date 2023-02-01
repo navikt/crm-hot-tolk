@@ -1,6 +1,6 @@
 <template>
     <div class="main-content">
-        <div if:false={isWageClaimDetails}>
+        <div>
             <div if:false={noWageClaims}>
                 <c-table records={wageClaims} columns={columns} onrowclick={goToRecordDetails}></c-table>
             </div>
@@ -9,21 +9,42 @@
                 Du har ingen ledig på lønn oppdrag.
             </div>
         </div>
-        <div if:true={isWageClaimDetails}>
-            <div class="record-details-container">
-                <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
-                <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
-                <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
-                <p>Status: <span>{wageClaim.Status__c}</span></p>
-                <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
-            </div>
-            <c-button
-                button-styling="primary"
-                button-label="Tilbaketrekk tilgjengelighet"
-                aria-label="Tilbaketrekk tilgjengelighet"
-                onbuttonclick={retractAvailability}
+        <div
+            class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay serviceAppointmentDetails hidden"
+            style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+            tabindex="-1"
+            aria-label="Informasjon om oppdrag"
+        >
+            <div
+                class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+                role="dialog"
+                aria-labelledby="comment-header-id"
             >
-            </c-button>
+                <section>
+                    <div>
+                        <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
+                    </div>
+                    <div if:true={isWageClaimDetails}>
+                        <div class="record-details-container">
+                            <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
+                            <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
+                            <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
+                            <p>Status: <span>{wageClaim.Status__c}</span></p>
+                            <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                        </div>
+                        <c-button
+                            button-styling="primary"
+                            button-label="Tilbaketrekk tilgjengelighet"
+                            aria-label="Tilbaketrekk tilgjengelighet"
+                            onbuttonclick={retractAvailability}
+                        >
+                        </c-button>
+                    </div>
+                </section>
+                <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
+                    <span class="text-hide">Lukk</span>
+                </button>
+            </div>
         </div>
     </div>
 </template>
