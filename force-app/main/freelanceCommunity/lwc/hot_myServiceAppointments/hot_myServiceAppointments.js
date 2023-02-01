@@ -104,6 +104,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
+        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -124,8 +125,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
-        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-        this.template.querySelector('.serviceAppointmentDetails').focus();
+        window.scrollTo(0, 0);
         let today = new Date();
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
@@ -145,7 +145,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
             }
         }
         this.updateURL();
-        //this.sendDetail();
+        this.sendDetail();
     }
 
     @api recordId;
@@ -213,9 +213,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
                 value: this.recordId
             }
         ];
-    }
-    closeModal() {
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
     }
     handleStatusChange(event) {
         console.log('handleStatusChange', event.detail);

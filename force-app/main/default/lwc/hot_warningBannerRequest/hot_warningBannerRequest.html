@@ -7,14 +7,12 @@
         >
             <span class="slds-assistive-text">Advarsel</span>
             <div style="display: inline-flex">
-                <lightning-icon
-                    icon-name="utility:error"
-                    size="x-small"
-                    class="slds-m-right--x-small"
-                    variant="inverse"
-                >
-                </lightning-icon>
-                <h2>Det er følgende sikkerhetstiltak på brukeren: {securityMeasures}</h2>
+                <div style="display: block">
+                    Det er følgende sikkerhetstiltak på brukeren:
+                    <template for:each={securityMeasures} for:item="sm">
+                        <p key={sm}>{sm}</p>
+                    </template>
+                </div>
             </div>
         </div>
     </template>
