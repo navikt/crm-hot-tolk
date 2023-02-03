@@ -29,10 +29,11 @@
                             <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
                             <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
                             <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
-                            <p>Status: <span>{wageClaim.Status__c}</span></p>
+                            <p>Status: <span>{Status}</span></p>
                             <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
                         </div>
                         <c-button
+                            disabled={isNotRetractable}
                             button-styling="primary"
                             button-label="Tilbaketrekk tilgjengelighet"
                             aria-label="Tilbaketrekk tilgjengelighet"

@@ -16,7 +16,8 @@ export default class Hot_wageClaimList extends LightningElement {
             this.columns = mobileColumns;
         }
     }
-
+    @track Status;
+    isNotRetractable = false;
     noWageClaims = false;
     @track wageClaims = [];
     @track allWageClaimsWired = [];
@@ -82,8 +83,14 @@ export default class Hot_wageClaimList extends LightningElement {
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
         this.template.querySelector('.serviceAppointmentDetails').focus();
         this.wageClaim = undefined;
+        this.Status = result.detail.Status__c;
         let recordId = result.detail.Id;
         this.recordId = recordId;
+        if (result.detail.Status__c == 'Open') {
+            this.isNotRetractable = false;
+        } else {
+            this.isNotRetractable = true;
+        }
         this.isWageClaimDetails = !!this.recordId;
         for (let wageClaim of this.wageClaims) {
             if (recordId === wageClaim.Id) {
@@ -119,6 +126,8 @@ export default class Hot_wageClaimList extends LightningElement {
         ) {
             try {
                 retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
+                    this.isNotRetractable = true;
+                    this.Status = 'Tilbaketrukket tilgjengelighet';
                     refreshApex(this.wiredWageClaimsResult);
                 });
             } catch (error) {
