@@ -228,6 +228,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
                 if (data.Status == 'Completed') {
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'Completed';
                 }
                 if (data.Status == 'Canceled') {
                     this.isflow = false;
