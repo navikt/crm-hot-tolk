@@ -134,6 +134,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.isDetails = !!this.recordId;
         this.isEditButtonHidden = false;
         this.isCancelButtonHidden = true;
+        this.isEditButtonDisabled = false;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
