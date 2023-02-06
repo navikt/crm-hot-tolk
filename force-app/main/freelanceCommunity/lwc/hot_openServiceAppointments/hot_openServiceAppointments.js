@@ -218,11 +218,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
                 this.template.querySelector('c-table').unsetCheckboxes();
+                this.checkedServiceAppointments = [];
                 this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
                 let currentFilters = this.filters;
                 if (this.sendInterestAll) {
                     this.sendInterestAllComplete = true;
-                    this.checkedServiceAppointments = [];
+
                     return; // If series -> refresh after closeModal() to avoid showing weird data behind popup
                 }
                 refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {

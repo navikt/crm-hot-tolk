@@ -134,6 +134,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.isDetails = !!this.recordId;
         this.isEditButtonHidden = false;
         this.isCancelButtonHidden = true;
+        this.isEditButtonDisabled = false;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
@@ -227,6 +228,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
                 if (data.Status == 'Completed') {
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'Completed';
                 }
                 if (data.Status == 'Canceled') {
                     this.isflow = false;
