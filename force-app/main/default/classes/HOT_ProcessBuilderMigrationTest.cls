@@ -58,6 +58,7 @@ public class HOT_ProcessBuilderMigrationTest {
         System.assertEquals(null, request.Person__c, 'Could not remove person field on request');
 
         //set person
+        request = [SELECT Person__c, Account__c FROM HOT_Request__c WHERE Id = :request.Id];
         request.Account__c = account.Id;
         update request;
 
