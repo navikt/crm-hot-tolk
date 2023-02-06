@@ -108,10 +108,12 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             if (recordId === record.Id) {
                 this.workOrder = record;
                 this.request = record.HOT_Request__r;
-
                 getThreadInterpreterId({ workOrderId: this.workOrder.Id }).then((result) => {
                     if (result != '') {
+                        console.log('thread id:' + result);
                         this.workOrderThreadId = result;
+                    } else {
+                        this.workOrderThreadId = undefined;
                     }
                 });
             }
@@ -253,6 +255,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goBack() {
+        this.workOrderThreadId = undefined;
         let currentLevel = this.urlStateParameters.level;
         if (currentLevel === undefined || currentLevel === '') {
             this[NavigationMixin.Navigate]({
