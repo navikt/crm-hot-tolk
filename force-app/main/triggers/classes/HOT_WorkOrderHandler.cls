@@ -70,7 +70,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 Set<String> recipients = new Set<String>();
                 recipients.add(userIdByAccountId.get(wo.AccountId));
                 if (recipients.size() != 0) {
-                   // HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
+                    // HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
                 }
             }
         }
@@ -340,9 +340,11 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         try {
             update requests;
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            if (!e.getMessage().contains('Slutt tid må være etter start tid')) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
         }
     }
 
