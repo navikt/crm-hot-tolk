@@ -29,6 +29,12 @@
                 <identifier>hot_registerDispatcherReadComment</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_InterestedResourceWarningBanner</componentName>
+                <identifier>c_hot_InterestedResourceWarningBanner</identifier>
+            </componentInstance>
+        </itemInstances>
         <mode>Replace</mode>
         <name>header</name>
         <type>Region</type>
