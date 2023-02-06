@@ -104,7 +104,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
-        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -125,7 +124,8 @@ export default class Hot_myServiceAppointments extends LightningElement {
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
-        window.scrollTo(0, 0);
+        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').focus();
         let today = new Date();
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
@@ -134,6 +134,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.isDetails = !!this.recordId;
         this.isEditButtonHidden = false;
         this.isCancelButtonHidden = true;
+        this.isEditButtonDisabled = false;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
@@ -145,7 +146,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
             }
         }
         this.updateURL();
-        this.sendDetail();
+        //this.sendDetail();
     }
 
     @api recordId;
@@ -214,6 +215,9 @@ export default class Hot_myServiceAppointments extends LightningElement {
             }
         ];
     }
+    closeModal() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+    }
     handleStatusChange(event) {
         console.log('handleStatusChange', event.detail);
         if (event.detail.interviewStatus == 'FINISHED') {
@@ -224,6 +228,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
                 if (data.Status == 'Completed') {
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'Completed';
                 }
                 if (data.Status == 'Canceled') {
                     this.isflow = false;
