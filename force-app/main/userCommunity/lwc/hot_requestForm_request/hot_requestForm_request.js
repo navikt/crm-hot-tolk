@@ -27,6 +27,10 @@ export default class Hot_requestForm_request extends LightningElement {
     @api parentRequestComponentValues;
     @api isEditOrCopyMode = false;
 
+    renderedCallback() {
+        this.template.querySelector('h2').focus();
+    }
+
     connectedCallback() {
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
@@ -97,8 +101,8 @@ export default class Hot_requestForm_request extends LightningElement {
         this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.sameAddressRadioButtons[1].checked =
             this.fieldValues.InterpretationStreet__c !== this.fieldValues.MeetingStreet__c;
-        this.componentValues.sameAddressRadioButtons[0].checked =
-            !this.componentValues.sameAddressRadioButtons[1].checked;
+        this.componentValues.sameAddressRadioButtons[0].checked = !this.componentValues.sameAddressRadioButtons[1]
+            .checked;
         this.componentValues.isOptionalFields =
             this.fieldValues.UserInterpretationMethod__c !== '' ||
             this.fieldValues.UserPreferredInterpreter__c !== '' ||
