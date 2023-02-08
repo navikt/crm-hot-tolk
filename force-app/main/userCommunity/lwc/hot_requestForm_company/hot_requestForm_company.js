@@ -80,7 +80,6 @@ export default class Hot_requestForm_company extends LightningElement {
 
     @api parentFieldValues;
     connectedCallback() {
-        document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];
@@ -94,5 +93,9 @@ export default class Hot_requestForm_company extends LightningElement {
         if (this.isEditOrCopyMode) {
             this.setComponentValuesOnEditAndCopy();
         }
+    }
+
+    renderedCallback() {
+        this.template.querySelector('h2').focus();
     }
 }
