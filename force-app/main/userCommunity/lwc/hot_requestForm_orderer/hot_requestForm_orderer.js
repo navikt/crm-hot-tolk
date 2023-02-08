@@ -71,4 +71,8 @@ export default class Hot_requestForm_orderer extends LightningElement {
             }
         }
     }
+
+    renderedCallback() {
+        this.template.querySelector('h2').focus();
+    }
 }
