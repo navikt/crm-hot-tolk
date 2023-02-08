@@ -4,7 +4,6 @@ import { NavigationMixin } from 'lightning/navigation';
 export default class hot_userInformation extends NavigationMixin(LightningElement) {
     @track breadcrumbs = [];
     connectedCallback() {
-        document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
         this.breadcrumbs = [
             {
                 label: 'Tolketjenesten',
@@ -15,5 +14,9 @@ export default class hot_userInformation extends NavigationMixin(LightningElemen
                 href: 'mine-side'
             }
         ];
+    }
+
+    renderedCallback() {
+        this.template.querySelector('h2').focus();
     }
 }
