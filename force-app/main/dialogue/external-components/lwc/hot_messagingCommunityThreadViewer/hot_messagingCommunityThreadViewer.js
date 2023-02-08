@@ -4,15 +4,17 @@ import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThrea
 import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
+import getRelatedWorkOrderId from '@salesforce/apex/HOT_MessageHelper.getRelatedWorkOrderId';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
+import THREADRELATEDOBJECTID from '@salesforce/schema/Thread__c.CRM_Related_Object__c';
 import getRequestId from '@salesforce/apex/HOT_MessageHelper.getRequestId';
 
-const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD]; //Extract the name of the thread record
+const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREADRELATEDOBJECTID]; //Extract the name of the thread record
 
 export default class hot_messagingCommunityThreadViewer extends NavigationMixin(LightningElement) {
     _mySendForSplitting;
@@ -30,7 +32,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @api maxLength;
     @api overrideValidation = false;
     @api errorList = { title: '', errors: [] };
-    @api helptextContent = 'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere og NAV-ansatte tolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+    @api helptextContent =
+        'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere og NAV-ansatte tolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
     @api helptextHovertext;
 
     connectedCallback() {
@@ -74,7 +77,9 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     get name() {
         return getFieldValue(this.thread.data, THREADNAME_FIELD);
     }
-
+    get threadRelatedObjectId() {
+        return getFieldValue(this.thread.data, THREADRELATEDOBJECTID);
+    }
     get isHelpText() {
         return this.helptextContent !== '' && this.helptextContent !== undefined ? true : false;
     }
@@ -210,14 +215,18 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         });
     }
     goToWO() {
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName: 'mine-bestillinger'
-            },
-            state: {
-                id: this.navigationId,
-                level: this.navigationLevel
+        getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
+            for (var key in result) {
+                this[NavigationMixin.Navigate]({
+                    type: 'comm__namedPage',
+                    attributes: {
+                        pageName: 'mine-bestillinger'
+                    },
+                    state: {
+                        id: key,
+                        level: result[key]
+                    }
+                });
             }
         });
     }
