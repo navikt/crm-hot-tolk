@@ -65,6 +65,7 @@ export default class Hot_requestForm_orderer extends LightningElement {
 
     @api parentFieldValues;
     connectedCallback() {
+        document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];
