@@ -206,4 +206,29 @@ public with sharing class HOT_MessageHelper {
             throw new AuraHandledException(e.getMessage());
         }
     }
+     @AuraEnabled
+    public static Map<String, String> getRelatedWorkOrderId(Id relatedRecordId) {
+        Map<String, String> navigationhelp = new Map<String, String>();
+        String workorderId;
+        String objectType=String.valueOf(relatedRecordId.getsobjecttype());
+        if(objectType=='WorkOrder'){
+            workorderId=relatedRecordId;
+            navigationhelp.put(workorderId,'WO');
+        }
+        if(objectType=='HOT_Request__c'){
+            WorkOrder workOrder=[Select Id FROM WorkOrder Where HOT_Request__c=:relatedRecordId LIMIT 1];
+            HOT_Request__c request=[SELECT IsSerieoppdrag__c FROM HOT_Request__c WHERE Id=:relatedRecordId LIMIT 1];
+            workorderId=workOrder.Id;
+            if(request.IsSerieoppdrag__c==false){
+                navigationhelp.put(workorderId,'WO');
+            }
+            else{
+            navigationhelp.put(workorderId,'R'); 
+            }
+          
+
+        }
+        return navigationhelp;
 }
+}
+
