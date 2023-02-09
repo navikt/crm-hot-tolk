@@ -33,6 +33,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     connectedCallback() {
+        refreshApex(this.wiredgetWorkOrdersResult);
         this.filters = defaultFilters();
         this.breadcrumbs = [
             {
@@ -401,7 +402,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             tempEndDate.getTime() > Date.now()
         ) {
             if (this.urlStateParameters.level === 'R') {
-                this.modalContent = 'Er du sikker på at du vil avlyse alle datoer i bestillingen?';
+                this.modalContent = 'Er du sikker på at du vil avlyse alle fremtidige datoer i bestillingen?';
             } else {
                 this.modalContent =
                     'Er du sikker på at du vil avlyse bestillingen?\nDato: ' + this.workOrder.StartAndEndDate;

@@ -60,6 +60,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
 
     @track filters = [];
     connectedCallback() {
+        refreshApex(this.wiredMyServiceAppointmentsResult);
         this.setColumns();
         this.breadcrumbs = [
             {
@@ -107,7 +108,6 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
 
     refresh() {
         this.filters = defaultFilters();
-        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -128,7 +128,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
-        window.scrollTo(0, 0);
+        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').focus();
         let today = new Date();
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
@@ -137,6 +138,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.isDetails = !!this.recordId;
         this.isEditButtonHidden = false;
         this.isCancelButtonHidden = true;
+        this.isEditButtonDisabled = false;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
@@ -148,7 +150,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             }
         }
         this.updateURL();
-        this.sendDetail();
+        //this.sendDetail();
     }
 
     @api recordId;
@@ -217,6 +219,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             }
         ];
     }
+
     navigateToThread(recordId) {
         this[NavigationMixin.Navigate]({
             type: 'standard__recordPage',
@@ -251,6 +254,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                     });
             }
         });
+    closeModal() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
     }
     handleStatusChange(event) {
         console.log('handleStatusChange', event.detail);
@@ -262,6 +267,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                 if (data.Status == 'Completed') {
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'Completed';
                 }
                 if (data.Status == 'Canceled') {
                     this.isflow = false;
