@@ -45,6 +45,13 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 href: 'mine-bestillinger'
             }
         ];
+        getThreadInterpreterId({ workOrderId: this.workOrder.Id }).then((result) => {
+            if (result != '') {
+                this.workOrderThreadId = result;
+            } else {
+                this.workOrderThreadId = undefined;
+            }
+        });
     }
     renderedCallback() {
         if (this.urlStateParameters.id === '' && this.urlStateParameters.level === '') {
@@ -111,7 +118,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 this.request = record.HOT_Request__r;
                 getThreadInterpreterId({ workOrderId: this.workOrder.Id }).then((result) => {
                     if (result != '') {
-                        console.log('thread id:' + result);
                         this.workOrderThreadId = result;
                     } else {
                         this.workOrderThreadId = undefined;
@@ -636,7 +642,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 .then((result) => {
                     this.navigateToThread(result.Id);
                     refreshApex(this.wiredgetWorkOrdersResult);
-                    this.workOrderThreadId = result;
+                    this.workOrderThreadId = result.Id;
                 })
                 .catch((error) => {
                     this.modalHeader = 'Noe gikk galt';
