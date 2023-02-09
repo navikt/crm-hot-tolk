@@ -254,6 +254,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                     });
             }
         });
+    }
     closeModal() {
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
     }
