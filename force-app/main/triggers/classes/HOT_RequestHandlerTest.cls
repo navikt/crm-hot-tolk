@@ -162,7 +162,7 @@ private class HOT_RequestHandlerTest {
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Source__c = 'Community';
+        request.Source__c = 'nav.no';
         request.Account__c = accountTromso.Id;
         insert request;
 
@@ -174,7 +174,7 @@ private class HOT_RequestHandlerTest {
         // Validate isClone in memory, not from DB
         System.assertEquals(req.isClone(), true, 'Request was not a clone');
         req = [SELECT Source__c FROM HOT_Request__c WHERE Id = :req.Id];
-        System.assertEquals(req.Source__c, 'Dispatcher', 'Request source is not "Dispatcher" (Formidler)');
+        System.assertEquals(req.Source__c, 'nav.no', 'Request source is not "Dispatcher" (Formidler)');
     }
 
     @isTest
@@ -408,9 +408,9 @@ private class HOT_RequestHandlerTest {
         System.assertNotEquals('Oslo', requester[0].MeetingPostalCity__c, 'Both adresses was changed to the same');
         System.assertNotEquals('0166', requester[0].MeetingPostalCode__c, 'Both adresses was changed to the same');
     }
-   @isTest
+    @isTest
     public static void shouldOnlyChangeStatusToCannotCompleteIfAllSAIsReleased() {
-     WorkType workType = HOT_TestDataFactory.createWorkType();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
@@ -428,7 +428,7 @@ private class HOT_RequestHandlerTest {
         sa2.HOT_Request__c = request.Id;
         insert sa1;
         insert sa2;
-        
+
         sa1.Status = 'Released to Freelance';
         sa2.Status = 'Released to Freelance';
         update sa1;
@@ -443,7 +443,7 @@ private class HOT_RequestHandlerTest {
     }
     @isTest
     public static void statusIsNotSupposedToChangeBecauseSAIsNotReleasedToFreelance() {
-     WorkType workType = HOT_TestDataFactory.createWorkType();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
@@ -470,19 +470,21 @@ private class HOT_RequestHandlerTest {
         update new List<WorkOrder>{ workOrder1, workOrder2 };
 
         request.Status__c = 'Udekket';
-        try{
+        try {
             update request;
-        }
-        catch(Exception e){
-            Boolean expectedException =  e.getMessage().contains('Alle oppdrag må være Frigitt til frilans, eller alle arbeidsordre må være Åpen for at du skal kunne sette hele forespørselen til Udekket.') ? true : false;
+        } catch (Exception e) {
+            Boolean expectedException = e.getMessage()
+                    .contains(
+                        'Alle oppdrag må være Frigitt til frilans, eller alle arbeidsordre må være Åpen for at du skal kunne sette hele forespørselen til Udekket.'
+                    )
+                ? true
+                : false;
             System.AssertEquals(expectedException, true);
-} 
-        
-        
+        }
     }
-     @isTest
+    @isTest
     public static void statusShouldChangeWhenAllWorkOrdersAreSetToNew() {
-     WorkType workType = HOT_TestDataFactory.createWorkType();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
@@ -513,11 +515,10 @@ private class HOT_RequestHandlerTest {
 
         System.assertEquals('Udekket', request.Status__c, 'Status on the request was supposed to be changed');
     }
-      @isTest
+    @isTest
     public static void statusShouldNotChangeWhenAllWorkOrdersAreNotSetNew() {
-
         //feil i den her
-     WorkType workType = HOT_TestDataFactory.createWorkType();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
@@ -543,12 +544,16 @@ private class HOT_RequestHandlerTest {
         update workOrder2;
 
         request.Status__c = 'Udekket';
-         try{
+        try {
             update request;
-        }
-        catch(Exception e){
-            Boolean expectedException =  e.getMessage().contains('Alle oppdrag må være Frigitt til frilans, eller alle arbeidsordre må være Åpen for at du skal kunne sette hele forespørselen til Udekket.') ? true : false;
+        } catch (Exception e) {
+            Boolean expectedException = e.getMessage()
+                    .contains(
+                        'Alle oppdrag må være Frigitt til frilans, eller alle arbeidsordre må være Åpen for at du skal kunne sette hele forespørselen til Udekket.'
+                    )
+                ? true
+                : false;
             System.AssertEquals(expectedException, true);
-} 
+        }
     }
 }
