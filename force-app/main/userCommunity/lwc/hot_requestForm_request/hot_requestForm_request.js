@@ -27,11 +27,13 @@ export default class Hot_requestForm_request extends LightningElement {
     @api parentRequestComponentValues;
     @api isEditOrCopyMode = false;
 
-    renderedCallback() {
-        this.template.querySelector('h2').focus();
-    }
+    // Dont want to use this because focus will move to top on re-rendrering which happens on "Additional information"
+    // renderedCallback() {
+    //     this.template.querySelector('h2').focus();
+    // }
 
     connectedCallback() {
+        document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];
