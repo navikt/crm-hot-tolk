@@ -33,7 +33,10 @@ export default class Hot_requestForm_request extends LightningElement {
     // }
 
     connectedCallback() {
-        document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // This gives DOM(?) time to catch up and set focus correctly
+        this.showDiv = true;
+        setTimeout(() => this.template.querySelector('h2').focus());
+
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];
