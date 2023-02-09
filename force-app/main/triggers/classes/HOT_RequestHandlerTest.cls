@@ -162,7 +162,7 @@ private class HOT_RequestHandlerTest {
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Source__c = 'nav.no';
+        request.Source__c = 'Community';
         request.Account__c = accountTromso.Id;
         insert request;
 
@@ -174,7 +174,7 @@ private class HOT_RequestHandlerTest {
         // Validate isClone in memory, not from DB
         System.assertEquals(req.isClone(), true, 'Request was not a clone');
         req = [SELECT Source__c FROM HOT_Request__c WHERE Id = :req.Id];
-        System.assertEquals(req.Source__c, 'nav.no', 'Request source is not "nav.no" (Formidler)');
+        System.assertEquals(req.Source__c, 'Community', 'Request source is not "Community" (Formidler)');
     }
 
     @isTest
