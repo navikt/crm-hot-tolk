@@ -236,12 +236,16 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
 
     goToWO() {
         console.log(this.threadRelatedObjectId);
+        let i = 0;
         getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
             for (var key in result) {
+                i++;
+                console.log(i);
                 if (result[key] == 'SA') {
                     console.log('Dette er sa');
                     getServiceAppointmentDetails({ recordId: key }).then((result) => {
                         this.serviceAppointment = result;
+                        console.log('tid:' + result.EarliestStartTime);
                         let startTimeFormatted = new Date(result.EarliestStartTime);
                         let endTimeFormatted = new Date(result.DueDate);
                         this.serviceAppointment.StartAndEndDate =
@@ -287,6 +291,12 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                             ':' +
                             ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
                         console.log(result.AppointmentNumber);
+                        if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
+                            this.serviceAppointment.ActualStartTime = '';
+                        }
+                        if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
+                            this.serviceAppointment.ActualEndTime = '';
+                        }
                         this.isDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                     });
