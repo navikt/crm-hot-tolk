@@ -235,17 +235,13 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @track serviceAppointment;
 
     goToWO() {
- console.log(this.threadRelatedObjectId);
-        let i = 0;
+        console.log(this.threadRelatedObjectId);
         getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
             for (var key in result) {
-                i++;
-                console.log(i);
                 if (result[key] == 'SA') {
                     console.log('Dette er sa');
                     getServiceAppointmentDetails({ recordId: key }).then((result) => {
                         this.serviceAppointment = result;
-                        console.log('tid:' + result.EarliestStartTime);
                         let startTimeFormatted = new Date(result.EarliestStartTime);
                         let endTimeFormatted = new Date(result.DueDate);
                         this.serviceAppointment.StartAndEndDate =
@@ -308,7 +304,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 }
             }
         });
-     }
     }
 
     navigationId = '';
