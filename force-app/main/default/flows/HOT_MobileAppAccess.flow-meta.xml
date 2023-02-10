@@ -1,11 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>54.0</apiVersion>
     <decisions>
+        <name>CheckIfUserFound</name>
+        <label>CheckIfUserFound</label>
+        <locationX>314</locationX>
+        <locationY>398</locationY>
+        <defaultConnector>
+            <targetReference>Get_Permission_Set_Assignment</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>UserNotFound</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>userId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>UserNotFoundScreen</targetReference>
+            </connector>
+            <label>UserNotFound</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Has_Access</name>
         <label>Has Access?</label>
-        <locationX>314</locationX>
-        <locationY>518</locationY>
+        <locationX>578</locationX>
+        <locationY>638</locationY>
         <defaultConnector>
             <targetReference>No_Access_Text</targetReference>
         </defaultConnector>
@@ -27,6 +52,7 @@
         </rules>
     </decisions>
     <description>Used to assign or revoke HOT_Tolk_Mobil_App permission set</description>
+    <environments>Default</environments>
     <interviewLabel>HOT_MobileAppAccess {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_MobileAppAccess</label>
     <processMetadataValues>
@@ -52,8 +78,8 @@
         <description>Assigns the user the HOT_Tolk_Mobil_App permission set</description>
         <name>Create_Permission_Set_Assignment</name>
         <label>Create Permission Set Assignment</label>
-        <locationX>578</locationX>
-        <locationY>758</locationY>
+        <locationX>842</locationX>
+        <locationY>878</locationY>
         <connector>
             <targetReference>Success</targetReference>
         </connector>
@@ -78,8 +104,8 @@
     <recordDeletes>
         <name>Delete_Permission_Set</name>
         <label>Delete Permission Set</label>
-        <locationX>50</locationX>
-        <locationY>758</locationY>
+        <locationX>314</locationX>
+        <locationY>878</locationY>
         <connector>
             <targetReference>SuccesRemoved</targetReference>
         </connector>
@@ -117,8 +143,8 @@
     <recordLookups>
         <name>Get_Permission_Set_Assignment</name>
         <label>Get Permission Set Assignment</label>
-        <locationX>314</locationX>
-        <locationY>398</locationY>
+        <locationX>578</locationX>
+        <locationY>518</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Has_Access</targetReference>
@@ -152,7 +178,7 @@
         <locationY>278</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Permission_Set_Assignment</targetReference>
+            <targetReference>CheckIfUserFound</targetReference>
         </connector>
         <faultConnector>
             <targetReference>User_Not_Found</targetReference>
@@ -177,8 +203,8 @@
     <screens>
         <name>Already_Access</name>
         <label>Already Access</label>
-        <locationX>50</locationX>
-        <locationY>638</locationY>
+        <locationX>314</locationX>
+        <locationY>758</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -196,14 +222,15 @@
     <screens>
         <name>Error_Occured</name>
         <label>Error Occured</label>
-        <locationX>842</locationX>
-        <locationY>878</locationY>
+        <locationX>1106</locationX>
+        <locationY>998</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Occured_Text</name>
-            <fieldText>&lt;p&gt;En feil oppstod under tildeling av tilgang.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;En feil oppstod under tildeling av tilgang.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -212,14 +239,15 @@
     <screens>
         <name>Error_Occured_During_Deletion</name>
         <label>Error Occured During Deletion</label>
-        <locationX>314</locationX>
-        <locationY>878</locationY>
+        <locationX>578</locationX>
+        <locationY>998</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Occured_During_Deletion_Text</name>
-            <fieldText>&lt;p&gt;En feil oppstod under fjerning av tilgang.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;En feil oppstod under fjerning av tilgang.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -228,8 +256,8 @@
     <screens>
         <name>No_Access_Text</name>
         <label>No Access Text</label>
-        <locationX>578</locationX>
-        <locationY>638</locationY>
+        <locationX>842</locationX>
+        <locationY>758</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -247,14 +275,15 @@
     <screens>
         <name>Permission_Set_Assignment_Error</name>
         <label>Permission Set Assignment Error</label>
-        <locationX>1106</locationX>
-        <locationY>518</locationY>
+        <locationX>1370</locationX>
+        <locationY>638</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>Permission_Set_Assignment_Error_Text</name>
-            <fieldText>&lt;p&gt;Noe feilet da tillatelsessettildeling skulle hentes.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Noe feilet da tillatelsessettildeling skulle hentes.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -263,7 +292,7 @@
     <screens>
         <name>PermsetFault_0</name>
         <label>PermsetFault</label>
-        <locationX>1634</locationX>
+        <locationX>1898</locationX>
         <locationY>278</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -279,8 +308,8 @@
     <screens>
         <name>SuccesRemoved</name>
         <label>SuccesRemoved</label>
-        <locationX>50</locationX>
-        <locationY>878</locationY>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -295,8 +324,8 @@
     <screens>
         <name>Success</name>
         <label>Success</label>
-        <locationX>578</locationX>
-        <locationY>878</locationY>
+        <locationX>842</locationX>
+        <locationY>998</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -311,18 +340,36 @@
     <screens>
         <name>User_Not_Found</name>
         <label>User Not Found</label>
-        <locationX>1370</locationX>
+        <locationX>1634</locationX>
         <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>User_Not_Found_Text</name>
-            <fieldText>&lt;p&gt;Kunne ikke finne aktiv bruker for denne kontoen.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Kunne ikke finne aktiv bruker for denne kontoen.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>UserNotFoundScreen</name>
+        <label>UserNotFoundScreen</label>
+        <locationX>50</locationX>
+        <locationY>518</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>UserNotFoundText</name>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Denne kontoen har ikke en aktiv bruker, og kan derfor ikke gis tilgang.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
     </screens>
     <start>
         <locationX>188</locationX>

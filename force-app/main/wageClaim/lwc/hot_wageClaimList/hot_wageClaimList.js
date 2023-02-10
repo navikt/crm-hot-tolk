@@ -86,7 +86,7 @@ export default class Hot_wageClaimList extends LightningElement {
         this.Status = result.detail.Status__c;
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        if (result.detail.Status__c == 'Open') {
+        if (result.detail.Status__c == 'Åpen') {
             this.isNotRetractable = false;
         } else {
             this.isNotRetractable = true;
