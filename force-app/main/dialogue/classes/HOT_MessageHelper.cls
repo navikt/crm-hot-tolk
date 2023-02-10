@@ -271,7 +271,7 @@ public without sharing class HOT_MessageHelper {
         update t;
     }
      @AuraEnabled
-    public static Map<String, String> getRelatedWorkOrderId(Id relatedRecordId) {
+public static Map<String, String> getRelatedWorkOrderId(Id relatedRecordId) {
         Map<String, String> navigationhelp = new Map<String, String>();
         String workorderId;
         String objectType=String.valueOf(relatedRecordId.getsobjecttype());
@@ -317,3 +317,4 @@ public without sharing class HOT_MessageHelper {
         return navigationhelp;
 }
 }
+
