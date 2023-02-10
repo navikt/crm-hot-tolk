@@ -3,7 +3,7 @@
  * @Author Lars Petter Johnsen
  * @Date 20.05.2021
  */
-public with sharing class HOT_MessageHelper {
+public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=true)
     public static String getRecordObjectType(Id recordId) {
         String objectType = recordId.getSObjectType().getDescribe().getName();
@@ -270,4 +270,50 @@ public with sharing class HOT_MessageHelper {
         }
         update t;
     }
+     @AuraEnabled
+    public static Map<String, String> getRelatedWorkOrderId(Id relatedRecordId) {
+        Map<String, String> navigationhelp = new Map<String, String>();
+        String workorderId;
+        String objectType=String.valueOf(relatedRecordId.getsobjecttype());
+        if(objectType=='WorkOrder'){
+            User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+            List<ServiceResource> serviceResource =[Select Id, AccountId FROM ServiceResource WHERE AccountId=:currentUser.AccountId];
+            if(serviceResource.size()>0){
+                List<ServiceAppointment> sa=[SELECT Id FROM ServiceAppointment WHERE HOT_WorkOrderLineItem__r.WorkOrderId=:relatedRecordId];
+                if(sa.size()>0){
+                    Boolean irFound = false;
+                    for(ServiceAppointment serviceappointment: sa){
+                        List<HOT_InterestedResource__c> ir=[SELECT Id, ServiceAppointment__c FROM HOT_InterestedResource__c WHERE (ServiceAppointment__c=:serviceappointment.Id AND ServiceResource__c=:serviceResource[0].Id)];
+                        if(ir.size() > 0){
+                            irFound = true;
+                            navigationhelp.put(serviceappointment.Id,'SA');
+                        }
+                    }
+                    if(!irFound) {
+                        workorderId=relatedRecordId;    
+                        navigationhelp.put(workorderId,'WO');                
+                    }
+                }else{
+                    workorderId=relatedRecordId;
+                    navigationhelp.put(workorderId,'WO');
+                }
+            }else{
+                workorderId=relatedRecordId;
+                navigationhelp.put(workorderId,'WO');
+            }
+        }
+        if(objectType=='HOT_Request__c'){
+            WorkOrder workOrder=[Select Id FROM WorkOrder Where HOT_Request__c=:relatedRecordId LIMIT 1];
+            HOT_Request__c request=[SELECT IsSerieoppdrag__c FROM HOT_Request__c WHERE Id=:relatedRecordId LIMIT 1];
+            workorderId=workOrder.Id;
+            if(request.IsSerieoppdrag__c==false){
+                navigationhelp.put(workorderId,'WO');
+            }
+            else{
+            navigationhelp.put(workorderId,'R'); 
+            }
+            
+        }
+        return navigationhelp;
+}
 }

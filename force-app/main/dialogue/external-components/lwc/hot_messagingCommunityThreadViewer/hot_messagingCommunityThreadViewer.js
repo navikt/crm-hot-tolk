@@ -4,22 +4,28 @@ import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThrea
 import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
+import getRelatedWorkOrderId from '@salesforce/apex/HOT_MessageHelper.getRelatedWorkOrderId';
+import { formatDate } from 'c/datetimeFormatter';
+import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
+import THREADRELATEDOBJECTID from '@salesforce/schema/Thread__c.CRM_Related_Object__c';
 import getRequestId from '@salesforce/apex/HOT_MessageHelper.getRequestId';
 import isUserOwnerOfLastMessage from '@salesforce/apex/HOT_MessageHelper.isUserOwnerOfLastMessage';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
+import { formatRecord } from 'c/datetimeFormatter';
 
-const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD]; //Extract the name of the thread record
+const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREADRELATEDOBJECTID]; //Extract the name of the thread record
 
 export default class hot_messagingCommunityThreadViewer extends NavigationMixin(LightningElement) {
     _mySendForSplitting;
     messages = [];
     buttonisdisabled = false;
+    @track isDetails = false;
     @api recordId;
     @api requestId;
     @track msgVal;
@@ -85,7 +91,9 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     get name() {
         return getFieldValue(this.thread.data, THREADNAME_FIELD);
     }
-
+    get threadRelatedObjectId() {
+        return getFieldValue(this.thread.data, THREADRELATEDOBJECTID);
+    }
     get isHelpText() {
         return this.helptextContent !== '' && this.helptextContent !== undefined ? true : false;
     }
@@ -221,15 +229,79 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             }
         });
     }
+    closeModal() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+    }
+    @track serviceAppointment;
+
     goToWO() {
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName: 'mine-bestillinger'
-            },
-            state: {
-                id: this.navigationId,
-                level: this.navigationLevel
+        console.log(this.threadRelatedObjectId);
+        getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
+            for (var key in result) {
+                if (result[key] == 'SA') {
+                    console.log('Dette er sa');
+                    getServiceAppointmentDetails({ recordId: key }).then((result) => {
+                        this.serviceAppointment = result;
+                        let startTimeFormatted = new Date(result.EarliestStartTime);
+                        let endTimeFormatted = new Date(result.DueDate);
+                        this.serviceAppointment.StartAndEndDate =
+                            startTimeFormatted.getDate() +
+                            '.' +
+                            (startTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            startTimeFormatted.getFullYear() +
+                            ' ' +
+                            ('0' + startTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
+                            ' - ' +
+                            endTimeFormatted.getDate() +
+                            '.' +
+                            (endTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            endTimeFormatted.getFullYear() +
+                            ' ' +
+                            ('0' + endTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                        let actualstartTimeFormatted = new Date(result.ActualStartTime);
+                        let actualendTimeFormatted = new Date(result.ActualEndTime);
+                        this.serviceAppointment.ActualStartTime =
+                            actualstartTimeFormatted.getDate() +
+                            '.' +
+                            (actualstartTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            actualstartTimeFormatted.getFullYear() +
+                            ' ' +
+                            ('0' + actualstartTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + actualstartTimeFormatted.getMinutes()).substr(-2);
+                        this.serviceAppointment.ActualEndTime =
+                            actualendTimeFormatted.getDate() +
+                            '.' +
+                            (actualendTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            actualendTimeFormatted.getFullYear() +
+                            ' ' +
+                            ('0' + actualendTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
+                        console.log(result.AppointmentNumber);
+                        this.isDetails = true;
+                        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                    });
+                } else {
+                    this[NavigationMixin.Navigate]({
+                        type: 'comm__namedPage',
+                        attributes: {
+                            pageName: 'mine-bestillinger'
+                        },
+                        state: {
+                            id: key,
+                            level: result[key]
+                        }
+                    });
+                }
             }
         });
     }

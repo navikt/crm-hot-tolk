@@ -26,6 +26,39 @@ public without sharing class HOT_MyServiceAppointmentListController {
         ];
         return sa;
     }
+    @AuraEnabled
+    public static ServiceAppointment getServiceAppointmentDetails(String recordId) {
+      ServiceAppointment serviceAppointment= [
+            SELECT  AppointmentNumber,
+                Subject,
+                SchedStartTime,
+                SchedEndTime,
+                EarliestStartTime,
+                DueDate,
+                ActualStartTime,
+                ActualEndTime,
+                HOT_AddressFormated__c,
+                HOT_ServiceTerritoryName__c,
+                Status,
+                HOT_HapticCommunication__c,
+                HOT_ServiceTerritoryDeveloperName__c,
+                HOT_DegreeOfHearingAndVisualImpairment__c,
+                HOT_WorkTypeName__c,
+                HOT_TermsOfAgreement__c,
+                HOT_Escort__c,
+                HOT_AssignmentType__c,
+                HOT_FreelanceSubject__c,
+                HOT_DelPol_IsHideFilesFromFreelance__c,
+                HOT_DelPol_ToHideRecord__c,
+                HOT_Dispatcher__c,
+                Description,
+                HOT_RequestNumber__c,
+                HOT_IsSerieoppdrag__c
+            FROM ServiceAppointment
+            WHERE Id=:recordId
+        ];
+        return serviceAppointment;
+    }
 
     @AuraEnabled(cacheable=true)
     public static List<ServiceAppointment> getMyServiceAppointments() {

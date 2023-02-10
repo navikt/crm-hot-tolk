@@ -1,15 +1,19 @@
 public with sharing class HOT_ThreadListController {
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getMyThreads() {
-        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-         List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource WHERE AccountId=:user.AccountId];
-        List<ServiceAppointment> serviceAppointments = [SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_ServiceResource__c IN :serviceResources];
-
-        Map<Id, ServiceAppointment> saMap = new Map<Id, ServiceAppointment>(serviceAppointments);
         List<Id> workOrderIds = new List<Id>();
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+       List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource WHERE AccountId=:user.AccountId];
+    if(serviceResources.size()>0){
+        List<ServiceAppointment> serviceAppointments = [SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id IN(SELECT ServiceAppointment__c FROM HOT_InterestedResource__c WHERE ServiceResource__c=:serviceResources[0].Id)];
+        
+        Map<Id, ServiceAppointment> saMap = new Map<Id, ServiceAppointment>(serviceAppointments);
+        
             for (ServiceAppointment sa : saMap.values()) {
             workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);
         }
+    }
+       
         List<Thread__c> threads = [
             SELECT Id, HOT_Subject__c, CRM_Type__c, CRM_Number_of_unread_Messages__c, HOT_Last_message_from__c, CRM_Registered_Datetime_Formula__c
             FROM Thread__c
