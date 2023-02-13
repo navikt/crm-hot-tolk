@@ -94,8 +94,4 @@ export default class Hot_requestForm_company extends LightningElement {
             this.setComponentValuesOnEditAndCopy();
         }
     }
-
-    renderedCallback() {
-        this.template.querySelector('h2').focus();
-    }
 }
