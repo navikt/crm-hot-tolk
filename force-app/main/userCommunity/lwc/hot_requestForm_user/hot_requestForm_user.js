@@ -69,7 +69,6 @@ export default class Hot_requestForm_user extends LightningElement {
     connectedCallback() {
         this.showDiv = true;
         setTimeout(() => this.template.querySelector('h2').focus());
-        1;
 
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
@@ -79,7 +78,7 @@ export default class Hot_requestForm_user extends LightningElement {
         this.setRadiobuttonsOnConnected();
     }
 
-    renderedCallback() {
-        this.template.querySelector('h2').focus();
-    }
+    // renderedCallback() {
+    //     this.template.querySelector('h2').focus();
+    // }
 }
