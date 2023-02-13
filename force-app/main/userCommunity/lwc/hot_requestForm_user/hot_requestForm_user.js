@@ -77,8 +77,4 @@ export default class Hot_requestForm_user extends LightningElement {
         }
         this.setRadiobuttonsOnConnected();
     }
-
-    // renderedCallback() {
-    //     this.template.querySelector('h2').focus();
-    // }
 }
