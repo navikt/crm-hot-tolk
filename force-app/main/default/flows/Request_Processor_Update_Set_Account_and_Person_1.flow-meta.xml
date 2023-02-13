@@ -46,7 +46,7 @@
             <name>TRUE_myRule_4</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>formula_TRUE_myRule_4</leftValueReference>
+                <leftValueReference>HOT_Account_Not_Null_AND_ISCHANGED</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -102,6 +102,13 @@
 &amp;&amp;
 ISCHANGED({!$Record.Account__c})</expression>
     </formulas>
+    <formulas>
+        <name>HOT_Account_Not_Null_AND_ISCHANGED</name>
+        <dataType>Boolean</dataType>
+        <expression>{!$Record.Account__c} &lt;&gt; null
+&amp;&amp;
+ISCHANGED({!$Record.Account__c})</expression>
+    </formulas>
     <interviewLabel>Request Processor - Update - Set Account and Person {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Request Processor - Update - Set Account and Person</label>
     <processMetadataValues>
@@ -149,7 +156,7 @@ ISCHANGED({!$Record.Account__c})</expression>
         <inputAssignments>
             <field>Person__c</field>
             <value>
-                <elementReference>formula_1_myRule_4_A1_3183913359</elementReference>
+                <elementReference>$Record.Account__r.CRM_Person__c</elementReference>
             </value>
         </inputAssignments>
         <inputReference>$Record</inputReference>
