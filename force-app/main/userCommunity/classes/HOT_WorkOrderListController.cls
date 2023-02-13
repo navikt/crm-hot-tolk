@@ -190,7 +190,7 @@ public without sharing class HOT_WorkOrderListController {
         }
         return workOrders;
     }
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
    public static String getThreadInterpreterId(String workOrderId) {
     List<Thread__c> thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:workOrderId LIMIT 1];
     String Id='';
