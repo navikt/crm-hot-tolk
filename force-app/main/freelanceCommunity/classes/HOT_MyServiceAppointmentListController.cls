@@ -121,7 +121,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
         ];
         return serviceAppointments;
     }
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static String getThreadFreelanceId(String serviceAppointmentId) {
          String Id='';
         ServiceAppointment serviceAppointment=[SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
