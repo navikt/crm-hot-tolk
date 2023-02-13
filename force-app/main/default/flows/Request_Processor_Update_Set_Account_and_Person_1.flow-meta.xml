@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>57.0</apiVersion>
+    <decisions>
+        <name>myRule_1</name>
+        <label>Delete Person</label>
+        <locationX>182</locationX>
+        <locationY>335</locationY>
+        <defaultConnector>
+            <targetReference>myRule_4</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Delete Person</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Account__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Account__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_1_A1</targetReference>
+            </connector>
+            <label>TRUE_Delete Person</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_4</name>
+        <label>Update Person</label>
+        <locationX>182</locationX>
+        <locationY>671</locationY>
+        <defaultConnector>
+            <targetReference>myRule_7</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Update Person</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_4</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_TRUE_myRule_4</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_4_A1</targetReference>
+            </connector>
+            <label>TRUE_Update Person</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_7</name>
+        <label>Status Annulert</label>
+        <locationX>182</locationX>
+        <locationY>1007</locationY>
+        <defaultConnectorLabel>FALSE_Status Annulert</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_7</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Annullert</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_7_A1</targetReference>
+            </connector>
+            <label>TRUE_Status Annulert</label>
+        </rules>
+    </decisions>
+    <description
+    >Migrated from the Request Processor - Update - Set Account and Person process using multiple criteria.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>formula_1_myRule_4_A1_3183913359</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.Account__c.CRM_Person__c }</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_4</name>
+        <dataType>Boolean</dataType>
+        <expression>{!$Record.Account__c} &lt;&gt; null
+&amp;&amp;
+ISCHANGED({!$Record.Account__c})</expression>
+    </formulas>
+    <interviewLabel>Request Processor - Update - Set Account and Person {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Request Processor - Update - Set Account and Person</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>myRule_1_A1</name>
+        <label>Set Person to NULL</label>
+        <locationX>50</locationX>
+        <locationY>455</locationY>
+        <connector>
+            <targetReference>myRule_4</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Person__c</field>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>myRule_4_A1</name>
+        <label>Set person</label>
+        <locationX>50</locationX>
+        <locationY>791</locationY>
+        <connector>
+            <targetReference>myRule_7</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Account__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Person__c</field>
+            <value>
+                <elementReference>formula_1_myRule_4_A1_3183913359</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>myRule_7_A1</name>
+        <label>Set Account and Person to NULL</label>
+        <locationX>50</locationX>
+        <locationY>1127</locationY>
+        <inputAssignments>
+            <field>Account__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Company__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Orderer__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Person__c</field>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>myRule_1</targetReference>
+        </connector>
+        <object>HOT_Request__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
