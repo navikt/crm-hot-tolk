@@ -14,7 +14,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 'NumberOfWorkOrders__c'
             }
         );
-        setSourceFieldOnClone((List<HOT_Request__c>) records);
+        //setSourceFieldOnClone((List<HOT_Request__c>) records);
         List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> requestsWithUserInterpretationMethod = new List<HOT_Request__c>();
 
@@ -33,8 +33,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             setInterpretationMethod(requestsWithUserInterpretationMethod);
         }
     }
-
-
 
     public override void onAfterInsert() {
         List<HOT_Request__c> requestsToGetContactInformationFor = new List<HOT_Request__c>();
@@ -365,7 +363,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             userInterpretationMethodList.add(request.UserInterpretationMethod__c);
         }
         Map<String, Id> workTypeIdByDeveloperName = new Map<String, Id>();
-        for (WorkType workType : [SELECT Id, HOT_DeveloperName__c FROM WorkType WHERE HOT_DeveloperName__c LIKE :userInterpretationMethodList]) {
+        for (WorkType workType : [
+            SELECT Id, HOT_DeveloperName__c
+            FROM WorkType
+            WHERE HOT_DeveloperName__c LIKE :userInterpretationMethodList
+        ]) {
             workTypeIdByDeveloperName.put(workType.HOT_DeveloperName__c, workType.Id);
         }
         for (HOT_Request__c request : requests) {
@@ -373,22 +375,19 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
 
-    public static void setMeetingStreet(List<HOT_Request__c> requests){
+    public static void setMeetingStreet(List<HOT_Request__c> requests) {
         for (HOT_Request__C request : requests) {
-            if(request.MeetingStreet__c == null && request.InterpretationStreet__c != null){
+            if (request.MeetingStreet__c == null && request.InterpretationStreet__c != null) {
                 request.MeetingStreet__c = request.InterpretationStreet__c;
                 request.MeetingPostalCity__c = request.InterpretationPostalCity__c;
                 request.MeetingPostalCode__c = request.InterpretationPostalCode__c;
             }
 
-            if(request.InterpretationStreet__c == null && request.MeetingStreet__c != null){
+            if (request.InterpretationStreet__c == null && request.MeetingStreet__c != null) {
                 request.InterpretationStreet__c = request.MeetingStreet__c;
                 request.InterpretationPostalCity__c = request.MeetingPostalCity__c;
                 request.InterpretationPostalCode__c = request.MeetingPostalCode__c;
             }
         }
     }
-
 }
-
-
