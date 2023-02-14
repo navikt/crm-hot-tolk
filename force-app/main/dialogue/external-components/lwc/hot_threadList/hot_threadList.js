@@ -118,17 +118,11 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     });
                     this.threads = this.unmappedThreads.map((x) => ({
                         ...x,
-                        read:
-                            x.CRM_Number_of_unread_Messages__c > 0 && x.HOT_Last_message_from__c != this.userContactId
-                                ? false
-                                : true
+                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true
                     }));
                     this.interpreterThreads = this.unmappedInterpreterThreads.map((x) => ({
                         ...x,
-                        read:
-                            x.CRM_Number_of_unread_Messages__c > 0 && x.HOT_Last_message_from__c != this.userContactId
-                                ? false
-                                : true
+                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true
                     }));
                     this.noThreads = this.threads.length === 0;
                     this.noInterpreterThreads = this.interpreterThreads.length === 0;

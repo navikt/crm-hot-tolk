@@ -198,14 +198,21 @@ public without sharing class HOT_MessageHelper {
             throw new AuraHandledException(e.getMessage());
         }
     }
-     @AuraEnabled
-    public static boolean isUserOwnerOfLastMessage(Id threadId) {
-        Message__c message=[SELECT Id, CRM_From_Contact__c FROM Message__c WHERE CRM_Thread__c=:threadId ORDER BY Id DESC LIMIT 1];
-        User user = [SELECT Id, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-        if(message.CRM_From_Contact__c==user.ContactId){
-            return true;
+    @AuraEnabled
+    public static void markThreadAsRead(Id threadId, String userContactId) {
+        Thread__c thread=[SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id=:threadId];
+        if (thread.HOT_Thread_read_by__c.contains(userContactId)){
+            
+         }
+         else{
+            thread.HOT_Thread_read_by__c=thread.HOT_Thread_read_by__c+userContactId+';';
+         }
+        ///thread.HOT_Thread_read_by__c=thread.HOT_Thread_read_by__c+userContactId+';';
+        try {
+            update thread;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
-        return false;
     }
     /**
      * Method for marking unread messages by NAV
@@ -261,12 +268,14 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled
     public static void setLastMessageFrom(String threadId, String fromContactId) {
-        Thread__c t = [SELECT Id, HOT_Last_message_from__c FROM Thread__c WHERE Id = :threadId];
+        Thread__c t = [SELECT Id, HOT_Last_message_from__c, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId];
         if(fromContactId=='tolk'){
             t.HOT_Last_message_from__c=null;
+            t.HOT_Thread_read_by__c=fromContactId;
         }
         else{
             t.HOT_Last_message_from__c=fromContactId;
+            t.HOT_Thread_read_by__c=fromContactId+';';
         }
         update t;
     }

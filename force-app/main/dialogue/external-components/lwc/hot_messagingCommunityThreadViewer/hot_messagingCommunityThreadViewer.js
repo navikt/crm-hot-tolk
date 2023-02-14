@@ -2,6 +2,7 @@ import { LightningElement, wire, api, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
+import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getRelatedWorkOrderId from '@salesforce/apex/HOT_MessageHelper.getRelatedWorkOrderId';
@@ -15,7 +16,6 @@ import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREADRELATEDOBJECTID from '@salesforce/schema/Thread__c.CRM_Related_Object__c';
 import getRequestId from '@salesforce/apex/HOT_MessageHelper.getRequestId';
-import isUserOwnerOfLastMessage from '@salesforce/apex/HOT_MessageHelper.isUserOwnerOfLastMessage';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { formatRecord } from 'c/datetimeFormatter';
 
@@ -48,18 +48,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             .then((contactId) => {
                 this.userContactId = contactId;
                 refreshApex(this._mySendForSplitting);
+                markThreadAsRead({ threadId: this.recordId, userContactId: this.userContactId });
             })
             .catch((error) => {
                 //Apex error
             });
-        isUserOwnerOfLastMessage({ threadId: this.recordId }).then((result) => {
-            if (result != true) {
-                markAsRead({ threadId: this.recordId });
-                console.log('Du har ikke sent den siste meldingen');
-            } else {
-                console.log('Du har sent den siste meldingen');
-            }
-        });
     }
 
     @track breadcrumbs = [
