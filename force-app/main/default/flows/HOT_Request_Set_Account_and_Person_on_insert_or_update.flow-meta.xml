@@ -2,16 +2,16 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>57.0</apiVersion>
     <decisions>
-        <name>myRule_1</name>
+        <name>HOT_Delete_Person</name>
         <label>Delete Person</label>
         <locationX>182</locationX>
-        <locationY>335</locationY>
+        <locationY>311</locationY>
         <defaultConnector>
-            <targetReference>myRule_4</targetReference>
+            <targetReference>HOT_Update_Person</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>FALSE_Delete Person</defaultConnectorLabel>
         <rules>
-            <name>TRUE_myRule_1</name>
+            <name>HOT_TRUE_DeletePerson</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.Account__c</leftValueReference>
@@ -28,44 +28,19 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>myRule_1_A1</targetReference>
+                <targetReference>HOT_Set_Person_to_NULL</targetReference>
             </connector>
             <label>TRUE_Delete Person</label>
         </rules>
     </decisions>
     <decisions>
-        <name>myRule_4</name>
-        <label>Update Person</label>
+        <name>HOT_Status_Annullert</name>
+        <label>Status Annullert</label>
         <locationX>182</locationX>
-        <locationY>671</locationY>
-        <defaultConnector>
-            <targetReference>myRule_7</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>FALSE_Update Person</defaultConnectorLabel>
+        <locationY>983</locationY>
+        <defaultConnectorLabel>FALSE_Status Annullert</defaultConnectorLabel>
         <rules>
-            <name>TRUE_myRule_4</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>HOT_Account_Not_Null_AND_ISCHANGED</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>myRule_4_A1</targetReference>
-            </connector>
-            <label>TRUE_Update Person</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>myRule_7</name>
-        <label>Status Annulert</label>
-        <locationX>182</locationX>
-        <locationY>1007</locationY>
-        <defaultConnectorLabel>FALSE_Status Annulert</defaultConnectorLabel>
-        <rules>
-            <name>TRUE_myRule_7</name>
+            <name>HOT_TRUE_Status_Annullert</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.Status__c</leftValueReference>
@@ -82,13 +57,36 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>myRule_7_A1</targetReference>
+                <targetReference>HOT_Set_Account_and_Person_to_NULL</targetReference>
             </connector>
-            <label>TRUE_Status Annulert</label>
+            <label>TRUE_Status Annullert</label>
         </rules>
     </decisions>
-    <description
-    >Migrated from the Request Processor - Update - Set Account and Person process using multiple criteria.</description>
+    <decisions>
+        <name>HOT_Update_Person</name>
+        <label>Update Person</label>
+        <locationX>182</locationX>
+        <locationY>647</locationY>
+        <defaultConnector>
+            <targetReference>HOT_Status_Annullert</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Update Person</defaultConnectorLabel>
+        <rules>
+            <name>HOT_TRUE_Update_Person</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>HOT_Account_Not_Null_AND_ISCHANGED</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>HOT_Set_Person</targetReference>
+            </connector>
+            <label>TRUE_Update Person</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
     <formulas>
         <name>formula_1_myRule_4_A1_3183913359</name>
@@ -109,8 +107,8 @@ ISCHANGED({!$Record.Account__c})</expression>
 &amp;&amp;
 ISCHANGED({!$Record.Account__c})</expression>
     </formulas>
-    <interviewLabel>Request Processor - Update - Set Account and Person {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Request Processor - Update - Set Account and Person</label>
+    <interviewLabel>Request - Set Account and Person on insert or update {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Request - Set Account and Person on insert or update</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -125,25 +123,31 @@ ISCHANGED({!$Record.Account__c})</expression>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordUpdates>
-        <name>myRule_1_A1</name>
-        <label>Set Person to NULL</label>
+        <name>HOT_Set_Account_and_Person_to_NULL</name>
+        <label>Set Account and Person to NULL</label>
         <locationX>50</locationX>
-        <locationY>455</locationY>
-        <connector>
-            <targetReference>myRule_4</targetReference>
-        </connector>
+        <locationY>1103</locationY>
+        <inputAssignments>
+            <field>Account__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Company__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Orderer__c</field>
+        </inputAssignments>
         <inputAssignments>
             <field>Person__c</field>
         </inputAssignments>
         <inputReference>$Record</inputReference>
     </recordUpdates>
     <recordUpdates>
-        <name>myRule_4_A1</name>
+        <name>HOT_Set_Person</name>
         <label>Set person</label>
         <locationX>50</locationX>
-        <locationY>791</locationY>
+        <locationY>767</locationY>
         <connector>
-            <targetReference>myRule_7</targetReference>
+            <targetReference>HOT_Status_Annullert</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -162,19 +166,13 @@ ISCHANGED({!$Record.Account__c})</expression>
         <inputReference>$Record</inputReference>
     </recordUpdates>
     <recordUpdates>
-        <name>myRule_7_A1</name>
-        <label>Set Account and Person to NULL</label>
+        <name>HOT_Set_Person_to_NULL</name>
+        <label>Set Person to NULL</label>
         <locationX>50</locationX>
-        <locationY>1127</locationY>
-        <inputAssignments>
-            <field>Account__c</field>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Company__c</field>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Orderer__c</field>
-        </inputAssignments>
+        <locationY>431</locationY>
+        <connector>
+            <targetReference>HOT_Update_Person</targetReference>
+        </connector>
         <inputAssignments>
             <field>Person__c</field>
         </inputAssignments>
@@ -184,11 +182,11 @@ ISCHANGED({!$Record.Account__c})</expression>
         <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>myRule_1</targetReference>
+            <targetReference>HOT_Delete_Person</targetReference>
         </connector>
         <object>HOT_Request__c</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
-        <triggerType>RecordAfterSave</triggerType>
+        <triggerType>RecordBeforeSave</triggerType>
     </start>
     <status>Active</status>
 </Flow>
