@@ -535,6 +535,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Thread__c.HOT_Thread_read_by__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Thread__c.HOT_WorkOrder__c</field>
         <readable>true</readable>
     </fieldPermissions>
