@@ -30,25 +30,23 @@ public without sharing class HOT_MessageHelper {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<Thread__c> getThreadsCollection(Id recordId, Boolean singleThread) {
+    public static List<Thread__c> getThreadsCollection(Id recordId, Boolean singleThread, String type) {
         //Sjekker om bruker har tillatelse til å se samtalen
-        if (recordId.getSobjectType() == WorkOrder.sObjectType) {
-            User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
-            ServiceResource serviceResource =[Select Id, AccountId FROM ServiceResource WHERE AccountId=:currentUser.AccountId];
-            if(serviceResource!=null){
-                List<ServiceAppointment> serviceAppointments=[Select HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_ServiceResource__c=:serviceResource.Id AND HOT_WorkOrderLineItem__r.WorkOrderId=:recordId];
-                if(serviceAppointments.size()==0){
-                    throw new AuraHandledException('Du har ikke tilgang til denne samtalen');
-                }
-            }
-        }
+        // if (recordId.getSobjectType() == WorkOrder.sObjectType) {
+        //     User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+        //     ServiceResource serviceResource =[Select Id, AccountId FROM ServiceResource WHERE AccountId=:currentUser.AccountId];
+        //     if(serviceResource!=null){
+        //         List<ServiceAppointment> serviceAppointments=[Select HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_ServiceResource__c=:serviceResource.Id AND HOT_WorkOrderLineItem__r.WorkOrderId=:recordId];
+        //         if(serviceAppointments.size()==0){
+        //             throw new AuraHandledException('Du har ikke tilgang til denne samtalen');
+        //         }
+        //     }
+        // }
         // ---//
-        if (singleThread == false) {
-            return getThreads(recordId);
+        if (singleThread == true && type!='') {
+            return getSingleThread(recordId, type);
         } else {
-            List<Thread__c> tList = new List<Thread__c>();
-            tList.add(getSingleThread(recordId));
-            return tList;
+            return getThreads(recordId);
         }
     }
 
@@ -57,9 +55,9 @@ public without sharing class HOT_MessageHelper {
         List<Thread__c> threadList;
         try {
             threadList = [
-                SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
+                SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c, CRM_Type__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK')
+                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Type__c = 'HOT_BESTILLER-FORMIDLER')
             ];
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
@@ -67,6 +65,15 @@ public without sharing class HOT_MessageHelper {
             logger.publishSynch();
         }
         return threadList;
+    }
+    @AuraEnabled(cacheable=true)
+    public static List<HOT_Request__c> getRequestInformation(Id recordId) {
+        List<HOT_Request__c> request= [
+                SELECT Id, IsAccountEqualOrderer__c
+                FROM HOT_Request__c
+                WHERE Id= :recordId
+            ];
+        return request;
     }
     @AuraEnabled(cacheable=true)
     public static Thread__c getSingleThread(Id recordId) {
@@ -78,6 +85,22 @@ public without sharing class HOT_MessageHelper {
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
                 FROM Thread__c
                 WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK')
+                LIMIT 1
+            ];
+
+            return t;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+     @AuraEnabled(cacheable=true)
+    public static List<Thread__c> getSingleThread(Id recordId, String type) {
+        try {
+    
+            List<Thread__c> t = [
+                SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
+                FROM Thread__c
+                WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c =:type
                 LIMIT 1
             ];
 
@@ -118,9 +141,16 @@ public without sharing class HOT_MessageHelper {
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='HOT_Request__c'){
-            HOT_Request__c request=[SELECT Subject__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
+            User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+            HOT_Request__c request=[SELECT Subject__c, IsAccountEqualOrderer__c, Orderer__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
-            thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+            if(request.IsAccountEqualOrderer__c==false && request.Orderer__c==currentUser.AccountId){
+                thread.CRM_Thread_Type__c = 'HOT_BESTILLER-FORMIDLER';
+            }
+            else{
+                 thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+            }
+           
             thread.CRM_Account__c = accountId;
             thread.HOT_Subject__c=request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
@@ -134,6 +164,39 @@ public without sharing class HOT_MessageHelper {
             HOT_DatabaseOperations.insertRecords(thread);
         }
         //Finne ut om det er request eller workorder object
+        return thread;
+    }
+     @AuraEnabled(cacheable=false)
+    public static Thread__c createThreadDispatcher(Id recordId, Id accountId, String type) {
+       
+        Thread__c thread = new Thread__c();
+        String objectType=String.valueOf(recordId.getsobjecttype());
+        if(objectType=='WorkOrder'){
+            WorkOrder workOrder=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+            thread.CRM_Account__c = accountId;
+            thread.HOT_Subject__c=workOrder.Subject;
+            thread.HOT_WorkOrder__c=recordId;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
+        if(objectType=='HOT_Request__c'){
+            User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+            HOT_Request__c request=[SELECT Subject__c, IsAccountEqualOrderer__c, Orderer__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = type;
+            thread.CRM_Account__c = accountId;
+            thread.HOT_Subject__c=request.Subject__c;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
+        if(objectType=='ServiceAppointment'){
+            ServiceAppointment serviceAppointment=[SELECT Subject, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:recordId LIMIT 1];
+            thread.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
+            thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+            thread.CRM_Account__c = serviceAppointment.HOT_Account__c; //?
+            thread.HOT_Subject__c=serviceAppointment.Subject;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
         return thread;
     }
 
@@ -312,16 +375,27 @@ public static Map<String, String> getRelatedWorkOrderId(Id relatedRecordId) {
             }
         }
         if(objectType=='HOT_Request__c'){
-            WorkOrder workOrder=[Select Id FROM WorkOrder Where HOT_Request__c=:relatedRecordId LIMIT 1];
+            User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+            WorkOrder workOrder=[Select Id, HOT_Request__r.IsAccountEqualOrderer__c, HOT_Request__r.Orderer__c FROM WorkOrder Where HOT_Request__c=:relatedRecordId LIMIT 1];
             HOT_Request__c request=[SELECT IsSerieoppdrag__c FROM HOT_Request__c WHERE Id=:relatedRecordId LIMIT 1];
             workorderId=workOrder.Id;
-            if(request.IsSerieoppdrag__c==false){
+            if(workOrder.HOT_Request__r.IsAccountEqualOrderer__c==false && workOrder.HOT_Request__r.Orderer__c ==currentUser.AccountId){
+                if(request.IsSerieoppdrag__c==false){
+                    navigationhelp.put(workorderId,'Andres-WO'); 
+                }
+                else{
+                    navigationhelp.put(workorderId,'Andres-R');
+                }
+                
+            }
+            else{
+                if(request.IsSerieoppdrag__c==false){
                 navigationhelp.put(workorderId,'WO');
             }
             else{
             navigationhelp.put(workorderId,'R'); 
             }
-            
+            }
         }
         return navigationhelp;
 }

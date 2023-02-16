@@ -25,12 +25,13 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     _mySendForSplitting;
     messages = [];
     buttonisdisabled = false;
-    @track isDetails = false;
-    @api recordId;
-    @api requestId;
-    @track msgVal;
     userContactId;
     thread;
+    @track isDetails = false;
+    @track msgVal;
+
+    @api recordId;
+    @api requestId;
     @api alerttext;
     @api header;
     @api secondheader;
@@ -210,15 +211,28 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
 
     goBack() {
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName: this.navigationBaseUrl
-            },
-            state: {
-                id: this.navigationId,
-                level: this.navigationLevel
+        getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
+            for (var key in result) {
+                if (result[key] == 'Andres-WO') {
+                    this.navigationBaseUrl = 'mine-bestillinger-andre';
+                    break;
+                }
+                if (result[key] == 'Andres-R') {
+                    this.navigationBaseUrl = 'mine-bestillinger-andre';
+                    break;
+                } else {
+                }
             }
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: this.navigationBaseUrl
+                },
+                state: {
+                    id: this.navigationId,
+                    level: this.navigationLevel
+                }
+            });
         });
     }
     closeModal() {
@@ -227,17 +241,13 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @track serviceAppointment;
 
     goToWO() {
-        console.log(this.threadRelatedObjectId);
         let i = 0;
         getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
             for (var key in result) {
                 i++;
-                console.log(i);
                 if (result[key] == 'SA') {
-                    console.log('Dette er sa');
                     getServiceAppointmentDetails({ recordId: key }).then((result) => {
                         this.serviceAppointment = result;
-                        console.log('tid:' + result.EarliestStartTime);
                         let startTimeFormatted = new Date(result.EarliestStartTime);
                         let endTimeFormatted = new Date(result.DueDate);
                         this.serviceAppointment.StartAndEndDate =
@@ -282,7 +292,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                             ('0' + actualendTimeFormatted.getHours()).substr(-2) +
                             ':' +
                             ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
-                        console.log(result.AppointmentNumber);
                         if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
                             this.serviceAppointment.ActualStartTime = '';
                         }
@@ -292,6 +301,33 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         this.isDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                     });
+                    break;
+                }
+                if (result[key] == 'Andres-WO') {
+                    this[NavigationMixin.Navigate]({
+                        type: 'comm__namedPage',
+                        attributes: {
+                            pageName: 'mine-bestillinger-andre'
+                        },
+                        state: {
+                            id: key,
+                            level: 'WO'
+                        }
+                    });
+                    break;
+                }
+                if (result[key] == 'Andres-R') {
+                    this[NavigationMixin.Navigate]({
+                        type: 'comm__namedPage',
+                        attributes: {
+                            pageName: 'mine-bestillinger-andre'
+                        },
+                        state: {
+                            id: key,
+                            level: 'R'
+                        }
+                    });
+                    break;
                 } else {
                     this[NavigationMixin.Navigate]({
                         type: 'comm__namedPage',

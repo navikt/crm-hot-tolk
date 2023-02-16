@@ -58,10 +58,9 @@
                 <label>HOT_BRUKER-TOLK</label>
             </value>
             <value>
-                <fullName>HOT_BRUKER-FRILANS</fullName>
+                <fullName>HOT_BESTILLER-FORMIDLER</fullName>
                 <default>false</default>
-                <isActive>false</isActive>
-                <label>HOT_BRUKER-FRILANS</label>
+                <label>HOT_BESTILLER-FORMIDLER</label>
             </value>
         </valueSetDefinition>
     </valueSet>

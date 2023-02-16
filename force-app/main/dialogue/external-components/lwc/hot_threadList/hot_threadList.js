@@ -72,9 +72,17 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                 if (this.activeTab == 'mythreads') {
                     this.showMythreads = true;
                     this.showInterpreterthreads = false;
-                } else {
+                    this.showOrderthreads = false;
+                }
+                if (this.activeTab == 'interpreterthreads') {
                     this.showMythreads = false;
                     this.showInterpreterthreads = true;
+                    this.showOrderthreads = false;
+                }
+                if (this.activeTab == 'orderThreads') {
+                    this.showMythreads = false;
+                    this.showInterpreterthreads = false;
+                    this.showOrderthreads = true;
                 }
             }
         }
@@ -90,13 +98,20 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
             }
         });
     }
-    @track unmappedThreads;
     @track threads;
+    @track interpreterThreads;
+    @track orderThreads;
+    @track unmappedThreads;
     @track unmappedInterpreterThreads;
+    @track unmapperOrderThreads;
+
     showMythreads = true;
     showInterpreterthreads = false;
+    showOrderthreads = false;
     noThreads = false;
     noInterpreterThreads = false;
+    noOrderThreads = false;
+
     wiredThreadsResult;
     @wire(getMyThreads)
     wiredThreads(result) {
@@ -108,12 +123,17 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     this.unmappedThreads = [];
                     this.threads = [];
                     this.unmappedInterpreterThreads = [];
+                    this.unmapperOrderThreads = [];
                     result.data.forEach((element) => {
                         if (element.CRM_Type__c == 'HOT_BRUKER-TOLK') {
                             this.unmappedInterpreterThreads.push(element);
                         }
                         if (element.CRM_Type__c == 'HOT_BRUKER-FORMIDLER') {
                             this.unmappedThreads.push(element);
+                        }
+                        if (element.CRM_Type__c == 'HOT_BESTILLER-FORMIDLER') {
+                            this.unmapperOrderThreads.push(element);
+                            this.tabs.push({ name: 'orderThreads', label: 'Annen bestiller', selected: false });
                         }
                     });
                     this.threads = this.unmappedThreads.map((x) => ({
@@ -124,8 +144,13 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true
                     }));
+                    this.orderThreads = this.unmapperOrderThreads.map((x) => ({
+                        ...x,
+                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true
+                    }));
                     this.noThreads = this.threads.length === 0;
                     this.noInterpreterThreads = this.interpreterThreads.length === 0;
+                    this.noOrderThreads = this.orderThreads.length === 0;
                 })
                 .catch((error) => {
                     //Apex error

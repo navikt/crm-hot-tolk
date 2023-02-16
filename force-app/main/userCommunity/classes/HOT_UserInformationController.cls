@@ -9,6 +9,11 @@ public without sharing class HOT_UserInformationController {
         ];
         return person;
     }
+     @AuraEnabled(cacheable=true)
+    public static User getAccountId() {
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        return currentUser;
+    }
 
     @AuraEnabled(cacheable=true)
     public static Person__c getPerson() {
