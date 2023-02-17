@@ -111,6 +111,7 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
     noThreads = false;
     noInterpreterThreads = false;
     noOrderThreads = false;
+    ordererThreadsExisting = 0;
 
     wiredThreadsResult;
     @wire(getMyThreads)
@@ -133,9 +134,12 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                         }
                         if (element.CRM_Type__c == 'HOT_BESTILLER-FORMIDLER') {
                             this.unmapperOrderThreads.push(element);
-                            this.tabs.push({ name: 'orderThreads', label: 'Annen bestiller', selected: false });
+                            this.ordererThreadsExisting++;
                         }
                     });
+                    if (this.ordererThreadsExisting > 0) {
+                        this.tabs.push({ name: 'orderThreads', label: 'Annen bestiller', selected: false });
+                    }
                     this.threads = this.unmappedThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true

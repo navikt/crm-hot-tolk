@@ -213,11 +213,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     goBack() {
         getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
             for (var key in result) {
-                if (result[key] == 'Andres-WO') {
+                if (result[key] == 'Andres-WO' && this.navigationBaseUrl != 'mine-samtaler') {
                     this.navigationBaseUrl = 'mine-bestillinger-andre';
                     break;
                 }
-                if (result[key] == 'Andres-R') {
+                if (result[key] == 'Andres-R' && this.navigationBaseUrl != 'mine-samtaler') {
                     this.navigationBaseUrl = 'mine-bestillinger-andre';
                     break;
                 } else {

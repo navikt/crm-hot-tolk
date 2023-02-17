@@ -45,7 +45,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             this.threads = result.data;
             if (this.threads.length > 0) {
                 this.showButtonDiv = false;
-                this.showThreads = true;
             } else {
                 this.showButtonDiv = true;
             }
@@ -70,6 +69,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                     createThread({ recordId: this.recordId, accountId: this.accountId, type: this.messageType })
                         .then(() => {
                             this.showButtonDiv = false;
+                            this.showThreads = true;
                             return refreshApex(this._threadsforRefresh);
                         })
                         .catch((error) => {});
@@ -79,6 +79,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             createThread({ recordId: this.recordId, accountId: this.accountId, type: this.messageType })
                 .then(() => {
                     this.showButtonDiv = false;
+                    this.showThreads = true;
                     return refreshApex(this._threadsforRefresh);
                 })
                 .catch((error) => {});
