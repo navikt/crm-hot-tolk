@@ -45,8 +45,8 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
         }
     ];
     @track tabs = [
-        { name: 'mythreads', label: 'Samtaler med formidler', selected: true },
-        { name: 'interpreterthreads', label: 'Samtaler tolk-bruker', selected: false }
+        { name: 'mythreads', label: 'Med formidler', selected: true },
+        { name: 'interpreterthreads', label: 'Med tolk', selected: false }
     ];
 
     @track tabMap = {
