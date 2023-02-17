@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
     <decisions>
         <name>isChangedDecision2_myRule_1_Account_c</name>
         <label>isChangedDecision2_myRule_1_Account_c</label>
@@ -361,6 +362,7 @@ ISCHANGED({!myVariable_current.Account__c})</expression>
         <connector>
             <targetReference>myDecision3</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <processMetadataValues>
                 <name>implicit</name>
@@ -441,6 +443,7 @@ ISCHANGED({!myVariable_current.Account__c})</expression>
         <connector>
             <targetReference>myDecision6</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <processMetadataValues>
                 <name>implicit</name>
@@ -570,6 +573,7 @@ ISCHANGED({!myVariable_current.Account__c})</expression>
         <label>Set Account and Person to NULL</label>
         <locationX>700</locationX>
         <locationY>200</locationY>
+        <filterLogic>and</filterLogic>
         <filters>
             <processMetadataValues>
                 <name>implicit</name>
@@ -718,7 +722,7 @@ ISCHANGED({!myVariable_current.Account__c})</expression>
         <object>HOT_Request__c</object>
     </recordUpdates>
     <startElementReference>isChangedDecision2_myRule_1_Account_c</startElementReference>
-    <status>Active</status>
+    <status>Obsolete</status>
     <variables>
         <name>myVariable_current</name>
         <dataType>SObject</dataType>
