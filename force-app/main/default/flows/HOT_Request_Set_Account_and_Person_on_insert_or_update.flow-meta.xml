@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>57.0</apiVersion>
+    <decisions>
+        <name>HOT_Delete_Person</name>
+        <label>Delete Person</label>
+        <locationX>182</locationX>
+        <locationY>311</locationY>
+        <defaultConnector>
+            <targetReference>HOT_Update_Person</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Delete Person</defaultConnectorLabel>
+        <rules>
+            <name>HOT_TRUE_DeletePerson</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Account__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Account__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>HOT_Set_Person_to_NULL</targetReference>
+            </connector>
+            <label>TRUE_Delete Person</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>HOT_Status_Annullert</name>
+        <label>Status Annullert</label>
+        <locationX>182</locationX>
+        <locationY>983</locationY>
+        <defaultConnectorLabel>FALSE_Status Annullert</defaultConnectorLabel>
+        <rules>
+            <name>HOT_TRUE_Status_Annullert</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Annullert</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>HOT_Set_Account_and_Person_to_NULL</targetReference>
+            </connector>
+            <label>TRUE_Status Annullert</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>HOT_Update_Person</name>
+        <label>Update Person</label>
+        <locationX>182</locationX>
+        <locationY>647</locationY>
+        <defaultConnector>
+            <targetReference>HOT_Status_Annullert</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Update Person</defaultConnectorLabel>
+        <rules>
+            <name>HOT_TRUE_Update_Person</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>HOT_Account_Not_Null_AND_ISCHANGED</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>HOT_Set_Person</targetReference>
+            </connector>
+            <label>TRUE_Update Person</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>formula_1_myRule_4_A1_3183913359</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.Account__c.CRM_Person__c }</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_4</name>
+        <dataType>Boolean</dataType>
+        <expression>{!$Record.Account__c} &lt;&gt; null
+&amp;&amp;
+ISCHANGED({!$Record.Account__c})</expression>
+    </formulas>
+    <formulas>
+        <name>HOT_Account_Not_Null_AND_ISCHANGED</name>
+        <dataType>Boolean</dataType>
+        <expression>{!$Record.Account__c} &lt;&gt; null
+&amp;&amp;
+ISCHANGED({!$Record.Account__c})</expression>
+    </formulas>
+    <interviewLabel>Request - Set Account and Person on insert or update {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Request - Set Account and Person on insert or update</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>HOT_Set_Account_and_Person_to_NULL</name>
+        <label>Set Account and Person to NULL</label>
+        <locationX>50</locationX>
+        <locationY>1103</locationY>
+        <inputAssignments>
+            <field>Account__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Company__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Orderer__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Person__c</field>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>HOT_Set_Person</name>
+        <label>Set person</label>
+        <locationX>50</locationX>
+        <locationY>767</locationY>
+        <connector>
+            <targetReference>HOT_Status_Annullert</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Account__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Person__c</field>
+            <value>
+                <elementReference>$Record.Account__r.CRM_Person__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>HOT_Set_Person_to_NULL</name>
+        <label>Set Person to NULL</label>
+        <locationX>50</locationX>
+        <locationY>431</locationY>
+        <connector>
+            <targetReference>HOT_Update_Person</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Person__c</field>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>HOT_Delete_Person</targetReference>
+        </connector>
+        <object>HOT_Request__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
