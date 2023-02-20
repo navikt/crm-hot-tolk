@@ -42,7 +42,7 @@ public without sharing class HOT_MessageHelper {
         //         }
         //     }
         // }
-        // ---//
+        
         if (singleThread == true && type!='') {
             return getSingleThread(recordId, type);
         } else {
@@ -103,7 +103,6 @@ public without sharing class HOT_MessageHelper {
                 WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c =:type
                 LIMIT 1
             ];
-
             return t;
         } catch (Exception e) {
             return null;
@@ -128,7 +127,6 @@ public without sharing class HOT_MessageHelper {
 
     @AuraEnabled(cacheable=false)
     public static Thread__c createThread(Id recordId, Id accountId) {
-       
         Thread__c thread = new Thread__c();
         String objectType=String.valueOf(recordId.getsobjecttype());
         if(objectType=='WorkOrder'){
@@ -163,12 +161,10 @@ public without sharing class HOT_MessageHelper {
             thread.HOT_Subject__c=serviceAppointment.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
-        //Finne ut om det er request eller workorder object
         return thread;
     }
      @AuraEnabled(cacheable=false)
     public static Thread__c createThreadDispatcher(Id recordId, Id accountId, String type) {
-       
         Thread__c thread = new Thread__c();
         String objectType=String.valueOf(recordId.getsobjecttype());
         if(objectType=='WorkOrder'){
@@ -270,7 +266,6 @@ public without sharing class HOT_MessageHelper {
          else{
             thread.HOT_Thread_read_by__c=thread.HOT_Thread_read_by__c+userContactId+';';
          }
-        ///thread.HOT_Thread_read_by__c=thread.HOT_Thread_read_by__c+userContactId+';';
         try {
             update thread;
         } catch (Exception e) {

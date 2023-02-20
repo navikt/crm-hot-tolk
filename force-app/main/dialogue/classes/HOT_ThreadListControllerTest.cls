@@ -27,6 +27,7 @@ public class HOT_ThreadListControllerTest {
     public static void getMyThreadsTest() {
         List<Thread__c> threadList = HOT_ThreadListController.getMyThreads();
 
+        //LAG TEST TIL DENNE
         System.assertEquals(0, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }
 }
