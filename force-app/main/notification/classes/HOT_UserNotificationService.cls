@@ -23,11 +23,10 @@ public without sharing class HOT_UserNotificationService {
 
         try {
             notification.send(recipients);
-            
+
             Exception e;
             LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            logger.
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
