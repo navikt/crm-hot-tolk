@@ -46,17 +46,17 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             accountIds.add(workOrder.AccountId);
         }
 
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
+        // CustomNotificationType notificationType = [
+        //     SELECT Id, DeveloperName
+        //     FROM CustomNotificationType
+        //     WHERE DeveloperName = 'HOT_NotifyUser'
+        // ];
 
-        CustomNotificationType notificationTypePush = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_Tolk_Bruker'
-        ];
+        // CustomNotificationType notificationTypePush = [
+        //     SELECT Id, DeveloperName
+        //     FROM CustomNotificationType
+        //     WHERE DeveloperName = 'HOT_Tolk_Bruker'
+        // ];
 
         List<WorkOrder> workordersList = [
             SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
@@ -77,9 +77,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 recipients.add(userIdByAccountId.get(wo.AccountId));
                 if (recipients.size() != 0) {
                     if(wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('SMS')) {
-                        HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
+                        HOT_UserNotificationService.newWorkOrderNotification(getCustomNotificationType('HOT_NotifyUser'), wo, recipients);
                     } else {
-                        HOT_UserNotificationService.newWorkOrderNotification(notificationTypePush, wo, recipients);
+                        HOT_UserNotificationService.newWorkOrderNotification(getCustomNotificationType('HOT_Tolk_Bruker'), wo, recipients);
                     }
                 }
             }
@@ -434,5 +434,14 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             workOrder.Duration =
                 ((Double) workOrder.EndDate.getTime() - (Double) workOrder.StartDate.getTime()) / 3600000;
         }
+    }
+
+    public static CustomNotificationType getCustomNotificationType(String devName) {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = :devName
+        ];
+        return notificationType;
     }
 }
