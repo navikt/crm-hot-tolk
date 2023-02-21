@@ -52,8 +52,14 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
 
+        CustomNotificationType notificationTypePush = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_Tolk_Bruker'
+        ];
+
         List<WorkOrder> workordersList = [
-            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c
+            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
             FROM WorkOrder
             WHERE HOT_Request__c IN :requestIds AND HOT_Request__r.Type__c = 'User'
         ];
@@ -70,7 +76,11 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 Set<String> recipients = new Set<String>();
                 recipients.add(userIdByAccountId.get(wo.AccountId));
                 if (recipients.size() != 0) {
-                    // HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
+                    if(wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('SMS')) {
+                        HOT_UserNotificationService.newWorkOrderNotification(notificationType, wo, recipients);
+                    } else {
+                        HOT_UserNotificationService.newWorkOrderNotification(notificationTypePush, wo, recipients);
+                    }
                 }
             }
         }

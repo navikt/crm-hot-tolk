@@ -21,7 +21,18 @@ public without sharing class HOT_UserNotificationService {
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+            
+            Exception e;
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void statusChangeNotification(
