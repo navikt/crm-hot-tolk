@@ -24,6 +24,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
+            System.debug('Problem sending notification' + e.getMessage());
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
