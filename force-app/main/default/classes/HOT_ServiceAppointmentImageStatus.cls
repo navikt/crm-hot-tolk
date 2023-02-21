@@ -11,13 +11,16 @@ public without sharing class HOT_ServiceAppointmentImageStatus implements Databa
 ]);
     }
     public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
-        for (ServiceAppointment sa : records) {
+        if(records.size()>0){
+            for (ServiceAppointment sa : records) {
             sa.Status = 'Completed';
         }
 
         update records;
+        }
     }
     public void finish(Database.BatchableContext bc) {
     
     }
 }
+

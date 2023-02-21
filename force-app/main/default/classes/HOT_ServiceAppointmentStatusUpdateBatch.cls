@@ -5,15 +5,16 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBatch implements 
     }
     public Database.QueryLocator start(Database.BatchableContext bc) {
         DateTime today =  Datetime.now();
-        return Database.getQueryLocator([SELECT Id, HOT_Request__c FROM ServiceAppointment WHERE (Status='Released to Freelance' OR Status='None') AND SchedEndTime<:today]);
+        return Database.getQueryLocator([SELECT Id, HOT_Request__c, Status FROM ServiceAppointment WHERE (Status='Released to Freelance' OR Status='None') AND SchedEndTime<:today]);
         
     }
     public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
-        for (ServiceAppointment sa : records) {
+        if(records.size()>0){
+            for (ServiceAppointment sa : records) {
             sa.Status = 'Cannot Complete';
         }
-
         update records;
+        }
     }
     public void finish(Database.BatchableContext bc) {
         if (!Test.isRunningTest()) {
@@ -32,3 +33,4 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBatch implements 
         }
     }
 }
+
