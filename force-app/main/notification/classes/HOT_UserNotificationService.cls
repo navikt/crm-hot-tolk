@@ -13,13 +13,13 @@ public without sharing class HOT_UserNotificationService {
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        //Id targetId = workOrder.Id;
+        Id targetId = workOrder.Id;
         String targetPageRef = getTargetPageRef(workOrder.Id, 'R');
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
         notification.setNotificationTypeId(notificationTypeId);
-        notification.setTargetPageRef(targetPageRef);
+       // notification.setTargetPageRef(targetPageRef);
 
         try {
             notification.send(recipients);
