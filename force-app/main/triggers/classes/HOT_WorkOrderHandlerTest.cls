@@ -334,6 +334,9 @@ private class HOT_WorkOrderHandlerTest {
 
     @isTest
     private static void createWorkOrder() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
