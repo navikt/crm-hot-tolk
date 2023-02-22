@@ -1,7 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
 import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
-import getOrderInformation from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOrderInformation';
+import getOrdererInformation from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOrdererInformation';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 
 import { columns, mobileColumns } from './columns';
@@ -126,7 +126,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
-        getOrderInformation({ serviceAppointmentId: result.detail.Id })
+        getOrdererInformation({ serviceAppointmentId: result.detail.Id })
             .then((phonenumber) => {
                 this.ordererPhoneNumber = phonenumber;
             })
