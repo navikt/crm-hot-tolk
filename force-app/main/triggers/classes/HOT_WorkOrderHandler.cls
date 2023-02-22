@@ -64,6 +64,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 Set<String> recipients = new Set<String>();
                 recipients.add(userIdByAccountId.get(wo.AccountId));
                 if (recipients.size() != 0 && wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
+                    System.debug('Notifikasjonskanal' + wo.Account.CRM_Person__r.HOT_NotificationChannel__c);
                     HOT_UserNotificationService.newWorkOrderNotification(getCustomNotificationType('HOT_NotifyUser'), wo, recipients);
                 }
             }
