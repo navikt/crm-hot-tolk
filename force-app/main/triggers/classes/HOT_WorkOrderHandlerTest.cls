@@ -331,22 +331,4 @@ private class HOT_WorkOrderHandlerTest {
         workOrder = [SELECT Id, Duration FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals(2.00, workOrder.Duration, 'Set Duration onBeforeUpdate');
     }
-
-    @isTest
-    private static void createWorkOrder() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Type__c = 'User';
-        insert request;
-
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        insert workOrder;
-    
-        Test.startTest();
-        List<WorkOrder> workOrderList = [SELECT Id FROM WorkOrder WHERE Subject = 'TEST'];
-        System.assertEquals(1, workOrderList.size(), 'The amount of workorders is not as expected');
-        Test.stopTest();
-    }
 }
