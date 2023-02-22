@@ -343,9 +343,9 @@ private class HOT_WorkOrderHandlerTest {
 
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
-
+    
         Test.startTest();
-        List<WorkOrder> workOrderList = [SELECT Id FROM WorkOrder WHERE Subject = 'Test'];
+        List<WorkOrder> workOrderList = [SELECT Id FROM WorkOrder WHERE Subject = 'TEST'];
         System.assertEquals(1, workOrderList.size(), 'The amount of workorders is not as expected');
         Test.stopTest();
     }
