@@ -341,10 +341,7 @@ private class HOT_WorkOrderHandlerTest {
         request.Type__c = 'User';
         insert request;
 
-
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        workOrder.StartDate = Datetime.now().addHours(1);
-        workOrder.EndDate = Datetime.now().addHours(2);
         insert workOrder;
 
         Test.startTest();
