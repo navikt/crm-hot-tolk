@@ -22,7 +22,15 @@ public class HOT_UserNotificationServiceTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
 
-        WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status FROM WorkOrder LIMIT 1];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Push-test', workType);
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status FROM WorkOrder WHERE HOT_LIMIT 1];
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         Test.startTest();
