@@ -71,8 +71,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                             recipients
                         );
                     } else {
-                        // Send sms
-                        System.debug('Notifikasjonskanal SMS: ' + wo.Account.CRM_Person__r.HOT_NotificationChannel__c);
+                        Set<Id> workOrderIds = new Set<Id>();
+                        workOrderIds.add(wo.Id);
+                        sendSMS(workOrderIds);
                     }
                 }
             }
@@ -427,6 +428,26 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             workOrder.Duration =
                 ((Double) workOrder.EndDate.getTime() - (Double) workOrder.StartDate.getTime()) / 3600000;
         }
+    }
+
+    @future
+    public static void sendSMS(Set<Id> workOrderIds) {
+        List<WorkOrder> workOrderList = [
+            SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM WorkOrder
+            WHERE Id IN :workOrderIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (WorkOrder wo : workOrderList) {
+            SMS__c sms = new SMS__c();
+            sms.Account__c = wo.AccountId;
+            sms.Domain__c = 'HOT';
+            sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Message__c = 'Andre har bestilt tolk til deg';
+            smsList.add(sms);
+        }
+        insert smsList;
     }
 
     public static CustomNotificationType getCustomNotificationType(String devName) {
