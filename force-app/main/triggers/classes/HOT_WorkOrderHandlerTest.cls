@@ -44,30 +44,26 @@ private class HOT_WorkOrderHandlerTest {
     }
     @isTest
     private static void notifyUserWhenMadeRequesOnBehalfForUser() {
-
         Account account = HOT_TestDataFactory.createAccount(true);
-        
+
         insert account;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user=HOT_TestDataFactory.createUser(profile, account);
+        User user = HOT_TestDataFactory.createUser(profile, account);
         insert user;
-            
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.Account__c = account.Id;
-        request.Type__c='User';
+        request.Type__c = 'User';
 
         insert request;
 
-        
         Test.startTest();
         request.Status__c = 'Godkjent';
         update request;
         Test.stopTest();
-        
     }
 
     @isTest
@@ -334,5 +330,21 @@ private class HOT_WorkOrderHandlerTest {
 
         workOrder = [SELECT Id, Duration FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals(2.00, workOrder.Duration, 'Set Duration onBeforeUpdate');
+    }
+
+    @isTest
+    private static void createWorkOrder() {
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.StartDate = Datetime.now().addHours(1);
+        workOrder.EndDate = Datetime.now().addHours(2);
+        insert workOrder;
+
+        Test.startTest();
+        List<WorkOrder> workOrderList = [SELECT Id FROM WorkOrder WHERE Subject = 'Test'];
+        System.assertEquals(1, workOrderList.size(), 'The amount of workorders is not as expected');
+        Test.stopTest();
     }
 }
