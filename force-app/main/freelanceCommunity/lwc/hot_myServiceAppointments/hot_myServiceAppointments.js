@@ -1,6 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
 import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
+import getOrderInformation from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOrderInformation';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 
 import { columns, mobileColumns } from './columns';
@@ -119,11 +120,19 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     @track serviceAppointment;
     @track interestedResource;
+    @track ordererPhoneNumber;
     isDetails = false;
     isflow = false;
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
+        getOrderInformation({ serviceAppointmentId: result.detail.Id })
+            .then((phonenumber) => {
+                this.ordererPhoneNumber = phonenumber;
+            })
+            .catch((error) => {
+                this.ordererPhoneNumber = '';
+            });
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
         this.template.querySelector('.serviceAppointmentDetails').focus();
         let today = new Date();
