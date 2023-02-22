@@ -30,7 +30,15 @@ public class HOT_UserNotificationServiceTest {
         request.Status__c = 'Godkjent';
         update request;
 
-        WorkOrder workOrder = [SELECT Id FROM WorkOrder WHERE Subject = 'Push-test' LIMIT 1];
+        WorkOrder wo = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert wo;
+
+        wo.Subject = 'Push-test 2';
+        wo.Account.CRM_Person__r.HOT_NotificationChannel__c = 'Push-varsel i appen';
+        update wo;
+
+        WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status  FROM WorkOrder WHERE Subject = 'Push-test 2' LIMIT 1];
+        
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         Test.startTest();

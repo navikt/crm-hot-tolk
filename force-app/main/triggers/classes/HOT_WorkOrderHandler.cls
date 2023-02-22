@@ -66,6 +66,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 if (recipients.size() != 0 && wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                     System.debug('Notifikasjonskanal' + wo.Account.CRM_Person__r.HOT_NotificationChannel__c);
                     HOT_UserNotificationService.newWorkOrderNotification(getCustomNotificationType('HOT_NotifyUser'), wo, recipients);
+                } else {
+                    // Send sms
+                    System.debug('Notifikasjonskanal: ' + wo.Account.CRM_Person__r.HOT_NotificationChannel__c);
                 }
             }
         }
