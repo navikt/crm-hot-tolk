@@ -23,7 +23,7 @@ public without sharing class HOT_EventHandler extends MyTriggers {
         }
 
         if (serviceAppointmentEvents.size() > 0) {
-            setDefaultValuesSA(serviceAppointmentEvents, serviceAppointmentIds);
+            setDefaultValuesSA(serviceAppointmentEvents, serviceAppointmentIds, true);
         }
     }
 
@@ -43,11 +43,11 @@ public without sharing class HOT_EventHandler extends MyTriggers {
         }
 
         if (serviceAppointmentEvents.size() > 0) {
-            setDefaultValuesSA(serviceAppointmentEvents, serviceAppointmentIds);
+            setDefaultValuesSA(serviceAppointmentEvents, serviceAppointmentIds, false);
         }
     }
 
-    private static void setDefaultValuesSA(List<Event> events, Set<Id> serviceAppointmentIds) {
+    private static void setDefaultValuesSA(List<Event> events, Set<Id> serviceAppointmentIds, Boolean newEvent) {
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, AppointmentNumber, WorkType.Name, HOT_AddressFormated__c
             FROM ServiceAppointment
@@ -65,6 +65,9 @@ public without sharing class HOT_EventHandler extends MyTriggers {
                 'Link til TinD: https://navdialog.lightning.force.com/lightning/r/ServiceAppointment/' +
                 serviceAppointmentMap.get(event.WhatId)?.Id +
                 '/view';
+            if (newEvent) {
+                event.HOT_IsCreatedFromSA__c = true;
+            }
         }
     }
 }
