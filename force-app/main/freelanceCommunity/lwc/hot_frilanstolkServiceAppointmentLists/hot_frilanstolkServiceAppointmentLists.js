@@ -36,8 +36,8 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
             this.updateTab({ target: { dataset: { id: this.urlStateParameters.list } } });
             this.recordId = this.urlStateParameters.id;
         } else {
-            if (sessionStorage.getItem('openTabFreelanceHome') != null) {
-                this.updateTab({ target: { dataset: { id: sessionStorage.getItem('openTabFreelanceHome') } } });
+            if (sessionStorage.getItem('activeTabFreelanceHome') != null) {
+                this.updateTab({ target: { dataset: { id: sessionStorage.getItem('activeTabFreelanceHome') } } });
             } else {
                 this.updateTab({ target: { dataset: { id: 'open' } } });
             }
@@ -58,7 +58,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
                 tab.selected = true;
                 this.urlStateParameterList = tab.name;
                 this.activeTab = tab.name;
-                sessionStorage.setItem('openTabFreelanceHome', this.activeTab);
+                sessionStorage.setItem('activeTabFreelanceHome', this.activeTab);
                 this.tabMap[tab.name] = true;
             }
         }
