@@ -64,10 +64,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
     renderedCallback() {
         this.setPreviousFiltersOnRefresh();
         this.setCheckedRowsOnRefresh();
+        localStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
     }
 
     @track filters = [];
     connectedCallback() {
+        if (localStorage.getItem('checkedrowsSavedForRefresh')) {
+            this.checkedServiceAppointments = JSON.parse(localStorage.getItem('checkedrowsSavedForRefresh'));
+            localStorage.removeItem('checkedrowsSavedForRefresh');
+        }
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
         this.breadcrumbs = [
