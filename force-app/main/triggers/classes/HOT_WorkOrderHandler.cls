@@ -444,7 +444,11 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             sms.Account__c = wo.AccountId;
             sms.Domain__c = 'HOT';
             sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
-            sms.Message__c = 'Andre har bestilt tolk til deg';
+            sms.Message__c = 'Det er bestilt tolk til deg. Dato: ' +
+            wo.StartDate?.format('d.M.yyyy, hh:mm') +
+            ' - ' +
+            wo.EndDate?.format('hh:mm') +
+            '.';
             smsList.add(sms);
         }
         insert smsList;
