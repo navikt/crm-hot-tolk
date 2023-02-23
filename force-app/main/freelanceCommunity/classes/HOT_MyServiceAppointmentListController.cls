@@ -88,4 +88,14 @@ public without sharing class HOT_MyServiceAppointmentListController {
         ];
         return serviceAppointments;
     }
+    @AuraEnabled
+    public static String getOrdererInformation(String serviceAppointmentId){
+        String phonenumber='';
+        ServiceAppointment sa=[SELECT HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        if(sa.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c!=null){
+            phonenumber=sa.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+        }
+        return phoneNumber;
+    }
+    
 }
