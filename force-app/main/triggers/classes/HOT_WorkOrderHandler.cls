@@ -443,6 +443,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             SMS__c sms = new SMS__c();
             sms.Account__c = wo.AccountId;
             sms.Domain__c = 'HOT';
+            sms.Type__c = 'Orderer On Status Update';
             sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c =
                 'Det er bestilt tolk til deg. Dato: ' +
