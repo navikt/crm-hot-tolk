@@ -131,3 +131,4 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
         System.assert(jobId != null);
     }
 }
+
