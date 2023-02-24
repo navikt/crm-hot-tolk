@@ -65,7 +65,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.setCheckedRowsOnRefresh();
         localStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
         localStorage.setItem('filterSavedForRefresh', JSON.stringify(this.filters));
-        localStorage.removeItem('openfilters');
     }
 
     @track filters = [];
