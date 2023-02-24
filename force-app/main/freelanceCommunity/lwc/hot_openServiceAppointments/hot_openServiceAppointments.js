@@ -36,13 +36,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.dispatchEvent(eventToSend);
     }
     sendInterestButtonLabel = '';
-
     setPreviousFiltersOnRefresh() {
-        if (sessionStorage.getItem('openfilters')) {
+        if (localStorage.getItem('openfilters')) {
             this.applyFilter({
-                detail: { filterArray: JSON.parse(sessionStorage.getItem('openfilters')), setRecords: true }
+                detail: { filterArray: JSON.parse(localStorage.getItem('openfilters')), setRecords: true }
             });
-            sessionStorage.removeItem('openfilters');
+            localStorage.removeItem('openfilters');
         }
         this.sendFilters();
     }
@@ -57,7 +56,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     disconnectedCallback() {
         // Going back with browser back or back button on mouse forces page refresh and a disconnect
         // Save filters on disconnect to exist only within the current browser tab
-        sessionStorage.setItem('openfilters', JSON.stringify(this.filters));
+        localStorage.setItem('openfilters', JSON.stringify(this.filters));
         sessionStorage.setItem('checkedrows', JSON.stringify(this.checkedServiceAppointments));
     }
 
@@ -65,6 +64,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.setPreviousFiltersOnRefresh();
         this.setCheckedRowsOnRefresh();
         localStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
+        localStorage.setItem('filterSavedForRefresh', JSON.stringify(this.filters));
+        localStorage.removeItem('openfilters');
     }
 
     @track filters = [];
@@ -73,6 +74,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.checkedServiceAppointments = JSON.parse(localStorage.getItem('checkedrowsSavedForRefresh'));
             localStorage.removeItem('checkedrowsSavedForRefresh');
         }
+
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
         this.breadcrumbs = [
@@ -129,11 +131,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     refresh() {
-        this.filters = defaultFilters();
+        // this.filters = defaultFilters();
         this.sendRecords();
         this.sendFilters();
         this.sendCheckedRows();
-        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        // this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
     datetimeFields = [
