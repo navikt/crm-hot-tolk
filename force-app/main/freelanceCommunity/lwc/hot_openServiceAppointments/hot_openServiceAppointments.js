@@ -228,8 +228,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 let currentFilters = this.filters;
                 if (this.sendInterestAll) {
                     this.sendInterestAllComplete = true;
-
-                    return; // If series -> refresh after closeModal() to avoid showing weird data behind popup
+                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
                 }
                 refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
                     // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
