@@ -1433,11 +1433,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceAppointment.HOT_IsUpdatedViaBatch__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_NavEmployeeName__c</field>
         <readable>true</readable>
