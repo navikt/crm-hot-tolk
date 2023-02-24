@@ -337,6 +337,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 newServiceAppointmentsSchedTimeChanged.put(serviceAppointment.Id, serviceAppointment);
             }
             if (
+                serviceAppointment.HOT_IsUpdatedViaBatch = false &&
                 serviceAppointment.Status != 'Scheduled' &&
                 (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
                 serviceAppointment.HOT_ServiceResource__c !=
