@@ -61,7 +61,7 @@ public without sharing class HOT_ReminderSMSService {
         for (WorkOrder workOrder : workOrders) {
             String interpreterNames = '';
             List<ServiceAppointment> serviceAppointents = serviceAppointmentsByWorkOrderId.get(workOrder.Id);
-            if(serviceAppointents != null){
+            if (serviceAppointents != null) {
                 for (Integer i = 0; i < serviceAppointents.size(); i++) {
                     interpreterNames += serviceAppointents[i].HOT_ServiceResource__r.Name + ', ';
                 }
@@ -112,7 +112,7 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.updateRecords(workOrderList);
     }
 
-        @future
+    @Future
     public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
         List<WorkOrder> workOrderList = [
             SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c
@@ -138,12 +138,12 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-        public static String constructOrdererMessage(WorkOrder workOrder) {
-            String message = 'Det er bestilt tolk til deg:\n';
-            message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
-            message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-            message += '\nMvh tolketjenesten i NAV';
-            return message;
+    public static String constructOrdererMessage(WorkOrder workOrder) {
+        String message = 'Det er bestilt tolk til deg:\n';
+        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+        message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\nMvh tolketjenesten i NAV';
+        return message;
     }
 
     private static String getRecipient(WorkOrder workOrder) {
