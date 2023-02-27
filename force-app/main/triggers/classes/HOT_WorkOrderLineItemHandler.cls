@@ -10,9 +10,16 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrderLineItem> setDurationWorkOrderLineItems = new List<WorkOrderLineItem>();
+        Map<Id, WorkOrderLineItem> oldMap = (Map<Id, WorkOrderLineItem>)triggerOldMap;
 
         for (WorkOrderLineItem workOrderLineItem : (List<WorkOrderLineItem>) records){
-            setDurationWorkOrderLineItems.add(workOrderLineItem);
+            if(
+                (workOrderLineItem.StartDate != (oldMap.get(workOrderLineItem.Id).StartDate))
+                ||
+                (workOrderLineItem.EndDate != (oldMap.get(workOrderLineItem.Id).EndDate))
+                ){
+                    setDurationWorkOrderLineItems.add(workOrderLineItem);
+            }
         }
 
         if (setDurationWorkOrderLineItems.size() > 0){
