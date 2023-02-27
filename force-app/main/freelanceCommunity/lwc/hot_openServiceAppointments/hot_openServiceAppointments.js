@@ -129,11 +129,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     refresh() {
-        // this.filters = defaultFilters();
         this.sendRecords();
         this.sendFilters();
         this.sendCheckedRows();
-        // this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
     datetimeFields = [
