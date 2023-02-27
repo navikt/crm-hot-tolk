@@ -126,7 +126,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Account__c = wo.AccountId;
             sms.Domain__c = 'HOT';
             sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
-            sms.Message__c = constructOrdererMessage(wo);
+            sms.Message__c = constructOnOrdererMessage(wo);
             smsList.add(sms);
         }
         try {
@@ -138,8 +138,8 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    public static String constructOrdererMessage(WorkOrder workOrder) {
-        String message = 'Det er bestilt tolk til deg:\n';
+    public static String constructOnOrdererMessage(WorkOrder workOrder) {
+        String message = 'INFO\nAndre har lagt inn en bestilling for deg:\n';
         message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh tolketjenesten i NAV';
