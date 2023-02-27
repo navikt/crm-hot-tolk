@@ -38,8 +38,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public override void onAfterInsert() {
-        notifyOnOrderer(List<WorkOrder> workordersList);
-        }
+        notifyOnOrderer((List<WorkOrder>) records);
 
         List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
@@ -384,19 +383,19 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         }
         return workOrders;
     }
-    
+
     public static void setDuration(List<workOrder> workOrders) {
         for (WorkOrder workOrder : workOrders) {
             workOrder.Duration =
-            ((Double) workOrder.EndDate.getTime() - (Double) workOrder.StartDate.getTime()) / 3600000;
+                ((Double) workOrder.EndDate.getTime() - (Double) workOrder.StartDate.getTime()) / 3600000;
         }
     }
-    
-    public static void notifyOnOrderer(List<workOrder> workOrders) {
+
+    public static void notifyOnOrderer(List<workOrder> records) {
         List<Id> accountIds = new List<Id>();
         List<Id> requestIds = new List<Id>();
 
-        for (WorkOrder workOrder : (List<WorkOrder>) records) {
+        for (WorkOrder workOrder : records) {
             requestIds.add(workOrder.HOT_Request__c);
             accountIds.add(workOrder.AccountId);
         }
@@ -432,6 +431,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                     }
                 }
             }
+        }
     }
 
     // @future
