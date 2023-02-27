@@ -38,6 +38,14 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public override void onAfterInsert() {
+        List<Id> accountIds = new List<Id>();
+        List<Id> requestIds = new List<Id>();
+
+        for (WorkOrder workOrder : (List<WorkOrder>) records) {
+            requestIds.add(workOrder.HOT_Request__c);
+            accountIds.add(workOrder.AccountId);
+        }
+
         notifyOnOrderer((List<WorkOrder>) records);
 
         List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();

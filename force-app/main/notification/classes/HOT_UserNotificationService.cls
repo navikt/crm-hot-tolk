@@ -4,33 +4,6 @@ public without sharing class HOT_UserNotificationService {
         WorkOrder workOrder,
         Set<String> recipients)
         {
-
-    //                 // Instantiating a notification
-    //     Messaging.PushNotification msg = 
-    //     new Messaging.PushNotification();
-
-    // // Assembling the necessary payload parameters for Apple.
-    // // Apple params are: 
-    // // (<alert text>,<alert sound>,<badge count>,
-    // // <free-form data>)
-    // // This example doesn't use badge count or free-form data.
-    // // The number of notifications that haven't been acted
-    // // upon by the intended recipient is best calculated
-    // // at the time of the push. This timing helps
-    // // ensure accuracy across multiple target devices.
-    // Map<String, Object> payload = 
-    //     Messaging.PushNotificationPayload.apple(
-    //         'Dick ' + workOrder.Subject + ' status changed to: ' 
-    //         + workOrder.Status, '', null, null);
-
-    // // Adding the assembled payload to the notification
-    //  msg.setPayload(payload);                    
-
-    // // Sending the notification to the specified app and users.
-    // // Here we specify the API name of the connected app.  
-    //     msg.send('myCommunities Playground for iOS', recipients);
-
-    // }
         String title = 'Andre har lagt inn en bestilling for deg';
         String body =
             'Det er bestilt tolk til deg. Dato: ' +
@@ -40,16 +13,12 @@ public without sharing class HOT_UserNotificationService {
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        //String targetId = workOrder.Id;
         String targetId = workOrder.HOT_Request__c;
-       // String targetPageRef = getTargetPageRef(workOrder.Id, 'R');
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetId(targetId);
-       // notification.setTargetPageRef(targetPageRef);
-
         try {
             notification.send(recipients);
             System.debug('Notification stats ' + notification);

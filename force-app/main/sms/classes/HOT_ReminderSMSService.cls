@@ -115,7 +115,7 @@ public without sharing class HOT_ReminderSMSService {
     @Future
     public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
         List<WorkOrder> workOrderList = [
-            SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c
+            SELECT Id, AccountId, Status, StartDate, EndDate, HOT_Request__c, Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM WorkOrder
             WHERE Id IN :workOrderIds
         ];
@@ -130,7 +130,7 @@ public without sharing class HOT_ReminderSMSService {
             smsList.add(sms);
         }
         try {
-            insert smsList;
+            HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
