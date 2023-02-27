@@ -38,45 +38,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public override void onAfterInsert() {
-        List<Id> accountIds = new List<Id>();
-        List<Id> requestIds = new List<Id>();
-
-        for (WorkOrder workOrder : (List<WorkOrder>) records) {
-            requestIds.add(workOrder.HOT_Request__c);
-            accountIds.add(workOrder.AccountId);
-        }
-
-        List<WorkOrder> workordersList = [
-            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
-            FROM WorkOrder
-            WHERE HOT_Request__c IN :requestIds AND HOT_Request__r.Type__c = 'User'
-        ];
-
-        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
-
-        Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
-        for (User user : users) {
-            userIdByAccountId.put(user.AccountId, user.Id);
-        }
-
-        if (!workordersList.isEmpty()) {
-            for (WorkOrder wo : workordersList) {
-                Set<String> recipients = new Set<String>();
-                recipients.add(userIdByAccountId.get(wo.AccountId));
-                if (recipients.size() != 0) {
-                    if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
-                        HOT_UserNotificationService.newWorkOrderNotification(
-                            getCustomNotificationType('HOT_NotifyUser'),
-                            wo,
-                            recipients
-                        );
-                    } else {
-                        Set<Id> workOrderIds = new Set<Id>();
-                        workOrderIds.add(wo.Id);
-                        sendSMS(workOrderIds);
-                    }
-                }
-            }
+        notifyOnOrderer(List<WorkOrder> workordersList);
         }
 
         List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();
@@ -422,43 +384,85 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         }
         return workOrders;
     }
-
+    
     public static void setDuration(List<workOrder> workOrders) {
         for (WorkOrder workOrder : workOrders) {
             workOrder.Duration =
-                ((Double) workOrder.EndDate.getTime() - (Double) workOrder.StartDate.getTime()) / 3600000;
+            ((Double) workOrder.EndDate.getTime() - (Double) workOrder.StartDate.getTime()) / 3600000;
         }
     }
+    
+    public static void notifyOnOrderer(List<workOrder> workOrders) {
+        List<Id> accountIds = new List<Id>();
+        List<Id> requestIds = new List<Id>();
 
-    @future
-    public static void sendSMS(Set<Id> workOrderIds) {
-        List<WorkOrder> workOrderList = [
-            SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c
+        for (WorkOrder workOrder : (List<WorkOrder>) records) {
+            requestIds.add(workOrder.HOT_Request__c);
+            accountIds.add(workOrder.AccountId);
+        }
+
+        List<WorkOrder> workordersList = [
+            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
             FROM WorkOrder
-            WHERE Id IN :workOrderIds
+            WHERE HOT_Request__c IN :requestIds AND HOT_Request__r.Type__c = 'User'
         ];
-        List<SMS__c> smsList = new List<SMS__c>();
 
-        for (WorkOrder wo : workOrderList) {
-            SMS__c sms = new SMS__c();
-            sms.Account__c = wo.AccountId;
-            sms.Domain__c = 'HOT';
-            sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
-            sms.Message__c = createMessageString(wo);
-            smsList.add(sms);
+        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
+
+        Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
+        for (User user : users) {
+            userIdByAccountId.put(user.AccountId, user.Id);
         }
-        try {
-            insert smsList;
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
+
+        if (!workordersList.isEmpty()) {
+            for (WorkOrder wo : workordersList) {
+                Set<String> recipients = new Set<String>();
+                recipients.add(userIdByAccountId.get(wo.AccountId));
+                if (recipients.size() != 0) {
+                    if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
+                        HOT_UserNotificationService.newWorkOrderNotification(
+                            getCustomNotificationType('HOT_NotifyUser'),
+                            wo,
+                            recipients
+                        );
+                    } else {
+                        Set<Id> workOrderIds = new Set<Id>();
+                        workOrderIds.add(wo.Id);
+                        HOT_ReminderSMSService.sendSMSOnOrderer(workOrderIds);
+                    }
+                }
+            }
     }
 
-    public static String createMessageString(WorkOrder workOrder) {
-        return 'Det er bestilt tolk til deg. Se mer på tolkebestilling.nav.no. \n\n\n Mvh tolketjenesten i NAV';
-    }
+    // @future
+    // public static void sendSMS(Set<Id> workOrderIds) {
+    //     List<WorkOrder> workOrderList = [
+    //         SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c
+    //         FROM WorkOrder
+    //         WHERE Id IN :workOrderIds
+    //     ];
+    //     List<SMS__c> smsList = new List<SMS__c>();
+
+    //     for (WorkOrder wo : workOrderList) {
+    //         SMS__c sms = new SMS__c();
+    //         sms.Account__c = wo.AccountId;
+    //         sms.Domain__c = 'HOT';
+    //         sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+    //         sms.Message__c = createMessageString(wo);
+    //         smsList.add(sms);
+    //     }
+    //     try {
+    //         insert smsList;
+    //     } catch (Exception e) {
+    //         LoggerUtility logger = new LoggerUtility();
+    //         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+    //         logger.publishSynch();
+    //     }
+    // }
+
+    // public static String createMessageString(WorkOrder workOrder) {
+    //     return 'Det er bestilt tolk til deg. Se mer på tolkebestilling.nav.no. \n\n\n Mvh tolketjenesten i NAV';
+    // }
 
     public static CustomNotificationType getCustomNotificationType(String devName) {
         CustomNotificationType notificationType = [

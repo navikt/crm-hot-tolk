@@ -112,6 +112,36 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.updateRecords(workOrderList);
     }
 
+        @future
+    public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
+        List<WorkOrder> workOrderList = [
+            SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM WorkOrder
+            WHERE Id IN :workOrderIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (WorkOrder wo : workOrderList) {
+            SMS__c sms = new SMS__c();
+            sms.Account__c = wo.AccountId;
+            sms.Domain__c = 'HOT';
+            sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Message__c = createMessageString(wo);
+            smsList.add(sms);
+        }
+        try {
+            insert smsList;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+        public static String constructOrdererMessage(WorkOrder workOrder) {
+        return 'Det er bestilt tolk til deg. Se mer på tolkebestilling.nav.no. \n\n\n Mvh tolketjenesten i NAV';
+    }
+
     private static String getRecipient(WorkOrder workOrder) {
         if (workOrder.HOT_Request__r.Type__c != 'Me') {
             return workOrder.HOT_Request__r.OrdererPhone__c;
