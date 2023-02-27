@@ -318,6 +318,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Event.HOT_IsCreatedFromSA__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_HistoricallyAssignedResource__c.SchedEndTime__c</field>
         <readable>true</readable>
@@ -1125,6 +1130,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ShiftTemplate.CRM_Domain__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Task.HOT_IsCreatedFromSA__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
