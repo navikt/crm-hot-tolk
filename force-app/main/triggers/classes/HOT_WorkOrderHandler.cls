@@ -440,17 +440,16 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         List<SMS__c> smsList = new List<SMS__c>();
 
         for (WorkOrder wo : workOrderList) {
+            String message = 'Det er bestilt tolk til deg. Dato: ';
+                message += wo.StartDate?.format('d.M.yyyy, hh:mm');
+                message += ' - ';
+                message += wo.EndDate?.format('hh:mm');
+                message += '.';
             SMS__c sms = new SMS__c();
             sms.Account__c = wo.AccountId;
             sms.Domain__c = 'HOT';
-            sms.Type__c = 'Orderer On Status Update';
             sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
-            sms.Message__c =
-                'Det er bestilt tolk til deg. Dato: ' +
-                wo.StartDate?.format('d.M.yyyy, hh:mm') +
-                ' - ' +
-                wo.EndDate?.format('hh:mm') +
-                '.';
+            sms.Message__c = message;
             smsList.add(sms);
         }
         try {
