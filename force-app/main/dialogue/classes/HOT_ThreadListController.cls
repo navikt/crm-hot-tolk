@@ -5,7 +5,7 @@ public with sharing class HOT_ThreadListController {
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
        List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource WHERE AccountId=:user.AccountId];
     if(serviceResources.size()>0){
-        List<ServiceAppointment> serviceAppointments = [SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id IN(SELECT ServiceAppointment__c FROM HOT_InterestedResource__c WHERE ServiceResource__c=:serviceResources[0].Id)];
+        List<ServiceAppointment> serviceAppointments = [SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id IN(SELECT ServiceAppointment__c FROM HOT_InterestedResource__c WHERE (ServiceResource__c=:serviceResources[0].Id) AND Status__c='Assigned') ];
         
         Map<Id, ServiceAppointment> saMap = new Map<Id, ServiceAppointment>(serviceAppointments);
         
