@@ -5,12 +5,12 @@ public without sharing class HOT_UserNotificationService {
         Set<String> recipients
     ) {
         String title = 'Andre har lagt inn en bestilling for deg';
-        String body =
-            'Det er bestilt tolk til deg. Dato: ' +
-            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
-            ' - ' +
-            workOrder.EndDate?.format('hh:mm') +
-            '.';
+        String body = 'Det er bestilt tolk til deg. Dato: ';
+            // 'Det er bestilt tolk til deg. Dato: ' +
+            // workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+            // ' - ' +
+            // workOrder.EndDate?.format('hh:mm') +
+            // '.';
 
         Id notificationTypeId = notificationType.Id;
         //String targetId = workOrder.Id;
