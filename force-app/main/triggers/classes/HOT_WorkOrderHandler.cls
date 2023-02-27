@@ -457,7 +457,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static String createMessageString(WorkOrder workOrder) {
-        return 'Det er bestilt tolk til deg. Dato:';
+        return 'Det er bestilt tolk til deg. Se mer på tolkebestilling.nav.no. \n\n\n Mvh tolketjenesten i NAV';
     }
 
     public static CustomNotificationType getCustomNotificationType(String devName) {
