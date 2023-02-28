@@ -13,7 +13,7 @@ public without sharing class HOT_UserNotificationService {
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetId = workOrder.HOT_Request__c;
+        String targetId = workOrder.Id;
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
