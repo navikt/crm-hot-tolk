@@ -124,7 +124,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                akutt: x.HOT_Is_urgent__c
+                akutt: x.HOT_IsUrgent__c
             }));
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];

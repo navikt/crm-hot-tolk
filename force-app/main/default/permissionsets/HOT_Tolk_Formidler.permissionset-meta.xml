@@ -1208,7 +1208,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>ServiceAppointment.HOT_Is_urgent__c</field>
+        <field>ServiceAppointment.HOT_IsUrgent__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
