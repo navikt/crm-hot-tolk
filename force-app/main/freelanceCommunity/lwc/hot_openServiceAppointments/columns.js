@@ -13,6 +13,12 @@ export let columns = [
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
         type: 'String'
+    },
+    {
+        label: '',
+        name: 'akutt',
+        type: 'boolean',
+        svg: true
     }
 ];
 
@@ -31,5 +37,11 @@ export let mobileColumns = [
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
         type: 'String'
+    },
+    {
+        label: '',
+        name: 'akutt',
+        type: 'boolean',
+        svg: true
     }
 ];

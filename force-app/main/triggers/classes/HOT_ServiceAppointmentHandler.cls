@@ -869,6 +869,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             if (serviceAppointment.HOT_DeadlineDate__c == null) {
                 serviceAppointment.HOT_DeadlineDate__c = serviceAppointment.EarliestStartTime.date();
             }
+            Date today = Date.today();
+            Date tomorrow = today.addDays(1);
+            for(ServiceAppointment sa: serviceAppointments){
+                Date saDate = sa.SchedStartTime.date();
+                if(saDate==today || saDate==tomorrow ){
+                    sa.HOT_Is_urgent__c=true;
+                }
+            }
             serviceAppointment.HOT_IsEmployedInterpreter__c = false;
             serviceAppointment.HOT_IsReleasedToFreelance__c = true;
             serviceAppointment.HOT_ReleaseDate__c = Date.today();

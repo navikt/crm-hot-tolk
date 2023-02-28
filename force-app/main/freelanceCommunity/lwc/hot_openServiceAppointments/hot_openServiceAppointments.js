@@ -16,6 +16,18 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.columns = mobileColumns;
         }
     }
+    iconByValue = {
+        false: {
+            icon: '',
+            fill: '',
+            ariaLabel: ''
+        },
+        true: {
+            icon: 'WarningFilled',
+            fill: 'Red',
+            ariaLabel: 'Dette oppdraget haster'
+        }
+    };
 
     sendFilters() {
         const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
@@ -100,7 +112,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
     }
-
     noServiceAppointments = false;
     initialServiceAppointments = [];
     @track records = [];
@@ -111,10 +122,13 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.wiredAllServiceAppointmentsResult = result;
         if (result.data) {
             this.error = undefined;
-            this.allServiceAppointmentsWired = [...result.data];
+            this.allServiceAppointmentsWired = result.data.map((x) => ({
+                ...x,
+                akutt: x.HOT_Is_urgent__c
+            }));
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
-            for (let record of result.data) {
+            for (let record of this.allServiceAppointmentsWired) {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
             }
             this.records = tempRecords;
