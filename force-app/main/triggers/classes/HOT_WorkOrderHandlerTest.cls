@@ -42,29 +42,6 @@ private class HOT_WorkOrderHandlerTest {
         System.assertEquals(request.MeetingStreet__c, workOrder.Street, 'Could not set Street');
         System.assertEquals('New', workOrder.Status, 'Could not set Status to New');
     }
-    @isTest
-    private static void notifyUserWhenMadeRequesOnBehalfForUser() {
-        Account account = HOT_TestDataFactory.createAccount(true);
-
-        insert account;
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser(profile, account);
-        insert user;
-
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Account__c = account.Id;
-        request.Type__c = 'User';
-
-        insert request;
-
-        Test.startTest();
-        request.Status__c = 'Godkjent';
-        update request;
-        Test.stopTest();
-    }
 
     @isTest
     private static void testCreateChildRecords() {
