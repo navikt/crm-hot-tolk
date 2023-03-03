@@ -98,7 +98,37 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         ];
     }
-
+    getDayOfWeek(date) {
+        var jsDate = new Date(date);
+        var dayOfWeek = jsDate.getDay();
+        var dayOfWeekString;
+        switch (dayOfWeek) {
+            case 0:
+                dayOfWeekString = 'Søndag';
+                break;
+            case 1:
+                dayOfWeekString = 'Mandag';
+                break;
+            case 2:
+                dayOfWeekString = 'Tirsdag';
+                break;
+            case 3:
+                dayOfWeekString = 'Onsdag';
+                break;
+            case 4:
+                dayOfWeekString = 'Torsdag';
+                break;
+            case 5:
+                dayOfWeekString = 'Fredag';
+                break;
+            case 6:
+                dayOfWeekString = 'Lørdag';
+                break;
+            default:
+                dayOfWeekString = '';
+        }
+        return dayOfWeekString;
+    }
     @track serviceResource;
     @track serviceResourceId;
     @wire(getServiceResource)
@@ -124,12 +154,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                akutt: x.HOT_IsUrgent__c
+                haster: x.HOT_IsUrgent__c,
+                dag: this.getDayOfWeek(x.EarliestStartTime)
             }));
+
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
             for (let record of this.allServiceAppointmentsWired) {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+                console.log(record.Id);
             }
             this.records = tempRecords;
             this.initialServiceAppointments = [...this.records];
@@ -171,6 +204,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
                 this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
+                this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
             }
         }
         for (let serviceAppointment of this.records) {

@@ -5,6 +5,11 @@ export let columns = [
         type: 'Datetime'
     },
     {
+        label: 'Dag',
+        name: 'dag',
+        type: 'String'
+    },
+    {
         label: 'Informasjon',
         name: 'HOT_Information__c',
         type: 'String'
@@ -16,7 +21,7 @@ export let columns = [
     },
     {
         label: '',
-        name: 'akutt',
+        name: 'haster',
         type: 'boolean',
         svg: true
     }

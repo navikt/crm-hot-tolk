@@ -68,7 +68,37 @@ export default class Hot_interestedResourcesList extends LightningElement {
             }
         ];
     }
-
+    getDayOfWeek(date) {
+        var jsDate = new Date(date);
+        var dayOfWeek = jsDate.getDay();
+        var dayOfWeekString;
+        switch (dayOfWeek) {
+            case 0:
+                dayOfWeekString = 'Søndag';
+                break;
+            case 1:
+                dayOfWeekString = 'Mandag';
+                break;
+            case 2:
+                dayOfWeekString = 'Tirsdag';
+                break;
+            case 3:
+                dayOfWeekString = 'Onsdag';
+                break;
+            case 4:
+                dayOfWeekString = 'Torsdag';
+                break;
+            case 5:
+                dayOfWeekString = 'Fredag';
+                break;
+            case 6:
+                dayOfWeekString = 'Lørdag';
+                break;
+            default:
+                dayOfWeekString = '';
+        }
+        return dayOfWeekString;
+    }
     @track serviceResource;
     @wire(getServiceResource)
     wiredServiceresource(result) {
@@ -136,6 +166,9 @@ export default class Hot_interestedResourcesList extends LightningElement {
         for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
+                this.interestedResource.weekday = this.getDayOfWeek(
+                    this.interestedResource.ServiceAppointmentStartTime__c
+                );
             }
         }
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
