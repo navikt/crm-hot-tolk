@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_InterpretersInformation__c</fullName>
+    <description>Her kan du skrive hvem som tolker fast for bruker f.eks på arbeidsplassen</description>
+    <externalId>false</externalId>
+    <label>Interpreters information</label>
+    <length>1000</length>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>4</visibleLines>
+</CustomField>

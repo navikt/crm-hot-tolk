@@ -30,16 +30,16 @@
             <targetValue>Mine_Oppdrag_Mine_Oppdrag_Page</targetValue>
         </target>
         <target>
-            <groupName>e10960da-e07d-4c1f-a513-491b905b81c3</groupName>
-            <priority>1</priority>
-            <targetType>ExperienceVariation</targetType>
-            <targetValue>Frilanstolk_min_side_Frilanstolk_min_side_Page</targetValue>
-        </target>
-        <target>
             <groupName>10f3ecb5-0a9b-46e7-a735-11aa674ce61e$#$a4b18819-dbd6-47d0-8620-fab423577c32</groupName>
             <priority>1</priority>
             <targetType>ExperienceVariation</targetType>
             <targetValue>Home_HOT_Freelance_Home_Component</targetValue>
+        </target>
+        <target>
+            <groupName>e10960da-e07d-4c1f-a513-491b905b81c3</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Frilanstolk_min_side_Frilanstolk_min_side_Page</targetValue>
         </target>
     </targets>
 </Audience>
