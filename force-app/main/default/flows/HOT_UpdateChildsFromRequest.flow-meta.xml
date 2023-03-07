@@ -64,6 +64,14 @@
         </connector>
     </assignments>
     <choices>
+        <name>Account</name>
+        <choiceText>Bruker</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <elementReference>getRequest.Account__c</elementReference>
+        </value>
+    </choices>
+    <choices>
         <name>Address</name>
         <choiceText>Adresser</choiceText>
         <dataType>String</dataType>
@@ -160,6 +168,7 @@
             <label>isDispatcherCheck</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <formulas>
         <name>isAddress</name>
         <dataType>Boolean</dataType>
@@ -261,6 +270,7 @@
             <choiceReferences>Description</choiceReferences>
             <choiceReferences>ScreenInterpreter</choiceReferences>
             <choiceReferences>Dispatcher</choiceReferences>
+            <choiceReferences>Account</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -519,7 +529,7 @@
             <targetReference>getRequest</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>
