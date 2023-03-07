@@ -200,12 +200,15 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     editButtonLabel = 'Rediger';
     copyButtonLabel = 'Kopier';
     cancelButtonLabel = 'Avlys';
+    isThreadButtonDisabled = false;
     setButtonLabels() {
         if (this.urlStateParameters.level === 'R') {
             this.editButtonLabel = 'Rediger serie';
             this.copyButtonLabel = 'Kopier serie';
             this.cancelButtonLabel = 'Avlys serie';
+            this.isThreadButtonDisabled = false;
         } else {
+            this.isThreadButtonDisabled = false;
             this.editButtonLabel = 'Rediger';
             this.copyButtonLabel = 'Kopier';
             this.cancelButtonLabel = 'Avlys';
@@ -593,6 +596,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goToThread() {
+        console.log('test');
+        this.isThreadButtonDisabled = true;
         if (this.request.Thread__c !== undefined) {
             this.navigateToThread(this.request.Thread__c);
         } else {
