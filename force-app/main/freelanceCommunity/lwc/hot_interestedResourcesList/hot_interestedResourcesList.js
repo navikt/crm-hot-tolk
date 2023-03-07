@@ -235,6 +235,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     @track prevComments = '';
     fixComments() {
         getComments({ interestedResourceId: this.recordId }).then((result) => {
+            this.prevComments = '';
             console.log(result.Comments__c);
             if (result.Comments__c != undefined || result.Comments__c != '') {
                 this.prevComments = result.Comments__c.split('\n\n');
