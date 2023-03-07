@@ -3,6 +3,8 @@ public without sharing class HOT_UpdateChildRecordsService {
     public HOT_Request__c request;
 
     @InvocableVariable
+    public Boolean isAccountChoice;
+    @InvocableVariable
     public Boolean isAddressChoice;
     @InvocableVariable
     public Boolean isSubjectChoice;
@@ -23,6 +25,11 @@ public without sharing class HOT_UpdateChildRecordsService {
         List<String> errors = new List<String>();
         
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
+        if (input.isAccountChoice) {
+            requestToUpdate.Account__c = request.Account__c;
+            requestToUpdate.UserName__c = request.UserName__c;
+            requestToUpdate.UserPersonNumber__c = request.UserPersonNumber__c;
+        }
         if (input.isAddressChoice) {
             requestToUpdate.InterpretationStreet__c = request.InterpretationStreet__c;
             requestToUpdate.InterpretationPostalCode__c = request.InterpretationPostalCode__c;
@@ -109,6 +116,9 @@ public without sharing class HOT_UpdateChildRecordsService {
 
         //Updates WorkOrders
         for (WorkOrder workOrder : workOrders.values()) {
+            if (input.isAccountChoice) {
+                workOrder.AccountId = request.Account__c;
+            }
             if (input.isAddressChoice) {
                 workOrder.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
                 workOrder.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
@@ -161,6 +171,11 @@ public without sharing class HOT_UpdateChildRecordsService {
 
         //Updates ServiceAppointment
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
+            if (input.isAccountChoice) {
+                serviceAppointment.HOT_AccountId__c = request.Account__c;
+                serviceAppointment.AccountId = request.Account__c;
+                serviceAppointment.ContactId = request.Account__r.PersonContactId;
+            }
             if (input.isAddressChoice) {
                 serviceAppointment.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
                 serviceAppointment.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
