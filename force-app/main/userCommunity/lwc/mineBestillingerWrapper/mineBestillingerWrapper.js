@@ -596,7 +596,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goToThread() {
-        console.log('test');
         this.isThreadButtonDisabled = true;
         if (this.request.Thread__c !== undefined) {
             this.navigateToThread(this.request.Thread__c);
