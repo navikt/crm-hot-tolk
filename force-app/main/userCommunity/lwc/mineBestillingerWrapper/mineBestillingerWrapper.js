@@ -610,6 +610,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                     this.modalHeader = 'Noe gikk galt';
                     this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
                     this.noCancelButton = true;
+                    this.isThreadButtonDisabled = false;
                     this.showModal();
                 });
         }
