@@ -172,8 +172,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         //Updates ServiceAppointment
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (input.isAccountChoice) {
-                serviceAppointment.HOT_AccountId__c = request.Account__c;
-                serviceAppointment.AccountId = request.Account__c;
+                serviceAppointment.HOT_Account__c = request.Account__c;
                 serviceAppointment.ContactId = request.Account__r.PersonContactId;
             }
             if (input.isAddressChoice) {
