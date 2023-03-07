@@ -4,9 +4,10 @@ public with sharing class DisableFreelanceUsersSchedulable implements Database.B
         database.executebatch(instance, 10);
     }
 
+    @TestVisible static Datetime oneYearAgo = Datetime.now().addDays(-365);
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        Datetime now = Datetime.now();
-        Datetime oneYearAgo = now.addYears(-1);
+        // Datetime now = Datetime.now();
+        // Datetime oneYearAgo = now.addYears(-1);
 
          return Database.getQueryLocator(
             [
@@ -20,6 +21,7 @@ public with sharing class DisableFreelanceUsersSchedulable implements Database.B
             List<ServiceResource> serviceResource=[SELECT Id,RelatedRecordId FROM ServiceResource WHERE RelatedRecordId IN: records AND HOT_IsFreelanceInterpreter__c=true];
             if(serviceResource.size()>0){
                 PermissionSet permissionset=[SELECT Id, Name FROM PermissionSet WHERE Name='HOT_Tolk_Bruker_Plus' LIMIT 1];
+                PermissionSet permissionsetFreelance=[SELECT Id, Name FROM PermissionSet WHERE Name='HOT_Tolk_Frilans' LIMIT 1];
                 Profile profile=[SELECT Id, Name FROM Profile WHERE Name='NAV Bruker Plus' LIMIT 1];
 
                 Set<Id> relatedRecordIds = new Set<Id>();
@@ -29,17 +31,32 @@ public with sharing class DisableFreelanceUsersSchedulable implements Database.B
                     relatedRecordIds.add(sr.RelatedRecordId);
                 }
                 
-                List<PermissionSetAssignment> permissionSetAssignments=[SELECT Id, AssigneeId, PermissionSetId FROM PermissionSetAssignment WHERE AssigneeId IN: relatedRecordIds];
+                List<PermissionSetAssignment> permissionSetAssignmentsToBeDeleted=[SELECT Id, AssigneeId, PermissionSetId FROM PermissionSetAssignment WHERE AssigneeId IN: relatedRecordIds AND PermissionSetId=:permissionsetFreelance.Id];
                 
                 for(User user : records){
                     user.ProfileId=profile.Id;
                 }
-                for(PermissionSetAssignment permissionSetAssignment: permissionSetAssignments){
-                    permissionSetAssignment.PermissionSetId=permissionset.Id;
+             
+                List<PermissionSetAssignment> permissionSetAssignments = [SELECT Id, AssigneeId, PermissionSetId FROM PermissionSetAssignment WHERE AssigneeId IN :relatedRecordIds];
+                    Map<Id, Id> assigneeToPermissionSetMap = new Map<Id, Id>();
+                    for (PermissionSetAssignment psa : permissionSetAssignments) {
+                        if (psa.PermissionSetId != permissionset.Id) {
+                            assigneeToPermissionSetMap.put(psa.AssigneeId, permissionset.Id);
+                        }
+                    }
+
+                List<PermissionSetAssignment> newPermissionSetAssignments = new List<PermissionSetAssignment>();
+                for (Id assigneeId : assigneeToPermissionSetMap.keySet()) {
+                    PermissionSetAssignment newPSA = new PermissionSetAssignment();
+                    newPSA.AssigneeId = assigneeId;
+                    newPSA.PermissionSetId = assigneeToPermissionSetMap.get(assigneeId);
+                    newPermissionSetAssignments.add(newPSA);
                 }
+
                 try {
                     update serviceResource;
-                    update permissionSetAssignments;
+                    delete permissionSetAssignmentsToBeDeleted;
+                    insert newPermissionSetAssignments;
                     update records;
                 } catch (Exception e) {
                     LoggerUtility logger = new LoggerUtility();
