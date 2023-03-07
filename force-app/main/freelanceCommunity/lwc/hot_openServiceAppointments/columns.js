@@ -16,7 +16,7 @@ export let columns = [
     },
     {
         label: '',
-        name: 'akutt',
+        name: 'isUrgent',
         type: 'boolean',
         svg: true
     }
@@ -57,7 +57,7 @@ export let mobileColumns = [
     },
     {
         label: '',
-        name: 'akutt',
+        name: 'isUrgent',
         type: 'boolean',
         svg: true
     }
