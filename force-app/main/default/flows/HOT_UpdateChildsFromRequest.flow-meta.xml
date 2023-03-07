@@ -9,6 +9,12 @@
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
+            <name>isAccountChoice</name>
+            <value>
+                <elementReference>isAccount</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>isAddressChoice</name>
             <value>
                 <elementReference>isAddress</elementReference>
@@ -68,7 +74,7 @@
         <choiceText>Bruker</choiceText>
         <dataType>String</dataType>
         <value>
-            <elementReference>getRequest.Account__c</elementReference>
+            <stringValue>Account</stringValue>
         </value>
     </choices>
     <choices>
@@ -169,6 +175,11 @@
         </rules>
     </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>isAccount</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!Account})</expression>
+    </formulas>
     <formulas>
         <name>isAddress</name>
         <dataType>Boolean</dataType>
@@ -519,6 +530,71 @@
                 </conditions>
             </visibilityRule>
         </fields>
+        <fields>
+            <name>NewValuesScreen_Section6</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section6_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>AccountLookup</name>
+                    <extensionName>flowruntime:lookup</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>fieldApiName</name>
+                        <value>
+                            <stringValue>Account__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value>
+                            <stringValue>Account</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value>
+                            <stringValue>HOT_Request__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value>
+                            <elementReference>getRequest.Account__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>required</name>
+                        <value>
+                            <booleanValue>true</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFields</leftValueReference>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Account</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
@@ -529,7 +605,7 @@
             <targetReference>getRequest</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>
