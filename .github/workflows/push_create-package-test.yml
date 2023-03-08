@@ -1,7 +1,7 @@
-name: "[PUSH] Create Package"
+name: "[PUSH] Create Package TEST"
 on:
   workflow_dispatch:
-  
+
 jobs:
   create-package:
     name: Run Package Creation
