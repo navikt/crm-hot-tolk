@@ -13,6 +13,29 @@ export let columns = [
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
         type: 'String'
+    },
+    {
+        label: '',
+        name: 'isUrgent',
+        type: 'boolean',
+        svg: true
+    }
+];
+export let inDetailsColumns = [
+    {
+        label: 'Tid',
+        name: 'StartAndEndDate',
+        type: 'Datetime'
+    },
+    {
+        label: 'Informasjon',
+        name: 'HOT_Information__c',
+        type: 'String'
+    },
+    {
+        label: 'Tema',
+        name: 'HOT_FreelanceSubject__c',
+        type: 'String'
     }
 ];
 
@@ -31,5 +54,11 @@ export let mobileColumns = [
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
         type: 'String'
+    },
+    {
+        label: '',
+        name: 'isUrgent',
+        type: 'boolean',
+        svg: true
     }
 ];
