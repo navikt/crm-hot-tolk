@@ -17,21 +17,25 @@ jobs:
 
       # Install SFDX
       - name: Install SFDX
-        uses: sfdx-actions/setup-sfdx@v1
+        uses: navikt/crm-workflows-base/.github/actions/installSFDX@master
 
       # Authenticate prod
       - name: Authenticate prod
-        run: |
-          echo ${{ secrets.CRM_PROD_SFDX_URL}} > ./CRM_PROD_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./CRM_PROD_SFDX_URL.txt -a devhub -d
-          rm -f ./CRM_PROD_SFDX_URL.txt
+        uses: navikt/crm-workflows-base/.github/actions/authenticateOrg@master
+        with:
+          auth-url: ${{ secrets.CRM_PROD_SFDX_URL }}
+          alias: prod
+          setDefaultUsername: false
+          setDefaultDevhubUsername: true
 
       # Authenticate dev sandbox
       - name: Authenticate dev sandbox
-        run: |
-          echo ${{ secrets.DEV_SFDX_URL}} > ./DEV_SFDX_URL.txt
-          sfdx auth:sfdxurl:store -f ./DEV_SFDX_URL.txt -a dev -s
-          rm -f ./DEV_SFDX_URL.txt
+        uses: navikt/crm-workflows-base/.github/actions/authenticateOrg@master
+        with:
+          auth-url: ${{ secrets.DEV_SFDX_URL }}
+          alias: dev
+          setDefaultUsername: true
+          setDefaultDevhubUsername: false
 
       # Install sfpowerkit plugin used to install multiple packages only by version number
       - name: Install sfpowerkit plugin
@@ -46,7 +50,7 @@ jobs:
               keys+=$p":${{ secrets.CRM_PACKAGE_KEY }} "
           done
 
-          echo "::set-output name=keys::$(echo $keys)"
+          echo "name=keys$(echo $keys)" >> GITHUB_OUTPUT
 
       # Install packages this repo is dependant on
       - name: Install dependant packages

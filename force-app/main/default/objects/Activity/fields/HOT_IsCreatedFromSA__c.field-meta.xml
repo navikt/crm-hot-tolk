@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_IsCreatedFromSA__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Is checked when the meeting is created and is connected to a Service Appointment</description>
+    <externalId>false</externalId>
+    <label>Created from SA</label>
+    <type>Checkbox</type>
+</CustomField>

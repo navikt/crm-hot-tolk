@@ -2,8 +2,8 @@ public without sharing class HOT_UserNotificationService {
     public static void newWorkOrderNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
-        Set<String> recipients
-    ) {
+        Set<String> recipients)
+        {
         String title = 'Andre har lagt inn en bestilling for deg';
         String body =
             'Det er bestilt tolk til deg. Dato: ' +
@@ -13,15 +13,19 @@ public without sharing class HOT_UserNotificationService {
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        Id targetId = workOrder.Id;
-        String targetPageRef = getTargetPageRef(workOrder.Id, 'R');
+        String targetId = workOrder.Id;
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
         notification.setNotificationTypeId(notificationTypeId);
-        notification.setTargetPageRef(targetPageRef);
-
-        notification.send(recipients);
+        notification.setTargetId(targetId);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void statusChangeNotification(

@@ -221,6 +221,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     cancelButtonLabel = 'Avlys';
     isThreadButtonDisabled = false;
     isInterpreterThreadButtonDisabled = false;
+
     setButtonLabels() {
         if (this.urlStateParameters.level === 'R') {
             this.editButtonLabel = 'Rediger serie';
@@ -229,6 +230,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.isThreadButtonDisabled = false;
             this.isInterpreterThreadButtonDisabled = false;
         } else {
+            this.isThreadButtonDisabled = false;
             this.editButtonLabel = 'Rediger';
             this.copyButtonLabel = 'Kopier';
             this.cancelButtonLabel = 'Avlys';
@@ -685,6 +687,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isInterpreterThreadButtonDisabled = true;
         if (this.workOrderThreadId !== undefined) {
             this.navigateToThread(this.workOrderThreadId);
+        if (this.request.Thread__c !== undefined) {
+            this.navigateToThread(this.request.Thread__c);
         } else {
             createThread({ recordId: this.workOrder.Id, accountId: this.request.Account__c })
                 .then((result) => {
@@ -696,6 +700,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                     this.modalHeader = 'Noe gikk galt';
                     this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
                     this.noCancelButton = true;
+                    this.isThreadButtonDisabled = false;
                     this.showModal();
                 });
         }
