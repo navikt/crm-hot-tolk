@@ -23,12 +23,12 @@ public without sharing class HOT_UpdateChildRecordsService {
         HOT_UpdateChildRecordsService input = inputVariables[0];
         HOT_Request__c request = input.request;
         List<String> errors = new List<String>();
-        
+
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
         if (input.isAccountChoice) {
             requestToUpdate.Account__c = request.Account__c;
-            requestToUpdate.UserName__c = request.UserName__c;
             requestToUpdate.UserPersonNumber__c = request.UserPersonNumber__c;
+            requestToUpdate.UserName__c = request.UserName__c;
         }
         if (input.isAddressChoice) {
             requestToUpdate.InterpretationStreet__c = request.InterpretationStreet__c;
@@ -66,6 +66,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                     Id,
                     Status,
                     AccountId,
+                    ContactId,
                     HOT_InterpretationStreet__c,
                     HOT_InterpretationPostalCode__c,
                     HOT_InterpretationPostalCity__c,
@@ -100,16 +101,16 @@ public without sharing class HOT_UpdateChildRecordsService {
                 SELECT
                     Id,
                     Status,
-                    HOT_Account__c,
-                    ContactId,
                     HOT_InterpretationStreet__c,
                     HOT_InterpretationPostalCode__c,
                     HOT_InterpretationPostalCity__c,
                     Street,
                     PostalCode,
                     City,
+                    ContactId,
                     Subject,
                     Description,
+                    HOT_Account__c,
                     HOT_IsScreenInterpreterNew__c,
                     HOT_DispatcherNew__c
                 FROM ServiceAppointment
@@ -121,6 +122,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         for (WorkOrder workOrder : workOrders.values()) {
             if (input.isAccountChoice) {
                 workOrder.AccountId = request.Account__c;
+                workOrder.ContactId = request.HOT_PersonContactId__c;
             }
             if (input.isAddressChoice) {
                 workOrder.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
@@ -176,7 +178,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (input.isAccountChoice) {
                 serviceAppointment.HOT_Account__c = request.Account__c;
-                serviceAppointment.ContactId = request.Account__r.PersonContactId;
+                serviceAppointment.ContactId = request.HOT_PersonContactId__c;
             }
             if (input.isAddressChoice) {
                 serviceAppointment.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
