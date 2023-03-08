@@ -9,6 +9,7 @@
                 checkbox="true"
                 checked-rows={checkedServiceAppointments}
                 oncheckedrows={handleRowChecked}
+                icon-by-value={iconByValue}
             ></c-table>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
@@ -176,7 +177,11 @@
                             title="Meld interesse til alle oppdrag i serien"
                         >
                         </c-button>
-                        <c-table records={seriesRecords} columns={columns} onrowclick={goToRecordDetails}></c-table>
+                        <c-table
+                            records={seriesRecords}
+                            columns={inDetailsColumns}
+                            onrowclick={goToRecordDetails}
+                        ></c-table>
                     </div>
                 </div>
             </section>

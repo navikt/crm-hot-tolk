@@ -61,7 +61,7 @@ public without sharing class HOT_ReminderSMSService {
         for (WorkOrder workOrder : workOrders) {
             String interpreterNames = '';
             List<ServiceAppointment> serviceAppointents = serviceAppointmentsByWorkOrderId.get(workOrder.Id);
-            if(serviceAppointents != null){
+            if (serviceAppointents != null) {
                 for (Integer i = 0; i < serviceAppointents.size(); i++) {
                     interpreterNames += serviceAppointents[i].HOT_ServiceResource__r.Name + ', ';
                 }
@@ -110,6 +110,40 @@ public without sharing class HOT_ReminderSMSService {
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrderList);
+    }
+
+    @Future
+    public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
+        List<WorkOrder> workOrderList = [
+            SELECT Id, AccountId, Status, StartDate, EndDate, HOT_Request__c, Account.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM WorkOrder
+            WHERE Id IN :workOrderIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (WorkOrder wo : workOrderList) {
+            SMS__c sms = new SMS__c();
+            sms.Account__c = wo.AccountId;
+            sms.Domain__c = 'HOT';
+            sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Message__c = constructOnOrdererMessage(wo);
+            smsList.add(sms);
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    public static String constructOnOrdererMessage(WorkOrder workOrder) {
+        String message = 'INFO\nAndre har lagt inn en bestilling for deg:\n';
+        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+        message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\nMvh tolketjenesten i NAV';
+        return message;
     }
 
     private static String getRecipient(WorkOrder workOrder) {
