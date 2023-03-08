@@ -177,7 +177,11 @@
                             title="Meld interesse til alle oppdrag i serien"
                         >
                         </c-button>
-                        <c-table records={seriesRecords} columns={columns} onrowclick={goToRecordDetails}></c-table>
+                        <c-table
+                            records={seriesRecords}
+                            columns={inDetailsColumns}
+                            onrowclick={goToRecordDetails}
+                        ></c-table>
                     </div>
                 </div>
             </section>

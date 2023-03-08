@@ -2,18 +2,21 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
-import { columns, mobileColumns } from './columns';
+import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
+    @track inDetailsColumns = [];
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
+            this.inDetailsColumns = inDetailsColumns;
         } else {
             this.columns = mobileColumns;
+            this.inDetailsColumns = inDetailsColumns;
         }
     }
     iconByValue = {
@@ -154,8 +157,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                haster: x.HOT_IsUrgent__c,
                 dag: this.getDayOfWeek(x.EarliestStartTime)
+                isUrgent: x.HOT_IsUrgent__c
             }));
 
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
