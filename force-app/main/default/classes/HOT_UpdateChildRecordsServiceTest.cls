@@ -16,6 +16,7 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
         request = [
             SELECT
                 Id,
+                Account__c,
                 InterpretationStreet__c,
                 InterpretationPostalCode__c,
                 InterpretationPostalCity__c,
@@ -23,6 +24,8 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
                 MeetingPostalCode__c,
                 MeetingPostalCity__c,
                 Subject__c,
+                UserPersonNumber__c,
+                UserName__c,
                 Description__c,
                 IsScreenInterpreter__c,
                 Dispatcher__c
@@ -42,6 +45,7 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
 
         input.request = request;
 
+        input.isAccountChoice = false;
         input.isAddressChoice = true;
         input.isSubjectChoice = true;
         input.isDescriptionChoice = true;
