@@ -5,30 +5,19 @@ public with sharing class DisableFreelanceUsersSchedulableTest {
     }
     @isTest
     static void testBatchClass() {
-        Profile profile=[SELECT Id, Name FROM Profile WHERE Name='NAV Samhandler' LIMIT 1];
-
         UserRole role = [SELECT Id FROM UserRole WHERE Name = 'UUser Customer Person Account' LIMIT 1];
-       
+        Profile profile=[SELECT Id, Name FROM Profile WHERE Name='NAV Samhandler' LIMIT 1];
+        Person__c person=HOT_TestDataFactory.createPerson();
+        insert person;
         Account acc=HOT_TestDataFactory.createAccount(false);
         insert acc;
         acc.Name='Wader';
+        acc.CRM_Person__c=person.Id;
         update acc;
 
-        Contact con = new Contact();
-        con.FirstName = 'John';
-        con.LastName = 'Doe';
-        con.Email = 'johndoe@test.com';
-        con.AccountId = acc.Id;
-        insert con;
+        createUser();
 
-        Account acco=[SELECT Id FROM Account WHERE Name='Wader' LIMIT 1];
-        // User user = HOT_TestDataFactory.createUser(profile, acco);
-        // user.ContactId = con.Id;
-        // user.UserRoleId = role.Id;
-        // insert user;
-        createUser(profile.Id, role.Id, con.Id);
-
-        User user=[SELECT Id FROM User LIMIT 1];
+        User user=[SELECT Id FROM User order by Id DESC limit 1];
 
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user.Id);
         insert resource1;
@@ -61,11 +50,20 @@ public static void assignPermissionSet(Id userId, Id permissionsetId) {
     insert new PermissionSetAssignment(AssigneeId = userId, PermissionSetId = permissionsetId);
 }
 @future
-public static void createUser(Id profile, Id role, Id contact) {
+public static void createUser() {
+    Account acco=[SELECT Id, PersonContactId FROM Account WHERE Name='Wader' LIMIT 1];
+     UserRole role = [SELECT Id FROM UserRole WHERE Name = 'UUser Customer Person Account' LIMIT 1];
+    Profile profile=[SELECT Id, Name FROM Profile WHERE Name='NAV Samhandler' LIMIT 1];
+     Contact con = new Contact();
+        con.FirstName = 'John';
+        con.LastName = 'Doe';
+        con.Email = 'johndoe@test.com';
+        con.AccountId = acco.Id;
+        insert con;
    
-);
+         User user = HOT_TestDataFactory.createUser(profile, acco);
+         user.ContactId = con.Id;
+         user.UserRoleId = role.Id;
+         insert user;
 }
-
-
-
 }
