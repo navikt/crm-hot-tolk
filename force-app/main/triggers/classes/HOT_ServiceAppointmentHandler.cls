@@ -874,7 +874,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             for(ServiceAppointment sa: serviceAppointments){
                 Date saDate = sa.SchedStartTime.date();
                 if(saDate==today || saDate==tomorrow ){
-                     sa.HOT_IsUrgent__c=true;
+                    // sa.HOT_IsUrgent__c=true;
                 }
             }
             serviceAppointment.HOT_IsEmployedInterpreter__c = false;
