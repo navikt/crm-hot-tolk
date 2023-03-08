@@ -15,6 +15,7 @@ public without sharing class HOT_NotificationHandler {
             }
         }
     }
+
     public static Messaging.CustomNotification prepareNotification(
         String title,
         String body,

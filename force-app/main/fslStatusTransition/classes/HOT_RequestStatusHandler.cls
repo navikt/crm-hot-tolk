@@ -203,14 +203,14 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, Status, HOT_Request__c
             FROM ServiceAppointment
-            WHERE HOT_Request__c IN :changedRequests
+            WHERE HOT_Request__c IN :changedRequests AND Status != 'Canceled' AND Status != 'Annul'
         ];
         Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(serviceAppointments);
 
         List<WorkOrder> workOrders = [
             SELECT Id, Status, HOT_Request__c
             FROM WorkOrder
-            WHERE HOT_Request__c IN :changedRequests
+            WHERE HOT_Request__c IN :changedRequests AND Status != 'Canceled' AND Status != 'Annul'
         ];
         Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(workOrders);
 

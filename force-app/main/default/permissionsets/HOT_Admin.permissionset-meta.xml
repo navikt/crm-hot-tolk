@@ -159,17 +159,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Event.CRM_NAV_Department__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Event.WhatId</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Event.WhoId</field>
+        <field>Event.HOT_IsCreatedFromSA__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -949,6 +939,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Person__c.HOT_InterpretersInformation__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Person__c.HOT_IsReservationAgainstReminderSMS__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1443,6 +1438,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsUrgent__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_NavEmployeeName__c</field>
         <readable>true</readable>
@@ -1739,17 +1739,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Task.CRM_NAV_Department__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Task.WhatId</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Task.WhoId</field>
+        <field>Task.HOT_IsCreatedFromSA__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
