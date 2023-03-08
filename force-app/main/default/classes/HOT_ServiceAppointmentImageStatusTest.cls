@@ -27,11 +27,16 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
 
         List<ServiceAppointment> salist = [SELECT Id, Status FROM ServiceAppointment];
         for (ServiceAppointment sa : salist) {
-            sa.Status = 'Dispatched';
+            sa.Status = 'Scheduled';
             sa.SchedStartTime = Datetime.now().AddHours(-1);
             sa.SchedEndTime = sa.SchedStartTime;
         }
         update saList;
+        List<ServiceAppointment> salist2 = [SELECT Id, Status FROM ServiceAppointment];
+        for (ServiceAppointment sa2 : salist2) {
+            sa2.Status = 'Dispatched';
+        }
+        update saList2;
         Test.startTest();
 
         HOT_ServiceAppointmentImageStatus instance = new HOT_ServiceAppointmentImageStatus();
@@ -73,11 +78,16 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
 
         List<ServiceAppointment> salist = [SELECT Id, Status FROM ServiceAppointment];
         for (ServiceAppointment sa : salist) {
-            sa.Status = 'Dispatched';
+            sa.Status = 'Scheduled';
             sa.SchedStartTime = Datetime.now().addDays(3).AddHours(1);
             sa.SchedEndTime = sa.SchedStartTime.AddHours(2);
         }
         update saList;
+        List<ServiceAppointment> salist2 = [SELECT Id, Status FROM ServiceAppointment];
+        for (ServiceAppointment sa2 : salist2) {
+            sa2.Status = 'Dispatched';
+        }
+        update saList2;
 
         HOT_ServiceAppointmentImageStatus instance = new HOT_ServiceAppointmentImageStatus();
         database.executebatch(instance);
@@ -86,7 +96,7 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
         List<ServiceAppointment> ls = [SELECT Id, Status FROM ServiceAppointment];
 
         for (ServiceAppointment sa : ls) {
-            System.assertEquals('Dispatched', sa.Status, 'Status ikke omgjort til "Tildelt"');
+            System.assertEquals('Dispatched', sa.Status, 'Status skulle ikke endres');
         }
     }
     @isTest
@@ -130,7 +140,7 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
         List<ServiceAppointment> ls = [SELECT Id, Status FROM ServiceAppointment];
 
         for (ServiceAppointment sa : ls) {
-            System.assertEquals('Scheduled', sa.Status, 'Status ikke omgjort til "Reservert"');
+            System.assertEquals('Scheduled', sa.Status, 'Status skulle ikke bli omgjort');
         }
     }
     @isTest
@@ -146,3 +156,4 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
         System.assert(jobId != null);
     }
 }
+

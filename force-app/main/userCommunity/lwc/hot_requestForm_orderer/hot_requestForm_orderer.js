@@ -65,10 +65,17 @@ export default class Hot_requestForm_orderer extends LightningElement {
 
     @api parentFieldValues;
     connectedCallback() {
+        this.showDiv = true;
+        setTimeout(() => this.template.querySelector('h2').focus());
+
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];
             }
         }
     }
+
+    // renderedCallback() {
+    //     this.template.querySelector('h2').focus();
+    // }
 }

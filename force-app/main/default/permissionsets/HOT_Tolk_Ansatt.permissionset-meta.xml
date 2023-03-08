@@ -567,6 +567,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Person__c.HOT_InterpretersInformation__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.HOT_LanguageAndCommunicationMethods__c</field>
         <readable>true</readable>
@@ -879,6 +884,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_IsSerieoppdrag__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsUrgent__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

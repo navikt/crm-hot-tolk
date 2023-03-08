@@ -113,13 +113,17 @@ public without sharing class HOT_InterestedResourcesListController {
 
     @AuraEnabled
     public static void addComment(Id interestedResourceId, String newComment) {
+        Datetime now = Datetime.now();
+        String osloTimeZone = 
+  now.format('yyyy-MM-dd-HH:mm:ss', 
+                 'Europe/Oslo');
         if (newComment != null && newComment != '') {
             newComment =
                 UserInfo.getFirstName() +
                 ' ' +
                 UserInfo.getLastName() +
                 ', ' +
-                Datetime.now() +
+                osloTimeZone +
                 ': ' +
                 newComment;
             HOT_InterestedResource__c interestedResource = [

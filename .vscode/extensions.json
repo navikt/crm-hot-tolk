@@ -15,8 +15,6 @@
         "nik-creation.lwc-salesforce",
         "chuckjonas.apex-pmd",
         "esbenp.prettier-vscode",
-        "allanoricil.salesforce-schema-builder",
-        "allanoricil.salesforce-soql-editor",
         "vscode-icons-team.vscode-icons"
     ]
 }
