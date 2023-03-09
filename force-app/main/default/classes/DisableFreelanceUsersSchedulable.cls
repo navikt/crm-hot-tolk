@@ -27,8 +27,18 @@ public void execute(Database.BatchableContext bc, List<User> records) {
                 sr.IsActive = false;
                 relatedRecordIds.add(sr.RelatedRecordId);
                 serviceResourcesToBeDisabled.add(sr.Id);
+               
             }
-        
+            try{
+               // update serviceResource;
+            }
+            catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publish();
+                System.debug('feil3'+e);
+            }
+           
                 
           
             
@@ -54,12 +64,10 @@ public void execute(Database.BatchableContext bc, List<User> records) {
                 newPSA.PermissionSetId = assigneeToPermissionSetMap.get(assigneeId);
                 newPermissionSetAssignments.add(newPSA);
             }
-
             try {
                 delete permissionSetAssignmentsToBeDeleted;
                 update records;
                 insert newPermissionSetAssignments;
-                updateServiceResources(serviceResourcesToBeDisabled);
                 //update serviceResource;
             } catch (Exception e) {
                 LoggerUtility logger = new LoggerUtility();
@@ -70,18 +78,6 @@ public void execute(Database.BatchableContext bc, List<User> records) {
         }
     }
 }
-@future
-public static void updateServiceResources(List<Id> srList) {
-    if(srList.size()!=0){
-        List<ServiceResource> serviceResources=[SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource WHERE Id IN: srList];
-        for(ServiceResource sr: serviceResources){
-            sr.HOT_IsFreelanceInterpreter__c=false;
-        }
-        update serviceResources;
-    }
-    
-}
-
 
     public void finish(Database.BatchableContext bc) {
         
