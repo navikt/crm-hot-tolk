@@ -160,7 +160,7 @@ public without sharing class HOT_ReminderSMSService {
         return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
     }
 
-    private static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
+    public static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
         String message = 'INFO\nStatus på din bestilling er:\n';
         if (workOrder.Status == 'Dispatched') {
             message += 'Du har fått tolk. ';
@@ -175,7 +175,7 @@ public without sharing class HOT_ReminderSMSService {
         return message;
     }
 
-    private static String constructInterpreterChangedMessage(WorkOrder workOrder, String interpreterNames) {
+    public static String constructInterpreterChangedMessage(WorkOrder workOrder, String interpreterNames) {
         String message = 'INFO\nTolk på din bestilling er endret:\n';
         message += 'Du har fått tolk. ';
         message += 'Tolk er: ';
