@@ -389,6 +389,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 Id,
                 StartDate,
                 EndDate,
+                Status,
                 AccountId,
                 HOT_Interpreters__c,
                 HOT_Request__c,
