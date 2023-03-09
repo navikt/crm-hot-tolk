@@ -346,10 +346,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                             updatedSA,
                             recipients
                         );
-                    } else {
-                        Set<Id> workOrderIds = new Set<Id>();
-                        workOrderIds.add(wo.Id);
-                        HOT_ReminderSMSService.sendSMSOnOrderer(workOrderIds);
                     }
                 }
             }
