@@ -8,6 +8,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
         ];
+        CustomNotificationType notificationTypePush = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
