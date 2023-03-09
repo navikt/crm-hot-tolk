@@ -304,31 +304,49 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
     public static void notifyUserOnAddedResource(ServiceAppointment sa) {
         User user = [SELECT Id, AccountId FROM User WHERE AccountId = :sa.AccountId];
-       
-        List<WorkOrder> workordersList = [
-            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
-            FROM WorkOrder
-            WHERE HOT_Request__c IN :sa.HOT_Request__c
-        ];
 
         Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
         userIdByAccountId.put(user.AccountId, user.Id);
 
-            Set<String> recipients = new Set<String>();
-            recipients.add(userIdByAccountId.get(sa.AccountId));
-            if (recipients.size() != 0) {
-                if (sa.HOT_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
-                    HOT_UserNotificationService.interpreterChangeNotification(
-                        getCustomNotificationType('HOT_NotifyUser'),
-                        sa.HOT_WorkOrder__c,
-                        recipients
-                    );
-                } else {
-                    Set<Id> workOrderIds = new Set<Id>();
-                    workOrderIds.add(sa.HOT_WorkOrder__c);
-                    HOT_ReminderSMSService.sendSMSOnOrderer(workOrderIds);
+        List<WorkOrder> workordersList = [
+            SELECT
+                Id,
+                StartDate,
+                EndDate,
+                AccountId,
+                HOT_Interpreters__c,
+                HOT_Request__c,
+                Account.CRM_Person__r.HOT_NotificationChannel__c
+            FROM WorkOrder
+            WHERE HOT_Request__c = :sa.HOT_Request__c
+        ];
+
+        if (!workordersList.isEmpty()) {
+            for (WorkOrder wo : workordersList) {
+                Set<String> recipients = new Set<String>();
+                recipients.add(userIdByAccountId.get(wo.AccountId));
+                if (recipients.size() != 0) {
+                    if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
+                        HOT_UserNotificationService.interpreterAddedNotification(
+                            getCustomNotificationType('HOT_NotifyUser'),
+                            wo,
+                            recipients
+                        );
+                    } else {
+                        Set<Id> workOrderIds = new Set<Id>();
+                        workOrderIds.add(wo.Id);
+                        HOT_ReminderSMSService.sendSMSOnOrderer(workOrderIds);
+                    }
                 }
             }
         }
+    }
+    public static CustomNotificationType getCustomNotificationType(String devName) {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = :devName
+        ];
+        return notificationType;
     }
 }
