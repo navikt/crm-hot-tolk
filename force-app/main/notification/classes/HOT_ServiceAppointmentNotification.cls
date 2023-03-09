@@ -18,9 +18,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c) &&
                 serviceAppointment.Status == 'Dispatched'
             ) {
-                Set<String> recipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
+                Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
+                resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
 
-                resourceAdded(notificationType, serviceAppointment, recipients);
+                notifyUserOnAddedResource(serviceAppointment);
             }
 
             if (oldServiceAppointment.HOT_AssignedResourceId__c != null) {
@@ -299,5 +300,67 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setTargetId(serviceAppointment.Id);
 
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+    }
+
+    public static void notifyUserOnAddedResource(ServiceAppointment sa) {
+        List<Id> accountIds = new List<Id>();
+        List<Id> requestIds = new List<Id>();
+        Boolean isPerson = false;
+
+        requestIds.add(sa.HOT_Request__c);
+        accountIds.add(sa.AccountId);    
+
+        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
+
+        Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
+        for (User user : users) {
+            userIdByAccountId.put(user.AccountId, user.Id);
+        }
+
+        // Needed to get latest SR I guess
+        ServiceAppointment updatedSA = [SELECT HOT_ServiceResource__r.Name FROM ServiceAppointment WHERE Id = :sa.Id];
+
+        List<WorkOrder> workordersList = [
+            SELECT
+                Id,
+                StartDate,
+                EndDate,
+                AccountId,
+                HOT_Interpreters__c,
+                HOT_Request__c,
+                Account.CRM_Person__r.HOT_NotificationChannel__c
+            FROM WorkOrder
+            WHERE HOT_Request__c = :sa.HOT_Request__c
+        ];
+
+        if (!workordersList.isEmpty()) {
+            for (WorkOrder wo : workordersList) {
+                isPerson = wo.Account.CRM_Person__c != null ? true : false;
+                Set<String> recipients = new Set<String>();
+                recipients.add(userIdByAccountId.get(wo.AccountId));
+                if (recipients.size() != 0 && isPerson ) {
+                    if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
+                        HOT_UserNotificationService.interpreterAddedNotification(
+                            getCustomNotificationType('HOT_NotifyUser'),
+                            wo,
+                            updatedSA,
+                            recipients
+                        );
+                    } else {
+                        Set<Id> workOrderIds = new Set<Id>();
+                        workOrderIds.add(wo.Id);
+                        HOT_ReminderSMSService.sendSMSOnOrderer(workOrderIds);
+                    }
+                }
+            }
+        }
+    }
+    public static CustomNotificationType getCustomNotificationType(String devName) {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = :devName
+        ];
+        return notificationType;
     }
 }

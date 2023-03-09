@@ -2,8 +2,8 @@ public without sharing class HOT_UserNotificationService {
     public static void newWorkOrderNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
-        Set<String> recipients)
-        {
+        Set<String> recipients
+    ) {
         String title = 'Andre har lagt inn en bestilling for deg';
         String body =
             'Det er bestilt tolk til deg. Dato: ' +
@@ -68,6 +68,34 @@ public without sharing class HOT_UserNotificationService {
             workOrder.HOT_Interpreters__c +
             '.' +
             'Dato: ' +
+            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+            ' - ' +
+            workOrder.EndDate?.format('hh:mm') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        String targetPageRef = getTargetPageRef(workOrder.Id, 'WO');
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        notification.send(recipients);
+    }
+
+    public static void interpreterAddedNotification(
+        CustomNotificationType notificationType,
+        WorkOrder workOrder,
+        ServiceAppointment sa,
+        Set<String> recipients
+    ) {
+        String title = 'Status på din bestilling er endret';
+        String body =
+            'Du har fått tolk. ' +
+            (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
+            +
+            '\nDato: ' +
             workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
             ' - ' +
             workOrder.EndDate?.format('hh:mm') +
