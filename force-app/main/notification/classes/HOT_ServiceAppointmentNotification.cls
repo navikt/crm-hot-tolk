@@ -320,7 +320,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Boolean isPerson = false;
 
         requestIds.add(sa.HOT_Request__c);
-        accountIds.add(sa.AccountId);    
+        accountIds.add(sa.AccountId);
 
         List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
 
@@ -350,7 +350,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 isPerson = wo.Account.CRM_Person__c != null ? true : false;
                 Set<String> recipients = new Set<String>();
                 recipients.add(userIdByAccountId.get(wo.AccountId));
-                if (recipients.size() != 0 && isPerson ) {
+                if (recipients.size() != 0 && isPerson) {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.interpreterChangedNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
@@ -359,9 +359,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                             recipients
                         );
                     } else {
-                        Set<Id> workOrderIds = new Set<Id>();
-                        workOrderIds.add(wo.Id);
-                        HOT_ReminderSMSService.constructInterpreterChangedMessage(workOrderIds,updatedSA);
+                        HOT_ReminderSMSService.constructInterpreterChangedMessage(wo, sa.HOT_ServiceResource__r.Name);
                     }
                 }
             }
@@ -374,7 +372,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Boolean isPerson = false;
 
         requestIds.add(sa.HOT_Request__c);
-        accountIds.add(sa.AccountId);    
+        accountIds.add(sa.AccountId);
 
         List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
 
@@ -404,7 +402,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 isPerson = wo.Account.CRM_Person__c != null ? true : false;
                 Set<String> recipients = new Set<String>();
                 recipients.add(userIdByAccountId.get(wo.AccountId));
-                if (recipients.size() != 0 && isPerson ) {
+                if (recipients.size() != 0 && isPerson) {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.interpreterAddedNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
@@ -413,9 +411,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                             recipients
                         );
                     } else {
-                        Set<Id> workOrderIds = new Set<Id>();
-                        workOrderIds.add(wo.Id);
-                        HOT_ReminderSMSService.sendSMSOnOrderer(workOrderIds);
+                        HOT_ReminderSMSService.constructStatusChangedMessage(wo, sa.HOT_ServiceResource__r.Name);
                     }
                 }
             }
