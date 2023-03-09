@@ -303,7 +303,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     }
 
     public static void notifyUserOnAddedResource(ServiceAppointment sa) {
-        User user = [SELECT Id, AccountId FROM User WHERE AccountId = :sa.AccountId];
+        User user = [SELECT Id, AccountId FROM User WHERE AccountId = :sa.AccountId LIMIT 1];
 
         Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
         userIdByAccountId.put(user.AccountId, user.Id);
