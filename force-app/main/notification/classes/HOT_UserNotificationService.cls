@@ -56,7 +56,7 @@ public without sharing class HOT_UserNotificationService {
         notification.send(recipients);
     }
 
-    public static void interpreterChangedNotification(
+    public static void interpreterChangeNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
         ServiceAppointment sa,

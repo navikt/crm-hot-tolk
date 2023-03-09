@@ -352,7 +352,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 recipients.add(userIdByAccountId.get(wo.AccountId));
                 if (recipients.size() != 0 && isPerson) {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
-                        HOT_UserNotificationService.interpreterChangedNotification(
+                        HOT_UserNotificationService.interpreterChangeNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             wo,
                             updatedSA,
