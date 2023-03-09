@@ -175,11 +175,11 @@ public without sharing class HOT_ReminderSMSService {
         return message;
     }
 
-    private static String constructInterpreterChangedMessage(WorkOrder workOrder, ServiceAppointment sa) {
+    private static String constructInterpreterChangedMessage(WorkOrder workOrder, String interpreterNames) {
         String message = 'INFO\nTolk på din bestilling er endret:\n';
         message += 'Du har fått tolk. ';
         message += 'Tolk er: ';
-        message += sa.HOT_ServiceResource__r.Name;
+        message += interpreterNames;
         message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh tolketjenesten i NAV';
