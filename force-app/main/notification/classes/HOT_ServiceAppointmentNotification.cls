@@ -305,6 +305,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public static void notifyUserOnAddedResource(ServiceAppointment sa) {
         List<Id> accountIds = new List<Id>();
         List<Id> requestIds = new List<Id>();
+        Boolean isPerson = false;
 
         requestIds.add(sa.HOT_Request__c);
         accountIds.add(sa.AccountId);    
@@ -334,9 +335,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         if (!workordersList.isEmpty()) {
             for (WorkOrder wo : workordersList) {
+                isPerson = wo.Account.CRM_Person__c != null ? true : false;
                 Set<String> recipients = new Set<String>();
                 recipients.add(userIdByAccountId.get(wo.AccountId));
-                if (recipients.size() != 0) {
+                if (recipients.size() != 0 && isPerson ) {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.interpreterAddedNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
