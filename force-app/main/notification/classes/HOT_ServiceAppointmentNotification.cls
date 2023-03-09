@@ -308,6 +308,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
         userIdByAccountId.put(user.AccountId, user.Id);
 
+        // Needed to get latest SR I guess
+        ServiceAppointment updatedSA = [SELECT HOT_ServiceResource__r.Name FROM ServiceAppointment WHERE Id = :sa.Id];
+
         List<WorkOrder> workordersList = [
             SELECT
                 Id,
@@ -330,6 +333,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         HOT_UserNotificationService.interpreterAddedNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             wo,
+                            updatedSA,
                             recipients
                         );
                     } else {
