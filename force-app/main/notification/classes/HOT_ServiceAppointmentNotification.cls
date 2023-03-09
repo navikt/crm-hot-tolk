@@ -351,6 +351,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             }
         }
     }
+    
     public static CustomNotificationType getCustomNotificationType(String devName) {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
