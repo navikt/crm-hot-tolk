@@ -303,10 +303,18 @@ public without sharing class HOT_ServiceAppointmentNotification {
     }
 
     public static void notifyUserOnAddedResource(ServiceAppointment sa) {
-        User user = [SELECT Id, AccountId FROM User WHERE AccountId = :sa.AccountId LIMIT 1];
+        List<Id> accountIds = new List<Id>();
+        List<Id> requestIds = new List<Id>();
+
+        requestIds.add(sa.HOT_Request__c);
+        accountIds.add(sa.AccountId);    
+
+        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
 
         Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
-        userIdByAccountId.put(user.AccountId, user.Id);
+        for (User user : users) {
+            userIdByAccountId.put(user.AccountId, user.Id);
+        }
 
         // Needed to get latest SR I guess
         ServiceAppointment updatedSA = [SELECT HOT_ServiceResource__r.Name FROM ServiceAppointment WHERE Id = :sa.Id];
