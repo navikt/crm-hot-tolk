@@ -84,6 +84,34 @@ public without sharing class HOT_UserNotificationService {
         notification.send(recipients);
     }
 
+    public static void interpreterAddedNotification(
+        CustomNotificationType notificationType,
+        WorkOrder workOrder,
+        Set<String> recipients
+    ) {
+        String title = 'Status på din bestilling er endret';
+        String body =
+            'Du har fått tolk. ' +
+            'Tolk er ' +
+            workOrder.HOT_Interpreters__c +
+            '.' +
+            'Dato: ' +
+            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+            ' - ' +
+            workOrder.EndDate?.format('hh:mm') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        String targetPageRef = getTargetPageRef(workOrder.Id, 'WO');
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        notification.send(recipients);
+    }
+
     public static void newMessageNotification(
         CustomNotificationType notificationType,
         Thread__c thread,

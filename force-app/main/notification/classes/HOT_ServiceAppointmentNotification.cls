@@ -18,8 +18,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c) &&
                 serviceAppointment.Status == 'Dispatched'
             ) {
-                Set<String> recipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
-                resourceAdded(notificationType, serviceAppointment, recipients);
+                Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
+                resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
+
+                notifyUserOnAddedResource(serviceAppointment);
             }
 
             if (oldServiceAppointment.HOT_AssignedResourceId__c != null) {
@@ -298,5 +300,35 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setTargetId(serviceAppointment.Id);
 
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+    }
+
+    public static void notifyUserOnAddedResource(ServiceAppointment sa) {
+        User user = [SELECT Id, AccountId FROM User WHERE AccountId = :sa.AccountId];
+       
+        List<WorkOrder> workordersList = [
+            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :sa.HOT_Request__c
+        ];
+
+        Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
+        userIdByAccountId.put(user.AccountId, user.Id);
+
+            Set<String> recipients = new Set<String>();
+            recipients.add(userIdByAccountId.get(sa.AccountId));
+            if (recipients.size() != 0) {
+                if (sa.HOT_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
+                    HOT_UserNotificationService.interpreterChangeNotification(
+                        getCustomNotificationType('HOT_NotifyUser'),
+                        sa.HOT_WorkOrder__c,
+                        recipients
+                    );
+                } else {
+                    Set<Id> workOrderIds = new Set<Id>();
+                    workOrderIds.add(sa.HOT_WorkOrder__c);
+                    HOT_ReminderSMSService.sendSMSOnOrderer(workOrderIds);
+                }
+            }
+        }
     }
 }
