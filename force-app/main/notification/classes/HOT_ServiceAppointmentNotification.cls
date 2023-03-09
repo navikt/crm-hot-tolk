@@ -359,7 +359,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                             recipients
                         );
                     } else {
-                        HOT_ReminderSMSService.constructInterpreterChangedMessage(wo, sa.HOT_ServiceResource__r.Name);
+                       // HOT_ReminderSMSService.constructInterpreterChangedMessage(wo, updatedSA.HOT_ServiceResource__r.Name);
                     }
                 }
             }
@@ -411,8 +411,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                             updatedSA,
                             recipients
                         );
-                    } else {
-                        HOT_ReminderSMSService.constructStatusChangedMessage(wo, sa.HOT_ServiceResource__r.Name);
                     }
                 }
             }
