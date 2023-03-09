@@ -30,7 +30,7 @@ public void execute(Database.BatchableContext bc, List<User> records) {
                
             }
             try{
-               // update serviceResource;
+                update serviceResource;
             }
             catch (Exception e) {
                 LoggerUtility logger = new LoggerUtility();
