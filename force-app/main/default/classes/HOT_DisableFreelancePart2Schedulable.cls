@@ -27,8 +27,8 @@ public void execute(Database.BatchableContext bc, List<User> records) {
             
             for(User user : records){
                 user.ProfileId=profile.Id;
+                relatedRecordIds.add(user.Id);
             }
-         
             List<PermissionSetAssignment> permissionSetAssignments = [SELECT Id, AssigneeId, PermissionSetId FROM PermissionSetAssignment WHERE AssigneeId IN :relatedRecordIds];
             Map<Id, Id> assigneeToPermissionSetMap = new Map<Id, Id>();
             for (PermissionSetAssignment psa : permissionSetAssignments) {
@@ -36,7 +36,6 @@ public void execute(Database.BatchableContext bc, List<User> records) {
                     assigneeToPermissionSetMap.put(psa.AssigneeId, permissionset.Id);
                 }
             }
-
             List<PermissionSetAssignment> newPermissionSetAssignments = new List<PermissionSetAssignment>();
             for (Id assigneeId : assigneeToPermissionSetMap.keySet()) {
                 PermissionSetAssignment newPSA = new PermissionSetAssignment();
@@ -52,8 +51,9 @@ public void execute(Database.BatchableContext bc, List<User> records) {
                 LoggerUtility logger = new LoggerUtility();
                 logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
                 logger.publish();
-                System.debug('feil3'+e);
+                System.debug('feil'+e);
             }
+            
         }
     }
 }
