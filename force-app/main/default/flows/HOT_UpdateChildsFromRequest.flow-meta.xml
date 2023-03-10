@@ -3,11 +3,17 @@
     <actionCalls>
         <name>UpdateChildRecords</name>
         <label>UpdateChildRecords</label>
-        <locationX>182</locationX>
-        <locationY>974</locationY>
+        <locationX>314</locationX>
+        <locationY>1094</locationY>
         <actionName>HOT_UpdateChildRecordsService</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>isAccountChoice</name>
+            <value>
+                <elementReference>isAccount</elementReference>
+            </value>
+        </inputParameters>
         <inputParameters>
             <name>isAddressChoice</name>
             <value>
@@ -48,6 +54,43 @@
     </actionCalls>
     <apiVersion>52.0</apiVersion>
     <assignments>
+        <name>Store_Account_Value</name>
+        <label>Store Account Value</label>
+        <locationX>314</locationX>
+        <locationY>878</locationY>
+        <assignmentItems>
+            <assignToReference>getRequest.Account__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>AccountLookup.recordId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.UserName__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>AccountLookup.recordName</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.UserPersonNumber__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>getPerson.Name</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.HOT_PersonContactId__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>getPerson.CRM_Account__r.PersonContactId</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>UpdateChildRecords</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Store_Dispatcher_Value</name>
         <label>Store Dispatcher Value</label>
         <locationX>50</locationX>
@@ -63,6 +106,14 @@
             <targetReference>UpdateChildRecords</targetReference>
         </connector>
     </assignments>
+    <choices>
+        <name>Account</name>
+        <choiceText>Bruker</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Account</stringValue>
+        </value>
+    </choices>
     <choices>
         <name>Address</name>
         <choiceText>Adresser</choiceText>
@@ -106,7 +157,7 @@
     <decisions>
         <name>Check_Request</name>
         <label>Check Request</label>
-        <locationX>336</locationX>
+        <locationX>534</locationX>
         <locationY>278</locationY>
         <defaultConnector>
             <targetReference>Cannot_update_Screen</targetReference>
@@ -138,7 +189,7 @@
     <decisions>
         <name>Is_Dispatcher</name>
         <label>Is Dispatcher?</label>
-        <locationX>182</locationX>
+        <locationX>314</locationX>
         <locationY>638</locationY>
         <defaultConnector>
             <targetReference>UpdateChildRecords</targetReference>
@@ -159,7 +210,28 @@
             </connector>
             <label>isDispatcherCheck</label>
         </rules>
+        <rules>
+            <name>isAccountCheck</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isAccount</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>getPerson</targetReference>
+            </connector>
+            <label>isAccountCheck</label>
+        </rules>
     </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>isAccount</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!Account})</expression>
+    </formulas>
     <formulas>
         <name>isAddress</name>
         <dataType>Boolean</dataType>
@@ -207,9 +279,30 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
+        <name>getPerson</name>
+        <label>getPerson</label>
+        <locationX>314</locationX>
+        <locationY>758</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_Account_Value</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Account__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>AccountLookup.recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Person__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>getRequest</name>
         <label>getRequest</label>
-        <locationX>336</locationX>
+        <locationX>534</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -230,7 +323,7 @@
     <screens>
         <name>Cannot_update_Screen</name>
         <label>Cannot update Screen</label>
-        <locationX>490</locationX>
+        <locationX>754</locationX>
         <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -246,7 +339,7 @@
     <screens>
         <name>ChooseFieldScreen</name>
         <label>ChooseFieldScreen</label>
-        <locationX>182</locationX>
+        <locationX>314</locationX>
         <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -261,6 +354,7 @@
             <choiceReferences>Description</choiceReferences>
             <choiceReferences>ScreenInterpreter</choiceReferences>
             <choiceReferences>Dispatcher</choiceReferences>
+            <choiceReferences>Account</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -272,7 +366,7 @@
     <screens>
         <name>NewValuesScreen</name>
         <label>NewValuesScreen</label>
-        <locationX>182</locationX>
+        <locationX>314</locationX>
         <locationY>518</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -509,11 +603,70 @@
                 </conditions>
             </visibilityRule>
         </fields>
+        <fields>
+            <name>NewValuesScreen_Section6</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section6_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>AccountLookup</name>
+                    <extensionName>flowruntime:lookup</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>fieldApiName</name>
+                        <value>
+                            <stringValue>Account__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value>
+                            <stringValue>Account</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value>
+                            <stringValue>HOT_Request__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value>
+                            <elementReference>getRequest.Account__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFields</leftValueReference>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Account</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>210</locationX>
+        <locationX>408</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>getRequest</targetReference>
