@@ -11,13 +11,14 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
             horizonDate = Date.today().addDays(4);
         }
         String query = 'SELECT ';
-        query += 'Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate ';
+        query += 'Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate, Account.CRM_Person__r.HOT_NotificationChannel__c ';
         query += 'FROM WorkOrder ';
         query += 'WHERE StartDate < :horizonDate ';
         query += 'AND StartDate > :now ';
         query += 'AND Status = \'Dispatched\' ';
         query += 'AND Account.CRM_Person__r.INT_KrrMobilePhone__c != null ';
         query += 'AND Account.CRM_Person__r.HOT_IsReservationAgainstReminderSMS__c = FALSE ';
+        query += 'AND Account.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\' ';
         query += 'AND HOT_Request__r.IsReminderSMS__c = TRUE ';
         query += 'AND HOT_IsReminderSMSSendt__c = FALSE';
 
