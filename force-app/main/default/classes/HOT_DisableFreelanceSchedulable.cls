@@ -5,14 +5,18 @@ public with sharing class HOT_DisableFreelanceSchedulable implements Database.Ba
     }
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime oneYearAgo = Datetime.now().addHours(-2);
-
          return Database.getQueryLocator(
             [
-                SELECT Id, LastLoginDate, ProfileId FROM User WHERE Profile.Name='NAV Samhandler' AND (LastLoginDate <= :oneYearAgo OR LastLoginDate=null)
+                SELECT Id, LastLoginDate, ProfileId 
+FROM User 
+WHERE Profile.Name='NAV Samhandler' 
+AND Id IN (SELECT ServiceResource.AccountId FROM AssignedResource WHERE ServiceAppointment.SchedEndTime <= :oneYearAgo)
+
             ]
         );
     }
 public void execute(Database.BatchableContext bc, List<User> records) {
+    
     if (records.size() > 0) {
         List<ServiceResource> serviceResource=[SELECT Id,RelatedRecordId FROM ServiceResource WHERE RelatedRecordId IN: records AND HOT_IsFreelanceInterpreter__c=true];
         if(serviceResource.size()>0){
@@ -26,10 +30,6 @@ public void execute(Database.BatchableContext bc, List<User> records) {
                 update serviceResource;
             }
             catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
-                System.debug('feil3'+e);
             }
  
     }
@@ -38,6 +38,7 @@ public void execute(Database.BatchableContext bc, List<User> records) {
 }
 
     public void finish(Database.BatchableContext bc) {
-        
+        HOT_DisableFreelancePart2Schedulable instance = new HOT_DisableFreelancePart2Schedulable();
+        database.executebatch(instance, 10);
     }
 }

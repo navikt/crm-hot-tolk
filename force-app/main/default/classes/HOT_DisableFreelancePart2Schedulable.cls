@@ -8,7 +8,11 @@ public with sharing class HOT_DisableFreelancePart2Schedulable implements Databa
 
          return Database.getQueryLocator(
             [
-                SELECT Id, LastLoginDate, ProfileId FROM User WHERE Profile.Name='NAV Samhandler' AND (LastLoginDate <= :oneYearAgo OR LastLoginDate=null)
+                SELECT Id, LastLoginDate, ProfileId 
+FROM User 
+WHERE Profile.Name='NAV Samhandler' 
+AND Id IN (SELECT ServiceResource.AccountId FROM AssignedResource WHERE ServiceAppointment.SchedEndTime <= :oneYearAgo)
+
             ]
         );
     }
@@ -21,7 +25,6 @@ public void execute(Database.BatchableContext bc, List<User> records) {
             Profile profile=[SELECT Id, Name FROM Profile WHERE Name='NAV Bruker Plus' LIMIT 1];
 
             Set<Id> relatedRecordIds = new Set<Id>();
-            List<Id> serviceResourcesToBeDisabled = new List<Id>();
 
             List<PermissionSetAssignment> permissionSetAssignmentsToBeDeleted=[SELECT Id, AssigneeId, PermissionSetId FROM PermissionSetAssignment WHERE AssigneeId IN: relatedRecordIds AND PermissionSetId=:permissionsetFreelance.Id];
             
@@ -48,10 +51,6 @@ public void execute(Database.BatchableContext bc, List<User> records) {
                 update records;
                 insert newPermissionSetAssignments;
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
-                System.debug('feil'+e);
             }
             
         }
