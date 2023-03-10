@@ -4,14 +4,18 @@ public with sharing class HOT_DisableFreelancePart2Schedulable implements Databa
         database.executebatch(instance, 10);
     }
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        Datetime oneYearAgo = Datetime.now().addHours(-2);
-
-         return Database.getQueryLocator(
+        Datetime oneYearAgo = Datetime.now().addDays(-365);
+        List<AssignedResource> assignedresource=[SELECT ServiceResource.AccountId FROM AssignedResource WHERE ServiceAppointment.SchedEndTime <= :oneYearAgo];
+        Set<Id> serviceResourceIds = new Set<Id>();
+        for (AssignedResource ar : assignedResource) {
+            serviceResourceIds.add(ar.ServiceResource.AccountId);
+        }
+        return Database.getQueryLocator(
             [
                 SELECT Id, LastLoginDate, ProfileId 
 FROM User 
 WHERE Profile.Name='NAV Samhandler' 
-AND Id IN (SELECT ServiceResource.AccountId FROM AssignedResource WHERE ServiceAppointment.SchedEndTime <= :oneYearAgo)
+AND AccountId IN :serviceResourceIds 
 
             ]
         );
