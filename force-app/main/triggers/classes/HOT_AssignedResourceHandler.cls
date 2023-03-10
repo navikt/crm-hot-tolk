@@ -108,7 +108,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         );
     
             List<Id> serviceAppointmentIdsList = new List<Id>(interestedresourceMap.keySet());
-            List<Id> serviceResourceIds = new List<Id>(interestedresourceMap.values());
 
             List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c
                                                                 FROM HOT_InterestedResource__c 
