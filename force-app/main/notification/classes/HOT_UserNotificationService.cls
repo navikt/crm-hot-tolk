@@ -67,9 +67,11 @@ public without sharing class HOT_UserNotificationService {
             'Tolk på din bestilling er endret. ' +
             (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
             '\nDato: ' +
-            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+            workOrder.StartDate?.format('dd/MM/yyyy HH', 
+            'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('hh:mm') +
+            workOrder.EndDate?.format('HH', 
+            'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
