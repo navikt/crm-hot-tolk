@@ -7,9 +7,11 @@ public without sharing class HOT_UserNotificationService {
         String title = 'Andre har lagt inn en bestilling for deg';
         String body =
             'Det er bestilt tolk til deg. Dato: ' +
-            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+            workOrder.StartDate?.format('dd/MM/yyyy HH:mm', 
+            'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('hh:mm') +
+            workOrder.EndDate?.format('HH:mm', 
+            'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
@@ -40,9 +42,11 @@ public without sharing class HOT_UserNotificationService {
             '. ' +
             (workOrder.HOT_Interpreters__c != null ? 'Tolk er ' + workOrder.HOT_Interpreters__c + '.' : '') +
             'Dato: ' +
-            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+            workOrder.StartDate?.format('dd/MM/yyyy HH:mm', 
+            'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('hh:mm') +
+            workOrder.EndDate?.format('HH:mm', 
+            'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
@@ -59,18 +63,19 @@ public without sharing class HOT_UserNotificationService {
     public static void interpreterChangeNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
+        ServiceAppointment sa,
         Set<String> recipients
     ) {
         String title = 'Endring av tolk';
         String body =
             'Tolk på din bestilling er endret. ' +
-            'Tolk er ' +
-            workOrder.HOT_Interpreters__c +
-            '.' +
-            'Dato: ' +
-            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+            (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
+            '\nDato: ' +
+            workOrder.StartDate?.format('dd/MM/yyyy HH:mm', 
+            'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('hh:mm') +
+            workOrder.EndDate?.format('HH:mm', 
+            'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
@@ -94,11 +99,12 @@ public without sharing class HOT_UserNotificationService {
         String body =
             'Du har fått tolk. ' +
             (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
-            +
             '\nDato: ' +
-            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+            workOrder.StartDate?.format('dd/MM/yyyy HH:mm', 
+            'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('hh:mm') +
+            workOrder.EndDate?.format('HH:mm', 
+            'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
