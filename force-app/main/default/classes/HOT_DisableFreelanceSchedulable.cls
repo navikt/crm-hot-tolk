@@ -5,10 +5,23 @@ public with sharing class HOT_DisableFreelanceSchedulable implements Database.Ba
     }
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime oneYearAgo = Datetime.now().addDays(-365);
-        List<AssignedResource> assignedresource=[SELECT ServiceResource.AccountId FROM AssignedResource WHERE ServiceAppointment.SchedEndTime <= :oneYearAgo];
-         Set<Id> serviceResourceIds = new Set<Id>();
-        for (AssignedResource ar : assignedResource) {
-            serviceResourceIds.add(ar.ServiceResource.AccountId);
+
+        List<AssignedResource> assignedResources = [SELECT ServiceResource.AccountId, ServiceAppointment.SchedEndTime FROM AssignedResource WHERE ServiceAppointment.SchedEndTime <= :oneYearAgo];
+
+        Map<Id, Datetime> serviceResourceIdsToSchedEndTime = new Map<Id, Datetime>();
+
+        for (AssignedResource ar : assignedResources) {
+            if (!serviceResourceIdsToSchedEndTime.containsKey(ar.ServiceResource.AccountId)
+                    || ar.ServiceAppointment.SchedEndTime > serviceResourceIdsToSchedEndTime.get(ar.ServiceResource.AccountId)) {
+                serviceResourceIdsToSchedEndTime.put(ar.ServiceResource.AccountId, ar.ServiceAppointment.SchedEndTime);
+            }
+        }
+
+        Set<Id> serviceResourceIds = new Set<Id>();
+        for (Id serviceResourceId : serviceResourceIdsToSchedEndTime.keySet()) {
+            if (serviceResourceIdsToSchedEndTime.get(serviceResourceId) <= oneYearAgo) {
+                serviceResourceIds.add(serviceResourceId);
+            }
         }
          return Database.getQueryLocator(
             [
