@@ -115,7 +115,14 @@ public without sharing class HOT_ReminderSMSService {
     @Future
     public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
         List<WorkOrder> workOrderList = [
-            SELECT Id, AccountId, Status, StartDate, EndDate, HOT_Request__c, Account.CRM_Person__r.INT_KrrMobilePhone__c
+            SELECT
+                Id,
+                AccountId,
+                Status,
+                StartDate,
+                EndDate,
+                HOT_Request__c,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM WorkOrder
             WHERE Id IN :workOrderIds
         ];
@@ -153,7 +160,7 @@ public without sharing class HOT_ReminderSMSService {
         return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
     }
 
-    private static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
+    public static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
         String message = 'INFO\nStatus på din bestilling er:\n';
         if (workOrder.Status == 'Dispatched') {
             message += 'Du har fått tolk. ';
@@ -162,6 +169,17 @@ public without sharing class HOT_ReminderSMSService {
         } else if (workOrder.Status == 'Cannot Complete') {
             message += 'Ikke ledig tolk';
         }
+        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+        message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\nMvh tolketjenesten i NAV';
+        return message;
+    }
+
+    public static String constructInterpreterChangedMessage(WorkOrder workOrder, String interpreterNames) {
+        String message = 'INFO\nTolk på din bestilling er endret:\n';
+        message += 'Du har fått tolk. ';
+        message += 'Tolk er: ';
+        message += interpreterNames;
         message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh tolketjenesten i NAV';

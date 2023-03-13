@@ -53,10 +53,11 @@ public class HOT_UserNotificationServiceTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status FROM WorkOrder LIMIT 1];
+        ServiceAppointment serviceAppointment = [SELECT Id, HOT_ServiceResource__r.Name FROM ServiceAppointment LIMIT 1];
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         Test.startTest();
-        HOT_UserNotificationService.interpreterChangeNotification(notificationType, workOrder, recipients);
+        HOT_UserNotificationService.interpreterChangeNotification(notificationType, workOrder, serviceAppointment, recipients);
         Test.stopTest();
     }
     @isTest
