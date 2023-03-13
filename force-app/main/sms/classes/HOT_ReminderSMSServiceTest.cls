@@ -62,6 +62,25 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
+    static void sendSMSOnInterpreterChangeTest() {
+        List<WorkOrder> workOrders = [
+            SELECT
+                Id,
+                HOT_Request__r.Orderer__c,
+                HOT_Request__r.OrdererPhone__c,
+                HOT_Request__r.Type__c,
+                StartDate,
+                EndDate,
+                Status,
+                HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
+            FROM WorkOrder
+        ];
+        HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
+
+    @isTest
     static void sendSMSToOrdererOnStatusUpdateTest2() {
         List<WorkOrder> workOrders = [
             SELECT

@@ -111,7 +111,7 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrderList);
     }
-
+    
     @Future
     public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
         List<WorkOrder> workOrderList = [
@@ -127,6 +127,39 @@ public without sharing class HOT_ReminderSMSService {
             sms.Domain__c = 'HOT';
             sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructOnOrdererMessage(wo);
+            smsList.add(sms);
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    @Future
+    public static void sendSMSOnInterpreterChange(Set<Id> workOrderIds, String interpreterName) {
+        List<WorkOrder> workOrderList = [
+            SELECT
+                Id,
+                AccountId,
+                Status,
+                StartDate,
+                EndDate,
+                HOT_Request__c,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM WorkOrder
+            WHERE Id IN :workOrderIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (WorkOrder wo : workOrderList) {
+            SMS__c sms = new SMS__c();
+            sms.Account__c = wo.AccountId;
+            sms.Domain__c = 'HOT';
+            sms.Recipient__c = getRecipient(wo);
+            sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
             smsList.add(sms);
         }
         try {
