@@ -351,7 +351,65 @@ public without sharing class HOT_ServiceAppointmentNotification {
             }
         }
     }
-    
+
+    public static void notifyUserOnChangedResource(ServiceAppointment sa) {
+        List<Id> accountIds = new List<Id>();
+        Boolean isPerson = false;
+
+        accountIds.add(sa.AccountId);
+
+        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
+
+        Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
+        for (User user : users) {
+            userIdByAccountId.put(user.AccountId, user.Id);
+        }
+
+        // Needed to get latest SR I guess
+        ServiceAppointment updatedSA = [
+            SELECT HOT_ServiceResource__r.Name, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
+
+        List<WorkOrder> workordersList = [
+            SELECT
+                Id,
+                StartDate,
+                EndDate,
+                AccountId,
+                HOT_Interpreters__c,
+                Account.CRM_Person__r.HOT_NotificationChannel__c
+            FROM WorkOrder
+            WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
+
+        if (!workordersList.isEmpty()) {
+            for (WorkOrder wo : workordersList) {
+                isPerson = wo.Account.CRM_Person__c != null ? true : false;
+                Set<String> recipients = new Set<String>();
+                recipients.add(userIdByAccountId.get(wo.AccountId));
+                if (recipients.size() != 0 && isPerson) {
+                    if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
+                        HOT_UserNotificationService.interpreterChangeNotification(
+                            getCustomNotificationType('HOT_NotifyUser'),
+                            wo,
+                            updatedSA,
+                            recipients
+                        );
+                    } else {
+                        Set<Id> workOrderIds = new Set<Id>();
+                        workOrderIds.add(wo.Id);
+                        HOT_ReminderSMSService.sendSMSOnInterpreterChange(
+                            workOrderIds,
+                            updatedSA.HOT_ServiceResource__r.Name
+                        );
+                    }
+                }
+            }
+        }
+    }
+
     public static CustomNotificationType getCustomNotificationType(String devName) {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
