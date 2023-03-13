@@ -179,6 +179,17 @@ public without sharing class HOT_ReminderSMSService {
         return message;
     }
 
+    public static String constructInterpreterChangedMessage(WorkOrder workOrder, String interpreterNames) {
+        String message = 'INFO\nTolk på din bestilling er endret:\n';
+        message += 'Du har fått tolk. ';
+        message += 'Tolk er: ';
+        message += interpreterNames;
+        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+        message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\nMvh tolketjenesten i NAV';
+        return message;
+    }
+
     private static String getRecipient(WorkOrder workOrder) {
         if (workOrder.HOT_Request__r.Type__c != 'Me') {
             return workOrder.HOT_Request__r.OrdererPhone__c;
