@@ -26,7 +26,7 @@ jobs:
       - name: Install SFDX
         uses: navikt/crm-workflows-base/.github/actions/installSFDX@master
         with:
-          version: 7.188.1
+          version: 7.192.2
 
       # Authorize Prod
       - name: Authorize PROD
