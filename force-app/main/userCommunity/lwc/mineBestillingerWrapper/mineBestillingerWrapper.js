@@ -687,22 +687,23 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isInterpreterThreadButtonDisabled = true;
         if (this.workOrderThreadId !== undefined) {
             this.navigateToThread(this.workOrderThreadId);
-        if (this.request.Thread__c !== undefined) {
-            this.navigateToThread(this.request.Thread__c);
-        } else {
-            createThread({ recordId: this.workOrder.Id, accountId: this.request.Account__c })
-                .then((result) => {
-                    this.navigateToThread(result.Id);
-                    refreshApex(this.wiredgetWorkOrdersResult);
-                    this.workOrderThreadId = result.Id;
-                })
-                .catch((error) => {
-                    this.modalHeader = 'Noe gikk galt';
-                    this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                    this.noCancelButton = true;
-                    this.isThreadButtonDisabled = false;
-                    this.showModal();
-                });
+            if (this.request.Thread__c !== undefined) {
+                this.navigateToThread(this.request.Thread__c);
+            } else {
+                createThread({ recordId: this.workOrder.Id, accountId: this.request.Account__c })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                        refreshApex(this.wiredgetWorkOrdersResult);
+                        this.workOrderThreadId = result.Id;
+                    })
+                    .catch((error) => {
+                        this.modalHeader = 'Noe gikk galt';
+                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                        this.noCancelButton = true;
+                        this.isThreadButtonDisabled = false;
+                        this.showModal();
+                    });
+            }
         }
     }
 }
