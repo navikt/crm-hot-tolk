@@ -40,7 +40,7 @@
     </values>
     <values>
         <field>Policy_Success_Field__c</field>
-        <value xsi:type="xsd:string">HOT_DelPol_IsDeleteRecord__c</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Policy_Type__c</field>
