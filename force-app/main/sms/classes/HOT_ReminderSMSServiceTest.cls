@@ -4,6 +4,7 @@ private class HOT_ReminderSMSServiceTest {
     static void setup() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.INT_KrrMobilePhone__c = '00000000';
+        person.HOT_NotificationChannel__c = 'SMS';
         insert person;
         Account account = [SELECT Id FROM Account];
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -29,8 +30,6 @@ private class HOT_ReminderSMSServiceTest {
             FROM WorkOrder
         ];
         workOrder.Status = 'Dispatched';
-        workOrder.Account.CRM_Person__r.HOT_NotificationChannel__c = 'SMS';
-        workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c = '12345678';
         workOrder.StartDate = workOrder.StartDate.addDays(-2);
         workOrder.EndDate = workOrder.EndDate.addDays(-2);
         update workOrder;
