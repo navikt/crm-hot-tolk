@@ -55,7 +55,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
 
         try {
             if (!workorderListSMS.isEmpty()) {
-                HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(records);
+                HOT_ReminderSMSService.reminderSMS(records);
             }
 
             if (!workorderListPush.isEmpty()) {
@@ -64,8 +64,10 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
                         Set<String> recipients = new Set<String>();
                         recipients.add(userIdByAccountId.get(wo.AccountId));
                         HOT_UserNotificationService.statusChangeNotification(notificationTypePush, wo, recipients);
+                        wo.HOT_IsReminderSMSSendt__c = true;
                     }
                 }
+                HOT_DatabaseOperations.updateRecords(workorderListPush);
             }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
