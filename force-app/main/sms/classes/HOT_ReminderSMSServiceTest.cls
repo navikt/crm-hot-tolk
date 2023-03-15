@@ -18,7 +18,16 @@ private class HOT_ReminderSMSServiceTest {
         // To create child records
         request.Status__c = 'Godkjent';
         update request;
-        WorkOrder workOrder = [SELECT Id, Status, Account.CRM_Person__r.INT_NotificationChannel__c, StartDate, EndDate FROM WorkOrder];
+        WorkOrder workOrder = [
+            SELECT
+                Id,
+                Status,
+                Account.CRM_Person__r.INT_NotificationChannel__c,
+                CRM_Person__r.INT_KrrMobilePhone__c,
+                StartDate,
+                EndDate
+            FROM WorkOrder
+        ];
         workOrder.Status = 'Dispatched';
         workOrder.Account.CRM_Person__r.INT_NotificationChannel__c = 'SMS';
         workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c = '12345678';
@@ -65,11 +74,7 @@ private class HOT_ReminderSMSServiceTest {
 
     @isTest
     static void sendSMSOnInterpreterChangeTest() {
-        List<WorkOrder> workOrders = [
-            SELECT
-                Id
-            FROM WorkOrder
-        ];
+        List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder];
 
         Set<Id> workOrderIds = new Set<Id>();
         for (WorkOrder wo : workOrders) {
