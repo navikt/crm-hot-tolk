@@ -22,7 +22,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
-
+                
                 notiyUserOnStatusChange(serviceAppointment);
             }
             
@@ -346,14 +346,15 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_Interpreters__c,
                 Account.CRM_Person__r.HOT_NotificationChannel__c
             FROM WorkOrder
-            WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
+            WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId 
+            AND Account.CRM_Person__r.HOT_NotificationChannel__c != null
         ];
 
         if (!workordersList.isEmpty()) {
             for (WorkOrder wo : workordersList) {
                 isPerson = wo.Account.CRM_Person__c != null ? true : false;
                 Set<String> recipients = new Set<String>();
-                if (userIdByAccountId.get(wo.AccountId) != null) {
+                if (userIdByAccountId.get(wo.AccountId) != null ) {
                     recipients.add(userIdByAccountId.get(wo.AccountId));
                 }
                 if (recipients.size() != 0 && isPerson) {
