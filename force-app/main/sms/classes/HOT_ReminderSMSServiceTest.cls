@@ -18,8 +18,10 @@ private class HOT_ReminderSMSServiceTest {
         // To create child records
         request.Status__c = 'Godkjent';
         update request;
-        WorkOrder workOrder = [SELECT Id, Status, StartDate, EndDate FROM WorkOrder];
+        WorkOrder workOrder = [SELECT Id, Status, CRM_Person__r.INT_NotificationChannel__c, StartDate, EndDate FROM WorkOrder];
         workOrder.Status = 'Dispatched';
+        workOrder.CRM_Person__r.INT_NotificationChannel__c = 'SMS';
+        workOrder.CRM_Person__r.INT_KrrMobilePhone__c = '12345678';
         workOrder.StartDate = workOrder.StartDate.addDays(-2);
         workOrder.EndDate = workOrder.EndDate.addDays(-2);
         update workOrder;
