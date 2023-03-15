@@ -24,7 +24,7 @@ private class HOT_ReminderSMSServiceTest {
                 Id,
                 Status,
                 Account.CRM_Person__r.HOT_NotificationChannel__c,
-                CRM_Person__r.INT_KrrMobilePhone__c,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c,
                 StartDate,
                 EndDate
             FROM WorkOrder
