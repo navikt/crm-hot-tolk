@@ -22,6 +22,14 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 notifyUserOnAddedResource(serviceAppointment);
             }
+            // Varsel ved Udekket
+            if (
+                serviceAppointment.HOT_AssignedResourceId__c == null &&
+                oldServiceAppointment.Status != serviceAppointment.Status &&
+                serviceAppointment.Status == 'Cannot Complete'
+            ) {
+                notifyOnCannotCompleteNotification(serviceAppointment);
+            }
 
             // Varsel ved endring av tolk
             if (
@@ -356,6 +364,59 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 if (recipients.size() != 0 && isPerson) {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.interpreterAddedNotification(
+                            getCustomNotificationType('HOT_NotifyUser'),
+                            wo,
+                            updatedSA,
+                            recipients
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    public static void notifyOnCannotCompleteNotification(ServiceAppointment sa) {
+        List<Id> accountIds = new List<Id>();
+        Boolean isPerson = false;
+
+        accountIds.add(sa.AccountId);
+
+        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
+
+        Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
+        for (User user : users) {
+            userIdByAccountId.put(user.AccountId, user.Id);
+        }
+
+        // Needed to get latest SR I guess
+        ServiceAppointment updatedSA = [
+            SELECT HOT_ServiceResource__r.Name, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
+
+        List<WorkOrder> workordersList = [
+            SELECT
+                Id,
+                StartDate,
+                EndDate,
+                AccountId,
+                HOT_Interpreters__c,
+                Account.CRM_Person__r.HOT_NotificationChannel__c
+            FROM WorkOrder
+            WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
+
+        if (!workordersList.isEmpty()) {
+            for (WorkOrder wo : workordersList) {
+                isPerson = wo.Account.CRM_Person__c != null ? true : false;
+                Set<String> recipients = new Set<String>();
+                if (userIdByAccountId.get(wo.AccountId) != null) {
+                    recipients.add(userIdByAccountId.get(wo.AccountId));
+                }
+                if (recipients.size() != 0 && isPerson) {
+                    if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
+                        HOT_UserNotificationService.cannotCompleteNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             wo,
                             updatedSA,
