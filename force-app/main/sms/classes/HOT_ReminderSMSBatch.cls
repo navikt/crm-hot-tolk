@@ -63,7 +63,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
                     if (userIdByAccountId.get(wo.AccountId) != null) {
                         Set<String> recipients = new Set<String>();
                         recipients.add(userIdByAccountId.get(wo.AccountId));
-                        HOT_UserNotificationService.statusChangeNotification(notificationTypePush, wo, recipients);
+                        HOT_UserNotificationService.reminderNotification(notificationTypePush, wo, recipients);
                         wo.HOT_IsReminderSMSSendt__c = true;
                     }
                 }
