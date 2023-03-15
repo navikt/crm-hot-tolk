@@ -22,14 +22,14 @@ private class HOT_ReminderSMSServiceTest {
             SELECT
                 Id,
                 Status,
-                Account.CRM_Person__r.INT_NotificationChannel__c,
+                Account.CRM_Person__r.HOT_NotificationChannel__c,
                 CRM_Person__r.INT_KrrMobilePhone__c,
                 StartDate,
                 EndDate
             FROM WorkOrder
         ];
         workOrder.Status = 'Dispatched';
-        workOrder.Account.CRM_Person__r.INT_NotificationChannel__c = 'SMS';
+        workOrder.Account.CRM_Person__r.HOT_NotificationChannel__c = 'SMS';
         workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c = '12345678';
         workOrder.StartDate = workOrder.StartDate.addDays(-2);
         workOrder.EndDate = workOrder.EndDate.addDays(-2);
