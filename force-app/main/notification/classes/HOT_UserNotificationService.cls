@@ -33,21 +33,24 @@ public without sharing class HOT_UserNotificationService {
     public static void statusChangeNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
+        ServiceAppointment sa,
         Set<String> recipients
     ) {
-        String title = 'Endring av status';
-        String body =
-            'Status på din bestilling er endret til: ' +
-            workOrder.Status +
-            '. ' +
-            (workOrder.HOT_Interpreters__c != null ? 'Tolk er ' + workOrder.HOT_Interpreters__c + '.' : '') +
-            'Dato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 
-            'Europe/Oslo') +
-            ' - ' +
-            workOrder.EndDate?.format('HH:mm', 
-            'Europe/Oslo') +
-            '.';
+        String title = 'Status på din bestilling er endret';
+        String body;
+        if (workOrder.Status == 'Dispatched') { 
+        String body = 'Du har fått tolk. ' +
+        (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
+        '\nDato: ';
+        }
+        if (workOrder.Status == 'Cannot complete') {
+
+        }
+        body += workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+        ' - ' +
+        workOrder.EndDate?.format('HH:mm', 
+        'Europe/Oslo') +
+        '.';
 
         Id notificationTypeId = notificationType.Id;
         String targetPageRef = getTargetPageRef(workOrder.Id, 'WO');
