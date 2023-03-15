@@ -20,8 +20,8 @@ private class HOT_ReminderSMSServiceTest {
         update request;
         WorkOrder workOrder = [SELECT Id, Status, Account.CRM_Person__r.INT_NotificationChannel__c, StartDate, EndDate FROM WorkOrder];
         workOrder.Status = 'Dispatched';
-        workOrder.CRM_Person__r.INT_NotificationChannel__c = 'SMS';
-        workOrder.CRM_Person__r.INT_KrrMobilePhone__c = '12345678';
+        workOrder.Account.CRM_Person__r.INT_NotificationChannel__c = 'SMS';
+        workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c = '12345678';
         workOrder.StartDate = workOrder.StartDate.addDays(-2);
         workOrder.EndDate = workOrder.EndDate.addDays(-2);
         update workOrder;
