@@ -38,11 +38,13 @@ public class HOT_UserNotificationServiceTest {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status FROM WorkOrder LIMIT 1];
+        ServiceAppointment serviceAppointment = [SELECT HOT_ServiceResource__r.Name, Status, HOT_WorkOrderLineItem__r.WorkOrderId
+        FROM ServiceAppointment];
+        WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status FROM WorkOrder WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId];
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         Test.startTest();
-        HOT_UserNotificationService.statusChangeNotification(notificationType, workOrder, recipients);
+        HOT_UserNotificationService.statusChangeNotification(notificationType, workOrder, serviceAppointment, recipients);
         Test.stopTest();
     }
     @isTest
