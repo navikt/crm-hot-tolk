@@ -422,7 +422,12 @@ public without sharing class HOT_ServiceAppointmentNotification {
                             recipients
                         );
                     } else {
-                        //Send SMS
+                        Set<Id> workOrderIds = new Set<Id>();
+                        workOrderIds.add(wo.Id);
+                        HOT_ReminderSMSService.sendSMSOnInterpreterChange(
+                            workOrderIds,
+                            updatedSA.HOT_ServiceResource__r.Name
+                        );
                     }
                 }
             }
