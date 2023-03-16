@@ -11,17 +11,20 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
-            // Varsel ved tildelt tolk
+            // Varsel ved tildelt tolk eller udekket
             if (
-                serviceAppointment.HOT_AssignedResourceId__c != null &&
+                serviceAppointment.AccountId != null &&
+                (serviceAppointment.HOT_AssignedResourceId__c != null &&
                 oldServiceAppointment.Status != serviceAppointment.Status &&
-                serviceAppointment.Status == 'Dispatched' &&
-                serviceAppointment.AccountId != null
+                serviceAppointment.Status == 'Dispatched') ||
+                (serviceAppointment.HOT_AssignedResourceId__c == null &&
+                oldServiceAppointment.Status != serviceAppointment.Status &&
+                serviceAppointment.Status == 'Cannot Complete')
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
 
-                notifyUserOnAddedResource(serviceAppointment);
+                notiyUserOnStatusChange(serviceAppointment);
             }
 
             // Varsel ved endring av tolk
@@ -316,7 +319,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
-    public static void notifyUserOnAddedResource(ServiceAppointment sa) {
+    public static void notiyUserOnStatusChange(ServiceAppointment sa) {
         List<Id> accountIds = new List<Id>();
         Boolean isPerson = false;
 
@@ -329,9 +332,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
             userIdByAccountId.put(user.AccountId, user.Id);
         }
 
-        // Needed to get latest SR I guess
+        // Needed to get latest SR and status I guess
         ServiceAppointment updatedSA = [
-            SELECT HOT_ServiceResource__r.Name, HOT_WorkOrderLineItem__r.WorkOrderId
+            SELECT HOT_ServiceResource__r.Name, Status, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
             WHERE Id = :sa.Id
         ];
@@ -345,7 +348,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_Interpreters__c,
                 Account.CRM_Person__r.HOT_NotificationChannel__c
             FROM WorkOrder
-            WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
+            WHERE
+                Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
+                AND Account.CRM_Person__r.HOT_NotificationChannel__c != NULL
         ];
 
         if (!workordersList.isEmpty()) {
@@ -357,7 +362,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 }
                 if (recipients.size() != 0 && isPerson) {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
-                        HOT_UserNotificationService.interpreterAddedNotification(
+                        HOT_UserNotificationService.statusChangeNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             wo,
                             updatedSA,
