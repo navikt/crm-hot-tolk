@@ -13,6 +13,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
             // Varsel ved tildelt tolk eller udekket
             if (
+                serviceAppointment.AccountId != null &&
                 (serviceAppointment.HOT_AssignedResourceId__c != null &&
                 oldServiceAppointment.Status != serviceAppointment.Status &&
                 serviceAppointment.Status == 'Dispatched') ||
@@ -22,16 +23,17 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
-                
+
                 notiyUserOnStatusChange(serviceAppointment);
             }
-            
+
             // Varsel ved endring av tolk
             if (
                 serviceAppointment.HOT_AssignedResourceId__c != null &&
                 oldServiceAppointment.HOT_AssignedResourceId__c != null &&
                 serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c &&
-                serviceAppointment.Status == 'Dispatched'
+                serviceAppointment.Status == 'Dispatched' &&
+                serviceAppointment.AccountId != null
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
@@ -346,15 +348,16 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_Interpreters__c,
                 Account.CRM_Person__r.HOT_NotificationChannel__c
             FROM WorkOrder
-            WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId 
-            AND Account.CRM_Person__r.HOT_NotificationChannel__c != null
+            WHERE
+                Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
+                AND Account.CRM_Person__r.HOT_NotificationChannel__c != NULL
         ];
 
         if (!workordersList.isEmpty()) {
             for (WorkOrder wo : workordersList) {
                 isPerson = wo.Account.CRM_Person__c != null ? true : false;
                 Set<String> recipients = new Set<String>();
-                if (userIdByAccountId.get(wo.AccountId) != null ) {
+                if (userIdByAccountId.get(wo.AccountId) != null) {
                     recipients.add(userIdByAccountId.get(wo.AccountId));
                 }
                 if (recipients.size() != 0 && isPerson) {
