@@ -15,7 +15,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
             if (
                 serviceAppointment.HOT_AssignedResourceId__c != null &&
                 oldServiceAppointment.Status != serviceAppointment.Status &&
-                serviceAppointment.Status == 'Dispatched'
+                serviceAppointment.Status == 'Dispatched' &&
+                serviceAppointment.AccountId != null
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
@@ -28,7 +29,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.HOT_AssignedResourceId__c != null &&
                 oldServiceAppointment.HOT_AssignedResourceId__c != null &&
                 serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c &&
-                serviceAppointment.Status == 'Dispatched'
+                serviceAppointment.Status == 'Dispatched' &&
+                serviceAppointment.AccountId != null
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
@@ -350,7 +352,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
             for (WorkOrder wo : workordersList) {
                 isPerson = wo.Account.CRM_Person__c != null ? true : false;
                 Set<String> recipients = new Set<String>();
-                recipients.add(userIdByAccountId.get(wo.AccountId));
+                if (userIdByAccountId.get(wo.AccountId) != null) {
+                    recipients.add(userIdByAccountId.get(wo.AccountId));
+                }
                 if (recipients.size() != 0 && isPerson) {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.interpreterAddedNotification(
@@ -401,7 +405,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
             for (WorkOrder wo : workordersList) {
                 isPerson = wo.Account.CRM_Person__c != null ? true : false;
                 Set<String> recipients = new Set<String>();
-                recipients.add(userIdByAccountId.get(wo.AccountId));
+                if (userIdByAccountId.get(wo.AccountId) != null) {
+                    recipients.add(userIdByAccountId.get(wo.AccountId));
+                }
                 if (recipients.size() != 0 && isPerson) {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.interpreterChangeNotification(
