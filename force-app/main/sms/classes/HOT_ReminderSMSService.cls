@@ -111,7 +111,7 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrderList);
     }
-    
+
     @Future
     public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
         List<WorkOrder> workOrderList = [
@@ -156,6 +156,7 @@ public without sharing class HOT_ReminderSMSService {
                 EndDate,
                 HOT_Request__c,
                 HOT_Request__r.Type__c,
+                HOT_Request__r.OrdererPhone__c,
                 Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM WorkOrder
             WHERE Id IN :workOrderIds
