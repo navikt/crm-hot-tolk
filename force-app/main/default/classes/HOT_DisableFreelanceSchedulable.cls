@@ -5,37 +5,30 @@ public with sharing class HOT_DisableFreelanceSchedulable implements Database.Ba
     }
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime oneYearAgo = Datetime.now().addDays(-365);
-
-        List<AssignedResource> assignedResources = [SELECT ServiceResource.AccountId, ServiceAppointment.SchedEndTime FROM AssignedResource WHERE ServiceAppointment.SchedEndTime <= :oneYearAgo];
-
-        Map<Id, Datetime> serviceResourceIdsToSchedEndTime = new Map<Id, Datetime>();
-
-        for (AssignedResource ar : assignedResources) {
-            if (!serviceResourceIdsToSchedEndTime.containsKey(ar.ServiceResource.AccountId)
-                    || ar.ServiceAppointment.SchedEndTime > serviceResourceIdsToSchedEndTime.get(ar.ServiceResource.AccountId)) {
-                serviceResourceIdsToSchedEndTime.put(ar.ServiceResource.AccountId, ar.ServiceAppointment.SchedEndTime);
-            }
-        }
-
-        Set<Id> serviceResourceIds = new Set<Id>();
-        for (Id serviceResourceId : serviceResourceIdsToSchedEndTime.keySet()) {
-            if (serviceResourceIdsToSchedEndTime.get(serviceResourceId) <= oneYearAgo) {
-                serviceResourceIds.add(serviceResourceId);
-            }
-        }
+        
          return Database.getQueryLocator(
             [
-                SELECT Id, LastLoginDate, ProfileId 
-FROM User 
-WHERE Profile.Name='NAV Samhandler' 
-AND AccountId IN :serviceResourceIds 
-            ]
+                SELECT Id, AccountId FROM ServiceResource WHERE IsActive=true AND CRM_Domain__c='HOT' AND HOT_IsFreelanceInterpreter__c=true AND CreatedDate<=:oneYearAgo]
         );
     }
-public void execute(Database.BatchableContext bc, List<User> records) {
-    
-    if (records.size() > 0) {
-        List<ServiceResource> serviceResource=[SELECT Id,RelatedRecordId FROM ServiceResource WHERE RelatedRecordId IN: records AND HOT_IsFreelanceInterpreter__c=true];
+public void execute(Database.BatchableContext bc, List<ServiceResource> records) {
+    Datetime oneYearAgo = Datetime.now().addDays(-365);
+    List<HOT_InterestedResource__c>irList=[SELECT Id FROM HOT_InterestedResource__c WHERE ServiceResource__c IN: records AND CreatedDate>=:oneYearAgo];
+       
+    Set<Id> irSrIds = new Set<Id>();
+    for (HOT_InterestedResource__c ir : irList) {
+        irSrIds.add(ir.ServiceResource__c);
+    }
+
+    Set<Id> srAccointIdsToDelete=new Set<Id>();
+    for (ServiceResource sr : records) {
+    if (!irSrIds.contains(sr.Id)) {
+        srAccointIdsToDelete.add(sr.AccountId);
+    }
+}
+    List<User> users=[SELECT Id, LastLoginDate, ProfileId FROM User WHERE Profile.Name='NAV Samhandler' AND AccountId IN :srAccointIdsToDelete];
+    if (users.size() > 0) {
+        List<ServiceResource> serviceResource=[SELECT Id,RelatedRecordId FROM ServiceResource WHERE RelatedRecordId IN: users AND HOT_IsFreelanceInterpreter__c=true];
         if(serviceResource.size()>0){
            
 

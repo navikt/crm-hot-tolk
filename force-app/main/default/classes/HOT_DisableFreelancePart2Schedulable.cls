@@ -4,39 +4,19 @@ public with sharing class HOT_DisableFreelancePart2Schedulable implements Databa
         database.executebatch(instance, 10);
     }
     public Database.QueryLocator start(Database.BatchableContext bc) {
-       Datetime oneYearAgo = Datetime.now().addDays(-365);
-
-        List<AssignedResource> assignedResources = [SELECT ServiceResource.AccountId, ServiceAppointment.SchedEndTime FROM AssignedResource WHERE ServiceAppointment.SchedEndTime <= :oneYearAgo];
-
-        Map<Id, Datetime> serviceResourceIdsToSchedEndTime = new Map<Id, Datetime>();
-
-        for (AssignedResource ar : assignedResources) {
-            if (!serviceResourceIdsToSchedEndTime.containsKey(ar.ServiceResource.AccountId)
-                    || ar.ServiceAppointment.SchedEndTime > serviceResourceIdsToSchedEndTime.get(ar.ServiceResource.AccountId)) {
-                serviceResourceIdsToSchedEndTime.put(ar.ServiceResource.AccountId, ar.ServiceAppointment.SchedEndTime);
-            }
-        }
-
-        Set<Id> serviceResourceIds = new Set<Id>();
-        for (Id serviceResourceId : serviceResourceIdsToSchedEndTime.keySet()) {
-            if (serviceResourceIdsToSchedEndTime.get(serviceResourceId) <= oneYearAgo) {
-                serviceResourceIds.add(serviceResourceId);
-            }
-        }
         return Database.getQueryLocator(
-            [
-                SELECT Id, LastLoginDate, ProfileId 
-FROM User 
-WHERE Profile.Name='NAV Samhandler' 
-AND AccountId IN :serviceResourceIds 
-
-            ]
+            [SELECT Id, AccountId FROM ServiceResource WHERE IsActive=false AND CRM_Domain__c='HOT' AND HOT_IsFreelanceInterpreter__c=true]
         );
     }
-public void execute(Database.BatchableContext bc, List<User> records) {
-      if (records.size() > 0) {
-        List<ServiceResource> serviceResource=[SELECT Id,RelatedRecordId FROM ServiceResource WHERE RelatedRecordId IN: records AND HOT_IsFreelanceInterpreter__c=true];
-        if(serviceResource.size()>0){
+public void execute(Database.BatchableContext bc, List<ServiceResource> records) {
+     if (records.size() > 0) {
+        Set<Id> srAccointIdsToDelete=new Set<Id>();
+        for(ServiceResource sr: records){
+            srAccointIdsToDelete.add(sr.AccountId);
+        }
+     
+        List<User> users=[SELECT Id, LastLoginDate, ProfileId FROM User WHERE Profile.Name='NAV Samhandler' AND AccountId IN :srAccointIdsToDelete];
+       
             PermissionSet permissionset=[SELECT Id, Name FROM PermissionSet WHERE Name='HOT_Tolk_Bruker_Plus' LIMIT 1];
             PermissionSet permissionsetFreelance=[SELECT Id, Name FROM PermissionSet WHERE Name='HOT_Tolk_Frilans' LIMIT 1];
             Profile profile=[SELECT Id, Name FROM Profile WHERE Name='NAV Bruker Plus' LIMIT 1];
@@ -45,7 +25,7 @@ public void execute(Database.BatchableContext bc, List<User> records) {
 
             List<PermissionSetAssignment> permissionSetAssignmentsToBeDeleted=[SELECT Id, AssigneeId, PermissionSetId FROM PermissionSetAssignment WHERE AssigneeId IN: relatedRecordIds AND PermissionSetId=:permissionsetFreelance.Id];
             
-            for(User user : records){
+            for(User user : users){
                 user.ProfileId=profile.Id;
                 relatedRecordIds.add(user.Id);
             }
@@ -70,7 +50,7 @@ public void execute(Database.BatchableContext bc, List<User> records) {
             } catch (Exception e) {
             }
             
-        }
+        
     }
 }
 
