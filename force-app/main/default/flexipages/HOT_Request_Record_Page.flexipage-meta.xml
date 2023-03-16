@@ -414,7 +414,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Account__c</fieldItem>
                 <identifier>RecordAccount__cField</identifier>
@@ -441,7 +441,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserPersonNumber__c</fieldItem>
                 <identifier>RecordUserPersonNumber__cField</identifier>

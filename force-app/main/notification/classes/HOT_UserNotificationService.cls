@@ -7,11 +7,9 @@ public without sharing class HOT_UserNotificationService {
         String title = 'Andre har lagt inn en bestilling for deg';
         String body =
             'Det er bestilt tolk til deg. Dato: ' +
-            workOrder.StartDate?.format('dd/MM/yyyy HH:mm', 
-            'Europe/Oslo') +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('HH:mm', 
-            'Europe/Oslo') +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
@@ -33,20 +31,47 @@ public without sharing class HOT_UserNotificationService {
     public static void statusChangeNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
+        ServiceAppointment sa,
         Set<String> recipients
     ) {
-        String title = 'Endring av status';
-        String body =
-            'Status på din bestilling er endret til: ' +
-            workOrder.Status +
-            '. ' +
-            (workOrder.HOT_Interpreters__c != null ? 'Tolk er ' + workOrder.HOT_Interpreters__c + '.' : '') +
-            'Dato: ' +
-            workOrder.StartDate?.format('dd/MM/yyyy HH:mm', 
-            'Europe/Oslo') +
+        String title = 'Status på din bestilling er endret';
+        String body;
+        if (sa.Status == 'Dispatched') {
+            body =
+                'Du har fått tolk. ' +
+                (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '');
+        }
+        if (sa.Status == 'Cannot Complete') {
+            body = 'Ikke ledig tolk';
+        }
+        body += '\nDato: ' +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('HH:mm', 
-            'Europe/Oslo') +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        String targetPageRef = getTargetPageRef(workOrder.Id, 'WO');
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        notification.send(recipients);
+    }
+
+    public static void reminderNotification(
+        CustomNotificationType notificationType,
+        WorkOrder workOrder,
+        Set<String> recipients
+    ) {
+        String title = 'Påminnelse om tolkebestilling';
+        String body =
+            'Dato: ' +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            ' - ' +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
@@ -71,40 +96,9 @@ public without sharing class HOT_UserNotificationService {
             'Tolk på din bestilling er endret. ' +
             (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
             '\nDato: ' +
-            workOrder.StartDate?.format('dd/MM/yyyy HH:mm', 
-            'Europe/Oslo') +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('HH:mm', 
-            'Europe/Oslo') +
-            '.';
-
-        Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRef(workOrder.Id, 'WO');
-        Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle(title);
-        notification.setBody(body);
-        notification.setNotificationTypeId(notificationTypeId);
-        notification.setTargetPageRef(targetPageRef);
-
-        notification.send(recipients);
-    }
-
-    public static void interpreterAddedNotification(
-        CustomNotificationType notificationType,
-        WorkOrder workOrder,
-        ServiceAppointment sa,
-        Set<String> recipients
-    ) {
-        String title = 'Status på din bestilling er endret';
-        String body =
-            'Du har fått tolk. ' +
-            (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
-            '\nDato: ' +
-            workOrder.StartDate?.format('dd/MM/yyyy HH:mm', 
-            'Europe/Oslo') +
-            ' - ' +
-            workOrder.EndDate?.format('HH:mm', 
-            'Europe/Oslo') +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
