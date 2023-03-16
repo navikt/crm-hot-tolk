@@ -155,6 +155,7 @@ public without sharing class HOT_ReminderSMSService {
                 StartDate,
                 EndDate,
                 HOT_Request__c,
+                HOT_Request__r.Type__c,
                 Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM WorkOrder
             WHERE Id IN :workOrderIds
