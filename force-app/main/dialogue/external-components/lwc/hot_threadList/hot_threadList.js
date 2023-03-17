@@ -138,7 +138,10 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                         }
                     });
                     if (this.ordererThreadsExisting > 0) {
-                        this.tabs.push({ name: 'orderThreads', label: 'Annen bestiller', selected: false });
+                        if (this.tabs.some((tab) => tab.name === 'orderThreads')) {
+                        } else {
+                            this.tabs.push({ name: 'orderThreads', label: 'Annen bestiller', selected: false });
+                        }
                     }
                     this.threads = this.unmappedThreads.map((x) => ({
                         ...x,
