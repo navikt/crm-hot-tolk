@@ -12,41 +12,36 @@ public with sharing class HOT_DisableFreelanceSchedulable implements Database.Ba
         );
     }
 public void execute(Database.BatchableContext bc, List<ServiceResource> records) {
-    Datetime oneYearAgo = Datetime.now().addDays(-365);
-    List<HOT_InterestedResource__c>irList=[SELECT Id FROM HOT_InterestedResource__c WHERE ServiceResource__c IN: records AND CreatedDate>=:oneYearAgo];
-       
-    Set<Id> irSrIds = new Set<Id>();
-    for (HOT_InterestedResource__c ir : irList) {
-        irSrIds.add(ir.ServiceResource__c);
-    }
+    if (records.size() > 0) {
+        Datetime oneYearAgo = Datetime.now().addDays(-365);
+        List<HOT_InterestedResource__c>irList=[SELECT Id FROM HOT_InterestedResource__c WHERE ServiceResource__c IN: records AND CreatedDate>=:oneYearAgo];
+        
+        Set<Id> irSrIds = new Set<Id>();
+        for (HOT_InterestedResource__c ir : irList) {
+            irSrIds.add(ir.ServiceResource__c);
+        }
 
-    Set<Id> srAccointIdsToDelete=new Set<Id>();
-    for (ServiceResource sr : records) {
-    if (!irSrIds.contains(sr.Id)) {
-        srAccointIdsToDelete.add(sr.AccountId);
+        Set<Id> srAccointIdsToDelete=new Set<Id>();
+        for (ServiceResource sr : records) {
+            if (!irSrIds.contains(sr.Id)) {
+                srAccointIdsToDelete.add(sr.AccountId);
+            }
+        }
+        List<User> users=[SELECT Id, ProfileId FROM User WHERE Profile.Name='NAV Samhandler' AND AccountId IN :srAccointIdsToDelete];
+        
+            List<ServiceResource> serviceResource=[SELECT Id,RelatedRecordId FROM ServiceResource WHERE RelatedRecordId IN: users AND HOT_IsFreelanceInterpreter__c=true];
+            if(serviceResource.size()>0){
+                for (ServiceResource sr : serviceResource) {
+                    sr.IsActive = false;
+                }
+                try{
+                    update serviceResource;
+                }
+                catch (Exception e) {
+                }
+        }
     }
 }
-    List<User> users=[SELECT Id, LastLoginDate, ProfileId FROM User WHERE Profile.Name='NAV Samhandler' AND AccountId IN :srAccointIdsToDelete];
-    if (users.size() > 0) {
-        List<ServiceResource> serviceResource=[SELECT Id,RelatedRecordId FROM ServiceResource WHERE RelatedRecordId IN: users AND HOT_IsFreelanceInterpreter__c=true];
-        if(serviceResource.size()>0){
-           
-
-            for (ServiceResource sr : serviceResource) {
-                sr.IsActive = false;
-               
-            }
-            try{
-                update serviceResource;
-            }
-            catch (Exception e) {
-            }
- 
-    }
-
-}
-}
-
     public void finish(Database.BatchableContext bc) {
         HOT_DisableFreelancePart2Schedulable instance = new HOT_DisableFreelancePart2Schedulable();
         database.executebatch(instance, 10);

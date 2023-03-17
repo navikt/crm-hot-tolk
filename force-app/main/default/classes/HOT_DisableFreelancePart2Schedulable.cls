@@ -15,7 +15,7 @@ public void execute(Database.BatchableContext bc, List<ServiceResource> records)
             srAccointIdsToDelete.add(sr.AccountId);
         }
      
-        List<User> users=[SELECT Id, LastLoginDate, ProfileId FROM User WHERE Profile.Name='NAV Samhandler' AND AccountId IN :srAccointIdsToDelete];
+        List<User> users=[SELECT Id, ProfileId FROM User WHERE Profile.Name='NAV Samhandler' AND AccountId IN :srAccointIdsToDelete];
        
             PermissionSet permissionset=[SELECT Id, Name FROM PermissionSet WHERE Name='HOT_Tolk_Bruker_Plus' LIMIT 1];
             PermissionSet permissionsetFreelance=[SELECT Id, Name FROM PermissionSet WHERE Name='HOT_Tolk_Frilans' LIMIT 1];
@@ -49,11 +49,8 @@ public void execute(Database.BatchableContext bc, List<ServiceResource> records)
                 insert newPermissionSetAssignments;
             } catch (Exception e) {
             }
-            
-        
     }
 }
-
     public void finish(Database.BatchableContext bc) {
         
     }
