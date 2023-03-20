@@ -28,9 +28,9 @@ sfdx force:source:push
 sfdx force:user:permset:assign --perm-set-name "HOT_admin, HOT_Config"
 
 # Publish Experience Site
-sfdx force:community:publish --name Tolketjenesten
+sfdx community:publish --name Tolketjenesten
 
 # Opprett testdata
-sfdx force:apex:execute -f scripts/apex/createTestData.apex
+sfdx apex run -f scripts/apex/createTestData.apex
 
 # done
