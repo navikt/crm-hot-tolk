@@ -64,9 +64,11 @@
                                 <p>Oppdragstype: <span>{it.value.HOT_AssignmentType__c}</span></p>
                                 <p>Frist dato: <span>{it.value.HOT_DeadlineDate__c}</span></p>
                             </div>
+                            <label for="Comments__c">Start samtale med formidler</label>
                             <lightning-input-field
                                 class="ikke-sensitive-opplysninger comment-field"
                                 field-name="Comments__c"
+                                variant="label-hidden"
                             >
                             </lightning-input-field>
                         </lightning-record-edit-form>

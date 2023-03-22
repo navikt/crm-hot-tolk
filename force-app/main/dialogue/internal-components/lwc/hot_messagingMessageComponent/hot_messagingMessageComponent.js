@@ -26,6 +26,8 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     @track shownewbutton;
     @track buttonMessage;
     @track errorMessage;
+    @track ThreadInfo;
+    @track noAssignedResource = false;
 
     @api recordId;
     @api singleThread;
@@ -36,7 +38,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     @wire(getThreads, { recordId: '$recordId', singleThread: '$singleThread', type: '$messageType' }) //Calls apex and extracts messages related to this record
     wiredThreads(result) {
         this._threadsforRefresh = result;
-
         if (result.error) {
             this.error = result.error;
             this.errorMessage = this.error.body.message;
@@ -70,9 +71,12 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                         .then(() => {
                             this.showButtonDiv = false;
                             this.showThreads = true;
+                            this.noAssignedResource = false;
                             return refreshApex(this._threadsforRefresh);
                         })
-                        .catch((error) => {});
+                        .catch((error) => {
+                            this.noAssignedResource = true;
+                        });
                 })
                 .catch((error) => {});
         } else {
@@ -80,9 +84,12 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 .then(() => {
                     this.showButtonDiv = false;
                     this.showThreads = true;
+                    this.noAssignedResource = false;
                     return refreshApex(this._threadsforRefresh);
                 })
-                .catch((error) => {});
+                .catch((error) => {
+                    console.log('kkkk');
+                });
         }
     }
 
@@ -90,6 +97,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         return this.threads.length == 0;
     }
     goToThreadTypeOrderer() {
+        this.ThreadInfo = 'Du er i samtale med bestiller';
         refreshApex(this._threadsforRefresh);
         for (let thread in this.threads) {
             if (this.threads[thread].CRM_Type__c == 'HOT_BESTILLER-FORMIDLER') {
@@ -97,6 +105,8 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 this.singleThread = true;
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
+                event.preventDefault(); // prevent the default scroll behavior
+                event.stopPropagation();
                 break;
             } else {
                 this.messageType = 'HOT_BESTILLER-FORMIDLER';
@@ -111,12 +121,15 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     }
     goToThreadTypeUser() {
         refreshApex(this._threadsforRefresh);
+        this.ThreadInfo = 'Du er i samtale med bruker';
         for (let thread in this.threads) {
             if (this.threads[thread].CRM_Type__c == 'HOT_BRUKER-FORMIDLER') {
                 this.messageType = 'HOT_BRUKER-FORMIDLER';
                 this.singleThread = true;
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
+                event.preventDefault(); // prevent the default scroll behavior
+                event.stopPropagation();
                 break;
             } else {
                 this.messageType = 'HOT_BRUKER-FORMIDLER';

@@ -61,7 +61,7 @@
                                 ></c-record-files-with-sharing>
                             </div>
                         </div>
-                        <div>
+                        <div style="display: inline-block">
                             <c-button
                                 disabled={isEditButtonDisabled}
                                 hidden={isEditButtonHidden}
@@ -81,14 +81,27 @@
                                 button-label="Avbryt"
                             >
                             </c-button>
-                           <c-button
-                    button-styling="Primary"
-                    type="Submit"
-                    onbuttonclick={goToThreadFreelance}
-                    button-label="Samtale med bruker"
-                    disabled={isGoToThreadButtonDisabled}
-                >
-                </c-button>
+
+                            <c-button
+                                button-styling="Primary"
+                                type="Submit"
+                                onbuttonclick={goToThreadFreelance}
+                                button-label="Samtale med bruker"
+                                style="padding-right: 1vw; padding-top: 1vw; padding-top: 2vw"
+                                disabled={isGoToThreadButtonDisabled}
+                            >
+                            </c-button>
+                        </div>
+                        <div style="display: inline-block; padding-top: 1vw">
+                            <c-button
+                                button-styling="Primary"
+                                type="Submit"
+                                style="padding-top: 1vw; padding-right: 1vw"
+                                onbuttonclick={goToThreadServiceAppointment}
+                                button-label="Samtale med formidler"
+                                disabled={isGoToThreadServiceAppointmentButtonDisabled}
+                            >
+                            </c-button>
                         </div>
                         <div if:true={isflow} class="flow-container">
                             <lightning-flow

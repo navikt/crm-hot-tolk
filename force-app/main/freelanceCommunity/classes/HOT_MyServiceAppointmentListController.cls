@@ -53,7 +53,8 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_Dispatcher__c,
                 Description,
                 HOT_RequestNumber__c,
-                HOT_IsSerieoppdrag__c
+                HOT_IsSerieoppdrag__c,
+                HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c
             FROM ServiceAppointment
             WHERE Id=:recordId
         ];
@@ -128,6 +129,23 @@ public without sharing class HOT_MyServiceAppointmentListController {
         try{
 
             Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId LIMIT 1];
+             if (thread.Id != null) {
+               Id=thread.Id;
+               return Id;
+             }
+             
+            return Id;
+        }catch(Exception E){
+
+        }
+        return Id;
+    }
+     @AuraEnabled
+    public static String getThreadServiceAppointmentId(String serviceAppointmentId) {
+         String Id='';
+        try{
+
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointmentId LIMIT 1];
              if (thread.Id != null) {
                Id=thread.Id;
                return Id;

@@ -4,7 +4,9 @@ import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentList
 import getOrdererInformation from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOrdererInformation';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
+import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
+import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
 import { NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -18,6 +20,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     @track isEditButtonHidden = false;
     freelanceThreadId;
     isGoToThreadButtonDisabled = false;
+    isGoToThreadServiceAppointmentButtonDisabled = false;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -254,6 +257,28 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                     .then((result) => {
                         this.navigateToThread(result.Id);
                         this.freelanceThreadId = result;
+                    })
+                    .catch((error) => {
+                        this.modalHeader = 'Noe gikk galt';
+                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                        this.noCancelButton = true;
+                        this.showModal();
+                    });
+            }
+        });
+    }
+    goToThreadServiceAppointment() {
+        console.log('yayy');
+        this.isGoToThreadServiceAppointmentButtonDisabled = true;
+        getThreadServiceAppointmentId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
+            if (result != '') {
+                this.saThreadId = result;
+                this.navigateToThread(this.saThreadId);
+            } else {
+                createThreadInterpreter({ recordId: this.serviceAppointment.Id })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                        this.saThreadId = result;
                     })
                     .catch((error) => {
                         this.modalHeader = 'Noe gikk galt';

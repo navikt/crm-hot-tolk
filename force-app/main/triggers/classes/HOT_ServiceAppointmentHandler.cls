@@ -30,6 +30,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
         Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
+        Map<Id, Id> findAndTransferInterestedResourceThreads=new Map<Id, Id>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -121,6 +122,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.HOT_IsReleasedToFreelance__c == true
             ) {
                 resourceByAppointmentUpdateWageClaim.put(
+                    serviceAppointment.Id,
+                    serviceAppointment.HOT_ServiceResource__c
+                );
+                findAndTransferInterestedResourceThreads.put(
                     serviceAppointment.Id,
                     serviceAppointment.HOT_ServiceResource__c
                 );
@@ -250,6 +255,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (!resourceByAppointmentUpdateWageClaim.isEmpty()) {
             HOT_WageClaimService.updateWageClaimsFuture(resourceByAppointmentUpdateWageClaim.keySet());
         }
+        // if (!findAndTransferInterestedResourceThreads.isEmpty()) {
+        //      findAndTransferThreads(findAndTransferInterestedResourceThreads);
+        // }
         if (serviceAppointmentsWithActualTimeSet.size() > 0) {
             setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
         }
@@ -1020,6 +1028,59 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
 
         HOT_ContentDocumentLinkService.setContentDocumentLinks(serviceAppointmentMap);
+    }
+    public static void findAndTransferThreads(Map<Id,Id> serviceAppointments){
+        //finn alle intersted resource med status assigned til hver service appointment
+        //søk i Threads om det finnes tråder som har disse iden i related record.
+        //om det ikke finnes noe. ikke gjør noe.
+        //om det finnes tråd fra før: bytt ut related record med SA sin related record.
+
+        Set<Id> ServiceResourceIds = new Set<Id>(serviceAppointments.values());
+        Map<Id, ServiceResource> serviceResourcesByServiceResourceId = new Map<Id, ServiceResource>([
+            SELECT Id, AccountId
+            FROM ServiceResource
+            WHERE Id IN :ServiceResourceIds
+        ]);
+        Map<Id, Id> accountIdsByServiceAppointmentId = new Map<Id, Id>();
+        for (Id serviceAppointmentId : serviceAppointments.keySet()) {
+            Id hotServiceResourceId = serviceAppointments.get(serviceAppointmentId);
+            ServiceResource sr = serviceResourcesByServiceResourceId.get(hotServiceResourceId);
+
+            accountIdsByServiceAppointmentId.put(serviceAppointmentId, sr.AccountId);
+        }
+        //slett alle eksisterende tråder på SA
+        Set<Id> serviceAppointmentIds = new Set<Id>(serviceAppointments.keySet());
+        List<Thread__c> exisitingThreadsToBeDeleted=[SELECT Id FROM Thread__c
+        WHERE CRM_Related_Object__c IN :serviceAppointmentIds AND CRM_Thread_Type__c='HOT_TOLK-FORMIDLER'];
+         Id accountId = null;
+        for(Thread__c thread : exisitingThreadsToBeDeleted){
+            thread.CRM_Related_Object__c='';
+            thread.CRM_Account__c=accountId;
+        }
+        update exisitingThreadsToBeDeleted;
+
+        //Se om det finnes tråder på IR
+       // Finn interested resource for hver serviceAppointmentId
+        List<HOT_InterestedResource__c> potentialIRWithThreads=[SELECT Id, ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Status__c='Assigned' AND ServiceAppointment__c IN: serviceAppointmentIds];
+        
+        if(potentialIRWithThreads.size()!=0){
+            Map<Id, HOT_InterestedResource__c> threadMap = new Map<Id, HOT_InterestedResource__c>();
+            Set<Id> potentialIRWithThreadsIds = new Set<Id>(); 
+            for (HOT_InterestedResource__c ir : potentialIRWithThreads) {
+                potentialIRWithThreadsIds.add(ir.Id);
+                threadMap.put(ir.Id,ir);
+            }
+            List<Thread__c> threadsToTransfer=[Select Id,CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN : potentialIRWithThreadsIds];
+
+
+            for(Thread__c threads: threadsToTransfer){
+                   HOT_InterestedResource__c ir = threadMap.get(threads.CRM_Related_Object__c);
+                    if (ir != null) {
+                        threads.CRM_Related_Object__c = ir.ServiceAppointment__c;
+                    }
+            }
+            update threadsToTransfer;
+        }
     }
 
     public static void setScheduledTimeBasedOnActualTime(List<ServiceAppointment> serviceAppointments) {

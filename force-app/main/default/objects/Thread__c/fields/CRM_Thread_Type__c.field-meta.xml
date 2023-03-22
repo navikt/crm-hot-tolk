@@ -62,6 +62,11 @@
                 <default>false</default>
                 <label>HOT_BESTILLER-FORMIDLER</label>
             </value>
+            <value>
+                <fullName>HOT_TOLK-FORMIDLER</fullName>
+                <default>false</default>
+                <label>HOT_TOLK-FORMIDLER</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

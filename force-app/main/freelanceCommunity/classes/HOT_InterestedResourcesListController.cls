@@ -149,6 +149,68 @@ public without sharing class HOT_InterestedResourcesListController {
             update interestedResource;
         }
     }
+    @AuraEnabled
+     public static void startAThreadAndAddComment(Id interestedResourceId, String newComment) {
+        if(newComment!=''){
+            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:interestedResourceId];
+            Thread__c thread = new Thread__c();
+            thread.CRM_Related_Object__c = interestedResourceId;
+            thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+            thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
+            thread.HOT_Subject__c=ir.ServiceAppointment__r.Subject;
+            HOT_DatabaseOperations.insertRecords(thread);
+
+            //legg inn meldingen i comment
+            Id userContactId=HOT_MessageHelper.getUserContactId();
+            HOT_MessageHelper.createMessage(thread.Id, newComment, userContactId);
+
+            //legg til read by
+            HOT_MessageHelper.setLastMessageFrom(thread.Id, userContactId);
+        }
+    }
+    
+    @AuraEnabled
+    public static String getThreadDispatcherId(String interestedResourceId) {
+         String Id='';
+        try{
+
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:interestedResourceId LIMIT 1];
+             if (thread.Id != null) {
+               Id=thread.Id;
+               return Id;
+             }
+             
+            return Id;
+        }catch(Exception E){
+
+        }
+        return Id;
+    }
+     @AuraEnabled
+    public static String getThreadDispatcherIdSA(String saId) {
+         String Id='';
+        try{
+
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:saId LIMIT 1];
+             if (thread.Id != null) {
+               Id=thread.Id;
+               return Id;
+             }
+             
+            return Id;
+        }catch(Exception E){
+
+        }
+        return Id;
+    }
+     @AuraEnabled
+    public static HOT_InterestedResource__c getInterestedResourceDetails(String recordId) {
+      HOT_InterestedResource__c interestedResource= [
+            SELECT  Id, HOT_TermsOfAgreement__c, AppointmentNumber__c, ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c, ServiceAppointmentAddress__c, WorkTypeName__c, AssignmentType__c, Status__c, NumberOfInterestedResources__c, AppointmentDeadlineDate__c, AppointmentServiceTerritory__c, ServiceAppointmentFreelanceSubject__c, WorkOrderCanceledDate__c FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__c=:recordId
+        ];
+        return interestedResource;
+    }
 
     @InvocableVariable
     public ID recordId;

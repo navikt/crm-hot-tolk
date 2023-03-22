@@ -32,16 +32,16 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadsCollection(Id recordId, Boolean singleThread, String type) {
         //Sjekker om bruker har tillatelse til å se samtalen
-        if (recordId.getSobjectType() == WorkOrder.sObjectType) {
-            User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
-            ServiceResource serviceResource =[Select Id, AccountId FROM ServiceResource WHERE AccountId=:currentUser.AccountId];
-            if(serviceResource!=null){
-                List<ServiceAppointment> serviceAppointments=[Select HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_ServiceResource__c=:serviceResource.Id AND HOT_WorkOrderLineItem__r.WorkOrderId=:recordId];
-                if(serviceAppointments.size()==0){
-                    throw new AuraHandledException('Du har ikke tilgang til denne samtalen');
-                }
-            }
-        }
+        // if (recordId.getSobjectType() == WorkOrder.sObjectType) {
+        //     User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+        //     ServiceResource serviceResource =[Select Id, AccountId FROM ServiceResource WHERE AccountId=:currentUser.AccountId];
+        //     if(serviceResource!=null){
+        //         List<ServiceAppointment> serviceAppointments=[Select HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_ServiceResource__c=:serviceResource.Id AND HOT_WorkOrderLineItem__r.WorkOrderId=:recordId];
+        //         if(serviceAppointments.size()==0){
+        //             throw new AuraHandledException('Du har ikke tilgang til denne samtalen');
+        //         }
+        //     }
+        // }
         
         if (singleThread == true && type!='') {
             return getSingleThread(recordId, type);
@@ -57,7 +57,7 @@ public without sharing class HOT_MessageHelper {
             threadList = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c, CRM_Type__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Type__c = 'HOT_BESTILLER-FORMIDLER')
+                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Type__c = 'HOT_BESTILLER-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-FORMIDLER')
             ];
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
@@ -75,6 +75,7 @@ public without sharing class HOT_MessageHelper {
             ];
         return request;
     }
+    //Denne er ikke i bruke
     @AuraEnabled(cacheable=true)
     public static Thread__c getSingleThread(Id recordId) {
         try {
@@ -93,6 +94,7 @@ public without sharing class HOT_MessageHelper {
             return null;
         }
     }
+    //
      @AuraEnabled(cacheable=true)
     public static List<Thread__c> getSingleThread(Id recordId, String type) {
         try {
@@ -124,7 +126,7 @@ public without sharing class HOT_MessageHelper {
             return null;
         }
     }
-
+    //Orderer, interpreter, user users use this
     @AuraEnabled(cacheable=false)
     public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
@@ -163,7 +165,8 @@ public without sharing class HOT_MessageHelper {
         }
         return thread;
     }
-     @AuraEnabled(cacheable=false)
+     //Dispatchers users use this
+    @AuraEnabled(cacheable=false)
     public static Thread__c createThreadDispatcher(Id recordId, Id accountId, String type) {
         Thread__c thread = new Thread__c();
         String objectType=String.valueOf(recordId.getsobjecttype());
@@ -177,7 +180,7 @@ public without sharing class HOT_MessageHelper {
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='HOT_Request__c'){
-            User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+            //User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
             HOT_Request__c request=[SELECT Subject__c, IsAccountEqualOrderer__c, Orderer__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = type;
@@ -185,14 +188,48 @@ public without sharing class HOT_MessageHelper {
             thread.HOT_Subject__c=request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
-        if(objectType=='ServiceAppointment'){
-            ServiceAppointment serviceAppointment=[SELECT Subject, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:recordId LIMIT 1];
-            thread.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
-            thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
-            thread.CRM_Account__c = serviceAppointment.HOT_Account__c; //?
-            thread.HOT_Subject__c=serviceAppointment.Subject;
+        if(objectType=='ServiceAppointment'){ 
+            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Dispatched'];
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+            thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
+            thread.HOT_Subject__c=ir.ServiceAppointment__r.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
+         if(objectType=='HOT_InterestedResource__c'){
+            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:recordId];
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+            thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
+            thread.HOT_Subject__c=ir.ServiceAppointment__r.Subject;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
+        return thread;
+    }
+     //Threads between interpreters and dispatcher
+      @AuraEnabled(cacheable=false)
+    public static Thread__c createThreadInterpreter(Id recordId) {
+            Thread__c thread = new Thread__c();
+            String objectType=String.valueOf(recordId.getsobjecttype());
+        if(objectType=='HOT_InterestedResource__c'){
+            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:recordId];
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+            thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
+            thread.HOT_Subject__c=ir.ServiceAppointment__r.Subject;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
+        if(objectType=='ServiceAppointment'){
+            User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+            ServiceAppointment sr=[SELECT Subject FROM ServiceAppointment WHERE Id=:recordId];
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+            thread.CRM_Account__c = currentUser.AccountId;
+            thread.HOT_Subject__c=sr.Subject;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
+                
+        
         return thread;
     }
 
@@ -391,6 +428,14 @@ public static Map<String, String> getRelatedWorkOrderId(Id relatedRecordId) {
             navigationhelp.put(workorderId,'R'); 
             }
             }
+        }
+        if(objectType=='HOT_InterestedResource__c'){
+            HOT_InterestedResource__c ir=[SELECT ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Id=:relatedRecordId];
+            navigationhelp.put(ir.ServiceAppointment__c,'IR'); 
+        }
+        if(objectType=='ServiceAppointment'){
+           	//ServiceAppointment sa=[SELECT ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Id=:relatedRecordId];
+            navigationhelp.put(relatedRecordId,'SA'); 
         }
         return navigationhelp;
 }

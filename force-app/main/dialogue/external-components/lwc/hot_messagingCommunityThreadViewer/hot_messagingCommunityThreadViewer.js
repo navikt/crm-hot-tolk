@@ -8,6 +8,7 @@ import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getRelatedWorkOrderId from '@salesforce/apex/HOT_MessageHelper.getRelatedWorkOrderId';
 import { formatDate } from 'c/datetimeFormatter';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
+import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
@@ -28,6 +29,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     userContactId;
     thread;
     @track isDetails = false;
+    @track isIRDetails = false;
     @track msgVal;
 
     @api recordId;
@@ -239,6 +241,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
     }
     @track serviceAppointment;
+    @track interestedResource;
 
     goToWO() {
         let i = 0;
@@ -246,6 +249,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             for (var key in result) {
                 i++;
                 if (result[key] == 'SA') {
+                    this.interestedResource = false;
+                    getInterestedResourceDetails({ recordId: key }).then((result) => {
+                        this.interestedResource = result;
+                    });
                     getServiceAppointmentDetails({ recordId: key }).then((result) => {
                         this.serviceAppointment = result;
                         let startTimeFormatted = new Date(result.EarliestStartTime);
@@ -256,17 +263,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                             (startTimeFormatted.getMonth() + 1) +
                             '.' +
                             startTimeFormatted.getFullYear() +
-                            ' ' +
+                            ', ' +
                             ('0' + startTimeFormatted.getHours()).substr(-2) +
                             ':' +
                             ('0' + startTimeFormatted.getMinutes()).substr(-2) +
                             ' - ' +
-                            endTimeFormatted.getDate() +
-                            '.' +
-                            (endTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            endTimeFormatted.getFullYear() +
-                            ' ' +
                             ('0' + endTimeFormatted.getHours()).substr(-2) +
                             ':' +
                             ('0' + endTimeFormatted.getMinutes()).substr(-2);
@@ -301,6 +302,41 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         this.isDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                     });
+                    break;
+                }
+                if (result[key] == 'IR') {
+                    getInterestedResourceDetails({ recordId: key }).then((result) => {
+                        this.interestedResource = result;
+                        let startTimeFormatted = new Date(result.ServiceAppointmentStartTime__c);
+                        let endTimeFormatted = new Date(result.ServiceAppointmentEndTime__c);
+                        this.interestedResource.StartAndEndDate =
+                            startTimeFormatted.getDate() +
+                            '.' +
+                            (startTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            startTimeFormatted.getFullYear() +
+                            ', ' +
+                            ('0' + startTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
+                            ' - ' +
+                            ('0' + endTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                        let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
+                        this.interestedResource.AppointmentDeadlineDate__c =
+                            DeadlineDateTimeFormatted.getDate() +
+                            '.' +
+                            (DeadlineDateTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            DeadlineDateTimeFormatted.getFullYear();
+                        if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
+                            this.serviceAppointment.ActualStartTime = '';
+                        }
+                        this.isIRDetails = true;
+                        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                    });
+
                     break;
                 }
                 if (result[key] == 'Andres-WO') {

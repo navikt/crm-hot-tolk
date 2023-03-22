@@ -1,4 +1,12 @@
 <template>
+    <template if:true={noAssignedResource}>
+        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+            <span class="slds-assistive-text">Advarsel</span>
+            <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
+            </lightning-icon>
+            <span>Du må tildele en interessert ressurs dette oppdraget før du kan starte samtale.</span>
+        </div>
+    </template>
     <lightning-card
         class="slds--sds-c-card-shadow"
         variant="Narrow"
@@ -42,6 +50,9 @@
                         slot="actions"
                         onclick={goToThreadTypeUser}
                     ></lightning-button>
+                </template>
+                <template if:false={showButtonDiv}>
+                    <span class="slds-badge slds-theme_success">{ThreadInfo}</span>
                 </template>
                 <div if:true={showButtonDiv}>
                     <template if:true={shownewbutton}>

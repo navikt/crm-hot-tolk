@@ -1,19 +1,21 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
 import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterest';
+import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
+import getThreadDispatcherIdSA from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherIdSA';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
 import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
-import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
-import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
-import getComments from '@salesforce/apex/HOT_InterestedResourcesListController.getComments';
+import { NavigationMixin } from 'lightning/navigation';
+import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
 
-export default class Hot_interestedResourcesList extends LightningElement {
+export default class Hot_interestedResourcesList extends NavigationMixin(LightningElement) {
     @track columns = [];
     @track filters = [];
     @track iconByValue = iconByValue;
+    @track isGoToThreadButtonDisabled = false;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -136,14 +138,28 @@ export default class Hot_interestedResourcesList extends LightningElement {
         for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
+                let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
+                this.interestedResource.AppointmentDeadlineDate__c =
+                    DeadlineDateTimeFormatted.getDate() +
+                    '.' +
+                    (DeadlineDateTimeFormatted.getMonth() + 1) +
+                    '.' +
+                    DeadlineDateTimeFormatted.getFullYear();
+                if (
+                    this.interestedResource.Status__c == 'Påmeldt' ||
+                    this.interestedResource.Status__c == 'Tildelt' ||
+                    this.interestedResource.Status__c == 'Assigned' ||
+                    this.interestedResource.Status__c == 'Interested'
+                ) {
+                    this.isGoToThreadButtonDisabled = false;
+                } else {
+                    this.isGoToThreadButtonDisabled = true;
+                }
             }
         }
+
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
-        this.fixComments();
         this.updateURL();
-        if (this.interestedResource?.IsNewComment__c) {
-            readComment({ interestedResourceId: this.interestedResource?.Id });
-        }
     }
 
     @api recordId;
@@ -163,16 +179,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.showTable = true;
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'interested' };
-    }
-
-    sendComment() {
-        let interestedResourceId = this.interestedResource.Id;
-        let newComment = this.template.querySelector('.newComment').value;
-        addComment({ interestedResourceId, newComment }).then(() => {
-            refreshApex(this.wiredInterestedResourcesResult);
-            this.template.querySelector('.newComment').value = '';
-            this.fixComments();
-        });
     }
     filteredRecordsLength = 0;
     @api
@@ -198,19 +204,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
         }
         return this.filteredRecordsLength;
     }
-
-    @track prevComments = '';
-    fixComments() {
-        getComments({ interestedResourceId: this.recordId }).then((result) => {
-            this.prevComments = '';
-            console.log(result.Comments__c);
-            if (result.Comments__c != undefined || result.Comments__c != '') {
-                this.prevComments = result.Comments__c.split('\n\n');
-            } else {
-                this.prevComments = '';
-            }
-        });
-    }
     isNotRetractable = false;
     retractInterest() {
         retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
@@ -223,5 +216,62 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
     closeModal() {
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+        this.isGoToThreadButtonDisabled = false;
+    }
+    navigateToThread(recordId) {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: recordId,
+                objectApiName: 'Thread__c',
+                actionName: 'view'
+            },
+            state: {
+                from: 'mine-oppdrag'
+            }
+        });
+    }
+    goToInterestedResourceThread() {
+        this.isGoToThreadButtonDisabled = true;
+        console.log(this.interestedResource.Status__c);
+        if (this.interestedResource.Status__c != 'Assigned') {
+            getThreadDispatcherId({ interestedResourceId: this.interestedResource.Id }).then((result) => {
+                if (result != '') {
+                    this.threadId = result;
+                    this.navigateToThread(this.threadId);
+                } else {
+                    createThreadInterpreter({ recordId: this.interestedResource.Id })
+                        .then((result) => {
+                            this.navigateToThread(result.Id);
+                        })
+                        .catch((error) => {
+                            this.modalHeader = 'Noe gikk galt';
+                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                            this.noCancelButton = true;
+                            this.showModal();
+                        });
+                }
+            });
+        } else {
+            console.log('ja');
+            //OM status har blitt assigned er thread blit omformet til å ha relatedrecord på SA. Bruk ritkig samtaletype
+            getThreadDispatcherIdSA({ saId: this.interestedResource.ServiceAppointment__c }).then((result) => {
+                if (result != '') {
+                    this.threadId = result;
+                    this.navigateToThread(this.threadId);
+                } else {
+                    createThreadInterpreter({ recordId: this.interestedResource.ServiceAppointment__c })
+                        .then((result) => {
+                            this.navigateToThread(result.Id);
+                        })
+                        .catch((error) => {
+                            this.modalHeader = 'Noe gikk galt';
+                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                            this.noCancelButton = true;
+                            this.showModal();
+                        });
+                }
+            });
+        }
     }
 }

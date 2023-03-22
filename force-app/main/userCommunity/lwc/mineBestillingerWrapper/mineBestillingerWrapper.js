@@ -228,7 +228,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.copyButtonLabel = 'Kopier serie';
             this.cancelButtonLabel = 'Avlys serie';
             this.isThreadButtonDisabled = false;
-            this.isInterpreterThreadButtonDisabled = false;
+            this.isInterpreterThreadButtonDisabled = true;
         } else {
             this.isThreadButtonDisabled = false;
             this.editButtonLabel = 'Rediger';

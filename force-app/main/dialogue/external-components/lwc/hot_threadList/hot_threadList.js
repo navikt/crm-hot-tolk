@@ -46,7 +46,7 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
     ];
     @track tabs = [
         { name: 'mythreads', label: 'Med formidler', selected: true },
-        { name: 'interpreterthreads', label: 'Med tolk', selected: false }
+        { name: 'interpreterthreads', label: 'Tolk-Bruker', selected: false }
     ];
 
     @track tabMap = {
@@ -86,6 +86,7 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                 }
             }
         }
+        sessionStorage.setItem('activeMessageList', this.activeTab);
         this.updateTabStyle();
     }
     openThread(event) {
@@ -129,7 +130,10 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                         if (element.CRM_Type__c == 'HOT_BRUKER-TOLK') {
                             this.unmappedInterpreterThreads.push(element);
                         }
-                        if (element.CRM_Type__c == 'HOT_BRUKER-FORMIDLER') {
+                        if (
+                            element.CRM_Type__c == 'HOT_BRUKER-FORMIDLER' ||
+                            element.CRM_Type__c == 'HOT_TOLK-FORMIDLER'
+                        ) {
                             this.unmappedThreads.push(element);
                         }
                         if (element.CRM_Type__c == 'HOT_BESTILLER-FORMIDLER') {
@@ -158,6 +162,35 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     this.noThreads = this.threads.length === 0;
                     this.noInterpreterThreads = this.interpreterThreads.length === 0;
                     this.noOrderThreads = this.orderThreads.length === 0;
+
+                    //sorting, unread first
+                    this.threads.sort((a, b) => {
+                        if (a.read === b.read) {
+                            return 0;
+                        }
+                        if (a.read === false) {
+                            return -1;
+                        }
+                        return 1;
+                    });
+                    this.interpreterThreads.sort((a, b) => {
+                        if (a.read === b.read) {
+                            return 0;
+                        }
+                        if (a.read === false) {
+                            return -1;
+                        }
+                        return 1;
+                    });
+                    this.orderThreads.sort((a, b) => {
+                        if (a.read === b.read) {
+                            return 0;
+                        }
+                        if (a.read === false) {
+                            return -1;
+                        }
+                        return 1;
+                    });
                 })
                 .catch((error) => {
                     //Apex error
@@ -174,6 +207,11 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
         refreshApex(this.wiredThreadsResult);
     }
     renderedCallback() {
+        if (sessionStorage.getItem('activeMessageList') != null) {
+            this.updateTab({ target: { dataset: { id: sessionStorage.getItem('activeMessageList') } } });
+        } else {
+            this.updateTab({ target: { dataset: { id: 'mythreads' } } });
+        }
         this.updateTabStyle();
     }
     updateTabStyle() {

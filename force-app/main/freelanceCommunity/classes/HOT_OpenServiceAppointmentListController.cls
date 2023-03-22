@@ -129,7 +129,8 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         insert interestedResources;
 
         for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
-            HOT_InterestedResourcesListController.addComment(interestedResources[i].Id, comments[i]);
+            //HOT_InterestedResourcesListController.addComment(interestedResources[i].Id, comments[i]);
+            HOT_InterestedResourcesListController.startAThreadAndAddComment(interestedResources[i].Id, comments[i]);
         }
     }
 }

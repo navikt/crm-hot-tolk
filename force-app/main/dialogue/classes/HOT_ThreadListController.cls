@@ -25,7 +25,7 @@ public with sharing class HOT_ThreadListController {
         List<Thread__c> threads = [
             SELECT Id, HOT_Subject__c, CRM_Type__c, CRM_Number_of_unread_Messages__c, HOT_Thread_read_by__c, HOT_Last_message_from__c, CRM_Registered_Datetime_Formula__c
             FROM Thread__c 
-            WHERE (CRM_Account__c = :user.AccountId AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER' AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false) OR (CRM_Related_Object__c IN :workOrderIds AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false)OR (CRM_Related_Object__c IN :bestillerSamtalerId AND CRM_Type__c = 'HOT_BESTILLER-FORMIDLER' AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false) OR (CRM_Account__c = :user.AccountId AND CRM_Type__c = 'HOT_BRUKER-TOLK' AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false) 
+            WHERE (CRM_Account__c = :user.AccountId AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER' AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false) OR (CRM_Related_Object__c IN :workOrderIds AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false)OR (CRM_Related_Object__c IN :bestillerSamtalerId AND CRM_Type__c = 'HOT_BESTILLER-FORMIDLER' AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false) OR (CRM_Account__c = :user.AccountId AND CRM_Type__c = 'HOT_BRUKER-TOLK' AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false) OR (CRM_Account__c = :user.AccountId AND CRM_Type__c = 'HOT_TOLK-FORMIDLER' AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false)
              ORDER BY CRM_Number_of_unread_Messages__c DESC, CRM_Registered_Datetime_Formula__c DESC
         ];
 

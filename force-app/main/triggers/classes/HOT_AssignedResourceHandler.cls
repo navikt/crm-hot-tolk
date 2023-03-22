@@ -29,6 +29,47 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             (List<AssignedResource>) records
         );
         update interestedResources;
+
+        //slett her
+         Set<Id> potentialSAWithThreadsIds = new Set<Id>(); 
+            for (ServiceAppointment sa : serviceAppointments) {
+                potentialSAWithThreadsIds.add(sa.Id);
+            }
+        List<Thread__c> exisitingThreadsToBeDeleted=[SELECT Id FROM Thread__c
+        WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c='HOT_TOLK-FORMIDLER'];
+        
+        if(exisitingThreadsToBeDeleted.size()!=0){
+            Id accountId = null;
+            for(Thread__c thread : exisitingThreadsToBeDeleted){
+            thread.CRM_Related_Object__c='';
+            thread.CRM_Account__c=accountId;
+        }
+        update exisitingThreadsToBeDeleted;
+        }
+
+        //finn eventuell ir tråd
+        List<HOT_InterestedResource__c> potentialIRWithThreads=[SELECT Id, ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Status__c='Assigned' AND ServiceAppointment__c IN: potentialSAWithThreadsIds];
+          if(potentialIRWithThreads.size()!=0){
+            Map<Id, HOT_InterestedResource__c> threadMap = new Map<Id, HOT_InterestedResource__c>();
+            Set<Id> potentialIRWithThreadsIds = new Set<Id>(); 
+            for (HOT_InterestedResource__c ir : potentialIRWithThreads) {
+                potentialIRWithThreadsIds.add(ir.Id);
+                threadMap.put(ir.Id,ir);
+            }
+            List<Thread__c> threadsToTransfer=[Select Id,CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN : potentialIRWithThreadsIds];
+
+
+            for(Thread__c threads: threadsToTransfer){
+                   HOT_InterestedResource__c ir = threadMap.get(threads.CRM_Related_Object__c);
+                    if (ir != null) {
+                        threads.CRM_Related_Object__c = ir.ServiceAppointment__c;
+                    }
+            }
+            update threadsToTransfer;
+        }
+
+
+
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
