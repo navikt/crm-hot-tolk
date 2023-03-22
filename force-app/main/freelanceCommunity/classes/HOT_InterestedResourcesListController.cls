@@ -157,7 +157,7 @@ public without sharing class HOT_InterestedResourcesListController {
             thread.CRM_Related_Object__c = interestedResourceId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
-            thread.HOT_Subject__c=ir.ServiceAppointment__r.Subject;
+            thread.HOT_InterestedResource__c=interestedResourceId;
             HOT_DatabaseOperations.insertRecords(thread);
 
             //legg inn meldingen i comment
