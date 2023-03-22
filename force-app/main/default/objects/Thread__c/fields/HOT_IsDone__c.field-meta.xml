@@ -4,7 +4,9 @@
     <externalId>false</externalId>
     <formula>IF(HOT_Request__r.IsDone__c==true, true,
 IF(HOT_WorkOrder__r.HOT_Request__r.IsDone__c==true, true,
-false) )</formula>
+IF(HOT_ServiceAppointment__r.HOT_Request__r.IsDone__c==true, true,
+IF(HOT_InterestedResource__r.ServiceAppointment__r.HOT_Request__r.IsDone__c==true, true,
+false) )))</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>HOT_IsDone</label>
     <trackHistory>false</trackHistory>
