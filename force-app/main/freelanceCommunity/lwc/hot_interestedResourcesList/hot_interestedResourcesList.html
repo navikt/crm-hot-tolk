@@ -62,35 +62,6 @@
                             button-styling="Primary"
                             onbuttonclick={goToInterestedResourceThread}
                         ></c-button>
-                        <!-- <section style="margin-bottom: 2rem">
-                            <div style="padding: 1rem">
-                                <br />
-                                <div>
-                                    <h2 class="typo-undertittel ikke-sensitive-opplysninger__label">
-                                        Dialog med formidler
-                                    </h2>
-                                    <template iterator:it={prevComments}>
-                                        <p class="typo-normal" key={it.value}>{it.value}</p>
-                                        <p style="color: transparent" key={it.value}>.</p>
-                                    </template>
-                                </div>
-                                <lightning-textarea
-                                    label="Legg til ny kommentar"
-                                    style="margin-bottom: 1rem"
-                                    class="newComment"
-                                    name="newComment"
-                                >
-                                </lightning-textarea>
-                                <lightning-button
-                                    onclick={sendComment}
-                                    class="slds-m-left_x-small"
-                                    variant="brand"
-                                    type="submit"
-                                    label="Send inn"
-                                >
-                                </lightning-button>
-                            </div>
-                        </section> -->
                     </div>
                 </section>
                 <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
