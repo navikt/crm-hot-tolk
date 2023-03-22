@@ -267,7 +267,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goBack() {
-        //this.workOrderThreadId = undefined;
         let currentLevel = this.urlStateParameters.level;
         if (currentLevel === undefined || currentLevel === '') {
             this[NavigationMixin.Navigate]({

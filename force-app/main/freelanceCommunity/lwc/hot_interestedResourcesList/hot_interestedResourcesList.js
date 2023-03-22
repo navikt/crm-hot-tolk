@@ -233,7 +233,6 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     }
     goToInterestedResourceThread() {
         this.isGoToThreadButtonDisabled = true;
-        console.log(this.interestedResource.Status__c);
         if (this.interestedResource.Status__c != 'Assigned') {
             getThreadDispatcherId({ interestedResourceId: this.interestedResource.Id }).then((result) => {
                 if (result != '') {
@@ -253,8 +252,6 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                 }
             });
         } else {
-            console.log('ja');
-            //OM status har blitt assigned er thread blit omformet til å ha relatedrecord på SA. Bruk ritkig samtaletype
             getThreadDispatcherIdSA({ saId: this.interestedResource.ServiceAppointment__c }).then((result) => {
                 if (result != '') {
                     this.threadId = result;

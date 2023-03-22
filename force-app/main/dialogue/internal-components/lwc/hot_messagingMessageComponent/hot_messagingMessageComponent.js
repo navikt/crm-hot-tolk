@@ -87,9 +87,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                     this.noAssignedResource = false;
                     return refreshApex(this._threadsforRefresh);
                 })
-                .catch((error) => {
-                    console.log('kkkk');
-                });
+                .catch((error) => {});
         }
     }
 

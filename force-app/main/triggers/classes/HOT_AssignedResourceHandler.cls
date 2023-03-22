@@ -30,7 +30,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         );
         update interestedResources;
 
-        //slett her
          Set<Id> potentialSAWithThreadsIds = new Set<Id>(); 
             for (ServiceAppointment sa : serviceAppointments) {
                 potentialSAWithThreadsIds.add(sa.Id);
@@ -46,8 +45,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         }
         update exisitingThreadsToBeDeleted;
         }
-
-        //finn eventuell ir tråd
         List<HOT_InterestedResource__c> potentialIRWithThreads=[SELECT Id, ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Status__c='Assigned' AND ServiceAppointment__c IN: potentialSAWithThreadsIds];
           if(potentialIRWithThreads.size()!=0){
             Map<Id, HOT_InterestedResource__c> threadMap = new Map<Id, HOT_InterestedResource__c>();
@@ -67,9 +64,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
             update threadsToTransfer;
         }
-
-
-
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
