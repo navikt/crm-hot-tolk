@@ -42,7 +42,10 @@ public without sharing class HOT_MessageHelper {
         //         }
         //     }
         // }
-        
+        String objectType=String.valueOf(recordId.getsobjecttype());
+        if(objectType=='Thread__c'){
+            return getThreadFromThreadId(recordId);
+        }
         if (singleThread == true && type!='') {
             return getSingleThread(recordId, type);
         } else {
@@ -52,6 +55,7 @@ public without sharing class HOT_MessageHelper {
 
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreads(Id recordId) {
+        //finn hvilket objekt som har denne tråden
         List<Thread__c> threadList;
         try {
             threadList = [
@@ -76,24 +80,24 @@ public without sharing class HOT_MessageHelper {
         return request;
     }
     //Denne er ikke i bruke
-    @AuraEnabled(cacheable=true)
-    public static Thread__c getSingleThread(Id recordId) {
-        try {
-            if (recordId.getSobjectType() == Thread__c.sObjectType) {
-                return getThreadFromThreadId(recordId);
-            }
-            Thread__c t = [
-                SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
-                FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK')
-                LIMIT 1
-            ];
+    // @AuraEnabled(cacheable=true)
+    // public static Thread__c getSingleThread(Id recordId) {
+    //     try {
+    //         if (recordId.getSobjectType() == Thread__c.sObjectType) {
+    //             return getThreadFromThreadId(recordId);
+    //         }
+    //         Thread__c t = [
+    //             SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
+    //             FROM Thread__c
+    //             WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK')
+    //             LIMIT 1
+    //         ];
 
-            return t;
-        } catch (Exception e) {
-            return null;
-        }
-    }
+    //         return t;
+    //     } catch (Exception e) {
+    //         return null;
+    //     }
+    // }
     //
      @AuraEnabled(cacheable=true)
     public static List<Thread__c> getSingleThread(Id recordId, String type) {
@@ -112,9 +116,9 @@ public without sharing class HOT_MessageHelper {
     }
 
     @AuraEnabled(cacheable=true)
-    public static Thread__c getThreadFromThreadId(Id recordId) {
+    public static List<Thread__c> getThreadFromThreadId(Id recordId) {
         try {
-            Thread__c t = [
+            List<Thread__c> t = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
                 FROM Thread__c
                 WHERE Id = :recordId
