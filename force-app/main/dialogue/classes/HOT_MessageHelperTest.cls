@@ -413,6 +413,51 @@ public with sharing class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
+    static void createThreadInterpreterServiceAppointment() {
+         WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli=HOT_TestDataFactory.createWorkOrderLineItem(workOrder,workType);
+        insert woli;
+        ServiceAppointment sa=HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject='TEST';
+        sa.Status='Dispatched';
+        insert sa;
+        Account account = [
+            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
+            FROM Account
+            WHERE LastName = :'Bruker'
+        ];
+        Test.startTest();
+        Profile communityProfile = [
+            SELECT Name
+            FROM Profile
+            WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User' OR Name = 'Customer Community User'
+            LIMIT 1
+        ];
+        User user = HOT_TestDataFactory.createUser(communityProfile, account);
+        user.Alias = 'userTest';
+        user.Username = 'HOT_testuser1@nav.hot.no';
+        user.CommunityNickname = 'userTest';
+        insert user;
+
+        user = [SELECT Id, AccountId FROM User WHERE Alias = 'userTest'];
+        System.runAs(user) {
+            Thread__c thread = HOT_MessageHelper.createThreadInterpreter(sa.Id);
+        }
+
+       
+        Test.stopTest();
+        List<Thread__c> tList = [
+            SELECT Id, CRM_Account__c, CRM_Type__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :sa.Id
+        ];
+        System.assertNotEquals(null, tList);
+    }
     @isTest
     static void getAccountonRequestTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
