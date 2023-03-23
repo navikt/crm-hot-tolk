@@ -424,7 +424,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         if (!workordersList.isEmpty()) {
             for (WorkOrder wo : workordersList) {
                 Set<String> recipients = new Set<String>();
-                recipients.add(userIdByAccountId.get(wo.AccountId));
+                if (userIdByAccountId.get(wo.AccountId) != null && wo.Account.CRM_Person__r.HOT_NotificationChannel__c != null) {
+                    recipients.add(userIdByAccountId.get(wo.AccountId));
+                }
                 if (recipients.size() != 0) {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.newWorkOrderNotification(
