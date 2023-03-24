@@ -3,6 +3,8 @@ import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesList
 import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterest';
 import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
 import getThreadDispatcherIdSA from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherIdSA';
+import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreads';
+import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
 import { columns, mobileColumns, iconByValue } from './columns';
@@ -92,13 +94,47 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             this.error = undefined;
             this.allInterestedResourcesWired = [...result.data];
             this.noInterestedResources = this.allInterestedResourcesWired.length === 0;
-            let tempRecords = [];
-            for (let record of result.data) {
-                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
-            }
-            this.records = tempRecords;
-            this.initialInterestedResources = [...this.records];
-            this.refresh();
+            getContactId({}).then((contactId) => {
+                this.userContactId = contactId;
+
+                getMyThreads().then((result) => {
+                    var thread = [];
+                    thread = result;
+                    var map = new Map();
+                    thread.forEach((t) => {
+                        map.set(t.CRM_Related_Object__c, t.HOT_Thread_read_by__c);
+                    });
+                    this.allInterestedResourcesWired = this.allInterestedResourcesWired.map((appointment) => {
+                        let threadId;
+                        if (appointment.Status__c == 'Assigned' || appointment.Status__c == 'Tildelt') {
+                            threadId = appointment.ServiceAppointment__c;
+                        } else {
+                            threadId = appointment.Id;
+                        }
+                        let status = 'noThread';
+                        if (map.has(threadId)) {
+                            var readBy = map.get(threadId);
+                            if (readBy.includes(this.userContactId)) {
+                                status = 'false';
+                            } else {
+                                status = 'true';
+                            }
+                        } else {
+                        }
+                        return {
+                            ...appointment,
+                            IsUnreadMessage: status
+                        };
+                    });
+                    let tempRecords = [];
+                    for (let record of this.allInterestedResourcesWired) {
+                        tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+                    }
+                    this.records = tempRecords;
+                    this.initialInterestedResources = [...this.records];
+                    this.refresh();
+                });
+            });
         } else if (result.error) {
             this.error = result.error;
             this.allInterestedResourcesWired = undefined;
