@@ -1,5 +1,5 @@
 public with sharing class HOT_ThreadListController {
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static List<Thread__c> getMyThreads() {
         List<Id> workOrderIds = new List<Id>();
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
