@@ -414,10 +414,10 @@ public static Map<String, String> getRelatedWorkOrderId(Id relatedRecordId) {
             workorderId=workOrder.Id;
             if(workOrder.HOT_Request__r.IsAccountEqualOrderer__c==false && workOrder.HOT_Request__r.Orderer__c ==currentUser.AccountId){
                 if(request.IsSerieoppdrag__c==false){
-                    navigationhelp.put(workorderId,'Andres-WO'); 
+                    navigationhelp.put(workorderId,'Andre-WO'); 
                 }
                 else{
-                    navigationhelp.put(workorderId,'Andres-R');
+                    navigationhelp.put(workorderId,'Andre-R');
                 }
                 
             }

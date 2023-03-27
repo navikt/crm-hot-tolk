@@ -215,11 +215,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     goBack() {
         getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
             for (var key in result) {
-                if (result[key] == 'Andres-WO' && this.navigationBaseUrl != 'mine-samtaler') {
+                if (result[key] == 'Andre-WO' && this.navigationBaseUrl != 'mine-samtaler') {
                     this.navigationBaseUrl = 'mine-bestillinger-andre';
                     break;
                 }
-                if (result[key] == 'Andres-R' && this.navigationBaseUrl != 'mine-samtaler') {
+                if (result[key] == 'Andre-R' && this.navigationBaseUrl != 'mine-samtaler') {
                     this.navigationBaseUrl = 'mine-bestillinger-andre';
                     break;
                 } else {
@@ -339,7 +339,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
 
                     break;
                 }
-                if (result[key] == 'Andres-WO') {
+                if (result[key] == 'Andre-WO') {
                     this[NavigationMixin.Navigate]({
                         type: 'comm__namedPage',
                         attributes: {
@@ -352,7 +352,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     });
                     break;
                 }
-                if (result[key] == 'Andres-R') {
+                if (result[key] == 'Andre-R') {
                     this[NavigationMixin.Navigate]({
                         type: 'comm__namedPage',
                         attributes: {
