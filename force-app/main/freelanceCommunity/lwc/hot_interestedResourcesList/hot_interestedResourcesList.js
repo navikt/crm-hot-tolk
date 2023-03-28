@@ -3,7 +3,7 @@ import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesList
 import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterest';
 import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
 import getThreadDispatcherIdSA from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherIdSA';
-import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreads';
+import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsDuplicate';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
