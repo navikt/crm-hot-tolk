@@ -42,7 +42,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @api overrideValidation = false;
     @api errorList = { title: '', errors: [] };
     @api helptextContent =
-        'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere og NAV-ansatte tolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+        'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, NAV-ansatte tolker og eventuelt frilanstolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
     @api helptextHovertext;
 
     connectedCallback() {
