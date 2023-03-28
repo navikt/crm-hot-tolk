@@ -11,7 +11,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
         query += 'FROM WorkOrder ';
         query += 'WHERE HOT_SendSMSNotificationOnStatusChanged__c = TRUE ';
         query += 'AND HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\' ';
-        query += 'AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = \'TRUE\'';
+        query += 'AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = TRUE';
 
         return Database.getQueryLocator(query);
     }
