@@ -61,42 +61,40 @@
                                 ></c-record-files-with-sharing>
                             </div>
                         </div>
-                        <div style="display: inline-block">
+                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
                             <c-button
                                 disabled={isEditButtonDisabled}
                                 hidden={isEditButtonHidden}
                                 onbuttonclick={changeStatus}
                                 button-styling="Primary"
-                                style="padding-right: 1vw; padding-bottom: 1vw"
                                 type="Submit"
                                 button-label="Endre status"
                             >
                             </c-button>
+
                             <c-button
                                 hidden={isCancelButtonHidden}
                                 onbuttonclick={cancelStatusFlow}
                                 button-styling="Secondary"
                                 type="Submit"
-                                style="padding-right: 1vw; padding-bottom: 1vw"
                                 button-label="Avbryt"
                             >
                             </c-button>
-
+                        </div>
+                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
                             <c-button
                                 button-styling="Primary"
                                 type="Submit"
                                 onbuttonclick={goToThreadFreelance}
                                 button-label="Samtale med bruker"
-                                style="padding-right: 1vw; padding-top: 1vw; padding-top: 2vw"
                                 disabled={isGoToThreadButtonDisabled}
                             >
                             </c-button>
                         </div>
-                        <div style="display: inline-block; padding-top: 1vw">
+                        <div style="display: inline-block; padding-right: 1vw">
                             <c-button
                                 button-styling="Primary"
                                 type="Submit"
-                                style="padding-top: 1vw; padding-right: 1vw"
                                 onbuttonclick={goToThreadServiceAppointment}
                                 button-label="Samtale med formidler"
                                 disabled={isGoToThreadServiceAppointmentButtonDisabled}

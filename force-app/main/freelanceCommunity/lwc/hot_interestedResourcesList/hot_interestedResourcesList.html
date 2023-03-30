@@ -47,21 +47,24 @@
                                 Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
                             </p>
                         </div>
-                        <c-button
-                            disabled={isNotRetractable}
-                            onbuttonclick={retractInterest}
-                            button-styling="Primary"
-                            type="Submit"
-                            button-label="Tilbaketrekk interesse"
-                        >
-                        </c-button>
-                        <c-button
-                            style="margin-left: 0.5rem"
-                            disabled={isGoToThreadButtonDisabled}
-                            button-label="Samtale med formidler"
-                            button-styling="Primary"
-                            onbuttonclick={goToInterestedResourceThread}
-                        ></c-button>
+                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                            <c-button
+                                disabled={isNotRetractable}
+                                onbuttonclick={retractInterest}
+                                button-styling="Primary"
+                                type="Submit"
+                                button-label="Tilbaketrekk interesse"
+                            >
+                            </c-button>
+                        </div>
+                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                            <c-button
+                                disabled={isGoToThreadButtonDisabled}
+                                button-label="Samtale med formidler"
+                                button-styling="Primary"
+                                onbuttonclick={goToInterestedResourceThread}
+                            ></c-button>
+                        </div>
                     </div>
                 </section>
                 <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
