@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <customValue>
         <fullName>Interested</fullName>
@@ -34,6 +34,11 @@
         <fullName>Canceled by Interpreter</fullName>
         <default>false</default>
         <label>Canceled by Interpreter</label>
+    </customValue>
+    <customValue>
+        <fullName>Withdrawn</fullName>
+        <default>false</default>
+        <label>Withdrawn</label>
     </customValue>
     <masterLabel>Interested Resource Status</masterLabel>
     <sorted>false</sorted>
