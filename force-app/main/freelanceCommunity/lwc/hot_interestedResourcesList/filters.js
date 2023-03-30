@@ -29,6 +29,11 @@ export let filterArray = [
                 name: 'Oppdrag tilbaketrukket',
                 label: 'Oppdrag tilbaketrukket'
             },
+            ,
+            {
+                name: 'Tatt av oppdraget',
+                label: 'Tatt av oppdraget'
+            },
             {
                 name: 'Avlyst av tolk',
                 label: 'Avlyst av tolk'
