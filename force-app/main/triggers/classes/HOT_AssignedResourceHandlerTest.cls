@@ -186,6 +186,25 @@ private class HOT_AssignedResourceHandlerTest {
             serviceAppointment.HOT_IsReleasedToFreelance__c,
             'Could not set HOT_IsReleasedToFreelance__c onAfterdelete'
         );
+         List<HOT_InterestedResource__c> interestedResourcesAfterDelete = [
+            SELECT Id, ServiceResource__c, Status__c
+            FROM HOT_InterestedResource__c
+        ];
+        Map<Id, HOT_InterestedResource__c> interestedResourcesNewStatuses = new Map<Id, HOT_InterestedResource__c>();
+        for (HOT_InterestedResource__c interestedResource : interestedResourcesAfterDelete) {
+                interestedResourcesNewStatuses.put(interestedResource.ServiceResource__c, interestedResource);
+        }
+
+        System.assertEquals(
+            'Withdrawn',
+            interestedResourcesNewStatuses.get(testResource.Id).Status__c,
+            'Status was supposed to be changed'
+        );
+        System.assertEquals(
+            'Not Assigned',
+            interestedResourcesNewStatuses.get(adminResource.Id).Status__c,
+            'Should not have changed status'
+        );
     }
 
     @isTest
