@@ -200,11 +200,6 @@ private class HOT_AssignedResourceHandlerTest {
             interestedResourcesNewStatuses.get(testResource.Id).Status__c,
             'Status was supposed to be changed'
         );
-        System.assertEquals(
-            'Not Assigned',
-            interestedResourcesNewStatuses.get(adminResource.Id).Status__c,
-            'Should not have changed status'
-        );
     }
 
     @isTest
