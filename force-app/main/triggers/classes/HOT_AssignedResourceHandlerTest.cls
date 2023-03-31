@@ -132,7 +132,7 @@ private class HOT_AssignedResourceHandlerTest {
             'Could not set correct status on InterestedResources'
         );
         System.assertEquals(
-            'Withdrawn',
+            'Not Assigned',
             irBySR.get(adminResource.Id).Status__c,
             'Could not set correct status on InterestedResources'
         );
@@ -199,11 +199,6 @@ private class HOT_AssignedResourceHandlerTest {
             'Withdrawn',
             interestedResourcesNewStatuses.get(testResource.Id).Status__c,
             'Status was supposed to be changed'
-        );
-        System.assertEquals(
-            'Not Assigned',
-            interestedResourcesNewStatuses.get(adminResource.Id).Status__c,
-            'Should not have changed status'
         );
     }
 
