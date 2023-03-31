@@ -34,14 +34,32 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             for (ServiceAppointment sa : serviceAppointments) {
                 potentialSAWithThreadsIds.add(sa.Id);
             }
-        List<Thread__c> exisitingThreadsToBeDeleted=[SELECT Id FROM Thread__c
+        List<Thread__c> exisitingThreadsToBeDeleted=[SELECT Id, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c FROM Thread__c
         WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c='HOT_TOLK-FORMIDLER'];
         
+        //Finn ir hvor accountid og serviceappointment id er samme
+        Set<Id> accountIds = new Set<Id>();
+        for(Thread__c thread : exisitingThreadsToBeDeleted){
+            accountIds.add(thread.CRM_Account__c);
+        }  
+        List<HOT_InterestedResource__c> irList=[SELECT Id FROM HOT_InterestedResource__c WHERE ServiceResource__r.AccountId IN :accountIds AND ServiceAppointment__c IN :potentialSAWithThreadsIds];
+        //LOOP om threads sin related record er samme serviceappointmentId. Så sett ir sin id som related object
+        Map<Id, List<Id>> saIdToIrIdListMap = new Map<Id, List<Id>>();
+        for (HOT_InterestedResource__c ir : irList) {
+            if (!saIdToIrIdListMap.containsKey(ir.ServiceAppointment__c)) {
+                saIdToIrIdListMap.put(ir.ServiceAppointment__c, new List<Id>{ir.Id});
+            } else {
+                saIdToIrIdListMap.get(ir.ServiceAppointment__c).add(ir.Id);
+            }
+        }
+
         if(exisitingThreadsToBeDeleted.size()!=0){
-            Id accountId = null;
-            for(Thread__c thread : exisitingThreadsToBeDeleted){
-            thread.CRM_Related_Object__c='';
-            thread.CRM_Account__c=accountId;
+    
+        for (Thread__c thread : exisitingThreadsToBeDeleted) {
+            if (saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c)) {
+                thread.CRM_Related_Object__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+                thread.HOT_InterestedResource__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+            }
         }
         update exisitingThreadsToBeDeleted;
         }
@@ -60,6 +78,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                    HOT_InterestedResource__c ir = threadMap.get(threads.CRM_Related_Object__c);
                     if (ir != null) {
                         threads.CRM_Related_Object__c = ir.ServiceAppointment__c;
+                        threads.HOT_ServiceAppointment__c=ir.ServiceAppointment__c;
                     }
             }
             update threadsToTransfer;

@@ -181,16 +181,16 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     (DeadlineDateTimeFormatted.getMonth() + 1) +
                     '.' +
                     DeadlineDateTimeFormatted.getFullYear();
-                if (
-                    this.interestedResource.Status__c == 'Påmeldt' ||
-                    this.interestedResource.Status__c == 'Tildelt' ||
-                    this.interestedResource.Status__c == 'Assigned' ||
-                    this.interestedResource.Status__c == 'Interested'
-                ) {
-                    this.isGoToThreadButtonDisabled = false;
-                } else {
-                    this.isGoToThreadButtonDisabled = true;
-                }
+                // if (
+                //     this.interestedResource.Status__c == 'Påmeldt' ||
+                //     this.interestedResource.Status__c == 'Tildelt' ||
+                //     this.interestedResource.Status__c == 'Assigned' ||
+                //     this.interestedResource.Status__c == 'Interested'
+                // ) {
+                //     this.isGoToThreadButtonDisabled = false;
+                // } else {
+                //     this.isGoToThreadButtonDisabled = true;
+                // }
             }
         }
 
