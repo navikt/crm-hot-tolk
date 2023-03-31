@@ -28,12 +28,14 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     @track errorMessage;
     @track ThreadInfo;
     @track noAssignedResource = false;
+    @track interestedResourceIsAssigned = false;
 
     @api recordId;
     @api singleThread;
     @api showClose;
     @api englishTextTemplate;
     @api textTemplate;
+    @api objectApiName;
 
     @wire(getThreads, { recordId: '$recordId', singleThread: '$singleThread', type: '$messageType' }) //Calls apex and extracts messages related to this record
     wiredThreads(result) {
@@ -72,10 +74,15 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                             this.showButtonDiv = false;
                             this.showThreads = true;
                             this.noAssignedResource = false;
+                            this.interestedResourceIsAssigned = false;
                             return refreshApex(this._threadsforRefresh);
                         })
                         .catch((error) => {
-                            this.noAssignedResource = true;
+                            if (this.objectApiName == 'HOT_InterestedResource__c') {
+                                this.interestedResourceIsAssigned = true;
+                            } else {
+                                this.noAssignedResource = true;
+                            }
                         });
                 })
                 .catch((error) => {});
@@ -85,6 +92,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                     this.showButtonDiv = false;
                     this.showThreads = true;
                     this.noAssignedResource = false;
+                    this.interestedResourceIsAssigned = false;
                     return refreshApex(this._threadsforRefresh);
                 })
                 .catch((error) => {});

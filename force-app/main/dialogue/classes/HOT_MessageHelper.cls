@@ -198,7 +198,7 @@ public without sharing class HOT_MessageHelper {
             HOT_DatabaseOperations.insertRecords(thread);
         }
          if(objectType=='HOT_InterestedResource__c'){
-            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:recordId];
+            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:recordId AND Status__c!='Assigned'];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
