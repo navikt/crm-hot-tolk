@@ -132,7 +132,7 @@ private class HOT_AssignedResourceHandlerTest {
             'Could not set correct status on InterestedResources'
         );
         System.assertEquals(
-            'Not Assigned',
+            'Withdrawn',
             irBySR.get(adminResource.Id).Status__c,
             'Could not set correct status on InterestedResources'
         );
