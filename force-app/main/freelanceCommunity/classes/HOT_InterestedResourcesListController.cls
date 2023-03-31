@@ -205,9 +205,10 @@ public without sharing class HOT_InterestedResourcesListController {
     }
      @AuraEnabled
     public static HOT_InterestedResource__c getInterestedResourceDetails(String recordId) {
+    User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
       HOT_InterestedResource__c interestedResource= [
             SELECT  Id, HOT_TermsOfAgreement__c, AppointmentNumber__c, ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c, ServiceAppointmentAddress__c, WorkTypeName__c, AssignmentType__c, Status__c, NumberOfInterestedResources__c, AppointmentDeadlineDate__c, AppointmentServiceTerritory__c, ServiceAppointmentFreelanceSubject__c, WorkOrderCanceledDate__c FROM HOT_InterestedResource__c
-            WHERE ServiceAppointment__c=:recordId
+            WHERE ServiceAppointment__c=:recordId AND ServiceResource__r.AccountId=:currentUser.AccountId
         ];
         return interestedResource;
     }
