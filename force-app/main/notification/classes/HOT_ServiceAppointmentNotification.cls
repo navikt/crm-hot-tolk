@@ -20,16 +20,15 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 (serviceAppointment.HOT_AssignedResourceId__c == null &&
                 oldServiceAppointment.Status != serviceAppointment.Status &&
                 serviceAppointment.Status == 'Cannot Complete')
-            ) {
+                ) {
+                Set<String> interpreterRecipients = new Set<String>();
                 if (
                     serviceAppointment.status == 'Cannot Complete' &&
                     serviceAppointment.HOT_AssignedResourceId__c == null
                 ) {
-                    Set<String> interpreterRecipients = new Set<String>{
-                        oldServiceAppointment.HOT_AssignedResourceId__c
-                    };
+                    interpreterRecipients.add(oldServiceAppointment.HOT_AssignedResourceId__c);
                 } else {
-                    Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
+                    interpreterRecipients.add(serviceAppointment.HOT_AssignedResourceId__c);
                 }
                 resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
 
