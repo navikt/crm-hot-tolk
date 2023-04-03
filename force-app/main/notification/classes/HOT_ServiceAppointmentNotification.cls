@@ -22,7 +22,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.Status == 'Cannot Complete')
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
-                resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
+                if (serviceAppointment.HOT_AssignedResourceId__c != null) {
+                    resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
+                }
 
                 notiyUserOnStatusChange(serviceAppointment);
             }
