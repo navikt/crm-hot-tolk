@@ -79,15 +79,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
     renderedCallback() {
         this.setPreviousFiltersOnRefresh();
         this.setCheckedRowsOnRefresh();
-        localStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
+        //localStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
     }
 
     @track filters = [];
     connectedCallback() {
-        if (localStorage.getItem('checkedrowsSavedForRefresh')) {
-            this.checkedServiceAppointments = JSON.parse(localStorage.getItem('checkedrowsSavedForRefresh'));
-            localStorage.removeItem('checkedrowsSavedForRefresh');
-        }
+        // if (localStorage.getItem('checkedrowsSavedForRefresh')) {
+        //     this.checkedServiceAppointments = JSON.parse(localStorage.getItem('checkedrowsSavedForRefresh'));
+        //     localStorage.removeItem('checkedrowsSavedForRefresh');
+        // }
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
         this.breadcrumbs = [
@@ -125,10 +125,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.wiredAllServiceAppointmentsResult = result;
         if (result.data) {
             this.error = undefined;
-            this.allServiceAppointmentsWired = result.data.map((x) => ({
-                ...x,
-                isUrgent: x.HOT_IsUrgent__c
-            }));
+            // this.allServiceAppointmentsWired = result.data.map((x) => ({
+            //     ...x,
+            //     isUrgent: x.HOT_IsUrgent__c
+            // }));
+            this.allServiceAppointmentsWired = result.data;
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
             for (let record of this.allServiceAppointmentsWired) {

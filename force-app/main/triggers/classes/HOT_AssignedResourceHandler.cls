@@ -86,8 +86,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
 
     public override void onAfterDelete() {
         List<Id> serviceAppointmentIds = new List<Id>();
+         Map<Id, Id> interestedresourceMap = new Map<Id, Id>();
         for (AssignedResource ar : (List<AssignedResource>) records) {
             serviceAppointmentIds.add(ar.ServiceAppointmentId);
+            interestedresourceMap.put(ar.ServiceAppointmentId, ar.ServiceResourceId);
         }
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, HOT_ResetToDefault__c, HOT_AssignedResourceId__c, HOT_ServiceResource__c
@@ -104,6 +106,20 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         update HOT_AssignedResourceAccessHandler.setRecalculateManualSharingFlagOnServiceAppointment(
             serviceAppointmentIds
         );
+    
+            List<Id> serviceAppointmentIdsList = new List<Id>(interestedresourceMap.keySet());
+
+            List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c
+                                                                FROM HOT_InterestedResource__c 
+                                                                WHERE ServiceAppointment__c IN :serviceAppointmentIdsList];
+
+            for(HOT_InterestedResource__c ir: interestedResources){
+                if(ir.ServiceResource__c==interestedresourceMap.get(ir.ServiceAppointment__c)){
+                    ir.Status__c = 'Withdrawn'; 
+                }
+            }
+             update interestedResources;       
+
     }
 
     List<HOT_InterestedResource__c> createInterestedResources(List<AssignedResource> records) {
@@ -182,7 +198,15 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                         interestedResource.Status__c != 'Assigned'
                     ) {
                         interestedResource.Status__c = 'Assigned';
-                    } else if (
+                    }
+                    if(interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
+                        interestedResource.Status__c == 'Assigned'){
+                        interestedResource.Status__c = 'Withdrawn';
+                        }
+                        if(interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
+                        interestedResource.Status__c == 'Withdrawn'){
+                        }
+                     else if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
                         interestedResource.Status__c != 'Not Assigned'
                     ) {
