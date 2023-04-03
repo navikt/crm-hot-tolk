@@ -31,7 +31,7 @@ export default class Hot_requestForm_orderer extends LightningElement {
         OrdererEmail__c: '',
         OrdererPhone__c: '',
         IsOrdererWantStatusUpdateOnSMS__c: false,
-        IsNotNotifyAccount__c: true
+        IsNotNotifyAccount__c: false
     };
 
     @api
