@@ -296,7 +296,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     } else if (
                         //Må vel endres om til Withdrawn siden
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
-                        interestedResource.Status__c == 'Not Assigned'
+                        interestedResource.Status__c == 'Not Assigned' || interestedResource.Status__c == 'Withdrawn'
                     ) {
                         //FRA SA TIL IR
                         threadToIR.put(assignedResource.ServiceAppointmentId, interestedResource);
