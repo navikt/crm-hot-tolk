@@ -129,12 +129,16 @@ public without sharing class HOT_ReminderSMSService {
         List<SMS__c> smsList = new List<SMS__c>();
 
         for (WorkOrder wo : workOrderList) {
-            SMS__c sms = new SMS__c();
-            sms.Account__c = wo.AccountId;
-            sms.Domain__c = 'HOT';
-            sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
-            sms.Message__c = constructOnOrdererMessage(wo);
-            smsList.add(sms);
+            smsList.add(
+            SMSService.createSMSRecord(
+                        'HOT',
+                        'Orderer On Status Update',
+                        wo.AccountId,
+                        workOrder.Id,
+                        wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                        constructOnOrdererMessage(wo)
+                    )
+            );
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -164,12 +168,16 @@ public without sharing class HOT_ReminderSMSService {
         List<SMS__c> smsList = new List<SMS__c>();
 
         for (WorkOrder wo : workOrderList) {
-            SMS__c sms = new SMS__c();
-            sms.Account__c = wo.AccountId;
-            sms.Domain__c = 'HOT';
-            sms.Recipient__c = getRecipient(wo);
-            sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
-            smsList.add(sms);
+            smsList.add(
+                SMSService.createSMSRecord(
+                            'HOT',
+                            'Orderer On Status Update',
+                            wo.AccountId,
+                            workOrder.Id,
+                            getRecipient(wo),
+                            constructInterpreterChangedMessage(wo, interpreterName)
+                        )
+                );
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -190,7 +198,6 @@ public without sharing class HOT_ReminderSMSService {
 
     public static String constructInterpreterChangedMessage(WorkOrder workOrder, String interpreterNames) {
         String message = 'INFO\nTolk på din bestilling er endret:\n';
-        message += 'Du har fått tolk. ';
         message += 'Tolk er: ';
         message += interpreterNames;
         message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
