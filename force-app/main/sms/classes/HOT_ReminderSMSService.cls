@@ -134,7 +134,7 @@ public without sharing class HOT_ReminderSMSService {
                         'HOT',
                         'Orderer On Status Update',
                         wo.AccountId,
-                        workOrder.Id,
+                        wo.Id,
                         wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
                         constructOnOrdererMessage(wo)
                     )
@@ -173,7 +173,7 @@ public without sharing class HOT_ReminderSMSService {
                             'HOT',
                             'Orderer On Status Update',
                             wo.AccountId,
-                            workOrder.Id,
+                            wo.Id,
                             getRecipient(wo),
                             constructInterpreterChangedMessage(wo, interpreterName)
                         )
