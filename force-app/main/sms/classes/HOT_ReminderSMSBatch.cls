@@ -21,7 +21,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
         query += 'AND (Account.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\' ';
         query += 'OR Account.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\') ';
         query += 'AND HOT_Request__r.IsReminderSMS__c = TRUE '; //Should consider renaming field to IsReminderNotification__c
-        //    query += 'AND HOT_Request__r.HOT_DoNotSendNotification = FALSE';  //In some cases (See TOLK-2234) we absolutely do not want to send notification to whomever the order concerns
+        //    query += 'AND HOT_Request__r.IsNotNotifyAccount__c = FALSE';  //In some cases (See TOLK-2234) we absolutely do not want to send notification to whomever the order concerns
         query += 'AND HOT_IsReminderSMSSendt__c = FALSE'; //Should consider renaming HOT_IsReminderNotificiationSent__c
 
         return Database.getQueryLocator(query);
