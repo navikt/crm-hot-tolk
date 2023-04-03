@@ -691,8 +691,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.IsNotifyAccount_c__c</fieldItem>
-                <identifier>RecordIsNotifyAccount_c_cField</identifier>
+                <fieldItem>Record.IsNotNotifyAccount__c</fieldItem>
+                <identifier>RecordIsNotNotifyAccount__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-5a56343c-3c55-41be-bbf2-68e3925e8cba</name>
