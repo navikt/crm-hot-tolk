@@ -107,6 +107,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 (List<AssignedResource>) records
             );
             update interestedResources;
+
+            updateThreads((List<AssignedResource>) records);
         }
     }
 
@@ -262,6 +264,72 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
         }
         return interestedResources;
+    }
+        public static void updateThreads(
+        List<AssignedResource> assignedResources
+    ) {
+        List<Id> serviceAppointmentIds = new List<Id>();
+
+        for (AssignedResource assignedResource : assignedResources) {
+            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+        }
+         List<HOT_InterestedResource__c> interestedResources = [
+             SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c
+             FROM HOT_InterestedResource__c
+             WHERE ServiceAppointment__c IN :serviceAppointmentIds
+         ];
+
+        //key IR
+       Map<Id, AssignedResource> threadToAR = new Map<Id, AssignedResource>();
+        //key SA
+       Map<Id, HOT_InterestedResource__c> threadToIR = new Map<Id, HOT_InterestedResource__c>();
+
+        for (AssignedResource assignedResource : assignedResources) {
+            for (HOT_InterestedResource__c interestedResource : interestedResources) {
+                if (assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c) {
+                    if (
+                        interestedResource.ServiceResource__c == assignedResource.ServiceResourceId &&
+                        interestedResource.Status__c == 'Assigned'
+                    ) {
+                        //FRA IR TIL SA
+                        threadToAR.put(interestedResource.Id, assignedResource);
+                    } else if (
+                        //Må vel endres om til Withdrawn siden
+                        interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
+                        interestedResource.Status__c == 'Not Assigned'
+                    ) {
+                        //FRA SA TIL IR
+                        threadToIR.put(assignedResource.ServiceAppointmentId, interestedResource);
+                    }
+                }
+            }
+        }
+        if(!threadToIR.isEmpty()){
+            List<Thread__c> threadListToIR=[SELECT Id,CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN: threadToIR.keySet()];
+            if(!threadListToIR.isEmpty()){
+               for (Thread__c thread : threadListToIR) {
+                    HOT_InterestedResource__c interestedResource = threadToIR.get(thread.CRM_Related_Object__c);
+                    if (interestedResource != null) {
+                        thread.CRM_Related_Object__c = interestedResource.Id;
+                    }
+                }
+            update threadListToIR;
+            }
+        }
+        //den som fjerner eksisterende tråd på sa burde kjøres først.
+        if(!threadToAR.isEmpty()){
+            List<Thread__c> threadListToAR=[SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN: threadToAR.keySet()];
+            if(!threadListToAR.isEmpty()){
+                //Loop igjennom alle trådene og sett ny crm related object to SA id istedet
+                for (Thread__c thread : threadListToAR) {
+                    AssignedResource assignedResource = threadToAR.get(thread.CRM_Related_Object__c);
+                    if (assignedResource != null) {
+                        thread.CRM_Related_Object__c = assignedResource.ServiceAppointmentId;
+                    }
+                }
+            update threadListToAR;
+            }
+        }
     }
 
     public static void setResourceFieldsOnServiceAppointment(List<AssignedResource> assignedResources) {
