@@ -253,7 +253,8 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                 actionName: 'view'
             },
             state: {
-                from: 'mine-oppdrag'
+                from: 'mine-oppdrag',
+                list: 'interested'
             }
         });
     }

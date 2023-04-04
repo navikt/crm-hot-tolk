@@ -391,6 +391,23 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     href: 'mine-bestillinger-andre'
                 };
             }
+        }
+        if (parsed_params.list !== undefined) {
+            this.navigationBaseUrl = parsed_params.from;
+            this.navigationId = undefined;
+            this.navigationLevel = undefined;
+            if (parsed_params.list == 'interested') {
+                this.breadcrumbs[1] = {
+                    label: 'Påmeldte oppdrag',
+                    href: 'mine-oppdrag?list=' + parsed_params.list
+                };
+            }
+            if (parsed_params.list == 'my') {
+                this.breadcrumbs[1] = {
+                    label: 'Mine oppdrag',
+                    href: 'mine-oppdrag?list=' + parsed_params.list
+                };
+            }
         } else {
             this.navigationBaseUrl = 'mine-samtaler';
         }

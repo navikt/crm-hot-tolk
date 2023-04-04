@@ -232,7 +232,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             },
             state: {
                 recordId: recordId,
-                from: 'mine-oppdrag'
+                from: 'mine-oppdrag',
+                list: 'my'
             }
         });
     }
