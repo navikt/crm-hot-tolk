@@ -391,8 +391,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     href: 'mine-bestillinger-andre'
                 };
             }
-        }
-        if (parsed_params.list !== undefined) {
+        } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = undefined;
             this.navigationLevel = undefined;
@@ -405,6 +404,12 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             if (parsed_params.list == 'my') {
                 this.breadcrumbs[1] = {
                     label: 'Mine oppdrag',
+                    href: 'mine-oppdrag?list=' + parsed_params.list
+                };
+            }
+            if (parsed_params.list == 'wageClaim') {
+                this.breadcrumbs[1] = {
+                    label: 'Ledig på lønn',
                     href: 'mine-oppdrag?list=' + parsed_params.list
                 };
             }
