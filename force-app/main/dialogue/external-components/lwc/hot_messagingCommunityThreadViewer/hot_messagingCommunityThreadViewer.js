@@ -213,28 +213,16 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
 
     goBack() {
-        getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
-            for (var key in result) {
-                if (result[key] == 'Andre-WO' && this.navigationBaseUrl != 'mine-samtaler') {
-                    this.navigationBaseUrl = 'mine-bestillinger-andre';
-                    break;
-                }
-                if (result[key] == 'Andre-R' && this.navigationBaseUrl != 'mine-samtaler') {
-                    this.navigationBaseUrl = 'mine-bestillinger-andre';
-                    break;
-                } else {
-                }
+        console.log(this.navigationBaseUrl);
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: this.navigationBaseUrl
+            },
+            state: {
+                id: this.navigationId,
+                level: this.navigationLevel
             }
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: this.navigationBaseUrl
-                },
-                state: {
-                    id: this.navigationId,
-                    level: this.navigationLevel
-                }
-            });
         });
     }
     closeModal() {

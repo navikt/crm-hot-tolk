@@ -604,19 +604,35 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     navigateToThread(recordId) {
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId: recordId,
-                objectApiName: 'Thread__c',
-                actionName: 'view'
-            },
-            state: {
-                from: 'mine-bestillinger',
-                recordId: this.urlStateParameters.id,
-                level: this.urlStateParameters.level
-            }
-        });
+        if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: recordId,
+                    objectApiName: 'Thread__c',
+                    actionName: 'view'
+                },
+                state: {
+                    from: 'mine-bestillinger-andre',
+                    recordId: this.urlStateParameters.id,
+                    level: this.urlStateParameters.level
+                }
+            });
+        } else {
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: recordId,
+                    objectApiName: 'Thread__c',
+                    actionName: 'view'
+                },
+                state: {
+                    from: 'mine-bestillinger',
+                    recordId: this.urlStateParameters.id,
+                    level: this.urlStateParameters.level
+                }
+            });
+        }
     }
     @track threadDispatcherId;
     goToThread() {
