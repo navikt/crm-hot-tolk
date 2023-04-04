@@ -61,16 +61,6 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredInterestedResourcesResult);
-        this.breadcrumbs = [
-            {
-                label: 'Tolketjenesten',
-                href: ''
-            },
-            {
-                label: 'oppdrag',
-                href: 'mine-oppdrag'
-            }
-        ];
     }
 
     @track serviceResource;

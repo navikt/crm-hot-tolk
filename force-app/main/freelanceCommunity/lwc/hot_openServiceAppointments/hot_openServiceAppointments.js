@@ -90,16 +90,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         // }
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
-        this.breadcrumbs = [
-            {
-                label: 'Tolketjenesten',
-                href: ''
-            },
-            {
-                label: 'oppdrag',
-                href: 'mine-oppdrag'
-            }
-        ];
     }
 
     @track serviceResource;

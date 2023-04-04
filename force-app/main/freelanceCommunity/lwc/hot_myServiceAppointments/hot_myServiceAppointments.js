@@ -66,16 +66,6 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     connectedCallback() {
         refreshApex(this.wiredMyServiceAppointmentsResult);
         this.setColumns();
-        this.breadcrumbs = [
-            {
-                label: 'Tolketjenesten',
-                href: ''
-            },
-            {
-                label: 'oppdrag',
-                href: 'mine-oppdrag'
-            }
-        ];
     }
     @track serviceResource;
     @wire(getServiceResource)
