@@ -128,7 +128,7 @@ public without sharing class HOT_WorkOrderListController {
             if (wo.HOT_DelPol_IsHideInterpreterFromUser__c) {
                 wo.HOT_Interpreters__c = '';
             }
-            if (wo.HOT_Request__r.Account__c == user.AccountId) {
+            if (wo.HOT_Request__r.Account__c == user.AccountId && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
                 workOrdersAccount.put(wo.Id, wo);
             } else if (wo.EndDate > sixMonthsAgo) {
                 workOrdersOrderer.put(wo.Id, wo);
