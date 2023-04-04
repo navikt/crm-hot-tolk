@@ -373,14 +373,24 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     navigationBaseUrl = '';
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
-        if (parsed_params.from && parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
-            this.navigationBaseUrl = parsed_params.from;
-            this.navigationId = parsed_params.recordId;
-            this.navigationLevel = parsed_params.level;
-            this.breadcrumbs[1] = {
-                label: 'Mine bestillinger',
-                href: 'mine-bestillinger'
-            };
+        if (parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
+            if (parsed_params.from != 'mine-bestillinger-andre') {
+                this.navigationBaseUrl = parsed_params.from;
+                this.navigationId = parsed_params.recordId;
+                this.navigationLevel = parsed_params.level;
+                this.breadcrumbs[1] = {
+                    label: 'Mine bestillinger',
+                    href: 'mine-bestillinger'
+                };
+            } else {
+                this.navigationBaseUrl = parsed_params.from;
+                this.navigationId = parsed_params.recordId;
+                this.navigationLevel = parsed_params.level;
+                this.breadcrumbs[1] = {
+                    label: 'Bestillinger på vegne av andre',
+                    href: 'mine-bestillinger-andre'
+                };
+            }
         } else {
             this.navigationBaseUrl = 'mine-samtaler';
         }
