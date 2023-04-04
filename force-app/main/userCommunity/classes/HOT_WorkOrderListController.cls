@@ -84,6 +84,7 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.Status__c,
                     HOT_Request__r.ExternalRequestStatus__c,
                     HOT_Request__r.Account__c,
+                    HOT_Request__r.IsNotNotifyAccount__c,
                     HOT_Request__r.TempAccountId__c,
                     HOT_Request__r.OrganizationNumber__c,
                     HOT_Request__r.Source__c,
