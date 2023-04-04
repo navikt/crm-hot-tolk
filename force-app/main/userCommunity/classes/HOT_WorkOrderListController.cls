@@ -110,6 +110,7 @@ public without sharing class HOT_WorkOrderListController {
                     (HOT_Request__r.Account__c = :user.AccountId
                     OR HOT_Request__r.Orderer__c = :user.AccountId)
                     AND Status != 'Annul'
+                    AND HOT_Request__r.IsNotNotifyAccount__c = FALSE
                 ORDER BY StartDate
             ]
         );
