@@ -409,7 +409,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         }
 
         List<WorkOrder> workordersList = [
-            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
+            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__r.IsNotNotifyAccount__c, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
             FROM WorkOrder
             WHERE HOT_Request__c IN :requestIds AND HOT_Request__r.Type__c = 'User'
         ];
