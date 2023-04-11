@@ -356,10 +356,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
         month = month < 10 ? '0' + month : month;
         day = day < 10 ? '0' + day : day;
         const formattedDate = `${year}-${month}-${day}`;
-
         this.filters[5].value[0].value = formattedDate;
-        this.sendFilters();
 
+        this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
     filteredRecordsLength = 0;
