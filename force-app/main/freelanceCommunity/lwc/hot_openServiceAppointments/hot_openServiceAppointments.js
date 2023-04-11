@@ -347,6 +347,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
         return null;
     }
+    isRemoveReleasedTodayButtonHidden = true;
+    isReleasedTodayButtonHidden = false;
     releasedTodayFilter() {
         this.noReleasedToday = false;
         const d = new Date();
@@ -360,6 +362,15 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        this.isReleasedTodayButtonHidden = true;
+        this.isRemoveReleasedTodayButtonHidden = false;
+    }
+    removeReleasedTodayFilter() {
+        this.filters[5].value[0].value = '';
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        this.isReleasedTodayButtonHidden = false;
+        this.isRemoveReleasedTodayButtonHidden = true;
     }
     filteredRecordsLength = 0;
     @api
