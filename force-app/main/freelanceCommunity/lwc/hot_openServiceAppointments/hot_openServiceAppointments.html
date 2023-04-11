@@ -1,5 +1,14 @@
 <template>
     <div class="main-content">
+        <div style="text-align: left">
+            <c-button
+                button-label="Frigitt idag"
+                button-styling="primary"
+                desktop-style="width: 8rem; justify-content: center"
+                mobile-style="width: 8rem; justify-content: center"
+                onbuttonclick={releasedTodayFilter}
+            ></c-button>
+        </div>
         <div if:false={noServiceAppointments}>
             <c-table
                 if:false={noServiceAppointments}

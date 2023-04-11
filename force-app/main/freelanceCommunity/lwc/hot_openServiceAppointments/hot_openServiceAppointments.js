@@ -347,7 +347,21 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
         return null;
     }
+    releasedTodayFilter() {
+        this.noReleasedToday = false;
+        const d = new Date();
+        let year = d.getFullYear();
+        let day = d.getDate();
+        let month = d.getMonth() + 1;
+        month = month < 10 ? '0' + month : month;
+        day = day < 10 ? '0' + day : day;
+        const formattedDate = `${year}-${month}-${day}`;
 
+        this.filters[5].value[0].value = formattedDate;
+        this.sendFilters();
+
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+    }
     filteredRecordsLength = 0;
     @api
     applyFilter(event) {
