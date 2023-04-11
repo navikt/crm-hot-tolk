@@ -319,7 +319,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                             '.' +
                             DeadlineDateTimeFormatted.getFullYear();
                         if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
-                            this.serviceAppointment.ActualStartTime = '';
+                            this.interestedResource.AppointmentDeadlineDate__c = '';
                         }
                         this.isIRDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
