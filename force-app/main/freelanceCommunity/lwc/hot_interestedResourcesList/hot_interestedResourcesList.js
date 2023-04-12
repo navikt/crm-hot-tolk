@@ -149,7 +149,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
             end: 'ServiceAppointmentEndTime__c'
         },
         { name: 'WorkOrderCanceledDate__c', type: 'date' },
-        { name: 'HOT_ReleaseDate__c', type: 'date' }
+        { name: 'HOT_ReleaseDate__c', type: 'date' },
+        { name: 'AppointmentDeadlineDate__c', type: 'date' }
     ];
 
     @track interestedResource;
