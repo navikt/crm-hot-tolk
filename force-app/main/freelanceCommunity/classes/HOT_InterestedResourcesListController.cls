@@ -76,6 +76,44 @@ public without sharing class HOT_InterestedResourcesListController {
         interestedResource.Status__c = 'Interested';
         update interestedResource;
     }
+       @AuraEnabled
+    public static void addComment(Id interestedResourceId, String newComment) {
+        Datetime now = Datetime.now();
+        String osloTimeZone = 
+  now.format('yyyy-MM-dd-HH:mm:ss', 
+                 'Europe/Oslo');
+        if (newComment != null && newComment != '') {
+            newComment =
+                UserInfo.getFirstName() +
+                ' ' +
+                UserInfo.getLastName() +
+                ', ' +
+                osloTimeZone +
+                ': ' +
+                newComment;
+            HOT_InterestedResource__c interestedResource = [
+                SELECT Id, Comments__c, IsNewComment__c, IsDispatcherNewComment__c
+                FROM HOT_InterestedResource__c
+                WHERE Id = :interestedResourceId
+            ];
+            if (interestedResource.Comments__c == null) {
+                interestedResource.Comments__c = newComment;
+            } else {
+                interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
+            }
+
+            if (
+                Test.isRunningTest()
+                    ? true
+                    : UserInfo.getProfileId() == [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0].Id
+            ) {
+                interestedResource.IsDispatcherNewComment__c = true;
+            } else {
+                interestedResource.IsNewComment__c = true;
+            }
+            update interestedResource;
+        }
+    }
     @AuraEnabled
      public static void startAThreadAndAddComment(Id interestedResourceId, String newComment) {
         if(newComment!=''){
