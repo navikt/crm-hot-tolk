@@ -59,6 +59,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             });
             sessionStorage.removeItem('openfilters');
         }
+
         this.sendFilters();
     }
     setCheckedRowsOnRefresh() {
@@ -72,11 +73,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
     disconnectedCallback() {
         // Going back with browser back or back button on mouse forces page refresh and a disconnect
         // Save filters on disconnect to exist only within the current browser tab
+        console.log('disconnectedCallback() has been called');
         sessionStorage.setItem('openfilters', JSON.stringify(this.filters));
+        localStorage.setItem('openFilterJR', JSON.stringify(this.filters));
         sessionStorage.setItem('checkedrows', JSON.stringify(this.checkedServiceAppointments));
     }
 
     renderedCallback() {
+        //console.log('renderedCallback has been called');
         this.setPreviousFiltersOnRefresh();
         this.setCheckedRowsOnRefresh();
         //localStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
@@ -147,7 +151,33 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     refresh() {
+        console.log('refresh() has been called.');
         this.filters = defaultFilters();
+        let filterFromLocalStorage = JSON.parse(localStorage.getItem('openFilterJR'));
+        //this.filters = JSON.parse(localStorage.getItem('openFilterJR'));
+
+        console.log('defaultFilters');
+        console.log(defaultFilters());
+
+        console.log('this.filters');
+        console.log(this.filters);
+
+        console.log('filterFromLocalStorage inside {}');
+
+        let filterTesterLocalStorage = {
+            detail: {
+                filterArray: filterFromLocalStorage,
+                setRecords: true
+            }
+        };
+
+        console.log(filterTesterLocalStorage);
+
+        //this.filters = filterTesterLocalStorage;
+
+        //filterArray: JSON.parse(sessionStorage.getItem('openfilters')), setRecords: true
+        //{detail: { filterArray: JSON.parse(sessionStorage.getItem('openfilters')), setRecords: true }}
+
         this.sendRecords();
         this.sendFilters();
         this.sendCheckedRows();
