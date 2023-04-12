@@ -95,6 +95,16 @@ public without sharing class HOT_InterestedResourcesListController {
             HOT_MessageHelper.setLastMessageFrom(thread.Id, userContactId);
         }
     }
+
+    @InvocableVariable
+    public ID recordId;
+    @InvocableVariable
+    public String newComment;
+
+    @InvocableMethod
+    public static void addComment(List<HOT_InterestedResourcesListController> inputVariables) {
+        HOT_InterestedResourcesListController.addComment(inputVariables[0].recordId, inputVariables[0].newComment);
+    }
     
     @AuraEnabled
     public static String getThreadDispatcherId(String interestedResourceId) {
