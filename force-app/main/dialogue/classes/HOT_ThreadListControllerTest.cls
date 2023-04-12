@@ -29,4 +29,10 @@ public class HOT_ThreadListControllerTest {
 
         System.assertEquals(0, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }
+    @isTest
+    public static void getMyThreadsDuplicateTest() {
+        List<Thread__c> threadList = HOT_ThreadListController.getMyThreadsDuplicate();
+
+        System.assertEquals(0, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
+    }
 }
