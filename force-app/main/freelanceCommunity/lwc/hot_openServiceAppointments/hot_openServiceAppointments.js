@@ -152,8 +152,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     refresh() {
         console.log('refresh() has been called.');
-        this.filters = defaultFilters();
+        //this.filters = defaultFilters();
         let filterFromLocalStorage = JSON.parse(localStorage.getItem('openFilterJR'));
+        this.filters = filterFromLocalStorage;
         //this.filters = JSON.parse(localStorage.getItem('openFilterJR'));
 
         console.log('defaultFilters');
