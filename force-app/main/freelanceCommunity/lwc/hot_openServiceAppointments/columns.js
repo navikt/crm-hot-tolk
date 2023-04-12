@@ -6,7 +6,7 @@ export let columns = [
     },
     {
         label: 'Dag',
-        name: 'dag',
+        name: 'weekday',
         type: 'String'
     },
     {
