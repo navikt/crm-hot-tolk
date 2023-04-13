@@ -31,7 +31,7 @@
                         <div class="record-details-container">
                             <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
                             <p>Tema: <span>{serviceAppointment.Subject}</span></p>
-                            <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
+                            <p>Tid: <span>{serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
                             <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
                             <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
                             <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>

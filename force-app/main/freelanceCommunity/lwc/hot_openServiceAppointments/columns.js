@@ -5,6 +5,11 @@ export let columns = [
         type: 'Datetime'
     },
     {
+        label: 'Dag',
+        name: 'weekday',
+        type: 'String'
+    },
+    {
         label: 'Informasjon',
         name: 'HOT_Information__c',
         type: 'String'
