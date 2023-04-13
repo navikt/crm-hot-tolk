@@ -561,6 +561,17 @@ public with sharing class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
+      @isTest
+    public static void getThreadsFailTest() {
+        Id recordId=null;
+          test.startTest();
+        try{
+            List<Thread__c> threads = HOT_MessageHelper.getThreads(recordId);
+        } catch (DmlException ex) {
+            System.assertEquals('expected text', ex.getMessage());
+        }  
+        test.stopTest();
+    }
     //    @isTest
     // static void getRelatedWorkOrderIdTestRequest() {
     //      Test.startTest();
