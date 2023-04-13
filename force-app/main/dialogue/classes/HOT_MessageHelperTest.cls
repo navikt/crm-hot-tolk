@@ -539,6 +539,35 @@ public with sharing class HOT_MessageHelperTest {
         System.assertEquals(msgList.isEmpty(), false);
     }
      @isTest
+    static void markThreadAsReadTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+         Thread__c thread = new Thread__c();
+         thread.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+         thread.CRM_Related_Object__c = request.Id;
+         thread.HOT_Thread_read_by__c='33rnf43r';
+         insert thread;
+
+        Thread__c th=[SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :request.Id];
+
+        String contactId = '1343234554';
+         HOT_MessageHelper.markThreadAsRead(th.Id, contactId);
+        Boolean isReadbyUser;
+        Thread__c checkthread=[SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id=:th.Id];
+        if (checkthread.HOT_Thread_read_by__c.contains(contactId)){
+            isReadbyUser=true;
+        }
+        else{
+            isReadbyUser=false;
+        }
+        Boolean test=true;
+        System.assertEquals(true, isReadbyUser,'Is not read by user');
+
+    }
+     @isTest
     static void getRelatedWorkOrderIdTestWO() {
          WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -572,51 +601,4 @@ public with sharing class HOT_MessageHelperTest {
         }  
         test.stopTest();
     }
-    //    @isTest
-    // static void getRelatedWorkOrderIdTestRequest() {
-    //      Test.startTest();
-    //      WorkType workType = HOT_TestDataFactory.createWorkType();
-    //     insert workType;
-    //     Account account = HOT_TestDataFactory.createAccount(true);
-    //     insert account;
-    //     HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-    //      insert request;
-    //     request.Account__c=account.Id;
-    //     request.Orderer__c=account.Id;
-    //    update request;
-    //     WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-    //     workOrder.AccountId = account.Id;
-    //     insert workOrder;
-
-           
-    //  Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-    //     Person__c person = HOT_TestDataFactory.createPerson();
-    //     person.INT_KrrEmail__c = 'getPersonTest@nav.no';
-    //     person.HOT_WorkplaceInterpreter__c = true;
-    //     person.INT_Confidential__c = 'Ugradert';
-    //     person.INT_FirstName__c = 'Tolk';
-    //     person.INT_LastName__c = 'Bruker';
-    //     insert person;
-
-    //     Account account2 = [
-    //         SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
-    //         FROM Account
-    //         WHERE LastName = :'Bruker'
-    //     ];
-    //     User user = HOT_TestDataFactory.createUser(communityProfile, account2);
-    //     user.Alias = 'userTest';
-    //     user.Username = 'HOT_testuser1@nav.hot.no';
-    //     user.CommunityNickname = 'userTest';
-    //     insert user;
-    //     Test.stopTest();
-    //     System.runAs(user) {
-    //         Map<String, String> navigationhelp2 = new Map<String, String>();
-    //         navigationhelp2.put(workOrder.Id,'WO'); 
-    //         Map<String, String> navigationhelp = new Map<String, String>();
-    //         navigationhelp= HOT_MessageHelper.getRelatedWorkOrderId(request.Id);
-           
-    //        System.assertEquals(navigationhelp2, navigationhelp);
-    //     }
-
-    // }
 }
