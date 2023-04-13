@@ -67,6 +67,11 @@
                 <default>false</default>
                 <label>HOT_TOLK-FORMIDLER</label>
             </value>
+            <value>
+                <fullName>HOT_TOLK-RESSURSKONTOR</fullName>
+                <default>false</default>
+                <label>HOT_TOLK-RESSURSKONTOR</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
