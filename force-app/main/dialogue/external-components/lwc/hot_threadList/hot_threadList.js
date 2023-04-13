@@ -45,8 +45,8 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
         }
     ];
     @track tabs = [
-        { name: 'mythreads', label: 'Med formidler', selected: true },
-        { name: 'interpreterthreads', label: 'Tolk-Bruker', selected: false }
+        { name: 'mythreads', label: 'Med formidler', selected: true, hasUnread: false },
+        { name: 'interpreterthreads', label: 'Tolk-Bruker', selected: false, hasUnread: false }
     ];
 
     @track tabMap = {
@@ -144,7 +144,12 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     if (this.ordererThreadsExisting > 0) {
                         if (this.tabs.some((tab) => tab.name === 'orderThreads')) {
                         } else {
-                            this.tabs.push({ name: 'orderThreads', label: 'Annen bestiller', selected: false });
+                            this.tabs.push({
+                                name: 'orderThreads',
+                                label: 'Annen bestiller',
+                                selected: false,
+                                hasUnread: false
+                            });
                         }
                     }
                     this.threads = this.unmappedThreads.map((x) => ({
@@ -191,6 +196,83 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                         }
                         return 1;
                     });
+
+                    //List 1 unread messages
+                    let foundUnreadDispatcherThreads = false;
+
+                    for (let i = 0; i < this.threads.length; i++) {
+                        const thread = this.threads[i];
+                        if (thread.read == false) {
+                            foundUnreadDispatcherThreads = true;
+                            break;
+                        }
+                    }
+                    if (foundUnreadDispatcherThreads) {
+                        this.tabs = this.tabs.map((tab) => {
+                            if (tab.name === 'mythreads') {
+                                return { ...tab, hasUnread: true };
+                            }
+                            return tab;
+                        });
+                    } else {
+                        this.tabs = this.tabs.map((tab) => {
+                            if (tab.name === 'mythreads') {
+                                return { ...tab, hasUnread: false };
+                            }
+                            return tab;
+                        });
+                    }
+                    //List 2 unread messages
+                    let foundUnreadInterpreterThreads = false;
+
+                    for (let i = 0; i < this.interpreterThreads.length; i++) {
+                        const thread2 = this.interpreterThreads[i];
+                        if (thread2.read == false) {
+                            foundUnreadInterpreterThreads = true;
+                            break;
+                        }
+                    }
+                    if (foundUnreadInterpreterThreads) {
+                        this.tabs = this.tabs.map((tab) => {
+                            if (tab.name === 'interpreterthreads') {
+                                return { ...tab, hasUnread: true };
+                            }
+                            return tab;
+                        });
+                    } else {
+                        this.tabs = this.tabs.map((tab) => {
+                            if (tab.name === 'interpreterthreads') {
+                                return { ...tab, hasUnread: false };
+                            }
+                            return tab;
+                        });
+                    }
+                    //List 3 unread messages
+
+                    let foundUnreadOrdererThreads = false;
+
+                    for (let i = 0; i < this.orderThreads.length; i++) {
+                        const thread3 = this.orderThreads[i];
+                        if (thread3.read == false) {
+                            foundUnreadOrdererThreads = true;
+                            break;
+                        }
+                    }
+                    if (foundUnreadOrdererThreads) {
+                        this.tabs = this.tabs.map((tab) => {
+                            if (tab.name === 'orderThreads') {
+                                return { ...tab, hasUnread: true };
+                            }
+                            return tab;
+                        });
+                    } else {
+                        this.tabs = this.tabs.map((tab) => {
+                            if (tab.name === 'orderThreads') {
+                                return { ...tab, hasUnread: false };
+                            }
+                            return tab;
+                        });
+                    }
                 })
                 .catch((error) => {
                     //Apex error
