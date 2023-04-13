@@ -71,6 +71,13 @@
                         Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
                     </p>
                 </div>
+                <div if:true={isWCDetails} class="record-details-container">
+                    <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
+                    <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
+                    <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
+                    <p>Status: <span>{wageClaim.Status__c}</span></p>
+                    <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                </div>
             </section>
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
                 <span class="text-hide">Lukk</span>

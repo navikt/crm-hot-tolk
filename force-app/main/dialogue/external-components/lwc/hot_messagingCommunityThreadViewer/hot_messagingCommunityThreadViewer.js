@@ -9,6 +9,7 @@ import getRelatedWorkOrderId from '@salesforce/apex/HOT_MessageHelper.getRelated
 import { formatDate } from 'c/datetimeFormatter';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
+import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
@@ -30,6 +31,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     thread;
     @track isDetails = false;
     @track isIRDetails = false;
+    @track isWCDetails = false;
     @track msgVal;
 
     @api recordId;
@@ -213,17 +215,29 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
 
     goBack() {
-        console.log(this.navigationBaseUrl);
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName: this.navigationBaseUrl
-            },
-            state: {
-                id: this.navigationId,
-                level: this.navigationLevel
-            }
-        });
+        if (this.navigationBaseUrl == 'mine-oppdrag') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: this.navigationBaseUrl
+                },
+                state: {
+                    list: this.navigationBaseList,
+                    id: this.navigationId
+                }
+            });
+        } else {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: this.navigationBaseUrl
+                },
+                state: {
+                    id: this.navigationId,
+                    level: this.navigationLevel
+                }
+            });
+        }
     }
     closeModal() {
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
@@ -327,6 +341,31 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
 
                     break;
                 }
+                if (result[key] == 'WC') {
+                    getWageClaimDetails({ recordId: key }).then((result) => {
+                        this.wageClaim = result;
+                        let startTimeFormatted = new Date(this.wageClaim.StartTime__c);
+                        let endTimeFormatted = new Date(this.wageClaim.EndTime__c);
+                        this.wageClaim.StartAndEndDate =
+                            startTimeFormatted.getDate() +
+                            '.' +
+                            (startTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            startTimeFormatted.getFullYear() +
+                            ', ' +
+                            ('0' + startTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
+                            ' - ' +
+                            ('0' + endTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                        this.isWCDetails = true;
+                        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                    });
+
+                    break;
+                }
                 if (result[key] == 'Andre-WO') {
                     this[NavigationMixin.Navigate]({
                         type: 'comm__namedPage',
@@ -371,6 +410,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     navigationId = '';
     navigationLevel = '';
     navigationBaseUrl = '';
+    navigationBaseList = '';
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
         if (parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
@@ -393,7 +433,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             }
         } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;
-            this.navigationId = undefined;
+            this.navigationId = parsed_params.recordId;
+            this.navigationBaseList = parsed_params.list;
             this.navigationLevel = undefined;
             if (parsed_params.list == 'interested') {
                 this.breadcrumbs[1] = {
