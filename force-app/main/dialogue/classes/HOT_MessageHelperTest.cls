@@ -568,7 +568,7 @@ public with sharing class HOT_MessageHelperTest {
 
     }
      @isTest
-    static void getRelatedWorkOrderIdTestWO() {
+    static void getRelatedObjectDetailsTestWO() {
          WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         Account account = HOT_TestDataFactory.createAccount(true);
@@ -586,7 +586,7 @@ public with sharing class HOT_MessageHelperTest {
          Map<String, String> navigationhelp2 = new Map<String, String>();
          navigationhelp2.put(workOrder.Id,'WO'); 
          Map<String, String> navigationhelp = new Map<String, String>();
-         navigationhelp= HOT_MessageHelper.getRelatedWorkOrderId(workOrder.Id);
+         navigationhelp= HOT_MessageHelper.getRelatedObjectDetails(workOrder.Id);
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }

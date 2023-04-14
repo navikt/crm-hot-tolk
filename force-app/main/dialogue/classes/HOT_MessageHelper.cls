@@ -167,6 +167,13 @@ public without sharing class HOT_MessageHelper {
             thread.HOT_ServiceAppointment__c=recordId;
             HOT_DatabaseOperations.insertRecords(thread);
         }
+        if(objectType=='HOT_WageClaim__c'){
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR';
+            thread.CRM_Account__c = accountId; //?
+            thread.HOT_WageClaim__c=recordId;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
         return thread;
     }
      //Dispatchers users use this
@@ -229,8 +236,6 @@ public without sharing class HOT_MessageHelper {
             thread.HOT_ServiceAppointment__c=recordId;
             HOT_DatabaseOperations.insertRecords(thread);
         }
-                
-        
         return thread;
     }
 
@@ -376,7 +381,7 @@ public without sharing class HOT_MessageHelper {
         update t;
     }
      @AuraEnabled
-public static Map<String, String> getRelatedWorkOrderId(Id relatedRecordId) {
+public static Map<String, String> getRelatedObjectDetails(Id relatedRecordId) {
         Map<String, String> navigationhelp = new Map<String, String>();
         String workorderId;
         String objectType=String.valueOf(relatedRecordId.getsobjecttype());
@@ -437,6 +442,10 @@ public static Map<String, String> getRelatedWorkOrderId(Id relatedRecordId) {
         if(objectType=='ServiceAppointment'){
            	//ServiceAppointment sa=[SELECT ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Id=:relatedRecordId];
             navigationhelp.put(relatedRecordId,'SA'); 
+        }
+        if(objectType=='HOT_WageClaim__c'){
+           	//ServiceAppointment sa=[SELECT ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Id=:relatedRecordId];
+            navigationhelp.put(relatedRecordId,'WC'); 
         }
         return navigationhelp;
 }

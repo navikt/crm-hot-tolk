@@ -5,7 +5,7 @@ import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
 import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
-import getRelatedWorkOrderId from '@salesforce/apex/HOT_MessageHelper.getRelatedWorkOrderId';
+import getRelatedObjectDetails from '@salesforce/apex/HOT_MessageHelper.getRelatedObjectDetails';
 import { formatDate } from 'c/datetimeFormatter';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
@@ -247,7 +247,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
 
     goToWO() {
         let i = 0;
-        getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
+        getRelatedObjectDetails({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
             for (var key in result) {
                 i++;
                 if (result[key] == 'SA') {
