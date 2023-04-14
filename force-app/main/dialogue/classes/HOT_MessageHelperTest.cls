@@ -601,4 +601,86 @@ public with sharing class HOT_MessageHelperTest {
         }  
         test.stopTest();
     }
+    @isTest
+    static void createThreadWageClaim() {
+         WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli=HOT_TestDataFactory.createWorkOrderLineItem(workOrder,workType);
+        insert woli;
+        ServiceAppointment sa=HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject='TEST';
+        insert sa;
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        resource.AccountId=acc.Id;
+        insert resource;
+        
+        HOT_WageClaim__c wageclaim= HOT_TestDataFactory.createWageClaim(resource);
+        insert wageclaim;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = wageclaim.Id;
+        t.CRM_Account__c = acc.Id;
+        insert t;
+
+        Test.startTest();
+        Thread__c thread = HOT_MessageHelper.createThread(wageclaim.Id, acc.Id);
+        Test.stopTest();
+        List<Thread__c> tList = [
+            SELECT Id, CRM_Account__c, CRM_Type__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :wageclaim.Id
+        ];
+        System.assertNotEquals(null, tList);
+    }
+    @isTest
+     static void createThreadWageClaimDispatcher() {
+         WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli=HOT_TestDataFactory.createWorkOrderLineItem(workOrder,workType);
+        insert woli;
+        ServiceAppointment sa=HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject='TEST';
+        insert sa;
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        resource.AccountId=acc.Id;
+        insert resource;
+        
+        HOT_WageClaim__c wageclaim= HOT_TestDataFactory.createWageClaim(resource);
+        insert wageclaim;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = wageclaim.Id;
+        t.CRM_Account__c = acc.Id;
+        insert t;
+
+        Test.startTest();
+        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(wageclaim.Id, acc.Id, 'HOT_TOLK-RESSURSKONTOR');
+        Test.stopTest();
+        List<Thread__c> tList = [
+            SELECT Id, CRM_Account__c, CRM_Type__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :wageclaim.Id
+        ];
+        System.assertNotEquals(null, tList);
+    }
 }
