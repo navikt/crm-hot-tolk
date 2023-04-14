@@ -61,7 +61,7 @@ public without sharing class HOT_MessageHelper {
             threadList = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c, CRM_Type__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Type__c = 'HOT_BESTILLER-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-FORMIDLER')
+                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Type__c = 'HOT_BESTILLER-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-RESSURSKONTOR')
             ];
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
@@ -167,13 +167,13 @@ public without sharing class HOT_MessageHelper {
             thread.HOT_ServiceAppointment__c=recordId;
             HOT_DatabaseOperations.insertRecords(thread);
         }
-        // if(objectType=='HOT_WageClaim__c'){
-        //     thread.CRM_Related_Object__c = recordId;
-        //     thread.CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR';
-        //     thread.CRM_Account__c = accountId; //?
-        //     thread.HOT_WageClaim__c=recordId;
-        //     HOT_DatabaseOperations.insertRecords(thread);
-        // }
+        if(objectType=='HOT_WageClaim__c'){
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR';
+            thread.CRM_Account__c = accountId; //?
+            thread.HOT_WageClaim__c=recordId;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
         return thread;
     }
      //Dispatchers users use this
@@ -212,9 +212,17 @@ public without sharing class HOT_MessageHelper {
             thread.HOT_InterestedResource__c=recordId;
             HOT_DatabaseOperations.insertRecords(thread);
         }
+         if(objectType=='HOT_WageClaim__c'){
+            HOT_WageClaim__c wageClaim = [SELECT ServiceResource__r.AccountId FROM HOT_WageClaim__c WHERE Id=:recordId];
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR';
+            thread.CRM_Account__c = wageClaim.ServiceResource__r.AccountId;
+            thread.HOT_WageClaim__c=recordId;
+            HOT_DatabaseOperations.insertRecords(thread);
+        }
         return thread;
     }
-     //Threads between interpreters and dispatcher
+     //Threads between interpreters and dispatcher. Interpreter use this
       @AuraEnabled(cacheable=false)
     public static Thread__c createThreadInterpreter(Id recordId) {
             Thread__c thread = new Thread__c();

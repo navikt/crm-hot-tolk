@@ -13,6 +13,7 @@ public without sharing class HOT_WageClaimListController {
                 ServiceAppointmentCity__c,
                 ServiceAppointmentName__c,
                 ParentWageClaim__c,
+                ServiceResource__r.AccountId,
                 DegreeOfHearingAndVisualImpairment__c
             FROM HOT_WageClaim__c
             WHERE
