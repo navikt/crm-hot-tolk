@@ -55,7 +55,6 @@ public without sharing class HOT_MessageHelper {
 
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreads(Id recordId) {
-        //finn hvilket objekt som har denne tråden
         List<Thread__c> threadList;
         try {
             threadList = [
@@ -79,26 +78,6 @@ public without sharing class HOT_MessageHelper {
             ];
         return request;
     }
-    //Denne er ikke i bruke
-    // @AuraEnabled(cacheable=true)
-    // public static Thread__c getSingleThread(Id recordId) {
-    //     try {
-    //         if (recordId.getSobjectType() == Thread__c.sObjectType) {
-    //             return getThreadFromThreadId(recordId);
-    //         }
-    //         Thread__c t = [
-    //             SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
-    //             FROM Thread__c
-    //             WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK')
-    //             LIMIT 1
-    //         ];
-
-    //         return t;
-    //     } catch (Exception e) {
-    //         return null;
-    //     }
-    // }
-    //
      @AuraEnabled(cacheable=true)
     public static List<Thread__c> getSingleThread(Id recordId, String type) {
         try {
@@ -448,11 +427,9 @@ public static Map<String, String> getRelatedObjectDetails(Id relatedRecordId) {
             navigationhelp.put(ir.ServiceAppointment__c,'IR'); 
         }
         if(objectType=='ServiceAppointment'){
-           	//ServiceAppointment sa=[SELECT ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Id=:relatedRecordId];
             navigationhelp.put(relatedRecordId,'SA'); 
         }
         if(objectType=='HOT_WageClaim__c'){
-           	//ServiceAppointment sa=[SELECT ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Id=:relatedRecordId];
             navigationhelp.put(relatedRecordId,'WC'); 
         }
         return navigationhelp;
