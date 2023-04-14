@@ -245,7 +245,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @track serviceAppointment;
     @track interestedResource;
 
-    goToWO() {
+    goToDetails() {
         let i = 0;
         getRelatedObjectDetails({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
             for (var key in result) {
