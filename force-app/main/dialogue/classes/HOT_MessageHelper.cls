@@ -167,13 +167,13 @@ public without sharing class HOT_MessageHelper {
             thread.HOT_ServiceAppointment__c=recordId;
             HOT_DatabaseOperations.insertRecords(thread);
         }
-        if(objectType=='HOT_WageClaim__c'){
-            thread.CRM_Related_Object__c = recordId;
-            thread.CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR';
-            thread.CRM_Account__c = accountId; //?
-            thread.HOT_WageClaim__c=recordId;
-            HOT_DatabaseOperations.insertRecords(thread);
-        }
+        // if(objectType=='HOT_WageClaim__c'){
+        //     thread.CRM_Related_Object__c = recordId;
+        //     thread.CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR';
+        //     thread.CRM_Account__c = accountId; //?
+        //     thread.HOT_WageClaim__c=recordId;
+        //     HOT_DatabaseOperations.insertRecords(thread);
+        // }
         return thread;
     }
      //Dispatchers users use this
