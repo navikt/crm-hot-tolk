@@ -66,6 +66,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     connectedCallback() {
         refreshApex(this.wiredMyServiceAppointmentsResult);
         this.setColumns();
+        this.updateURL();
     }
     @track serviceResource;
     @wire(getServiceResource)
@@ -313,6 +314,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     }
     closeModal() {
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+        this.recordId = undefined;
+        this.updateURL();
     }
     handleStatusChange(event) {
         console.log('handleStatusChange', event.detail);

@@ -88,6 +88,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         //     this.checkedServiceAppointments = JSON.parse(localStorage.getItem('checkedrowsSavedForRefresh'));
         //     localStorage.removeItem('checkedrowsSavedForRefresh');
         // }
+        this.updateURL();
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
     }

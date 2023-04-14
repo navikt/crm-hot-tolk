@@ -7,6 +7,7 @@ import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreads
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
+import { getParametersFromURL } from 'c/hot_URIDecoder';
 import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
@@ -61,6 +62,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredInterestedResourcesResult);
+        this.updateURL();
     }
     getDayOfWeek(date) {
         var jsDate = new Date(date);
@@ -278,6 +280,8 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     closeModal() {
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
         this.isGoToThreadButtonDisabled = false;
+        this.recordId = undefined;
+        this.updateURL();
     }
     navigateToThread(recordId) {
         this[NavigationMixin.Navigate]({
@@ -289,7 +293,8 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             },
             state: {
                 from: 'mine-oppdrag',
-                list: 'interested'
+                list: 'interested',
+                recordId: this.interestedResource.Id
             }
         });
     }
