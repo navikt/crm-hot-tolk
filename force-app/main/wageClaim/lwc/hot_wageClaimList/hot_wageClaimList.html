@@ -27,7 +27,7 @@
                     <div if:true={isWageClaimDetails}>
                         <div class="record-details-container">
                             <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
-                            <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
+                            <p>Tid: <span>{wageClaim.weekday} {wageClaim.StartAndEndDate}</span></p>
                             <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
                             <p>Status: <span>{Status}</span></p>
                             <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
