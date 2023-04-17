@@ -1,7 +1,7 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
 import getThreadInterpreterId from '@salesforce/apex/HOT_WorkOrderListController.getThreadInterpreterId';
-import getThreadDispatcherId from '@salesforce/apex/HOT_WorkOrderListController.getThreadDispatcherId';
+import getThreadRequestId from '@salesforce/apex/HOT_RequestListController.getThreadRequestId';
 import updateRelatedWorkOrders from '@salesforce/apex/HOT_RequestListController.updateRelatedWorkOrders';
 import getUserAccountID from '@salesforce/apex/HOT_UserInformationController.getAccountId';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
@@ -639,7 +639,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     goToThread() {
         this.isThreadButtonDisabled = true;
         if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
-            getThreadDispatcherId({ requestId: this.request.Id, type: 'HOT_BESTILLER-FORMIDLER' }).then((result) => {
+            getThreadRequestId({ requestId: this.request.Id, type: 'HOT_BESTILLER-FORMIDLER' }).then((result) => {
                 if (result != '') {
                     this.threadDispatcherId = result;
                     this.navigateToThread(this.threadDispatcherId);
@@ -659,7 +659,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             });
         }
         if (this.request.IsAccountEqualOrderer__c == false && this.request.Account__c == this.userAccountId) {
-            getThreadDispatcherId({ requestId: this.request.Id, type: 'HOT_BRUKER-FORMIDLER' }).then((result) => {
+            getThreadRequestId({ requestId: this.request.Id, type: 'HOT_BRUKER-FORMIDLER' }).then((result) => {
                 if (result != '') {
                     this.threadDispatcherId = result;
                     this.navigateToThread(this.threadDispatcherId);
@@ -679,7 +679,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             });
         }
         if (this.request.IsAccountEqualOrderer__c == true && this.request.Account__c == this.userAccountId) {
-            getThreadDispatcherId({ requestId: this.request.Id, type: 'HOT_BRUKER-FORMIDLER' }).then((result) => {
+            getThreadRequestId({ requestId: this.request.Id, type: 'HOT_BRUKER-FORMIDLER' }).then((result) => {
                 if (result != '') {
                     this.threadDispatcherId = result;
                     this.navigateToThread(this.threadDispatcherId);

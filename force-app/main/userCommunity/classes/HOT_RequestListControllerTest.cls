@@ -145,4 +145,23 @@ private class HOT_RequestListControllerTest {
 
         System.assertEquals(workOrdersCancelled.size(), 3, 'Ikke riktig avlyst');
     }
+      @isTest
+    static void getThreadRequestIdTest() {
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c=request.Id;
+        t.CRM_Thread_Type__c='HOT_BRUKER-FORMIDLER';
+        insert t;
+        Test.stopTest();
+           String threadId= HOT_RequestListController.getThreadRequestId(request.Id,'HOT_BRUKER-FORMIDLER');
+            System.assertEquals(t.Id,threadId, 'Could not find the thread Id');
+        
+    }
 }

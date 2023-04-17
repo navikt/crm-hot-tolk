@@ -201,14 +201,4 @@ public without sharing class HOT_WorkOrderListController {
     }
     return Id;
 }
-@AuraEnabled
-   public static String getThreadDispatcherId(String requestId, String type) {
-    List<Thread__c> thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:requestId AND CRM_Thread_Type__c = :type LIMIT 1];
-    String Id='';
-    if (thread.size() >0) {
-           Id=thread[0].Id;
-    }
-    return Id;
-}
-
 }
