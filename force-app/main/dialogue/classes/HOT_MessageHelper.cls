@@ -60,7 +60,7 @@ public without sharing class HOT_MessageHelper {
             threadList = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c, CRM_Type__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Type__c = 'HOT_BESTILLER-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-RESSURSKONTOR')
+                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Type__c = 'HOT_BESTILLER-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-RESSURSKONTOR' OR CRM_Type__c='HOT_BRUKER-BESTILLER')
             ];
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
@@ -223,6 +223,19 @@ public without sharing class HOT_MessageHelper {
             thread.HOT_ServiceAppointment__c=recordId;
             HOT_DatabaseOperations.insertRecords(thread);
         }
+        return thread;
+    }
+     //Threads between user and orderer
+      @AuraEnabled(cacheable=false)
+    public static Thread__c createThreadOrdererUser(Id recordId) {
+            HOT_Request__c request=[SELECT Subject__c, IsAccountEqualOrderer__c, Account__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
+            Thread__c thread = new Thread__c();
+            thread.CRM_Related_Object__c = recordId;
+            thread.CRM_Thread_Type__c = 'HOT_BRUKER-BESTILLER';
+            thread.CRM_Account__c = request.Account__c;
+            thread.HOT_Request__c=recordId;
+            HOT_DatabaseOperations.insertRecords(thread);
+        
         return thread;
     }
 

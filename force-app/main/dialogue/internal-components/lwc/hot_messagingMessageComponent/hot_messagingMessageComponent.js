@@ -15,6 +15,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     showtaskmodal = false;
     showUserThreadbutton = false;
     showOrderThreadbutton = false;
+    showUserOrdererThreadbutton = false;
     activeSectionMessage = '';
     threads;
     setCardTitle;
@@ -29,6 +30,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     @track ThreadInfo;
     @track noAssignedResource = false;
     @track interestedResourceIsAssigned = false;
+    @track noThreadExist = false;
 
     @api recordId;
     @api singleThread;
@@ -103,6 +105,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         return this.threads.length == 0;
     }
     goToThreadTypeOrderer() {
+        this.noThreadExist = false;
         this.ThreadInfo = 'Du er i samtale med bestiller';
         refreshApex(this._threadsforRefresh);
         for (let thread in this.threads) {
@@ -126,6 +129,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         }
     }
     goToThreadTypeUser() {
+        this.noThreadExist = false;
         refreshApex(this._threadsforRefresh);
         this.ThreadInfo = 'Du er i samtale med bruker';
         for (let thread in this.threads) {
@@ -146,6 +150,29 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             this.shownewbutton = true;
             this.messageType = 'HOT_BRUKER-FORMIDLER';
             this.buttonMessage = 'Klikk for å starte samtale med bruker';
+        }
+    }
+    goToThreadTypeUserOrderer() {
+        this.shownewbutton = false;
+        refreshApex(this._threadsforRefresh);
+        this.ThreadInfo = 'Du er i samtale mellom bruker og bestiller';
+        for (let thread in this.threads) {
+            if (this.threads[thread].CRM_Type__c == 'HOT_BRUKER-BESTILLER') {
+                this.messageType = 'HOT_BRUKER-BESTILLER';
+                this.singleThread = true;
+                refreshApex(this._threadsforRefresh);
+                this.showThreads = true;
+                event.preventDefault(); // prevent the default scroll behavior
+                event.stopPropagation();
+                break;
+            } else {
+                this.messageType = 'HOT_BRUKER-BESTILLER';
+                this.buttonMessage = 'Klikk for å starte samtale mellom bruker og bestiller';
+            }
+        }
+        if (this.threads.length == 0) {
+            this.noThreadExist = true;
+            this.showThreads = true;
         }
     }
 
@@ -182,6 +209,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                     this.showUserThreadbutton = true;
                     this.showOrderThreadbutton = true;
                 }
+                this.showUserOrdererThreadbutton = true;
             })
             .catch((error) => {
                 this.isRequestMessages = false;

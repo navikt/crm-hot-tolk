@@ -5,6 +5,7 @@ import getThreadRequestId from '@salesforce/apex/HOT_RequestListController.getTh
 import updateRelatedWorkOrders from '@salesforce/apex/HOT_RequestListController.updateRelatedWorkOrders';
 import getUserAccountID from '@salesforce/apex/HOT_UserInformationController.getAccountId';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
+import createThreadOrdererUser from '@salesforce/apex/HOT_MessageHelper.createThreadOrdererUser';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -25,6 +26,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @api isAccount;
     @track filters = [];
     @track breadcrumbs = [];
+    @track threadOrdererUserButtonDescription = 'Test';
 
     get isMobile() {
         return window.screen.width < 576;
@@ -219,6 +221,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     editButtonLabel = 'Rediger';
     copyButtonLabel = 'Kopier';
     cancelButtonLabel = 'Avlys';
+    threadOrdererUserButtonLabel;
     isThreadButtonDisabled = false;
     isInterpreterThreadButtonDisabled = false;
 
@@ -236,6 +239,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.cancelButtonLabel = 'Avlys';
             this.isThreadButtonDisabled = false;
             this.isInterpreterThreadButtonDisabled = false;
+        }
+        if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
+            this.threadOrdererUserButtonLabel = 'Samtale med bruker';
+        } else if (
+            this.request.IsAccountEqualOrderer__c == false &&
+            this.request.Account__c === this.userRecord.AccountId
+        ) {
+            this.threadOrdererUserButtonLabel = 'Samtale med bestiller';
         }
     }
 
@@ -302,6 +313,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     isUserAccount = false;
     updateView() {
         this.isUserAccount = this.request.Account__c === this.userRecord.AccountId;
+        this.isAccountEqualOrderer = this.request.IsAccountEqualOrderer__c;
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
@@ -718,5 +730,27 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                     this.showModal();
                 });
         }
+    }
+    goToThreadOrdererUser() {
+        getThreadRequestId({ requestId: this.request.Id, type: 'HOT_BRUKER-BESTILLER' }).then((result) => {
+            if (result != '') {
+                this.threadDispatcherId = result;
+                this.navigateToThread(this.threadDispatcherId);
+            } else {
+                createThreadOrdererUser({ recordId: this.request.Id, accountId: this.request.Account__c })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                        refreshApex(this.wiredgetWorkOrdersResult);
+                        this.workOrderThreadId = result.Id;
+                    })
+                    .catch((error) => {
+                        this.modalHeader = 'Noe gikk galt';
+                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                        this.noCancelButton = true;
+                        this.isThreadButtonDisabled = false;
+                        this.showModal();
+                    });
+            }
+        });
     }
 }

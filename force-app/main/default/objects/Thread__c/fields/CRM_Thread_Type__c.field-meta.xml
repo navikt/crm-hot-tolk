@@ -72,6 +72,11 @@
                 <default>false</default>
                 <label>HOT_TOLK-RESSURSKONTOR</label>
             </value>
+            <value>
+                <fullName>HOT_BRUKER-BESTILLER</fullName>
+                <default>false</default>
+                <label>HOT_BRUKER-BESTILLER</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

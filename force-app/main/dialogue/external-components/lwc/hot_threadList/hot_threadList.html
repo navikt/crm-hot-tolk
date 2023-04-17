@@ -72,6 +72,20 @@
                     Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
                 </div>
             </div>
+            <div if:true={showOrdererUserThreads}>
+                <div class="record-details-container" if:false={noOrdererUserThreads}>
+                    <c-table
+                        records={ordererUserThreads}
+                        columns={columns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-table>
+                </div>
+                <div if:true={noOrdererUserThreads} style="text-align: center">
+                    <br />
+                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                </div>
+            </div>
             <div if:true={showWageClaimthreads}>
                 <div class="record-details-container" if:false={noWageClaimThreads}>
                     <c-table

@@ -12,7 +12,15 @@
             <span class="slds-assistive-text">Advarsel</span>
             <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
             </lightning-icon>
-            <span>Tolk er tildelt oppdraget. Se/start samtale med tolk på Oppdraget</span>
+            <span>Tolk er tildelt oppdraget. Se/start samtalen med tolk inne på Oppdraget</span>
+        </div>
+    </template>
+    <template if:true={noThreadExist}>
+        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+            <span class="slds-assistive-text">Advarsel</span>
+            <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
+            </lightning-icon>
+            <span>Det finnes ingen samtale mellom bruker og bestiller. Du kan ikke starte denne typen samtale.</span>
         </div>
     </template>
     <lightning-card
@@ -59,9 +67,18 @@
                         onclick={goToThreadTypeUser}
                     ></lightning-button>
                 </template>
+                <template if:true={showUserOrdererThreadbutton}>
+                    <lightning-button
+                        label="Samtale mellom bruker og bestiller"
+                        variant="border-filled"
+                        slot="actions"
+                        onclick={goToThreadTypeUserOrderer}
+                    ></lightning-button>
+                </template>
                 <template if:false={showButtonDiv}>
                     <span class="slds-badge slds-theme_success">{ThreadInfo}</span>
                 </template>
+                <br /><br />
                 <div if:true={showButtonDiv}>
                     <template if:true={shownewbutton}>
                         <lightning-button
