@@ -146,7 +146,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     refresh() {
-        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilterJR'));
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilter'));
         this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
 
         this.sendRecords();
@@ -352,7 +352,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     filteredRecordsLength = 0;
     @api
     applyFilter(event) {
-        sessionStorage.setItem('openSessionFilterJR', JSON.stringify(this.filters));
+        sessionStorage.setItem('openSessionFilter', JSON.stringify(this.filters));
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
         let filteredRecords = [];
