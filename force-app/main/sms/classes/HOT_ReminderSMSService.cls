@@ -90,7 +90,6 @@ public without sharing class HOT_ReminderSMSService {
             String phoneNumber = getRecipient(workOrder);
             if (
                 phoneNumber != null &&
-                workOrder.HOT_Interpreters__c.length() > 0 &&
                 workOrder.StartDate > Datetime.now() &&
                 workOrder.HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c == true &&
                 (workOrder.Status == 'Dispatched' ||
