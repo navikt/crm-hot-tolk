@@ -109,9 +109,9 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
     
             List<Id> serviceAppointmentIdsList = new List<Id>(interestedresourceMap.keySet());
 
-            List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c
+            List<HOT_InterestedResource__c> interestedResources = [SELECT Id, Status__c, ServiceAppointment__c, ServiceAppointment__r.Status, ServiceResource__c
                                                                 FROM HOT_InterestedResource__c 
-                                                                WHERE ServiceAppointment__c IN :serviceAppointmentIdsList];
+                                                                WHERE (ServiceAppointment__c IN :serviceAppointmentIdsList) AND (ServiceAppointment__r.Status!='Canceled')];
 
             for(HOT_InterestedResource__c ir: interestedResources){
                 if(ir.ServiceResource__c==interestedresourceMap.get(ir.ServiceAppointment__c)){
@@ -186,7 +186,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
         }
         List<HOT_InterestedResource__c> interestedResources = [
-            SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c
+            SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c, ServiceAppointment__r.Status
             FROM HOT_InterestedResource__c
             WHERE ServiceAppointment__c IN :serviceAppointmentIds
         ];
@@ -200,7 +200,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                         interestedResource.Status__c = 'Assigned';
                     }
                     if(interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
-                        interestedResource.Status__c == 'Assigned'){
+                        interestedResource.Status__c == 'Assigned' && interestedResource.ServiceAppointment__r.Status!='Canceled'){
                         interestedResource.Status__c = 'Withdrawn';
                         }
                         if(interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
