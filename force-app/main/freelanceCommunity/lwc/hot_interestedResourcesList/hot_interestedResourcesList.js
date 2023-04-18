@@ -128,7 +128,12 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     });
                     this.allInterestedResourcesWired = this.allInterestedResourcesWired.map((appointment) => {
                         let threadId;
-                        if (appointment.Status__c == 'Assigned' || appointment.Status__c == 'Tildelt') {
+                        if (
+                            appointment.Status__c == 'Assigned' ||
+                            appointment.Status__c == 'Tildelt' ||
+                            appointment.Status__c == 'Canceled' ||
+                            appointment.Status__c == 'Avlyst'
+                        ) {
                             threadId = appointment.ServiceAppointment__c;
                         } else {
                             threadId = appointment.Id;
