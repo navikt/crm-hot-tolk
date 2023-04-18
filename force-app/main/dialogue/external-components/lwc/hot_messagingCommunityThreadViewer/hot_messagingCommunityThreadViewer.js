@@ -17,7 +17,6 @@ import { getParametersFromURL } from 'c/hot_URIDecoder';
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREADRELATEDOBJECTID from '@salesforce/schema/Thread__c.CRM_Related_Object__c';
-import getRequestId from '@salesforce/apex/HOT_MessageHelper.getRequestId';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { formatRecord } from 'c/datetimeFormatter';
 
@@ -108,10 +107,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
     get isclosed() {
         return getFieldValue(this.thread.data, THREADCLOSED_FIELD);
-    }
-    @wire(getRequestId, { recordId: '$recordId' })
-    wiredRequest({ error, data }) {
-        this.requestId = data;
     }
 
     /**

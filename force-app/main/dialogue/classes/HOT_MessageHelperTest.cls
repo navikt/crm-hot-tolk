@@ -601,6 +601,22 @@ public with sharing class HOT_MessageHelperTest {
         }  
         test.stopTest();
     }
+      @isTest
+    public static void createThreadOrdererUserTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c=account.Id;
+        request.Orderer__c=account.Id;
+        insert request;
+
+          test.startTest();
+            Thread__c thread=HOT_MessageHelper.createThreadOrdererUser(request.Id);
+        test.stopTest();
+        System.assertEquals('HOT_BRUKER-BESTILLER',thread.CRM_Thread_Type__c);
+    }
     @isTest
     static void createThreadWageClaim() {
          WorkType workType = HOT_TestDataFactory.createWorkType();
