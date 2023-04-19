@@ -134,7 +134,7 @@
                     <name>adminFilters</name>
                     <valueList>
                         <valueListItems>
-                            <value>Status__c|EQUALS|[&quot;Udekket&quot;,&quot;Dekket&quot;,&quot;Avlyst&quot;,&quot;Annullert&quot;,&quot;Avslått&quot;]</value>
+                            <value>EndTime__c|LESS_THAN|TODAY</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
