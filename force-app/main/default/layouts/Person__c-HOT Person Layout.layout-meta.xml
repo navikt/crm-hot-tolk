@@ -156,10 +156,6 @@
                 <behavior>Edit</behavior>
                 <field>HOT_ReservationAgainstAppNotifications__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>HOT_NotificationChannel__c</field>
-            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
