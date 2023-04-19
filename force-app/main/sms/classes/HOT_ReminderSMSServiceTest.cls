@@ -99,7 +99,6 @@ private class HOT_ReminderSMSServiceTest {
                 HOT_Request__r.Type__c,
                 StartDate,
                 EndDate,
-                HOT_Request__r.IsNotNotifyAccount__c,
                 Status,
                 HOT_Request__r.IsNotNotifyAccount__c,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
