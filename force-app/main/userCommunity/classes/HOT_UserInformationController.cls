@@ -33,7 +33,7 @@ public without sharing class HOT_UserInformationController {
                 INT_SecurityMeasures__c,
                 HOT_SIPAddress__c,
                 HOT_NotificationChannel__c,
-                HOT_ReservationAgainstAppNotifications__c
+                HOT_IsReservationAgainstNotifications__c
             FROM Person__c
             WHERE Id = :currentUser.Account.CRM_Person__c
         ];
@@ -76,7 +76,7 @@ public without sharing class HOT_UserInformationController {
     }
     
     @AuraEnabled
-    public static boolean changeUserNotificationSetting(String personId, String newNotificationValue, Boolean isReservedAgainstAppNotifications) {
+    public static boolean changeUserNotificationSetting(String personId, String newNotificationValue, Boolean isReservedAgainstNotifications) {
         Person__c person = [
             SELECT
                 Id,
@@ -86,7 +86,7 @@ public without sharing class HOT_UserInformationController {
         ];
          if(person!=null){
              person.HOT_NotificationChannel__c=newNotificationValue;
-             person.HOT_ReservationAgainstAppNotifications__c=isReservedAgainstAppNotifications;
+             person.HOT_IsReservationAgainstNotifications__c=isReservedAgainstNotifications;
              update person;
          }
         return true;

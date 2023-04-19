@@ -405,7 +405,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Person__c.HOT_ReservationAgainstAppNotifications__c</field>
+        <field>Person__c.HOT_IsReservationAgainstNotifications__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

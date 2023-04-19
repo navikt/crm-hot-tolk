@@ -10,8 +10,8 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     @track options;
     @track selectedOption;
     @track newSelectedOption;
-    @track isReservedAgainsAppNotifications;
-    @track newIsReservedAgainsAppNotifications;
+    @track isReservedAgainstNotifications;
+    @track newIsReservedAgainstNotifications;
 
     viewUserNotificationSettings = true;
     editUserNotification = false;
@@ -30,7 +30,7 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
             this.person = result.data;
             this.recordId = this.person.Id;
             this.selectedOption = this.person.HOT_NotificationChannel__c;
-            this.isReservedAgainsAppNotifications = this.person.HOT_ReservationAgainstAppNotifications__c;
+            this.isReservedAgainstNotifications = this.person.HOT_IsReservationAgainstNotifications__c;
             this.newSelectedOption = this.selectedOption;
             getNotificationPickListValues({
                 chosen: this.selectedOption
@@ -91,7 +91,7 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
         });
     }
     handleOptionalCheckbox(event) {
-        this.newIsReservedAgainsAppNotifications = event.detail;
+        this.newIsReservedAgainstNotifications = event.detail;
     }
     handleSubmit() {
         this.viewUserNotificationSettings = true;
@@ -100,10 +100,10 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
         changeUserNotificationSetting({
             personId: this.recordId,
             newNotificationValue: this.newSelectedOption,
-            isReservedAgainstAppNotifications: this.newIsReservedAgainsAppNotifications
+            IsReservedAgainstNotifications: this.newIsReservedAgainstNotifications
         }).then(() => {
             this.selectedOption = this.newSelectedOption;
-            this.isReservedAgainsAppNotifications = this.newIsReservedAgainsAppNotifications;
+            this.IsReservedAgainstNotifications = this.newIsReservedAgainstNotifications;
         });
     }
 }
