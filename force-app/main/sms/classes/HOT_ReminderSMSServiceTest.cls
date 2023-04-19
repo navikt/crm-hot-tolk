@@ -27,7 +27,7 @@ private class HOT_ReminderSMSServiceTest {
                 Account.CRM_Person__r.INT_KrrMobilePhone__c,
                 StartDate,
                 EndDate,
-                HOT_Request__c.IsNotNotifyAccount__c
+                HOT_Request__r.IsNotNotifyAccount__c
             FROM WorkOrder
         ];
         workOrder.Status = 'Dispatched';
@@ -63,7 +63,7 @@ private class HOT_ReminderSMSServiceTest {
                 HOT_Request__r.Type__c,
                 StartDate,
                 EndDate,
-                HOT_Request__c.IsNotNotifyAccount__c,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 Status,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
@@ -99,9 +99,9 @@ private class HOT_ReminderSMSServiceTest {
                 HOT_Request__r.Type__c,
                 StartDate,
                 EndDate,
-                HOT_Request__c.IsNotNotifyAccount__c,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 Status,
-                HOT_Request__c.IsNotNotifyAccount__c,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
         ];
@@ -168,7 +168,7 @@ private class HOT_ReminderSMSServiceTest {
                 HOT_Request__r.OrdererPhone__c,
                 StartDate,
                 EndDate,
-                HOT_Request__c.IsNotNotifyAccount__c,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 Status,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
@@ -197,7 +197,7 @@ private class HOT_ReminderSMSServiceTest {
                 StartDate,
                 EndDate,
                 Status,
-                HOT_Request__c.IsNotNotifyAccount__c,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
         ];
