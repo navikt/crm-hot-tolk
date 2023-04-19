@@ -35,12 +35,12 @@ public without sharing class HOT_UserNotificationService {
     ) {
         String title = 'Status på din bestilling er endret';
         String body;
-        if (workOrder.Status == 'Dispatched') {
+        if (workOrder.Status == 'Dispatched' && workOrder.HOT_Interpreters__c.length() > 0) {
             body =
                 'Du har fått tolk. Tolk er ' + workOrder.HOT_Interpreters__c +'.';
         }
         if (workOrder.Status == 'Cannot Complete') {
-            body = 'Ikke ledig tolk';
+            body = 'Ikke ledig tolk.';
         }
         body += '\nDato: ' +
             workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
@@ -67,12 +67,12 @@ public without sharing class HOT_UserNotificationService {
     ) {
         String title = 'Status på din bestilling er endret';
         String body;
-        if (sa.Status == 'Dispatched') {
+        if (workOrder.Status == 'Dispatched') {
             body =
                 'Du har fått tolk. ' +
                 (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '');
         }
-        if (sa.Status == 'Cannot Complete') {
+        if (workOrder.Status == 'Cannot Complete') {
             body = 'Ikke ledig tolk';
         }
         body += '\nDato: ' +
