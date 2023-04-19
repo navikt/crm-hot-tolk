@@ -32,6 +32,38 @@ public class HOT_UserNotificationServiceTest {
     }
 
     @isTest
+    private static void reminderNotificationTest() {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+  
+        WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status FROM WorkOrder LIMIT 1];
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        Test.startTest();
+        HOT_UserNotificationService.reminderNotification(notificationType, workOrder, recipients);
+        Test.stopTest();
+    }
+
+    @isTest
+    private static void sendNotificationToOrdererOnStatusUpdateTest() {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+  
+        WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status FROM WorkOrder LIMIT 1];
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        Test.startTest();
+        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(notificationType, workOrder, recipients);
+        Test.stopTest();
+    }
+
+    @isTest
     private static void statusChangeNotificationTest() {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
