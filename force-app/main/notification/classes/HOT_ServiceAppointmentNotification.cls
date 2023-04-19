@@ -26,7 +26,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
                 }
 
-                notiyUserOnStatusChange(serviceAppointment);
+                //notiyUserOnStatusChange(serviceAppointment);
             }
 
             // Varsel ved endring av tolk
@@ -402,6 +402,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 Id,
                 StartDate,
                 EndDate,
+                Status,
                 AccountId,
                 HOT_Interpreters__c,
                 HOT_Request__r.IsNotNotifyAccount__c,
@@ -417,7 +418,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 if (userIdByAccountId.get(wo.AccountId) != null && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
                     recipients.add(userIdByAccountId.get(wo.AccountId));
                 }
-                if (recipients.size() != 0 && isPerson) {
+                if (recipients.size() != 0 && isPerson && wo.Status == 'Dispatched') {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.interpreterChangeNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
