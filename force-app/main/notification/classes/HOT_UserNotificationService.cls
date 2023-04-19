@@ -7,14 +7,49 @@ public without sharing class HOT_UserNotificationService {
         String title = 'Andre har lagt inn en bestilling for deg';
         String body =
             'Det er bestilt tolk til deg. Dato: ' +
-            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('hh:mm') +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        Id targetId = workOrder.Id;
         String targetPageRef = getTargetPageRef(workOrder.Id, 'R');
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    public static void sendNotificationToOrdererOnStatusUpdate(
+        CustomNotificationType notificationType,
+        WorkOrder workOrder,
+        Set<String> recipients
+    ) {
+        String title = 'Status på din bestilling er endret';
+        String body;
+        if (workOrder.Status == 'Dispatched') {
+            body =
+                'Du har fått tolk. Tolk er ' + workOrder.HOT_Interpreters__c +'.';
+        }
+        if (workOrder.Status == 'Cannot Complete') {
+            body = 'Ikke ledig tolk';
+        }
+        body += '\nDato: ' +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            ' - ' +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        String targetPageRef = getTargetPageRefOrderer(workOrder.Id, 'WO');
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
@@ -27,18 +62,47 @@ public without sharing class HOT_UserNotificationService {
     public static void statusChangeNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
+        ServiceAppointment sa,
         Set<String> recipients
     ) {
-        String title = 'Endring av status';
-        String body =
-            'Status på din bestilling er endret til: ' +
-            workOrder.Status +
-            '. ' +
-            (workOrder.HOT_Interpreters__c != null ? 'Tolk er ' + workOrder.HOT_Interpreters__c + '.' : '') +
-            'Dato: ' +
-            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+        String title = 'Status på din bestilling er endret';
+        String body;
+        if (sa.Status == 'Dispatched') {
+            body =
+                'Du har fått tolk. ' +
+                (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '');
+        }
+        if (sa.Status == 'Cannot Complete') {
+            body = 'Ikke ledig tolk';
+        }
+        body += '\nDato: ' +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('hh:mm') +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        String targetPageRef = getTargetPageRef(workOrder.Id, 'WO');
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        notification.send(recipients);
+    }
+
+    public static void reminderNotification(
+        CustomNotificationType notificationType,
+        WorkOrder workOrder,
+        Set<String> recipients
+    ) {
+        String title = 'Påminnelse om tolkebestilling';
+        String body =
+            'Dato: ' +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            ' - ' +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
@@ -55,18 +119,17 @@ public without sharing class HOT_UserNotificationService {
     public static void interpreterChangeNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
+        ServiceAppointment sa,
         Set<String> recipients
     ) {
         String title = 'Endring av tolk';
         String body =
             'Tolk på din bestilling er endret. ' +
-            'Tolk er ' +
-            workOrder.HOT_Interpreters__c +
-            '.' +
-            'Dato: ' +
-            workOrder.StartDate?.format('d.M.yyyy, hh:mm') +
+            (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
+            '\nDato: ' +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('hh:mm') +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
@@ -103,6 +166,16 @@ public without sharing class HOT_UserNotificationService {
     private static String getTargetPageRef(Id targetId, String level) {
         String pageRef =
             '{type: "comm__namedPage",attributes: {pageName: "mine-bestillinger"}, state: {id: "' +
+            targetId +
+            '", level: "' +
+            level +
+            '"}}';
+
+        return pageRef;
+    }
+    private static String getTargetPageRefOrderer(Id targetId, String level) {
+        String pageRef =
+            '{type: "comm__namedPage",attributes: {pageName: "mine-bestillinger-andre"}, state: {id: "' +
             targetId +
             '", level: "' +
             level +

@@ -101,6 +101,7 @@
                     <p if:true={request.OrdererName__c}>Bestiller: <span>{request.OrdererName__c}</span></p>
                     <p if:true={request.UserName__c}>Tolkebrukers navn: <span>{request.UserName__c}</span></p>
                     <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
+                    <p>Sende varsler til bruker: <span>{IsNotNotifyAccount}</span></p>
                     <br />
                     <p if:true={request.UserPreferredInterpreter__c}>
                         Ønsket tolk: <span>{request.UserPreferredInterpreter__c}</span>
@@ -172,6 +173,7 @@
                 ></c-button>
                 <c-button
                     if:true={isUserAccount}
+                    disabled={isThreadButtonDisabled}
                     button-label="Samtale med formidler"
                     button-styling="primary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
@@ -199,7 +201,7 @@
         header={modalHeader}
         content={modalContent}
         desktop-style="text-align: center; white-space: pre-line; width: 50%"
-        mobile-style="text-align: center; white-space: pre-line; width: 100%"
+        mobile-style="text-align: center; white-space: pre-line; width: 100%; max-width: 100%;"
         center-buttons="true"
         no-cancel-button={noCancelButton}
         onbuttonclick={handleAlertDialogClick}

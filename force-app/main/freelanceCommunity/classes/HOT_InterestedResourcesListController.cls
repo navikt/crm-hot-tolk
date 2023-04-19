@@ -89,7 +89,15 @@ public without sharing class HOT_InterestedResourcesListController {
             update interestedResource;
         }
     }
-
+     @AuraEnabled
+    public static HOT_InterestedResource__c getComments(String interestedResourceId) {
+        HOT_InterestedResource__c interestedResource = [
+            SELECT Id, Comments__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :interestedResourceId
+        ];
+        return interestedResource;
+    }
     @AuraEnabled
     public static void dispatcherReadComment(Id recordId) {
         HOT_InterestedResource__c interestedResource = [
@@ -105,13 +113,17 @@ public without sharing class HOT_InterestedResourcesListController {
 
     @AuraEnabled
     public static void addComment(Id interestedResourceId, String newComment) {
+        Datetime now = Datetime.now();
+        String osloTimeZone = 
+  now.format('yyyy-MM-dd-HH:mm:ss', 
+                 'Europe/Oslo');
         if (newComment != null && newComment != '') {
             newComment =
                 UserInfo.getFirstName() +
                 ' ' +
                 UserInfo.getLastName() +
                 ', ' +
-                Datetime.now() +
+                osloTimeZone +
                 ': ' +
                 newComment;
             HOT_InterestedResource__c interestedResource = [

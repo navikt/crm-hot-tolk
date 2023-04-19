@@ -28,8 +28,15 @@
       "type" : "component"
     }, {
       "componentAttributes" : { },
+      "componentName" : "c:hot_welcomeMessage",
+      "id" : "1d858104-592d-4e15-bc98-f6acc2526a33",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : { },
       "componentName" : "c:hot_freelanceHome",
-      "id" : "a6350c05-408b-4e86-8002-630dd28ff63d",
+      "id" : "a4b18819-dbd6-47d0-8620-fab423577c32",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"

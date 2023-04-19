@@ -61,7 +61,7 @@ public without sharing class HOT_ReminderSMSService {
         for (WorkOrder workOrder : workOrders) {
             String interpreterNames = '';
             List<ServiceAppointment> serviceAppointents = serviceAppointmentsByWorkOrderId.get(workOrder.Id);
-            if(serviceAppointents != null){
+            if (serviceAppointents != null) {
                 for (Integer i = 0; i < serviceAppointents.size(); i++) {
                     interpreterNames += serviceAppointents[i].HOT_ServiceResource__r.Name + ', ';
                 }
@@ -112,6 +112,100 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.updateRecords(workOrderList);
     }
 
+    @Future
+    public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
+        List<WorkOrder> workOrderList = [
+            SELECT
+                Id,
+                AccountId,
+                Status,
+                StartDate,
+                EndDate,
+                HOT_Request__c,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM WorkOrder
+            WHERE Id IN :workOrderIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (WorkOrder wo : workOrderList) {
+            smsList.add(
+            SMSService.createSMSRecord(
+                        'HOT',
+                        'Orderer On Status Update',
+                        wo.AccountId,
+                        wo.Id,
+                        wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                        constructOnOrdererMessage(wo)
+                    )
+            );
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    @Future
+    public static void sendSMSOnInterpreterChange(Set<Id> workOrderIds, String interpreterName) {
+        List<WorkOrder> workOrderList = [
+            SELECT
+                Id,
+                AccountId,
+                Status,
+                StartDate,
+                EndDate,
+                HOT_Request__c,
+                HOT_Request__r.Type__c,
+                HOT_Request__r.OrdererPhone__c,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM WorkOrder
+            WHERE Id IN :workOrderIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (WorkOrder wo : workOrderList) {
+            smsList.add(
+                SMSService.createSMSRecord(
+                            'HOT',
+                            'Orderer On Status Update',
+                            wo.AccountId,
+                            wo.Id,
+                            getRecipient(wo),
+                            constructInterpreterChangedMessage(wo, interpreterName)
+                        )
+                );
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    public static String constructOnOrdererMessage(WorkOrder workOrder) {
+        String message = 'INFO\nAndre har lagt inn en bestilling for deg:\n';
+        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+        message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\nMvh tolketjenesten i NAV';
+        return message;
+    }
+
+    public static String constructInterpreterChangedMessage(WorkOrder workOrder, String interpreterNames) {
+        String message = 'INFO\nTolk på din bestilling er endret:\n';
+        message += 'Tolk er: ';
+        message += interpreterNames;
+        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+        message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\nMvh tolketjenesten i NAV';
+        return message;
+    }
+
     private static String getRecipient(WorkOrder workOrder) {
         if (workOrder.HOT_Request__r.Type__c != 'Me') {
             return workOrder.HOT_Request__r.OrdererPhone__c;
@@ -119,7 +213,7 @@ public without sharing class HOT_ReminderSMSService {
         return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
     }
 
-    private static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
+    public static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
         String message = 'INFO\nStatus på din bestilling er:\n';
         if (workOrder.Status == 'Dispatched') {
             message += 'Du har fått tolk. ';

@@ -126,29 +126,6 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Assign_new_values_Pagar</name>
-        <label>Assign new values - Pågår</label>
-        <locationX>1245</locationX>
-        <locationY>1622</locationY>
-        <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.Status</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>In Progress</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_DoNotCreateHAR__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Save_Service_Appointment</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Set_Record_Id_0</name>
         <label>Set Record Id</label>
         <locationX>324</locationX>
@@ -207,14 +184,6 @@
         </value>
     </choices>
     <choices>
-        <name>Status_Pagar</name>
-        <choiceText>Pågår</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>In Progress</stringValue>
-        </value>
-    </choices>
-    <choices>
         <name>Status_TolkAvlyst</name>
         <choiceText>Avlyst av tolk</choiceText>
         <dataType>String</dataType>
@@ -257,6 +226,28 @@
                 <targetReference>Set_Completed_Comment</targetReference>
             </connector>
             <label>Changed Start or End Time</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Found_the_SA</name>
+        <label>Found the SA</label>
+        <locationX>599</locationX>
+        <locationY>592</locationY>
+        <defaultConnector>
+            <targetReference>Get_Assigned_Resource</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>NotFound</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>CurrentServiceAppointment.Id</leftValueReference>
+                <operator>EqualTo</operator>
+            </conditions>
+            <connector>
+                <targetReference>Could_not_find_SA</targetReference>
+            </connector>
+            <label>NotFound</label>
         </rules>
     </decisions>
     <decisions>
@@ -320,12 +311,19 @@
         <defaultConnectorLabel>NOT my service appointment</defaultConnectorLabel>
         <rules>
             <name>My_ServiceAppointment</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>or</conditionLogic>
             <conditions>
                 <leftValueReference>serviceResource.RelatedRecordId</leftValueReference>
                 <operator>Contains</operator>
                 <rightValue>
                     <elementReference>currentUserId</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>serviceResource.RelatedRecordId</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>UserId</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -379,21 +377,6 @@
                 <targetReference>Startet</targetReference>
             </connector>
             <label>Dekket</label>
-        </rules>
-        <rules>
-            <name>Pagar</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>New_status</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>Status_Pagar</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Create_Historically_Assigned_Resource_Pagar</targetReference>
-            </connector>
-            <label>Pågår</label>
         </rules>
         <rules>
             <name>Avlyst</name>
@@ -577,39 +560,11 @@
         </inputAssignments>
         <object>HOT_HistoricallyAssignedResource__c</object>
     </recordCreates>
-    <recordCreates>
-        <name>Create_Historically_Assigned_Resource_Pagar</name>
-        <label>Create Historically Assigned Resource - Pågår</label>
-        <locationX>1245</locationX>
-        <locationY>1502</locationY>
-        <connector>
-            <targetReference>Assign_new_values_Pagar</targetReference>
-        </connector>
-        <inputAssignments>
-            <field>ServiceAppointment__c</field>
-            <value>
-                <elementReference>CurrentServiceAppointment.Id</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>ServiceResource__c</field>
-            <value>
-                <elementReference>ServiceResourceId</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Status__c</field>
-            <value>
-                <stringValue>Pågår</stringValue>
-            </value>
-        </inputAssignments>
-        <object>HOT_HistoricallyAssignedResource__c</object>
-    </recordCreates>
     <recordLookups>
         <name>Get_Assigned_Resource</name>
         <label>Get Assigned Resource</label>
-        <locationX>456</locationX>
-        <locationY>662</locationY>
+        <locationX>453</locationX>
+        <locationY>687</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Service_Resource</targetReference>
@@ -653,11 +608,11 @@
     <recordLookups>
         <name>Get_ServiceAppointment_0_0_0</name>
         <label>Get ServiceAppointment</label>
-        <locationX>456</locationX>
-        <locationY>542</locationY>
+        <locationX>455</locationX>
+        <locationY>474</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Assigned_Resource</targetReference>
+            <targetReference>Found_the_SA</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -743,6 +698,22 @@
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Could_not_find_SA</name>
+        <label>Could not find SA</label>
+        <locationX>780</locationX>
+        <locationY>590</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>displayNotFound</name>
+            <fieldText>&lt;p&gt;Kunne ikke finne oppdraget!&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>NOT_your_SA</name>
@@ -855,7 +826,6 @@
         </connector>
         <fields>
             <name>New_status</name>
-            <choiceReferences>Status_Pagar</choiceReferences>
             <choiceReferences>Status_Dekket</choiceReferences>
             <choiceReferences>Status_Avlyst</choiceReferences>
             <choiceReferences>Status_TolkAvlyst</choiceReferences>
@@ -902,8 +872,8 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>330</locationX>
-        <locationY>48</locationY>
+        <locationX>342</locationX>
+        <locationY>46</locationY>
         <connector>
             <targetReference>Which_App</targetReference>
         </connector>
@@ -933,6 +903,13 @@
         <objectType>HOT_InterestedResource__c</objectType>
     </variables>
     <variables>
+        <name>parentId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>recordId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -952,6 +929,13 @@
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>UserId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
         <isOutput>false</isOutput>
     </variables>
 </Flow>

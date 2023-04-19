@@ -1,37 +1,24 @@
 <template>
     <div class="main-content">
-        <div if:true={isDetails}>
-            <div class="record-details-container">
-                <p>Oppdragsnummer: <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span></p>
-                <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
-                <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
-                <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
-                <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
-                <p>Frigitt dato: <span>{serviceAppointment.ReleaseDate}</span></p>
-                <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
-                <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
-                <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
-                <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
-                <br />
-            </div>
-            <div if:true={isSeries}>
-                <c-button
-                    button-styling="primary"
-                    button-label="Meld interesse til alle oppdrag i serien"
-                    aria-label="Meld interesse til alle oppdrag i serien"
-                    onbuttonclick={sendInterestSeries}
-                    desktop-style="width: 20rem; justify-content: center; margin-bottom: 1rem;"
-                    mobile-style="width: 100%; justify-content: center; margin-bottom: 1rem;"
-                    title="Meld interesse til alle oppdrag i serien"
-                >
-                </c-button>
-                <c-table records={seriesRecords} columns={columns} onrowclick={goToRecordDetails}></c-table>
-            </div>
+        <div style="text-align: left">
+            <c-button
+                hidden={isReleasedTodayButtonHidden}
+                button-label="Frigitt idag"
+                button-styling="primary"
+                desktop-style="width: 8rem; justify-content: center"
+                mobile-style="width: 8rem; justify-content: center"
+                onbuttonclick={releasedTodayFilter}
+            ></c-button>
+            <c-button
+                hidden={isRemoveReleasedTodayButtonHidden}
+                button-label="Fjern frigitt idag filter"
+                button-styling="primary"
+                onbuttonclick={removeReleasedTodayFilter}
+            ></c-button>
         </div>
         <div if:false={noServiceAppointments}>
             <c-table
-                if:false={isDetails}
+                if:false={noServiceAppointments}
                 records={records}
                 columns={columns}
                 onrowclick={goToRecordDetails}
@@ -39,6 +26,16 @@
                 checked-rows={checkedServiceAppointments}
                 oncheckedrows={handleRowChecked}
             ></c-table>
+            <!-- <c-table
+                if:false={noServiceAppointments}
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                checkbox="true"
+                checked-rows={checkedServiceAppointments}
+                oncheckedrows={handleRowChecked}
+                icon-by-value={iconByValue}
+            ></c-table> -->
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
             <br />
@@ -158,6 +155,60 @@
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"
                 ></c-button>
+            </section>
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
+                <span class="text-hide">Lukk</span>
+            </button>
+        </div>
+    </div>
+    <div
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay serviceAppointmentDetails hidden"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+        tabindex="-1"
+        aria-label="Informasjon om oppdrag"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            role="dialog"
+            aria-labelledby="comment-header-id"
+        >
+            <section>
+                <div>
+                    <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
+                </div>
+                <div if:true={isDetails}>
+                    <div class="record-details-container">
+                        <p>Oppdragsnummer: <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span></p>
+                        <p>Tid: <span> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
+                        <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
+                        <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
+                        <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                        <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
+                        <p>Frigitt dato: <span>{serviceAppointment.ReleaseDate}</span></p>
+                        <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
+                        <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                        <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+                        <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
+                        <br />
+                    </div>
+                    <div if:true={isSeries}>
+                        <c-button
+                            button-styling="primary"
+                            button-label="Meld interesse til alle oppdrag i serien"
+                            aria-label="Meld interesse til alle oppdrag i serien"
+                            onbuttonclick={sendInterestSeries}
+                            desktop-style="width: 20rem; justify-content: center; margin-bottom: 1rem;"
+                            mobile-style="width: 100%; justify-content: center; margin-bottom: 1rem;"
+                            title="Meld interesse til alle oppdrag i serien"
+                        >
+                        </c-button>
+                        <c-table
+                            records={seriesRecords}
+                            columns={inDetailsColumns}
+                            onrowclick={goToRecordDetails}
+                        ></c-table>
+                    </div>
+                </div>
             </section>
             <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
                 <span class="text-hide">Lukk</span>

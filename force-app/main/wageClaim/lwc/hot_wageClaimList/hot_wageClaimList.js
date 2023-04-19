@@ -16,7 +16,8 @@ export default class Hot_wageClaimList extends LightningElement {
             this.columns = mobileColumns;
         }
     }
-
+    @track Status;
+    isNotRetractable = false;
     noWageClaims = false;
     @track wageClaims = [];
     @track allWageClaimsWired = [];
@@ -43,7 +44,6 @@ export default class Hot_wageClaimList extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
-        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -69,27 +69,69 @@ export default class Hot_wageClaimList extends LightningElement {
         this.setPreviousFiltersOnRefresh();
     }
 
+    getDayOfWeek(date) {
+        var jsDate = new Date(date);
+        var dayOfWeek = jsDate.getDay();
+        var dayOfWeekString;
+        switch (dayOfWeek) {
+            case 0:
+                dayOfWeekString = 'Søndag';
+                break;
+            case 1:
+                dayOfWeekString = 'Mandag';
+                break;
+            case 2:
+                dayOfWeekString = 'Tirsdag';
+                break;
+            case 3:
+                dayOfWeekString = 'Onsdag';
+                break;
+            case 4:
+                dayOfWeekString = 'Torsdag';
+                break;
+            case 5:
+                dayOfWeekString = 'Fredag';
+                break;
+            case 6:
+                dayOfWeekString = 'Lørdag';
+                break;
+            default:
+                dayOfWeekString = '';
+        }
+        return dayOfWeekString;
+    }
+
     datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
+
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredWageClaimsResult);
     }
-
+    closeModal() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+    }
     @track wageClaim;
     isWageClaimDetails = false;
     goToRecordDetails(result) {
-        window.scrollTo(0, 0);
+        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').focus();
         this.wageClaim = undefined;
+        this.Status = result.detail.Status__c;
         let recordId = result.detail.Id;
         this.recordId = recordId;
+        if (result.detail.Status__c == 'Åpen') {
+            this.isNotRetractable = false;
+        } else {
+            this.isNotRetractable = true;
+        }
         this.isWageClaimDetails = !!this.recordId;
         for (let wageClaim of this.wageClaims) {
             if (recordId === wageClaim.Id) {
                 this.wageClaim = wageClaim;
+                this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
             }
         }
         this.updateURL();
-        this.sendDetail();
     }
 
     @api recordId;
@@ -118,6 +160,8 @@ export default class Hot_wageClaimList extends LightningElement {
         ) {
             try {
                 retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
+                    this.isNotRetractable = true;
+                    this.Status = 'Tilbaketrukket tilgjengelighet';
                     refreshApex(this.wiredWageClaimsResult);
                 });
             } catch (error) {

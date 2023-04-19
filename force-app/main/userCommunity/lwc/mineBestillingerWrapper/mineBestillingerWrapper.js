@@ -1,5 +1,6 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
+import updateRelatedWorkOrders from '@salesforce/apex/HOT_RequestListController.updateRelatedWorkOrders';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
@@ -31,6 +32,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     connectedCallback() {
+        refreshApex(this.wiredgetWorkOrdersResult);
         this.filters = defaultFilters();
         this.breadcrumbs = [
             {
@@ -198,12 +200,15 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     editButtonLabel = 'Rediger';
     copyButtonLabel = 'Kopier';
     cancelButtonLabel = 'Avlys';
+    isThreadButtonDisabled = false;
     setButtonLabels() {
         if (this.urlStateParameters.level === 'R') {
             this.editButtonLabel = 'Rediger serie';
             this.copyButtonLabel = 'Kopier serie';
             this.cancelButtonLabel = 'Avlys serie';
+            this.isThreadButtonDisabled = false;
         } else {
+            this.isThreadButtonDisabled = false;
             this.editButtonLabel = 'Rediger';
             this.copyButtonLabel = 'Kopier';
             this.cancelButtonLabel = 'Avlys';
@@ -279,6 +284,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
         this.isOrdererWantStatusUpdateOnSMS = this.request.IsOrdererWantStatusUpdateOnSMS__c ? 'Ja' : 'Nei';
+        this.IsNotNotifyAccount = this.request.IsNotNotifyAccount__c ? 'Nei' : 'Ja';
         this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId ? true : false;
         this.setHeader();
         this.setButtonLabels();
@@ -383,7 +389,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             tempEndDate.getTime() > Date.now()
         ) {
             if (this.urlStateParameters.level === 'R') {
-                this.modalContent = 'Er du sikker på at du vil avlyse alle datoer i bestillingen?';
+                this.modalContent = 'Er du sikker på at du vil avlyse alle fremtidige datoer i bestillingen?';
             } else {
                 this.modalContent =
                     'Er du sikker på at du vil avlyse bestillingen?\nDato: ' + this.workOrder.StartAndEndDate;
@@ -418,31 +424,44 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.template.querySelector('.loader').classList.remove('hidden');
         const fields = {};
         if (this.urlStateParameters.level === 'R') {
-            fields[REQUEST_ID.fieldApiName] = this.request.Id;
-            fields[STATUS.fieldApiName] = 'Avlyst';
-            fields[NOTIFY_DISPATCHER.fieldApiName] = true;
+            updateRelatedWorkOrders({ requestId: this.request.Id })
+                .then((result) => {
+                    refreshApex(this.wiredgetWorkOrdersResult);
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Bestillingen er avlyst.';
+                    this.showModal();
+                })
+                .catch((error) => {
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
+                    this.showModal();
+                });
         } else {
             fields[WORKORDER_ID.fieldApiName] = this.workOrder.Id;
             fields[WORKORDER_STATUS.fieldApiName] = 'Canceled';
             fields[WORKORDER_NOTIFY_DISPATCHER.fieldApiName] = true;
+            const recordInput = { fields };
+            updateRecord(recordInput)
+                .then(() => {
+                    refreshApex(this.wiredgetWorkOrdersResult);
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Bestillingen er avlyst.';
+                    this.showModal();
+                })
+                .catch(() => {
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
+                    this.showModal();
+                });
         }
-        const recordInput = { fields };
-        updateRecord(recordInput)
-            .then(() => {
-                refreshApex(this.wiredgetWorkOrdersResult);
-                this.noCancelButton = true;
-                this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-                this.template.querySelector('.loader').classList.add('hidden');
-                this.modalContent = 'Bestillingen er avlyst.';
-                this.showModal();
-            })
-            .catch(() => {
-                this.noCancelButton = true;
-                this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-                this.template.querySelector('.loader').classList.add('hidden');
-                this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
-                this.showModal();
-            });
     }
 
     showUploadFilesComponent = false;
@@ -578,6 +597,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goToThread() {
+        this.isThreadButtonDisabled = true;
         if (this.request.Thread__c !== undefined) {
             this.navigateToThread(this.request.Thread__c);
         } else {
@@ -590,6 +610,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                     this.modalHeader = 'Noe gikk galt';
                     this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
                     this.noCancelButton = true;
+                    this.isThreadButtonDisabled = false;
                     this.showModal();
                 });
         }

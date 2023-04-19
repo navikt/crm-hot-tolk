@@ -1,10 +1,30 @@
 public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
     public override void onBeforeInsert() {
         setDefaultFields((List<WorkOrderLineItem>) records);
+        setDuration((List<WorkOrderLineItem>) records);
     }
 
     public override void onAfterInsert() {
         createChildRecords((List<WorkOrderLineItem>) records);
+    }
+
+    public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
+        List<WorkOrderLineItem> setDurationWorkOrderLineItems = new List<WorkOrderLineItem>();
+        Map<Id, WorkOrderLineItem> oldMap = (Map<Id, WorkOrderLineItem>)triggerOldMap;
+
+        for (WorkOrderLineItem workOrderLineItem : (List<WorkOrderLineItem>) records){
+            if(
+                (workOrderLineItem.StartDate != (oldMap.get(workOrderLineItem.Id).StartDate))
+                ||
+                (workOrderLineItem.EndDate != (oldMap.get(workOrderLineItem.Id).EndDate))
+                ){
+                    setDurationWorkOrderLineItems.add(workOrderLineItem);
+            }
+        }
+
+        if (setDurationWorkOrderLineItems.size() > 0){
+            setDuration(setDurationWorkOrderLineItems);
+        }
     }
 
     public static void createChildRecords(List<WorkOrderLineItem> workOrderLineItems) {
@@ -156,6 +176,13 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                         .HOT_InterpretationStreet__c;
                 }
             }
+        }
+    }
+    
+    public static void setDuration(List<workOrderLineItem> workOrderLineItems) {
+        for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
+            workOrderLineItem.Duration =
+                ((Double) workOrderLineItem.EndDate.getTime() - (Double) workOrderLineItem.StartDate.getTime()) / 3600000;
         }
     }
 }

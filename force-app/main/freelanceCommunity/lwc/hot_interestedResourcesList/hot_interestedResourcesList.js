@@ -8,6 +8,7 @@ import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
 import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
 import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
+import getComments from '@salesforce/apex/HOT_InterestedResourcesListController.getComments';
 
 export default class Hot_interestedResourcesList extends LightningElement {
     @track columns = [];
@@ -67,7 +68,37 @@ export default class Hot_interestedResourcesList extends LightningElement {
             }
         ];
     }
-
+    getDayOfWeek(date) {
+        var jsDate = new Date(date);
+        var dayOfWeek = jsDate.getDay();
+        var dayOfWeekString;
+        switch (dayOfWeek) {
+            case 0:
+                dayOfWeekString = 'Søndag';
+                break;
+            case 1:
+                dayOfWeekString = 'Mandag';
+                break;
+            case 2:
+                dayOfWeekString = 'Tirsdag';
+                break;
+            case 3:
+                dayOfWeekString = 'Onsdag';
+                break;
+            case 4:
+                dayOfWeekString = 'Torsdag';
+                break;
+            case 5:
+                dayOfWeekString = 'Fredag';
+                break;
+            case 6:
+                dayOfWeekString = 'Lørdag';
+                break;
+            default:
+                dayOfWeekString = '';
+        }
+        return dayOfWeekString;
+    }
     @track serviceResource;
     @wire(getServiceResource)
     wiredServiceresource(result) {
@@ -104,8 +135,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
-        this.goToRecordDetails({ detail: { Id: this.recordId } });
-        this.sendRecords();
+        //this.goToRecordDetails({ detail: { Id: this.recordId } });
+        //this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
@@ -118,7 +149,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
             end: 'ServiceAppointmentEndTime__c'
         },
         { name: 'WorkOrderCanceledDate__c', type: 'date' },
-        { name: 'HOT_ReleaseDate__c', type: 'date' }
+        { name: 'HOT_ReleaseDate__c', type: 'date' },
+        { name: 'AppointmentDeadlineDate__c', type: 'date' }
     ];
 
     @track interestedResource;
@@ -126,22 +158,23 @@ export default class Hot_interestedResourcesList extends LightningElement {
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
-        window.scrollTo(0, 0);
+        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').focus();
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
-        console.log(this.recordId);
-        console.log(result.detail.Id);
         this.recordId = recordId;
         this.isDetails = !!this.recordId;
         for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
+                this.interestedResource.weekday = this.getDayOfWeek(
+                    this.interestedResource.ServiceAppointmentStartTime__c
+                );
             }
         }
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
         this.fixComments();
         this.updateURL();
-        this.sendDetail();
         if (this.interestedResource?.IsNewComment__c) {
             readComment({ interestedResourceId: this.interestedResource?.Id });
         }
@@ -171,6 +204,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
         let newComment = this.template.querySelector('.newComment').value;
         addComment({ interestedResourceId, newComment }).then(() => {
             refreshApex(this.wiredInterestedResourcesResult);
+            this.template.querySelector('.newComment').value = '';
+            this.fixComments();
         });
     }
     filteredRecordsLength = 0;
@@ -200,17 +235,27 @@ export default class Hot_interestedResourcesList extends LightningElement {
 
     @track prevComments = '';
     fixComments() {
-        if (this.interestedResource?.Comments__c != undefined) {
-            this.prevComments = this.interestedResource?.Comments__c.split('\n\n');
-        } else {
+        getComments({ interestedResourceId: this.recordId }).then((result) => {
             this.prevComments = '';
-        }
+            console.log(result.Comments__c);
+            if (result.Comments__c != undefined || result.Comments__c != '') {
+                this.prevComments = result.Comments__c.split('\n\n');
+            } else {
+                this.prevComments = '';
+            }
+        });
     }
     isNotRetractable = false;
     retractInterest() {
         retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
             refreshApex(this.wiredInterestedResourcesResult);
             this.interestedResource.Status__c = 'Tilbaketrukket påmelding';
+            let newNumberOfInterestedResources = Number(this.interestedResource.NumberOfInterestedResources__c) - 1;
+            this.interestedResource.NumberOfInterestedResources__c = newNumberOfInterestedResources;
+            this.isNotRetractable = true;
         });
+    }
+    closeModal() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
     }
 }

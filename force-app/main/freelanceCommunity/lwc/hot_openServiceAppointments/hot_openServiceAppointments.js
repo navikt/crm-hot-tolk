@@ -2,20 +2,35 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
-import { columns, mobileColumns } from './columns';
+import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
+    @track inDetailsColumns = [];
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
+            this.inDetailsColumns = inDetailsColumns;
         } else {
             this.columns = mobileColumns;
+            this.inDetailsColumns = inDetailsColumns;
         }
     }
+    iconByValue = {
+        false: {
+            icon: '',
+            fill: '',
+            ariaLabel: ''
+        },
+        true: {
+            icon: 'WarningFilled',
+            fill: 'Red',
+            ariaLabel: 'Dette oppdraget haster'
+        }
+    };
 
     sendFilters() {
         const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
@@ -30,7 +45,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.dispatchEvent(eventToSend);
     }
     sendCheckedRows() {
-        this.showSendInterest = this.checkedServiceAppointments.length > 0 && !this.isDetails;
+        this.showSendInterest = this.checkedServiceAppointments.length > 0;
         this.sendInterestButtonLabel = 'Meld interesse til ' + this.checkedServiceAppointments.length + ' oppdrag';
         const eventToSend = new CustomEvent('sendcheckedrows', { detail: this.checkedServiceAppointments });
         this.dispatchEvent(eventToSend);
@@ -44,6 +59,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             });
             sessionStorage.removeItem('openfilters');
         }
+
         this.sendFilters();
     }
     setCheckedRowsOnRefresh() {
@@ -57,17 +73,21 @@ export default class Hot_openServiceAppointments extends LightningElement {
     disconnectedCallback() {
         // Going back with browser back or back button on mouse forces page refresh and a disconnect
         // Save filters on disconnect to exist only within the current browser tab
-        sessionStorage.setItem('openfilters', JSON.stringify(this.filters));
         sessionStorage.setItem('checkedrows', JSON.stringify(this.checkedServiceAppointments));
     }
 
     renderedCallback() {
         this.setPreviousFiltersOnRefresh();
         this.setCheckedRowsOnRefresh();
+        sessionStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
     }
 
     @track filters = [];
     connectedCallback() {
+        if (sessionStorage.getItem('checkedrowsSavedForRefresh')) {
+            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsSavedForRefresh'));
+            sessionStorage.removeItem('checkedrowsSavedForRefresh');
+        }
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
         this.breadcrumbs = [
@@ -81,7 +101,37 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         ];
     }
-
+    getDayOfWeek(date) {
+        var jsDate = new Date(date);
+        var dayOfWeek = jsDate.getDay();
+        var dayOfWeekString;
+        switch (dayOfWeek) {
+            case 0:
+                dayOfWeekString = 'Søndag';
+                break;
+            case 1:
+                dayOfWeekString = 'Mandag';
+                break;
+            case 2:
+                dayOfWeekString = 'Tirsdag';
+                break;
+            case 3:
+                dayOfWeekString = 'Onsdag';
+                break;
+            case 4:
+                dayOfWeekString = 'Torsdag';
+                break;
+            case 5:
+                dayOfWeekString = 'Fredag';
+                break;
+            case 6:
+                dayOfWeekString = 'Lørdag';
+                break;
+            default:
+                dayOfWeekString = '';
+        }
+        return dayOfWeekString;
+    }
     @track serviceResource;
     @track serviceResourceId;
     @wire(getServiceResource)
@@ -95,7 +145,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
     }
-
     noServiceAppointments = false;
     initialServiceAppointments = [];
     @track records = [];
@@ -106,10 +155,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.wiredAllServiceAppointmentsResult = result;
         if (result.data) {
             this.error = undefined;
-            this.allServiceAppointmentsWired = [...result.data];
+            this.allServiceAppointmentsWired = result.data.map((x) => ({
+                ...x,
+                weekday: this.getDayOfWeek(x.EarliestStartTime)
+                //,isUrgent: x.HOT_IsUrgent__c
+            }));
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
-            for (let record of result.data) {
+            for (let record of this.allServiceAppointmentsWired) {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
             }
             this.records = tempRecords;
@@ -124,8 +177,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     refresh() {
-        this.filters = defaultFilters();
-        this.goToRecordDetails({ detail: { Id: this.recordId } });
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilter'));
+        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
+
         this.sendRecords();
         this.sendFilters();
         this.sendCheckedRows();
@@ -144,7 +198,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
     seriesRecords = [];
     showTable = true;
     goToRecordDetails(result) {
-        window.scrollTo(0, 0);
         this.serviceAppointment = undefined;
         this.seriesRecords = [];
         let recordId = result.detail.Id;
@@ -154,6 +207,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
                 this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
+                this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
             }
         }
         for (let serviceAppointment of this.records) {
@@ -162,8 +216,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
         this.isSeries = this.seriesRecords.length <= 1 ? false : true;
-        this.updateURL();
-        this.sendDetail();
+        this.showServiceAppointmentDetails();
+    }
+    showServiceAppointmentDetails() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').focus();
     }
 
     @api recordId;
@@ -217,10 +274,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
                 this.template.querySelector('c-table').unsetCheckboxes();
+                this.checkedServiceAppointments = [];
                 this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
                 let currentFilters = this.filters;
                 if (this.sendInterestAll) {
                     this.sendInterestAllComplete = true;
+
                     return; // If series -> refresh after closeModal() to avoid showing weird data behind popup
                 }
                 refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
@@ -273,6 +332,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     sendInterestAllComplete = false;
     sendInterestAll = false;
     sendInterestSeries() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
         this.hideSubmitIndicators();
         this.showCommentSection();
         this.serviceAppointmentCommentDetails = [];
@@ -304,6 +364,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.sendInterestAllComplete = false;
         this.sendInterestAll = false;
         this.template.querySelector('.commentPage').classList.add('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
     }
 
     showCommentSection() {
@@ -319,10 +380,35 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
         return null;
     }
+    isRemoveReleasedTodayButtonHidden = true;
+    isReleasedTodayButtonHidden = false;
+    releasedTodayFilter() {
+        this.noReleasedToday = false;
+        const d = new Date();
+        let year = d.getFullYear();
+        let day = d.getDate();
+        let month = d.getMonth() + 1;
+        month = month < 10 ? '0' + month : month;
+        day = day < 10 ? '0' + day : day;
+        const formattedDate = `${year}-${month}-${day}`;
+        this.filters[5].value[0].value = formattedDate;
 
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        this.isReleasedTodayButtonHidden = true;
+        this.isRemoveReleasedTodayButtonHidden = false;
+    }
+    removeReleasedTodayFilter() {
+        this.filters[5].value[0].value = '';
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        this.isReleasedTodayButtonHidden = false;
+        this.isRemoveReleasedTodayButtonHidden = true;
+    }
     filteredRecordsLength = 0;
     @api
     applyFilter(event) {
+        sessionStorage.setItem('openSessionFilter', JSON.stringify(this.filters));
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
         let filteredRecords = [];

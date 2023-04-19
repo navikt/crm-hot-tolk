@@ -27,7 +27,16 @@ export default class Hot_requestForm_request extends LightningElement {
     @api parentRequestComponentValues;
     @api isEditOrCopyMode = false;
 
+    // Dont want to use this because focus will move to top on re-rendrering which happens on "Additional information"
+    // renderedCallback() {
+    //     this.template.querySelector('h2').focus();
+    // }
+
     connectedCallback() {
+        // This gives DOM(?) time to catch up and set focus correctly
+        this.showDiv = true;
+        setTimeout(() => this.template.querySelector('h2').focus());
+
         for (let field in this.parentFieldValues) {
             if (this.fieldValues[field] != null) {
                 this.fieldValues[field] = this.parentFieldValues[field];
@@ -97,8 +106,8 @@ export default class Hot_requestForm_request extends LightningElement {
         this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.sameAddressRadioButtons[1].checked =
             this.fieldValues.InterpretationStreet__c !== this.fieldValues.MeetingStreet__c;
-        this.componentValues.sameAddressRadioButtons[0].checked =
-            !this.componentValues.sameAddressRadioButtons[1].checked;
+        this.componentValues.sameAddressRadioButtons[0].checked = !this.componentValues.sameAddressRadioButtons[1]
+            .checked;
         this.componentValues.isOptionalFields =
             this.fieldValues.UserInterpretationMethod__c !== '' ||
             this.fieldValues.UserPreferredInterpreter__c !== '' ||

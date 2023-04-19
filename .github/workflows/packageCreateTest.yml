@@ -1,6 +1,14 @@
-name: "Create Package"
+name: "Create Package TEST"
 on:
   workflow_call:
+    inputs:
+       SFDX_ENV:
+        description: "Environent variables to be set for sfdx commands"
+        required: false
+        type: string
+    outputs:
+      packageId:
+        value: ${{ jobs.create-package.outputs.packageId }}
 jobs:
   create-package:
     name: Create Package
@@ -17,6 +25,8 @@ jobs:
       # Install SFDX
       - name: Install SFDX
         uses: navikt/crm-workflows-base/.github/actions/installSFDX@master
+        with:
+          version: 7.192.2
 
       # Authorize Prod
       - name: Authorize PROD
@@ -57,6 +67,7 @@ jobs:
       packageId: ${{ needs.create-package.outputs.packageId }}
       org: sit
       unpackagable: ./force-app/unpackagable-with-auto-deploy
+      SFDX_ENV: ${{ inputs.SFDX_ENV }}
     secrets: inherit
 
   create-release:

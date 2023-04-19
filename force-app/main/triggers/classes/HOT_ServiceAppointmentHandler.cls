@@ -338,9 +338,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
             if (
                 serviceAppointment.Status != 'Scheduled' &&
+                serviceAppointment.Status != 'Completed' &&
                 (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
                 serviceAppointment.HOT_ServiceResource__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c'))
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) &&
+                (serviceAppointment.HOT_ServiceResource__c != null ||
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') != null)
             ) {
                 serviceAppointmentWithNewAssignedResource.put(serviceAppointment.Id, serviceAppointment);
             }
@@ -865,6 +868,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
             if (serviceAppointment.HOT_DeadlineDate__c == null) {
                 serviceAppointment.HOT_DeadlineDate__c = serviceAppointment.EarliestStartTime.date();
+            }
+            Date today = Date.today();
+            Date tomorrow = today.addDays(1);
+            for(ServiceAppointment sa: serviceAppointments){
+                Date saDate = sa.SchedStartTime.date();
+                if(saDate==today || saDate==tomorrow ){
+                    // sa.HOT_IsUrgent__c=true;
+                }
             }
             serviceAppointment.HOT_IsEmployedInterpreter__c = false;
             serviceAppointment.HOT_IsReleasedToFreelance__c = true;

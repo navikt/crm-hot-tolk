@@ -1,13 +1,19 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
+import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
+import getOrdererInformation from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOrdererInformation';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
+
 import { columns, mobileColumns } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
+import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_myServiceAppointments extends LightningElement {
     @track columns = [];
     @track isEditButtonDisabled = false;
+    @track isCancelButtonHidden = true;
+    @track isEditButtonHidden = false;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -51,6 +57,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     @track filters = [];
     connectedCallback() {
+        refreshApex(this.wiredMyServiceAppointmentsResult);
         this.setColumns();
         this.breadcrumbs = [
             {
@@ -98,7 +105,6 @@ export default class Hot_myServiceAppointments extends LightningElement {
 
     refresh() {
         this.filters = defaultFilters();
-        this.goToRecordDetails({ detail: { Id: this.recordId } });
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -111,24 +117,67 @@ export default class Hot_myServiceAppointments extends LightningElement {
         { name: 'HOT_DeadlineDate__c', type: 'date' },
         { name: 'HOT_ReleaseDate__c', type: 'date' }
     ];
-
+    getDayOfWeek(date) {
+        var jsDate = new Date(date);
+        var dayOfWeek = jsDate.getDay();
+        var dayOfWeekString;
+        switch (dayOfWeek) {
+            case 0:
+                dayOfWeekString = 'Søndag';
+                break;
+            case 1:
+                dayOfWeekString = 'Mandag';
+                break;
+            case 2:
+                dayOfWeekString = 'Tirsdag';
+                break;
+            case 3:
+                dayOfWeekString = 'Onsdag';
+                break;
+            case 4:
+                dayOfWeekString = 'Torsdag';
+                break;
+            case 5:
+                dayOfWeekString = 'Fredag';
+                break;
+            case 6:
+                dayOfWeekString = 'Lørdag';
+                break;
+            default:
+                dayOfWeekString = '';
+        }
+        return dayOfWeekString;
+    }
     @track serviceAppointment;
     @track interestedResource;
+    @track ordererPhoneNumber;
     isDetails = false;
     isflow = false;
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
-        window.scrollTo(0, 0);
+        getOrdererInformation({ serviceAppointmentId: result.detail.Id })
+            .then((phonenumber) => {
+                this.ordererPhoneNumber = phonenumber;
+            })
+            .catch((error) => {
+                this.ordererPhoneNumber = '';
+            });
+        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').focus();
         let today = new Date();
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
         this.isDetails = !!this.recordId;
+        this.isEditButtonHidden = false;
+        this.isCancelButtonHidden = true;
+        this.isEditButtonDisabled = false;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
+                this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
                 let duedate = new Date(this.serviceAppointment.DueDate);
                 if (this.serviceAppointment.Status == 'Completed') {
@@ -137,7 +186,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
             }
         }
         this.updateURL();
-        this.sendDetail();
+        //this.sendDetail();
     }
 
     @api recordId;
@@ -155,7 +204,7 @@ export default class Hot_myServiceAppointments extends LightningElement {
         this.isDetails = false;
         this.showTable = true;
         this.isflow = false;
-        this.isEditButtonDisabled = true;
+        this.isEditButtonDisabled = false;
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'my' };
     }
@@ -186,7 +235,16 @@ export default class Hot_myServiceAppointments extends LightningElement {
     changeStatus() {
         this.isflow = true;
         this.isEditButtonDisabled = true;
+        this.isCancelButtonHidden = false;
         this.isDetails = true;
+        this.isEditButtonHidden = true;
+    }
+    cancelStatusFlow() {
+        this.isflow = false;
+        this.isEditButtonDisabled = false;
+        this.isCancelButtonHidden = true;
+        this.isDetails = true;
+        this.isEditButtonHidden = false;
     }
     get flowVariables() {
         return [
@@ -196,5 +254,34 @@ export default class Hot_myServiceAppointments extends LightningElement {
                 value: this.recordId
             }
         ];
+    }
+    closeModal() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+    }
+    handleStatusChange(event) {
+        console.log('handleStatusChange', event.detail);
+        if (event.detail.interviewStatus == 'FINISHED') {
+            getServiceAppointment({
+                recordId: this.recordId
+            }).then((data) => {
+                console.log(data.Status);
+                if (data.Status == 'Completed') {
+                    this.isflow = false;
+                    this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'Completed';
+                }
+                if (data.Status == 'Canceled') {
+                    this.isflow = false;
+                    this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'Canceled';
+                }
+                if (data.HOT_CanceledByInterpreter__c) {
+                    this.isflow = false;
+                    this.isCancelButtonHidden = true;
+                    this.serviceAppointment.Status = 'None';
+                }
+            });
+            refreshApex(this.wiredMyServiceAppointmentsResult);
+        }
     }
 }
