@@ -409,7 +409,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         }
 
         List<WorkOrder> workordersList = [
-            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
+            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__r.IsNotNotifyAccount__c, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
             FROM WorkOrder
             WHERE HOT_Request__c IN :requestIds AND HOT_Request__r.Type__c = 'User'
         ];
@@ -424,7 +424,10 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         if (!workordersList.isEmpty()) {
             for (WorkOrder wo : workordersList) {
                 Set<String> recipients = new Set<String>();
-                recipients.add(userIdByAccountId.get(wo.AccountId));
+                // Added check for if account should not recieve notification on order
+                if (userIdByAccountId.get(wo.AccountId) != null && wo.Account.CRM_Person__r.HOT_NotificationChannel__c != null && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
+                    recipients.add(userIdByAccountId.get(wo.AccountId));
+                }
                 if (recipients.size() != 0) {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.newWorkOrderNotification(

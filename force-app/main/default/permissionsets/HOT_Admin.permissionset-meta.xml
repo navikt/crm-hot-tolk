@@ -524,6 +524,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.IsNotNotifyAccount__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.IsNotifyDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1740,6 +1745,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Task.HOT_IsCreatedFromSA__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.HOT_DelPol_ToDeleteRecord__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

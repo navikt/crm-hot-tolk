@@ -284,6 +284,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
         this.isOrdererWantStatusUpdateOnSMS = this.request.IsOrdererWantStatusUpdateOnSMS__c ? 'Ja' : 'Nei';
+        this.IsNotNotifyAccount = this.request.IsNotNotifyAccount__c ? 'Nei' : 'Ja';
         this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId ? true : false;
         this.setHeader();
         this.setButtonLabels();

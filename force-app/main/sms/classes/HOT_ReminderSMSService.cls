@@ -115,19 +115,69 @@ public without sharing class HOT_ReminderSMSService {
     @Future
     public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
         List<WorkOrder> workOrderList = [
-            SELECT Id, AccountId, Status, StartDate, EndDate, HOT_Request__c, Account.CRM_Person__r.INT_KrrMobilePhone__c
+            SELECT
+                Id,
+                AccountId,
+                Status,
+                StartDate,
+                EndDate,
+                HOT_Request__c,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM WorkOrder
             WHERE Id IN :workOrderIds
         ];
         List<SMS__c> smsList = new List<SMS__c>();
 
         for (WorkOrder wo : workOrderList) {
-            SMS__c sms = new SMS__c();
-            sms.Account__c = wo.AccountId;
-            sms.Domain__c = 'HOT';
-            sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
-            sms.Message__c = constructOnOrdererMessage(wo);
-            smsList.add(sms);
+            smsList.add(
+            SMSService.createSMSRecord(
+                        'HOT',
+                        'Orderer On Status Update',
+                        wo.AccountId,
+                        wo.Id,
+                        wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                        constructOnOrdererMessage(wo)
+                    )
+            );
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    @Future
+    public static void sendSMSOnInterpreterChange(Set<Id> workOrderIds, String interpreterName) {
+        List<WorkOrder> workOrderList = [
+            SELECT
+                Id,
+                AccountId,
+                Status,
+                StartDate,
+                EndDate,
+                HOT_Request__c,
+                HOT_Request__r.Type__c,
+                HOT_Request__r.OrdererPhone__c,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM WorkOrder
+            WHERE Id IN :workOrderIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (WorkOrder wo : workOrderList) {
+            smsList.add(
+                SMSService.createSMSRecord(
+                            'HOT',
+                            'Orderer On Status Update',
+                            wo.AccountId,
+                            wo.Id,
+                            getRecipient(wo),
+                            constructInterpreterChangedMessage(wo, interpreterName)
+                        )
+                );
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -146,6 +196,16 @@ public without sharing class HOT_ReminderSMSService {
         return message;
     }
 
+    public static String constructInterpreterChangedMessage(WorkOrder workOrder, String interpreterNames) {
+        String message = 'INFO\nTolk på din bestilling er endret:\n';
+        message += 'Tolk er: ';
+        message += interpreterNames;
+        message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+        message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        message += '\nMvh tolketjenesten i NAV';
+        return message;
+    }
+
     private static String getRecipient(WorkOrder workOrder) {
         if (workOrder.HOT_Request__r.Type__c != 'Me') {
             return workOrder.HOT_Request__r.OrdererPhone__c;
@@ -153,7 +213,7 @@ public without sharing class HOT_ReminderSMSService {
         return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
     }
 
-    private static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
+    public static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
         String message = 'INFO\nStatus på din bestilling er:\n';
         if (workOrder.Status == 'Dispatched') {
             message += 'Du har fått tolk. ';
