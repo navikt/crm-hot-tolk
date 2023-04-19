@@ -59,6 +59,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             });
             sessionStorage.removeItem('openfilters');
         }
+
         this.sendFilters();
     }
     setCheckedRowsOnRefresh() {
@@ -72,14 +73,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
     disconnectedCallback() {
         // Going back with browser back or back button on mouse forces page refresh and a disconnect
         // Save filters on disconnect to exist only within the current browser tab
-        sessionStorage.setItem('openfilters', JSON.stringify(this.filters));
         sessionStorage.setItem('checkedrows', JSON.stringify(this.checkedServiceAppointments));
     }
 
     renderedCallback() {
         this.setPreviousFiltersOnRefresh();
         this.setCheckedRowsOnRefresh();
-        //localStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
     }
 
     @track filters = [];
@@ -177,7 +176,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     refresh() {
-        this.filters = defaultFilters();
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilter'));
+        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
+
         this.sendRecords();
         this.sendFilters();
         this.sendCheckedRows();
@@ -406,6 +407,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     filteredRecordsLength = 0;
     @api
     applyFilter(event) {
+        sessionStorage.setItem('openSessionFilter', JSON.stringify(this.filters));
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
         let filteredRecords = [];
