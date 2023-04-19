@@ -349,7 +349,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 AccountId,
                 HOT_Interpreters__c,
                 HOT_Request__r.IsNotNotifyAccount__c,
-                Account.CRM_Person__r.HOT_NotificationChannel__c
+                Account.CRM_Person__r.HOT_NotificationChannel__c,
+                Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
             FROM WorkOrder
             WHERE
                 Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
@@ -406,7 +407,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 AccountId,
                 HOT_Interpreters__c,
                 HOT_Request__r.IsNotNotifyAccount__c,
-                Account.CRM_Person__r.HOT_NotificationChannel__c
+                Account.CRM_Person__r.HOT_NotificationChannel__c,
+                Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
             FROM WorkOrder
             WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
