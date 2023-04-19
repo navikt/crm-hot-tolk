@@ -124,6 +124,7 @@ private class HOT_ReminderSMSServiceTest {
                 StartDate,
                 EndDate,
                 Status,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c,
                 Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM WorkOrder
