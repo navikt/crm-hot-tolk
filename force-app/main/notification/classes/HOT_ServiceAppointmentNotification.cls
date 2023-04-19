@@ -26,7 +26,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
                 }
 
-                notiyUserOnStatusChange(serviceAppointment);
+                //notiyUserOnStatusChange(serviceAppointment);
             }
 
             // Varsel ved endring av tolk
@@ -348,6 +348,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 EndDate,
                 AccountId,
                 HOT_Interpreters__c,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 Account.CRM_Person__r.HOT_NotificationChannel__c
             FROM WorkOrder
             WHERE
@@ -359,7 +360,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             for (WorkOrder wo : workordersList) {
                 isPerson = wo.Account.CRM_Person__c != null ? true : false;
                 Set<String> recipients = new Set<String>();
-                if (userIdByAccountId.get(wo.AccountId) != null) {
+                if (userIdByAccountId.get(wo.AccountId) != null && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
                     recipients.add(userIdByAccountId.get(wo.AccountId));
                 }
                 if (recipients.size() != 0 && isPerson) {
@@ -401,8 +402,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 Id,
                 StartDate,
                 EndDate,
+                Status,
                 AccountId,
                 HOT_Interpreters__c,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 Account.CRM_Person__r.HOT_NotificationChannel__c
             FROM WorkOrder
             WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
@@ -412,10 +415,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
             for (WorkOrder wo : workordersList) {
                 isPerson = wo.Account.CRM_Person__c != null ? true : false;
                 Set<String> recipients = new Set<String>();
-                if (userIdByAccountId.get(wo.AccountId) != null) {
+                if (userIdByAccountId.get(wo.AccountId) != null && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
                     recipients.add(userIdByAccountId.get(wo.AccountId));
                 }
-                if (recipients.size() != 0 && isPerson) {
+                if (recipients.size() != 0 && isPerson && wo.Status == 'Dispatched') {
                     if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.interpreterChangeNotification(
                             getCustomNotificationType('HOT_NotifyUser'),

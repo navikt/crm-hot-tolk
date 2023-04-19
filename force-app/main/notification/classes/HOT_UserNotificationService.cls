@@ -28,6 +28,37 @@ public without sharing class HOT_UserNotificationService {
         }
     }
 
+    public static void sendNotificationToOrdererOnStatusUpdate(
+        CustomNotificationType notificationType,
+        WorkOrder workOrder,
+        Set<String> recipients
+    ) {
+        String title = 'Status på din bestilling er endret';
+        String body;
+        if (workOrder.Status == 'Dispatched' && workOrder.HOT_Interpreters__c.length() > 0) {
+            body =
+                'Du har fått tolk. Tolk er ' + workOrder.HOT_Interpreters__c +'.';
+        }
+        if (workOrder.Status == 'Cannot Complete') {
+            body = 'Ikke ledig tolk.';
+        }
+        body += '\nDato: ' +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            ' - ' +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        String targetPageRef = getTargetPageRefOrderer(workOrder.Id, 'WO');
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        notification.send(recipients);
+    }
+
     public static void statusChangeNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
@@ -36,12 +67,12 @@ public without sharing class HOT_UserNotificationService {
     ) {
         String title = 'Status på din bestilling er endret';
         String body;
-        if (sa.Status == 'Dispatched') {
+        if (workOrder.Status == 'Dispatched') {
             body =
                 'Du har fått tolk. ' +
                 (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '');
         }
-        if (sa.Status == 'Cannot Complete') {
+        if (workOrder.Status == 'Cannot Complete') {
             body = 'Ikke ledig tolk';
         }
         body += '\nDato: ' +
@@ -135,6 +166,16 @@ public without sharing class HOT_UserNotificationService {
     private static String getTargetPageRef(Id targetId, String level) {
         String pageRef =
             '{type: "comm__namedPage",attributes: {pageName: "mine-bestillinger"}, state: {id: "' +
+            targetId +
+            '", level: "' +
+            level +
+            '"}}';
+
+        return pageRef;
+    }
+    private static String getTargetPageRefOrderer(Id targetId, String level) {
+        String pageRef =
+            '{type: "comm__namedPage",attributes: {pageName: "mine-bestillinger-andre"}, state: {id: "' +
             targetId +
             '", level: "' +
             level +
