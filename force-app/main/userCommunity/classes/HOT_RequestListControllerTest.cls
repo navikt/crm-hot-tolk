@@ -164,4 +164,18 @@ private class HOT_RequestListControllerTest {
             System.assertEquals(t.Id,threadId, 'Could not find the thread Id');
         
     }
+      @isTest
+    static void getRequestStatusTest() {
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Status__c='Åpen';
+        insert request;
+
+        Test.stopTest();
+           String status= HOT_RequestListController.getRequestStatus(request.Id);
+            System.assertEquals('Åpen',status, 'Could not get correct status');
+        
+    }
 }
