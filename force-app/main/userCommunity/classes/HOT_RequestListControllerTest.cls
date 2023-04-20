@@ -178,4 +178,35 @@ private class HOT_RequestListControllerTest {
             System.assertEquals('Åpen',status, 'Could not get correct status');
         
     }
+      @isTest static void testGetTimesNew() {
+        List<WorkOrder> workOrders = new List<WorkOrder>();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        for(Integer i=1; i<=3; i++) {
+            WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+            workOrder.AccountId = account.Id;
+            workOrder.StartDate = DateTime.now().addDays(i);
+            workOrder.EndDate = workOrder.StartDate.addHours(2);
+            workOrder.Status = 'In Progress';
+            workOrders.add(workOrder);
+        }
+        insert workOrders;
+        
+        List<String> requestIds = new List<String>();
+        for(WorkOrder wo : workOrders) {
+            requestIds.add(wo.HOT_Request__c);
+        }
+        List<Map<String, String>> result = HOT_RequestListController.getTimesNew(requestIds);
+        
+        System.assertEquals(result.size(), 3);
+        for(Integer i=0; i<result.size(); i++) {
+            Map<String, String> timeMap = result[i];
+            WorkOrder wo = workOrders[i];
+            System.assertEquals(timeMap.get('id'), wo.Id);
+    }
+}
 }
