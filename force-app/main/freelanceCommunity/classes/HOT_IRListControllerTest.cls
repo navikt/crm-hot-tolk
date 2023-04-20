@@ -105,4 +105,30 @@ private class HOT_IRListControllerTest {
             'Could not set IsDispatcherNewComment__c'
         );
     }
+      @isTest 
+      static void testRetractInterest() {
+        HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
+        interestedResource.Status__c = 'Interested';
+        update interestedResource;
+
+        HOT_InterestedResourcesListController.retractInterest(interestedResource.Id);
+    
+        HOT_InterestedResource__c updatedInterestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c WHERE Id = :interestedResource.Id];
+        System.assertEquals(updatedInterestedResource.Status__c, 'Retracted Interest');
+    }
+    @isTest 
+     static void startAThreadAndAddCommentTest() {
+        
+        HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
+        
+        String newComment = 'This is a test comment';
+        
+        Test.startTest();
+        HOT_InterestedResourcesListController.startAThreadAndAddComment(interestedResource.Id, newComment);
+        Test.stopTest();
+    
+        Thread__c thread = [SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, CRM_Account__c, HOT_InterestedResource__c FROM Thread__c WHERE CRM_Related_Object__c =: interestedResource.Id LIMIT 1];
+        
+        System.assertNotEquals(null, thread, 'Thread was not made');
+    }
 }
