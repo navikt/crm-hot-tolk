@@ -1366,27 +1366,6 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value>&lt;p&gt;Forespørselen er ikke koblet til en bruker, og det kan derfor ikke føres en samtale.&lt;/p&gt;</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-                <identifier>flexipage_richText1</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.IsAccountNotNull__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>false</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>showClose</name>
                     <value>false</value>
                 </componentInstanceProperties>
