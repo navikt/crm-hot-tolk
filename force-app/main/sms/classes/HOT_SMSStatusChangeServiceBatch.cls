@@ -21,6 +21,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
         List<WorkOrder> workorderListPush = new List<WorkOrder>();
         List<WorkOrder> workorderListSMS = new List<WorkOrder>();
         Map<Id, Id> userIdByOrdererAccountId = new Map<Id, Id>();
+        Map<Id, String> interpreterNames = HOT_ReminderSMSService.interpreterNamesByWorkOrderIds(records);
         List<Id> accountIds = new List<Id>();
 
         CustomNotificationType notificationTypePush = [
@@ -55,7 +56,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                     if (userIdByOrdererAccountId.get(wo.HOT_Request__r.Orderer__c) != null && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
                         Set<String> recipients = new Set<String>();
                         recipients.add(userIdByOrdererAccountId.get(wo.HOT_Request__r.Orderer__c));
-                        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(notificationTypePush, wo, recipients);
+                        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(notificationTypePush, wo, interpreterNames.get(wo.Id), recipients);
                         wo.HOT_SendSMSNotificationOnStatusChanged__c = false;
                     }
                 }
