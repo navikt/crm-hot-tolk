@@ -50,7 +50,7 @@ public without sharing class HOT_UserNotificationService {
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRefOrderer(workOrder.Id, 'WO');
+        String targetPageRef = workOrder.HOT_Request__r.Type__c == 'Me' ? getTargetPageRef(workOrder.Id, 'WO') : getTargetPageRefOrderer(workOrder.Id, 'WO');
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
