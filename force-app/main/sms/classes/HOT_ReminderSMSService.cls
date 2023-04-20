@@ -52,7 +52,7 @@ public without sharing class HOT_ReminderSMSService {
         return dispatchedServiceAppointmentsByWorkOrderId;
     }
 
-    private static Map<Id, String> interpreterNamesByWorkOrderIds(List<WorkOrder> workOrders) {
+    public static Map<Id, String> interpreterNamesByWorkOrderIds(List<WorkOrder> workOrders) {
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = dispatchedServiceAppointmentsByWorkOrderId(
             workOrders
         );
