@@ -120,13 +120,13 @@ public without sharing class HOT_UserNotificationService {
     public static void interpreterChangeNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
-        ServiceAppointment sa,
+        String interpreters,
         Set<String> recipients
     ) {
         String title = 'Endring av tolk';
         String body =
-            'Tolk på din bestilling er endret. ' +
-            (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
+            'Tolk på din bestilling er endret. \nTolk er: ' + interpreters +
+           // (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
             '\nDato: ' +
             workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
