@@ -12,6 +12,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
         query += 'WHERE HOT_SendSMSNotificationOnStatusChanged__c = TRUE ';
         query += 'AND (Status = \'Dispatched\' OR Status = \'Cannot Complete\')';
         query += 'AND (HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\' OR HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\') ';
+        query += 'AND HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE ';
         query += 'AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = TRUE';
 
         return Database.getQueryLocator(query);

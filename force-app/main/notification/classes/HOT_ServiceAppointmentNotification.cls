@@ -355,6 +355,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             WHERE
                 Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
                 AND Account.CRM_Person__r.HOT_NotificationChannel__c != NULL
+                AND Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE
         ];
 
         if (!workordersList.isEmpty()) {
