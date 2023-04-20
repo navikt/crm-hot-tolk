@@ -132,7 +132,9 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                             appointment.Status__c == 'Assigned' ||
                             appointment.Status__c == 'Tildelt' ||
                             appointment.Status__c == 'Canceled' ||
-                            appointment.Status__c == 'Avlyst'
+                            appointment.Status__c == 'Avlyst' ||
+                            appointment.Status__c == 'Canceled by Interpreter' ||
+                            appointment.Status__c == 'Avlyst av tolk'
                         ) {
                             threadId = appointment.ServiceAppointment__c;
                         } else {
@@ -309,7 +311,9 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             this.interestedResource.Status__c != 'Assigned' &&
             this.interestedResource.Status__c != 'Canceled' &&
             this.interestedResource.Status__c != 'Tildelt' &&
-            this.interestedResource.Status__c != 'Avlyst'
+            this.interestedResource.Status__c != 'Avlyst' &&
+            this.interestedResource.Status__c != 'Canceled by Interpreter' &&
+            this.interestedResource.Status__c != 'Avlyst av tolk'
         ) {
             getThreadDispatcherId({ interestedResourceId: this.interestedResource.Id }).then((result) => {
                 if (result != '') {
