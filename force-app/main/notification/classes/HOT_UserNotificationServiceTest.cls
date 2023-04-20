@@ -54,9 +54,10 @@ public class HOT_UserNotificationServiceTest {
   
         WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status FROM WorkOrder LIMIT 1];
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        String interpreters = 'Tolk Vader';
 
         Test.startTest();
-        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(notificationType, workOrder, recipients);
+        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(notificationType, workOrder,interpreters, recipients);
         Test.stopTest();
     }
 
@@ -86,9 +87,10 @@ public class HOT_UserNotificationServiceTest {
         WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status FROM WorkOrder LIMIT 1];
         ServiceAppointment serviceAppointment = [SELECT Id, HOT_ServiceResource__r.Name FROM ServiceAppointment LIMIT 1];
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        String interpreters = 'Darth Vader';
 
         Test.startTest();
-        HOT_UserNotificationService.interpreterChangeNotification(notificationType, workOrder, serviceAppointment, recipients);
+        HOT_UserNotificationService.interpreterChangeNotification(notificationType, workOrder, interpreters, recipients);
         Test.stopTest();
     }
     @isTest
