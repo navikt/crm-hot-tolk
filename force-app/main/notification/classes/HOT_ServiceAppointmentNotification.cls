@@ -394,7 +394,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         // Needed to get latest SR I guess
         ServiceAppointment updatedSA = [
-            SELECT HOT_ServiceResource__r.Name, HOT_WorkOrderLineItem__r.WorkOrderId
+            SELECT HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
             WHERE Id = :sa.Id
         ];
@@ -414,6 +414,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
             WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
 
+        Map<Id, String> interpreterNames = HOT_ReminderSMSService.interpreterNamesByWorkOrderIds(workordersList);
+
         if (!workordersList.isEmpty()) {
             for (WorkOrder wo : workordersList) {
                 isPerson = wo.Account.CRM_Person__c != null ? true : false;
@@ -426,7 +428,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         HOT_UserNotificationService.interpreterChangeNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             wo,
-                            updatedSA,
+                            interpreterNames.get(wo.Id),
                             recipients
                         );
                     } else {
@@ -434,7 +436,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         workOrderIds.add(wo.Id);
                         HOT_ReminderSMSService.sendSMSOnInterpreterChange(
                             workOrderIds,
-                            updatedSA.HOT_ServiceResource__r.Name
+                            interpreterNames.get(wo.Id)
                         );
                     }
                 }
