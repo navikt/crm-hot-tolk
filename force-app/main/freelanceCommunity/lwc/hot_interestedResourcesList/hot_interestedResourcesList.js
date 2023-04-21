@@ -134,7 +134,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
 
     refresh() {
-        this.filters = defaultFilters();
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilter'));
+        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
         //this.goToRecordDetails({ detail: { Id: this.recordId } });
         //this.sendRecords();
         this.sendFilters();
@@ -213,7 +214,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
-
+        sessionStorage.setItem('openSessionFilter', JSON.stringify(this.filters));
         let filteredRecords = [];
         let records = this.initialInterestedResources;
         for (let record of records) {
