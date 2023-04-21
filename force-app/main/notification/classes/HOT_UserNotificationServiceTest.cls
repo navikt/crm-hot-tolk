@@ -52,7 +52,7 @@ public class HOT_UserNotificationServiceTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
   
-        WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status FROM WorkOrder LIMIT 1];
+        WorkOrder workOrder = [SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status, HOT_Request__r.Type__c FROM WorkOrder LIMIT 1];
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
         String interpreters = 'Tolk Vader';
 

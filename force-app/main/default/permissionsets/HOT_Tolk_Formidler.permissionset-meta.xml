@@ -282,6 +282,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_InterestedResource__c.ServiceResource__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_InterestedResource__c.ServiceTerritory__c</field>
         <readable>true</readable>
@@ -839,6 +844,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_RemoteInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Person__c.HOT_IsReservationAgainstNotifications__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
