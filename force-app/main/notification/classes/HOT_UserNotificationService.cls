@@ -126,7 +126,6 @@ public without sharing class HOT_UserNotificationService {
         String title = 'Endring av tolk';
         String body =
             'Tolk på din bestilling er endret. \nTolk er: ' + interpreters +
-           // (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
             '\nDato: ' +
             workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
