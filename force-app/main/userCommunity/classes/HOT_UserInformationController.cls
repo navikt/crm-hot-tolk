@@ -32,7 +32,8 @@ public without sharing class HOT_UserInformationController {
                 HOT_DegreeOfHearingAndVisualImpairment__c,
                 INT_SecurityMeasures__c,
                 HOT_SIPAddress__c,
-                HOT_NotificationChannel__c
+                HOT_NotificationChannel__c,
+                HOT_IsReservationAgainstNotifications__c
             FROM Person__c
             WHERE Id = :currentUser.Account.CRM_Person__c
         ];
@@ -53,6 +54,15 @@ public without sharing class HOT_UserInformationController {
         
         Schema.DescribeFieldResult fieldResult = Person__c.HOT_NotificationChannel__c.getDescribe();
 		List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+        for( Schema.PicklistEntry f : ple){
+            if(chosen==f.getLabel()){
+                Map < String, String > values = new Map < String, String > {
+                    'label' => f.getLabel(),
+                    'value' => f.getValue()
+                };
+                options.add(values);
+            }
+		}   
 		for( Schema.PicklistEntry f : ple){
             if(chosen!=f.getLabel()){
                 Map < String, String > values = new Map < String, String > {
@@ -66,7 +76,7 @@ public without sharing class HOT_UserInformationController {
     }
     
     @AuraEnabled
-    public static boolean changeUserNotificationSetting(String personId, String newNotificationValue) {
+    public static boolean changeUserNotificationSetting(String personId, String newNotificationValue, Boolean isReservedAgainstNotifications) {
         Person__c person = [
             SELECT
                 Id,
@@ -76,6 +86,7 @@ public without sharing class HOT_UserInformationController {
         ];
          if(person!=null){
              person.HOT_NotificationChannel__c=newNotificationValue;
+             person.HOT_IsReservationAgainstNotifications__c=isReservedAgainstNotifications;
              update person;
          }
         return true;
