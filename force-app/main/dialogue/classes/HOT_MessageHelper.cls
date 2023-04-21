@@ -77,7 +77,6 @@ public without sharing class HOT_MessageHelper {
      @AuraEnabled(cacheable=true)
     public static List<Thread__c> getSingleThread(Id recordId, String type) {
         try {
-    
             List<Thread__c> t = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
                 FROM Thread__c
@@ -85,6 +84,7 @@ public without sharing class HOT_MessageHelper {
                 LIMIT 1
             ];
             return t;
+            
         } catch (Exception e) {
             return null;
         }
@@ -172,7 +172,7 @@ public without sharing class HOT_MessageHelper {
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='ServiceAppointment'){ 
-            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE (ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Dispatched' AND Status__c='Assigned') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled')];
+            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE (ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Dispatched' AND Status__c='Assigned') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled by Interpreter')];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
@@ -180,7 +180,7 @@ public without sharing class HOT_MessageHelper {
             HOT_DatabaseOperations.insertRecords(thread);
         }
          if(objectType=='HOT_InterestedResource__c'){
-            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:recordId AND Status__c!='Assigned' AND Status__c!='Canceled'];
+            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:recordId AND Status__c!='Assigned' AND Status__c!='Canceled' AND Status__c!='Canceled by Interpreter'];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
