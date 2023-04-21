@@ -428,6 +428,25 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
         if (sameValues) {
+            let filteredRecords = [];
+            let records = this.initialServiceAppointments;
+            for (let record of records) {
+                let includeRecord = true;
+                for (let filter of this.filters) {
+                    includeRecord *= compare(filter, record);
+                }
+                if (includeRecord) {
+                    filteredRecords.push(record);
+                }
+            }
+            this.filteredRecordsLength = filteredRecords.length;
+
+            if (setRecords) {
+                this.records = filteredRecords;
+            }
+            this.checkedServiceAppointmentsFromSession = JSON.parse(
+                sessionStorage.getItem('checkedrowsSavedForRefresh')
+            );
         } else {
             let filteredRecords = [];
             let records = this.initialServiceAppointments;
