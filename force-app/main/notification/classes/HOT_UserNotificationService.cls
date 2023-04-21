@@ -31,13 +31,14 @@ public without sharing class HOT_UserNotificationService {
     public static void sendNotificationToOrdererOnStatusUpdate(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
+        String interpreters,
         Set<String> recipients
     ) {
         String title = 'Status på din bestilling er endret';
         String body;
-        if (workOrder.Status == 'Dispatched' && workOrder.HOT_Interpreters__c.length() > 0) {
+        if (workOrder.Status == 'Dispatched') {
             body =
-                'Du har fått tolk. Tolk er ' + workOrder.HOT_Interpreters__c +'.';
+                'Du har fått tolk. Tolk er ' + interpreters;
         }
         if (workOrder.Status == 'Cannot Complete') {
             body = 'Ikke ledig tolk.';
@@ -119,13 +120,13 @@ public without sharing class HOT_UserNotificationService {
     public static void interpreterChangeNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
-        ServiceAppointment sa,
+        String interpreters,
         Set<String> recipients
     ) {
         String title = 'Endring av tolk';
         String body =
-            'Tolk på din bestilling er endret. ' +
-            (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
+            'Tolk på din bestilling er endret. \nTolk er: ' + interpreters +
+           // (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '') +
             '\nDato: ' +
             workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +

@@ -43,7 +43,8 @@ export default class Hot_wageClaimList extends LightningElement {
     }
 
     refresh() {
-        this.filters = defaultFilters();
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('wageClaimSessionFilter'));
+        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -186,7 +187,7 @@ export default class Hot_wageClaimList extends LightningElement {
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
-
+        sessionStorage.setItem('wageClaimSessionFilter', JSON.stringify(this.filters));
         let filteredRecords = [];
         let records = this.allWageClaimsWired;
         for (let record of records) {

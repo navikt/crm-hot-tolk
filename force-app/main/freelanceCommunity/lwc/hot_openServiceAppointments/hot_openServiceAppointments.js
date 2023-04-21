@@ -83,6 +83,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     @track filters = [];
+    numberTimesCalled = 0;
     connectedCallback() {
         if (sessionStorage.getItem('checkedrowsSavedForRefresh')) {
             this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsSavedForRefresh'));
@@ -383,6 +384,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     isRemoveReleasedTodayButtonHidden = true;
     isReleasedTodayButtonHidden = false;
     releasedTodayFilter() {
+        this.checkedServiceAppointments = [];
         this.noReleasedToday = false;
         const d = new Date();
         let year = d.getFullYear();
@@ -399,6 +401,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.isRemoveReleasedTodayButtonHidden = false;
     }
     removeReleasedTodayFilter() {
+        this.checkedServiceAppointments = [];
         this.filters[5].value[0].value = '';
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -408,6 +411,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     filteredRecordsLength = 0;
     @api
     applyFilter(event) {
+        this.numberTimesCalled = this.numberTimesCalled + 1;
         sessionStorage.setItem('openSessionFilter', JSON.stringify(this.filters));
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
@@ -426,6 +430,13 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
         if (setRecords) {
             this.records = filteredRecords;
+        }
+        this.checkedServiceAppointmentsFromSession = JSON.parse(sessionStorage.getItem('checkedrowsSavedForRefresh'));
+        if (
+            this.filteredRecordsLength != this.checkedServiceAppointmentsFromSession.length &&
+            this.numberTimesCalled > 2
+        ) {
+            this.checkedServiceAppointments = [];
         }
         return this.filteredRecordsLength;
     }
