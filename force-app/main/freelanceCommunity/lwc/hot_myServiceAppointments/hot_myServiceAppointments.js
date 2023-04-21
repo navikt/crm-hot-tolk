@@ -102,7 +102,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     }
 
     refresh() {
-        this.filters = defaultFilters();
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('mySessionFilter'));
+        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -211,7 +212,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
-
+        sessionStorage.setItem('mySessionFilter', JSON.stringify(this.filters));
         let filteredRecords = [];
         let records = this.initialServiceAppointments;
         for (let record of records) {

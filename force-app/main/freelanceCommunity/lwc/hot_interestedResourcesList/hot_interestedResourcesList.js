@@ -171,7 +171,8 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     }
 
     refresh() {
-        this.filters = defaultFilters();
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('interestedSessionFilter'));
+        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
         //this.goToRecordDetails({ detail: { Id: this.recordId } });
         //this.sendRecords();
         this.sendFilters();
@@ -255,7 +256,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
-
+        sessionStorage.setItem('interestedSessionFilter', JSON.stringify(this.filters));
         let filteredRecords = [];
         let records = this.initialInterestedResources;
         for (let record of records) {
