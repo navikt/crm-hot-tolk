@@ -32,3 +32,7 @@
     background-color: red;
     display: none !important;
 }
+.button-class {
+    text-align: center;
+    margin-top: 1.5rem;
+}
