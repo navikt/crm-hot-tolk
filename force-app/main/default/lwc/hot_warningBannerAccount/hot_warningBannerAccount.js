@@ -8,13 +8,6 @@ import { formatDate } from 'c/datetimeFormatter';
 export default class Hot_warningBannerAccount extends LightningElement {
     @api recordId;
     @track isDeceased;
-    @track record;
-
-    // @wire(getRecord, {
-    //     recordId: '$recordId',
-    //     fields: [securityMeasures, reservations, isDeceased]
-    // })
-    // record;
 
     @wire(getRecord, {
         recordId: '$recordId',
