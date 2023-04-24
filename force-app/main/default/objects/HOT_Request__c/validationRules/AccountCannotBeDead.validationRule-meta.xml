@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AccountCannotBeDead</fullName>
+    <active>true</active>
+    <description>Kan ikke opprette forespørsel om bruker er død</description>
+    <errorConditionFormula>Account__r.CRM_Person__r.INT_IsDeceased__c</errorConditionFormula>
+    <errorDisplayField>Account__c</errorDisplayField>
+    <errorMessage>Kan ikke opprette forespørsel på en død person</errorMessage>
+</ValidationRule>
