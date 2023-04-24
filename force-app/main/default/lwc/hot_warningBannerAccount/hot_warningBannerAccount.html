@@ -24,4 +24,12 @@
             <h2>Det er følgende reservasjoner på brukeren: {reservations}</h2>
         </div>
     </template>
+    <template if:true={isDeceased}>
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+            <span class="slds-assistive-text">Advarsel</span>
+            <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
+            </lightning-icon>
+            <span>Denne brukeren er død.</span>
+        </div>
+    </template>
 </template>
