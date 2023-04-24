@@ -84,10 +84,16 @@ public without sharing class HOT_UserInformationController {
                 FROM Person__c
                 WHERE Id = :personId
         ];
-         if(person!=null){
-             person.HOT_NotificationChannel__c=newNotificationValue;
-             person.HOT_IsReservationAgainstNotifications__c=isReservedAgainstNotifications;
-             update person;
+        if(person!=null){
+            if(String.isNotBlank(String.valueOf(isReservedAgainstNotifications))){
+                person.HOT_NotificationChannel__c=newNotificationValue;
+                person.HOT_IsReservationAgainstNotifications__c=isReservedAgainstNotifications;
+                update person;
+            }
+            else{
+                person.HOT_NotificationChannel__c=newNotificationValue;
+                update person;
+            }
          }
         return true;
     }
