@@ -96,14 +96,15 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     handleSubmit() {
         this.viewUserNotificationSettings = true;
         this.editUserNotification = false;
-
         changeUserNotificationSetting({
             personId: this.recordId,
             newNotificationValue: this.newSelectedOption,
-            IsReservedAgainstNotifications: this.newIsReservedAgainstNotifications
+            isReservedAgainstNotifications: this.newIsReservedAgainstNotifications
         }).then(() => {
             this.selectedOption = this.newSelectedOption;
-            this.IsReservedAgainstNotifications = this.newIsReservedAgainstNotifications;
+            if (typeof this.newIsReservedAgainstNotifications == 'boolean') {
+                this.isReservedAgainstNotifications = this.newIsReservedAgainstNotifications;
+            }
         });
     }
 }
