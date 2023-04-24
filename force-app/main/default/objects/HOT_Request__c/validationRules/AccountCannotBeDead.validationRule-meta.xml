@@ -3,7 +3,7 @@
     <fullName>AccountCannotBeDead</fullName>
     <active>true</active>
     <description>Kan ikke opprette forespørsel om bruker er død</description>
-    <errorConditionFormula>Account__r.CRM_Person__r.INT_IsDeceased__c</errorConditionFormula>
+    <errorConditionFormula>Account__r.CRM_Person__r.INT_IsDeceased__c &amp;&amp; ISPICKVAL(Status__c, &apos;Åpen&apos;)</errorConditionFormula>
     <errorDisplayField>Account__c</errorDisplayField>
     <errorMessage>Kan ikke opprette forespørsel på en død person</errorMessage>
 </ValidationRule>
