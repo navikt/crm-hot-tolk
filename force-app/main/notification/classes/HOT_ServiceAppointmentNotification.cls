@@ -25,8 +25,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 if (serviceAppointment.HOT_AssignedResourceId__c != null) {
                     resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
                 }
-
-                //notiyUserOnStatusChange(serviceAppointment);
             }
 
             // Varsel ved endring av tolk
