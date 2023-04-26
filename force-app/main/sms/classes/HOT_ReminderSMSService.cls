@@ -92,7 +92,6 @@ public without sharing class HOT_ReminderSMSService {
                 phoneNumber != null &&
                 workOrder.StartDate > Datetime.now() &&
                 workOrder.HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c == true &&
-                !workOrder.HOT_Request__r.IsNotNotifyAccount__c &&
                 (workOrder.Status == 'Dispatched' ||
                 workOrder.Status == 'Cannot Complete')
             ) {
