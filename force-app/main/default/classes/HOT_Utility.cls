@@ -108,6 +108,26 @@ public without sharing class HOT_Utility {
     }
 
     public static Long getMinutesUntilNextSMSBatch() {
+        Long minutes = 10;
+        Datetime now = Datetime.now();
+        Datetime datetime_1600 = Datetime.newInstance(Date.today(), Time.newInstance(16, 0, 0, 0));
+        Boolean isWithinAnHour = datetime_1600.getTime() - Datetime.now().getTime() < 3600000;
+        Boolean isWithinTenMin = datetime_1600.getTime() - Datetime.now().getTime() < 600000;
+        Boolean isFriday = now.format('EEEE') == 'Friday';
+        if (isWithinTenMin) {
+            Datetime nextDay = Datetime.newInstance(now.addDays(1).date(), Time.newInstance(9, 0, 0, 0));
+            minutes = (nextDay.getTime() - now.getTime()) / 60000;
+            if (isFriday) {
+                Datetime monday = Datetime.newInstance(now.addDays(3).date(), Time.newInstance(9, 0, 0, 0));
+                minutes = (monday.getTime() - now.getTime()) / 60000;
+            }
+        } else if (isWithinAnHour) {
+            minutes = (datetime_1600.getTime() - now.getTime()) / 60000;
+        } 
+        return minutes;
+    }
+
+    public static Long getMinutesUntilNextReminderSMSBatch() {
         Long minutes = 60;
         Datetime now = Datetime.now();
         Datetime datetime_1600 = Datetime.newInstance(Date.today(), Time.newInstance(16, 0, 0, 0));
