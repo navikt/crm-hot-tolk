@@ -379,9 +379,14 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
     public static void notifyUserOnChangedResource(ServiceAppointment sa) {
         List<Id> accountIds = new List<Id>();
-        Boolean isPerson = false;
+  
+        ServiceAppointment updatedSA = [
+            SELECT HOT_WorkOrderLineItem__r.WorkOrderId, HOT_Request__r.Orderer__c
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
 
-        accountIds.add(sa.AccountId);
+        accountIds.add(updatedSA.HOT_Request__r.Orderer__c);
 
         List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
 
@@ -390,24 +395,18 @@ public without sharing class HOT_ServiceAppointmentNotification {
             userIdByAccountId.put(user.AccountId, user.Id);
         }
 
-        // Needed to get latest SR I guess
-        ServiceAppointment updatedSA = [
-            SELECT HOT_WorkOrderLineItem__r.WorkOrderId
-            FROM ServiceAppointment
-            WHERE Id = :sa.Id
-        ];
-
         List<WorkOrder> workordersList = [
             SELECT
                 Id,
-                StartDate,
-                EndDate,
                 Status,
+                EndDate,
+                StartDate,
                 AccountId,
                 HOT_Interpreters__c,
+                HOT_Request__r.Orderer__c,
                 HOT_Request__r.IsNotNotifyAccount__c,
-                Account.CRM_Person__r.HOT_NotificationChannel__c,
-                Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
+                HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c,
+                HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
             FROM WorkOrder
             WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
@@ -416,13 +415,12 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         if (!workordersList.isEmpty()) {
             for (WorkOrder wo : workordersList) {
-                isPerson = wo.Account.CRM_Person__c != null ? true : false;
                 Set<String> recipients = new Set<String>();
-                if (userIdByAccountId.get(wo.AccountId) != null && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
-                    recipients.add(userIdByAccountId.get(wo.AccountId));
+                if (userIdByAccountId.get(wo.HOT_Request__r.Orderer__c) != null) {
+                    recipients.add(userIdByAccountId.get(wo.HOT_Request__r.Orderer__c));
                 }
-                if (recipients.size() != 0 && isPerson && wo.Status == 'Dispatched') {
-                    if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
+                if (recipients.size() != 0 && wo.Status == 'Dispatched') {
+                    if (wo.HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.interpreterChangeNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             wo,
