@@ -130,7 +130,7 @@ public without sharing class HOT_WorkOrderListController {
             }
             if (wo.HOT_Request__r.Account__c == user.AccountId && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
                 workOrdersAccount.put(wo.Id, wo);
-            } else if (wo.EndDate > sixMonthsAgo) {
+            } else if (wo.EndDate > sixMonthsAgo && wo.HOT_Request__r.Orderer__c == user.AccountId) {
                 workOrdersOrderer.put(wo.Id, wo);
             }
         }
