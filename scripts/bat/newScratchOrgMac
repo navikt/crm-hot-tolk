@@ -25,12 +25,12 @@ sfdx package:install --package 04t7U000000D2KjQAK -r -k $3 --wait 10 --publish-w
 sfdx force:source:push
 
 # Tildel tilatelsessett til brukeren
-sfdx force:user:permset:assign --permsetname HOT_admin
+sfdx force:user:permset:assign --perm-set-name "HOT_admin, HOT_Config"
 
 # Publish Experience Site
-sfdx force:community:publish --name Tolketjenesten
+sfdx community:publish --name Tolketjenesten
 
 # Opprett testdata
-sfdx force:apex:execute -f scripts/apex/createTestData.apex
+sfdx apex run -f scripts/apex/createTestData.apex
 
 # done
