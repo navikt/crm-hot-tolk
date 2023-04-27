@@ -3,34 +3,34 @@
 # Oppretter scratch org
 sfdx force:org:create -f config/project-scratch-def.json --setalias $1 --durationdays $2 --setdefaultusername --json --loglevel fatal  --wait 10
 
-# Installer crm-platform-base ver. 0.186
-sfdx package:install --package 04t7U0000008r7rQAA -r -k $3 --wait 10 --publish-wait 10
+# Installer crm-platform-base ver. 0.192
+sfdx package:install --package 04t7U000000D2HkQAK -r -k $3 --wait 10 --publish-wait 10
 
-# Installer crm-platform-integration ver. 0.98
-sfdx package:install --package 04t7U0000008rFCQAY -r -k $3 --wait 10 --publish-wait 10
+# Installer crm-platform-integration ver. 0.99
+sfdx package:install --package 04t7U0000004dzIQAQ -r -k $3 --wait 10 --publish-wait 10
 
-# Installer crm-platform-access-control ver. 0.107
-sfdx package:install --package 04t7U0000008r15QAA -r -k $3 --wait 10 --publish-wait 10
+# Installer crm-platform-access-control ver. 0.113
+sfdx package:install --package 04t7U0000004e8tQAA -r -k $3 --wait 10 --publish-wait 10
 
-# Installer crm-community-base ver. 0.85
-sfdx package:install --package 04t7U0000008rHNQAY -r -k $3 --wait 10 --publish-wait 10
+# Installer crm-community-base ver. 0.86
+sfdx package:install --package 04t7U0000004duXQAQ -r -k $3 --wait 10 --publish-wait 10
 
-# Installer crm-platform-reporting ver. 0.30
-sfdx package:install --package 04t7U0000008qnNQAQ -r -k $3 --wait 10 --publish-wait 10
+# Installer crm-platform-reporting ver. 0.31
+sfdx package:install --package 04t7U0000008rBAQAY -r -k $3 --wait 10 --publish-wait 10
 
-# Installer crm-henvendelse-base ver. 0.14
-sfdx package:install --package 04t7U0000008r4dQAA -r -k $3 --wait 10 --publish-wait 10
+# Installer crm-henvendelse-base ver. 0.15
+sfdx package:install --package 04t7U000000D2KjQAK -r -k $3 --wait 10 --publish-wait 10
 
 # Dytt kildekoden til scratch org'en
 sfdx force:source:push
 
 # Tildel tilatelsessett til brukeren
-sfdx force:user:permset:assign --perm-set-name "HOT_admin, HOT_Config"
+sfdx force:user:permset:assign --permsetname HOT_admin
 
 # Publish Experience Site
-sfdx community:publish --name Tolketjenesten
+sfdx force:community:publish --name Tolketjenesten
 
 # Opprett testdata
-sfdx apex run -f scripts/apex/createTestData.apex
+sfdx force:apex:execute -f scripts/apex/createTestData.apex
 
 # done
