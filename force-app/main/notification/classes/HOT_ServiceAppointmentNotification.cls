@@ -379,7 +379,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
     public static void notifyUserOnChangedResource(ServiceAppointment sa) {
         List<Id> accountIds = new List<Id>();
-  
+
         ServiceAppointment updatedSA = [
             SELECT HOT_WorkOrderLineItem__r.WorkOrderId, HOT_Request__r.Orderer__c
             FROM ServiceAppointment
@@ -408,7 +408,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c,
                 HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
             FROM WorkOrder
-            WHERE Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
+            WHERE
+                Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
+                AND HOT_Request__r.Orderer__c != NULL
+                AND HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE
+                AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = TRUE
         ];
 
         Map<Id, String> interpreterNames = HOT_ReminderSMSService.interpreterNamesByWorkOrderIds(workordersList);
@@ -430,10 +434,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     } else {
                         Set<Id> workOrderIds = new Set<Id>();
                         workOrderIds.add(wo.Id);
-                        HOT_ReminderSMSService.sendSMSOnInterpreterChange(
-                            workOrderIds,
-                            interpreterNames.get(wo.Id)
-                        );
+                        HOT_ReminderSMSService.sendSMSOnInterpreterChange(workOrderIds, interpreterNames.get(wo.Id));
                     }
                 }
             }
