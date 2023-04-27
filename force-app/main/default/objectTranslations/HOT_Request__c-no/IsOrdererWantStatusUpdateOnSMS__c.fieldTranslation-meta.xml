@@ -3,6 +3,6 @@
     <help>
         <!-- Når denne er huket av, vil bestiller på vegne av bruker få sms når status på bestilling endres. -->
     </help>
-    <label>SMS til bestiller ved statusendringer?</label>
+    <label>Varsel til bestiller ved statusendringer?</label>
     <name>IsOrdererWantStatusUpdateOnSMS__c</name>
 </CustomFieldTranslation>
