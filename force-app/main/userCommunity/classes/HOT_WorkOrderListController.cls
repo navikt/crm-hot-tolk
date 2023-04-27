@@ -77,6 +77,7 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.InterpretationPostalCity__c,
                     HOT_Request__r.IsSerieoppdrag__c,
                     HOT_Request__r.IsScreenInterpreter__c,
+                    HOT_Request__r.IsAccountEqualOrderer__c,
                     HOT_Request__r.IsOtherEconomicProvicer__c,
                     HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c,
                     HOT_Request__r.InvoiceReference__c,
@@ -191,4 +192,13 @@ public without sharing class HOT_WorkOrderListController {
         }
         return workOrders;
     }
+    @AuraEnabled
+   public static String getThreadInterpreterId(String workOrderId) {
+    List<Thread__c> thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:workOrderId LIMIT 1];
+    String Id='';
+    if (thread.size() >0) {
+           Id=thread[0].Id;
+    }
+    return Id;
+}
 }

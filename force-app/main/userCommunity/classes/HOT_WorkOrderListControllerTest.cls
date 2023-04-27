@@ -156,4 +156,25 @@ private class HOT_WorkOrderListControllerTest {
             System.assertEquals(1, workOrders.size(), 'Could not get workOrders from Request');
         }
     }
+    @isTest
+    static void getThreadInterpreterIdTest() {
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.AccountId = account.Id;
+        insert workOrder;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c=workOrder.Id;
+        insert t;
+        Test.stopTest();
+           String threadId= HOT_WorkOrderListController.getThreadInterpreterId(workOrder.Id);
+            System.assertEquals(t.Id,threadId, 'Could not find the thread Id');
+        
+    }
 }

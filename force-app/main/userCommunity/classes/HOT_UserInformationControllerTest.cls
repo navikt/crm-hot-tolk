@@ -85,4 +85,38 @@ private class HOT_UserInformationControllerTest {
             System.assertEquals(true, person.HOT_WorkplaceInterpreter__c);
         }
     }
+    @isTest
+    static void getAccountId() {
+         Test.startTest();
+     Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
+
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.INT_KrrEmail__c = 'getPersonTest@nav.no';
+        person.HOT_WorkplaceInterpreter__c = true;
+        person.INT_Confidential__c = 'Ugradert';
+        person.INT_FirstName__c = 'Tolk';
+        person.INT_LastName__c = 'Bruker';
+        insert person;
+
+        Account account = [
+            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
+            FROM Account
+            WHERE LastName = :'Bruker'
+        ];
+        account.OwnerId = admin.Id;
+        update account;
+
+        User user = HOT_TestDataFactory.createUser(communityProfile, account);
+        user.Alias = 'userTest';
+        user.Username = 'HOT_testuser1@nav.hot.no';
+        user.CommunityNickname = 'userTest';
+        insert user;
+         Test.stopTest();
+        System.runAs(user) {
+            User user2 = HOT_UserInformationController.getAccountId();
+            System.assertEquals(account.Id, user2.AccountId);
+        }
+        
+    }
 }
