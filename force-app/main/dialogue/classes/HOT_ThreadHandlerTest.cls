@@ -19,7 +19,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         thread = [SELECT Id, Name FROM Thread__c WHERE Id = :thread.Id];
 
-        System.assertEquals(request.Subject__c, thread.Name, 'Could not set thread Name based on request');
+        System.assertEquals('SAMTALE MED BRUKER: TEST', thread.Name, 'Could not set thread Name based on request');
     }
      @isTest
     static void setThreadNameBasedOnWorkorderTest() {
@@ -54,6 +54,17 @@ public without sharing class HOT_ThreadHandlerTest {
         ServiceAppointment sa=HOT_TestDataFactory.createServiceAppointment(woli);
         sa.Subject='TEST';
         insert sa;
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert resource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            sa.Id,
+            resource.Id
+        );
+        insert assignedResource;
         Thread__c thread = HOT_TestDataFactory.createThread();
         thread.CRM_Type__c = 'HOT_TOLK-FORMIDLER';
         thread.CRM_Related_Object__c = sa.Id;
