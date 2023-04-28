@@ -2,9 +2,14 @@ import { LightningElement, wire, api, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
+import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
-import getRelatedWorkOrderId from '@salesforce/apex/HOT_MessageHelper.getRelatedWorkOrderId';
+import getRelatedObjectDetails from '@salesforce/apex/HOT_MessageHelper.getRelatedObjectDetails';
+import { formatDate } from 'c/datetimeFormatter';
+import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
+import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
+import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
@@ -12,7 +17,8 @@ import { getParametersFromURL } from 'c/hot_URIDecoder';
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREADRELATEDOBJECTID from '@salesforce/schema/Thread__c.CRM_Related_Object__c';
-import getRequestId from '@salesforce/apex/HOT_MessageHelper.getRequestId';
+import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
+import { formatRecord } from 'c/datetimeFormatter';
 
 const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREADRELATEDOBJECTID]; //Extract the name of the thread record
 
@@ -20,11 +26,15 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     _mySendForSplitting;
     messages = [];
     buttonisdisabled = false;
-    @api recordId;
-    @api requestId;
-    @track msgVal;
     userContactId;
     thread;
+    @track isDetails = false;
+    @track isIRDetails = false;
+    @track isWCDetails = false;
+    @track msgVal;
+
+    @api recordId;
+    @api requestId;
     @api alerttext;
     @api header;
     @api secondheader;
@@ -33,15 +43,16 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @api overrideValidation = false;
     @api errorList = { title: '', errors: [] };
     @api helptextContent =
-        'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere og NAV-ansatte tolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+        'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, NAV-ansatte tolker og eventuelt frilanstolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
     @api helptextHovertext;
 
     connectedCallback() {
         this.getParams();
-        markAsRead({ threadId: this.recordId });
         getContactId({})
             .then((contactId) => {
                 this.userContactId = contactId;
+                refreshApex(this._mySendForSplitting);
+                markThreadAsRead({ threadId: this.recordId, userContactId: this.userContactId });
             })
             .catch((error) => {
                 //Apex error
@@ -97,11 +108,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     get isclosed() {
         return getFieldValue(this.thread.data, THREADCLOSED_FIELD);
     }
-    @wire(getRequestId, { recordId: '$recordId' })
-    wiredRequest({ error, data }) {
-        console.log(data);
-        this.requestId = data;
-    }
 
     /**
      * Blanks out all text fields, and enables the submit-button again.
@@ -150,6 +156,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         createmsg({ threadId: this.recordId, messageText: this.msgVal, fromContactId: this.userContactId })
             .then((result) => {
                 if (result === true) {
+                    setLastMessageFrom({ threadId: this.recordId, fromContactId: this.userContactId });
                     this.handlesuccess();
                 } else {
                     this.handleMessageFailed();
@@ -203,30 +210,194 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
 
     goBack() {
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName: this.navigationBaseUrl
-            },
-            state: {
-                id: this.navigationId,
-                level: this.navigationLevel
-            }
-        });
+        if (this.navigationBaseUrl == 'mine-oppdrag') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: this.navigationBaseUrl
+                },
+                state: {
+                    list: this.navigationBaseList,
+                    id: this.navigationId
+                }
+            });
+        } else {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: this.navigationBaseUrl
+                },
+                state: {
+                    id: this.navigationId,
+                    level: this.navigationLevel
+                }
+            });
+        }
     }
-    goToWO() {
-        getRelatedWorkOrderId({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
+    closeModal() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+    }
+    @track serviceAppointment;
+    @track interestedResource;
+
+    goToDetails() {
+        let i = 0;
+        getRelatedObjectDetails({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
             for (var key in result) {
-                this[NavigationMixin.Navigate]({
-                    type: 'comm__namedPage',
-                    attributes: {
-                        pageName: 'mine-bestillinger'
-                    },
-                    state: {
-                        id: key,
-                        level: result[key]
-                    }
-                });
+                i++;
+                if (result[key] == 'SA') {
+                    this.interestedResource = false;
+                    getInterestedResourceDetails({ recordId: key }).then((result) => {
+                        this.interestedResource = result;
+                    });
+                    getServiceAppointmentDetails({ recordId: key }).then((result) => {
+                        this.serviceAppointment = result;
+                        let startTimeFormatted = new Date(result.EarliestStartTime);
+                        let endTimeFormatted = new Date(result.DueDate);
+                        this.serviceAppointment.StartAndEndDate =
+                            startTimeFormatted.getDate() +
+                            '.' +
+                            (startTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            startTimeFormatted.getFullYear() +
+                            ', ' +
+                            ('0' + startTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
+                            ' - ' +
+                            ('0' + endTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                        let actualstartTimeFormatted = new Date(result.ActualStartTime);
+                        let actualendTimeFormatted = new Date(result.ActualEndTime);
+                        this.serviceAppointment.ActualStartTime =
+                            actualstartTimeFormatted.getDate() +
+                            '.' +
+                            (actualstartTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            actualstartTimeFormatted.getFullYear() +
+                            ' ' +
+                            ('0' + actualstartTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + actualstartTimeFormatted.getMinutes()).substr(-2);
+                        this.serviceAppointment.ActualEndTime =
+                            actualendTimeFormatted.getDate() +
+                            '.' +
+                            (actualendTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            actualendTimeFormatted.getFullYear() +
+                            ' ' +
+                            ('0' + actualendTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
+                        if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
+                            this.serviceAppointment.ActualStartTime = '';
+                        }
+                        if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
+                            this.serviceAppointment.ActualEndTime = '';
+                        }
+                        this.isDetails = true;
+                        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                    });
+                    break;
+                }
+                if (result[key] == 'IR') {
+                    getInterestedResourceDetails({ recordId: key }).then((result) => {
+                        this.interestedResource = result;
+                        let startTimeFormatted = new Date(result.ServiceAppointmentStartTime__c);
+                        let endTimeFormatted = new Date(result.ServiceAppointmentEndTime__c);
+                        this.interestedResource.StartAndEndDate =
+                            startTimeFormatted.getDate() +
+                            '.' +
+                            (startTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            startTimeFormatted.getFullYear() +
+                            ', ' +
+                            ('0' + startTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
+                            ' - ' +
+                            ('0' + endTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                        let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
+                        this.interestedResource.AppointmentDeadlineDate__c =
+                            DeadlineDateTimeFormatted.getDate() +
+                            '.' +
+                            (DeadlineDateTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            DeadlineDateTimeFormatted.getFullYear();
+                        if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
+                            this.interestedResource.AppointmentDeadlineDate__c = '';
+                        }
+                        this.isIRDetails = true;
+                        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                    });
+
+                    break;
+                }
+                if (result[key] == 'WC') {
+                    getWageClaimDetails({ recordId: key }).then((result) => {
+                        this.wageClaim = result;
+                        let startTimeFormatted = new Date(this.wageClaim.StartTime__c);
+                        let endTimeFormatted = new Date(this.wageClaim.EndTime__c);
+                        this.wageClaim.StartAndEndDate =
+                            startTimeFormatted.getDate() +
+                            '.' +
+                            (startTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            startTimeFormatted.getFullYear() +
+                            ', ' +
+                            ('0' + startTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
+                            ' - ' +
+                            ('0' + endTimeFormatted.getHours()).substr(-2) +
+                            ':' +
+                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                        this.isWCDetails = true;
+                        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                    });
+
+                    break;
+                }
+                if (result[key] == 'Andre-WO') {
+                    this[NavigationMixin.Navigate]({
+                        type: 'comm__namedPage',
+                        attributes: {
+                            pageName: 'mine-bestillinger-andre'
+                        },
+                        state: {
+                            id: key,
+                            level: 'WO'
+                        }
+                    });
+                    break;
+                }
+                if (result[key] == 'Andre-R') {
+                    this[NavigationMixin.Navigate]({
+                        type: 'comm__namedPage',
+                        attributes: {
+                            pageName: 'mine-bestillinger-andre'
+                        },
+                        state: {
+                            id: key,
+                            level: 'R'
+                        }
+                    });
+                    break;
+                } else {
+                    this[NavigationMixin.Navigate]({
+                        type: 'comm__namedPage',
+                        attributes: {
+                            pageName: 'mine-bestillinger'
+                        },
+                        state: {
+                            id: key,
+                            level: result[key]
+                        }
+                    });
+                }
             }
         });
     }
@@ -234,16 +405,50 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     navigationId = '';
     navigationLevel = '';
     navigationBaseUrl = '';
+    navigationBaseList = '';
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
-        if (parsed_params.from && parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
+        if (parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
+            if (parsed_params.from != 'mine-bestillinger-andre') {
+                this.navigationBaseUrl = parsed_params.from;
+                this.navigationId = parsed_params.recordId;
+                this.navigationLevel = parsed_params.level;
+                this.breadcrumbs[1] = {
+                    label: 'Mine bestillinger',
+                    href: 'mine-bestillinger'
+                };
+            } else {
+                this.navigationBaseUrl = parsed_params.from;
+                this.navigationId = parsed_params.recordId;
+                this.navigationLevel = parsed_params.level;
+                this.breadcrumbs[1] = {
+                    label: 'Bestillinger på vegne av andre',
+                    href: 'mine-bestillinger-andre'
+                };
+            }
+        } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = parsed_params.recordId;
-            this.navigationLevel = parsed_params.level;
-            this.breadcrumbs[1] = {
-                label: 'Mine bestillinger',
-                href: 'mine-bestillinger'
-            };
+            this.navigationBaseList = parsed_params.list;
+            this.navigationLevel = undefined;
+            if (parsed_params.list == 'interested') {
+                this.breadcrumbs[1] = {
+                    label: 'Påmeldte oppdrag',
+                    href: 'mine-oppdrag?list=' + parsed_params.list
+                };
+            }
+            if (parsed_params.list == 'my') {
+                this.breadcrumbs[1] = {
+                    label: 'Mine oppdrag',
+                    href: 'mine-oppdrag?list=' + parsed_params.list
+                };
+            }
+            if (parsed_params.list == 'wageClaim') {
+                this.breadcrumbs[1] = {
+                    label: 'Ledig på lønn',
+                    href: 'mine-oppdrag?list=' + parsed_params.list
+                };
+            }
         } else {
             this.navigationBaseUrl = 'mine-samtaler';
         }

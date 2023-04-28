@@ -45,4 +45,18 @@ private class HOT_WageClaimListControllerTest {
         wageClaim = [SELECT Id, Status__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id LIMIT 1];
         System.assertEquals('Retracted Availability', wageClaim.Status__c, 'Could not retract wage claim');
     }
+     @isTest
+    static void getWageClaimThreadIdTest() {
+        HOT_WageClaim__c wageClaim = [SELECT Id FROM HOT_WageClaim__c LIMIT 1];
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = wageClaim.Id;
+        insert thread;
+
+        Test.startTest();
+        String threadId=HOT_WageClaimListController.getThreadId(wageClaim.Id);
+        Test.stopTest();
+        System.assertEquals(thread.Id, threadId, 'Could not find the wageclaim thread');
+        
+
+    }
 }

@@ -29,6 +29,60 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             (List<AssignedResource>) records
         );
         update interestedResources;
+
+         Set<Id> potentialSAWithThreadsIds = new Set<Id>(); 
+            for (ServiceAppointment sa : serviceAppointments) {
+                potentialSAWithThreadsIds.add(sa.Id);
+            }
+        List<Thread__c> exisitingThreadsToBeTransferred=[SELECT Id, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c FROM Thread__c
+        WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c='HOT_TOLK-FORMIDLER'];
+        
+        //Finn ir hvor accountid og serviceappointment id er samme
+        Set<Id> accountIds = new Set<Id>();
+        for(Thread__c thread : exisitingThreadsToBeTransferred){
+            accountIds.add(thread.CRM_Account__c);
+        }  
+        List<HOT_InterestedResource__c> irList=[SELECT Id, ServiceAppointment__c FROM HOT_InterestedResource__c WHERE (ServiceResource__r.AccountId IN :accountIds) AND (ServiceAppointment__c IN :potentialSAWithThreadsIds)];
+        //LOOP om threads sin related record er samme serviceappointmentId. Så sett ir sin id som related object
+        Map<Id, List<Id>> saIdToIrIdListMap = new Map<Id, List<Id>>();
+        for (HOT_InterestedResource__c ir : irList) {
+            if (!saIdToIrIdListMap.containsKey(ir.ServiceAppointment__c)) {
+                saIdToIrIdListMap.put(ir.ServiceAppointment__c, new List<Id>{ir.Id});
+            } else {
+                saIdToIrIdListMap.get(ir.ServiceAppointment__c).add(ir.Id);
+            }
+        }
+
+        if(exisitingThreadsToBeTransferred.size()!=0){
+    
+        for (Thread__c thread : exisitingThreadsToBeTransferred) {
+            if (saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c)) {
+                thread.CRM_Related_Object__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+                thread.HOT_InterestedResource__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+            }
+        }
+        update exisitingThreadsToBeTransferred;
+        }
+        List<HOT_InterestedResource__c> potentialIRWithThreads=[SELECT Id, ServiceAppointment__c FROM HOT_InterestedResource__c WHERE Status__c='Assigned' AND ServiceAppointment__c IN: potentialSAWithThreadsIds];
+          if(potentialIRWithThreads.size()!=0){
+            Map<Id, HOT_InterestedResource__c> threadMap = new Map<Id, HOT_InterestedResource__c>();
+            Set<Id> potentialIRWithThreadsIds = new Set<Id>(); 
+            for (HOT_InterestedResource__c ir : potentialIRWithThreads) {
+                potentialIRWithThreadsIds.add(ir.Id);
+                threadMap.put(ir.Id,ir);
+            }
+            List<Thread__c> threadsToTransfer=[Select Id,CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN : potentialIRWithThreadsIds];
+
+
+            for(Thread__c threads: threadsToTransfer){
+                   HOT_InterestedResource__c ir = threadMap.get(threads.CRM_Related_Object__c);
+                    if (ir != null) {
+                        threads.CRM_Related_Object__c = ir.ServiceAppointment__c;
+                        threads.HOT_ServiceAppointment__c=ir.ServiceAppointment__c;
+                    }
+            }
+            update threadsToTransfer;
+        }
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -53,6 +107,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 (List<AssignedResource>) records
             );
             update interestedResources;
+
+            updateThreads((List<AssignedResource>) records);
         }
     }
 
@@ -216,6 +272,72 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
         }
         return interestedResources;
+    }
+        public static void updateThreads(
+        List<AssignedResource> assignedResources
+    ) {
+        List<Id> serviceAppointmentIds = new List<Id>();
+
+        for (AssignedResource assignedResource : assignedResources) {
+            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+        }
+         List<HOT_InterestedResource__c> interestedResources = [
+             SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c
+             FROM HOT_InterestedResource__c
+             WHERE ServiceAppointment__c IN :serviceAppointmentIds
+         ];
+
+        //key IR
+       Map<Id, AssignedResource> threadToAR = new Map<Id, AssignedResource>();
+        //key SA
+       Map<Id, HOT_InterestedResource__c> threadToIR = new Map<Id, HOT_InterestedResource__c>();
+
+        for (AssignedResource assignedResource : assignedResources) {
+            for (HOT_InterestedResource__c interestedResource : interestedResources) {
+                if (assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c) {
+                    if (
+                        interestedResource.ServiceResource__c == assignedResource.ServiceResourceId &&
+                        interestedResource.Status__c == 'Assigned'
+                    ) {
+                        //FRA IR TIL SA
+                        threadToAR.put(interestedResource.Id, assignedResource);
+                    } else if (
+                        //Må vel endres om til Withdrawn siden
+                        interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
+                        interestedResource.Status__c == 'Not Assigned' || interestedResource.Status__c == 'Withdrawn'
+                    ) {
+                        //FRA SA TIL IR
+                        threadToIR.put(assignedResource.ServiceAppointmentId, interestedResource);
+                    }
+                }
+            }
+        }
+        if(!threadToIR.isEmpty()){
+            List<Thread__c> threadListToIR=[SELECT Id,CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN: threadToIR.keySet()];
+            if(!threadListToIR.isEmpty()){
+               for (Thread__c thread : threadListToIR) {
+                    HOT_InterestedResource__c interestedResource = threadToIR.get(thread.CRM_Related_Object__c);
+                    if (interestedResource != null) {
+                        thread.CRM_Related_Object__c = interestedResource.Id;
+                    }
+                }
+            update threadListToIR;
+            }
+        }
+        //den som fjerner eksisterende tråd på sa burde kjøres først.
+        if(!threadToAR.isEmpty()){
+            List<Thread__c> threadListToAR=[SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN: threadToAR.keySet()];
+            if(!threadListToAR.isEmpty()){
+                //Loop igjennom alle trådene og sett ny crm related object to SA id istedet
+                for (Thread__c thread : threadListToAR) {
+                    AssignedResource assignedResource = threadToAR.get(thread.CRM_Related_Object__c);
+                    if (assignedResource != null) {
+                        thread.CRM_Related_Object__c = assignedResource.ServiceAppointmentId;
+                    }
+                }
+            update threadListToAR;
+            }
+        }
     }
 
     public static void setResourceFieldsOnServiceAppointment(List<AssignedResource> assignedResources) {
