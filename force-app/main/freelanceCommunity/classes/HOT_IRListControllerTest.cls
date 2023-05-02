@@ -29,6 +29,17 @@ private class HOT_IRListControllerTest {
      @isTest
     static void getThreadDispatcherIdSATest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert resource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            resource.Id
+        );
+        insert assignedResource;
         Thread__c thread = HOT_TestDataFactory.createThread();
         thread.CRM_Related_Object__c = serviceAppointment.Id;
         insert thread;

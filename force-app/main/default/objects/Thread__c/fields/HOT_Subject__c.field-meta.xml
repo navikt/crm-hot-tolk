@@ -3,20 +3,23 @@
     <fullName>HOT_Subject__c</fullName>
     <externalId>false</externalId>
     <formula>IF(NOT(ISBLANK(HOT_InterestedResource__r.ServiceAppointmentSubject__c)),
-HOT_InterestedResource__r.ServiceAppointmentSubject__c,
-IF(NOT(ISBLANK(HOT_ServiceAppointment__r.Subject)),
-HOT_ServiceAppointment__r.Subject,
-IF(NOT(ISBLANK(HOT_Request__r.Subject__c)),
-HOT_Request__r.Subject__c,
-IF(NOT(ISBLANK(HOT_WorkOrder__r.Subject)),
-HOT_WorkOrder__r.Subject,
-IF(NOT(ISBLANK(HOT_WageClaim__r.ServiceAppointment__r.Subject)),
-HOT_WageClaim__r.ServiceAppointment__r.Subject,
-null
-)
-)
-)
-)
+    HOT_InterestedResource__r.ServiceAppointmentSubject__c,
+    IF(NOT(ISBLANK(HOT_ServiceAppointment__r.Subject)),
+        HOT_ServiceAppointment__r.Subject,
+        IF(NOT(ISBLANK(HOT_Request__r.Subject__c)),
+            HOT_Request__r.Subject__c,
+            IF(NOT(ISBLANK(HOT_WorkOrder__r.Subject)),
+                HOT_WorkOrder__r.Subject,
+                IF(NOT(ISBLANK(HOT_WageClaim__r.Id)),
+                    IF(NOT(ISBLANK(HOT_WageClaim__r.ServiceAppointment__c)),
+                        HOT_WageClaim__r.ServiceAppointment__r.Subject,
+                        null
+                    ),
+                    null
+                )
+            )
+        )
+    )
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Subject</label>
