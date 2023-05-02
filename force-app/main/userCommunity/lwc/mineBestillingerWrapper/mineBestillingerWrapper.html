@@ -54,7 +54,7 @@
                     <p>Bestillingsnummer: <span>{request.Name}</span></p>
                     <p if:true={request.OrdererName__c}>Bestiller: <span>{request.OrdererName__c}</span></p>
                     <p if:true={request.UserName__c}>Tolkebrukers navn: <span>{request.UserName__c}</span></p>
-                    <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
+                    <p>Varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
                     <br />
                     <p if:true={request.UserPreferredInterpreter__c}>
                         Ønsket tolk: <span>{request.UserPreferredInterpreter__c}</span>
@@ -100,7 +100,7 @@
                     <p>Bestillingsnummer: <span>{workOrder.HOT_RequestName__c}</span></p>
                     <p if:true={request.OrdererName__c}>Bestiller: <span>{request.OrdererName__c}</span></p>
                     <p if:true={request.UserName__c}>Tolkebrukers navn: <span>{request.UserName__c}</span></p>
-                    <p>SMS-varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
+                    <p>Varsel ved statusendring på bestillingen: <span>{isOrdererWantStatusUpdateOnSMS}</span></p>
                     <p>Sende varsler til bruker: <span>{IsNotNotifyAccount}</span></p>
                     <br />
                     <p if:true={request.UserPreferredInterpreter__c}>
