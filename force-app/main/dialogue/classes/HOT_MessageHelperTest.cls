@@ -660,7 +660,7 @@ public with sharing class HOT_MessageHelperTest {
     }
     @isTest
      static void createThreadWageClaimDispatcher() {
-         WorkType workType = HOT_TestDataFactory.createWorkType();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
@@ -698,5 +698,43 @@ public with sharing class HOT_MessageHelperTest {
             WHERE CRM_Related_Object__c = :wageclaim.Id
         ];
         System.assertNotEquals(null, tList);
+    }
+     @isTest
+    static void getAccountOnThreadTest() {
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        Account acc = new Account();
+        acc.Name = 'Darth Vader';
+        insert acc;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = request.Id;
+        t.CRM_Account__c = acc.Id;
+        insert t;
+        Test.startTest();
+        String result=HOT_MessageHelper.getAccountOnThread(t.Id);
+        Test.stopTest();
+        System.assertEquals('Darth Vader', result);
+    }
+      @isTest
+    static void getAccountOnThreadWOTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.HOT_Interpreters__c='Darth Vader';
+        insert workOrder;
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = workOrder.Id;
+        insert t;
+        Test.startTest();
+        String result=HOT_MessageHelper.getAccountOnThread(t.Id);
+        Test.stopTest();
+        System.assertEquals('Darth Vader', result);
     }
 }

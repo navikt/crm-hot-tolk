@@ -75,8 +75,11 @@
                         onclick={goToThreadTypeUserOrderer}
                     ></lightning-button>
                 </template>
-                <template if:false={showButtonDiv}>
+                <template lwc:if={ThreadInfo}>
                     <span class="slds-badge slds-theme_success">{ThreadInfo}</span>
+                </template>
+                <template lwc:if={showAccountName}>
+                    <span class="slds-badge slds-theme_success">{accountName}</span>
                 </template>
                 <br /><br />
                 <div if:true={showButtonDiv}>
