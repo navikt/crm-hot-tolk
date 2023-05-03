@@ -2,7 +2,11 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_Subject__c</fullName>
     <externalId>false</externalId>
-    <formula>HOT_Title__c</formula>
+    <formula>IF(
+    NOT(ISBLANK(HOT_Request__r.Subject__c)),
+    HOT_Request__r.Subject__c,
+    HOT_Title__c
+)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Subject</label>
     <required>false</required>
