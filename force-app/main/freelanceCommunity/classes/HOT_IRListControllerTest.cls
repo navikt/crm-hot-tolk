@@ -27,6 +27,22 @@ private class HOT_IRListControllerTest {
         System.assertEquals(1, interestedResources.size(), 'Could not get list of interested resources');
     }
      @isTest
+    static void dispatcherReadCommentTest() {
+        HOT_InterestedResource__c interestedResource = [
+            SELECT Id, IsDispatcherNewComment__c
+            FROM HOT_InterestedResource__c
+        ];
+        interestedResource.IsDispatcherNewComment__c = true;
+        update interestedResource;
+        HOT_InterestedResourcesListController.dispatcherReadComment(interestedResource.Id);
+        interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c];
+        System.assertEquals(
+            false,
+            interestedResource.IsDispatcherNewComment__c,
+            'Could not set IsDispatcherNewComment__c'
+        );
+    }
+     @isTest
     static void getThreadDispatcherIdSATest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];

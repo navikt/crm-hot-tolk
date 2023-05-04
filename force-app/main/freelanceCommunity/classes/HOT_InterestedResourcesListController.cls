@@ -133,6 +133,18 @@ public without sharing class HOT_InterestedResourcesListController {
             HOT_MessageHelper.setLastMessageFrom(thread.Id, userContactId);
         }
     }
+    @AuraEnabled
+    public static void dispatcherReadComment(Id recordId) {
+        HOT_InterestedResource__c interestedResource = [
+            SELECT Id, IsDispatcherNewComment__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :recordId
+        ];
+        if (interestedResource.IsDispatcherNewComment__c) {
+            interestedResource.IsDispatcherNewComment__c = false;
+            update interestedResource;
+        }
+    }
 
     @InvocableVariable
     public ID recordId;
