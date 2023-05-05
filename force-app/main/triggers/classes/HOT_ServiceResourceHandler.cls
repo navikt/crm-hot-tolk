@@ -22,7 +22,7 @@ public without sharing class HOT_ServiceResourceHandler {
     //Kjøres fra User trigger onInsert
     @Future
     public static void createServiceResourceFuture(List<Id> userIds) {
-        List<User> users = [SELECT Id, Name, MiddleName, ProfileId, Department FROM User WHERE Id IN :userIds];
+        List<User> users = [SELECT Id, Name, FirstName, MiddleName, LastName, ProfileId, Department FROM User WHERE Id IN :userIds];
         createServiceResource(users, true, 'AUTO');
     }
 

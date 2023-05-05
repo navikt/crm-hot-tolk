@@ -1183,6 +1183,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Thread__c.HOT_Title__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.HOT_DelPol_IsHideInterpreterFromUser__c</field>
         <readable>true</readable>

@@ -126,8 +126,10 @@ public without sharing class HOT_MessageHelper {
         Thread__c thread = new Thread__c();
         String objectType=String.valueOf(recordId.getsobjecttype());
         if(objectType=='WorkOrder'){
+            WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             thread.HOT_WorkOrder__c=recordId;
+            thread.HOT_Title__c=wo.Subject;
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
             thread.CRM_Account__c = accountId;
             thread.HOT_WorkOrder__c=recordId;
@@ -146,21 +148,25 @@ public without sharing class HOT_MessageHelper {
                  thread.HOT_Request__c=recordId;
             }
             thread.CRM_Account__c = accountId;
+            thread.HOT_Title__c=request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='ServiceAppointment'){
             ServiceAppointment serviceAppointment=[SELECT Subject, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+            thread.HOT_Title__c=serviceAppointment.Subject;
             thread.CRM_Account__c = serviceAppointment.HOT_Account__c; //?
             thread.HOT_ServiceAppointment__c=recordId;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='HOT_WageClaim__c'){
+            HOT_WageClaim__c wc=[SELECT ServiceAppointment__r.Subject FROM HOT_WageClaim__c WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR';
             thread.CRM_Account__c = accountId; //?
             thread.HOT_WageClaim__c=recordId;
+            thread.HOT_Title__c=wc.ServiceAppointment__r.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         return thread;
@@ -171,10 +177,12 @@ public without sharing class HOT_MessageHelper {
         Thread__c thread = new Thread__c();
         String objectType=String.valueOf(recordId.getsobjecttype());
         if(objectType=='WorkOrder'){
+            WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
             thread.CRM_Account__c = accountId;
             thread.HOT_WorkOrder__c=recordId;
+            thread.HOT_Title__c=wo.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='HOT_Request__c'){
@@ -183,6 +191,7 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Thread_Type__c = type;
             thread.CRM_Account__c = accountId;
             thread.HOT_Request__c=recordId;
+            thread.HOT_Title__c=request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='ServiceAppointment'){ 
@@ -191,6 +200,7 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
             thread.HOT_ServiceAppointment__c=recordId;
+            thread.HOT_Title__c=ir.ServiceAppointment__r.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
          if(objectType=='HOT_InterestedResource__c'){
@@ -199,14 +209,16 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
             thread.HOT_InterestedResource__c=recordId;
+            thread.HOT_Title__c=ir.ServiceAppointment__r.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
          if(objectType=='HOT_WageClaim__c'){
-            HOT_WageClaim__c wageClaim = [SELECT ServiceResource__r.AccountId FROM HOT_WageClaim__c WHERE Id=:recordId];
+            HOT_WageClaim__c wageClaim = [SELECT ServiceResource__r.AccountId, ServiceAppointment__r.Subject FROM HOT_WageClaim__c WHERE Id=:recordId];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR';
             thread.CRM_Account__c = wageClaim.ServiceResource__r.AccountId;
             thread.HOT_WageClaim__c=recordId;
+            thread.HOT_Title__c=wageClaim.ServiceAppointment__r.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         return thread;
@@ -222,6 +234,7 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
             thread.HOT_InterestedResource__c=recordId;
+            thread.HOT_Title__c=ir.ServiceAppointment__r.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='ServiceAppointment'){
@@ -230,6 +243,7 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = currentUser.AccountId;
             thread.HOT_ServiceAppointment__c=recordId;
+            thread.HOT_Title__c=sr.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         return thread;
@@ -243,6 +257,7 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-BESTILLER';
             thread.CRM_Account__c = request.Account__c;
             thread.HOT_Request__c=recordId;
+            thread.HOT_Title__c=request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
         
         return thread;
