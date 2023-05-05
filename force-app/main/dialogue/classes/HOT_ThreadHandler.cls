@@ -66,7 +66,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         ];
         for (ServiceAppointment sa : serviceAppointment) {
             threadByServiceAppointmentId.get(sa.Id).Name = sa.Subject.left(80);
-          //  threadByServiceAppointmentId.get(sa.Id).OwnerId = sa.HOT_ServiceResource__r.RelatedRecordId;
+            threadByServiceAppointmentId.get(sa.Id).OwnerId = sa.HOT_ServiceResource__r.RelatedRecordId;
         }
         //interestedresource
          List<HOT_InterestedResource__c> interestedResource = [
