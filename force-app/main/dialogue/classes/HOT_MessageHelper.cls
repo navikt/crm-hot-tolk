@@ -239,6 +239,7 @@ public without sharing class HOT_MessageHelper {
         }
         if(objectType=='ServiceAppointment'){
             User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+            ServiceAppointment sr=[SELECT Subject FROM ServiceAppointment WHERE Id=:recordId];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = currentUser.AccountId;
