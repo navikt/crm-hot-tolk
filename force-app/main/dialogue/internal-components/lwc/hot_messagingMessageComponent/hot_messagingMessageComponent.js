@@ -2,6 +2,7 @@ import { LightningElement, api, wire, track } from 'lwc';
 import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreadsCollection';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThreadDispatcher';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
+import getAccountOnThread from '@salesforce/apex/HOT_MessageHelper.getAccountOnThread';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
 import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformation';
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
@@ -32,6 +33,9 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     @track interestedResourceIsAssigned = false;
     @track noThreadExist = false;
 
+    @track showAccountName = false;
+    @track accountName;
+
     @api recordId;
     @api singleThread;
     @api showClose;
@@ -41,6 +45,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
 
     @wire(getThreads, { recordId: '$recordId', singleThread: '$singleThread', type: '$messageType' }) //Calls apex and extracts messages related to this record
     wiredThreads(result) {
+        this.showAccountName = false;
         this._threadsforRefresh = result;
         if (result.error) {
             this.error = result.error;
@@ -52,6 +57,19 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 this.showButtonDiv = false;
             } else {
                 this.showButtonDiv = true;
+            }
+            if (this.threads.length == 1) {
+                if (this.objectApiName != 'HOT_Request__c') {
+                    getAccountOnThread({ recordId: this.threads[0].Id })
+                        .then((result) => {
+                            this.accountName = result;
+                            console.log(this.accountName);
+                            this.showAccountName = true;
+                        })
+                        .catch((error) => {
+                            console.log('feil');
+                        });
+                }
             }
         }
     }
@@ -114,6 +132,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 this.singleThread = true;
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
+                this.showAccountName = true;
                 event.preventDefault(); // prevent the default scroll behavior
                 event.stopPropagation();
                 break;
@@ -138,6 +157,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 this.singleThread = true;
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
+                this.showAccountName = true;
                 event.preventDefault(); // prevent the default scroll behavior
                 event.stopPropagation();
                 break;
@@ -205,11 +225,12 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 if (result[0].IsAccountEqualOrderer__c == true) {
                     this.showUserThreadbutton = true;
                     this.showOrderThreadbutton = false;
+                    this.showUserOrdererThreadbutton = false;
                 } else {
                     this.showUserThreadbutton = true;
                     this.showOrderThreadbutton = true;
+                    this.showUserOrdererThreadbutton = true;
                 }
-                this.showUserOrdererThreadbutton = true;
             })
             .catch((error) => {
                 this.isRequestMessages = false;
