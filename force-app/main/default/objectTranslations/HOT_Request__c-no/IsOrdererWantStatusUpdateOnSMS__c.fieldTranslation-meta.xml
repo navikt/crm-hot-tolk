@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <help>
-        <!-- Når denne er huket av, vil bestiller på vegne av bruker få sms når status på bestilling endres. -->
+        <!-- Når denne er huket av, vil bestiller få varsel når status på bestillingen endres. -->
     </help>
     <label>Varsel til bestiller ved statusendringer?</label>
     <name>IsOrdererWantStatusUpdateOnSMS__c</name>
