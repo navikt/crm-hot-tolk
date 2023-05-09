@@ -16,11 +16,12 @@ import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
+import THREADTYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
 import THREADRELATEDOBJECTID from '@salesforce/schema/Thread__c.CRM_Related_Object__c';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { formatRecord } from 'c/datetimeFormatter';
 
-const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREADRELATEDOBJECTID]; //Extract the name of the thread record
+const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREADRELATEDOBJECTID, THREADTYPE_FIELD]; //Extract the name of the thread record
 
 export default class hot_messagingCommunityThreadViewer extends NavigationMixin(LightningElement) {
     _mySendForSplitting;
@@ -42,8 +43,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @api maxLength;
     @api overrideValidation = false;
     @api errorList = { title: '', errors: [] };
-    @api helptextContent =
-        'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, NAV-ansatte tolker og eventuelt frilanstolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+    @api helptextContent;
     @api helptextHovertext;
 
     connectedCallback() {
@@ -90,6 +90,40 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
     get threadRelatedObjectId() {
         return getFieldValue(this.thread.data, THREADRELATEDOBJECTID);
+    }
+    get threadType() {
+        const threadTypeValue = getFieldValue(this.thread.data, THREADTYPE_FIELD);
+        if (threadTypeValue === 'HOT_BRUKER-FORMIDLER') {
+            this.helptextContent =
+                'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+            return '(Samtale med formidler)';
+        }
+        if (threadTypeValue === 'HOT_BESTILLER-FORMIDLER') {
+            this.helptextContent =
+                'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+            return '(Samtale med formidler)';
+        }
+        if (threadTypeValue === 'HOT_BRUKER-TOLK') {
+            this.helptextContent =
+                'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, NAV-ansatte tolker og eventuelt frilanstolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+            return '(Samtale mellom tolker og bruker)';
+        }
+        if (threadTypeValue === 'HOT_BRUKER-BESTILLER') {
+            this.helptextContent =
+                'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, bruker og bestiller av bestillingen se.  Meldingen vil bli slettet etter ett år.';
+            return '(Samtale mellom bruker og bestiller)';
+        }
+        if (threadTypeValue === 'HOT_TOLK-FORMIDLER') {
+            this.helptextContent =
+                'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+            return '(Samtale med formidler)';
+        }
+        if (threadTypeValue === 'HOT_TOLK-RESSURSKONTOR') {
+            this.helptextContent =
+                'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ressurskontoret ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+            return '(Samtale med ressurskontor)';
+        }
+        return threadTypeValue;
     }
     get isHelpText() {
         return this.helptextContent !== '' && this.helptextContent !== undefined ? true : false;
