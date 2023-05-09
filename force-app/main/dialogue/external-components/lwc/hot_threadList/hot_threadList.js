@@ -42,6 +42,11 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
             name: 'read',
             type: 'boolean',
             svg: true
+        },
+        {
+            label: 'Siste melding',
+            name: 'LastMessage',
+            type: 'text'
         }
     ];
     @track tabs = [
@@ -53,6 +58,66 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
         mythreads: true,
         interpreterthreads: false
     };
+
+    formatDateTime(date) {
+        let unformatted = new Date(date);
+        var month = unformatted.getMonth();
+        var monthString;
+        switch (month) {
+            case 0:
+                monthString = 'Januar';
+                break;
+            case 1:
+                monthString = 'Februar';
+                break;
+            case 2:
+                monthString = 'Mars';
+                break;
+            case 3:
+                monthString = 'April';
+                break;
+            case 4:
+                monthString = 'Mai';
+                break;
+            case 5:
+                monthString = 'Juni';
+                break;
+            case 6:
+                monthString = 'Juli';
+                break;
+            case 7:
+                monthString = 'August';
+                break;
+            case 8:
+                monthString = 'September';
+                break;
+            case 9:
+                monthString = 'Oktober';
+                break;
+            case 10:
+                monthString = 'November';
+                break;
+            case 11:
+                monthString = 'Desember';
+                break;
+            default:
+                monthString = '';
+        }
+        let formattedTime =
+            unformatted.getDate() +
+            ' ' +
+            monthString +
+            ' ' +
+            unformatted.getFullYear() +
+            ', Kl ' +
+            ('0' + unformatted.getHours()).substr(-2) +
+            ':' +
+            ('0' + unformatted.getMinutes()).substr(-2);
+        if (formattedTime.includes('NaN')) {
+            formattedTime = '';
+        }
+        return formattedTime;
+    }
 
     setActiveTabMobile(event) {
         this.setActiveTab({ target: { dataset: { id: event.detail.name } } });
@@ -220,23 +285,28 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     }
                     this.threads = this.unmappedThreads.map((x) => ({
                         ...x,
-                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true
+                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
                     }));
                     this.interpreterThreads = this.unmappedInterpreterThreads.map((x) => ({
                         ...x,
-                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true
+                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
                     }));
                     this.orderThreads = this.unmapperOrderThreads.map((x) => ({
                         ...x,
-                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true
+                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
                     }));
                     this.wageClaimThreads = this.unmappedWageClaimThreads.map((x) => ({
                         ...x,
-                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true
+                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
                     }));
                     this.ordererUserThreads = this.unmappedOrdererUserTreads.map((x) => ({
                         ...x,
-                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true
+                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
                     }));
 
                     this.noThreads = this.threads.length === 0;
