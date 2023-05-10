@@ -279,7 +279,7 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-TOLK';
             thread.HOT_Title__c=serviceAppointment.Subject;
-            thread.HOT_ServiceAppointment__c=recordId;
+            thread.HOT_WorkOrder__c=serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
             HOT_DatabaseOperations.insertRecords(thread);
         
         return thread;

@@ -757,4 +757,31 @@ public with sharing class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals('Darth Vader', result);
     }
+    @isTest
+    static void createThreadInterpreterInterpreters() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Subject='Hei';
+        insert sa;
+
+        Test.startTest();
+        Thread__c thread = HOT_MessageHelper.createThreadInterpreters(sa.Id);
+        Test.stopTest();
+        List<Thread__c> tList = [
+            SELECT Id, CRM_Account__c, CRM_Type__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :workOrder.Id
+        ];
+        System.assertNotEquals(null, tList);
+        System.assertEquals(tList[0].CRM_Type__c, 'HOT_TOLK-TOLK');
+    }
 }
