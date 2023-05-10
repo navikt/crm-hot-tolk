@@ -90,6 +90,26 @@ public with sharing class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(result, true, 'Account Id was not correct');
     }
+      @isTest
+    static void getWorkOrderInformation(){
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c=account.Id;
+        request.Orderer__c=account.Id;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.AccountId = account.Id;
+        insert workOrder;
+        
+        List<WorkOrder> wo=HOT_MessageHelper.getWorkOrderInformation(workOrder.Id);
+        String result = String.valueOf(wo[0].HOT_TotalNumberOfInterpreters__c);
+        Test.stopTest();
+        System.assertEquals(result, '0', 'Did not find correct number of interpreters');
+    }
     @isTest
     static void getThreadsCollectionSingleTest() {
         List<Account> accList = [SELECT Id FROM Account];
