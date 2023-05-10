@@ -5,8 +5,10 @@ import getOrdererInformation from '@salesforce/apex/HOT_MyServiceAppointmentList
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
 import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
+import getThreadInterpretersId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadInterpretersId';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
+import createThreadInterpreters from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreters';
 import { NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -21,6 +23,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     freelanceThreadId;
     isGoToThreadButtonDisabled = false;
     isGoToThreadServiceAppointmentButtonDisabled = false;
+    isGoToThreadInterpretersButtonDisabled = false;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -182,6 +185,9 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                 if (this.serviceAppointment.Status == 'Completed') {
                     this.isEditButtonDisabled = true;
                 }
+                if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
+                    this.isGoToThreadInterpretersButtonDisabled = true;
+                }
             }
         }
         this.updateURL();
@@ -303,6 +309,29 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                     .then((result) => {
                         this.navigateToThread(result.Id);
                         this.saThreadId = result;
+                    })
+                    .catch((error) => {
+                        this.modalHeader = 'Noe gikk galt';
+                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                        this.noCancelButton = true;
+                        this.showModal();
+                    });
+            }
+        });
+    }
+    goToThreadInterpreters() {
+        this.isGoToThreadInterpretersButtonDisabled = true;
+        getThreadInterpretersId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
+            if (result != '') {
+                this.freelanceThreadId = result;
+                this.navigateToThread(this.freelanceThreadId);
+                console.log('finnes');
+            } else {
+                console.log('finnes ingen');
+                createThreadInterpreters({ recordId: this.serviceAppointment.Id })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                        this.freelanceThreadId = result;
                     })
                     .catch((error) => {
                         this.modalHeader = 'Noe gikk galt';
