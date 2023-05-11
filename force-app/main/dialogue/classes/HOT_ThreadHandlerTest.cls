@@ -31,7 +31,7 @@ public without sharing class HOT_ThreadHandlerTest {
         workOrder.Subject='TEST';
         insert workOrder;
         Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        thread.CRM_Type__c = 'HOT_BRUKER-TOLK';
         thread.CRM_Related_Object__c = workOrder.Id;
         Test.startTest();
         insert thread;

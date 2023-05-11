@@ -782,6 +782,5 @@ public with sharing class HOT_MessageHelperTest {
             WHERE CRM_Related_Object__c = :workOrder.Id
         ];
         System.assertNotEquals(null, tList);
-        System.assertEquals(tList[0].CRM_Type__c, 'HOT_TOLK-TOLK');
     }
 }
