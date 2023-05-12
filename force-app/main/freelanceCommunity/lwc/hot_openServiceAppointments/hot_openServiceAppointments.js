@@ -149,8 +149,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                weekday: this.getDayOfWeek(x.EarliestStartTime)
-                //,isUrgent: x.HOT_IsUrgent__c
+                weekday: this.getDayOfWeek(x.EarliestStartTime),
+                isUrgent: x.HOT_IsUrgent__c
             }));
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
