@@ -44,6 +44,11 @@ public with sharing class HOT_MessagesNotification {
 
         for (Thread__c thread : threads) {
             threadRelatedObjectIds.add(thread.CRM_Related_Object__c);
+            userIds.add(thread.ownerId);
+                if(thread.HOT_WorkOrder__r.AccountId!=null){
+                    //The user of WO in HOT_BRUKER-TOLK threads
+                    accountIdThreadMap.put(thread.HOT_WorkOrder__r.AccountId, thread.Id);
+                }
         }
         
         CustomNotificationType notificationType = [
@@ -51,14 +56,6 @@ public with sharing class HOT_MessagesNotification {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-
-         for (Thread__c thread : threads) {
-                userIds.add(thread.ownerId);
-                if(thread.HOT_WorkOrder__r.AccountId!=null){
-                    //The user of WO in HOT_BRUKER-TOLK threads
-                    accountIdThreadMap.put(thread.HOT_WorkOrder__r.AccountId, thread.Id);
-                }
-        }
         //** 1 - SYSTEM THREADS:
         //HOT_BRUKER-FORMIDLER // owner = bruker
         //HOT_BESTILLER-FORMIDLER // owner = bestiller
