@@ -71,13 +71,13 @@ public with sharing class HOT_MessagesNotification {
         List<User> users = [SELECT Id, AccountId,Account.CRM_Person__r.HOT_NotificationChannel__c, Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c, ContactId FROM User WHERE Id IN :userIds OR AccountId IN :accountFromWoIds];
     
         for (Thread__c thread : threads) {
-            if(CRM_Thread_Type__c=='HOT_BRUKER-FORMIDLER' || CRM_Thread_Type__c=='HOT_BESTILLER-FORMIDLER' || CRM_Thread_Type__c=='HOT_TOLK-FORMIDLER' || CRM_Thread_Type__c=='HOT_TOLK-RESSURSKONTOR')
+            if(thread.CRM_Thread_Type__c=='HOT_BRUKER-FORMIDLER' || thread.CRM_Thread_Type__c=='HOT_BESTILLER-FORMIDLER' || thread.CRM_Thread_Type__c=='HOT_TOLK-FORMIDLER' || thread.CRM_Thread_Type__c=='HOT_TOLK-RESSURSKONTOR')
                 for (User user : users) {
                     if (thread.OwnerId == user.Id && thread.HOT_Last_message_from__c != user.ContactId ) {
                         userIdThreadMap.put(thread.Id, user);
                     }
             }
-            else if(CRM_Thread_Type__c=='HOT_BRUKER-TOLK'){
+            else if(thread.CRM_Thread_Type__c=='HOT_BRUKER-TOLK'){
                 for (User user : users) {
                     if (accountIdThreadMap.containsKey(user.AccountId)) {
                         if(thread.HOT_Last_message_from__c != user.ContactId){
