@@ -143,8 +143,8 @@ public with sharing class HOT_MessagesNotification {
             //Send push her
             Set<String> userInterpretersRecipients = new Set<String>();
                 for (Id threadId : userInterpreterThreadMap.keySet()) {
-                    HOT_InterestedResource__c interestedresource = userInterpreterThreadMap.get(threadId);
-                    userInterpretersRecipients.add(interestedresource.ServiceResource__r.RelatedRecordId);
+                    HOT_InterestedResource__c irs = userInterpreterThreadMap.get(threadId);
+                    userInterpretersRecipients.add(irs.ServiceResource__r.RelatedRecordId);
                     HOT_UserNotificationService.newMessageNotification(notificationType, threadId, userInterpretersRecipients); 
                 }
 
