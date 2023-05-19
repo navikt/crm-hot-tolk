@@ -123,6 +123,7 @@ public without sharing class HOT_InterestedResourcesListController {
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
             thread.HOT_InterestedResource__c=interestedResourceId;
+            thread.HOT_Title__c=ir.ServiceAppointment__r.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
 
             //legg inn meldingen i comment
