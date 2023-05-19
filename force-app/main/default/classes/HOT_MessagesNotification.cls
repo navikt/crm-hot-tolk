@@ -89,12 +89,13 @@ public with sharing class HOT_MessagesNotification {
         }
         Set<String> recipients = new Set<String>();
         for (Id threadId : userIdThreadMap.keySet()) {
+            Thread__c thread = new Thread__c(Id = threadId);
             User user = userIdThreadMap.get(threadId);
             if(user.Account.CRM_Person__r.HOT_NotificationChannel__c=='Push-varsel i appen' && user.Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c==false){
                 recipients.add(user.Id);
-                HOT_UserNotificationService.newMessageNotification(notificationType, threadId, recipients);
+                HOT_UserNotificationService.newMessageNotification(notificationType, thread, recipients);
             }
-            else if(user.Account.CRM_Person__r.HOT_NotificationChannel__c='SMS' && user.Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c==false){
+            else if(user.Account.CRM_Person__r.HOT_NotificationChannel__c=='SMS' && user.Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c==false){
                 //SMS SENDING
             }
         }
@@ -140,9 +141,10 @@ public with sharing class HOT_MessagesNotification {
             //Send push her
             Set<String> userInterpretersRecipients = new Set<String>();
                 for (Id threadId : userInterpreterThreadMap.keySet()) {
+                    Thread__c thread = new Thread__c(Id = threadId);
                     HOT_InterestedResource__c irs = userInterpreterThreadMap.get(threadId);
                     userInterpretersRecipients.add(irs.ServiceResource__r.RelatedRecordId);
-                    HOT_UserNotificationService.newMessageNotification(notificationType, threadId, userInterpretersRecipients); 
+                    HOT_UserNotificationService.newMessageNotification(notificationType, thread, userInterpretersRecipients); 
                 }
 
         }
@@ -167,9 +169,10 @@ public with sharing class HOT_MessagesNotification {
             //Send push her
             Set<String> InterpretersRecipients = new Set<String>();
                 for (Id threadId : interpreterInterpreterThreadMap.keySet()) {
-                    HOT_InterestedResource__c interestedresource = interpreterInterpreterThreadMap.get(threadId);
-                    InterpretersRecipients.add(interestedresource.ServiceResource__r.RelatedRecordId);
-                    HOT_UserNotificationService.newMessageNotification(notificationType, threadId, InterpretersRecipients); 
+                    Thread__c thread = new Thread__c(Id = threadId);
+                    HOT_InterestedResource__c interestedres = interpreterInterpreterThreadMap.get(threadId);
+                    InterpretersRecipients.add(interestedres.ServiceResource__r.RelatedRecordId);
+                    HOT_UserNotificationService.newMessageNotification(notificationType,thread, InterpretersRecipients); 
                 }
             }
     }
