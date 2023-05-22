@@ -100,6 +100,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_ServiceTerritoryDeveloperName__c,
                 HOT_DegreeOfHearingAndVisualImpairment__c,
                 HOT_HapticCommunication__c,
+                HOT_TotalNumberOfInterpreters__c,
                 HOT_Escort__c,
                 HOT_AssignmentType__c,
                 HOT_FreelanceSubject__c,
@@ -128,7 +129,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
         ServiceAppointment serviceAppointment=[SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
         try{
 
-            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId LIMIT 1];
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId AND CRM_Thread_Type__c='HOT_BRUKER-TOLK' LIMIT 1];
              if (thread.Id != null) {
                Id=thread.Id;
                return Id;
@@ -165,5 +166,23 @@ public without sharing class HOT_MyServiceAppointmentListController {
             phonenumber=sa.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
         }
         return phoneNumber;
+    }
+     @AuraEnabled
+    public static String getThreadInterpretersId(String serviceAppointmentId) {
+         String Id='';
+        ServiceAppointment serviceAppointment=[SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        try{
+
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId AND CRM_Thread_Type__c='HOT_TOLK-TOLK' LIMIT 1];
+             if (thread.Id != null) {
+               Id=thread.Id;
+               return Id;
+             }
+             
+            return Id;
+        }catch(Exception E){
+
+        }
+        return Id;
     }
 }

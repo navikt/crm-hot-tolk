@@ -123,6 +123,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ressurskontoret ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
             return '(Samtale med ressurskontor)';
         }
+        if (threadTypeValue === 'HOT_TOLK-TOLK') {
+            this.helptextContent =
+                'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan tolkeformidlere og andre tolker som er tildelt oppdraget ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+            return '(Samtale med medtolker)';
+        }
         return threadTypeValue;
     }
     get isHelpText() {

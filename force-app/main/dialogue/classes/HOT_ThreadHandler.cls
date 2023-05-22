@@ -2,7 +2,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
     public override void onBeforeInsert() {
         Map<Id, Thread__c> threadById = new Map<Id, Thread__c>();
         for (Thread__c thread : (List<Thread__c>) records) {
-            if (thread.CRM_Type__c == 'HOT_BRUKER-FORMIDLER' ||thread.CRM_Type__c == 'HOT_BRUKER-BESTILLER' || thread.CRM_Type__c == 'HOT_BRUKER-TOLK' || thread.CRM_Type__c == 'HOT_BESTILLER-FORMIDLER' || thread.CRM_Type__c == 'HOT_TOLK-FORMIDLER' || thread.CRM_Type__c == 'HOT_TOLK-RESSURSKONTOR' && thread.CRM_Related_Object__c != null) {
+            if (thread.CRM_Type__c == 'HOT_BRUKER-FORMIDLER' ||thread.CRM_Type__c == 'HOT_BRUKER-BESTILLER' || thread.CRM_Type__c == 'HOT_BRUKER-TOLK' || thread.CRM_Type__c == 'HOT_TOLK-TOLK' || thread.CRM_Type__c == 'HOT_BESTILLER-FORMIDLER' || thread.CRM_Type__c == 'HOT_TOLK-FORMIDLER' || thread.CRM_Type__c == 'HOT_TOLK-RESSURSKONTOR' && thread.CRM_Related_Object__c != null) {
                     threadById.put(thread.CRM_Related_Object__c, thread);
             }
         }
@@ -85,7 +85,12 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             WHERE Id IN :threadByWorkOrderId.keySet()
         ];
         for (WorkOrder wo : workOrder) {
-            threadByWorkOrderId.get(wo.Id).Name = 'SAMTALE MELLOM BRUKER OG TOLKER: '+wo.Subject.left(80);
+            if (threadByWorkOrderId.get(wo.Id).CRM_Type__c == 'HOT_BRUKER-TOLK') {
+                threadByWorkOrderId.get(wo.Id).Name = 'SAMTALE MELLOM BRUKER OG TOLKER: '+wo.Subject.left(80);
+            }
+            if (threadByWorkOrderId.get(wo.Id).CRM_Type__c == 'HOT_TOLK-TOLK') {
+                threadByWorkOrderId.get(wo.Id).Name = 'SAMTALE MELLOM MEDTOLKER: '+wo.Subject.left(80);
+            }
         }
         //wageclaim
         List<HOT_WageClaim__c> wageClaim =[SELECT Id, Name, ServiceResource__r.RelatedRecordId FROM HOT_WageClaim__c WHERE Id IN: threadByWageClaimId.keySet()];
