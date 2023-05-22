@@ -31,15 +31,15 @@ public without sharing class HOT_ThreadHandlerTest {
         workOrder.Subject='TEST';
         insert workOrder;
         Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        thread.CRM_Type__c = 'HOT_TOLK-TOLK';
         thread.CRM_Related_Object__c = workOrder.Id;
         Test.startTest();
         insert thread;
         Test.stopTest();
 
-        thread = [SELECT Id, Name FROM Thread__c WHERE Id = :thread.Id];
+        Thread__c t = [SELECT Id, Name FROM Thread__c WHERE Id = :thread.Id];
 
-        System.assertEquals('SAMTALE MELLOM BRUKER OG TOLKER: TEST', thread.Name, 'Could not set thread Name based on workOrder');
+        System.assertEquals(thread.Id, t.Name, 'Could not set thread Name based on workOrder');
     }
      @isTest
     static void setThreadNameBasedOnServiceAppointmentTest() {

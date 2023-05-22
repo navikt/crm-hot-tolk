@@ -5,6 +5,7 @@ import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav'
 import getAccountOnThread from '@salesforce/apex/HOT_MessageHelper.getAccountOnThread';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
 import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformation';
+import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkOrderInformation';
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
 import { refreshApex } from '@salesforce/apex';
 
@@ -17,6 +18,8 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     showUserThreadbutton = false;
     showOrderThreadbutton = false;
     showUserOrdererThreadbutton = false;
+    showUserInterpreterThreadbutton = false;
+    showInterpreterInterpreterThreadbutton = false;
     activeSectionMessage = '';
     threads;
     setCardTitle;
@@ -63,12 +66,9 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                     getAccountOnThread({ recordId: this.threads[0].Id })
                         .then((result) => {
                             this.accountName = result;
-                            console.log(this.accountName);
                             this.showAccountName = true;
                         })
-                        .catch((error) => {
-                            console.log('feil');
-                        });
+                        .catch((error) => {});
                 }
             }
         }
@@ -121,6 +121,57 @@ export default class CrmMessagingMessageComponent extends LightningElement {
 
     get shownewbutton() {
         return this.threads.length == 0;
+    }
+    goToThreadTypeInterpreterInterpreter() {
+        this.noThreadExist = false;
+        this.ThreadInfo = 'Du er i samtale med mellom medtolker';
+        refreshApex(this._threadsforRefresh);
+        for (let thread in this.threads) {
+            if (this.threads[thread].CRM_Type__c == 'HOT_TOLK-TOLK') {
+                this.messageType = 'HOT_TOLK-TOLK';
+                this.singleThread = true;
+                refreshApex(this._threadsforRefresh);
+                this.showThreads = true;
+                this.showAccountName = true;
+                event.preventDefault(); // prevent the default scroll behavior
+                event.stopPropagation();
+                break;
+            } else {
+                this.messageType = 'HOT_TOLK-TOLK';
+                this.buttonMessage = 'Klikk for å starte samtale med medtolker';
+            }
+        }
+        if (this.threads.length == 0) {
+            this.shownewbutton = true;
+            this.messageType = 'HOT_TOLK-TOLK';
+            this.buttonMessage = 'Klikk for å starte samtale med medtolker';
+        }
+    }
+
+    goToThreadTypeUserInterpreter() {
+        this.noThreadExist = false;
+        this.ThreadInfo = 'Du er i samtale med mellom bruker og tolker';
+        refreshApex(this._threadsforRefresh);
+        for (let thread in this.threads) {
+            if (this.threads[thread].CRM_Type__c == 'HOT_BRUKER-TOLK') {
+                this.messageType = 'HOT_BRUKER-TOLK';
+                this.singleThread = true;
+                refreshApex(this._threadsforRefresh);
+                this.showThreads = true;
+                this.showAccountName = true;
+                event.preventDefault(); // prevent the default scroll behavior
+                event.stopPropagation();
+                break;
+            } else {
+                this.messageType = 'HOT_BRUKER-TOLK';
+                this.buttonMessage = 'Klikk for å starte samtale med bruker og tolker';
+            }
+        }
+        if (this.threads.length == 0) {
+            this.shownewbutton = true;
+            this.messageType = 'HOT_BRUKER-TOLK';
+            this.buttonMessage = 'Klikk for å starte samtale med bruker og tolker';
+        }
     }
     goToThreadTypeOrderer() {
         this.noThreadExist = false;
@@ -233,10 +284,22 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 }
             })
             .catch((error) => {
-                this.isRequestMessages = false;
-                this.shownewbutton = true;
-                this.showThreads = true;
-                this.buttonMessage = 'Klikk for å starte samtale';
+                getWorkOrderInformation({ recordId: this.recordId })
+                    .then((result) => {
+                        if (result[0].HOT_TotalNumberOfInterpreters__c > 1) {
+                            this.showInterpreterInterpreterThreadbutton = true;
+                            this.showUserInterpreterThreadbutton = true;
+                        } else {
+                            this.showInterpreterInterpreterThreadbutton = false;
+                            this.showUserInterpreterThreadbutton = true;
+                        }
+                    })
+                    .catch((error) => {
+                        this.isRequestMessages = false;
+                        this.shownewbutton = true;
+                        this.showThreads = true;
+                        this.buttonMessage = 'Klikk for å starte samtale';
+                    });
             });
     }
 }
