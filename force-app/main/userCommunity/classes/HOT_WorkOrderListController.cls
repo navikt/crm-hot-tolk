@@ -194,7 +194,7 @@ public without sharing class HOT_WorkOrderListController {
     }
     @AuraEnabled
    public static String getThreadInterpreterId(String workOrderId) {
-    List<Thread__c> thread = [SELECT Id, CRM_Thread_Type__c FROM Thread__c WHERE CRM_Related_Object__c=:workOrderId AND CRM_Thread_Type__c='HOT_TOLK-TOLK' LIMIT 1];
+    List<Thread__c> thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:workOrderId LIMIT 1];
     String Id='';
     if (thread.size() >0) {
            Id=thread[0].Id;
