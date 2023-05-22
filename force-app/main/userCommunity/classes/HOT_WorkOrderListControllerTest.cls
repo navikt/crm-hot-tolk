@@ -171,6 +171,7 @@ private class HOT_WorkOrderListControllerTest {
 
         Thread__c t = HOT_TestDataFactory.createThread();
         t.CRM_Related_Object__c=workOrder.Id;
+        t.CRM_Thread_Type__c='HOT_TOLK-TOLK';
         insert t;
         Test.stopTest();
            String threadId= HOT_WorkOrderListController.getThreadInterpreterId(workOrder.Id);
