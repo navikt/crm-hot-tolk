@@ -77,6 +77,7 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.InterpretationPostalCity__c,
                     HOT_Request__r.IsSerieoppdrag__c,
                     HOT_Request__r.IsScreenInterpreter__c,
+                    HOT_Request__r.IsAccountEqualOrderer__c,
                     HOT_Request__r.IsOtherEconomicProvicer__c,
                     HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c,
                     HOT_Request__r.InvoiceReference__c,
@@ -130,7 +131,7 @@ public without sharing class HOT_WorkOrderListController {
             }
             if (wo.HOT_Request__r.Account__c == user.AccountId && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
                 workOrdersAccount.put(wo.Id, wo);
-            } else if (wo.EndDate > sixMonthsAgo) {
+            } else if (wo.EndDate > sixMonthsAgo && wo.HOT_Request__r.Orderer__c == user.AccountId) {
                 workOrdersOrderer.put(wo.Id, wo);
             }
         }
@@ -191,4 +192,13 @@ public without sharing class HOT_WorkOrderListController {
         }
         return workOrders;
     }
+    @AuraEnabled
+   public static String getThreadInterpreterId(String workOrderId) {
+    List<Thread__c> thread = [SELECT Id, CRM_Thread_Type__c FROM Thread__c WHERE CRM_Related_Object__c=:workOrderId AND CRM_Thread_Type__c='HOT_TOLK-TOLK' LIMIT 1];
+    String Id='';
+    if (thread.size() >0) {
+           Id=thread[0].Id;
+    }
+    return Id;
+}
 }

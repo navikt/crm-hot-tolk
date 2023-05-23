@@ -25,7 +25,7 @@ export let columns = [
         type: 'String'
     },
     {
-        name: 'IsNewComment__c',
+        name: 'IsUnreadMessage',
         label: '',
         type: 'String',
         svg: true
@@ -54,10 +54,16 @@ export let iconByValue = {
     true: {
         icon: 'Information',
         fill: '',
-        ariaLabel: 'Ny melding'
+        ariaLabel: 'Ulest melding'
     },
     false: {
+        icon: 'SuccessFilled',
+        fill: 'Green',
+        ariaLabel: 'Ingen nye meldinger'
+    },
+    noThread: {
         icon: '',
-        fill: ''
+        fill: '',
+        ariaLabel: ''
     }
 };

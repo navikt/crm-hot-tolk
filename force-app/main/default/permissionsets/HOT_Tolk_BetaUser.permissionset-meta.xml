@@ -4,6 +4,11 @@
         <enabled>true</enabled>
         <name>HOT_Tolk_BetaUser</name>
     </customPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.HOT_Subject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT Tolk Beta User</label>
 </PermissionSet>

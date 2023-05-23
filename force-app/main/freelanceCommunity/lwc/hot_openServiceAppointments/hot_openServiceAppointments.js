@@ -85,22 +85,13 @@ export default class Hot_openServiceAppointments extends LightningElement {
     @track filters = [];
     numberTimesCalled = 0;
     connectedCallback() {
+        this.updateURL();
         if (sessionStorage.getItem('checkedrowsSavedForRefresh')) {
             this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsSavedForRefresh'));
             sessionStorage.removeItem('checkedrowsSavedForRefresh');
         }
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
-        this.breadcrumbs = [
-            {
-                label: 'Tolketjenesten',
-                href: ''
-            },
-            {
-                label: 'oppdrag',
-                href: 'mine-oppdrag'
-            }
-        ];
     }
     getDayOfWeek(date) {
         var jsDate = new Date(date);
@@ -158,8 +149,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                weekday: this.getDayOfWeek(x.EarliestStartTime)
-                //,isUrgent: x.HOT_IsUrgent__c
+                weekday: this.getDayOfWeek(x.EarliestStartTime),
+                isUrgent: x.HOT_IsUrgent__c
             }));
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
