@@ -67,14 +67,33 @@
                         onclick={goToThreadTypeUser}
                     ></lightning-button>
                 </template>
-                <template if:true={showUserOrdererThreadbutton}>
+                <!-- <template if:true={showUserOrdererThreadbutton}>
                     <lightning-button
                         label="Samtale mellom bruker og bestiller"
                         variant="border-filled"
                         slot="actions"
                         onclick={goToThreadTypeUserOrderer}
                     ></lightning-button>
+                </template> -->
+                <!--  -->
+                <template if:true={showUserInterpreterThreadbutton}>
+                    <lightning-button
+                        label="Samtale mellom bruker og tolk"
+                        variant="border-filled"
+                        slot="actions"
+                        onclick={goToThreadTypeUserInterpreter}
+                    ></lightning-button>
                 </template>
+                <template if:true={showInterpreterInterpreterThreadbutton}>
+                    <lightning-button
+                        label="Samtale mellom medtolker"
+                        variant="border-filled"
+                        slot="actions"
+                        onclick={goToThreadTypeInterpreterInterpreter}
+                    ></lightning-button>
+                </template>
+
+                <!--  -->
                 <template lwc:if={ThreadInfo}>
                     <span class="slds-badge slds-theme_success">{ThreadInfo}</span>
                 </template>

@@ -100,6 +100,20 @@
                     Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
                 </div>
             </div>
+            <div if:true={showInterpreterInterpreterThreads}>
+                <div class="record-details-container" if:false={noInterpreterInterpreterThreads}>
+                    <c-table
+                        records={interpreterInterpreterThreads}
+                        columns={columns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-table>
+                </div>
+                <div if:true={noInterpreterInterpreterThreads} style="text-align: center">
+                    <br />
+                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                </div>
+            </div>
         </div>
     </main>
 </template>

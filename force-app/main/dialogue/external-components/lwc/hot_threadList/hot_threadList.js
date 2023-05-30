@@ -140,6 +140,7 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     this.showOrderthreads = false;
                     this.showWageClaimthreads = false;
                     this.showOrdererUserThreads = false;
+                    this.showInterpreterInterpreterThreads = false;
                 }
                 if (this.activeTab == 'interpreterthreads') {
                     this.showMythreads = false;
@@ -147,6 +148,7 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     this.showOrderthreads = false;
                     this.showWageClaimthreads = false;
                     this.showOrdererUserThreads = false;
+                    this.showInterpreterInterpreterThreads = false;
                 }
                 if (this.activeTab == 'orderThreads') {
                     this.showMythreads = false;
@@ -154,6 +156,7 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     this.showOrderthreads = true;
                     this.showWageClaimthreads = false;
                     this.showOrdererUserThreads = false;
+                    this.showInterpreterInterpreterThreads = false;
                 }
                 if (this.activeTab == 'wageClaimThreads') {
                     this.showMythreads = false;
@@ -161,6 +164,7 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     this.showOrderthreads = false;
                     this.showWageClaimthreads = true;
                     this.showOrdererUserThreads = false;
+                    this.showInterpreterInterpreterThreads = false;
                 }
                 if (this.activeTab == 'ordererUserThreads') {
                     this.showMythreads = false;
@@ -168,6 +172,15 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     this.showOrderthreads = false;
                     this.showWageClaimthreads = false;
                     this.showOrdererUserThreads = true;
+                    this.showInterpreterInterpreterThreads = false;
+                }
+                if (this.activeTab == 'interpreterInterpreterThreads') {
+                    this.showMythreads = false;
+                    this.showInterpreterthreads = false;
+                    this.showOrderthreads = false;
+                    this.showWageClaimthreads = false;
+                    this.showOrdererUserThreads = false;
+                    this.showInterpreterInterpreterThreads = true;
                 }
             }
         }
@@ -189,28 +202,33 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
     @track orderThreads;
     @track wageClaimThreads;
     @track ordererUserThreads;
+    @track interpreterInterpreterThreads;
 
     @track unmappedThreads;
     @track unmappedInterpreterThreads;
     @track unmapperOrderThreads;
     @track unmappedWageClaimThreads;
     @track unmappedOrdererUserTreads;
+    @track unmappedInterpreterInterpreterThreads;
 
     showMythreads = true;
     showInterpreterthreads = false;
     showOrderthreads = false;
     showWageClaimthreads = false;
     showOrdererUserThreads = false;
+    showInterpreterInterpreterThreads = false;
 
     noThreads = false;
     noInterpreterThreads = false;
     noOrderThreads = false;
     noWageClaimThreads = false;
     noOrdererUserThreads = false;
+    noInterpreterInterpreterThreads = false;
 
     ordererThreadsExisting = 0;
     wageClaimThreadsExisting = 0;
     ordererUserThreadsExisting = 0;
+    interpreterInterpreterThreadsExisting = 0;
 
     wiredThreadsResult;
     @wire(getMyThreads)
@@ -226,6 +244,7 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     this.unmapperOrderThreads = [];
                     this.unmappedWageClaimThreads = [];
                     this.unmappedOrdererUserTreads = [];
+                    this.unmappedInterpreterInterpreterThreads = [];
 
                     result.data.forEach((element) => {
                         if (element.CRM_Type__c == 'HOT_BRUKER-TOLK') {
@@ -249,7 +268,23 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                             this.unmappedOrdererUserTreads.push(element);
                             this.ordererUserThreadsExisting++;
                         }
+                        if (element.CRM_Type__c == 'HOT_TOLK-TOLK') {
+                            this.unmappedInterpreterInterpreterThreads.push(element);
+                            this.interpreterInterpreterThreadsExisting++;
+                            console.log('yesssss');
+                        }
                     });
+                    if (this.interpreterInterpreterThreadsExisting > 0) {
+                        if (this.tabs.some((tab) => tab.name === 'interpreterInterpreterThreads')) {
+                        } else {
+                            this.tabs.push({
+                                name: 'interpreterInterpreterThreads',
+                                label: 'Tolk-Tolk',
+                                selected: false,
+                                hasUnread: false
+                            });
+                        }
+                    }
                     if (this.ordererUserThreadsExisting > 0) {
                         if (this.tabs.some((tab) => tab.name === 'ordererUserThreads')) {
                         } else {
@@ -308,12 +343,18 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
                         LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
                     }));
+                    this.interpreterInterpreterThreads = this.unmappedInterpreterInterpreterThreads.map((x) => ({
+                        ...x,
+                        read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
+                    }));
 
                     this.noThreads = this.threads.length === 0;
                     this.noInterpreterThreads = this.interpreterThreads.length === 0;
                     this.noOrderThreads = this.orderThreads.length === 0;
                     this.noWageClaimThreads = this.wageClaimThreads.length === 0;
                     this.noOrdererUserThreads = this.ordererUserThreads.length === 0;
+                    this.noInterpreterInterpreterThreads = this.interpreterInterpreterThreads.length === 0;
 
                     //sorting, unread first
                     this.threads.sort((a, b) => {
@@ -353,6 +394,15 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                         return 1;
                     });
                     this.ordererUserThreads.sort((a, b) => {
+                        if (a.read === b.read) {
+                            return 0;
+                        }
+                        if (a.read === false) {
+                            return -1;
+                        }
+                        return 1;
+                    });
+                    this.interpreterInterpreterThreads.sort((a, b) => {
                         if (a.read === b.read) {
                             return 0;
                         }
@@ -485,6 +535,32 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     } else {
                         this.tabs = this.tabs.map((tab) => {
                             if (tab.name === 'ordererUserThreads') {
+                                return { ...tab, hasUnread: false };
+                            }
+                            return tab;
+                        });
+                    }
+                    //List 6 unread messages
+
+                    let foundUnreadInterpreterInterpreterThreads = false;
+
+                    for (let i = 0; i < this.interpreterInterpreterThreads.length; i++) {
+                        const thread6 = this.interpreterInterpreterThreads[i];
+                        if (thread6.read == false) {
+                            foundUnreadInterpreterInterpreterThreads = true;
+                            break;
+                        }
+                    }
+                    if (foundUnreadInterpreterInterpreterThreads) {
+                        this.tabs = this.tabs.map((tab) => {
+                            if (tab.name === 'interpreterInterpreterThreads') {
+                                return { ...tab, hasUnread: true };
+                            }
+                            return tab;
+                        });
+                    } else {
+                        this.tabs = this.tabs.map((tab) => {
+                            if (tab.name === 'interpreterInterpreterThreads') {
                                 return { ...tab, hasUnread: false };
                             }
                             return tab;

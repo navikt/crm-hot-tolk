@@ -28,7 +28,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         true: {
             icon: 'WarningFilled',
             fill: 'Red',
-            ariaLabel: 'Dette oppdraget haster'
+            ariaLabel: 'Høyt prioritert'
         }
     };
 

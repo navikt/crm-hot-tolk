@@ -71,7 +71,7 @@ public without sharing class HOT_MessageHelper {
             threadList = [
                 SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c, CRM_Type__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Type__c = 'HOT_BESTILLER-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-RESSURSKONTOR' OR CRM_Type__c='HOT_BRUKER-BESTILLER')
+                WHERE CRM_Related_Object__c = :recordId AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER' OR CRM_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Type__c = 'HOT_BESTILLER-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-FORMIDLER' OR CRM_Type__c = 'HOT_TOLK-RESSURSKONTOR' OR CRM_Type__c='HOT_BRUKER-BESTILLER' OR CRM_Type__c='HOT_TOLK-TOLK')
             ];
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
@@ -88,6 +88,15 @@ public without sharing class HOT_MessageHelper {
                 WHERE Id= :recordId
             ];
         return request;
+    }
+      @AuraEnabled(cacheable=true)
+    public static List<WorkOrder> getWorkOrderInformation(Id recordId) {
+        List<WorkOrder> wo= [
+                SELECT Id, HOT_TotalNumberOfInterpreters__c
+                FROM WorkOrder
+                WHERE Id= :recordId
+            ];
+        return wo;
     }
      @AuraEnabled(cacheable=true)
     public static List<Thread__c> getSingleThread(Id recordId, String type) {
@@ -179,7 +188,7 @@ public without sharing class HOT_MessageHelper {
         if(objectType=='WorkOrder'){
             WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
-            thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+            thread.CRM_Thread_Type__c = type;
             thread.CRM_Account__c = accountId;
             thread.HOT_WorkOrder__c=recordId;
             thread.HOT_Title__c=wo.Subject;
@@ -259,6 +268,18 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Account__c = request.Account__c;
             thread.HOT_Request__c=recordId;
             thread.HOT_Title__c=request.Subject__c;
+            HOT_DatabaseOperations.insertRecords(thread);
+        
+        return thread;
+    }
+      @AuraEnabled(cacheable=false)
+    public static Thread__c createThreadInterpreters(Id recordId) {
+            ServiceAppointment serviceAppointment=[SELECT Subject, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:recordId LIMIT 1];
+            Thread__c thread = new Thread__c();
+            thread.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
+            thread.CRM_Thread_Type__c = 'HOT_TOLK-TOLK';
+            thread.HOT_Title__c=serviceAppointment.Subject;
+            thread.HOT_WorkOrder__c=serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
             HOT_DatabaseOperations.insertRecords(thread);
         
         return thread;
