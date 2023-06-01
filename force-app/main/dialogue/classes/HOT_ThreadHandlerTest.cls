@@ -74,7 +74,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         thread = [SELECT Id, Name FROM Thread__c WHERE Id = :thread.Id];
 
-        System.assertEquals(sa.Subject, thread.Name, 'Could not set thread Name based on workOrder');
+        System.assertEquals('SAMTALE MED TOLK: '+sa.Subject, thread.Name, 'Could not set thread Name based on workOrder');
     }
      @isTest
     static void setThreadNameBasedOnInterestedResourceTest() {
@@ -107,6 +107,6 @@ public without sharing class HOT_ThreadHandlerTest {
 
         thread = [SELECT Id, Name FROM Thread__c WHERE Id = :thread.Id];
 
-        System.assertEquals(sa.Subject, thread.Name, 'Could not set thread Name based on workOrder');
+        System.assertEquals('SAMTALE MED TOLK: '+sa.Subject, thread.Name, 'Could not set thread Name based on workOrder');
     }
 }

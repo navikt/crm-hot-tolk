@@ -96,10 +96,9 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             }
         }
         //wageclaim
-        List<HOT_WageClaim__c> wageClaim =[SELECT Id, Name, ServiceAppointment__r.OwnerId FROM HOT_WageClaim__c WHERE Id IN: threadByWageClaimId.keySet()];
+        List<HOT_WageClaim__c> wageClaim =[SELECT Id, Name FROM HOT_WageClaim__c WHERE Id IN: threadByWageClaimId.keySet()];
         for (HOT_WageClaim__c wc : wageClaim) {
             threadByWageClaimId.get(wc.Id).Name = 'LØNNSKRAV: '+wc.Name.left(80);
-            threadByWageClaimId.get(wc.Id).OwnerId = wc.ServiceAppointment__r.OwnerId;
         }
 
     }
