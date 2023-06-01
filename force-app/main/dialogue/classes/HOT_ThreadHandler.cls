@@ -66,7 +66,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             WHERE Id IN :threadByServiceAppointmentId.keySet()
         ];
         for (ServiceAppointment sa : serviceAppointment) {
-            threadByServiceAppointmentId.get(sa.Id).Name = sa.Subject.left(80);
+            threadByServiceAppointmentId.get(sa.Id).Name = 'SAMTALE MED TOLK: '+sa.Subject.left(80);
             threadByServiceAppointmentId.get(sa.Id).OwnerId = sa.OwnerId;
         }
         //interestedresource
@@ -76,7 +76,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             WHERE Id IN :threadByInterestedResourceId.keySet()
         ];
         for (HOT_InterestedResource__c ir : interestedResource) {
-            threadByInterestedResourceId.get(ir.Id).Name = ir.ServiceAppointment__r.Subject.left(80);
+            threadByInterestedResourceId.get(ir.Id).Name = 'SAMTALE MED TOLK: '+ir.ServiceAppointment__r.Subject.left(80);
             threadByInterestedResourceId.get(ir.Id).OwnerId = ir.ServiceAppointment__r.OwnerId;
         }
         //workorder
