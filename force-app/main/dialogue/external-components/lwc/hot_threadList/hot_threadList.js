@@ -174,7 +174,7 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                 actionName: 'view'
             },
             state: {
-                from: 'mine-samtaler-frilanstolk'
+                from: 'mine-samtaler'
             }
         });
     }
