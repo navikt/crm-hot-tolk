@@ -33,7 +33,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @track isIRDetails = false;
     @track isWCDetails = false;
     @track msgVal;
-    @track isFreelace = false;
+    @track isFreelance = false;
 
     @api recordId;
     @api requestId;
@@ -482,7 +482,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             }
         } else if (parsed_params.from == 'mine-samtaler-frilanstolk') {
             this.navigationBaseUrl = 'mine-samtaler-frilanstolk';
-            this.isFreelace = true;
+            this.isFreelance = true;
         } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = parsed_params.recordId;
