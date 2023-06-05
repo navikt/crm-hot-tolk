@@ -1,6 +1,9 @@
 <template>
-    <div class="brodsmulesti">
+    <div class="brodsmulesti" if:false={isFreelace}>
         <c-breadcrumbs url-list={breadcrumbs} num-pops="3"></c-breadcrumbs>
+    </div>
+    <div class="brodsmulesti" if:true={isFreelace}>
+        <c-breadcrumbs url-list={breadcrumbsFreelance} num-pops="3"></c-breadcrumbs>
     </div>
     <div class="back-link-div">
         <a class="back-link" onclick={goBack}>

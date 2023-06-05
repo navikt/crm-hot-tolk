@@ -37,7 +37,7 @@
 
 .informasjonstavle__bildepaneler-single {
     min-height: 96px;
-    width: 825px;
+    width: 1000px;
     display: flex;
     flex-direction: row;
 }

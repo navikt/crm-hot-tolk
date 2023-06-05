@@ -11,7 +11,8 @@ export default class Hot_freelanceHome extends NavigationMixin(LightningElement)
         let baseURL = baseURLArray.join('/');
         this.pageLinks = {
             myServiceAppointments: baseURL + '/mine-oppdrag',
-            freelanceMyPage: baseURL + '/frilanstolk-min-side'
+            freelanceMyPage: baseURL + '/frilanstolk-min-side',
+            freelanceMyThreads: baseURL + '/mine-samtaler-frilanstolk'
         };
     }
 }

@@ -33,6 +33,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @track isIRDetails = false;
     @track isWCDetails = false;
     @track msgVal;
+    @track isFreelace = false;
 
     @api recordId;
     @api requestId;
@@ -67,6 +68,20 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         {
             label: 'Mine samtaler',
             href: 'mine-samtaler'
+        },
+        {
+            label: 'Min samtale',
+            href: 'detail'
+        }
+    ];
+    @track breadcrumbsFreelance = [
+        {
+            label: 'Tolketjenesten',
+            href: ''
+        },
+        {
+            label: 'Mine samtaler som frilanstolk',
+            href: 'mine-samtaler-frilanstolk'
         },
         {
             label: 'Min samtale',
@@ -465,6 +480,9 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     href: 'mine-bestillinger-andre'
                 };
             }
+        } else if (parsed_params.from == 'mine-samtaler-frilanstolk') {
+            this.navigationBaseUrl = 'mine-samtaler-frilanstolk';
+            this.isFreelace = true;
         } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = parsed_params.recordId;
