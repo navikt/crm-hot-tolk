@@ -1,6 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreads';
+import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsFreelance';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import { refreshApex } from '@salesforce/apex';
 
