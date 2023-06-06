@@ -5,7 +5,7 @@ import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_frilanstolkThreadList extends NavigationMixin(LightningElement) {
-    userContactId;
+    @track userContactId;
     breadcrumbs = [
         {
             label: 'Tolketjenesten',

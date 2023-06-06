@@ -21,7 +21,7 @@ public with sharing class HOT_ThreadListController {
 
             return threads;
     }
-       @AuraEnabled(cacheable=true)
+       @AuraEnabled(cacheable=false)
     public static List<Thread__c> getMyThreadsIR() {
         List<Id> workOrderIds = new List<Id>();
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
@@ -53,7 +53,7 @@ public with sharing class HOT_ThreadListController {
 
         return threads;
     }
-    @AuraEnabled(cacheable=false)
+    @AuraEnabled(cacheable=true)
     public static List<Thread__c> getMyThreadsFreelance() {
         List<Id> workOrderIds = new List<Id>();
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
@@ -67,14 +67,6 @@ public with sharing class HOT_ThreadListController {
             workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);
         }
     }
-    List<HOT_Request__c> bestillerSamtaler=[SELECT Id
-        FROM HOT_Request__c
-        WHERE Orderer__c = :user.AccountId AND IsAccountEqualOrderer__c = false];
-
-        Set<Id> bestillerSamtalerId = new Set<Id>();
-            for(HOT_Request__c request : bestillerSamtaler){
-                bestillerSamtalerId.add(request.Id); 
-        }
     
         List<Thread__c> threads = [
             SELECT Id, HOT_Subject__c, CRM_Type__c, CRM_Related_Object__c, CRM_Number_of_unread_Messages__c, HOT_Thread_read_by__c, HOT_Last_message_from__c, CRM_Registered_Datetime_Formula__c, CRM_Latest_Message_Datetime__c
