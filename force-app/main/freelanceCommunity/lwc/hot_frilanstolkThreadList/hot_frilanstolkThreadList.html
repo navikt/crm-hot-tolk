@@ -11,7 +11,7 @@
                         <p style="margin-left: 0.25rem">Tilbake</p>
                     </a>
                 </div>
-                <h2 class="header">Mine samtaler</h2>
+                <h2 class="header">Mine samtaler som frilanstolk</h2>
                 <div if:true={isMobile} class="back-link-div">
                     <a class="back-link" onclick={goBack}>
                         <c-icon icon="Back"></c-icon>
@@ -58,30 +58,30 @@
                     Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
                 </div>
             </div>
-            <div if:true={showOrderthreads}>
-                <div class="record-details-container" if:false={noOrderThreads}>
+            <div if:true={showWageClaimthreads}>
+                <div class="record-details-container" if:false={noWageClaimThreads}>
                     <c-table
-                        records={orderThreads}
+                        records={wageClaimThreads}
                         columns={columns}
                         onrowclick={openThread}
                         icon-by-value={iconByValue}
                     ></c-table>
                 </div>
-                <div if:true={noOrderThreads} style="text-align: center">
+                <div if:true={noWageClaimThreads} style="text-align: center">
                     <br />
                     Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
                 </div>
             </div>
-            <div if:true={showOrdererUserThreads}>
-                <div class="record-details-container" if:false={noOrdererUserThreads}>
+            <div if:true={showInterpreterInterpreterThreads}>
+                <div class="record-details-container" if:false={noInterpreterInterpreterThreads}>
                     <c-table
-                        records={ordererUserThreads}
+                        records={interpreterInterpreterThreads}
                         columns={columns}
                         onrowclick={openThread}
                         icon-by-value={iconByValue}
                     ></c-table>
                 </div>
-                <div if:true={noOrdererUserThreads} style="text-align: center">
+                <div if:true={noInterpreterInterpreterThreads} style="text-align: center">
                     <br />
                     Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
                 </div>
