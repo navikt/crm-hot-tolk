@@ -2,11 +2,14 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
+import getThreadId from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
+import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import { columns, mobileColumns } from './columns';
+import { NavigationMixin } from 'lightning/navigation';
 import { formatRecord } from 'c/datetimeFormatter';
 import { defaultFilters, compare } from './filters';
 
-export default class Hot_wageClaimList extends LightningElement {
+export default class Hot_wageClaimList extends NavigationMixin(LightningElement) {
     @track columns = [];
     @track filters = [];
     setColumns() {
@@ -18,6 +21,7 @@ export default class Hot_wageClaimList extends LightningElement {
     }
     @track Status;
     isNotRetractable = false;
+    isDisabledGoToThread = false;
     noWageClaims = false;
     @track wageClaims = [];
     @track allWageClaimsWired = [];
@@ -43,7 +47,8 @@ export default class Hot_wageClaimList extends LightningElement {
     }
 
     refresh() {
-        this.filters = defaultFilters();
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('wageClaimSessionFilter'));
+        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -105,14 +110,18 @@ export default class Hot_wageClaimList extends LightningElement {
 
     connectedCallback() {
         this.setColumns();
+        this.updateURL();
         refreshApex(this.wiredWageClaimsResult);
     }
     closeModal() {
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+        this.recordId = undefined;
+        this.updateURL();
     }
     @track wageClaim;
     isWageClaimDetails = false;
     goToRecordDetails(result) {
+        this.isDisabledGoToThread = false;
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
         this.template.querySelector('.serviceAppointmentDetails').focus();
         this.wageClaim = undefined;
@@ -132,6 +141,43 @@ export default class Hot_wageClaimList extends LightningElement {
             }
         }
         this.updateURL();
+    }
+    treadId;
+    goToWageClaimThread() {
+        this.isDisabledGoToThread = true;
+        getThreadId({ wageClaimeId: this.recordId }).then((result) => {
+            if (result != '') {
+                this.threadId = result;
+                this.navigateToThread(this.threadId);
+            } else {
+                console.log('tråd finnes ikke');
+                console.log('accountid: ' + this.wageClaim.ServiceResource__r.AccountId);
+                createThread({ recordId: this.recordId, accountId: this.wageClaim.ServiceResource__r.AccountId })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                    })
+                    .catch((error) => {
+                        this.modalHeader = 'Noe gikk galt';
+                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                        this.noCancelButton = true;
+                        this.showModal();
+                    });
+            }
+        });
+    }
+    navigateToThread(recordId) {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: recordId,
+                objectApiName: 'Thread__c',
+                actionName: 'view'
+            },
+            state: {
+                from: 'mine-oppdrag',
+                list: 'wageClaim'
+            }
+        });
     }
 
     @api recordId;
@@ -186,7 +232,7 @@ export default class Hot_wageClaimList extends LightningElement {
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
-
+        sessionStorage.setItem('wageClaimSessionFilter', JSON.stringify(this.filters));
         let filteredRecords = [];
         let records = this.allWageClaimsWired;
         for (let record of records) {

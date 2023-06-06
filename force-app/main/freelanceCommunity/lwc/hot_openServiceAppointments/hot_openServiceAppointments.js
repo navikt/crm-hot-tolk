@@ -28,7 +28,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         true: {
             icon: 'WarningFilled',
             fill: 'Red',
-            ariaLabel: 'Dette oppdraget haster'
+            ariaLabel: 'Høyt prioritert'
         }
     };
 
@@ -59,6 +59,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             });
             sessionStorage.removeItem('openfilters');
         }
+
         this.sendFilters();
     }
     setCheckedRowsOnRefresh() {
@@ -72,34 +73,25 @@ export default class Hot_openServiceAppointments extends LightningElement {
     disconnectedCallback() {
         // Going back with browser back or back button on mouse forces page refresh and a disconnect
         // Save filters on disconnect to exist only within the current browser tab
-        sessionStorage.setItem('openfilters', JSON.stringify(this.filters));
         sessionStorage.setItem('checkedrows', JSON.stringify(this.checkedServiceAppointments));
     }
 
     renderedCallback() {
         this.setPreviousFiltersOnRefresh();
         this.setCheckedRowsOnRefresh();
-        //localStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
+        sessionStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
     }
 
     @track filters = [];
+    numberTimesCalled = 0;
     connectedCallback() {
-        // if (localStorage.getItem('checkedrowsSavedForRefresh')) {
-        //     this.checkedServiceAppointments = JSON.parse(localStorage.getItem('checkedrowsSavedForRefresh'));
-        //     localStorage.removeItem('checkedrowsSavedForRefresh');
-        // }
+        this.updateURL();
+        if (sessionStorage.getItem('checkedrowsSavedForRefresh')) {
+            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsSavedForRefresh'));
+            sessionStorage.removeItem('checkedrowsSavedForRefresh');
+        }
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
-        this.breadcrumbs = [
-            {
-                label: 'Tolketjenesten',
-                href: ''
-            },
-            {
-                label: 'oppdrag',
-                href: 'mine-oppdrag'
-            }
-        ];
     }
     getDayOfWeek(date) {
         var jsDate = new Date(date);
@@ -157,8 +149,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                weekday: this.getDayOfWeek(x.EarliestStartTime)
-                //,isUrgent: x.HOT_IsUrgent__c
+                weekday: this.getDayOfWeek(x.EarliestStartTime),
+                isUrgent: x.HOT_IsUrgent__c
             }));
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
@@ -177,7 +169,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     refresh() {
-        this.filters = defaultFilters();
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilter'));
+        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
+
         this.sendRecords();
         this.sendFilters();
         this.sendCheckedRows();
@@ -381,6 +375,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
     isRemoveReleasedTodayButtonHidden = true;
     isReleasedTodayButtonHidden = false;
     releasedTodayFilter() {
+        this.checkedServiceAppointments = [];
         this.noReleasedToday = false;
         const d = new Date();
         let year = d.getFullYear();
@@ -397,6 +392,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.isRemoveReleasedTodayButtonHidden = false;
     }
     removeReleasedTodayFilter() {
+        this.checkedServiceAppointments = [];
         this.filters[5].value[0].value = '';
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -406,23 +402,68 @@ export default class Hot_openServiceAppointments extends LightningElement {
     filteredRecordsLength = 0;
     @api
     applyFilter(event) {
+        this.numberTimesCalled = this.numberTimesCalled + 1;
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
-        let filteredRecords = [];
-        let records = this.initialServiceAppointments;
-        for (let record of records) {
-            let includeRecord = true;
-            for (let filter of this.filters) {
-                includeRecord *= compare(filter, record);
-            }
-            if (includeRecord) {
-                filteredRecords.push(record);
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilter'));
+        sessionStorage.setItem('openSessionFilter', JSON.stringify(this.filters));
+        let sameValues = true;
+        if (this.filters.length !== filterFromSessionStorage.length) {
+            sameValues = false;
+        } else {
+            for (let i = 0; i < this.filters.length; i++) {
+                if (JSON.stringify(this.filters[i]) !== JSON.stringify(filterFromSessionStorage[i])) {
+                    sameValues = false;
+                    break;
+                }
             }
         }
-        this.filteredRecordsLength = filteredRecords.length;
+        if (sameValues) {
+            let filteredRecords = [];
+            let records = this.initialServiceAppointments;
+            for (let record of records) {
+                let includeRecord = true;
+                for (let filter of this.filters) {
+                    includeRecord *= compare(filter, record);
+                }
+                if (includeRecord) {
+                    filteredRecords.push(record);
+                }
+            }
+            this.filteredRecordsLength = filteredRecords.length;
 
-        if (setRecords) {
-            this.records = filteredRecords;
+            if (setRecords) {
+                this.records = filteredRecords;
+            }
+            this.checkedServiceAppointmentsFromSession = JSON.parse(
+                sessionStorage.getItem('checkedrowsSavedForRefresh')
+            );
+        } else {
+            let filteredRecords = [];
+            let records = this.initialServiceAppointments;
+            for (let record of records) {
+                let includeRecord = true;
+                for (let filter of this.filters) {
+                    includeRecord *= compare(filter, record);
+                }
+                if (includeRecord) {
+                    filteredRecords.push(record);
+                }
+            }
+            this.filteredRecordsLength = filteredRecords.length;
+
+            if (setRecords) {
+                this.records = filteredRecords;
+            }
+            this.checkedServiceAppointmentsFromSession = JSON.parse(
+                sessionStorage.getItem('checkedrowsSavedForRefresh')
+            );
+            if (
+                this.filteredRecordsLength != this.checkedServiceAppointmentsFromSession.length &&
+                this.numberTimesCalled > 2
+            ) {
+                this.checkedServiceAppointments = [];
+            }
         }
         return this.filteredRecordsLength;
     }

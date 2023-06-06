@@ -3,7 +3,7 @@
     <fullName>HOT_IsUrgent__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <label>Is urgent?</label>
+    <label>High priority?</label>
     <trackHistory>false</trackHistory>
     <type>Checkbox</type>
 </CustomField>

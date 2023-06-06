@@ -1,19 +1,24 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
 import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterest';
+import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
+import getThreadDispatcherIdSA from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherIdSA';
+import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsDuplicate';
+import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
+import { getParametersFromURL } from 'c/hot_URIDecoder';
 import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
-import addComment from '@salesforce/apex/HOT_InterestedResourcesListController.addComment';
-import readComment from '@salesforce/apex/HOT_InterestedResourcesListController.readComment';
-import getComments from '@salesforce/apex/HOT_InterestedResourcesListController.getComments';
+import { NavigationMixin } from 'lightning/navigation';
+import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
 
-export default class Hot_interestedResourcesList extends LightningElement {
+export default class Hot_interestedResourcesList extends NavigationMixin(LightningElement) {
     @track columns = [];
     @track filters = [];
     @track iconByValue = iconByValue;
+    @track isGoToThreadButtonDisabled = false;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -57,16 +62,7 @@ export default class Hot_interestedResourcesList extends LightningElement {
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredInterestedResourcesResult);
-        this.breadcrumbs = [
-            {
-                label: 'Tolketjenesten',
-                href: ''
-            },
-            {
-                label: 'oppdrag',
-                href: 'mine-oppdrag'
-            }
-        ];
+        this.updateURL();
     }
     getDayOfWeek(date) {
         var jsDate = new Date(date);
@@ -120,13 +116,54 @@ export default class Hot_interestedResourcesList extends LightningElement {
             this.error = undefined;
             this.allInterestedResourcesWired = [...result.data];
             this.noInterestedResources = this.allInterestedResourcesWired.length === 0;
-            let tempRecords = [];
-            for (let record of result.data) {
-                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
-            }
-            this.records = tempRecords;
-            this.initialInterestedResources = [...this.records];
-            this.refresh();
+            getContactId({}).then((contactId) => {
+                this.userContactId = contactId;
+
+                getMyThreads().then((result) => {
+                    var thread = [];
+                    thread = result;
+                    var map = new Map();
+                    thread.forEach((t) => {
+                        map.set(t.CRM_Related_Object__c, t.HOT_Thread_read_by__c);
+                    });
+                    this.allInterestedResourcesWired = this.allInterestedResourcesWired.map((appointment) => {
+                        let threadId;
+                        if (
+                            appointment.Status__c == 'Assigned' ||
+                            appointment.Status__c == 'Tildelt' ||
+                            appointment.Status__c == 'Canceled' ||
+                            appointment.Status__c == 'Avlyst' ||
+                            appointment.Status__c == 'Canceled by Interpreter' ||
+                            appointment.Status__c == 'Avlyst av tolk'
+                        ) {
+                            threadId = appointment.ServiceAppointment__c;
+                        } else {
+                            threadId = appointment.Id;
+                        }
+                        let status = 'noThread';
+                        if (map.has(threadId)) {
+                            var readBy = map.get(threadId);
+                            if (readBy.includes(this.userContactId)) {
+                                status = 'false';
+                            } else {
+                                status = 'true';
+                            }
+                        } else {
+                        }
+                        return {
+                            ...appointment,
+                            IsUnreadMessage: status
+                        };
+                    });
+                    let tempRecords = [];
+                    for (let record of this.allInterestedResourcesWired) {
+                        tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+                    }
+                    this.records = tempRecords;
+                    this.initialInterestedResources = [...this.records];
+                    this.refresh();
+                });
+            });
         } else if (result.error) {
             this.error = result.error;
             this.allInterestedResourcesWired = undefined;
@@ -134,7 +171,8 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
 
     refresh() {
-        this.filters = defaultFilters();
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('interestedSessionFilter'));
+        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
         //this.goToRecordDetails({ detail: { Id: this.recordId } });
         //this.sendRecords();
         this.sendFilters();
@@ -167,17 +205,32 @@ export default class Hot_interestedResourcesList extends LightningElement {
         for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
+                let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
+                this.interestedResource.AppointmentDeadlineDate__c =
+                    DeadlineDateTimeFormatted.getDate() +
+                    '.' +
+                    (DeadlineDateTimeFormatted.getMonth() + 1) +
+                    '.' +
+                    DeadlineDateTimeFormatted.getFullYear();
+                // if (
+                //     this.interestedResource.Status__c == 'Påmeldt' ||
+                //     this.interestedResource.Status__c == 'Tildelt' ||
+                //     this.interestedResource.Status__c == 'Assigned' ||
+                //     this.interestedResource.Status__c == 'Interested'
+                // ) {
+                //     this.isGoToThreadButtonDisabled = false;
+                // } else {
+                //     this.isGoToThreadButtonDisabled = true;
+                // }
+
                 this.interestedResource.weekday = this.getDayOfWeek(
                     this.interestedResource.ServiceAppointmentStartTime__c
                 );
             }
         }
+
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
-        this.fixComments();
         this.updateURL();
-        if (this.interestedResource?.IsNewComment__c) {
-            readComment({ interestedResourceId: this.interestedResource?.Id });
-        }
     }
 
     @api recordId;
@@ -198,22 +251,12 @@ export default class Hot_interestedResourcesList extends LightningElement {
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'interested' };
     }
-
-    sendComment() {
-        let interestedResourceId = this.interestedResource.Id;
-        let newComment = this.template.querySelector('.newComment').value;
-        addComment({ interestedResourceId, newComment }).then(() => {
-            refreshApex(this.wiredInterestedResourcesResult);
-            this.template.querySelector('.newComment').value = '';
-            this.fixComments();
-        });
-    }
     filteredRecordsLength = 0;
     @api
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
-
+        sessionStorage.setItem('interestedSessionFilter', JSON.stringify(this.filters));
         let filteredRecords = [];
         let records = this.initialInterestedResources;
         for (let record of records) {
@@ -232,19 +275,6 @@ export default class Hot_interestedResourcesList extends LightningElement {
         }
         return this.filteredRecordsLength;
     }
-
-    @track prevComments = '';
-    fixComments() {
-        getComments({ interestedResourceId: this.recordId }).then((result) => {
-            this.prevComments = '';
-            console.log(result.Comments__c);
-            if (result.Comments__c != undefined || result.Comments__c != '') {
-                this.prevComments = result.Comments__c.split('\n\n');
-            } else {
-                this.prevComments = '';
-            }
-        });
-    }
     isNotRetractable = false;
     retractInterest() {
         retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
@@ -257,5 +287,70 @@ export default class Hot_interestedResourcesList extends LightningElement {
     }
     closeModal() {
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+        this.isGoToThreadButtonDisabled = false;
+        this.recordId = undefined;
+        this.updateURL();
+    }
+    navigateToThread(recordId) {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: recordId,
+                objectApiName: 'Thread__c',
+                actionName: 'view'
+            },
+            state: {
+                from: 'mine-oppdrag',
+                list: 'interested',
+                recordId: this.interestedResource.Id
+            }
+        });
+    }
+    goToInterestedResourceThread() {
+        this.isGoToThreadButtonDisabled = true;
+        if (
+            this.interestedResource.Status__c != 'Assigned' &&
+            this.interestedResource.Status__c != 'Canceled' &&
+            this.interestedResource.Status__c != 'Tildelt' &&
+            this.interestedResource.Status__c != 'Avlyst' &&
+            this.interestedResource.Status__c != 'Canceled by Interpreter' &&
+            this.interestedResource.Status__c != 'Avlyst av tolk'
+        ) {
+            getThreadDispatcherId({ interestedResourceId: this.interestedResource.Id }).then((result) => {
+                if (result != '') {
+                    this.threadId = result;
+                    this.navigateToThread(this.threadId);
+                } else {
+                    createThreadInterpreter({ recordId: this.interestedResource.Id })
+                        .then((result) => {
+                            this.navigateToThread(result.Id);
+                        })
+                        .catch((error) => {
+                            this.modalHeader = 'Noe gikk galt';
+                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                            this.noCancelButton = true;
+                            this.showModal();
+                        });
+                }
+            });
+        } else {
+            getThreadDispatcherIdSA({ saId: this.interestedResource.ServiceAppointment__c }).then((result) => {
+                if (result != '') {
+                    this.threadId = result;
+                    this.navigateToThread(this.threadId);
+                } else {
+                    createThreadInterpreter({ recordId: this.interestedResource.ServiceAppointment__c })
+                        .then((result) => {
+                            this.navigateToThread(result.Id);
+                        })
+                        .catch((error) => {
+                            this.modalHeader = 'Noe gikk galt';
+                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                            this.noCancelButton = true;
+                            this.showModal();
+                        });
+                }
+            });
+        }
     }
 }

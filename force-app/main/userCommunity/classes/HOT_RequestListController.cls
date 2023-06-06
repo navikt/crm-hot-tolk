@@ -224,4 +224,13 @@ public without sharing class HOT_RequestListController {
         request.IsNotifyDispatcher__c = true;
         update request;
     }
+    @AuraEnabled
+   public static String getThreadRequestId(String requestId, String type) {
+    List<Thread__c> thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:requestId AND CRM_Thread_Type__c = :type LIMIT 1];
+    String Id='';
+    if (thread.size() >0) {
+           Id=thread[0].Id;
+    }
+    return Id;
+}
 }
