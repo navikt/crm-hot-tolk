@@ -3,15 +3,15 @@
     <actionCalls>
         <name>HOT_Create_Notification</name>
         <label>Create Notification</label>
-        <locationX>176</locationX>
-        <locationY>575</locationY>
+        <locationX>50</locationX>
+        <locationY>695</locationY>
         <actionName>customNotificationAction</actionName>
         <actionType>customNotificationAction</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>customNotifTypeId</name>
             <value>
-                <elementReference>HOT_Get_Request_Created_Id.Id</elementReference>
+                <elementReference>HOT_GetNotificationId.Id</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -44,8 +44,8 @@
     <assignments>
         <name>HOT_Add_Owner_to_the_RecipientIDs</name>
         <label>Add Owner to the RecipientIDs</label>
-        <locationX>176</locationX>
-        <locationY>455</locationY>
+        <locationX>50</locationX>
+        <locationY>575</locationY>
         <assignmentItems>
             <assignToReference>RecipientIDs</assignToReference>
             <operator>Add</operator>
@@ -57,7 +57,37 @@
             <targetReference>HOT_Create_Notification</targetReference>
         </connector>
     </assignments>
-    <description>Notify Owner if there has been created a request in the HOT_Tolk_Admin queue.</description>
+    <constants>
+        <description>Variable for storing &quot;HOT_Tolk_Admin&quot; in a String</description>
+        <name>HOT_Tolk_Admin_String</name>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>HOT_Tolk_Admin</stringValue>
+        </value>
+    </constants>
+    <decisions>
+        <name>HOT_Is_Owner_HOT_Tolk_Admin</name>
+        <label>Is Owner HOT_Tolk_Admin</label>
+        <locationX>182</locationX>
+        <locationY>335</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>HOT_CheckOwner</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.OwnerName__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>HoT Tolk Admin</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>HOT_GetNotificationId</targetReference>
+            </connector>
+            <label>CheckOwner</label>
+        </rules>
+    </decisions>
+    <description>Request - Notify Owner if there has been created a request in the HOT_Tolk_Admin queue.</description>
     <environments>Default</environments>
     <interviewLabel>Request Initiator {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Request Initiator</label>
@@ -81,41 +111,43 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>HOT_Get_Request_Created_Id</name>
-        <label>Get Request Created Id</label>
-        <locationX>176</locationX>
-        <locationY>335</locationY>
+        <name>HOT_GetNotificationId</name>
+        <label>getNotificationId</label>
+        <locationX>50</locationX>
+        <locationY>455</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>HOT_Add_Owner_to_the_RecipientIDs</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Id</field>
+            <field>DeveloperName</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>$Record.Id</elementReference>
+                <elementReference>HOT_Request_Created_String</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>CustomNotificationType</object>
-        <queriedFields>Id</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
-        <locationX>50</locationX>
+        <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>HOT_Get_Request_Created_Id</targetReference>
+            <targetReference>HOT_Is_Owner_HOT_Tolk_Admin</targetReference>
         </connector>
-        <filterFormula>{!$Organization.Id} = &quot;00D2o000000aANV&quot;
-&amp;&amp;
-{!$Record.Owner:Queue.DeveloperName} = &quot;HOT_Tolk_Admin&quot;</filterFormula>
         <object>HOT_Request__c</object>
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
+    <textTemplates>
+        <description>Storing &quot;HOT_Request_Created&quot; in a String</description>
+        <name>HOT_Request_Created_String</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>HOT_Request_Created</text>
+    </textTemplates>
     <variables>
         <name>RecipientIDs</name>
         <dataType>String</dataType>
