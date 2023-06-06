@@ -26,6 +26,40 @@ public without sharing class HOT_MyServiceAppointmentListController {
         ];
         return sa;
     }
+    @AuraEnabled
+    public static ServiceAppointment getServiceAppointmentDetails(String recordId) {
+      ServiceAppointment serviceAppointment= [
+            SELECT  AppointmentNumber,
+                Subject,
+                SchedStartTime,
+                SchedEndTime,
+                EarliestStartTime,
+                DueDate,
+                ActualStartTime,
+                ActualEndTime,
+                HOT_AddressFormated__c,
+                HOT_ServiceTerritoryName__c,
+                Status,
+                HOT_HapticCommunication__c,
+                HOT_ServiceTerritoryDeveloperName__c,
+                HOT_DegreeOfHearingAndVisualImpairment__c,
+                HOT_WorkTypeName__c,
+                HOT_TermsOfAgreement__c,
+                HOT_Escort__c,
+                HOT_AssignmentType__c,
+                HOT_FreelanceSubject__c,
+                HOT_DelPol_IsHideFilesFromFreelance__c,
+                HOT_DelPol_ToHideRecord__c,
+                HOT_Dispatcher__c,
+                Description,
+                HOT_RequestNumber__c,
+                HOT_IsSerieoppdrag__c,
+                HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM ServiceAppointment
+            WHERE Id=:recordId
+        ];
+        return serviceAppointment;
+    }
 
     @AuraEnabled(cacheable=true)
     public static List<ServiceAppointment> getMyServiceAppointments() {
@@ -66,6 +100,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_ServiceTerritoryDeveloperName__c,
                 HOT_DegreeOfHearingAndVisualImpairment__c,
                 HOT_HapticCommunication__c,
+                HOT_TotalNumberOfInterpreters__c,
                 HOT_Escort__c,
                 HOT_AssignmentType__c,
                 HOT_FreelanceSubject__c,
@@ -89,6 +124,41 @@ public without sharing class HOT_MyServiceAppointmentListController {
         return serviceAppointments;
     }
     @AuraEnabled
+    public static String getThreadFreelanceId(String serviceAppointmentId) {
+         String Id='';
+        ServiceAppointment serviceAppointment=[SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        try{
+
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId AND CRM_Thread_Type__c='HOT_BRUKER-TOLK' LIMIT 1];
+             if (thread.Id != null) {
+               Id=thread.Id;
+               return Id;
+             }
+             
+            return Id;
+        }catch(Exception E){
+
+        }
+        return Id;
+    }
+     @AuraEnabled
+    public static String getThreadServiceAppointmentId(String serviceAppointmentId) {
+         String Id='';
+        try{
+
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointmentId LIMIT 1];
+             if (thread.Id != null) {
+               Id=thread.Id;
+               return Id;
+             }
+             
+            return Id;
+        }catch(Exception E){
+
+        }
+        return Id;
+    }
+    @AuraEnabled
     public static String getOrdererInformation(String serviceAppointmentId){
         String phonenumber='';
         ServiceAppointment sa=[SELECT HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
@@ -97,5 +167,22 @@ public without sharing class HOT_MyServiceAppointmentListController {
         }
         return phoneNumber;
     }
-    
+     @AuraEnabled
+    public static String getThreadInterpretersId(String serviceAppointmentId) {
+         String Id='';
+        ServiceAppointment serviceAppointment=[SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        try{
+
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId AND CRM_Thread_Type__c='HOT_TOLK-TOLK' LIMIT 1];
+             if (thread.Id != null) {
+               Id=thread.Id;
+               return Id;
+             }
+             
+            return Id;
+        }catch(Exception E){
+
+        }
+        return Id;
+    }
 }

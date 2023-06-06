@@ -7,14 +7,86 @@
             <c-icon icon="Back"></c-icon>
             <p style="margin-left: 0.25rem">Tilbake</p>
         </a>
-        <a class="goToWO-link" onclick={goToWO}>
+        <a class="goToWO-link" onclick={goToDetails}>
             <p>Gå til bestilling</p>
         </a>
     </div>
-
+    <div
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay serviceAppointmentDetails hidden"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+        tabindex="-1"
+        aria-label="Informasjon om oppdrag"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            role="dialog"
+            aria-labelledby="comment-header-id"
+        >
+            <section>
+                <div>
+                    <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
+                </div>
+                <div class="record-details-container" if:true={isDetails}>
+                    <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
+                    <p>Tema: <span>{serviceAppointment.Subject}</span></p>
+                    <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
+                    <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
+                    <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
+                    <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
+                    <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                    <p>Status: <span>{serviceAppointment.Status}</span></p>
+                    <p>Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span></p>
+                    <p if:true={serviceAppointment.HOT_Escort__c}>
+                        Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
+                    </p>
+                    <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                        Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
+                    </p>
+                    <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                    <p if:true={interestedResource}>
+                        Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                    </p>
+                    <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
+                    <p>
+                        Telefonnummer til bestiller:
+                        <span> {serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c}</span>
+                    </p>
+                    <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
+                </div>
+                <div if:true={isIRDetails} class="record-details-container">
+                    <p>Oppdrag: <span>{interestedResource.AppointmentNumber__c}</span></p>
+                    <p>Tid: <span>{interestedResource.StartAndEndDate}</span></p>
+                    <p>Adresse: <span>{interestedResource.ServiceAppointmentAddress__c}</span></p>
+                    <p>Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span></p>
+                    <p>Oppdragstype: <span>{interestedResource.AssignmentType__c}</span></p>
+                    <p>Status: <span>{interestedResource.Status__c}</span></p>
+                    <p>Antall påmeldte: <span>{interestedResource.NumberOfInterestedResources__c}</span></p>
+                    <p>Frist dato: <span>{interestedResource.AppointmentDeadlineDate__c}</span></p>
+                    <p>Region: <span>{interestedResource.AppointmentServiceTerritory__c}</span></p>
+                    <p>Tema: <span>{interestedResource.ServiceAppointmentFreelanceSubject__c}</span></p>
+                    <p if:true={interestedResource.WorkOrderCanceledDate__c}>
+                        Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span>
+                    </p>
+                    <p if:true={interestedResource.HOT_TermsOfAgreement__c}>
+                        Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                    </p>
+                </div>
+                <div if:true={isWCDetails} class="record-details-container">
+                    <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
+                    <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
+                    <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
+                    <p>Status: <span>{wageClaim.Status__c}</span></p>
+                    <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                </div>
+            </section>
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
+                <span class="text-hide">Lukk</span>
+            </button>
+        </div>
+    </div>
     <div class="decorator-wrapper">
         <div class="header" style="text-align: center">
-            <h1 class="typo-sidetittel">{name}</h1>
+            <h1 class="typo-sidetittel">{name} {threadType}</h1>
             <slot name="subheader"></slot>
         </div>
         <c-hot_community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">

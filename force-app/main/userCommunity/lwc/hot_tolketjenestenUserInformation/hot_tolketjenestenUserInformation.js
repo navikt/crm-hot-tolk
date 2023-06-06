@@ -9,17 +9,40 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     @track recordId;
     @track options;
     @track selectedOption;
+    @track newSelectedOption;
+    @track isReservedAgainstNotifications;
+    @track newIsReservedAgainstNotifications;
+
+    viewUserNotificationSettings = true;
+    editUserNotification = false;
+
+    picklistOptions = [
+        { name: 'SMS', label: 'SMS', selected: false },
+        { name: 'Push-varsel i appen', label: 'Push-varsel i appen', selected: false }
+    ];
+
     @track securityMeassures;
     @track hasSecurityMeassures = false;
+
     @wire(getPerson)
     wiredGetPerson(result) {
         if (result.data) {
             this.person = result.data;
             this.recordId = this.person.Id;
+            this.selectedOption = this.person.HOT_NotificationChannel__c;
+            this.isReservedAgainstNotifications = this.person.HOT_IsReservationAgainstNotifications__c;
+            this.newSelectedOption = this.selectedOption;
             getNotificationPickListValues({
                 chosen: this.selectedOption
             }).then((data) => {
                 this.options = data;
+                this.picklistOptions.forEach((element) => {
+                    if (element.name === this.selectedOption) {
+                        element.selected = true;
+                    } else {
+                        element.selected = false;
+                    }
+                });
             });
             if (this.person.INT_SecurityMeasures__c != null || this.person.INT_SecurityMeasures__c != '') {
                 this.hasSecurityMeassures = true;
@@ -41,7 +64,47 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
             }
         }
     }
+
     selectionChangeHandler(event) {
-        changeUserNotificationSetting({ personId: this.recordId, newNotificationValue: event.target.value });
+        this.newSelectedOption = event.detail.name;
+        this.picklistOptions.forEach((element) => {
+            if (element.name === event.detail.name) {
+                element.selected = true;
+            } else {
+                element.selected = false;
+            }
+        });
+    }
+    editUserNotificationBtn() {
+        this.viewUserNotificationSettings = false;
+        this.editUserNotification = true;
+    }
+    handleAbort() {
+        this.viewUserNotificationSettings = true;
+        this.editUserNotification = false;
+        this.picklistOptions.forEach((element) => {
+            if (element.name === this.selectedOption) {
+                element.selected = true;
+            } else {
+                element.selected = false;
+            }
+        });
+    }
+    handleOptionalCheckbox(event) {
+        this.newIsReservedAgainstNotifications = event.detail;
+    }
+    handleSubmit() {
+        this.viewUserNotificationSettings = true;
+        this.editUserNotification = false;
+        changeUserNotificationSetting({
+            personId: this.recordId,
+            newNotificationValue: this.newSelectedOption,
+            isReservedAgainstNotifications: this.newIsReservedAgainstNotifications
+        }).then(() => {
+            this.selectedOption = this.newSelectedOption;
+            if (typeof this.newIsReservedAgainstNotifications == 'boolean') {
+                this.isReservedAgainstNotifications = this.newIsReservedAgainstNotifications;
+            }
+        });
     }
 }

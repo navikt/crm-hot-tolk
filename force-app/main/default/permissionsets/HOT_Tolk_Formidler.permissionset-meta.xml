@@ -282,6 +282,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_InterestedResource__c.ServiceResource__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_InterestedResource__c.ServiceTerritory__c</field>
         <readable>true</readable>
@@ -364,11 +369,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.ExternalRequestStatus__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.HOT_PersonContactId__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -844,6 +844,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_RemoteInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Person__c.HOT_IsReservationAgainstNotifications__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1559,6 +1564,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Thread__c.HOT_IsMyThread__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.HOT_Subject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Thread__c.HOT_Title__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

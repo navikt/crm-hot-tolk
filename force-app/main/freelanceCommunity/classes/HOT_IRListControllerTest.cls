@@ -26,6 +26,53 @@ private class HOT_IRListControllerTest {
         List<HOT_InterestedResource__c> interestedResources = HOT_InterestedResourcesListController.getInterestedResources();
         System.assertEquals(1, interestedResources.size(), 'Could not get list of interested resources');
     }
+     @isTest
+    static void dispatcherReadCommentTest() {
+        HOT_InterestedResource__c interestedResource = [
+            SELECT Id, IsDispatcherNewComment__c
+            FROM HOT_InterestedResource__c
+        ];
+        interestedResource.IsDispatcherNewComment__c = true;
+        update interestedResource;
+        HOT_InterestedResourcesListController.dispatcherReadComment(interestedResource.Id);
+        interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c];
+        System.assertEquals(
+            false,
+            interestedResource.IsDispatcherNewComment__c,
+            'Could not set IsDispatcherNewComment__c'
+        );
+    }
+     @isTest
+    static void getThreadDispatcherIdSATest() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert resource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            resource.Id
+        );
+        insert assignedResource;
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = serviceAppointment.Id;
+        insert thread;
+        String threadId = HOT_InterestedResourcesListController.getThreadDispatcherIdSA(serviceAppointment.Id);
+        System.assertNotEquals(null, threadId, 'Could not get SA Thread');
+    }
+     @isTest
+    static void getThreadDispatcherIdTest() {
+        HOT_InterestedResource__c ir = [SELECT Id FROM HOT_InterestedResource__c];
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = ir.Id;
+        insert thread;
+        String threadId = HOT_InterestedResourcesListController.getThreadDispatcherId(ir.Id);
+        System.assertNotEquals(null, threadId, 'Could not get SA Thread');
+    }
+    
+
 
     @isTest
     static void retractInterestsTest() {
@@ -69,35 +116,7 @@ private class HOT_IRListControllerTest {
             'Comment was not updated'
         );
     }
-
-    @isTest
-    static void readCommentTest() {
-        HOT_InterestedResource__c interestedResource = [SELECT Id, IsNewComment__c FROM HOT_InterestedResource__c];
-        interestedResource.IsNewComment__c = true;
-        update interestedResource;
-        HOT_InterestedResourcesListController.readComment(interestedResource.Id);
-        interestedResource = [SELECT Id, IsNewComment__c FROM HOT_InterestedResource__c];
-        System.assertEquals(false, interestedResource.IsNewComment__c, 'Could not set IsNewComment__c');
-    }
-
-    @isTest
-    static void dispatcherReadCommentTest() {
-        HOT_InterestedResource__c interestedResource = [
-            SELECT Id, IsDispatcherNewComment__c
-            FROM HOT_InterestedResource__c
-        ];
-        interestedResource.IsDispatcherNewComment__c = true;
-        update interestedResource;
-        HOT_InterestedResourcesListController.dispatcherReadComment(interestedResource.Id);
-        interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c];
-        System.assertEquals(
-            false,
-            interestedResource.IsDispatcherNewComment__c,
-            'Could not set IsDispatcherNewComment__c'
-        );
-    }
-
-    @isTest
+      @isTest
     static void dispatcherAddCommentTest() {
         HOT_InterestedResource__c interestedResource = [SELECT Id FROM HOT_InterestedResource__c];
         HOT_InterestedResourcesListController interestedResourcesListController = new HOT_InterestedResourcesListController();
@@ -112,5 +131,31 @@ private class HOT_IRListControllerTest {
             interestedResource.IsDispatcherNewComment__c,
             'Could not set IsDispatcherNewComment__c'
         );
+    }
+      @isTest 
+      static void testRetractInterest() {
+        HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
+        interestedResource.Status__c = 'Interested';
+        update interestedResource;
+
+        HOT_InterestedResourcesListController.retractInterest(interestedResource.Id);
+    
+        HOT_InterestedResource__c updatedInterestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c WHERE Id = :interestedResource.Id];
+        System.assertEquals(updatedInterestedResource.Status__c, 'Retracted Interest');
+    }
+    @isTest 
+     static void startAThreadAndAddCommentTest() {
+        
+        HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
+        
+        String newComment = 'This is a test comment';
+        
+        Test.startTest();
+        HOT_InterestedResourcesListController.startAThreadAndAddComment(interestedResource.Id, newComment);
+        Test.stopTest();
+    
+        Thread__c thread = [SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, CRM_Account__c, HOT_InterestedResource__c FROM Thread__c WHERE CRM_Related_Object__c =: interestedResource.Id LIMIT 1];
+        
+        System.assertNotEquals(null, thread, 'Thread was not made');
     }
 }

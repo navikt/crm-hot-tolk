@@ -6,17 +6,6 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     @track records = [];
     @track checkedRows = [];
 
-    breadcrumbs = [
-        {
-            label: 'Tolketjenesten',
-            href: ''
-        },
-        {
-            label: 'Oppdrag',
-            href: 'mine-oppdrag'
-        }
-    ];
-
     handleFilters(event) {
         this.filters = event.detail;
     }

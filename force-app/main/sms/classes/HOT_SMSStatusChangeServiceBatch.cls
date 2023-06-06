@@ -7,10 +7,12 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
         String query = 'SELECT ';
-        query += 'Id, HOT_Request__r.Orderer__c, HOT_Interpreters__c, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Type__c, Status, StartDate, EndDate, HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c, AccountId, Account.CRM_Person__c, Account.CRM_Person__r.INT_KrrMobilePhone__c, HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c ';
+        query += 'Id, HOT_Request__r.Orderer__c, HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c, HOT_Request__r.IsNotNotifyAccount__c, HOT_Interpreters__c, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Type__c, Status, StartDate, EndDate, HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c, AccountId, Account.CRM_Person__c, Account.CRM_Person__r.INT_KrrMobilePhone__c, HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c ';
         query += 'FROM WorkOrder ';
         query += 'WHERE HOT_SendSMSNotificationOnStatusChanged__c = TRUE ';
+        query += 'AND (Status = \'Dispatched\' OR Status = \'Cannot Complete\')';
         query += 'AND (HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\' OR HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\') ';
+        query += 'AND HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE ';
         query += 'AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = TRUE';
 
         return Database.getQueryLocator(query);
@@ -20,6 +22,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
         List<WorkOrder> workorderListPush = new List<WorkOrder>();
         List<WorkOrder> workorderListSMS = new List<WorkOrder>();
         Map<Id, Id> userIdByOrdererAccountId = new Map<Id, Id>();
+        Map<Id, String> interpreterNames = HOT_ReminderSMSService.interpreterNamesByWorkOrderIds(records);
         List<Id> accountIds = new List<Id>();
 
         CustomNotificationType notificationTypePush = [
@@ -54,7 +57,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                     if (userIdByOrdererAccountId.get(wo.HOT_Request__r.Orderer__c) != null) {
                         Set<String> recipients = new Set<String>();
                         recipients.add(userIdByOrdererAccountId.get(wo.HOT_Request__r.Orderer__c));
-                        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(notificationTypePush, wo, recipients);
+                        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(notificationTypePush, wo, interpreterNames.get(wo.Id), recipients);
                         wo.HOT_SendSMSNotificationOnStatusChanged__c = false;
                     }
                 }

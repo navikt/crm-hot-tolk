@@ -80,3 +80,22 @@ span {
         display: block;
     }
 }
+.tab-button {
+    all: unset;
+}
+.tab-button:hover {
+    cursor: pointer;
+}
+
+.tab {
+    padding: 0.25rem 1rem;
+}
+.tab_active {
+    box-shadow: inset 0 -3px 0 0 #2196f3;
+    font-weight: bold;
+}
+
+.tabset {
+    display: flex;
+    flex-direction: row;
+}
