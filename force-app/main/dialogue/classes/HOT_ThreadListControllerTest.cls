@@ -30,14 +30,14 @@ public class HOT_ThreadListControllerTest {
         System.assertEquals(0, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }
     @isTest
-    public static void getMyThreadsDuplicateTest() {
-        List<Thread__c> threadList = HOT_ThreadListController.getMyThreadsDuplicate();
+    public static void getMyThreadsIRTest() {
+        List<Thread__c> threadList = HOT_ThreadListController.getMyThreadsIR();
 
         System.assertEquals(0, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }
-     @isTest
-    public static void getMyThreadsServiceResourceTest() {
-         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+       @isTest
+    public static void getMyThreadsIRServiceResourceTest() {
+         User admin = [SELECT Id, AccountId, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
         insert serviceResource;
@@ -61,21 +61,23 @@ public class HOT_ThreadListControllerTest {
         
         AssignedResource ar=HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResource.Id);
         insert ar;
-        
+
         Thread__c t = new Thread__c();
-        t.CRM_Related_Object__c= workOrder.Id;
+        t.CRM_Related_Object__c= ir.Id;
+        t.CRM_Account__c=admin.AccountId;
+        t.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
         insert t;
         Message__c message = new Message__c();
         message.CRM_Thread__c = t.Id;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
         insert message;
-
-        List<Thread__c> threadList = HOT_ThreadListController.getMyThreads();
+        
+        List<Thread__c> threadList = HOT_ThreadListController.getMyThreadsIR();
 
         System.assertEquals(1, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }
-       @isTest
-    public static void getMyThreadsDuplicateServiceResourceTest() {
+     @isTest
+    public static void getMyThreadsFreelanceServiceResourceTest() {
          User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
@@ -109,7 +111,7 @@ public class HOT_ThreadListControllerTest {
         message.CRM_Message_Text__c = 'Dette er en testmelding';
         insert message;
         
-        List<Thread__c> threadList = HOT_ThreadListController.getMyThreadsDuplicate();
+        List<Thread__c> threadList = HOT_ThreadListController.getMyThreadsFreelance();
 
         System.assertEquals(1, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }

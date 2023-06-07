@@ -1,0 +1,101 @@
+.mainContent {
+    margin-bottom: 3.5rem;
+}
+
+.thread-wrapper {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px;
+    padding: 1rem;
+}
+
+.navigation-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.back-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    max-width: fit-content;
+}
+.back-link-div {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-basis: 33%;
+    max-width: 80em;
+    margin: auto;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+
+p {
+    font-weight: bold;
+}
+
+span {
+    font-weight: normal;
+}
+
+.skjema-max-width {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.header {
+    flex-grow: 2;
+    flex-basis: 33%;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.empty {
+    flex-grow: 3;
+    flex-basis: 33%;
+}
+
+.record-details-container {
+    margin: 2rem 0;
+}
+
+@media (max-width: 576px) {
+    .mine-bestillinger-wrapper {
+        padding: 1rem;
+    }
+    .header {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+    .record-details-container {
+        margin: 5vw 0;
+    }
+    .navigation-container {
+        display: block;
+    }
+}
+.tab-button {
+    all: unset;
+}
+.tab-button:hover {
+    cursor: pointer;
+}
+
+.tab {
+    padding: 0.25rem 1rem;
+}
+.tab_active {
+    box-shadow: inset 0 -3px 0 0 #2196f3;
+    font-weight: bold;
+}
+
+.tabset {
+    display: flex;
+    flex-direction: row;
+}
