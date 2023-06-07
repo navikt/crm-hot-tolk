@@ -1,13 +1,12 @@
 public with sharing class HOT_MessagesNotification {
+    public static void Notification(List<Id> threadIds, String userRole){
+        List<Thread__c> threads=[SELECT Id, Name, OwnerId, HOT_Dispatcher__c, HOT_Subject__c FROM Thread__c WHERE Id IN:threadIds];
 
-    public static void notifyDispatcher(List<Id> threadIds){
-        List<Thread__c> threads=[SELECT Id, OwnerId, HOT_Dispatcher__c, HOT_Subject__c FROM Thread__c WHERE Id IN:threadIds];
-
-        CustomNotificationType notificationTypeDispatcher = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyDispatcher'
-        ];
+        // CustomNotificationType notificationTypeDispatcher = [
+        //     SELECT Id, DeveloperName
+        //     FROM CustomNotificationType
+        //     WHERE DeveloperName = 'HOT_NotifyDispatcher'
+        // ];
 
         List<Id> ownerIds=new List<Id>();
         for(Thread__c thread : threads){
