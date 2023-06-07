@@ -22,7 +22,7 @@ public with sharing class HOT_MessageHandler extends MyTriggers {
         }
 
         if (!threadIdsToNotifyUserOnNewMessage.isEmpty()) {
-            HOT_MessagesNotification.NotifyUser(threadIdsToNotifyUserOnNewMessage, 'User');
+            HOT_MessagesNotification.NotifyUser(threadIdsToNotifyUserOnNewMessage);
         }
     }
 }

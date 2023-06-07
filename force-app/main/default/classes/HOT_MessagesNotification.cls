@@ -26,6 +26,45 @@ public with sharing class HOT_MessagesNotification {
         }
     }
 
+    public static void notifyUser(List<Id> threadIds) {
+        List<Thread__c> threads=[SELECT CRM_Account__c, CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c, CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c FROM Thread__c WHERE Id IN:threadIds AND CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE AND CRM_Account__c != NULL];
+        List<Id> accountIds = new List<Id>();
+
+        for(Thread__c thread : threads) {
+            accountIds.add(thread.CRM_Account__c);
+        }
+
+        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
+
+        Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
+        for (User user : users) {
+            userIdByAccountId.put(user.AccountId, user.Id);
+        }
+
+        if (!threads.isEmpty()) {
+            for (Thread__c thread : threads) {
+                Set<String> recipients = new Set<String>();
+                if (userIdByAccountId.get(thread.CRM_Account__c) != null) {
+                    recipients.add(userIdByAccountId.get(thread.CRM_Account__c));
+                }
+                if (recipients.size() != 0) {
+                    if (thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
+                        HOT_UserNotificationService.newMessageNotification(
+                            getCustomNotificationType('HOT_NotifyUser'),
+                            thread,
+                            recipients
+                        );
+                    } else {
+                        // Set<Id> workOrderIds = new Set<Id>();
+                        // workOrderIds.add(wo.Id);
+                        // HOT_ReminderSMSService.sendSMSOnInterpreterChange(workOrderIds, interpreterNames.get(wo.Id));
+                    }
+                }
+            }
+        }
+    }
+
+
     public static CustomNotificationType getCustomNotificationType(String devName) {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
