@@ -18,7 +18,7 @@
             <name>body</name>
             <value>
                 <stringValue
-                >Det har blitt opprettet en Forespørsel i HOT Tolk Admin køen i produksjon. Se detaljer her: {![HOT_Request__c].Name}.</stringValue>
+                >Det har blitt opprettet en Forespørsel i HOT Tolk Admin køen i produksjon.</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
