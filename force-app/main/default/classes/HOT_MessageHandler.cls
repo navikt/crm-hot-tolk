@@ -18,11 +18,11 @@ public with sharing class HOT_MessageHandler extends MyTriggers {
         }
 
         if (!threadIdsToNotifyDispatcherOnNewMessage.isEmpty()) {
-            HOT_MessagesNotification.Notification(threadIdsToNotifyDispatcherOnNewMessage, 'Dispatcher');
+            HOT_MessagesNotification.NotifyDispatcher(threadIdsToNotifyDispatcherOnNewMessage);
         }
 
         if (!threadIdsToNotifyUserOnNewMessage.isEmpty()) {
-            HOT_MessagesNotification.Notification(threadIdsToNotifyUserOnNewMessage, 'User');
+            HOT_MessagesNotification.NotifyUser(threadIdsToNotifyUserOnNewMessage, 'User');
         }
     }
 }
