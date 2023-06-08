@@ -47,7 +47,7 @@ public with sharing class HOT_MessagesNotification {
                 if (userIdByAccountId.get(thread.CRM_Account__c) != null) {
                     recipients.add(userIdByAccountId.get(thread.CRM_Account__c));
                 }
-                if (recipients.size() != 0) {
+                if (recipients.size() > 0) {
                     if (thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.newMessageNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
@@ -55,8 +55,6 @@ public with sharing class HOT_MessagesNotification {
                             recipients
                         );
                     } else {
-                        // Set<Id> workOrderIds = new Set<Id>();
-                        // workOrderIds.add(wo.Id);
                         // HOT_ReminderSMSService.sendSMSOnInterpreterChange(workOrderIds, interpreterNames.get(wo.Id));
                     }
                 }
