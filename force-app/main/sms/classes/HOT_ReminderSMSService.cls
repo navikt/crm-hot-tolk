@@ -112,6 +112,33 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.updateRecords(workOrderList);
     }
 
+    public static void sendSMSOnNewMessage(List<Thread__c> threadList) {
+        List<SMS__c> smsList = new List<SMS__c>();
+        for (Thread__c thread : threadList) {
+            String phoneNumber = thread.CRM_Account__r.INT_KrrMobilePhone__c != null ? thread.CRM_Account__r.INT_KrrMobilePhone__c : '';
+            if (
+                phoneNumber != null &&
+                workOrder.StartDate > Datetime.now() &&
+                workOrder.HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c == true &&
+                (workOrder.Status == 'Dispatched' ||
+                workOrder.Status == 'Cannot Complete')
+            ) {
+                smsList.add(
+                    SMSService.createSMSRecord(
+                        'HOT',
+                        'Orderer On Status Update',
+                        workOrder.HOT_Request__r.Orderer__c,
+                        workOrder.Id,
+                        phoneNumber,
+                        constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id))
+                    )
+                );
+            }
+        }
+        HOT_DatabaseOperations.insertRecords(smsList);
+        HOT_DatabaseOperations.updateRecords(workOrderList);
+    }
+
     private static String getRecipient(WorkOrder workOrder) {
         if (workOrder.HOT_Request__r.Type__c != 'Me') {
             return workOrder.HOT_Request__r.OrdererPhone__c;

@@ -27,7 +27,7 @@ public with sharing class HOT_MessagesNotification {
     }
 
     public static void notifyUser(List<Id> threadIds) {
-        List<Thread__c> threads=[SELECT CRM_Account__c, CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c, CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c FROM Thread__c WHERE Id IN:threadIds AND CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE AND CRM_Account__c != NULL];
+        List<Thread__c> threads=[SELECT CRM_Account__c, CRM_Account__r.INT_KrrMobilePhone__c, CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c, CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c FROM Thread__c WHERE Id IN:threadIds AND CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE AND CRM_Account__c != NULL];
         List<Id> accountIds = new List<Id>();
 
         for(Thread__c thread : threads) {
@@ -55,7 +55,7 @@ public with sharing class HOT_MessagesNotification {
                             recipients
                         );
                     } else {
-                        // HOT_ReminderSMSService.sendSMSOnInterpreterChange(workOrderIds, interpreterNames.get(wo.Id));
+                         HOT_ReminderSMSService.sendSMSOnNewMessage(threadList);
                     }
                 }
             }
