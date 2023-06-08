@@ -56,6 +56,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 HOT_ServiceTerritoryName__c,
                 HOT_ReleaseDate__c,
                 City,
+                HOT_IsUrgent__c,
                 Street,
                 PostalCode,
                 HOT_AssignmentType__c,
@@ -128,7 +129,9 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         insert interestedResources;
 
         for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
-            HOT_InterestedResourcesListController.addComment(interestedResources[i].Id, comments[i]);
+            if(!String.isEmpty(comments[i])) {
+                HOT_InterestedResourcesListController.startAThreadAndAddComment(interestedResources[i].Id, comments[i]);
+            }
         }
     }
 }

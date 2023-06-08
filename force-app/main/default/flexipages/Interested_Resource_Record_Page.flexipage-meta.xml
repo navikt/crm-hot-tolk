@@ -5,7 +5,11 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>collapsed</name>
-                    <value>true</value>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>enableActionsConfiguration</name>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>hideChatterActions</name>
@@ -23,6 +27,12 @@
             <componentInstance>
                 <componentName>hot_registerDispatcherReadComment</componentName>
                 <identifier>hot_registerDispatcherReadComment</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_InterestedResourceWarningBanner</componentName>
+                <identifier>c_hot_InterestedResourceWarningBanner</identifier>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>
@@ -55,12 +65,29 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>force:detailPanel</componentName>
-                <identifier>force_detailPanel</identifier>
+                <componentName>hot_matchingServiceAppointmentsFromSA</componentName>
+                <identifier>c_hot_matchingServiceAppointmentsFromSA</identifier>
             </componentInstance>
         </itemInstances>
-        <mode>Replace</mode>
-        <name>detailTabContent</name>
+        <name>Facet-0cf36c71-59f9-4a83-8d6e-228663d005a3</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>showClose</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>singleThread</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentName>hot_messagingMessageComponent</componentName>
+                <identifier>c_hot_messagingMessageComponent</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-857cc1f7-7d45-4356-9982-f7e027c24d41</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -81,19 +108,29 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>active</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
                     <name>body</name>
-                    <value>detailTabContent</value>
+                    <value>Facet-0cf36c71-59f9-4a83-8d6e-228663d005a3</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
-                    <value>Standard.Tab.detail</value>
+                    <value>Relevante oppdrag</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
-                <identifier>detailTab</identifier>
+                <identifier>flexipage_tab</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-857cc1f7-7d45-4356-9982-f7e027c24d41</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>Samtale</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tab</componentName>
+                <identifier>flexipage_tab2</identifier>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>
@@ -116,6 +153,12 @@
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>force:detailPanel</componentName>
+                <identifier>force_detailPanel</identifier>
+            </componentInstance>
+        </itemInstances>
         <mode>Replace</mode>
         <name>sidebar</name>
         <type>Region</type>

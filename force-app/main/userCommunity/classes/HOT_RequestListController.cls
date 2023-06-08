@@ -204,4 +204,33 @@ public without sharing class HOT_RequestListController {
         }
         return times;
     }
+    @AuraEnabled
+    public static void updateRelatedWorkOrders(String requestId) {
+        List<WorkOrder> workOrdersToUpdate = new List<WorkOrder>();
+        List<WorkOrder> workOrders = [
+            SELECT Id, Status, StartDate, EndDate
+            FROM WorkOrder
+            WHERE HOT_Request__r.Id = :requestId
+        ];
+        for (WorkOrder workOrder : workOrders) {
+            if (workOrder.StartDate > Datetime.now()) {
+                workOrder.Status = 'Canceled';
+                workOrdersToUpdate.add(workOrder);
+            }
+        }
+        update workOrdersToUpdate;
+
+        HOT_Request__c request = [SELECT IsNotifyDispatcher__c, Status__c FROM HOT_Request__c WHERE Id = :requestId];
+        request.IsNotifyDispatcher__c = true;
+        update request;
+    }
+    @AuraEnabled
+   public static String getThreadRequestId(String requestId, String type) {
+    List<Thread__c> thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:requestId AND CRM_Thread_Type__c = :type LIMIT 1];
+    String Id='';
+    if (thread.size() >0) {
+           Id=thread[0].Id;
+    }
+    return Id;
+}
 }

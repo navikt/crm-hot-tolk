@@ -50,7 +50,7 @@ private class HOT_MySAListControllerTest {
         );
 
         for (ServiceAppointment sa : myServiceAppointment) {
-            sa.Status = 'Cancelled';
+            sa.Status = 'Canceled';
         }
         update myServiceAppointment;
 

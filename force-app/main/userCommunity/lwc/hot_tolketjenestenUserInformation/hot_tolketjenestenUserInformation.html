@@ -70,14 +70,104 @@
                             <div class="slds-col slds-size_1-of-2">
                                 <lightning-output-field field-name="HOT_DegreeOfHearingAndVisualImpairment__c">
                                 </lightning-output-field>
-                                <lightning-output-field field-name="INT_SecurityMeasures__c"></lightning-output-field>
                             </div>
                             <div class="slds-col slds-size_1-of-2">
                                 <lightning-output-field field-name="HOT_SIPAddress__c"> </lightning-output-field>
                             </div>
                         </div>
                     </section>
+                    <section class="bruker-info-skjema sub-form" style="margin-bottom: 4rem">
+                        <h2 style="font-size: 1.25rem">Sikkerhetstiltak</h2>
+                        <div if:true={hasSecurityMeassures}>
+                            <template for:each={securityMeassures} for:item="sm">
+                                <p key={sm}>{sm}<br /></p>
+                            </template>
+                        </div>
+                    </section>
                 </lightning-record-view-form>
+                <h2 style="font-size: 1.25rem">Varslingsinnstillinger</h2>
+                <section
+                    class="bruker-info-skjema sub-form"
+                    style="margin-bottom: 4rem"
+                    if:true={viewUserNotificationSettings}
+                >
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-2">
+                            <c-checkbox
+                                label="Reserver mot varsler"
+                                default-value={isReservedAgainstNotifications}
+                                disabled="disabled"
+                            ></c-checkbox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <p>Velg hvor du vil få varsler</p>
+                            <select class="slds-select" disabled="disabled" onchange={selectionChangeHandler}>
+                                <option value={selectedOption}>{selectedOption}</option>
+                                <template for:each={options} for:item="option">
+                                    <option key={option.label} class="uiInputSelectOption" value={option.value}>
+                                        {option.value}
+                                    </option>
+                                </template>
+                            </select>
+                            <!-- <c-picklist
+                                master-label="Velg hvor du vil få varsler"
+                                choices={picklistOptions}
+                                onpicklistvaluechange={selectionChangeHandler}
+                            ></c-picklist> -->
+                        </div>
+                    </div>
+                    <div class="button-class">
+                        <c-button
+                            button-label="Rediger varslingsinnstillinger"
+                            button-styling="primary"
+                            desktop-style="width: 20rem; justify-content: center"
+                            mobile-style="width: 16rem; justify-content: center"
+                            onclick={editUserNotificationBtn}
+                            style="margin-top: 2rem"
+                        ></c-button>
+                    </div>
+                </section>
+
+                <section
+                    class="bruker-info-skjema"
+                    style="margin-bottom: 4rem"
+                    if:true={editUserNotification}
+                    aria-live="polite"
+                >
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-2">
+                            <c-checkbox
+                                label="Reserver mot varsler"
+                                default-value={isReservedAgainstNotifications}
+                                oncheckboxclick={handleOptionalCheckbox}
+                            ></c-checkbox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <c-picklist
+                                master-label="Velg hvor du vil få varsler"
+                                choices={picklistOptions}
+                                onpicklistvaluechange={selectionChangeHandler}
+                            ></c-picklist>
+                        </div>
+                    </div>
+                    <div class="button-class">
+                        <c-button
+                            button-label="Lagre"
+                            button-styling="primary"
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center"
+                            onbuttonclick={handleSubmit}
+                        ></c-button>
+                        <c-button
+                            button-label="Avbryt"
+                            button-styling="secondary"
+                            style="padding-left: 1rem"
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center"
+                            onbuttonclick={handleAbort}
+                        ></c-button>
+                    </div>
+                </section>
             </section>
         </div>
     </div>

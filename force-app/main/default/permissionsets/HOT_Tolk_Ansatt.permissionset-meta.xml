@@ -567,6 +567,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Person__c.HOT_InterpretersInformation__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.HOT_LanguageAndCommunicationMethods__c</field>
         <readable>true</readable>
@@ -883,6 +888,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_IsUrgent__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_NavEmployeeName__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1064,6 +1074,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Task.WhoId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.HOT_Subject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Thread__c.HOT_Title__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

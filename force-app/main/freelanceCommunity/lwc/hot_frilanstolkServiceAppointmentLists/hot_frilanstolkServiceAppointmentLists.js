@@ -6,17 +6,6 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     @track records = [];
     @track checkedRows = [];
 
-    breadcrumbs = [
-        {
-            label: 'Tolketjenesten',
-            href: ''
-        },
-        {
-            label: 'Oppdrag',
-            href: 'mine-oppdrag'
-        }
-    ];
-
     handleFilters(event) {
         this.filters = event.detail;
     }
@@ -36,7 +25,11 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
             this.updateTab({ target: { dataset: { id: this.urlStateParameters.list } } });
             this.recordId = this.urlStateParameters.id;
         } else {
-            this.updateTab({ target: { dataset: { id: 'open' } } });
+            if (sessionStorage.getItem('activeTabFreelanceHome') != null) {
+                this.updateTab({ target: { dataset: { id: sessionStorage.getItem('activeTabFreelanceHome') } } });
+            } else {
+                this.updateTab({ target: { dataset: { id: 'open' } } });
+            }
         }
     }
     setActiveTabMobile(event) {
@@ -54,6 +47,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
                 tab.selected = true;
                 this.urlStateParameterList = tab.name;
                 this.activeTab = tab.name;
+                sessionStorage.setItem('activeTabFreelanceHome', this.activeTab);
                 this.tabMap[tab.name] = true;
             }
         }

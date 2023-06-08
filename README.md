@@ -1,1 +1,14 @@
-Team Tolketjeneste ble opprettet i oktober 2019, og er et av teamene i DigiHoT som er NAV Hjelpemidler og tilrettelegging sin digitaliseringssatsing. Teamet sin oppgave er å ta i bruk Salsforce på oppgaver knyttet til bestilling og formidling av tolkeoppdrag for døve, døvblinde og hørselshemmede.
+# crm-hot
+
+Denne pakken inneholder Salesforce metadata som støtter arbeidet NAV gjør rundt formidling av tolker for hørselhemmede, døve og døvblinde. Løsningen er utviklet av Team Tolketjeneste, som ble opprettet i Januar 2020 og ligger under DigiHot.
+
+## Salesforce Features
+
+Løsningen benytter seg av 
+- Service Cloud
+- Experience Cloud
+- Field Service
+
+## Lenker
+- https://confluence.adeo.no/display/DigiHoT/Team+Tolketjeneste
+- https://confluence.adeo.no/display/PTC/Plattform+Team+CRM

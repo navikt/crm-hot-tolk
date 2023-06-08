@@ -2,11 +2,14 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
+import getThreadId from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
+import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import { columns, mobileColumns } from './columns';
+import { NavigationMixin } from 'lightning/navigation';
 import { formatRecord } from 'c/datetimeFormatter';
 import { defaultFilters, compare } from './filters';
 
-export default class Hot_wageClaimList extends LightningElement {
+export default class Hot_wageClaimList extends NavigationMixin(LightningElement) {
     @track columns = [];
     @track filters = [];
     setColumns() {
@@ -16,7 +19,9 @@ export default class Hot_wageClaimList extends LightningElement {
             this.columns = mobileColumns;
         }
     }
-
+    @track Status;
+    isNotRetractable = false;
+    isDisabledGoToThread = false;
     noWageClaims = false;
     @track wageClaims = [];
     @track allWageClaimsWired = [];
@@ -42,8 +47,8 @@ export default class Hot_wageClaimList extends LightningElement {
     }
 
     refresh() {
-        this.filters = defaultFilters();
-        this.goToRecordDetails({ detail: { Id: this.recordId } });
+        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('wageClaimSessionFilter'));
+        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
@@ -69,27 +74,110 @@ export default class Hot_wageClaimList extends LightningElement {
         this.setPreviousFiltersOnRefresh();
     }
 
-    datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
-    connectedCallback() {
-        this.setColumns();
-        refreshApex(this.wiredWageClaimsResult);
+    getDayOfWeek(date) {
+        var jsDate = new Date(date);
+        var dayOfWeek = jsDate.getDay();
+        var dayOfWeekString;
+        switch (dayOfWeek) {
+            case 0:
+                dayOfWeekString = 'Søndag';
+                break;
+            case 1:
+                dayOfWeekString = 'Mandag';
+                break;
+            case 2:
+                dayOfWeekString = 'Tirsdag';
+                break;
+            case 3:
+                dayOfWeekString = 'Onsdag';
+                break;
+            case 4:
+                dayOfWeekString = 'Torsdag';
+                break;
+            case 5:
+                dayOfWeekString = 'Fredag';
+                break;
+            case 6:
+                dayOfWeekString = 'Lørdag';
+                break;
+            default:
+                dayOfWeekString = '';
+        }
+        return dayOfWeekString;
     }
 
+    datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
+
+    connectedCallback() {
+        this.setColumns();
+        this.updateURL();
+        refreshApex(this.wiredWageClaimsResult);
+    }
+    closeModal() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+        this.recordId = undefined;
+        this.updateURL();
+    }
     @track wageClaim;
     isWageClaimDetails = false;
     goToRecordDetails(result) {
-        window.scrollTo(0, 0);
+        this.isDisabledGoToThread = false;
+        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').focus();
         this.wageClaim = undefined;
+        this.Status = result.detail.Status__c;
         let recordId = result.detail.Id;
         this.recordId = recordId;
+        if (result.detail.Status__c == 'Åpen') {
+            this.isNotRetractable = false;
+        } else {
+            this.isNotRetractable = true;
+        }
         this.isWageClaimDetails = !!this.recordId;
         for (let wageClaim of this.wageClaims) {
             if (recordId === wageClaim.Id) {
                 this.wageClaim = wageClaim;
+                this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
             }
         }
         this.updateURL();
-        this.sendDetail();
+    }
+    treadId;
+    goToWageClaimThread() {
+        this.isDisabledGoToThread = true;
+        getThreadId({ wageClaimeId: this.recordId }).then((result) => {
+            if (result != '') {
+                this.threadId = result;
+                this.navigateToThread(this.threadId);
+            } else {
+                console.log('tråd finnes ikke');
+                console.log('accountid: ' + this.wageClaim.ServiceResource__r.AccountId);
+                createThread({ recordId: this.recordId, accountId: this.wageClaim.ServiceResource__r.AccountId })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                    })
+                    .catch((error) => {
+                        this.modalHeader = 'Noe gikk galt';
+                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                        this.noCancelButton = true;
+                        this.showModal();
+                    });
+            }
+        });
+    }
+    navigateToThread(recordId) {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: recordId,
+                objectApiName: 'Thread__c',
+                actionName: 'view'
+            },
+            state: {
+                from: 'mine-oppdrag',
+                list: 'wageClaim'
+            }
+        });
     }
 
     @api recordId;
@@ -118,6 +206,8 @@ export default class Hot_wageClaimList extends LightningElement {
         ) {
             try {
                 retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
+                    this.isNotRetractable = true;
+                    this.Status = 'Tilbaketrukket tilgjengelighet';
                     refreshApex(this.wiredWageClaimsResult);
                 });
             } catch (error) {
@@ -142,7 +232,7 @@ export default class Hot_wageClaimList extends LightningElement {
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
-
+        sessionStorage.setItem('wageClaimSessionFilter', JSON.stringify(this.filters));
         let filteredRecords = [];
         let records = this.allWageClaimsWired;
         for (let record of records) {

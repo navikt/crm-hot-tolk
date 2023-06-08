@@ -318,6 +318,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Event.HOT_IsCreatedFromSA__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_HistoricallyAssignedResource__c.SchedEndTime__c</field>
         <readable>true</readable>
@@ -544,6 +549,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.IsNotNotifyAccount__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.IsNotifyDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -663,6 +673,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_WageClaim__c.IsAvailableForAcute__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_WageClaim__c.ParentWageClaim__c</field>
         <readable>true</readable>
@@ -728,11 +743,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_WageClaim__c.IsAvailableForAcute__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>JobProfile.Description</field>
         <readable>true</readable>
@@ -760,6 +770,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_NotificationChannel__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.INT_IsHasTombstone__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -809,6 +824,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>SMS__c.RecipientFormatted__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>SMS__c.Recipient__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -840,6 +860,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_DatesOutOfSync__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_DaysBetweenCreatedAndStart__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -904,6 +929,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsUrgent__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>ServiceAppointment.HOT_PreferredInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -925,6 +955,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_ResetToDefault__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_ResourceType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1064,6 +1099,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Shift.HOT_WageClaim__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Shift.JobProfileId</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1103,6 +1143,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Task.HOT_IsCreatedFromSA__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Thread__c.CRM_Related_Record_Link__c</field>
         <readable>true</readable>
@@ -1110,6 +1155,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Thread__c.CRM_Thread_Name_Formula__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.HOT_DelPol_ToDeleteRecord__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1130,6 +1180,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Thread__c.HOT_Subject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Thread__c.HOT_Title__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

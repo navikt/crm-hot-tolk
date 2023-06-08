@@ -1,6 +1,11 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getMyWorkOrdersAndRelatedRequest from '@salesforce/apex/HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest';
+import getThreadInterpreterId from '@salesforce/apex/HOT_WorkOrderListController.getThreadInterpreterId';
+import getThreadRequestId from '@salesforce/apex/HOT_RequestListController.getThreadRequestId';
+import updateRelatedWorkOrders from '@salesforce/apex/HOT_RequestListController.updateRelatedWorkOrders';
+import getUserAccountID from '@salesforce/apex/HOT_UserInformationController.getAccountId';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
+import createThreadOrdererUser from '@salesforce/apex/HOT_MessageHelper.createThreadOrdererUser';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -21,6 +26,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @api isAccount;
     @track filters = [];
     @track breadcrumbs = [];
+    @track threadOrdererUserButtonDescription = 'Test';
 
     get isMobile() {
         return window.screen.width < 576;
@@ -29,8 +35,16 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     get buttonText() {
         return this.isMobile ? '+' : 'Ny bestilling';
     }
+    @track userAccountId;
+    @wire(getUserAccountID)
+    wiredAccountId({ error, data }) {
+        if (data) {
+            this.userAccountId = data.AccountId;
+        }
+    }
 
     connectedCallback() {
+        refreshApex(this.wiredgetWorkOrdersResult);
         this.filters = defaultFilters();
         this.breadcrumbs = [
             {
@@ -90,12 +104,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.isNavigatingAway === false
         ) {
             this.urlStateParameters = { ...currentPageReference.state };
-            this.refresh(false);
+        } else {
+            this.urlStateParameters = { level: '', id: '' };
         }
     }
     @track request = { MeetingStreet__c: '', Subject__c: '' };
     @track workOrder = { HOT_AddressFormated__c: '', Subject: '' };
     @track workOrders = [];
+    @track workOrderThreadId;
 
     getRecords() {
         this.resetRequestAndWorkOrder();
@@ -104,6 +120,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             if (recordId === record.Id) {
                 this.workOrder = record;
                 this.request = record.HOT_Request__r;
+
+                getThreadInterpreterId({ workOrderId: this.workOrder.Id }).then((result) => {
+                    if (result != '') {
+                        this.workOrderThreadId = result;
+                    } else {
+                        this.workOrderThreadId = undefined;
+                    }
+                });
             }
         }
         if (this.request.Id !== undefined) {
@@ -197,15 +221,32 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     editButtonLabel = 'Rediger';
     copyButtonLabel = 'Kopier';
     cancelButtonLabel = 'Avlys';
+    threadOrdererUserButtonLabel;
+    isThreadButtonDisabled = false;
+    isInterpreterThreadButtonDisabled = false;
+
     setButtonLabels() {
         if (this.urlStateParameters.level === 'R') {
             this.editButtonLabel = 'Rediger serie';
             this.copyButtonLabel = 'Kopier serie';
             this.cancelButtonLabel = 'Avlys serie';
+            this.isThreadButtonDisabled = false;
+            this.isInterpreterThreadButtonDisabled = true;
         } else {
+            this.isThreadButtonDisabled = false;
             this.editButtonLabel = 'Rediger';
             this.copyButtonLabel = 'Kopier';
             this.cancelButtonLabel = 'Avlys';
+            this.isThreadButtonDisabled = false;
+            this.isInterpreterThreadButtonDisabled = false;
+        }
+        if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
+            this.threadOrdererUserButtonLabel = 'Samtale med bruker';
+        } else if (
+            this.request.IsAccountEqualOrderer__c == false &&
+            this.request.Account__c === this.userRecord.AccountId
+        ) {
+            this.threadOrdererUserButtonLabel = 'Samtale med bestiller';
         }
     }
 
@@ -272,12 +313,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     isUserAccount = false;
     updateView() {
         this.isUserAccount = this.request.Account__c === this.userRecord.AccountId;
+        this.isAccountEqualOrderer = this.request.IsAccountEqualOrderer__c;
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
         this.isOrdererWantStatusUpdateOnSMS = this.request.IsOrdererWantStatusUpdateOnSMS__c ? 'Ja' : 'Nei';
+        this.IsNotNotifyAccount = this.request.IsNotNotifyAccount__c ? 'Nei' : 'Ja';
         this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId ? true : false;
         this.setHeader();
         this.setButtonLabels();
@@ -380,13 +423,12 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.request.ExternalRequestStatus__c !== 'Avlyst' &&
             this.request.ExternalRequestStatus__c !== 'Dekket' &&
             tempEndDate.getTime() > Date.now()
-        )
-        {
-            if(this.urlStateParameters.level === 'R'){
-                this.modalContent = 'Er du sikker på at du vil avlyse alle datoer i bestillingen?';
-            }
-            else{
-                this.modalContent = 'Er du sikker på at du vil avlyse bestillingen?\nDato: '+this.workOrder.StartAndEndDate;
+        ) {
+            if (this.urlStateParameters.level === 'R') {
+                this.modalContent = 'Er du sikker på at du vil avlyse alle fremtidige datoer i bestillingen?';
+            } else {
+                this.modalContent =
+                    'Er du sikker på at du vil avlyse bestillingen?\nDato: ' + this.workOrder.StartAndEndDate;
             }
             this.isCancel = true;
             this.noCancelButton = false;
@@ -418,31 +460,44 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.template.querySelector('.loader').classList.remove('hidden');
         const fields = {};
         if (this.urlStateParameters.level === 'R') {
-            fields[REQUEST_ID.fieldApiName] = this.request.Id;
-            fields[STATUS.fieldApiName] = 'Avlyst';
-            fields[NOTIFY_DISPATCHER.fieldApiName] = true;
+            updateRelatedWorkOrders({ requestId: this.request.Id })
+                .then((result) => {
+                    refreshApex(this.wiredgetWorkOrdersResult);
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Bestillingen er avlyst.';
+                    this.showModal();
+                })
+                .catch((error) => {
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
+                    this.showModal();
+                });
         } else {
             fields[WORKORDER_ID.fieldApiName] = this.workOrder.Id;
             fields[WORKORDER_STATUS.fieldApiName] = 'Canceled';
             fields[WORKORDER_NOTIFY_DISPATCHER.fieldApiName] = true;
+            const recordInput = { fields };
+            updateRecord(recordInput)
+                .then(() => {
+                    refreshApex(this.wiredgetWorkOrdersResult);
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Bestillingen er avlyst.';
+                    this.showModal();
+                })
+                .catch(() => {
+                    this.noCancelButton = true;
+                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
+                    this.template.querySelector('.loader').classList.add('hidden');
+                    this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
+                    this.showModal();
+                });
         }
-        const recordInput = { fields };
-        updateRecord(recordInput)
-            .then(() => {
-                refreshApex(this.wiredgetWorkOrdersResult);
-                this.noCancelButton = true;
-                this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-                this.template.querySelector('.loader').classList.add('hidden');
-                this.modalContent = 'Bestillingen er avlyst.';
-                this.showModal();
-            })
-            .catch(() => {
-                this.noCancelButton = true;
-                this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-                this.template.querySelector('.loader').classList.add('hidden');
-                this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
-                this.showModal();
-            });
     }
 
     showUploadFilesComponent = false;
@@ -562,36 +617,140 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     navigateToThread(recordId) {
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId: recordId,
-                objectApiName: 'Thread__c',
-                actionName: 'view'
-            },
-            state: {
-                from: 'mine-bestillinger',
-                recordId: this.urlStateParameters.id,
-                level: this.urlStateParameters.level
-            }
-        });
-    }
-
-    goToThread() {
-        if (this.request.Thread__c !== undefined) {
-            this.navigateToThread(this.request.Thread__c);
+        if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: recordId,
+                    objectApiName: 'Thread__c',
+                    actionName: 'view'
+                },
+                state: {
+                    from: 'mine-bestillinger-andre',
+                    recordId: this.urlStateParameters.id,
+                    level: this.urlStateParameters.level
+                }
+            });
         } else {
-            createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: recordId,
+                    objectApiName: 'Thread__c',
+                    actionName: 'view'
+                },
+                state: {
+                    from: 'mine-bestillinger',
+                    recordId: this.urlStateParameters.id,
+                    level: this.urlStateParameters.level
+                }
+            });
+        }
+    }
+    @track threadDispatcherId;
+    goToThread() {
+        this.isThreadButtonDisabled = true;
+        if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
+            getThreadRequestId({ requestId: this.request.Id, type: 'HOT_BESTILLER-FORMIDLER' }).then((result) => {
+                if (result != '') {
+                    this.threadDispatcherId = result;
+                    this.navigateToThread(this.threadDispatcherId);
+                } else {
+                    createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
+                        .then((result) => {
+                            this.navigateToThread(result.Id);
+                            refreshApex(this.wiredgetWorkOrdersResult);
+                        })
+                        .catch((error) => {
+                            this.modalHeader = 'Noe gikk galt';
+                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                            this.noCancelButton = true;
+                            this.showModal();
+                        });
+                }
+            });
+        }
+        if (this.request.IsAccountEqualOrderer__c == false && this.request.Account__c == this.userAccountId) {
+            getThreadRequestId({ requestId: this.request.Id, type: 'HOT_BRUKER-FORMIDLER' }).then((result) => {
+                if (result != '') {
+                    this.threadDispatcherId = result;
+                    this.navigateToThread(this.threadDispatcherId);
+                } else {
+                    createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
+                        .then((result) => {
+                            this.navigateToThread(result.Id);
+                            refreshApex(this.wiredgetWorkOrdersResult);
+                        })
+                        .catch((error) => {
+                            this.modalHeader = 'Noe gikk galt';
+                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                            this.noCancelButton = true;
+                            this.showModal();
+                        });
+                }
+            });
+        }
+        if (this.request.IsAccountEqualOrderer__c == true && this.request.Account__c == this.userAccountId) {
+            getThreadRequestId({ requestId: this.request.Id, type: 'HOT_BRUKER-FORMIDLER' }).then((result) => {
+                if (result != '') {
+                    this.threadDispatcherId = result;
+                    this.navigateToThread(this.threadDispatcherId);
+                } else {
+                    createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
+                        .then((result) => {
+                            this.navigateToThread(result.Id);
+                            refreshApex(this.wiredgetWorkOrdersResult);
+                        })
+                        .catch((error) => {
+                            this.modalHeader = 'Noe gikk galt';
+                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                            this.noCancelButton = true;
+                            this.showModal();
+                        });
+                }
+            });
+        }
+    }
+    goToThreadInterpreter() {
+        this.isInterpreterThreadButtonDisabled = true;
+        if (this.workOrderThreadId !== undefined) {
+            this.navigateToThread(this.workOrderThreadId);
+        } else {
+            createThread({ recordId: this.workOrder.Id, accountId: this.request.Account__c })
                 .then((result) => {
                     this.navigateToThread(result.Id);
                     refreshApex(this.wiredgetWorkOrdersResult);
+                    this.workOrderThreadId = result.Id;
                 })
                 .catch((error) => {
                     this.modalHeader = 'Noe gikk galt';
                     this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
                     this.noCancelButton = true;
+                    this.isThreadButtonDisabled = false;
                     this.showModal();
                 });
         }
+    }
+    goToThreadOrdererUser() {
+        getThreadRequestId({ requestId: this.request.Id, type: 'HOT_BRUKER-BESTILLER' }).then((result) => {
+            if (result != '') {
+                this.threadDispatcherId = result;
+                this.navigateToThread(this.threadDispatcherId);
+            } else {
+                createThreadOrdererUser({ recordId: this.request.Id, accountId: this.request.Account__c })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                        refreshApex(this.wiredgetWorkOrdersResult);
+                        this.workOrderThreadId = result.Id;
+                    })
+                    .catch((error) => {
+                        this.modalHeader = 'Noe gikk galt';
+                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                        this.noCancelButton = true;
+                        this.isThreadButtonDisabled = false;
+                        this.showModal();
+                    });
+            }
+        });
     }
 }

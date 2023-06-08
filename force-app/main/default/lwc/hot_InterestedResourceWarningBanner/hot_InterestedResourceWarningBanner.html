@@ -1,0 +1,17 @@
+<template>
+    <template if:true={hasOverlap}>
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+            <span class="slds-assistive-text">Advarsel</span>
+            <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
+            </lightning-icon>
+            <span>Tolken har overlappende oppdrag.</span>
+        </div>
+        <template iterator:it={serviceAppointments}>
+            <div class="slds-notify slds-notify_alert slds-alert_error" role="alert" key={it.value.Id}>
+                <span key={it.value.Id}
+                    ><a href={it.value.Link}>{it.value.AppointmentNumber}</a> {it.value.oppdragsInfo}
+                </span>
+            </div>
+        </template>
+    </template>
+</template>

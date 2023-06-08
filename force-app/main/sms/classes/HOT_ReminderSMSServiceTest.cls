@@ -4,6 +4,7 @@ private class HOT_ReminderSMSServiceTest {
     static void setup() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.INT_KrrMobilePhone__c = '00000000';
+        person.HOT_NotificationChannel__c = 'SMS';
         insert person;
         Account account = [SELECT Id FROM Account];
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -18,7 +19,17 @@ private class HOT_ReminderSMSServiceTest {
         // To create child records
         request.Status__c = 'Godkjent';
         update request;
-        WorkOrder workOrder = [SELECT Id, Status, StartDate, EndDate FROM WorkOrder];
+        WorkOrder workOrder = [
+            SELECT
+                Id,
+                Status,
+                Account.CRM_Person__r.HOT_NotificationChannel__c,
+                Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                StartDate,
+                EndDate,
+                HOT_Request__r.IsNotNotifyAccount__c
+            FROM WorkOrder
+        ];
         workOrder.Status = 'Dispatched';
         workOrder.StartDate = workOrder.StartDate.addDays(-2);
         workOrder.EndDate = workOrder.EndDate.addDays(-2);
@@ -52,11 +63,28 @@ private class HOT_ReminderSMSServiceTest {
                 HOT_Request__r.Type__c,
                 StartDate,
                 EndDate,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 Status,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
         ];
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
+
+    @isTest
+    static void sendSMSOnInterpreterChangeTest() {
+        List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder];
+
+        Set<Id> workOrderIds = new Set<Id>();
+        for (WorkOrder wo : workOrders) {
+            workOrderIds.add(wo.Id);
+        }
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSOnInterpreterChange(workOrderIds, 'Tolk Tolkersen');
+        Test.stopTest();
+
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
@@ -72,6 +100,7 @@ private class HOT_ReminderSMSServiceTest {
                 StartDate,
                 EndDate,
                 Status,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
         ];
@@ -95,6 +124,7 @@ private class HOT_ReminderSMSServiceTest {
                 StartDate,
                 EndDate,
                 Status,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c,
                 Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM WorkOrder
@@ -138,6 +168,7 @@ private class HOT_ReminderSMSServiceTest {
                 HOT_Request__r.OrdererPhone__c,
                 StartDate,
                 EndDate,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 Status,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
@@ -166,6 +197,7 @@ private class HOT_ReminderSMSServiceTest {
                 StartDate,
                 EndDate,
                 Status,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
         ];

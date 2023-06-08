@@ -3,7 +3,7 @@
     <fullName>HOT_IsReservationAgainstReminderSMS__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <label>Reservation against reminder SMS</label>
+    <label>Reservation against reminders</label>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>

@@ -6,10 +6,9 @@
         </p>
         <br />
         <div style="flex-direction: row; display: flex">
-            <h2 class="header" tabindex="-1" autofocus>Kontaktinformasjon</h2>
+            <h2 class="header" tabindex="-1">Kontaktinformasjon</h2>
             <c-helptext
                 text="For å kunne kontakte deg ved behov for ytterligere opplysninger, vil dine kontaktopplysninger bli knyttet til denne tolkebestillingen."
-                hover-text="Hjelpeknapp for kontaktinformasjon."
             ></c-helptext>
         </div>
         <br />
@@ -39,11 +38,20 @@
             type="tel"
         ></c-input>
         <c-checkbox
-            label="Ønsker SMS-varsel ved statusendring på bestillingen"
+            label="Ønsker varsel ved statusendring på bestillingen"
+            helptext-content="Varslingskanal kan endres på Min side."
             oncheckboxclick={handleSMSCheckbox}
             name="IsOrdererWantStatusUpdateOnSMS__c"
             form="tolk-skjema-input"
             default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
+        ></c-checkbox>
+        <c-checkbox
+            label="Ikke send varsel til bruker"
+            helptext-content="Bruker vil ikke få varsel vedrørende bestillingen."
+            oncheckboxclick={handleDontNotifyUserCheckbox}
+            name="IsNotNotifyAccount__c"
+            form="tolk-skjema-input"
+            default-value={fieldValues.IsNotNotifyAccount__c}
         ></c-checkbox>
     </section>
 </template>

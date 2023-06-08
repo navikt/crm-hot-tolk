@@ -1,31 +1,34 @@
 echo "Oppretter scratch org"
 call sfdx force:org:create -f config\project-scratch-def.json --setalias %1 --durationdays %2 --setdefaultusername --json --loglevel fatal  --wait 10
 
-echo "Installerer crm-platform-base ver. 0.176"
-call sfdx force:package:install --package 04t7U000000TqsTQAS -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-platform-base ver. 0.192"
+call sfdx package:install --package 04t7U000000D2HkQAK -r -k %3 --wait 10 --publish-wait 10
 
-echo "Installerer crm-platform-integration ver. 0.87"
-call sfdx force:package:install --package 04t7U000000Tr32QAC -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-platform-integration ver. 0.99"
+call sfdx package:install --package 04t7U0000004dzIQAQ -r -k %3 --wait 10 --publish-wait 10
 
-echo "Installerer crm-platform-access-control ver. 0.101"
-call sfdx force:package:install --package 04t7U000000TpqbQAC -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-platform-access-control ver. 0.113"
+call sfdx package:install --package 04t7U0000004e8tQAA -r -k %3 --wait 10 --publish-wait 10
 
-echo "Installerer crm-community-base ver. 0.71"
-call sfdx force:package:install --package 04t7U000000TqLFQA0 -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-community-base ver. 0.86"
+call sfdx package:install --package 04t7U0000004duXQAQ -r -k %3 --wait 10 --publish-wait 10
 
-echo "Installerer crm-platform-reporting ver. 0.25"
-call sfdx force:package:install --package 04t2o000000ySIYAA2 -r -k %3 --wait 10 --publishwait 10
+echo "Installerer crm-platform-reporting ver. 0.31"
+call sfdx package:install --package 04t7U0000008rBAQAY -r -k %3 --wait 10 --publish-wait 10
 
-echo "Installer crm-henvendelse-base ver. 0.11"
-call sfdx force:package:install --package 04t7U000000Tqf5QAC -r -k %3 --wait 10 --publishwait 10
+echo "Installer crm-henvendelse-base ver. 0.16"
+call sfdx package:install --package 04t7U0000000RX4QAM -r -k %3 --wait 10 --publish-wait 10
 
 echo "Dytter kildekoden til scratch org'en"
 call sfdx force:source:push
 
 echo "Tildeler tilatelsessett til brukeren"
-call sfdx force:user:permset:assign --permsetname HOT_admin
+call sfdx force:user:permset:assign --perm-set-name "HOT_admin, HOT_Config"
+
+echo "Publish Experience Site"
+call sfdx community:publish --name Tolketjenesten
 
 echo "Oppretter testdata"
-call sfdx force:apex:execute -f scripts/apex/createTestData.apex
+call sfdx apex run -f scripts/apex/createTestData.apex
 
 echo "Ferdig"

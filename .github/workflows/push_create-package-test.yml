@@ -1,0 +1,19 @@
+name: "[PUSH] Create Package TEST"
+on:
+  workflow_dispatch:
+
+jobs:
+  create-package:
+    name: Run Package Creation
+    uses: navikt/crm-hot/.github/workflows/packageCreateTest.yml@master
+    secrets: inherit
+
+  install-in-uat:
+    name: Install in UAT
+    needs: [create-package]
+    uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@master
+    with:
+      packageId: ${{ needs.create-package.outputs.packageId }}
+      org: uat
+      unpackagable: ./force-app/unpackagable-with-auto-deploy
+    secrets: inherit

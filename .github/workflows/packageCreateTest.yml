@@ -1,0 +1,123 @@
+name: "Create Package TEST"
+on:
+  workflow_call:
+    inputs:
+       SFDX_ENV:
+        description: "Environent variables to be set for sfdx commands"
+        required: false
+        type: string
+    outputs:
+      packageId:
+        value: ${{ jobs.create-package.outputs.packageId }}
+jobs:
+  create-package:
+    name: Create Package
+    runs-on: ubuntu-latest
+    outputs:
+      packageId: ${{ steps.package-version-create.outputs.packageId }}
+      betaVersionNumber: ${{ steps.package-version-create.outputs.betaVersionNumber }}
+      codeCoverage: ${{ steps.package-version-create.outputs.codeCoverage }}
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      # Install SFDX
+      - name: Install SFDX
+        uses: navikt/crm-workflows-base/.github/actions/installSFDX@master
+        with:
+          version: 7.192.2
+
+      # Authorize Prod
+      - name: Authorize PROD
+        uses: navikt/crm-workflows-base/.github/actions/authenticateOrg@master
+        with:
+          auth-url: ${{ secrets.CRM_PROD_SFDX_URL }}
+          alias: prod
+          setDefaultUsername: true
+          setDefaultDevhubUsername: true
+
+      # Delete unpackagable and scratch-org folder
+      - name: Delete unpackagable
+        run: |
+          rm -rf ./force-app/unpackagable
+          rm -rf ./force-app/unpackagable-with-auto-deploy
+          rm -rf ./force-app/scratch-org
+      # Create package version
+      - name: Create package version
+        id: package-version-create
+        run: |
+          sfdx force:package:version:create --targetdevhubusername prod --definitionfile config/project-scratch-def.json --package $(jq -r '.packageDirectories[0].package' sfdx-project.json) --installationkey ${{ secrets.CRM_PACKAGE_KEY }} --wait 90 --codecoverage --json | tee output
+          # ! manually cancel the process if the package failed to be created
+          if [ $(cat output |jq '.status') == "1" ]; then
+            exit 125
+          fi
+          packageId=$(cat output | jq -r '.result.SubscriberPackageVersionId')
+          echo "packageId=$(echo $packageId)" >> $GITHUB_OUTPUT
+          echo "betaVersionNumber=$(cat sfdx-project.json | jq -r '.packageAliases | keys_unsorted[-1]' | sed 's/.*-//')" >> $GITHUB_OUTPUT
+          echo "codeCoverage=$( sfdx force:package:version:report -p $(echo $packageId) --json | jq -r '.result.CodeCoverage.apexCodeCoveragePercentage' )" >> $GITHUB_OUTPUT
+          echo
+          echo Package ID: $packageId
+
+  validate-in-sit:
+    name: Validate install in SIT Sandbox
+    needs: [create-package]
+    uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@master
+    with:
+      packageId: ${{ needs.create-package.outputs.packageId }}
+      org: sit
+      unpackagable: ./force-app/unpackagable-with-auto-deploy
+      SFDX_ENV: ${{ inputs.SFDX_ENV }}
+    secrets: inherit
+
+  create-release:
+    name: Create release
+    needs: [create-package, validate-in-sit]
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      # set release variables
+      - name: Set release fields
+        id: release-fields
+        run: |
+          versionNumber=$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')
+          betaVersionNumber=${{ needs.create-package.outputs.betaVersionNumber }}
+          echo "tagName=v$(echo $versionNumber)-beta$(echo $betaVersionNumber)" >> $GITHUB_OUTPUT
+          echo "releaseName=$(echo $versionNumber)-beta$(echo $betaVersionNumber)" >> $GITHUB_OUTPUT
+          echo "bodyVersion=$(echo $versionNumber).$(echo $betaVersionNumber)" >> $GITHUB_OUTPUT
+          echo "bodyPackage=${{ needs.create-package.outputs.packageId }}" >> $GITHUB_OUTPUT
+          echo "packageCreation=✅ Package Creation" >> $GITHUB_OUTPUT
+          if [ ${{ needs.validate-in-sit.outputs.successfullyInstalledPackage }} == "true" ]; then
+            echo "integrationInstallation=✅ Package Installation (Integration Sandbox)" >> $GITHUB_OUTPUT
+          else
+            echo "integrationInstallation=❌ Package Installation (Integration Sandbox)" >> $GITHUB_OUTPUT
+          fi
+      # Generate changelog from commits
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v3.0.0
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # create github release
+      - name: Create Release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release-fields.outputs.tagName }}
+          release_name: ${{ steps.release-fields.outputs.releaseName }}
+          body: |
+            **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
+            **Package ID**: ${{ steps.release-fields.outputs.bodyPackage }}
+            **Code Coverage**: ${{ needs.create-package.outputs.codeCoverage }}%
+            **Author**: ${{ github.actor }}
+            ${{ steps.release-fields.outputs.packageCreation }}
+            ${{ steps.release-fields.outputs.integrationInstallation }}
+            ## Changelog
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: true
