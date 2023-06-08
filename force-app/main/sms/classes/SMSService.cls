@@ -4,6 +4,7 @@ public with sharing class SMSService {
         String type,
         Id accountId,
         Id workOrderId,
+        Id threadId,
         String recipient,
         String message
     ) {
@@ -12,6 +13,7 @@ public with sharing class SMSService {
         sms.Type__c = type;
         sms.Account__c = accountID;
         sms.WorkOrder__c = workOrderId;
+        sms.Thread__c = threadId;
         sms.Recipient__c = recipient;
         sms.Message__c = message;
         return sms;

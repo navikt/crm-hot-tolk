@@ -147,11 +147,16 @@ public without sharing class HOT_ReminderSMSService {
             smsList.add(
             SMSService.createSMSRecord(
                         'HOT',
-                        'New Message',
+                        'Message',
                         thread.CRM_Account__c,
-                        th,
-                        wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
-                        constructOnOrdererMessage(wo)
+                        '',
+                        thread.Id,
+                        thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                        'INFO/n' + 
+                        'Du har fått en melding fra tolketjenesten.\n' +
+                        'For mer informasjon, se tolkebestilling.nav.no.'+
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV'
                     )
             );
         }
