@@ -68,8 +68,8 @@ public with sharing class HOT_MessagesNotification {
                             recipients
                         );
                     } else {
-                        List<Thread__c> threadList = new List<Thread__c>();
-                        threadList.add(thread);
+                        Set<Id> threadList = new Set<Id>();
+                        threadList.add(thread.Id);
                         HOT_ReminderSMSService.sendSMSOnNewMessage(threadList);
                     }
                 }
