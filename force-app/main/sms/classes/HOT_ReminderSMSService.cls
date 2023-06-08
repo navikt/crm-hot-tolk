@@ -12,7 +12,8 @@ public without sharing class HOT_ReminderSMSService {
                     workOrder.AccountId,
                     workOrder.Id,
                     workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c,
-                    constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id))
+                    constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id)),
+                    ''
                 )
             );
             workOrder.HOT_IsReminderSMSSendt__c = true;
@@ -102,7 +103,8 @@ public without sharing class HOT_ReminderSMSService {
                         workOrder.HOT_Request__r.Orderer__c,
                         workOrder.Id,
                         phoneNumber,
-                        constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id))
+                        constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id)),
+                        ''
                     )
                 );
             }
@@ -112,53 +114,23 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.updateRecords(workOrderList);
     }
 
-    public static void sendSMSOnNewMessage(List<Thread__c> threadList) {
-        List<SMS__c> smsList = new List<SMS__c>();
-        for (Thread__c thread : threadList) {
-            String phoneNumber = thread.CRM_Account__r.INT_KrrMobilePhone__c != null ? thread.CRM_Account__r.INT_KrrMobilePhone__c : '';
-            if (
-                phoneNumber != null &&
-                workOrder.StartDate > Datetime.now() &&
-                workOrder.HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c == true &&
-                (workOrder.Status == 'Dispatched' ||
-                workOrder.Status == 'Cannot Complete')
-            ) {
-                smsList.add(
-                    SMSService.createSMSRecord(
-                        'HOT',
-                        'Orderer On Status Update',
-                        workOrder.HOT_Request__r.Orderer__c,
-                        workOrder.Id,
-                        phoneNumber,
-                        constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id))
-                    )
-                );
-            }
-        }
-        HOT_DatabaseOperations.insertRecords(smsList);
-        HOT_DatabaseOperations.updateRecords(workOrderList);
-    }
-    
     @Future
-    public static void sendSMSOnNewMessage(List<Thread__c> threadList) {
+    public static void sendSMSOnNewMessage(Set<Id> threadIds) {
         List<SMS__c> smsList = new List<SMS__c>();
+        List<Thread__c> threadList = [
+            SELECT CRM_Account__c, CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM Thread__c
+            WHERE Id IN :threadIds
+        ];
 
         for (Thread__c thread : threadList) {
-            smsList.add(
-            SMSService.createSMSRecord(
-                        'HOT',
-                        'Message',
-                        thread.CRM_Account__c,
-                        '',
-                        thread.Id,
-                        thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
-                        'INFO/n' + 
-                        'Du har fått en melding fra tolketjenesten.\n' +
-                        'For mer informasjon, se tolkebestilling.nav.no.'+
-                        'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV'
-                    )
-            );
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Account__c = thread.CRM_Account__c;
+            sms.Thread__c = thread.Id;
+            sms.Recipient__c = thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Message__c = constructOnNewMessage();
+            smsList.add(sms);
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -187,14 +159,15 @@ public without sharing class HOT_ReminderSMSService {
 
         for (WorkOrder wo : workOrderList) {
             smsList.add(
-            SMSService.createSMSRecord(
-                        'HOT',
-                        'Orderer On Status Update',
-                        wo.AccountId,
-                        wo.Id,
-                        wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
-                        constructOnOrdererMessage(wo)
-                    )
+                SMSService.createSMSRecord(
+                    'HOT',
+                    'Orderer On Status Update',
+                    wo.AccountId,
+                    wo.Id,
+                    wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                    constructOnOrdererMessage(wo),
+                    ''
+                )
             );
         }
         try {
@@ -228,14 +201,15 @@ public without sharing class HOT_ReminderSMSService {
         for (WorkOrder wo : workOrderList) {
             smsList.add(
                 SMSService.createSMSRecord(
-                            'HOT',
-                            'Orderer On Status Update',
-                            wo.HOT_Request__r.Orderer__c,
-                            wo.Id,
-                            getRecipient(wo),
-                            constructInterpreterChangedMessage(wo, interpreterName)
-                        )
-                );
+                    'HOT',
+                    'Orderer On Status Update',
+                    wo.HOT_Request__r.Orderer__c,
+                    wo.Id,
+                    getRecipient(wo),
+                    constructInterpreterChangedMessage(wo, interpreterName),
+                    ''
+                )
+            );
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -244,6 +218,14 @@ public without sharing class HOT_ReminderSMSService {
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
         }
+    }
+
+    public static String constructOnNewMessage() {
+        String message = 'INFO\nDu har fått en melding fra tolketjenesten.\n\n';
+        message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
+        message += 'Du kan ikke svare på denne meldingen.\n';
+        message += 'Mvh tolketjenesten i NAV';
+        return message;
     }
 
     public static String constructOnOrdererMessage(WorkOrder workOrder) {
