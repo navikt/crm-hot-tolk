@@ -20,7 +20,7 @@
                 <field>Type__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
+                <behavior>Edit</behavior>
                 <field>Thread__c</field>
             </layoutItems>
             <layoutItems>
