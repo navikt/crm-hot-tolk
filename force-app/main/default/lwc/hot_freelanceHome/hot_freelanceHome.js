@@ -10,7 +10,7 @@ export default class Hot_freelanceHome extends NavigationMixin(LightningElement)
     personIcon = ICON_Person;
     tasklistIcon = ICON_Tasklist;
     chatIcon = ICON_Chat;
-    rightArrow = ICON_RightArrow;
+    rightArrowIcon = ICON_RightArrow;
     connectedCallback() {
         sessionStorage.clear(); // Clear session storage when on home
         window.scrollTo(0, 0);
