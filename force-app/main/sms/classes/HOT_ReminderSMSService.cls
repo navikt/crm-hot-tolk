@@ -107,7 +107,7 @@ public without sharing class HOT_ReminderSMSService {
                 SMS__c sms = new SMS__c();
                 sms.Domain__c = 'HOT';
                 sms.Type__c = 'Orderer On Status Update';
-                sms.Account__c = workOrder.AccountId;
+                sms.Account__c = workOrder.HOT_Request__r.Orderer__c;
                 sms.WorkOrder__c = workOrder.Id;
                 sms.Recipient__c = phoneNumber;
                 sms.Message__c = constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id));
@@ -227,7 +227,7 @@ public without sharing class HOT_ReminderSMSService {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Orderer On Status Update';
-            sms.Account__c = wo.AccountId;
+            sms.Account__c = wo.HOT_Request__r.Orderer__c;
             sms.WorkOrder__c = wo.Id;
             sms.Recipient__c = getRecipient(wo);
             sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
