@@ -15,6 +15,10 @@
                     "versionNumber": "0.195.0.LATEST"
                 },
                 {
+                    "package": "crm-henvendelse-base",
+                    "versionNumber": "0.16.0.LATEST"
+                },
+                {
                     "package": "crm-platform-integration",
                     "versionNumber": "0.100.0.LATEST"
                 },
@@ -29,10 +33,6 @@
                 {
                     "package": "crm-platform-reporting",
                     "versionNumber": "0.31.0.LATEST"
-                },
-                {
-                    "package": "crm-henvendelse-base",
-                    "versionNumber": "0.16.0.LATEST"
                 }
             ]
         },
@@ -47,6 +47,10 @@
                     "versionNumber": "0.195.0.LATEST"
                 },
                 {
+                    "package": "crm-henvendelse-base",
+                    "versionNumber": "0.16.0.LATEST"
+                },
+                {
                     "package": "crm-platform-integration",
                     "versionNumber": "0.100.0.LATEST"
                 },
@@ -61,10 +65,6 @@
                 {
                     "package": "crm-platform-reporting",
                     "versionNumber": "0.31.0.LATEST"
-                },
-                {
-                    "package": "crm-henvendelse-base",
-                    "versionNumber": "0.16.0.LATEST"
                 }
             ]
         }
