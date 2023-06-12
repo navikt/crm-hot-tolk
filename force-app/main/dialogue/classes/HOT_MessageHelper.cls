@@ -133,6 +133,7 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=false)
     public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
+        Id account;
         String objectType=String.valueOf(recordId.getsobjecttype());
         if(objectType=='WorkOrder'){
             WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
@@ -150,13 +151,14 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Related_Object__c = recordId;
             if(request.IsAccountEqualOrderer__c==false && request.Orderer__c==currentUser.AccountId){
                 thread.CRM_Thread_Type__c = 'HOT_BESTILLER-FORMIDLER';
+                account = request.Orderer__c;
                 thread.HOT_Request__c=recordId;
             }
             else{
                  thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
                  thread.HOT_Request__c=recordId;
             }
-            thread.CRM_Account__c = accountId;
+            thread.CRM_Account__c = account;
             thread.HOT_Title__c=request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
@@ -198,7 +200,7 @@ public without sharing class HOT_MessageHelper {
             HOT_Request__c request=[SELECT Subject__c, IsAccountEqualOrderer__c, Orderer__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = type;
-            thread.CRM_Account__c = accountId;
+            thread.CRM_Account__c = type == 'HOT_BESTILLER-FORMIDLER' ? request.Orderer__c : accountId;
             thread.HOT_Request__c=recordId;
             thread.HOT_Title__c=request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
