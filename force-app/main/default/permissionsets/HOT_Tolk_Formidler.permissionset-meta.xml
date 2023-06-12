@@ -356,6 +356,11 @@
         <field>HOT_Request__c.Duration__c</field>
         <readable>true</readable>
     </fieldPermissions>
+        <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.HOT_PersonContactId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.EconomicProvider__c</field>
@@ -979,6 +984,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SMS__c.Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+        <fieldPermissions>
+        <editable>false</editable>
+        <field>SMS__c.Thread__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

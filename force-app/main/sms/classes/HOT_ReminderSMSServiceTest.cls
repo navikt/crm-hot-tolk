@@ -58,6 +58,7 @@ private class HOT_ReminderSMSServiceTest {
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
+                AccountId,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,
                 HOT_Request__r.Type__c,
@@ -94,6 +95,7 @@ private class HOT_ReminderSMSServiceTest {
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
+                AccountId,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,
                 HOT_Request__r.Type__c,
@@ -118,6 +120,7 @@ private class HOT_ReminderSMSServiceTest {
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
+                AccountId,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,
                 HOT_Request__r.Type__c,
