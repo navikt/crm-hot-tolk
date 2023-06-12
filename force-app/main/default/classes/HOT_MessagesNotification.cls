@@ -34,16 +34,20 @@ public with sharing class HOT_MessagesNotification {
                 CRM_Account__c,
                 CRM_Account__r.INT_KrrMobilePhone__c,
                 CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c,
-                CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c
+                CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c,
+                
+                CRM_Thread_Type__c 
             FROM Thread__c
             WHERE
                 Id IN :threadIds
-                AND CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE
                 AND CRM_Account__c != NULL
         ];
         List<Id> accountIds = new List<Id>();
 
         for (Thread__c thread : threads) {
+            if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
+                accountIds.add(arg0)
+            } 
             accountIds.add(thread.CRM_Account__c);
         }
 
