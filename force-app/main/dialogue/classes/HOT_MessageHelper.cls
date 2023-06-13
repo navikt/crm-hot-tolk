@@ -203,6 +203,9 @@ public without sharing class HOT_MessageHelper {
             if(type=='HOT_BRUKER-FORMIDLER'){
                 thread.CRM_Account__c = accountId;
             }
+            else{
+                 thread.CRM_Account__c = request.Orderer__c;
+            }
             thread.HOT_Request__c=recordId;
             thread.HOT_Title__c=request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
