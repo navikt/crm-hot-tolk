@@ -13,7 +13,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
             // Varsel ved tildelt tolk eller udekket
             if (
-                serviceAppointment.AccountId != null &&
                 (serviceAppointment.HOT_AssignedResourceId__c != null &&
                 oldServiceAppointment.Status != serviceAppointment.Status &&
                 serviceAppointment.Status == 'Dispatched') ||
