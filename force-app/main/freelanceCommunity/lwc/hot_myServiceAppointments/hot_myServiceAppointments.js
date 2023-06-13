@@ -346,6 +346,9 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
         this.recordId = undefined;
         this.updateURL();
+        this.isGoToThreadButtonDisabled = false;
+        this.isGoToThreadServiceAppointmentButtonDisabled = false;
+        this.isGoToThreadInterpretersButtonDisabled = false;
     }
     handleStatusChange(event) {
         console.log('handleStatusChange', event.detail);
