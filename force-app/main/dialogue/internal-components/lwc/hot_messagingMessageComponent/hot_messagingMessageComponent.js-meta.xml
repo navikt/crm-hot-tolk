@@ -14,12 +14,8 @@
                 label="Single Thread Mode enabled" />
             <property name="showClose" type="Boolean" default="false"
                 label="Display the 'Close thread' button" />
-        </targetConfig>
-        <targetConfig targets="lightning__RecordPage">
-            <supportedFormFactors>
-                <supportedFormFactor type="Large" />
-                <supportedFormFactor type="Small" />
-            </supportedFormFactors>
+            <supportedFormFactor type="Large" />
+            <supportedFormFactor type="Small" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
