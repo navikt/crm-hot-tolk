@@ -1,4 +1,4 @@
-public with sharing class HOT_ThreadListController {
+public without sharing class HOT_ThreadListController {
    @AuraEnabled(cacheable=true)
     public static List<Thread__c> getMyThreads() {
         List<Id> workOrderIds = new List<Id>();
