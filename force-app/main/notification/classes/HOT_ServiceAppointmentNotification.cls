@@ -31,8 +31,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.HOT_AssignedResourceId__c != null &&
                 oldServiceAppointment.HOT_AssignedResourceId__c != null &&
                 serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c &&
-                serviceAppointment.Status == 'Dispatched' &&
-                serviceAppointment.AccountId != null
+                serviceAppointment.Status == 'Dispatched'
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
