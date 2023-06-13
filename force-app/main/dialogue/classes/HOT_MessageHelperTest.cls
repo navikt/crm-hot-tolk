@@ -661,6 +661,7 @@ public with sharing class HOT_MessageHelperTest {
         insert resource;
         
         HOT_WageClaim__c wageclaim= HOT_TestDataFactory.createWageClaim(resource);
+        wageclaim.ServiceAppointment__c=sa.Id;
         insert wageclaim;
 
         Thread__c t = HOT_TestDataFactory.createThread();
@@ -702,6 +703,7 @@ public with sharing class HOT_MessageHelperTest {
         insert resource;
         
         HOT_WageClaim__c wageclaim= HOT_TestDataFactory.createWageClaim(resource);
+        wageclaim.ServiceAppointment__c=sa.Id;
         insert wageclaim;
 
         Thread__c t = HOT_TestDataFactory.createThread();
