@@ -39,6 +39,7 @@ public with sharing class HOT_MessagesNotification {
             WHERE
                 Id IN :threadIds
                 AND CRM_Account__c != NULL
+                AND CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE
         ];
         List<Id> accountIds = new List<Id>();
 
