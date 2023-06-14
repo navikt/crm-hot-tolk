@@ -15,7 +15,7 @@ import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { formatRecord } from 'c/datetimeFormatter';
-import getRecord from '@salesforce/apex/HOT_ThreadDetailController.getRecord';
+import getRecordData from '@salesforce/apex/HOT_ThreadDetailController.getRecord';
 export default class hot_messagingCommunityThreadViewer extends NavigationMixin(LightningElement) {
     _mySendForSplitting;
     messages = [];
@@ -82,9 +82,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         }
     ];
 
-    @wire(getRecord, { recordId: '$recordId' })
+    @wire(getRecordData, { recordId: '$recordId' })
     wirethread(result) {
-        this.thread = result;
+        if (result.data) {
+            this.thread = result.data;
+        }
     }
     get showopenwarning() {
         if (this.alertopen) {
@@ -94,13 +96,13 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
 
     get name() {
-        return this.thread.data.HOT_Subject__c;
+        return this.thread.HOT_Subject__c;
     }
     get threadRelatedObjectId() {
-        return this.thread.data.CRM_Related_Object__c;
+        return this.thread.CRM_Related_Object__c;
     }
     get threadType() {
-        const threadTypeValue = this.thread.data.CRM_Thread_Type__c;
+        const threadTypeValue = this.thread.CRM_Thread_Type__c;
         if (threadTypeValue === 'HOT_BRUKER-FORMIDLER') {
             this.helptextContent =
                 'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
@@ -159,7 +161,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         }
     }
     get isclosed() {
-        return this.thread.data.CRM_Is_Closed__c;
+        return this.thread.CRM_Is_Closed__c;
     }
 
     /**
