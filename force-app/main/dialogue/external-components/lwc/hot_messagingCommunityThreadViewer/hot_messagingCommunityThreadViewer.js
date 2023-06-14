@@ -11,18 +11,11 @@ import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointm
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
-import THREADNAME_FIELD from '@salesforce/schema/Thread__c.HOT_Subject__c';
-import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
-import THREADTYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
-import THREADRELATEDOBJECTID from '@salesforce/schema/Thread__c.CRM_Related_Object__c';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { formatRecord } from 'c/datetimeFormatter';
-
-const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREADRELATEDOBJECTID, THREADTYPE_FIELD]; //Extract the name of the thread record
-
+import getRecord from '@salesforce/apex/HOT_ThreadDetailController.getRecord';
 export default class hot_messagingCommunityThreadViewer extends NavigationMixin(LightningElement) {
     _mySendForSplitting;
     messages = [];
@@ -89,7 +82,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         }
     ];
 
-    @wire(getRecord, { recordId: '$recordId', fields })
+    @wire(getRecord, { recordId: '$recordId' })
     wirethread(result) {
         this.thread = result;
     }
@@ -101,13 +94,13 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
 
     get name() {
-        return getFieldValue(this.thread.data, THREADNAME_FIELD);
+        return this.thread.data.HOT_Subject__c;
     }
     get threadRelatedObjectId() {
-        return getFieldValue(this.thread.data, THREADRELATEDOBJECTID);
+        return this.thread.data.CRM_Related_Object__c;
     }
     get threadType() {
-        const threadTypeValue = getFieldValue(this.thread.data, THREADTYPE_FIELD);
+        const threadTypeValue = this.thread.data.CRM_Thread_Type__c;
         if (threadTypeValue === 'HOT_BRUKER-FORMIDLER') {
             this.helptextContent =
                 'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
@@ -166,7 +159,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         }
     }
     get isclosed() {
-        return getFieldValue(this.thread.data, THREADCLOSED_FIELD);
+        return this.thread.data.CRM_Is_Closed__c;
     }
 
     /**
