@@ -207,7 +207,7 @@ public with sharing class HOT_MessageHelperTest {
         workType.Name = 'Work Type Name';
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
-        request.Orderer__c = acc;
+        request.Orderer__c = acc.Id;
         insert request;
 
         Test.startTest();
@@ -223,7 +223,7 @@ public with sharing class HOT_MessageHelperTest {
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-FORMIDLER');
 
         HOT_Request__c request2 = HOT_TestDataFactory.createRequest('Subject', workType);
-        request2.Orderer__c = orderer;
+        request2.Orderer__c = orderer.Id;
         insert request2;
         Thread__c thread2 = HOT_MessageHelper.createThread(request2.Id, orderer.Id);
         Test.stopTest();
