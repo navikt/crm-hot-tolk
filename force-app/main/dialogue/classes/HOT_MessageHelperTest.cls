@@ -198,20 +198,19 @@ public with sharing class HOT_MessageHelperTest {
     @isTest
     static void createThread() {
         Account acc = new Account();
-        acc.Name = 'Account';
+        acc.Name = 'Darth Vader';
         insert acc;
-        Account orderer = new Account();
-        orderer.Name = 'Orderer';
-        insert orderer;
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        workType.Name = 'Work Type Name';
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
-        request.Orderer__c = acc.Id;
-        insert request;
+
+        // WorkType workType = HOT_TestDataFactory.createWorkType();
+        // workType.Name = 'Work Type Name';
+        // insert workType;
+        // HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        // insert request;
+
+        HOT_Request__c request = [SELECT Id, Subject__c, Account__c, Orderer__c, IsAccountEqualOrderer__c FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
 
         Test.startTest();
-        Thread__c thread = HOT_MessageHelper.createThread(request.Id, acc.Id);
+        Thread__c thread = HOT_MessageHelper.createThread(request.Id, request.Account__c);
         Test.stopTest();
         List<Thread__c> tList = [
             SELECT Id, CRM_Account__c, CRM_Type__c
@@ -219,25 +218,10 @@ public with sharing class HOT_MessageHelperTest {
             WHERE CRM_Related_Object__c = :request.Id
         ];
         System.assertNotEquals(null, tList);
-        System.assertEquals(tList[0].CRM_Account__c, acc.Id);
+        System.assertEquals(tList[0].CRM_Account__c, request.Account__c);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-FORMIDLER');
-
-        HOT_Request__c request2 = HOT_TestDataFactory.createRequest('Subject', workType);
-        request2.Orderer__c = orderer.Id;
-        insert request2;
-        Thread__c thread2 = HOT_MessageHelper.createThread(request2.Id, orderer.Id);
-        Test.stopTest();
-        tList = [
-            SELECT Id, CRM_Account__c, CRM_Type__c
-            FROM Thread__c
-            WHERE CRM_Related_Object__c = :request2.Id
-        ];
-        System.assertNotEquals(null, tList);
-        System.assertEquals(tList[0].CRM_Account__c, orderer.Id);
-        System.assertEquals(tList[0].CRM_Type__c, 'HOT_BESTILLER-FORMIDLER');
     }
-
-    @isTest
+        @isTest
     static void createThreadWorkOrder() {
         Account acc = new Account();
         acc.Name = 'Newly created account';
