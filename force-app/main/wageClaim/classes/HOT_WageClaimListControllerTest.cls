@@ -11,9 +11,19 @@ private class HOT_WageClaimListControllerTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli=HOT_TestDataFactory.createWorkOrderLineItem(workOrder,workType);
+        insert woli;
+        ServiceAppointment sa=HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject='TEST';
+        insert sa;
 
         HOT_WageClaim__c wageClaim = HOT_TestDataFactory.createWageClaim(resource);
         wageClaim.WorkType__c = workType.Id;
+        wageClaim.ServiceAppointment__c=sa.Id;
         insert wageClaim;
         HOT_WageClaim__c wageClaim2 = HOT_TestDataFactory.createWageClaim(resource);
         wageClaim2.Status__c = 'Annul';

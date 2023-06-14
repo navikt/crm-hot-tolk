@@ -191,7 +191,9 @@ public without sharing class HOT_MessageHelper {
             WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = type;
-            thread.CRM_Account__c = accountId;
+            if(type=='HOT_BRUKER-TOLK'){
+                thread.CRM_Account__c = accountId;
+            }
             thread.HOT_WorkOrder__c=recordId;
             thread.HOT_Title__c=wo.Subject;
             HOT_DatabaseOperations.insertRecords(thread);

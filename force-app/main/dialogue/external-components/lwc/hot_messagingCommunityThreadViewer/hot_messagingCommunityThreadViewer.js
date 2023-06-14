@@ -119,9 +119,15 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             return '(Samtale med formidler)';
         }
         if (threadTypeValue === 'HOT_BRUKER-TOLK') {
-            this.helptextContent =
-                'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, NAV-ansatte tolker og eventuelt frilanstolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
-            return '(Samtale mellom tolker og bruker)';
+            if (this.isFreelance == true || this.navigationBaseList != '') {
+                this.helptextContent =
+                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, NAV-ansatte tolker og eventuelt frilanstolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                return '(Samtale mellom tolk og bruker)';
+            } else {
+                this.helptextContent =
+                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, NAV-ansatte tolker og eventuelt frilanstolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                return '(Samtale med tolk)';
+            }
         }
         if (threadTypeValue === 'HOT_BRUKER-BESTILLER') {
             this.helptextContent =
