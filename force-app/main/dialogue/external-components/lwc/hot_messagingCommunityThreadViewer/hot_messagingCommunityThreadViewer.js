@@ -80,7 +80,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         },
         {
             label: 'Mine samtaler som frilanstolk',
-            href: 'mine-samtaler-frilanstolk'
+            href: 's/mine-samtaler-frilanstolk'
         },
         {
             label: 'Min samtale',
