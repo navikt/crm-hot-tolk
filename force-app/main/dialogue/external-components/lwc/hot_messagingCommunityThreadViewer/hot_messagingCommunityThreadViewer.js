@@ -468,7 +468,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
         console.log(parsed_params.from);
-        if (parsed_params.from != 'mine-bestillinger' && parsed_params.from != 'mine-bestillinger-andre') {
+        if (
+            parsed_params.from != 'mine-bestillinger' &&
+            parsed_params.from != 'mine-bestillinger-andre' &&
+            parsed_params.from != 'mine-samtaler'
+        ) {
             this.recordId = parsed_params.recordId;
         }
         if (parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
