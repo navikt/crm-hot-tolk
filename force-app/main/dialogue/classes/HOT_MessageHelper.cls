@@ -211,13 +211,29 @@ public without sharing class HOT_MessageHelper {
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='ServiceAppointment'){ 
-            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE (ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Dispatched' AND Status__c='Assigned') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled by Interpreter')OR (ServiceAppointment__c=:recordId AND Status__c='Cannot Complete') OR (ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Completed' AND Status__c='Assigned')];
-            thread.CRM_Related_Object__c = recordId;
-            thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
-            thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
-            thread.HOT_ServiceAppointment__c=recordId;
-            thread.HOT_Title__c=ir.ServiceAppointment__r.Subject;
-            HOT_DatabaseOperations.insertRecords(thread);
+            List<HOT_InterestedResource__c> irList=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE (ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Dispatched' AND Status__c='Assigned') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled by Interpreter')OR (ServiceAppointment__c=:recordId AND Status__c='Cannot Complete') OR (ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Completed' AND Status__c='Assigned')];
+            if (irList.isEmpty()) {
+                //=Ansatt-tolk
+                AssignedResource ar=[SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE ServiceAppointmentId=:recordId];
+                ServiceResource sr=[SELECT Id, AccountId FROM ServiceResource WHERE Id=:ar.ServiceResourceId];
+                ServiceAppointment sa=[SELECT Id, Subject FROM ServiceAppointment WHERE Id=:ar.ServiceAppointmentId];
+                thread.CRM_Related_Object__c = recordId;
+                thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+                thread.CRM_Account__c = sr.AccountId;
+                thread.HOT_IsEmployeeThread__c=true;
+                thread.HOT_ServiceAppointment__c=recordId;
+                thread.HOT_Title__c=sa.Subject;
+                HOT_DatabaseOperations.insertRecords(thread);
+
+            } else {
+                 thread.CRM_Related_Object__c = recordId;
+                 thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+                 thread.CRM_Account__c = irList[0].ServiceResource__r.AccountId;
+                 thread.HOT_ServiceAppointment__c=recordId;
+                 thread.HOT_Title__c=irList[0].ServiceAppointment__r.Subject;
+                 HOT_DatabaseOperations.insertRecords(thread);
+             }
+            
         }
          if(objectType=='HOT_InterestedResource__c'){
             HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:recordId AND Status__c!='Assigned' AND Status__c!='Canceled' AND Status__c!='Canceled by Interpreter'];
