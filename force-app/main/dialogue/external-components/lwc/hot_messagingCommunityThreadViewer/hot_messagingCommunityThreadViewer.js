@@ -501,19 +501,19 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             if (parsed_params.list == 'interested') {
                 this.breadcrumbs[1] = {
                     label: 'Påmeldte oppdrag',
-                    href: 'tolketjenesten/s/mine-oppdrag?list=' + parsed_params.list
+                    href: 's/mine-oppdrag?list=' + parsed_params.list
                 };
             }
             if (parsed_params.list == 'my') {
                 this.breadcrumbs[1] = {
                     label: 'Mine oppdrag',
-                    href: 'tolketjenesten/s/mine-oppdrag?list=' + parsed_params.list
+                    href: 's/mine-oppdrag?list=' + parsed_params.list
                 };
             }
             if (parsed_params.list == 'wageClaim') {
                 this.breadcrumbs[1] = {
                     label: 'Ledig på lønn',
-                    href: 'tolketjenesten/s/mine-oppdrag?list=' + parsed_params.list
+                    href: 's/mine-oppdrag?list=' + parsed_params.list
                 };
             }
         } else {
