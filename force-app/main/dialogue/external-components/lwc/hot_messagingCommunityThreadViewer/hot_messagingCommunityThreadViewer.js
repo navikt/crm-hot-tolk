@@ -467,7 +467,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     navigationBaseList = '';
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
-        console.log(parsed_params.from);
         if (
             parsed_params.from != 'mine-bestillinger' &&
             parsed_params.from != 'mine-bestillinger-andre' &&
@@ -497,7 +496,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             this.navigationBaseUrl = 'mine-samtaler-frilanstolk';
             this.isFreelance = true;
         } else if (parsed_params.list !== undefined) {
-            console.log('listen er :' + parsed_params.list);
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = parsed_params.recordId;
             this.navigationBaseList = parsed_params.list;
