@@ -467,6 +467,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     navigationBaseList = '';
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
+        console.log(parsed_params.from);
+        if (parsed_params.from != 'mine-bestillinger' && parsed_params.from != 'mine-bestillinger-andre') {
+            this.recordId = parsed_params.recordId;
+        }
         if (parsed_params.recordId !== undefined && parsed_params.level !== undefined) {
             if (parsed_params.from != 'mine-bestillinger-andre') {
                 this.navigationBaseUrl = parsed_params.from;
@@ -489,6 +493,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             this.navigationBaseUrl = 'mine-samtaler-frilanstolk';
             this.isFreelance = true;
         } else if (parsed_params.list !== undefined) {
+            console.log('listen er :' + parsed_params.list);
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = parsed_params.recordId;
             this.navigationBaseList = parsed_params.list;
@@ -496,19 +501,19 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             if (parsed_params.list == 'interested') {
                 this.breadcrumbs[1] = {
                     label: 'Påmeldte oppdrag',
-                    href: 'mine-oppdrag?list=' + parsed_params.list
+                    href: 'tolketjenesten/s/mine-oppdrag?list=' + parsed_params.list
                 };
             }
             if (parsed_params.list == 'my') {
                 this.breadcrumbs[1] = {
                     label: 'Mine oppdrag',
-                    href: 'mine-oppdrag?list=' + parsed_params.list
+                    href: 'tolketjenesten/s/mine-oppdrag?list=' + parsed_params.list
                 };
             }
             if (parsed_params.list == 'wageClaim') {
                 this.breadcrumbs[1] = {
                     label: 'Ledig på lønn',
-                    href: 'mine-oppdrag?list=' + parsed_params.list
+                    href: 'tolketjenesten/s/mine-oppdrag?list=' + parsed_params.list
                 };
             }
         } else {

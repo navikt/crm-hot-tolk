@@ -292,17 +292,14 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         this.updateURL();
     }
     navigateToThread(recordId) {
+        const baseUrl = '/tolketjenesten/s/samtale-frilans';
+        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=interested&interestedRecordId=${this.interestedResource.Id}`;
+        const url = `${baseUrl}?${attributes}`;
+
         this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
+            type: 'standard__webPage',
             attributes: {
-                recordId: recordId,
-                objectApiName: 'Thread__c',
-                actionName: 'view'
-            },
-            state: {
-                from: 'mine-oppdrag',
-                list: 'interested',
-                recordId: this.interestedResource.Id
+                url: url
             }
         });
     }

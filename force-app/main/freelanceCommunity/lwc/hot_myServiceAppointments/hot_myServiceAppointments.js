@@ -260,22 +260,19 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             }
         ];
     }
-
     navigateToThread(recordId) {
+        const baseUrl = '/tolketjenesten/s/samtale-frilans';
+        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=my`;
+        const url = `${baseUrl}?${attributes}`;
+
         this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
+            type: 'standard__webPage',
             attributes: {
-                recordId: recordId,
-                objectApiName: 'Thread__c',
-                actionName: 'view'
-            },
-            state: {
-                recordId: recordId,
-                from: 'mine-oppdrag',
-                list: 'my'
+                url: url
             }
         });
     }
+
     goToThreadFreelance() {
         this.isGoToThreadButtonDisabled = true;
         getThreadFreelanceId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
