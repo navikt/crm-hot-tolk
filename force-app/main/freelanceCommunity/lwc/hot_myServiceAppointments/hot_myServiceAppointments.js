@@ -261,7 +261,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         ];
     }
     navigateToThread(recordId) {
-        const baseUrl = '/tolketjenesten/s/samtale-frilans';
+        const baseUrl = '/samtale-frilans';
         const attributes = `recordId=${recordId}&from=mine-oppdrag&list=my`;
         const url = `${baseUrl}?${attributes}`;
 

@@ -166,7 +166,7 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         });
     }
     navigateToThread(recordId) {
-        const baseUrl = '/tolketjenesten/s/samtale-frilans';
+        const baseUrl = '/samtale-frilans';
         const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaim`;
         const url = `${baseUrl}?${attributes}`;
 
