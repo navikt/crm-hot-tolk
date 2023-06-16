@@ -175,15 +175,14 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
         this.updateTabStyle();
     }
     openThread(event) {
+        const baseUrl = '/samtale-frilans';
+        const attributes = `recordId=${event.detail.Id}&from=mine-samtaler-frilanstolk`;
+        const url = `${baseUrl}?${attributes}`;
+
         this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
+            type: 'standard__webPage',
             attributes: {
-                recordId: event.detail.Id,
-                objectApiName: 'Thread__c',
-                actionName: 'view'
-            },
-            state: {
-                from: 'mine-samtaler-frilanstolk'
+                url: url
             }
         });
     }

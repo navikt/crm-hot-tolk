@@ -656,7 +656,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                     this.threadDispatcherId = result;
                     this.navigateToThread(this.threadDispatcherId);
                 } else {
-                    createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
+                    createThread({ recordId: this.request.Id, accountId: this.request.Orderer__c })
                         .then((result) => {
                             this.navigateToThread(result.Id);
                             refreshApex(this.wiredgetWorkOrdersResult);
