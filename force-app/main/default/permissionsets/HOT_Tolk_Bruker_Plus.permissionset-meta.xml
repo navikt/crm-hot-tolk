@@ -544,6 +544,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Thread__c.HOT_IsEmployeeThread__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Thread__c.HOT_Last_message_from__c</field>
         <readable>true</readable>
     </fieldPermissions>
