@@ -81,6 +81,13 @@
                             >
                             </c-button>
                         </div>
+                        <div if:true={isflow} class="flow-container">
+                            <lightning-flow
+                                flow-api-name="HOT_ChangeServiceAppointmentStatus"
+                                flow-input-variables={flowVariables}
+                                onstatuschange={handleStatusChange}
+                            ></lightning-flow>
+                        </div>
                         <p>Samtale med:</p>
                         <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
                             <c-button
@@ -111,13 +118,6 @@
                                 disabled={isGoToThreadServiceAppointmentButtonDisabled}
                             >
                             </c-button>
-                        </div>
-                        <div if:true={isflow} class="flow-container">
-                            <lightning-flow
-                                flow-api-name="HOT_ChangeServiceAppointmentStatus"
-                                flow-input-variables={flowVariables}
-                                onstatuschange={handleStatusChange}
-                            ></lightning-flow>
                         </div>
                     </div>
                 </section>
