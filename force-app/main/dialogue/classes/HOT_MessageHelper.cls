@@ -133,7 +133,6 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=false)
     public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
-        Id account;
         String objectType=String.valueOf(recordId.getsobjecttype());
         if(objectType=='WorkOrder'){
             WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
@@ -151,14 +150,14 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Related_Object__c = recordId;
             if(request.IsAccountEqualOrderer__c==false && request.Orderer__c==currentUser.AccountId){
                 thread.CRM_Thread_Type__c = 'HOT_BESTILLER-FORMIDLER';
-                account = request.Orderer__c;
+                accountId = request.Orderer__c;
                 thread.HOT_Request__c=recordId;
             }
             else{
                  thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
                  thread.HOT_Request__c=recordId;
             }
-            thread.CRM_Account__c = account;
+            thread.CRM_Account__c = accountId;
             thread.HOT_Title__c=request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
