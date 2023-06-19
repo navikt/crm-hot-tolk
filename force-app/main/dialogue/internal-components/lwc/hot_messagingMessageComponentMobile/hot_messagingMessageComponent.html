@@ -1,0 +1,137 @@
+<template>
+    <template if:true={noAssignedResource}>
+        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+            <span class="slds-assistive-text">Advarsel</span>
+            <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
+            </lightning-icon>
+            <span>Du må tildele en interessert ressurs dette oppdraget før du kan starte samtale.</span>
+        </div>
+    </template>
+    <template if:true={interestedResourceIsAssigned}>
+        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+            <span class="slds-assistive-text">Advarsel</span>
+            <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
+            </lightning-icon>
+            <span>Tolk er tildelt oppdraget. Se/start samtalen med tolk inne på Oppdraget</span>
+        </div>
+    </template>
+    <template if:true={noThreadExist}>
+        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+            <span class="slds-assistive-text">Advarsel</span>
+            <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
+            </lightning-icon>
+            <span>Det finnes ingen samtale mellom bruker og bestiller. Du kan ikke starte denne typen samtale.</span>
+        </div>
+    </template>
+    <lightning-card
+        class="slds--sds-c-card-shadow"
+        variant="Narrow"
+        title={cardTitle}
+        icon-name="standard:messaging_user"
+    >
+        <div class="slds-is-relative" style="min-height: 2em">
+            <!-- Singlethread true - WIll only ever be one thread in the iteration-->
+            <lightning-spinner
+                if:true={showSpinner}
+                alternative-text="Laster samtalekomponent"
+                size="medium"
+                variant="brand"
+            ></lightning-spinner>
+            <div
+                if:true={hasError}
+                class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
+                role="alert"
+            >
+                <lightning-layout vertical-align="center">
+                    <lightning-icon icon-name="utility:error" size="x-small" variant="inverse"></lightning-icon>
+                    <span class="slds-assistive-text">Feil</span>
+                    <h2 class="slds-p-left_small" style="margin-top: auto; margin-bottom: auto">
+                        Feil: {errorMessage}
+                    </h2>
+                </lightning-layout>
+            </div>
+            <div>
+                <template if:true={showOrderThreadbutton}>
+                    <lightning-button
+                        label="Snakke med bestiller"
+                        variant="border-filled"
+                        slot="actions"
+                        onclick={goToThreadTypeOrderer}
+                    ></lightning-button>
+                </template>
+                <template if:true={showUserThreadbutton}>
+                    <lightning-button
+                        label="Snakke med bruker"
+                        variant="border-filled"
+                        slot="actions"
+                        onclick={goToThreadTypeUser}
+                    ></lightning-button>
+                </template>
+                <!-- <template if:true={showUserOrdererThreadbutton}>
+                    <lightning-button
+                        label="Samtale mellom bruker og bestiller"
+                        variant="border-filled"
+                        slot="actions"
+                        onclick={goToThreadTypeUserOrderer}
+                    ></lightning-button>
+                </template> -->
+                <!--  -->
+                <template if:true={showUserInterpreterThreadbutton}>
+                    <lightning-button
+                        label="Samtale mellom bruker og tolk"
+                        variant="border-filled"
+                        slot="actions"
+                        onclick={goToThreadTypeUserInterpreter}
+                    ></lightning-button>
+                </template>
+                <template if:true={showInterpreterInterpreterThreadbutton}>
+                    <lightning-button
+                        label="Samtale mellom medtolker"
+                        variant="border-filled"
+                        slot="actions"
+                        onclick={goToThreadTypeInterpreterInterpreter}
+                    ></lightning-button>
+                </template>
+
+                <!--  -->
+                <template lwc:if={ThreadInfo}>
+                    <span class="slds-badge slds-theme_success">{ThreadInfo}</span>
+                </template>
+                <template lwc:if={showAccountName}>
+                    <span class="slds-badge slds-theme_success">{accountName}</span>
+                </template>
+                <br /><br />
+                <div if:true={showButtonDiv}>
+                    <template if:true={shownewbutton}>
+                        <lightning-button
+                            label={buttonMessage}
+                            icon-name="utility:anywhere_chat"
+                            variant="border-filled"
+                            slot="actions"
+                            class="slds-align_absolute-center"
+                            onclick={handlenewpressed}
+                        ></lightning-button>
+                    </template>
+                </div>
+            </div>
+            <div>
+                <div if:true={showThreads}>
+                    <template for:each={threads} for:item="thread">
+                        <c-hot_messaging-thread-Viewer
+                            onenglishevent={handleEnglishEvent}
+                            english-text-template={englishTextTemplate}
+                            key={thread.Id}
+                            text-template={textTemplate}
+                            thread={thread}
+                            show-close={showClose}
+                        >
+                            <div slot="toolbar">
+                                <slot name="toolbar"></slot>
+                            </div>
+                        </c-hot_messaging-thread-Viewer>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>
