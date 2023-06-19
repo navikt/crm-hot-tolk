@@ -67,13 +67,13 @@ public without sharing class HOT_ThreadListController {
             workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);
         }
     }
-    
         List<Thread__c> threads = [
             SELECT Id, HOT_Subject__c, CRM_Type__c, HOT_IsEmployeeThread__c, CRM_Related_Object__c, CRM_Number_of_unread_Messages__c, HOT_Thread_read_by__c, HOT_Last_message_from__c, CRM_Registered_Datetime_Formula__c, CRM_Latest_Message_Datetime__c
             FROM Thread__c 
-            WHERE (CRM_Related_Object__c IN :workOrderIds AND CRM_Number_of_Messages__c > 0 AND HOT_IsEmployeeThread__c=false AND HOT_IsDone__c=false) OR (CRM_Account__c = :user.AccountId AND CRM_Type__c = 'HOT_TOLK-FORMIDLER' AND CRM_Number_of_Messages__c > 0 AND HOT_IsEmployeeThread__c=false AND HOT_IsDone__c=false) OR (CRM_Account__c = :user.AccountId AND CRM_Type__c = 'HOT_TOLK-RESSURSKONTOR' AND HOT_IsEmployeeThread__c=false AND CRM_Number_of_Messages__c > 0)
+            WHERE (CRM_Related_Object__c IN :workOrderIds AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false) OR (CRM_Account__c = :user.AccountId AND CRM_Type__c = 'HOT_TOLK-FORMIDLER' AND CRM_Number_of_Messages__c > 0 AND HOT_IsDone__c=false) OR (CRM_Account__c = :user.AccountId AND CRM_Type__c = 'HOT_TOLK-RESSURSKONTOR' AND CRM_Number_of_Messages__c > 0)
              ORDER BY CRM_Number_of_unread_Messages__c DESC, CRM_Registered_Datetime_Formula__c DESC
         ];
+        
 
         return threads;
     }
