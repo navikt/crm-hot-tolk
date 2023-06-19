@@ -215,11 +215,11 @@ public without sharing class HOT_MessageHelper {
             if (irList.isEmpty()) {
                 //=Ansatt-tolk
                 AssignedResource ar=[SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE ServiceAppointmentId=:recordId];
-                ServiceResource sr=[SELECT Id, AccountId FROM ServiceResource WHERE Id=:ar.ServiceResourceId];
+                //ServiceResource sr=[SELECT Id, AccountId FROM ServiceResource WHERE Id=:ar.ServiceResourceId];
                 ServiceAppointment sa=[SELECT Id, Subject FROM ServiceAppointment WHERE Id=:ar.ServiceAppointmentId];
                 thread.CRM_Related_Object__c = recordId;
                 thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
-                thread.CRM_Account__c = sr.AccountId;
+                //thread.CRM_Account__c = sr.AccountId;
                 thread.HOT_IsEmployeeThread__c=true;
                 thread.HOT_ServiceAppointment__c=recordId;
                 thread.HOT_Title__c=sa.Subject;
