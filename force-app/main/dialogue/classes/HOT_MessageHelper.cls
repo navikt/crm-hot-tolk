@@ -150,6 +150,7 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Related_Object__c = recordId;
             if(request.IsAccountEqualOrderer__c==false && request.Orderer__c==currentUser.AccountId){
                 thread.CRM_Thread_Type__c = 'HOT_BESTILLER-FORMIDLER';
+                accountId = request.Orderer__c;
                 thread.HOT_Request__c=recordId;
             }
             else{
@@ -200,12 +201,7 @@ public without sharing class HOT_MessageHelper {
             HOT_Request__c request=[SELECT Subject__c, IsAccountEqualOrderer__c, Orderer__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = type;
-            if(type=='HOT_BRUKER-FORMIDLER'){
-                thread.CRM_Account__c = accountId;
-            }
-            else{
-                 thread.CRM_Account__c = request.Orderer__c;
-            }
+            thread.CRM_Account__c = type == 'HOT_BESTILLER-FORMIDLER' ? request.Orderer__c : accountId;
             thread.HOT_Request__c=recordId;
             thread.HOT_Title__c=request.Subject__c;
             HOT_DatabaseOperations.insertRecords(thread);
