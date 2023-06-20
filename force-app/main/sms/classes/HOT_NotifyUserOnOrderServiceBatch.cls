@@ -11,13 +11,13 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
             horizonDate = Date.today().addDays(4);
         }
         String query = 'SELECT ';
-        query += 'Id, Account__r.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate, Account__r.CRM_Person__r.HOT_NotificationChannel__c ';
+        query += 'Id, Account__c, Account__r.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate, Account__r.CRM_Person__r.HOT_NotificationChannel__c ';
         query += 'FROM HOT_Request__c ';
         query += 'WHERE Status = \'Godkjent\' ';
-        query += 'AND Account__r.CRM_Person__r.INT_KrrMobilePhone__c != null ';
+        query += 'AND (Account__r.CRM_Person__r.INT_KrrMobilePhone__c != null ';
+        query += 'AND Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\') ';
+        query += 'OR Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\' ';
         query += 'AND Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE ';
-        query += 'AND (Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\' ';
-        query += 'OR Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\') ';
         query += 'AND HOT_Request__r.IsNotNotifyAccount__c = FALSE ';  
         query += 'AND IsNotifyUserOnOrder__c = TRUE'; 
 
@@ -25,8 +25,8 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
     }
 
     public void execute(Database.BatchableContext bc, List<HOT_Request__c> records) {
-        List<WorkOrder> workorderListPush = new List<WorkOrder>();
-        List<WorkOrder> workorderListSMS = new List<WorkOrder>();
+        List<HOT_Request__c> pushNotifications = new List<HOT_Request__c>();
+        List<HOT_Request__c> smsNotifications = new List<HOT_Request__c>();
         List<Id> accountIds = new List<Id>();
 
         CustomNotificationType notificationTypePush = [
@@ -35,12 +35,12 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
 
-        for (WorkOrder wo : records) {
-            if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('SMS')) {
-                workorderListSMS.add(wo);
+        for (HOT_Request__c request : records) {
+            if (request.Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('SMS')) {
+                smsNotifications.add(request);
             } else {
-                workorderListPush.add(wo);
-                accountIds.add(wo.AccountId);
+                pushNotifications.add(request);
+                accountIds.add(request.Account__r.Id);
             }
         }
 
@@ -51,20 +51,20 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
         }
 
         try {
-            if (!workorderListSMS.isEmpty()) {
-                HOT_ReminderSMSService.reminderSMS(records);
+            if (!smsNotifications.isEmpty()) {
+                //HOT_ReminderSMSService.reminderSMS(records);
             }
 
-            if (!workorderListPush.isEmpty()) {
-                for (WorkOrder wo : workorderListPush) {
-                    if (userIdByAccountId.get(wo.AccountId) != null) {
+            if (!pushNotifications.isEmpty()) {
+                for (HOT_Request__c request : pushNotifications) {
+                    if (userIdByAccountId.get(request.Account__r.Id) != null) {
                         Set<String> recipients = new Set<String>();
-                        recipients.add(userIdByAccountId.get(wo.AccountId));
-                        HOT_UserNotificationService.reminderNotification(notificationTypePush, wo, recipients);
-                        wo.HOT_IsReminderSMSSendt__c = true;
+                        recipients.add(userIdByAccountId.get(request.Account__r.Id));
+                        HOT_UserNotificationService.newWorkOrderNotification(notificationTypePush, wo, recipients);
+                        request.IsNotifyUserOnOrder__c = false;
                     }
                 }
-                HOT_DatabaseOperations.updateRecords(workorderListPush);
+                HOT_DatabaseOperations.updateRecords(pushNotifications);
             }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
@@ -74,10 +74,10 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
     }
 
     public void finish(Database.BatchableContext bc) {
-        Long minutes = HOT_Utility.getMinutesUntilNextReminderSMSBatch();
+        Long minutes = HOT_Utility.getMinutesUntilNextSMSBatch();
         if (!Test.isRunningTest()) {
             try {
-                System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', (Integer) minutes, 10);
+                System.scheduleBatch(new HOT_NotifyUserOnOrderServiceBatch(), 'HOT_NotifyUserOnOrderServiceBatch', (Integer) minutes, 10);
             } catch (Exception e) {
                 LoggerUtility logger = new LoggerUtility();
                 logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
