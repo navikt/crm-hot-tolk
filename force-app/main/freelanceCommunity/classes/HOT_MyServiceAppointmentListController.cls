@@ -54,7 +54,9 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 Description,
                 HOT_RequestNumber__c,
                 HOT_IsSerieoppdrag__c,
-                HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c
+                HOT_Request__r.Account__r.Name,
+                HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c
             FROM ServiceAppointment
             WHERE Id=:recordId
         ];

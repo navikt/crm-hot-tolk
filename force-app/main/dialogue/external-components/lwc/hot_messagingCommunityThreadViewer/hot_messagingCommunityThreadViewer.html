@@ -35,6 +35,14 @@
                     <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
                     <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
                     <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
+                    <p>
+                        Navn til bruker:
+                        <span> {serviceAppointment.HOT_Request__r.Account__r.Name}</span>
+                    </p>
+                    <p>
+                        Telefonnummer til bruker:
+                        <span> {serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c}</span>
+                    </p>
                     <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
                     <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
                     <p>Status: <span>{serviceAppointment.Status}</span></p>
