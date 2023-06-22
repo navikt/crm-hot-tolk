@@ -168,6 +168,24 @@ public without sharing class HOT_MyServiceAppointmentListController {
         }
         return phoneNumber;
     }
+    @AuraEnabled
+    public static String getAccountPhonenumber(String serviceAppointmentId){
+        String phonenumber='';
+        ServiceAppointment sa=[SELECT HOT_Request__r.Account__r.Name, HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        if(sa.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c!=null){
+            phonenumber=sa.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+        }
+        return phoneNumber;
+    }
+    @AuraEnabled
+    public static String getAccountName(String serviceAppointmentId){
+        String name = '';
+        ServiceAppointment sa=[SELECT HOT_Request__r.Account__r.Name FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        if(sa.HOT_Request__r.Account__c!=null){
+            Name=sa.HOT_Request__r.Account__r.Name;
+        }
+        return Name;
+    }
      @AuraEnabled
     public static String getThreadInterpretersId(String serviceAppointmentId) {
          String Id='';
