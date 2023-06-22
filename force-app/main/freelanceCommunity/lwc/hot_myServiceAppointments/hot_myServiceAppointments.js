@@ -188,6 +188,9 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                 if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
                     this.isGoToThreadInterpretersButtonDisabled = true;
                 }
+                if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
+                    this.isGoToThreadButtonDisabled = true;
+                }
             }
         }
         this.updateURL();

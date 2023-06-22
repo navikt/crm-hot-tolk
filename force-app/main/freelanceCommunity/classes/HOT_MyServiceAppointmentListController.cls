@@ -109,6 +109,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_Dispatcher__c,
                 HOT_RequestNumber__c,
                 HOT_IsSerieoppdrag__c,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 (
                     SELECT Id, HOT_TermsOfAgreement__c
                     FROM ServiceAppointment.InterestedResources__r
