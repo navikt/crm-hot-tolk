@@ -133,8 +133,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
                 this.showAccountName = true;
-                event.preventDefault();
-                event.stopPropagation();
                 break;
             } else {
                 this.messageType = 'HOT_TOLK-TOLK';
@@ -159,8 +157,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
                 this.showAccountName = true;
-                event.preventDefault(); // prevent the default scroll behavior
-                event.stopPropagation();
                 break;
             } else {
                 this.messageType = 'HOT_BRUKER-TOLK';
@@ -184,8 +180,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
                 this.showAccountName = true;
-                event.preventDefault(); // prevent the default scroll behavior
-                event.stopPropagation();
                 break;
             } else {
                 this.messageType = 'HOT_BESTILLER-FORMIDLER';
@@ -209,8 +203,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
                 this.showAccountName = true;
-                event.preventDefault(); // prevent the default scroll behavior
-                event.stopPropagation();
                 break;
             } else {
                 this.messageType = 'HOT_BRUKER-FORMIDLER';
@@ -233,8 +225,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 this.singleThread = true;
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
-                event.preventDefault(); // prevent the default scroll behavior
-                event.stopPropagation();
                 break;
             } else {
                 this.messageType = 'HOT_BRUKER-BESTILLER';
