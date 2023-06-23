@@ -106,6 +106,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_Request__c> godkjentRequests = new List<HOT_Request__c>();
         List<Hot_Request__c> requestsWithNewSubject = new List<Hot_Request__c>();
+        List<Hot_Request__c> requestsWithUpdatedDispatcher = new List<Hot_Request__c>();
+
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Godkjent requests
@@ -115,6 +117,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (triggerOldMap.get(request.Id).get('Subject__c') !== request.Subject__c) {
                 requestsWithNewSubject.add(request);
             }
+            if (triggerOldMap.get(request.Id).get('Dispatcher__c') !== request.Dispatcher__c) {
+            requestsWithUpdatedDispatcher.add(request);
+            }
         }
         if (godkjentRequests.size() > 0) {
             createWOLI_SA(godkjentRequests);
@@ -122,8 +127,52 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (requestsWithNewSubject.size() > 0) {
             updateWorkOrderSubject(requestsWithNewSubject);
         }
+        if (requestsWithUpdatedDispatcher.size() > 0) {
+            for (Hot_Request__c request : requestsWithUpdatedDispatcher) {
+                updateDispatcherOnThread(request);
+        }
     }
+    }
+    //Når request Dispatcher endres eller legger til-> endre alle threads som har related=request, sa, wo, ir
+    public static void updateDispatcherOnThread(HOT_Request__c request){
 
+        //Finn potensielle WO
+        List<WorkOrder> workorders=[SELECT Id, HOT_Request__c FROM WorkOrder WHERE HOT_Request__c =:request.Id];
+        //Finn potensielle SA
+        List<ServiceAppointment> serviceAppointments=[SELECT Id, HOT_Request__c FROM ServiceAppointment WHERE HOT_Request__c =:request.Id];
+        //Finn potensielle IR
+        List<HOT_InterestedResource__c> interestedReources=[SELECT Id FROM HOT_InterestedResource__c WHERE ServiceAppointment__r.HOT_Request__c =: request.Id];
+        
+        Set<Id> woIds=new Set<Id>();
+        for(WorkOrder wo: workorders){
+            woIds.add(wo.Id);
+        }
+        Set<Id> saIds=new Set<Id>();
+        for(ServiceAppointment sa: serviceAppointments){
+            saIds.add(sa.Id);
+        }
+        Set<Id> irIds=new Set<Id>();
+        for(HOT_InterestedResource__c ir: interestedReources){
+            irIds.add(ir.Id);
+        }
+
+        Set<Id>allThreadIds=new Set<Id>();
+
+        
+        List<Thread__c> threadList=[SELECT Id FROM Thread__c WHERE CRM_Related_Object__c =:request.Id OR CRM_Related_Object__c IN:woIds OR CRM_Related_Object__c IN: saIds OR CRM_Related_Object__c IN: irIds];
+            
+        if(threadList.size()>0){
+            for(Thread__c thread: threadList){
+                thread.HOT_Dispatcher__c=request.Dispatcher__c;
+            }
+            update threadList;
+        }     
+    
+    
+        
+        
+
+    }
     private static void updateWorkOrderSubject(List<HOT_Request__c> requestsWithNewSubject) {
         List<WorkOrder> workOrders = [
             SELECT Id, Subject, HOT_Request__r.Subject__c
