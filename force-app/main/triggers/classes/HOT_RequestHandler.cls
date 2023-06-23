@@ -133,14 +133,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
     }
-    //Når request Dispatcher endres eller legger til-> endre alle threads som har related=request, sa, wo, ir
     public static void updateDispatcherOnThread(HOT_Request__c request){
-
-        //Finn potensielle WO
         List<WorkOrder> workorders=[SELECT Id, HOT_Request__c FROM WorkOrder WHERE HOT_Request__c =:request.Id];
-        //Finn potensielle SA
         List<ServiceAppointment> serviceAppointments=[SELECT Id, HOT_Request__c FROM ServiceAppointment WHERE HOT_Request__c =:request.Id];
-        //Finn potensielle IR
         List<HOT_InterestedResource__c> interestedReources=[SELECT Id FROM HOT_InterestedResource__c WHERE ServiceAppointment__r.HOT_Request__c =: request.Id];
         
         Set<Id> woIds=new Set<Id>();
@@ -157,7 +152,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
 
         Set<Id>allThreadIds=new Set<Id>();
-
         
         List<Thread__c> threadList=[SELECT Id FROM Thread__c WHERE CRM_Related_Object__c =:request.Id OR CRM_Related_Object__c IN:woIds OR CRM_Related_Object__c IN: saIds OR CRM_Related_Object__c IN: irIds];
             
@@ -167,11 +161,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
             update threadList;
         }     
-    
-    
-        
-        
-
     }
     private static void updateWorkOrderSubject(List<HOT_Request__c> requestsWithNewSubject) {
         List<WorkOrder> workOrders = [
