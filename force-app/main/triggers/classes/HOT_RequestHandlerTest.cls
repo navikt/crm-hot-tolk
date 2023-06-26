@@ -556,6 +556,7 @@ private class HOT_RequestHandlerTest {
             System.AssertEquals(expectedException, true);
         }
     }
+    
     @isTest
     public static void dispatcherOnThreadChangeRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
