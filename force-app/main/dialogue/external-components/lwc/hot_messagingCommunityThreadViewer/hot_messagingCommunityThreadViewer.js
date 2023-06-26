@@ -1,7 +1,6 @@
 import { LightningElement, wire, api, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
-import checkAccess from '@salesforce/apex/HOT_ThreadListController.checkAccess';
 import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
 import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRead';
 import { refreshApex } from '@salesforce/apex';
@@ -96,24 +95,12 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @wire(getThreadDetails, { recordId: '$recordId' })
     wirethreadss(result) {
         if (result.data) {
-            checkAccess({ threadId: result.data.Id }).then((accessResult) => {
-                this.hasAccess = accessResult;
-                if (this.hasAccess == false) {
-                    this.thread = null;
-                    this.subject = null;
-                    this.threadType = null;
-                    this.threadRelatedObjectId = null;
-                    this.isclosed = null;
-                    this.showContent = false;
-                } else if (this.hasAccess == true) {
-                    this.thread = result.data;
-                    this.subject = this.thread.HOT_Subject__c;
-                    this.threadType = this.threadTypeName();
-                    this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
-                    this.isclosed = this.thread.CRM_Is_Closed__c;
-                    this.showContent = true;
-                }
-            });
+            this.thread = result.data;
+            this.subject = this.thread.HOT_Subject__c;
+            this.threadType = this.threadTypeName();
+            this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
+            this.isclosed = this.thread.CRM_Is_Closed__c;
+            this.showContent = true;
         }
     }
 
