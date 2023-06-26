@@ -135,18 +135,19 @@ public without sharing class HOT_MessageHelper {
         Thread__c thread = new Thread__c();
         String objectType=String.valueOf(recordId.getsobjecttype());
         if(objectType=='WorkOrder'){
-            WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
+            WorkOrder wo=[SELECT Subject, HOT_Request__r.Dispatcher__c FROM WorkOrder WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             thread.HOT_WorkOrder__c=recordId;
             thread.HOT_Title__c=wo.Subject;
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
             thread.CRM_Account__c = accountId;
             thread.HOT_WorkOrder__c=recordId;
+            thread.HOT_Dispatcher__c=wo.HOT_Request__r.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='HOT_Request__c'){
             User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            HOT_Request__c request=[SELECT Subject__c, IsAccountEqualOrderer__c, Orderer__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
+            HOT_Request__c request=[SELECT Subject__c, Dispatcher__c, IsAccountEqualOrderer__c, Orderer__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             if(request.IsAccountEqualOrderer__c==false && request.Orderer__c==currentUser.AccountId){
                 thread.CRM_Thread_Type__c = 'HOT_BESTILLER-FORMIDLER';
@@ -159,15 +160,17 @@ public without sharing class HOT_MessageHelper {
             }
             thread.CRM_Account__c = accountId;
             thread.HOT_Title__c=request.Subject__c;
+            thread.HOT_Dispatcher__c=request.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='ServiceAppointment'){
-            ServiceAppointment serviceAppointment=[SELECT Subject, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:recordId LIMIT 1];
+            ServiceAppointment serviceAppointment=[SELECT Subject, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId, HOT_Request__r.Dispatcher__c FROM ServiceAppointment WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
             thread.HOT_Title__c=serviceAppointment.Subject;
             thread.CRM_Account__c = serviceAppointment.HOT_Account__c; //?
             thread.HOT_ServiceAppointment__c=recordId;
+            thread.HOT_Dispatcher__c=serviceAppointment.HOT_Request__r.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='HOT_WageClaim__c'){
@@ -187,7 +190,7 @@ public without sharing class HOT_MessageHelper {
         Thread__c thread = new Thread__c();
         String objectType=String.valueOf(recordId.getsobjecttype());
         if(objectType=='WorkOrder'){
-            WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:recordId LIMIT 1];
+            WorkOrder wo=[SELECT Subject, HOT_Request__r.Dispatcher__c FROM WorkOrder WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = type;
             if(type=='HOT_BRUKER-TOLK'){
@@ -195,30 +198,34 @@ public without sharing class HOT_MessageHelper {
             }
             thread.HOT_WorkOrder__c=recordId;
             thread.HOT_Title__c=wo.Subject;
+            thread.HOT_Dispatcher__c=wo.HOT_Request__r.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='HOT_Request__c'){
-            HOT_Request__c request=[SELECT Subject__c, IsAccountEqualOrderer__c, Orderer__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
+            HOT_Request__c request=[SELECT Subject__c, Dispatcher__c, IsAccountEqualOrderer__c, Orderer__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = type;
             thread.CRM_Account__c = type == 'HOT_BESTILLER-FORMIDLER' ? request.Orderer__c : accountId;
             thread.HOT_Request__c=recordId;
             thread.HOT_Title__c=request.Subject__c;
+            thread.HOT_Dispatcher__c=request.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='ServiceAppointment'){ 
-            List<HOT_InterestedResource__c> irList=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE (ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Dispatched' AND Status__c='Assigned') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled by Interpreter')OR (ServiceAppointment__c=:recordId AND Status__c='Cannot Complete') OR (ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Completed' AND Status__c='Assigned')];
+            List<HOT_InterestedResource__c> irList=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId, ServiceAppointment__r.HOT_Request__r.Dispatcher__c FROM HOT_InterestedResource__c WHERE (ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Dispatched' AND Status__c='Assigned') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled') OR (ServiceAppointment__c=:recordId AND Status__c='Canceled by Interpreter')OR (ServiceAppointment__c=:recordId AND Status__c='Cannot Complete') OR (ServiceAppointment__c=:recordId AND ServiceAppointment__r.Status='Completed' AND Status__c='Assigned')];
             if (irList.isEmpty()) {
                 //=Ansatt-tolk
                 AssignedResource ar=[SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE ServiceAppointmentId=:recordId];
                 //ServiceResource sr=[SELECT Id, AccountId FROM ServiceResource WHERE Id=:ar.ServiceResourceId];
-                ServiceAppointment sa=[SELECT Id, Subject FROM ServiceAppointment WHERE Id=:ar.ServiceAppointmentId];
+                ServiceAppointment sa=[SELECT Id, Subject, HOT_Request__r.Dispatcher__c FROM ServiceAppointment WHERE Id=:ar.ServiceAppointmentId];
                 thread.CRM_Related_Object__c = recordId;
                 thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
                 //thread.CRM_Account__c = sr.AccountId;
+                thread.HOT_Dispatcher__c=sa.HOT_Request__r.Dispatcher__c;
                 thread.HOT_IsEmployeeThread__c=true;
                 thread.HOT_ServiceAppointment__c=recordId;
                 thread.HOT_Title__c=sa.Subject;
+                
                 HOT_DatabaseOperations.insertRecords(thread);
 
             } else {
@@ -227,17 +234,19 @@ public without sharing class HOT_MessageHelper {
                  thread.CRM_Account__c = irList[0].ServiceResource__r.AccountId;
                  thread.HOT_ServiceAppointment__c=recordId;
                  thread.HOT_Title__c=irList[0].ServiceAppointment__r.Subject;
+                 thread.HOT_Dispatcher__c=irList[0].ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
                  HOT_DatabaseOperations.insertRecords(thread);
              }
             
         }
          if(objectType=='HOT_InterestedResource__c'){
-            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:recordId AND Status__c!='Assigned' AND Status__c!='Canceled' AND Status__c!='Canceled by Interpreter'];
+            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId, ServiceAppointment__r.HOT_Request__r.Dispatcher__c FROM HOT_InterestedResource__c WHERE Id=:recordId AND Status__c!='Assigned' AND Status__c!='Canceled' AND Status__c!='Canceled by Interpreter'];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
             thread.HOT_InterestedResource__c=recordId;
             thread.HOT_Title__c=ir.ServiceAppointment__r.Subject;
+            thread.HOT_Dispatcher__c=ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
          if(objectType=='HOT_WageClaim__c'){
@@ -257,22 +266,24 @@ public without sharing class HOT_MessageHelper {
             Thread__c thread = new Thread__c();
             String objectType=String.valueOf(recordId.getsobjecttype());
         if(objectType=='HOT_InterestedResource__c'){
-            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:recordId];
+            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId, ServiceAppointment__r.HOT_Request__r.Dispatcher__c FROM HOT_InterestedResource__c WHERE Id=:recordId];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
             thread.HOT_InterestedResource__c=recordId;
             thread.HOT_Title__c=ir.ServiceAppointment__r.Subject;
+            thread.HOT_Dispatcher__c=ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if(objectType=='ServiceAppointment'){
             User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            ServiceAppointment sr=[SELECT Subject FROM ServiceAppointment WHERE Id=:recordId];
+            ServiceAppointment sr=[SELECT Subject, HOT_Request__r.Dispatcher__c FROM ServiceAppointment WHERE Id=:recordId];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = currentUser.AccountId;
             thread.HOT_ServiceAppointment__c=recordId;
             thread.HOT_Title__c=sr.Subject;
+            thread.HOT_Dispatcher__c=sr.HOT_Request__r.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         return thread;
@@ -280,24 +291,26 @@ public without sharing class HOT_MessageHelper {
      //Threads between user and orderer
       @AuraEnabled(cacheable=false)
     public static Thread__c createThreadOrdererUser(Id recordId) {
-            HOT_Request__c request=[SELECT Subject__c, IsAccountEqualOrderer__c, Account__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
+            HOT_Request__c request=[SELECT Subject__c, Dispatcher__c, IsAccountEqualOrderer__c, Account__c FROM HOT_Request__c WHERE Id=:recordId LIMIT 1];
             Thread__c thread = new Thread__c();
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_BRUKER-BESTILLER';
             thread.CRM_Account__c = request.Account__c;
             thread.HOT_Request__c=recordId;
             thread.HOT_Title__c=request.Subject__c;
+            thread.HOT_Dispatcher__c=request.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
         
         return thread;
     }
       @AuraEnabled(cacheable=false)
     public static Thread__c createThreadInterpreters(Id recordId) {
-            ServiceAppointment serviceAppointment=[SELECT Subject, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:recordId LIMIT 1];
+            ServiceAppointment serviceAppointment=[SELECT Subject, HOT_WorkOrderLineItem__r.WorkOrderId, HOT_Request__r.Dispatcher__c FROM ServiceAppointment WHERE Id=:recordId LIMIT 1];
             Thread__c thread = new Thread__c();
             thread.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-TOLK';
             thread.HOT_Title__c=serviceAppointment.Subject;
+            thread.HOT_Dispatcher__c=serviceAppointment.HOT_Request__r.Dispatcher__c;
             thread.HOT_WorkOrder__c=serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
             HOT_DatabaseOperations.insertRecords(thread);
         
