@@ -556,8 +556,6 @@ private class HOT_RequestHandlerTest {
             System.AssertEquals(expectedException, true);
         }
     }
-<<<<<<< Updated upstream
-=======
     @isTest
     public static void dispatcherOnThreadChangeRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -703,5 +701,4 @@ private class HOT_RequestHandlerTest {
         WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:workOrder.Id];
         System.AssertEquals('Ny subject', wo.Subject);
     }
->>>>>>> Stashed changes
 }
