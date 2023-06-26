@@ -685,4 +685,20 @@ private class HOT_RequestHandlerTest {
         Thread__c t=[SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id=:thread.Id];
         System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
     }
+    @isTest
+    public static void updateWorkOrderSubjectOnRequestChange() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        
+        Test.startTest();
+            request.Subject__c='Ny subject';
+            update request;
+        Test.stopTest();
+        WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:workOrder.Id];
+        System.AssertEquals('Ny subject', wo.Subject);
+    }
 }
