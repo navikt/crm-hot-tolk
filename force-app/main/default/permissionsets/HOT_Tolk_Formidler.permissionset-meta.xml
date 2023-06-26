@@ -358,6 +358,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.HOT_PersonContactId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.EconomicProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -983,6 +988,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>SMS__c.Thread__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>SMS__c.Type__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1559,6 +1569,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Thread__c.HOT_Dispatcher__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.HOT_IsEmployeeThread__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

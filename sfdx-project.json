@@ -8,15 +8,19 @@
             "default": true,
             "package": "crm-hot",
             "versionName": "ver 0.1",
-            "versionNumber": "1.219.0.NEXT",
+            "versionNumber": "1.220.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.192.0.LATEST"
+                    "versionNumber": "0.195.0.LATEST"
+                },
+                {
+                    "package": "crm-henvendelse-base",
+                    "versionNumber": "0.16.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.99.0.LATEST"
+                    "versionNumber": "0.100.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -29,10 +33,6 @@
                 {
                     "package": "crm-platform-reporting",
                     "versionNumber": "0.31.0.LATEST"
-                },
-                {
-                    "package": "crm-henvendelse-base",
-                    "versionNumber": "0.16.0.LATEST"
                 }
             ]
         },
@@ -44,11 +44,15 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.192.0.LATEST"
+                    "versionNumber": "0.195.0.LATEST"
+                },
+                {
+                    "package": "crm-henvendelse-base",
+                    "versionNumber": "0.16.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.99.0.LATEST"
+                    "versionNumber": "0.100.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -61,10 +65,6 @@
                 {
                     "package": "crm-platform-reporting",
                     "versionNumber": "0.31.0.LATEST"
-                },
-                {
-                    "package": "crm-henvendelse-base",
-                    "versionNumber": "0.16.0.LATEST"
                 }
             ]
         }

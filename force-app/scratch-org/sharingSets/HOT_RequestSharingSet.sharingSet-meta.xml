@@ -14,6 +14,12 @@
     </accessMappings>
     <accessMappings>
         <accessLevel>Edit</accessLevel>
+        <object>ServiceAppointment</object>
+        <objectField>Account</objectField>
+        <userField>Account</userField>
+    </accessMappings>
+    <accessMappings>
+        <accessLevel>Edit</accessLevel>
         <object>Thread__c</object>
         <objectField>CRM_Account__c</objectField>
         <userField>Account</userField>

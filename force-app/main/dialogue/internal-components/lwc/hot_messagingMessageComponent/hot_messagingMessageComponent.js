@@ -133,7 +133,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
                 this.showAccountName = true;
-                event.preventDefault(); // prevent the default scroll behavior
+                event.preventDefault();
                 event.stopPropagation();
                 break;
             } else {

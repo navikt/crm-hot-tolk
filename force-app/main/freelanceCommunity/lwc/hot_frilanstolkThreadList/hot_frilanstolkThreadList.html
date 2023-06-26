@@ -1,0 +1,91 @@
+<template>
+    <div class="brodsmulesti">
+        <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
+    </div>
+    <main class="mainContent">
+        <div class="thread-wrapper">
+            <div class="navigation-container">
+                <div if:false={isMobile} class="back-link-div">
+                    <a class="back-link" onclick={goBack}>
+                        <c-icon icon="Back"></c-icon>
+                        <p style="margin-left: 0.25rem">Tilbake</p>
+                    </a>
+                </div>
+                <h2 class="header">Mine samtaler som frilanstolk</h2>
+                <div if:true={isMobile} class="back-link-div">
+                    <a class="back-link" onclick={goBack}>
+                        <c-icon icon="Back"></c-icon>
+                        <p style="margin-left: 0.25rem">Tilbake</p>
+                    </a>
+                </div>
+                <div class="empty"></div>
+            </div>
+            <div class="tabset desktop-only">
+                <template for:each={tabs} for:item="tab">
+                    <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
+                        {tab.label} <c-icon if:true={tab.hasUnread} icon="Information"></c-icon>
+                    </button>
+                </template>
+            </div>
+            <div class="tabset mobile-only">
+                <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
+            </div>
+            <div if:true={showMythreads}>
+                <div class="record-details-container" if:false={noThreads}>
+                    <c-table
+                        records={threads}
+                        columns={columns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-table>
+                </div>
+                <div if:true={noThreads} style="text-align: center">
+                    <br />
+                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                </div>
+            </div>
+            <div if:true={showInterpreterthreads}>
+                <div class="record-details-container" if:false={noInterpreterThreads}>
+                    <c-table
+                        records={interpreterThreads}
+                        columns={columns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-table>
+                </div>
+                <div if:true={noInterpreterThreads} style="text-align: center">
+                    <br />
+                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                </div>
+            </div>
+            <div if:true={showWageClaimthreads}>
+                <div class="record-details-container" if:false={noWageClaimThreads}>
+                    <c-table
+                        records={wageClaimThreads}
+                        columns={columns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-table>
+                </div>
+                <div if:true={noWageClaimThreads} style="text-align: center">
+                    <br />
+                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                </div>
+            </div>
+            <div if:true={showInterpreterInterpreterThreads}>
+                <div class="record-details-container" if:false={noInterpreterInterpreterThreads}>
+                    <c-table
+                        records={interpreterInterpreterThreads}
+                        columns={columns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-table>
+                </div>
+                <div if:true={noInterpreterInterpreterThreads} style="text-align: center">
+                    <br />
+                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                </div>
+            </div>
+        </div>
+    </main>
+</template>

@@ -3,7 +3,7 @@ import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesList
 import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterest';
 import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
 import getThreadDispatcherIdSA from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherIdSA';
-import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsDuplicate';
+import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsIR';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
@@ -292,17 +292,14 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         this.updateURL();
     }
     navigateToThread(recordId) {
+        const baseUrl = '/samtale-frilans';
+        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=interested&interestedRecordId=${this.interestedResource.Id}`;
+        const url = `${baseUrl}?${attributes}`;
+
         this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
+            type: 'standard__webPage',
             attributes: {
-                recordId: recordId,
-                objectApiName: 'Thread__c',
-                actionName: 'view'
-            },
-            state: {
-                from: 'mine-oppdrag',
-                list: 'interested',
-                recordId: this.interestedResource.Id
+                url: url
             }
         });
     }

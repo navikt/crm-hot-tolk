@@ -54,7 +54,9 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 Description,
                 HOT_RequestNumber__c,
                 HOT_IsSerieoppdrag__c,
-                HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c
+                HOT_Request__r.Account__r.Name,
+                HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c
             FROM ServiceAppointment
             WHERE Id=:recordId
         ];
@@ -109,6 +111,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_Dispatcher__c,
                 HOT_RequestNumber__c,
                 HOT_IsSerieoppdrag__c,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 (
                     SELECT Id, HOT_TermsOfAgreement__c
                     FROM ServiceAppointment.InterestedResources__r
@@ -166,6 +169,24 @@ public without sharing class HOT_MyServiceAppointmentListController {
             phonenumber=sa.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
         }
         return phoneNumber;
+    }
+    @AuraEnabled
+    public static String getAccountPhonenumber(String serviceAppointmentId){
+        String phonenumber='';
+        ServiceAppointment sa=[SELECT HOT_Request__r.Account__r.Name, HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        if(sa.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c!=null){
+            phonenumber=sa.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+        }
+        return phoneNumber;
+    }
+    @AuraEnabled
+    public static String getAccountName(String serviceAppointmentId){
+        String name = '';
+        ServiceAppointment sa=[SELECT HOT_Request__r.Account__r.Name FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        if(sa.HOT_Request__r.Account__c!=null){
+            Name=sa.HOT_Request__r.Account__r.Name;
+        }
+        return Name;
     }
      @AuraEnabled
     public static String getThreadInterpretersId(String serviceAppointmentId) {

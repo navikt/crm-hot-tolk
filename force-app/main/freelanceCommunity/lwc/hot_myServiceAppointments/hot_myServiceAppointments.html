@@ -34,6 +34,8 @@
                             <p>Tid: <span>{serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
                             <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
                             <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
+                            <p>Navn til bruker: <span>{accountName}</span></p>
+                            <p>Telefonnummer til bruker: <span>{accountPhoneNumber}</span></p>
                             <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
                             <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
                             <p>Status: <span>{serviceAppointment.Status}</span></p>
@@ -81,12 +83,20 @@
                             >
                             </c-button>
                         </div>
+                        <div if:true={isflow} class="flow-container">
+                            <lightning-flow
+                                flow-api-name="HOT_ChangeServiceAppointmentStatus"
+                                flow-input-variables={flowVariables}
+                                onstatuschange={handleStatusChange}
+                            ></lightning-flow>
+                        </div>
+                        <p>Samtale med:</p>
                         <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
                             <c-button
                                 button-styling="Primary"
                                 type="Submit"
                                 onbuttonclick={goToThreadFreelance}
-                                button-label="Samtale med bruker"
+                                button-label="Bruker"
                                 disabled={isGoToThreadButtonDisabled}
                             >
                             </c-button>
@@ -97,7 +107,7 @@
                                 type="Submit"
                                 onbuttonclick={goToThreadInterpreters}
                                 disabled={isGoToThreadInterpretersButtonDisabled}
-                                button-label="Samtale med medtolker"
+                                button-label="Medtolker"
                             >
                             </c-button>
                         </div>
@@ -106,17 +116,10 @@
                                 button-styling="Primary"
                                 type="Submit"
                                 onbuttonclick={goToThreadServiceAppointment}
-                                button-label="Samtale med formidler"
+                                button-label="Formidler"
                                 disabled={isGoToThreadServiceAppointmentButtonDisabled}
                             >
                             </c-button>
-                        </div>
-                        <div if:true={isflow} class="flow-container">
-                            <lightning-flow
-                                flow-api-name="HOT_ChangeServiceAppointmentStatus"
-                                flow-input-variables={flowVariables}
-                                onstatuschange={handleStatusChange}
-                            ></lightning-flow>
                         </div>
                     </div>
                 </section>

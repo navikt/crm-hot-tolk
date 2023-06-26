@@ -5,11 +5,7 @@
                 <a class="panelMedBilde panelMedBilde-single" href={pageLinks.myServiceAppointments}>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
-                            <img
-                                style="height: 60%"
-                                src="/s/sfsites/c/resource/1590665878000/OppdragIkon"
-                                alt="Til mine oppdrag"
-                            />
+                            <img style="height: 60%" src={tasklistIcon} alt="Til mine oppdrag" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
@@ -24,19 +20,34 @@
                     </div>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
-                            <img src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
+                            <img src={rightArrowIcon} alt="" />
+                        </div>
+                    </div>
+                </a>
+                <a class="panelMedBilde panelMedBilde-single" href={pageLinks.freelanceMyThreads}>
+                    <div class="panelMedBilde__imageOnPanel-single">
+                        <div class="panelMedBilde__svgContainer-single">
+                            <img style="height: 60%" src={chatIcon} alt="Til mine samtaler som frilanstolk" />
+                        </div>
+                    </div>
+                    <div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
+                        <h2 class="typo-undertittel">Frilanstolk samtaler</h2>
+                        <div>
+                            <p class="typo-normal">
+                                <span> Se alle samtaler som angår dine oppdrag.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="panelMedBilde__imageOnPanel-single">
+                        <div class="panelMedBilde__svgContainer-single">
+                            <img src={rightArrowIcon} alt="" />
                         </div>
                     </div>
                 </a>
                 <a class="panelMedBilde panelMedBilde-single" href={pageLinks.freelanceMyPage}>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
-                            <lightning-icon
-                                icon-name="utility:user"
-                                alternative-text="Til frilanstolk min side"
-                                style="height: 60%"
-                                title="Min side frilanstolk"
-                            ></lightning-icon>
+                            <img style="height: 60%" src={personIcon} alt="Til frilanstolk min side" />
                         </div>
                     </div>
                     <div class="panel panelMedBilde__panelOnPanel panelMedBilde__panelOnPanel-single">
@@ -49,7 +60,7 @@
                     </div>
                     <div class="panelMedBilde__imageOnPanel-single">
                         <div class="panelMedBilde__svgContainer-single">
-                            <img src="/s/sfsites/c/resource/1590666405000/rightArrow" alt="" />
+                            <img src={rightArrowIcon} alt="" />
                         </div>
                     </div>
                 </a>

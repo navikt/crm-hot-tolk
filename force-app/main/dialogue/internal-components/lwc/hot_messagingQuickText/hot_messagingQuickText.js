@@ -272,39 +272,39 @@ export default class crmQuickText extends LightningElement {
             this.dispatchEvent(lockLang);
         }
 
-        if (event.keyCode === 32) {
-            const editor = this.textArea;
-            const carretPositionEnd = editor.selectionEnd;
-            const lastItem = editor.value
-                .substring(0, carretPositionEnd)
-                .replace(/(\r\n|\n|\r)/g, ' ')
-                .trim()
-                .split(' ')
-                .pop();
-            const abbreviation = lastItem.toUpperCase();
-            const obj = this.qmap.get(abbreviation);
-            const quickText = obj.message;
-            const isCaseSensitive = obj.isCaseSensitive;
+        // if (event.keyCode === 32) {
+        //     const editor = this.textArea;
+        //     const carretPositionEnd = editor.selectionEnd;
+        //     const lastItem = editor.value
+        //         .substring(0, carretPositionEnd)
+        //         .replace(/(\r\n|\n|\r)/g, ' ')
+        //         .trim()
+        //         .split(' ')
+        //         .pop();
+        //     const abbreviation = lastItem.toUpperCase();
+        //     const obj = this.qmap.get(abbreviation);
+        //     const quickText = obj.message;
+        //     const isCaseSensitive = obj.isCaseSensitive;
 
-            if (this.qmap.has(abbreviation)) {
-                const startindex = carretPositionEnd - lastItem.length - 1;
+        //     if (this.qmap.has(abbreviation)) {
+        //         const startindex = carretPositionEnd - lastItem.length - 1;
 
-                if (isCaseSensitive) {
-                    const words = quickText.split(' ');
+        //         if (isCaseSensitive) {
+        //             const words = quickText.split(' ');
 
-                    if (lastItem.charAt(0) === lastItem.charAt(0).toLowerCase()) {
-                        words[0] = words[0].toLowerCase();
-                        const lowerCaseQuickText = words.join(' ');
-                        editor.setRangeText(lowerCaseQuickText + ' ', startindex, carretPositionEnd, 'end');
-                    } else if (lastItem.charAt(0) === lastItem.charAt(0).toUpperCase()) {
-                        const upperCaseQuickText = quickText.charAt(0).toUpperCase() + quickText.slice(1);
-                        editor.setRangeText(upperCaseQuickText + ' ', startindex, carretPositionEnd, 'end');
-                    }
-                } else {
-                    editor.setRangeText(quickText + ' ', startindex, carretPositionEnd, 'end');
-                }
-            }
-        }
+        //             if (lastItem.charAt(0) === lastItem.charAt(0).toLowerCase()) {
+        //                 words[0] = words[0].toLowerCase();
+        //                 const lowerCaseQuickText = words.join(' ');
+        //                 editor.setRangeText(lowerCaseQuickText + ' ', startindex, carretPositionEnd, 'end');
+        //             } else if (lastItem.charAt(0) === lastItem.charAt(0).toUpperCase()) {
+        //                 const upperCaseQuickText = quickText.charAt(0).toUpperCase() + quickText.slice(1);
+        //                 editor.setRangeText(upperCaseQuickText + ' ', startindex, carretPositionEnd, 'end');
+        //             }
+        //         } else {
+        //             editor.setRangeText(quickText + ' ', startindex, carretPositionEnd, 'end');
+        //         }
+        //     }
+        // }
     }
 
     toPlainText(value) {

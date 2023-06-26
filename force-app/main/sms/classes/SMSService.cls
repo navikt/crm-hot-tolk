@@ -5,7 +5,8 @@ public with sharing class SMSService {
         Id accountId,
         Id workOrderId,
         String recipient,
-        String message
+        String message,
+        Id threadId
     ) {
         SMS__c sms = new SMS__c();
         sms.Domain__c = domain;
@@ -14,6 +15,7 @@ public with sharing class SMSService {
         sms.WorkOrder__c = workOrderId;
         sms.Recipient__c = recipient;
         sms.Message__c = message;
+        sms.Thread__c = threadId;
         return sms;
     }
 }

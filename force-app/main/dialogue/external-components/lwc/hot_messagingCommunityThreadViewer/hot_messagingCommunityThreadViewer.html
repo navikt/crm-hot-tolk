@@ -1,6 +1,9 @@
 <template>
-    <div class="brodsmulesti">
+    <div class="brodsmulesti" if:false={isFreelance}>
         <c-breadcrumbs url-list={breadcrumbs} num-pops="3"></c-breadcrumbs>
+    </div>
+    <div class="brodsmulesti" if:true={isFreelance}>
+        <c-breadcrumbs url-list={breadcrumbsFreelance} num-pops="3"></c-breadcrumbs>
     </div>
     <div class="back-link-div">
         <a class="back-link" onclick={goBack}>
@@ -32,6 +35,14 @@
                     <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
                     <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
                     <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
+                    <p>
+                        Navn til bruker:
+                        <span> {serviceAppointment.HOT_Request__r.Account__r.Name}</span>
+                    </p>
+                    <p>
+                        Telefonnummer til bruker:
+                        <span> {serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c}</span>
+                    </p>
                     <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
                     <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
                     <p>Status: <span>{serviceAppointment.Status}</span></p>
@@ -86,7 +97,7 @@
     </div>
     <div class="decorator-wrapper">
         <div class="header" style="text-align: center">
-            <h1 class="typo-sidetittel">{name} {threadType}</h1>
+            <h1 class="typo-sidetittel">{subject} {threadType}</h1>
             <slot name="subheader"></slot>
         </div>
         <c-hot_community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">

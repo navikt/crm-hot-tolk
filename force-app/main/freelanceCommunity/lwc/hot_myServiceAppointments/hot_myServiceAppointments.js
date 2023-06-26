@@ -2,6 +2,8 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
 import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import getOrdererInformation from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOrdererInformation';
+import getAccountPhonenumber from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountPhonenumber';
+import getAccountName from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountName';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
 import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
@@ -153,6 +155,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     @track serviceAppointment;
     @track interestedResource;
     @track ordererPhoneNumber;
+    @track accountPhoneNumber;
+    @track accountName;
     isDetails = false;
     isflow = false;
     isSeries = false;
@@ -164,6 +168,20 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             })
             .catch((error) => {
                 this.ordererPhoneNumber = '';
+            });
+        getAccountPhonenumber({ serviceAppointmentId: result.detail.Id })
+            .then((phonenumber) => {
+                this.accountPhoneNumber = phonenumber;
+            })
+            .catch((error) => {
+                this.accountPhoneNumber = '';
+            });
+        getAccountName({ serviceAppointmentId: result.detail.Id })
+            .then((name) => {
+                this.accountName = name;
+            })
+            .catch((error) => {
+                this.accountName = '';
             });
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
         this.template.querySelector('.serviceAppointmentDetails').focus();
@@ -187,6 +205,9 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                 }
                 if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
                     this.isGoToThreadInterpretersButtonDisabled = true;
+                }
+                if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
+                    this.isGoToThreadButtonDisabled = true;
                 }
             }
         }
@@ -260,22 +281,19 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             }
         ];
     }
-
     navigateToThread(recordId) {
+        const baseUrl = '/samtale-frilans';
+        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=my`;
+        const url = `${baseUrl}?${attributes}`;
+
         this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
+            type: 'standard__webPage',
             attributes: {
-                recordId: recordId,
-                objectApiName: 'Thread__c',
-                actionName: 'view'
-            },
-            state: {
-                recordId: recordId,
-                from: 'mine-oppdrag',
-                list: 'my'
+                url: url
             }
         });
     }
+
     goToThreadFreelance() {
         this.isGoToThreadButtonDisabled = true;
         getThreadFreelanceId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
@@ -346,6 +364,9 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
         this.recordId = undefined;
         this.updateURL();
+        this.isGoToThreadButtonDisabled = false;
+        this.isGoToThreadServiceAppointmentButtonDisabled = false;
+        this.isGoToThreadInterpretersButtonDisabled = false;
     }
     handleStatusChange(event) {
         console.log('handleStatusChange', event.detail);

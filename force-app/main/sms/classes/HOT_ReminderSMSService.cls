@@ -5,16 +5,25 @@ public without sharing class HOT_ReminderSMSService {
         List<SMS__c> smsList = new List<SMS__c>();
 
         for (WorkOrder workOrder : workOrders.values()) {
-            smsList.add(
-                SMSService.createSMSRecord(
-                    'HOT',
-                    '24 Hour Scheduled Reminder',
-                    workOrder.AccountId,
-                    workOrder.Id,
-                    workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c,
-                    constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id))
-                )
-            );
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = '24 Hour Scheduled Reminder';
+            sms.Account__c = workOrder.AccountId;
+            sms.WorkOrder__c = workOrder.Id;
+            sms.Recipient__c = workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Message__c = constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id));
+            smsList.add(sms);
+            // smsList.add(
+            //     SMSService.createSMSRecord(
+            //         'HOT',
+            //         '24 Hour Scheduled Reminder',
+            //         workOrder.AccountId,
+            //         workOrder.Id,
+            //         workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c,
+            //         constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id)),
+            //         ''
+            //     )
+            // );
             workOrder.HOT_IsReminderSMSSendt__c = true;
         }
         HOT_DatabaseOperations.insertRecords(smsList);
@@ -95,21 +104,58 @@ public without sharing class HOT_ReminderSMSService {
                 (workOrder.Status == 'Dispatched' ||
                 workOrder.Status == 'Cannot Complete')
             ) {
-                smsList.add(
-                    SMSService.createSMSRecord(
-                        'HOT',
-                        'Orderer On Status Update',
-                        workOrder.HOT_Request__r.Orderer__c,
-                        workOrder.Id,
-                        phoneNumber,
-                        constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id))
-                    )
-                );
+                SMS__c sms = new SMS__c();
+                sms.Domain__c = 'HOT';
+                sms.Type__c = 'Orderer On Status Update';
+                sms.Account__c = workOrder.HOT_Request__r.Orderer__c;
+                sms.WorkOrder__c = workOrder.Id;
+                sms.Recipient__c = phoneNumber;
+                sms.Message__c = constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id));
+                smsList.add(sms);
+                // smsList.add(
+                //     SMSService.createSMSRecord(
+                //         'HOT',
+                //         'Orderer On Status Update',
+                //         workOrder.HOT_Request__r.Orderer__c,
+                //         workOrder.Id,
+                //         phoneNumber,
+                //         constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id)),
+                //         ''
+                //     )
+                // );
             }
             workOrder.HOT_SendSMSNotificationOnStatusChanged__c = false;
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrderList);
+    }
+
+    @Future
+    public static void sendSMSOnNewMessage(Set<Id> threadIds) {
+        List<SMS__c> smsList = new List<SMS__c>();
+        List<Thread__c> threadList = [
+            SELECT CRM_Account__c, CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM Thread__c
+            WHERE Id IN :threadIds
+        ];
+
+        for (Thread__c thread : threadList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Message';
+            sms.Account__c = thread.CRM_Account__c;
+            sms.Thread__c = thread.Id;
+            sms.Recipient__c = thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Message__c = constructOnNewMessage();
+            smsList.add(sms);
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     @Future
@@ -129,16 +175,25 @@ public without sharing class HOT_ReminderSMSService {
         List<SMS__c> smsList = new List<SMS__c>();
 
         for (WorkOrder wo : workOrderList) {
-            smsList.add(
-            SMSService.createSMSRecord(
-                        'HOT',
-                        'Orderer On Status Update',
-                        wo.AccountId,
-                        wo.Id,
-                        wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
-                        constructOnOrdererMessage(wo)
-                    )
-            );
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Orderer On Status Update';
+            sms.Account__c = wo.AccountId;
+            sms.WorkOrder__c = wo.Id;
+            sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Message__c = constructOnOrdererMessage(wo);
+            smsList.add(sms);
+            // smsList.add(
+            //     SMSService.createSMSRecord(
+            //         'HOT',
+            //         'Orderer On Status Update',
+            //         wo.AccountId,
+            //         wo.Id,
+            //         wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
+            //         constructOnOrdererMessage(wo),
+            //         ''
+            //     )
+            // );
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -169,16 +224,25 @@ public without sharing class HOT_ReminderSMSService {
         List<SMS__c> smsList = new List<SMS__c>();
 
         for (WorkOrder wo : workOrderList) {
-            smsList.add(
-                SMSService.createSMSRecord(
-                            'HOT',
-                            'Orderer On Status Update',
-                            wo.HOT_Request__r.Orderer__c,
-                            wo.Id,
-                            getRecipient(wo),
-                            constructInterpreterChangedMessage(wo, interpreterName)
-                        )
-                );
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Orderer On Status Update';
+            sms.Account__c = wo.HOT_Request__r.Orderer__c;
+            sms.WorkOrder__c = wo.Id;
+            sms.Recipient__c = getRecipient(wo);
+            sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
+            smsList.add(sms);
+            // smsList.add(
+            //     SMSService.createSMSRecord(
+            //         'HOT',
+            //         'Orderer On Status Update',
+            //         wo.HOT_Request__r.Orderer__c,
+            //         wo.Id,
+            //         getRecipient(wo),
+            //         constructInterpreterChangedMessage(wo, interpreterName),
+            //         ''
+            //     )
+            // );
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -187,6 +251,14 @@ public without sharing class HOT_ReminderSMSService {
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
         }
+    }
+
+    public static String constructOnNewMessage() {
+        String message = 'INFO\nDu har fått en melding fra tolketjenesten.\n\n';
+        message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
+        message += 'Du kan ikke svare på denne meldingen.\n';
+        message += 'Mvh tolketjenesten i NAV';
+        return message;
     }
 
     public static String constructOnOrdererMessage(WorkOrder workOrder) {

@@ -34,7 +34,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             for (ServiceAppointment sa : serviceAppointments) {
                 potentialSAWithThreadsIds.add(sa.Id);
             }
-        List<Thread__c> exisitingThreadsToBeTransferred=[SELECT Id, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c FROM Thread__c
+        List<Thread__c> exisitingThreadsToBeTransferred=[SELECT Id, HOT_IsEmployeeThread__c, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c FROM Thread__c
         WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c='HOT_TOLK-FORMIDLER'];
         
         //Finn ir hvor accountid og serviceappointment id er samme
@@ -56,9 +56,12 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         if(exisitingThreadsToBeTransferred.size()!=0){
     
         for (Thread__c thread : exisitingThreadsToBeTransferred) {
-            if (saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c)) {
+            if (saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c) && thread.HOT_IsEmployeeThread__c==false) {
                 thread.CRM_Related_Object__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
                 thread.HOT_InterestedResource__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+            }
+            if(thread.HOT_IsEmployeeThread__c==true){
+                thread.CRM_Related_Object__c=null;
             }
         }
         update exisitingThreadsToBeTransferred;
@@ -174,7 +177,22 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     ir.Status__c = 'Withdrawn'; 
                 }
             }
-             update interestedResources;       
+             update interestedResources;
+
+        removeEmployeeThreads(serviceAppointmentIds);
+
+    }
+    static public void removeEmployeeThreads(List<Id> saIds){
+        if(!saIds.isEmpty()){
+            List<Thread__c> existingThreads=[SELECT Id, HOT_IsEmployeeThread__c, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c FROM Thread__c
+        WHERE CRM_Related_Object__c IN :saIds AND CRM_Thread_Type__c='HOT_TOLK-FORMIDLER' AND HOT_IsEmployeeThread__c=true];
+            if(!existingThreads.isEmpty()){
+                for (Thread__c thread : existingThreads) {
+                            thread.CRM_Related_Object__c = null;
+                    }
+                update existingThreads;
+            }
+        }
 
     }
 
@@ -312,8 +330,15 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 }
             }
         }
+        List<Thread__c> arThreadList=[SELECT Id,CRM_Related_Object__c, HOT_IsEmployeeThread__c FROM Thread__c WHERE CRM_Related_Object__c IN: serviceAppointmentIds AND HOT_IsEmployeeThread__c=true];
+         if(!arThreadList.isEmpty()){
+            for (Thread__c thread : arThreadList) {
+                        thread.CRM_Related_Object__c = null;
+                }
+            update arThreadList;
+         }
         if(!threadToIR.isEmpty()){
-            List<Thread__c> threadListToIR=[SELECT Id,CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN: threadToIR.keySet()];
+            List<Thread__c> threadListToIR=[SELECT Id,CRM_Related_Object__c, HOT_IsEmployeeThread__c FROM Thread__c WHERE CRM_Related_Object__c IN: threadToIR.keySet() AND HOT_IsEmployeeThread__c=false];
             if(!threadListToIR.isEmpty()){
                for (Thread__c thread : threadListToIR) {
                     HOT_InterestedResource__c interestedResource = threadToIR.get(thread.CRM_Related_Object__c);
