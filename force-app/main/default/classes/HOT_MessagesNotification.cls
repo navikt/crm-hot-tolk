@@ -1,4 +1,4 @@
-public with sharing class HOT_MessagesNotification {
+public without sharing class HOT_MessagesNotification {
     public static void NotifyDispatcher(List<Id> threadIds) {
         List<Thread__c> threads = [
             SELECT Id, Name, OwnerId, HOT_Dispatcher__c, HOT_Subject__c
