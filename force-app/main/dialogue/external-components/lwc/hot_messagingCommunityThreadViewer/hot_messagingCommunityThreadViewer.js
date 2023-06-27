@@ -33,6 +33,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @track msgVal;
     @track isFreelance = false;
     @track isclosed;
+    @track showContent = false;
+    @track hasAccess;
 
     @api recordId;
     @api requestId;
@@ -98,6 +100,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             this.threadType = this.threadTypeName();
             this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
             this.isclosed = this.thread.CRM_Is_Closed__c;
+            this.showContent = true;
         }
     }
 
