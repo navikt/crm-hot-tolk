@@ -1,5 +1,5 @@
 @isTest
-public with sharing class HOT_MessageHelperTest {
+private class HOT_MessageHelperTest {
     @TestSetup
     static void makeData() {
         Account acc = new Account();
@@ -235,7 +235,7 @@ public with sharing class HOT_MessageHelperTest {
             WHERE CRM_Related_Object__c = :request.Id
             LIMIT 1
         ];
-        
+
         Test.stopTest();
         System.assertNotEquals(null, thread);
         System.assertEquals(account.Id, thread.CRM_Account__c);
@@ -447,7 +447,7 @@ public with sharing class HOT_MessageHelperTest {
         HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
         insert interestedResource;
         Test.startTest();
-        
+
         Thread__c thread = HOT_MessageHelper.createThreadInterpreter(interestedResource.Id);
         Test.stopTest();
         List<Thread__c> tList = [
@@ -787,11 +787,11 @@ public with sharing class HOT_MessageHelperTest {
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
         resource.AccountId = acc.Id;
         insert resource;
-        AssignedResource ar=HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
         insert ar;
 
         Test.startTest();
-        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(sa.Id, acc.Id,'HOT_TOLK-FORMIDLER');
+        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(sa.Id, acc.Id, 'HOT_TOLK-FORMIDLER');
         Test.stopTest();
         List<Thread__c> tList = [
             SELECT Id, CRM_Account__c, CRM_Type__c
