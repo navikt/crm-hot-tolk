@@ -1,4 +1,4 @@
-public with sharing class HOT_MessageHandler extends MyTriggers {
+public without sharing class HOT_MessageHandler extends MyTriggers {
     public override void onAfterInsert() {
         List<Id> threadIdsToNotifyDispatcherOnNewMessage = new List<Id>();
         List<Id> threadIdsToNotifyUserOnNewMessage = new List<Id>();

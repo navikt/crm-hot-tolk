@@ -1,5 +1,5 @@
 @isTest
-public with sharing class HOT_MessagehandlerTest {
+private class HOT_MessagehandlerTest {
     @TestSetup
     static void makeData() {
         String personAccountRecordTypeId = Schema.getGlobalDescribe()
