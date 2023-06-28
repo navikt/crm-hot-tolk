@@ -20,7 +20,7 @@ public without sharing class HOT_ThreadDetailController {
             List<ServiceResource> serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId=:user.AccountId];
             if(!serviceResource.isEmpty()){
                 List<HOT_InterestedResource__c> irList=[SELECT Id FROM HOT_InterestedResource__c WHERE 	ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId=:thread.CRM_Related_Object__c AND Status__c='Assigned' AND ServiceResource__c=:serviceResource[0].Id];
-                if(irList.size()!=0){
+                if(irList.size()!=0 || wo.HOT_Request__r.Account__c == user.AccountId){
                     grantAccess=true;
                 }
                 else{
