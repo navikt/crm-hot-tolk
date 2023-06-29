@@ -161,9 +161,6 @@ public without sharing class HOT_ReminderSMSService {
             sms.Account__c = thread.CRM_Account__c;
             sms.Thread__c = thread.Id;
             sms.Recipient__c = (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' && ordererPhoneOnRequest.get(thread.CRM_Related_Object__c) != null) ? ordererPhoneOnRequest.get(thread.CRM_Related_Object__c) : thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-            // if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'() {
-            //     sms.Recipient__c = thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-            // }
             sms.Message__c = constructOnNewMessage();
             smsList.add(sms);
         }
