@@ -1,4 +1,8 @@
-public without sharing class HOT_DisableFreelancePart2Schedulable implements Database.Batchable<sObject> {
+public without sharing class HOT_DisableFreelancePart2Schedulable implements Database.Batchable<sObject>, Schedulable {
+     public void execute(SchedulableContext sc) {
+        HOT_DisableFreelancePart2Schedulable instance = new HOT_DisableFreelancePart2Schedulable();
+        database.executebatch(instance, 10);
+    }
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
             [
@@ -33,7 +37,6 @@ public without sharing class HOT_DisableFreelancePart2Schedulable implements Dat
             Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'NAV Bruker Plus' LIMIT 1];
 
             Set<Id> relatedRecordIds = new Set<Id>();
-
 
             for (User user : users) {
                 user.ProfileId = profile.Id;
