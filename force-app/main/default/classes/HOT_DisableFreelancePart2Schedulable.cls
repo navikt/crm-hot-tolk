@@ -1,8 +1,4 @@
-public with sharing class HOT_DisableFreelancePart2Schedulable implements Database.Batchable<sObject>, Schedulable {
-    public void execute(SchedulableContext sc) {
-        HOT_DisableFreelancePart2Schedulable instance = new HOT_DisableFreelancePart2Schedulable();
-        database.executebatch(instance, 10);
-    }
+public without sharing class HOT_DisableFreelancePart2Schedulable implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
             [
@@ -25,32 +21,35 @@ public with sharing class HOT_DisableFreelancePart2Schedulable implements Databa
                 WHERE Profile.Name = 'NAV Samhandler' AND AccountId IN :srAccointIdsToDelete
             ];
 
-            PermissionSet permissionset = [
+            PermissionSet permissionsetBrukerPlus = [
                 SELECT Id, Name
                 FROM PermissionSet
                 WHERE Name = 'HOT_Tolk_Bruker_Plus'
                 LIMIT 1
             ];
-            PermissionSet permissionsetFreelance = [
-                SELECT Id, Name
-                FROM PermissionSet
-                WHERE Name = 'HOT_Tolk_Frilans'
-                LIMIT 1
+            PermissionSetGroup permissionsetFreelance = [
+                SELECT Id, DeveloperName FROM PermissionSetGroup WHERE DeveloperName ='HOT_Tolk_Frilans_Gruppe' LIMIT 1
             ];
             Profile profile = [SELECT Id, Name FROM Profile WHERE Name = 'NAV Bruker Plus' LIMIT 1];
 
             Set<Id> relatedRecordIds = new Set<Id>();
 
-            List<PermissionSetAssignment> permissionSetAssignmentsToBeDeleted = [
-                SELECT Id, AssigneeId, PermissionSetId
-                FROM PermissionSetAssignment
-                WHERE AssigneeId IN :relatedRecordIds AND PermissionSetId = :permissionsetFreelance.Id
-            ];
 
             for (User user : users) {
                 user.ProfileId = profile.Id;
                 relatedRecordIds.add(user.Id);
             }
+            update users;
+
+            PermissionSetLicenseAssign pmSetLicenseList=[SELECT Id,PermissionSetLicense.DeveloperName, AssigneeId FROM PermissionSetLicenseAssign WHERE AssigneeId IN: relatedRecordIds AND (PermissionSetLicense.DeveloperName='FieldServiceSchedulingPsl' OR PermissionSetLicense.DeveloperName='FieldServiceMobilePsl')];
+            delete pmSetLicenseList;
+
+            List<PermissionSetAssignment> permissionSetAssignmentsToBeDeleted = [
+                 SELECT Id, AssigneeId, PermissionSetId
+                FROM PermissionSetAssignment
+                WHERE AssigneeId IN :relatedRecordIds AND PermissionSetGroup.Id = :permissionsetFreelance.Id
+            ];
+
             List<PermissionSetAssignment> permissionSetAssignments = [
                 SELECT Id, AssigneeId, PermissionSetId
                 FROM PermissionSetAssignment
@@ -58,8 +57,8 @@ public with sharing class HOT_DisableFreelancePart2Schedulable implements Databa
             ];
             Map<Id, Id> assigneeToPermissionSetMap = new Map<Id, Id>();
             for (PermissionSetAssignment psa : permissionSetAssignments) {
-                if (psa.PermissionSetId != permissionset.Id) {
-                    assigneeToPermissionSetMap.put(psa.AssigneeId, permissionset.Id);
+                if (psa.PermissionSetId != permissionsetBrukerPlus.Id) {
+                        assigneeToPermissionSetMap.put(psa.AssigneeId, permissionsetBrukerPlus.Id);
                 }
             }
             List<PermissionSetAssignment> newPermissionSetAssignments = new List<PermissionSetAssignment>();
@@ -71,7 +70,6 @@ public with sharing class HOT_DisableFreelancePart2Schedulable implements Databa
             }
             try {
                 delete permissionSetAssignmentsToBeDeleted;
-                update records;
                 insert newPermissionSetAssignments;
             } catch (Exception e) {
                 LoggerUtility logger = new LoggerUtility();
