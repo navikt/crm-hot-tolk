@@ -1,0 +1,75 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "23a96844-2ef2-48ae-837c-22964f4c48d8",
+  "label" : "Mine samtaler frilanstolk",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "NAVarea" : "Privatperson",
+        "navareapicklist" : "Privatperson"
+      },
+      "componentName" : "c:globalCommunityHeader",
+      "id" : "21f25e08-abe4-49e9-801d-f47964bf3999",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "16b8eeff-793b-441f-b689-26f4561ceded",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:hot_tolketjenestenHovedBanner",
+      "id" : "3176b577-dbdd-4621-bc83-ee56c8640d48",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : { },
+      "componentName" : "c:hot_frilanstolkThreadList",
+      "id" : "6d107b00-d8fc-4cb0-846a-a0b5868bd563",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "60425f9a-fbd7-444d-82e0-7b963aa360d4",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "NAVarea" : "Privatperson",
+        "navareapicklist" : "Privatperson"
+      },
+      "componentName" : "c:globalCommunityFooter",
+      "id" : "6a4b74c9-3e04-4b8d-ab04-9862c99d562a",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "d05b6d4f-d02b-473e-b6ec-4437e44c4cd8",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Mine samtaler frilanstolk"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "4ec94d0b-0324-4104-99ba-1b2646afa9f4",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "65c88aa1-895c-46a3-bdc0-5a55f51a695d",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-mine-samtaler-frilanstolk"
+}

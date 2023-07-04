@@ -1,0 +1,11 @@
+{
+    "activeViewId": "23a96844-2ef2-48ae-837c-22964f4c48d8",
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "configurationTags": [],
+    "id": "f6d2082f-b177-4f37-a93b-cb7ab89ac531",
+    "label": "Mine samtaler frilanstolk",
+    "pageAccess": "UseParent",
+    "routeType": "custom-mine-samtaler-frilanstolk",
+    "type": "route",
+    "urlPrefix": "mine-samtaler-frilanstolk"
+}
