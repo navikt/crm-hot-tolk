@@ -252,15 +252,15 @@ public without sharing class HOT_ReminderSMSService {
 
     private static String getRecipientOnThread(Thread__c thread) {
         if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
-            return thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+            return thread?.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
         }
         else if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
-            ServiceResource sr = [SELECT AccountId, HOT_MobilePhone__c FROM ServiceResource WHERE AccountId = :thread.CRM_Account__c AND HOT_MobilePhone__c != null];
-            return sr.HOT_MobilePhone__c;
+            ServiceResource sr = [SELECT AccountId, HOT_MobilePhone__c FROM ServiceResource WHERE AccountId = :thread.CRM_Account__c];
+            return sr?.HOT_MobilePhone__c;
         } 
         else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
-            HOT_Request__c request = [SELECT Id, OrdererPhone__c FROM HOT_Request__c WHERE Id = :thread.CRM_Related_Object__c AND OrdererPhone__c != null]; 
-            return request.OrdererPhone__c;
+            HOT_Request__c request = [SELECT Id, OrdererPhone__c FROM HOT_Request__c WHERE Id = :thread.CRM_Related_Object__c]; 
+            return request?.OrdererPhone__c;
         }
         return '';
     }
