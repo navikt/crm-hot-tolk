@@ -102,9 +102,7 @@ public without sharing class HOT_ReminderSMSService {
                 sms.WorkOrder__c = workOrder.Id;
                 sms.Recipient__c = phoneNumber;
                 sms.Message__c = constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id));
-                if (SMS.Recipient__c != null) {
-                    smsList.add(sms);
-                } 
+                smsList.add(sms);
             }
             workOrder.HOT_SendSMSNotificationOnStatusChanged__c = false;
         }
