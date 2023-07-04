@@ -1,0 +1,13 @@
+{
+  "componentVariants" : [ {
+    "id" : "a04a8c15-465d-42ce-b83b-ef6c6faed702",
+    "propertyOverrides" : {
+      "activeViewId" : "752ca6d2-03f7-461a-ba84-3ca7206daa61"
+    },
+    "targetId" : "ab514961-bce6-4b1c-b6b0-358c34521f93",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Samtale_Frilans_Samtale_Frilans_Page",
+  "id" : "c2e880ac-08eb-4299-91c9-c76b05bdd80d",
+  "type" : "experienceVariation"
+}
