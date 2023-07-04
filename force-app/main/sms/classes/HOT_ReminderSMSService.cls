@@ -12,19 +12,10 @@ public without sharing class HOT_ReminderSMSService {
             sms.WorkOrder__c = workOrder.Id;
             sms.Recipient__c = workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id));
-            smsList.add(sms);
-            // smsList.add(
-            //     SMSService.createSMSRecord(
-            //         'HOT',
-            //         '24 Hour Scheduled Reminder',
-            //         workOrder.AccountId,
-            //         workOrder.Id,
-            //         workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c,
-            //         constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id)),
-            //         ''
-            //     )
-            // );
-            workOrder.HOT_IsReminderSMSSendt__c = true;
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+                workOrder.HOT_IsReminderSMSSendt__c = true;
+                } 
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrders.values());
@@ -111,18 +102,9 @@ public without sharing class HOT_ReminderSMSService {
                 sms.WorkOrder__c = workOrder.Id;
                 sms.Recipient__c = phoneNumber;
                 sms.Message__c = constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id));
-                smsList.add(sms);
-                // smsList.add(
-                //     SMSService.createSMSRecord(
-                //         'HOT',
-                //         'Orderer On Status Update',
-                //         workOrder.HOT_Request__r.Orderer__c,
-                //         workOrder.Id,
-                //         phoneNumber,
-                //         constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id)),
-                //         ''
-                //     )
-                // );
+                if (SMS.Recipient__c != null) {
+                    smsList.add(sms);
+                } 
             }
             workOrder.HOT_SendSMSNotificationOnStatusChanged__c = false;
         }
@@ -162,7 +144,9 @@ public without sharing class HOT_ReminderSMSService {
             sms.Thread__c = thread.Id;
             sms.Recipient__c = (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' && ordererPhoneOnRequest.get(thread.CRM_Related_Object__c) != null) ? ordererPhoneOnRequest.get(thread.CRM_Related_Object__c) : thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructOnNewMessage();
-            smsList.add(sms);
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+                } 
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -197,18 +181,9 @@ public without sharing class HOT_ReminderSMSService {
             sms.WorkOrder__c = wo.Id;
             sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructOnOrdererMessage(wo);
-            smsList.add(sms);
-            // smsList.add(
-            //     SMSService.createSMSRecord(
-            //         'HOT',
-            //         'Orderer On Status Update',
-            //         wo.AccountId,
-            //         wo.Id,
-            //         wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
-            //         constructOnOrdererMessage(wo),
-            //         ''
-            //     )
-            // );
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+                } 
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -246,18 +221,9 @@ public without sharing class HOT_ReminderSMSService {
             sms.WorkOrder__c = wo.Id;
             sms.Recipient__c = getRecipient(wo);
             sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
+            if (SMS.Recipient__c != null) {
             smsList.add(sms);
-            // smsList.add(
-            //     SMSService.createSMSRecord(
-            //         'HOT',
-            //         'Orderer On Status Update',
-            //         wo.HOT_Request__r.Orderer__c,
-            //         wo.Id,
-            //         getRecipient(wo),
-            //         constructInterpreterChangedMessage(wo, interpreterName),
-            //         ''
-            //     )
-            // );
+            } 
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
