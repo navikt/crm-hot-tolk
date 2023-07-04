@@ -112,27 +112,12 @@ public without sharing class HOT_ReminderSMSService {
 
     @Future
     public static void sendSMSOnNewMessage(Set<Id> threadIds) {
-        Map<Id,String> ordererPhoneOnRequest = new Map<Id, String>();
         List<SMS__c> smsList = new List<SMS__c>();
-        Set<Id> requestIds = new Set<Id>();
         List<Thread__c> threadList = [
             SELECT CRM_Account__c, CRM_Thread_Type__c, CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c, CRM_Related_Object__c
             FROM Thread__c
             WHERE Id IN :threadIds
         ];
-
-
-        for(Thread__c thread : threadList) {
-            if(thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
-                requestIds.add(thread.CRM_Related_Object__c);
-            } 
-        }
-
-        List<HOT_Request__c> requestList = [SELECT Id, OrdererPhone__c FROM HOT_Request__c WHERE Id = :requestIds AND OrdererPhone__c != null]; 
-
-        for (HOT_Request__c request : requestList) {
-            ordererPhoneOnRequest.put(request.Id, request.OrdererPhone__c);
-        }
 
         for (Thread__c thread : threadList) {
             SMS__c sms = new SMS__c();
@@ -140,7 +125,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Type__c = 'Message';
             sms.Account__c = thread.CRM_Account__c;
             sms.Thread__c = thread.Id;
-            sms.Recipient__c = (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' && ordererPhoneOnRequest.get(thread.CRM_Related_Object__c) != null) ? ordererPhoneOnRequest.get(thread.CRM_Related_Object__c) : thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Recipient__c = getRecipientOnThread(thread);
             sms.Message__c = constructOnNewMessage();
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
@@ -263,6 +248,21 @@ public without sharing class HOT_ReminderSMSService {
             return workOrder.HOT_Request__r.OrdererPhone__c;
         }
         return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+    }
+
+    private static String getRecipientOnThread(Thread__c thread) {
+        if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
+            return thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+        }
+        else if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
+            ServiceResource sr = [SELECT AccountId, HOT_MobilePhone__c FROM ServiceResource WHERE AccountId = :thread.CRM_Account__c AND HOT_MobilePhone__c != null];
+            return sr.HOT_MobilePhone__c;
+        } 
+        else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
+            HOT_Request__c request = [SELECT Id, OrdererPhone__c FROM HOT_Request__c WHERE Id = :thread.CRM_Related_Object__c AND OrdererPhone__c != null]; 
+            return request.OrdererPhone__c;
+        }
+        return '';
     }
 
     public static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
