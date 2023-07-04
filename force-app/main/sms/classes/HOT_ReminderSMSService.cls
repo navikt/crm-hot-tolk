@@ -222,7 +222,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Recipient__c = getRecipient(wo);
             sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
             if (SMS.Recipient__c != null) {
-            smsList.add(sms);
+                smsList.add(sms);
             } 
         }
         try {
