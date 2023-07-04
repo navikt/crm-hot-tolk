@@ -184,24 +184,11 @@ public without sharing class HOT_UserNotificationService {
         return pageRef;
     }
 
-    // private static String getTargetPageRefThread(Id targetId) {
-    //     String pageRef =
-    //         '{type: "standard__recordPage",attributes: {recordId: "' +
-    //         targetId +
-    //         '", objectApiName: "Thread__c", actionName: "view"}}';
-    //     return pageRef;
-    // }
-
-private static String getTargetPageRefThread(Id targetId) {
-    // Base URL for your Salesforce org
-    String baseUrl = 'https://navdialog--uathot.sandbox.my.site.com';
-
-    // Path to the record page and query parameters
-    String path = '/tolketjenesten/s/thread/' + targetId + '?from=mine-samtaler';
-
-    // Complete URL with the base URL and path
-    String url = baseUrl + path;
-
-    return url;
-}
+    private static String getTargetPageRefThread(Id targetId) {
+        String pageRef =
+            '{type: "standard__recordPage",attributes: {recordId: "' +
+            targetId +
+            '", objectApiName: "Thread__c", actionName: "view"}}';
+        return pageRef;
+    }
 }
