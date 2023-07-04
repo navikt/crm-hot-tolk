@@ -152,7 +152,7 @@ public without sharing class HOT_UserNotificationService {
         String body = 'Du har fått en melding fra Tolketjenesten.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRefThread(thread.Id);
+        String targetPageRef = getTargetPageRefMyConversations(thread.Id);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
@@ -184,7 +184,7 @@ public without sharing class HOT_UserNotificationService {
         return pageRef;
     }
 
-    private static String getTargetPageRefThread(Id targetId) {
+    private static String getTargetPageRefMyConversations(Id targetId) {
         String pageRef =
             '{type: "standard__recordPage",attributes: {recordId: "' +
             targetId +
