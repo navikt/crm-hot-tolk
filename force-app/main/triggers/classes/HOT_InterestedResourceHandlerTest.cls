@@ -164,7 +164,7 @@ private class HOT_InterestedResourceHandlerTest {
         insert serviceResource;
 
         HOT_InterestedResource__c interestedResource2=HOT_TestDataFactory.createInterestedResource(ServiceAppointment.Id, serviceResource.Id);
-        insert interestedResource;
+        insert interestedResource2;
         Test.stopTest();
 
         HOT_InterestedResource__c irToCheck = [SELECT Status__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE Id=:interestedResource2.Id];
