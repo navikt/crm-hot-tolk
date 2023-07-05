@@ -51,7 +51,7 @@
                     <name>adminFilters</name>
                     <valueList>
                         <valueListItems>
-                            <value>EndTime__c|GREATER_OR_EQUAL|TODAY</value>
+                            <value>SeriesEndDate__c|GREATER_OR_EQUAL|TODAY</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -84,10 +84,10 @@
                             <value>Subject__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>StartTime__c</value>
+                            <value>SeriesStartDate__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>EndTime__c</value>
+                            <value>SeriesEndDate__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>AssignmentType__c</value>
@@ -134,7 +134,7 @@
                     <name>adminFilters</name>
                     <valueList>
                         <valueListItems>
-                            <value>EndTime__c|LESS_THAN|TODAY</value>
+                            <value>SeriesEndDate__c|LESS_THAN|TODAY</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -167,10 +167,10 @@
                             <value>Subject__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>StartTime__c</value>
+                            <value>SeriesStartDate__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>EndTime__c</value>
+                            <value>SeriesEndDate__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>AssignmentType__c</value>
