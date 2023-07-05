@@ -154,13 +154,9 @@ private class HOT_InterestedResourceHandlerTest {
         Test.startTest();
         update interestedResource;
         
+         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user2', profile);
-        insert user;
-
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsFreelanceInterpreter__c = true;
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
         insert serviceResource;
 
         HOT_InterestedResource__c interestedResource2=HOT_TestDataFactory.createInterestedResource(ServiceAppointment.Id, serviceResource.Id);
