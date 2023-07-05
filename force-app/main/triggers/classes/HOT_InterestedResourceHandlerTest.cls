@@ -139,4 +139,37 @@ private class HOT_InterestedResourceHandlerTest {
         String names = serviceAppointment.HOT_InterestedResourceNames__c;
         System.assertEquals(names.substring(names.length() - 3, names.length()), '...');
     }
+          @isTest
+    static void changeStatusOfInterestedResourceWhenAnIrIsAlreadyAssigned() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+
+        HOT_InterestedResource__c interestedResource = [
+            SELECT Status__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__c = :serviceAppointment.Id
+            LIMIT 1
+        ];
+
+        interestedResource.Status__c = 'Assigned';
+        Test.startTest();
+        update interestedResource;
+        
+
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user2', profile);
+        insert user;
+
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResource.HOT_IsFreelanceInterpreter__c = true;
+        insert serviceResource;
+
+        HOT_InterestedResource__c interestedResource=HOT_TestDataFactory.createInterestedResource(ServiceAppointment.Id, serviceResource.Id);
+        insert interestedResource;
+        Test.stopTest();
+
+        HOT_InterestedResource__c irToCheck = [SELECT Status__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__c = :serviceAppointment.Id AND ServiceResource__c=:user.Id LIMIT 1];
+
+
+        System.assertEquals('Not Assigned', irToCheck.Status__c);
+    }
 }

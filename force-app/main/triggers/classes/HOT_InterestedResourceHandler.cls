@@ -1,6 +1,7 @@
 public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
     public override void onAfterInsert() {
         updateInterestedResourceNamesOnServiceAppointments(records, null, false);
+        updateInterestedResourceStatus(records);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -68,5 +69,31 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
             serviceAppointmentsToUpdate.add(serviceAppointment);
         }
         update serviceAppointmentsToUpdate;
+    }
+      public void updateInterestedResourceStatus(List<SObject> records) {
+    Set<Id> serviceAppointmentIds = new Set<Id>();
+    for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
+        serviceAppointmentIds.add(interestedResource.ServiceAppointment__c);
+    }
+        List<HOT_InterestedResource__c> existingInterestedResources = [
+        SELECT Id, ServiceAppointment__c
+        FROM HOT_InterestedResource__c
+        WHERE ServiceAppointment__c IN :serviceAppointmentIds
+        AND Status__c = 'Assigned'
+    ];
+    Map<Id,Id> irMap = new Map<Id,Id>();
+    for (HOT_InterestedResource__c existingInterestedResource : existingInterestedResources) {
+        irMap.put(existingInterestedResource.ServiceAppointment__c,existingInterestedResource.Id);
+    }
+    List<HOT_InterestedResource__c> recordsToUpdate = new List<HOT_InterestedResource__c>();
+    for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
+        if (irMap.containsKey(interestedResource.ServiceAppointment__c)) {
+                interestedResource.Status__c='Not Assigned';
+                recordsToUpdate.add(interestedResource);
+        } 
+    }
+    if (recordsToUpdate.size() > 0) {
+        update recordsToUpdate;
+    }
     }
 }
