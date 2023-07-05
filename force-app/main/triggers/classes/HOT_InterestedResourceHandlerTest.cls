@@ -163,11 +163,11 @@ private class HOT_InterestedResourceHandlerTest {
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
         insert serviceResource;
 
-        HOT_InterestedResource__c interestedResource=HOT_TestDataFactory.createInterestedResource(ServiceAppointment.Id, serviceResource.Id);
+        HOT_InterestedResource__c interestedResource2=HOT_TestDataFactory.createInterestedResource(ServiceAppointment.Id, serviceResource.Id);
         insert interestedResource;
         Test.stopTest();
 
-        HOT_InterestedResource__c irToCheck = [SELECT Status__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__c = :serviceAppointment.Id AND ServiceResource__c=:user.Id LIMIT 1];
+        HOT_InterestedResource__c irToCheck = [SELECT Status__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE Id=:interestedResource2.Id];
 
 
         System.assertEquals('Not Assigned', irToCheck.Status__c);
