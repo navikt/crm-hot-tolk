@@ -72,10 +72,9 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
     }
           public void updateInterestedResourceStatus(List<SObject> records) {
     Set<Id> serviceAppointmentIds = new Set<Id>();
-     List<HOT_InterestedResource__c> newIrList=[SELECT Id, ServiceAppointment__c
-        FROM HOT_InterestedResource__c WHERE Id IN: records];
-for (HOT_InterestedResource__c interestedResource : newIrList) {
-         serviceAppointmentIds.add(interestedResource.ServiceAppointment__c);
+
+     for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
+        serviceAppointmentIds.add(interestedResource.ServiceAppointment__c);
      }
         List<HOT_InterestedResource__c> existingInterestedResources = [
         SELECT Id, ServiceAppointment__c
@@ -88,10 +87,11 @@ for (HOT_InterestedResource__c interestedResource : newIrList) {
         irMap.put(existingInterestedResource.ServiceAppointment__c,existingInterestedResource.Id);
     }
     List<HOT_InterestedResource__c> recordsToUpdate = new List<HOT_InterestedResource__c>();
-    for (HOT_InterestedResource__c interestedResource : newIrList) {
+    for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
         if (irMap.containsKey(interestedResource.ServiceAppointment__c)) {
-                interestedResource.Status__c='Not Assigned';
-                recordsToUpdate.add(interestedResource);
+            HOT_InterestedResource__c irToUpdate=new HOT_InterestedResource__c(Id=interestedResource.Id, Status__c='Not Assigned');
+                recordsToUpdate.add(irToUpdate);
+
         } 
     }
     if (recordsToUpdate.size() > 0) {
