@@ -112,17 +112,6 @@ public without sharing class HOT_ReminderSMSService {
                 sms.Recipient__c = phoneNumber;
                 sms.Message__c = constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id));
                 smsList.add(sms);
-                // smsList.add(
-                //     SMSService.createSMSRecord(
-                //         'HOT',
-                //         'Orderer On Status Update',
-                //         workOrder.HOT_Request__r.Orderer__c,
-                //         workOrder.Id,
-                //         phoneNumber,
-                //         constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id)),
-                //         ''
-                //     )
-                // );
             }
             workOrder.HOT_SendSMSNotificationOnStatusChanged__c = false;
         }
