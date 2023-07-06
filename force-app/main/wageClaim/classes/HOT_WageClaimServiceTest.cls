@@ -91,7 +91,7 @@ private class HOT_WageClaimServiceTest {
     static void SAWithARTimesChangedAndIsAgreement() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         update new ServiceResource(Id = assignedResource.ServiceResourceId, HOT_AgreementFreelance__c = true);
-
+        Test.startTest();
         HOT_Request__c request = [SELECT Id, ServiceResourceWithAgreement1__c FROM HOT_Request__c];
         request.ServiceResourceWithAgreement1__c = assignedResource.ServiceResourceId;
         update request;
@@ -112,7 +112,7 @@ private class HOT_WageClaimServiceTest {
         serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime.addMinutes(15);
         serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
         serviceAppointment.Status = 'Completed';
-        Test.startTest();
+
         update serviceAppointment;
         Test.stopTest();
 
