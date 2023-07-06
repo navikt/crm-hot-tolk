@@ -110,7 +110,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             HOT_Utility.setArchiveAsOwner(requestsToChangeOwnerToArchive);
         }
         if (ordererRequestsToNotifyUsers.size() > 0) {
-            notifyOnOrderer(ordererRequestsToNotifyUsers);
+            setNotifyOnUser(ordererRequestsToNotifyUsers);
         }
     }
 
@@ -452,10 +452,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
 
-    public static void notifyOnOrderer(List<HOT_Request__c> requests) {
-        for (HOT_Request__c request : requests) {
-            request.IsNotifyDispatcher__c = false;
-        }
+    public static void setNotifyOnUser(List<HOT_Request__c> requests) {
+        for (HOT_Request__C request : requests) {
+            request.IsNotifyUserOnOrder__c = true;
     }
 
     public static void setMeetingStreet(List<HOT_Request__c> requests) {
