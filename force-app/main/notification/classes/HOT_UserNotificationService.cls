@@ -152,7 +152,7 @@ public without sharing class HOT_UserNotificationService {
         String body = 'Du har fått en melding fra Tolketjenesten.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRefMyConversations(thread.Id);
+        String targetPageRef = getTargetPageRefThread(thread);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
@@ -184,11 +184,32 @@ public without sharing class HOT_UserNotificationService {
         return pageRef;
     }
 
-    private static String getTargetPageRefMyConversations(Id targetId) {
+    private static String getTargetPageRefThreadFreelance(Id targetId, String level) {
         String pageRef =
-            '{type: "standard__recordPage",attributes: {recordId: "' +
-            targetId +
-            '", objectApiName: "Thread__c", actionName: "view"}}';
+            '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {id: "' +
+            targetId + '"}}';
+
         return pageRef;
+    }
+
+    private static String getTargetPageRefThread(Thread__c target) {
+        if(target.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !target.HOT_IsEmployeeThread__c) {
+            String pageRef =
+            '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {recordId: "' +
+            target.Id + '"}}';
+
+            return pageRef;
+        } else if (target.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
+            String pageRef = '{' +
+                '"type": "standard__recordPage",' +
+                '"attributes": {' +
+                    '"Id": "' + target.Id + '",' +
+                    '"objectApiName": "Thread__c",' +
+                    '"actionName": "view"' +
+                '}' +
+            '}';
+            return pageRef;
+        }
+        return '';
     }
 }
