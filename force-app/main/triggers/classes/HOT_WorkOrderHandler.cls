@@ -46,8 +46,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             accountIds.add(workOrder.AccountId);
         }
 
-        //notifyOnOrderer((List<WorkOrder>) records);
-
         List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
             [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
