@@ -117,7 +117,6 @@ public without sharing class HOT_ReminderSMSService {
             SELECT CRM_Account__c, CRM_Thread_Type__c, CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c, CRM_Related_Object__c
             FROM Thread__c
             WHERE Id IN :threadIds
-            AND CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c != NULL
         ];
 
         for (Thread__c thread : threadList) {
