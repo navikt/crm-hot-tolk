@@ -184,14 +184,6 @@ public without sharing class HOT_UserNotificationService {
         return pageRef;
     }
 
-    private static String getTargetPageRefThreadFreelance(Id targetId, String level) {
-        String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {id: "' +
-            targetId + '"}}';
-
-        return pageRef;
-    }
-
     private static String getTargetPageRefThread(Thread__c target) {
         if(target.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !target.HOT_IsEmployeeThread__c) {
             String pageRef =
@@ -199,17 +191,11 @@ public without sharing class HOT_UserNotificationService {
             target.Id + '"}}';
 
             return pageRef;
-        } else if (target.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
-            String pageRef = '{' +
-                '"type": "standard__recordPage",' +
-                '"attributes": {' +
-                    '"Id": "' + target.Id + '",' +
-                    '"objectApiName": "Thread__c",' +
-                    '"actionName": "view"' +
-                '}' +
-            '}';
+        } else {
+            String pageRef =
+            '{type: "comm__namedPage",attributes: {pageName: "mine-samtaler"}, state: {recordId: "' +
+            target.Id +'"}}';
             return pageRef;
         }
-        return '';
     }
 }
