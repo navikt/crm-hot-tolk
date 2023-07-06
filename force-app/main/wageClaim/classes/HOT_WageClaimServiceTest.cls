@@ -65,9 +65,9 @@ private class HOT_WageClaimServiceTest {
 
     @isTest
     static void getServiceAppointmentsTest() {
+        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
-        Test.startTest();
         HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
         List<ServiceAppointment> serviceAppointments = HOT_WageClaimService.getServiceAppointments(wageClaim.Id);
         Test.stopTest();
