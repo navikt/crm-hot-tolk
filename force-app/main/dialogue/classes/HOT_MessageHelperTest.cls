@@ -1,5 +1,5 @@
 @isTest
-public with sharing class HOT_MessageHelperTest {
+private class HOT_MessageHelperTest {
     @TestSetup
     static void makeData() {
         Account acc = new Account();
@@ -235,7 +235,7 @@ public with sharing class HOT_MessageHelperTest {
             WHERE CRM_Related_Object__c = :request.Id
             LIMIT 1
         ];
-        
+
         Test.stopTest();
         System.assertNotEquals(null, thread);
         System.assertEquals(account.Id, thread.CRM_Account__c);
@@ -434,7 +434,6 @@ public with sharing class HOT_MessageHelperTest {
         insert woli;
         ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
         sa.Subject = 'TEST';
-        sa.Status = 'Dispatched';
         insert sa;
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
@@ -446,59 +445,15 @@ public with sharing class HOT_MessageHelperTest {
         resource.AccountId = acc.Id;
         insert resource;
         HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
-
-        Test.startTest();
         insert interestedResource;
+        Test.startTest();
+
         Thread__c thread = HOT_MessageHelper.createThreadInterpreter(interestedResource.Id);
         Test.stopTest();
         List<Thread__c> tList = [
             SELECT Id, CRM_Account__c, CRM_Type__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :interestedResource.Id
-        ];
-        System.assertNotEquals(null, tList);
-    }
-    static void createThreadInterpreterServiceAppointment() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        insert workOrder;
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert woli;
-        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
-        sa.Subject = 'TEST';
-        sa.Status = 'Dispatched';
-        insert sa;
-        Account account = [
-            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
-            FROM Account
-            WHERE LastName = :'Bruker'
-        ];
-        Test.startTest();
-        Profile communityProfile = [
-            SELECT Name
-            FROM Profile
-            WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User' OR Name = 'Customer Community User'
-            LIMIT 1
-        ];
-        User user = HOT_TestDataFactory.createUser(communityProfile, account);
-        user.Alias = 'userTest';
-        user.Username = 'HOT_testuser1@nav.hot.no';
-        user.CommunityNickname = 'userTest';
-        insert user;
-
-        user = [SELECT Id, AccountId FROM User WHERE Alias = 'userTest'];
-        System.runAs(user) {
-            Thread__c thread = HOT_MessageHelper.createThreadInterpreter(sa.Id);
-        }
-
-        Test.stopTest();
-        List<Thread__c> tList = [
-            SELECT Id, CRM_Account__c, CRM_Type__c
-            FROM Thread__c
-            WHERE CRM_Related_Object__c = :sa.Id
         ];
         System.assertNotEquals(null, tList);
     }
@@ -804,6 +759,44 @@ public with sharing class HOT_MessageHelperTest {
             SELECT Id, CRM_Account__c, CRM_Type__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :workOrder.Id
+        ];
+        System.assertNotEquals(null, tList);
+    }
+    @isTest
+    static void createThreadDispatcherEmployee() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        Test.startTest();
+        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(sa.Id, acc.Id, 'HOT_TOLK-FORMIDLER');
+        Test.stopTest();
+        List<Thread__c> tList = [
+            SELECT Id, CRM_Account__c, CRM_Type__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :sa.Id
         ];
         System.assertNotEquals(null, tList);
     }

@@ -1,173 +1,191 @@
 <template>
-    <div class="brodsmulesti" if:false={isFreelance}>
-        <c-breadcrumbs url-list={breadcrumbs} num-pops="3"></c-breadcrumbs>
-    </div>
-    <div class="brodsmulesti" if:true={isFreelance}>
-        <c-breadcrumbs url-list={breadcrumbsFreelance} num-pops="3"></c-breadcrumbs>
-    </div>
-    <div class="back-link-div">
-        <a class="back-link" onclick={goBack}>
-            <c-icon icon="Back"></c-icon>
-            <p style="margin-left: 0.25rem">Tilbake</p>
-        </a>
-        <a class="goToWO-link" onclick={goToDetails}>
-            <p>Gå til bestilling</p>
-        </a>
-    </div>
-    <div
-        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay serviceAppointmentDetails hidden"
-        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
-        tabindex="-1"
-        aria-label="Informasjon om oppdrag"
-    >
+    <template if:true={showContent}>
+        <div class="brodsmulesti" if:false={isFreelance}>
+            <c-breadcrumbs url-list={breadcrumbs} num-pops="3"></c-breadcrumbs>
+        </div>
+        <div class="brodsmulesti" if:true={isFreelance}>
+            <c-breadcrumbs url-list={breadcrumbsFreelance} num-pops="3"></c-breadcrumbs>
+        </div>
+        <div class="back-link-div">
+            <a class="back-link" onclick={goBack}>
+                <c-icon icon="Back"></c-icon>
+                <p style="margin-left: 0.25rem">Tilbake</p>
+            </a>
+            <a class="goToWO-link" onclick={goToDetails}>
+                <p>Gå til bestilling</p>
+            </a>
+        </div>
         <div
-            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-            role="dialog"
-            aria-labelledby="comment-header-id"
+            class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay serviceAppointmentDetails hidden"
+            style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+            tabindex="-1"
+            aria-label="Informasjon om oppdrag"
         >
-            <section>
-                <div>
-                    <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
-                </div>
-                <div class="record-details-container" if:true={isDetails}>
-                    <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
-                    <p>Tema: <span>{serviceAppointment.Subject}</span></p>
-                    <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
-                    <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
-                    <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
-                    <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
-                    <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
-                    <p>Status: <span>{serviceAppointment.Status}</span></p>
-                    <p>Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span></p>
-                    <p if:true={serviceAppointment.HOT_Escort__c}>
-                        Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
-                    </p>
-                    <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
-                        Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
-                    </p>
-                    <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                    <p if:true={interestedResource}>
-                        Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
-                    </p>
-                    <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
-                    <p>
-                        Telefonnummer til bestiller:
-                        <span> {serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c}</span>
-                    </p>
-                    <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
-                </div>
-                <div if:true={isIRDetails} class="record-details-container">
-                    <p>Oppdrag: <span>{interestedResource.AppointmentNumber__c}</span></p>
-                    <p>Tid: <span>{interestedResource.StartAndEndDate}</span></p>
-                    <p>Adresse: <span>{interestedResource.ServiceAppointmentAddress__c}</span></p>
-                    <p>Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span></p>
-                    <p>Oppdragstype: <span>{interestedResource.AssignmentType__c}</span></p>
-                    <p>Status: <span>{interestedResource.Status__c}</span></p>
-                    <p>Antall påmeldte: <span>{interestedResource.NumberOfInterestedResources__c}</span></p>
-                    <p>Frist dato: <span>{interestedResource.AppointmentDeadlineDate__c}</span></p>
-                    <p>Region: <span>{interestedResource.AppointmentServiceTerritory__c}</span></p>
-                    <p>Tema: <span>{interestedResource.ServiceAppointmentFreelanceSubject__c}</span></p>
-                    <p if:true={interestedResource.WorkOrderCanceledDate__c}>
-                        Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span>
-                    </p>
-                    <p if:true={interestedResource.HOT_TermsOfAgreement__c}>
-                        Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
-                    </p>
-                </div>
-                <div if:true={isWCDetails} class="record-details-container">
-                    <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
-                    <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
-                    <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
-                    <p>Status: <span>{wageClaim.Status__c}</span></p>
-                    <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
-                </div>
-            </section>
-            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
-                <span class="text-hide">Lukk</span>
-            </button>
+            <div
+                class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+                role="dialog"
+                aria-labelledby="comment-header-id"
+            >
+                <section>
+                    <div>
+                        <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
+                    </div>
+                    <div class="record-details-container" if:true={isDetails}>
+                        <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
+                        <p>Tema: <span>{serviceAppointment.Subject}</span></p>
+                        <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
+                        <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
+                        <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
+                        <p>
+                            Navn til bruker:
+                            <span> {serviceAppointment.HOT_Request__r.Account__r.Name}</span>
+                        </p>
+                        <p>
+                            Telefonnummer til bruker:
+                            <span>
+                                {serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c}</span
+                            >
+                        </p>
+                        <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
+                        <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                        <p>Status: <span>{serviceAppointment.Status}</span></p>
+                        <p>Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span></p>
+                        <p if:true={serviceAppointment.HOT_Escort__c}>
+                            Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
+                        </p>
+                        <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                            Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
+                        </p>
+                        <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                        <p if:true={interestedResource}>
+                            Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                        </p>
+                        <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
+                        <p>
+                            Telefonnummer til bestiller:
+                            <span>
+                                {serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c}</span
+                            >
+                        </p>
+                        <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
+                    </div>
+                    <div if:true={isIRDetails} class="record-details-container">
+                        <p>Oppdrag: <span>{interestedResource.AppointmentNumber__c}</span></p>
+                        <p>Tid: <span>{interestedResource.StartAndEndDate}</span></p>
+                        <p>Adresse: <span>{interestedResource.ServiceAppointmentAddress__c}</span></p>
+                        <p>Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span></p>
+                        <p>Oppdragstype: <span>{interestedResource.AssignmentType__c}</span></p>
+                        <p>Status: <span>{interestedResource.Status__c}</span></p>
+                        <p>Antall påmeldte: <span>{interestedResource.NumberOfInterestedResources__c}</span></p>
+                        <p>Frist dato: <span>{interestedResource.AppointmentDeadlineDate__c}</span></p>
+                        <p>Region: <span>{interestedResource.AppointmentServiceTerritory__c}</span></p>
+                        <p>Tema: <span>{interestedResource.ServiceAppointmentFreelanceSubject__c}</span></p>
+                        <p if:true={interestedResource.WorkOrderCanceledDate__c}>
+                            Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span>
+                        </p>
+                        <p if:true={interestedResource.HOT_TermsOfAgreement__c}>
+                            Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                        </p>
+                    </div>
+                    <div if:true={isWCDetails} class="record-details-container">
+                        <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
+                        <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
+                        <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
+                        <p>Status: <span>{wageClaim.Status__c}</span></p>
+                        <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                    </div>
+                </section>
+                <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
+                    <span class="text-hide">Lukk</span>
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="decorator-wrapper">
-        <div class="header" style="text-align: center">
-            <h1 class="typo-sidetittel">{subject} {threadType}</h1>
-            <slot name="subheader"></slot>
-        </div>
-        <c-hot_community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
-        </c-hot_community-error-summary>
-        <div class="contentholder">
-            <template for:each={messages} for:item="message">
-                <c-hot_messaging-Community-Message-Container
-                    tabindex="0"
-                    message={message}
-                    user-contact-id={userContactId}
-                    key={message.Id}
-                ></c-hot_messaging-Community-Message-Container>
-            </template>
-        </div>
-        <div>
-            <template if:false={isclosed}>
-                <lightning-layout horizontal-align="center">
-                    <lightning-layout-item
-                        size="12"
-                        class="slds-var-p-top_medium slds-var-p-horizontal_medium largePadding"
-                    >
-                        <lightning-messages></lightning-messages>
-                        <lightning-input-field
-                            class="msgText slds-hidden"
-                            field-name="CRM_Message_Text__c"
-                        ></lightning-input-field>
-                        <div class="body-wrapper">
-                            <div class="example__inner">
-                                <div class="">
-                                    <c-helptext
-                                        class="helpText"
-                                        if:true={isHelpText}
-                                        text={helptextContent}
-                                        hover-text={helptextHovertext}
-                                    ></c-helptext>
-                                    <c-hot_community-textarea
-                                        max-length={maxLength}
-                                        class="inputTextbox slds-var-m-bottom_medium"
-                                        ontextchanged={handleTextChange}
-                                    ></c-hot_community-textarea>
-                                    <button
-                                        disabled={buttonisdisabled}
-                                        type="submit"
-                                        class="knapp knapp--hoved .slds-float_right"
-                                        name="submit"
-                                        label="Send"
-                                        onclick={handleSendButtonClick}
-                                    >
-                                        Send
-                                    </button>
+        <div class="decorator-wrapper">
+            <div class="header" style="text-align: center">
+                <h1 class="typo-sidetittel">{subject} {threadType}</h1>
+                <slot name="subheader"></slot>
+            </div>
+            <c-hot_community-error-summary
+                error-list={errorList}
+                onclickedevent={handleErrorClick}
+                class="errorSummary"
+            >
+            </c-hot_community-error-summary>
+            <div class="contentholder">
+                <template for:each={messages} for:item="message">
+                    <c-hot_messaging-Community-Message-Container
+                        tabindex="0"
+                        message={message}
+                        user-contact-id={userContactId}
+                        key={message.Id}
+                    ></c-hot_messaging-Community-Message-Container>
+                </template>
+            </div>
+            <div class="content">
+                <template if:false={isclosed}>
+                    <lightning-layout horizontal-align="center">
+                        <lightning-layout-item
+                            size="12"
+                            class="slds-var-p-top_medium slds-var-p-horizontal_medium largePadding"
+                        >
+                            <lightning-messages></lightning-messages>
+                            <lightning-input-field
+                                class="msgText slds-hidden"
+                                field-name="CRM_Message_Text__c"
+                            ></lightning-input-field>
+                            <div class="body-wrapper">
+                                <div class="example__inner">
+                                    <div class="">
+                                        <c-helptext
+                                            class="helpText"
+                                            if:true={isHelpText}
+                                            text={helptextContent}
+                                            hover-text={helptextHovertext}
+                                        ></c-helptext>
+                                        <c-hot_community-textarea
+                                            max-length={maxLength}
+                                            class="inputTextbox slds-var-m-bottom_medium"
+                                            ontextchanged={handleTextChange}
+                                        ></c-hot_community-textarea>
+                                        <button
+                                            disabled={buttonisdisabled}
+                                            type="submit"
+                                            class="knapp knapp--hoved .slds-float_right"
+                                            name="submit"
+                                            label="Send"
+                                            onclick={handleSendButtonClick}
+                                        >
+                                            Send
+                                        </button>
+                                    </div>
                                 </div>
+                                <template if:true={showopenwarning}>
+                                    <c-hot_community-alert-stripe
+                                        class="alertbox closebox"
+                                        type="info"
+                                        alerttext={alertopen}
+                                    ></c-hot_community-alert-stripe>
+                                </template>
                             </div>
-                            <template if:true={showopenwarning}>
-                                <c-hot_community-alert-stripe
-                                    class="alertbox closebox"
-                                    type="info"
-                                    alerttext={alertopen}
-                                ></c-hot_community-alert-stripe>
-                            </template>
-                        </div>
 
-                        <lightning-input-field
-                            field-name="CRM_From_Contact__c"
-                            value={userContactId}
-                            class="slds-hidden"
-                        ></lightning-input-field>
-                        <lightning-input-field field-name="CRM_Thread__c" value={recordId} class="slds-hidden">
-                        </lightning-input-field>
-                    </lightning-layout-item>
-                </lightning-layout>
-            </template>
-        </div>
-        <template if:true={isclosed}>
-            <div class="infocontainer slds-var-p-top_medium slds-var-p-horizontal_medium largePadding">
-                <c-hot_community-alert-stripe
-                    class="alertbox"
-                    type="info"
-                    alerttext={alerttext}
-                ></c-hot_community-alert-stripe></div
-        ></template></div
-></template>
+                            <lightning-input-field
+                                field-name="CRM_From_Contact__c"
+                                value={userContactId}
+                                class="slds-hidden"
+                            ></lightning-input-field>
+                            <lightning-input-field field-name="CRM_Thread__c" value={recordId} class="slds-hidden">
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+            </div>
+            <template if:true={isclosed}>
+                <div class="infocontainer slds-var-p-top_medium slds-var-p-horizontal_medium largePadding">
+                    <c-hot_community-alert-stripe
+                        class="alertbox"
+                        type="info"
+                        alerttext={alerttext}
+                    ></c-hot_community-alert-stripe></div
+            ></template></div
+    ></template>
+</template>

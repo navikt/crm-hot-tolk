@@ -106,6 +106,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_Request__c> godkjentRequests = new List<HOT_Request__c>();
         List<Hot_Request__c> requestsWithNewSubject = new List<Hot_Request__c>();
+        List<Hot_Request__c> requestsWithUpdatedDispatcher = new List<Hot_Request__c>();
+
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Godkjent requests
@@ -115,6 +117,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (triggerOldMap.get(request.Id).get('Subject__c') !== request.Subject__c) {
                 requestsWithNewSubject.add(request);
             }
+            if (triggerOldMap.get(request.Id).get('Dispatcher__c') !== request.Dispatcher__c) {
+            requestsWithUpdatedDispatcher.add(request);
+            }
         }
         if (godkjentRequests.size() > 0) {
             createWOLI_SA(godkjentRequests);
@@ -122,8 +127,60 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (requestsWithNewSubject.size() > 0) {
             updateWorkOrderSubject(requestsWithNewSubject);
         }
+        if (requestsWithUpdatedDispatcher.size() > 0) {
+             updateDispatcherOnThread(requestsWithUpdatedDispatcher);
+        }
     }
+    public static void updateDispatcherOnThread(List<HOT_Request__c>  requestsList){
+        Set<Id> requestIds=new Set<Id>();
+        for(HOT_Request__c r:requestsList ){
+            requestIds.add(r.Id);
+        }
+        List<HOT_Request__c> requests=[SELECT Id, Dispatcher__c FROM HOT_Request__C WHERE Id IN :requestIds];
+        List<WorkOrder> workorders=[SELECT Id, HOT_Request__r.Dispatcher__c FROM WorkOrder WHERE HOT_Request__c IN :requestIds];
+        List<ServiceAppointment> serviceAppointments=[SELECT Id, HOT_Request__r.Dispatcher__c FROM ServiceAppointment WHERE HOT_Request__c IN :requestIds];
+        List<HOT_InterestedResource__c> interestedReources=[SELECT Id, ServiceAppointment__r.HOT_Request__r.Dispatcher__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__r.HOT_Request__c IN :requestIds];
+        
+        
+     Map<Id, Id> requestMap = new Map<Id, Id>();
+     Map<Id, Id> workOrderMap = new Map<Id, Id>();
+     Map<Id, Id> serviceApppointmentMap = new Map<Id, Id>();
+     Map<Id, Id> interestedResourceMap = new Map<Id, Id>();
+        for(HOT_Request__c r: requests){
+            requestMap.put(r.Id, r.Dispatcher__c);
+        }
+        Set<Id> woIds=new Set<Id>();
+        for(WorkOrder wo: workorders){
+            woIds.add(wo.Id);
+            workOrderMap.put(wo.Id, wo.HOT_Request__r.Dispatcher__c);
+        }
+        Set<Id> saIds=new Set<Id>();
+        for(ServiceAppointment sa: serviceAppointments){
+            saIds.add(sa.Id);
+            serviceApppointmentMap.put(sa.Id, sa.HOT_Request__r.Dispatcher__c);
+        }
+        Set<Id> irIds=new Set<Id>();
+        for(HOT_InterestedResource__c ir: interestedReources){
+            irIds.add(ir.Id);
+            interestedResourceMap.put(ir.Id, ir.serviceAppointment__r.HOT_Request__r.Dispatcher__c);
+        }
 
+        List<Thread__c> threadList=[SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN:requestIds OR CRM_Related_Object__c IN:woIds OR CRM_Related_Object__c IN: saIds OR CRM_Related_Object__c IN: irIds];
+
+        for (Thread__c thread : threadList) {
+            if (requestMap.containsKey(thread.CRM_Related_Object__c)) {
+                thread.HOT_Dispatcher__c = requestMap.get(thread.CRM_Related_Object__c);
+            } else if (workOrderMap.containsKey(thread.CRM_Related_Object__c)) {
+                thread.HOT_Dispatcher__c = workOrderMap.get(thread.CRM_Related_Object__c);
+            } else if (serviceApppointmentMap.containsKey(thread.CRM_Related_Object__c)) {
+                thread.HOT_Dispatcher__c = serviceApppointmentMap.get(thread.CRM_Related_Object__c);
+            } else if (interestedResourceMap.containsKey(thread.CRM_Related_Object__c)) {
+                thread.HOT_Dispatcher__c = interestedResourceMap.get(thread.CRM_Related_Object__c);
+            }
+        }
+        update threadList;
+    }  
+    
     private static void updateWorkOrderSubject(List<HOT_Request__c> requestsWithNewSubject) {
         List<WorkOrder> workOrders = [
             SELECT Id, Subject, HOT_Request__r.Subject__c

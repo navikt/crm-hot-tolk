@@ -54,6 +54,10 @@
     </classAccesses>
     <customPermissions>
         <enabled>true</enabled>
+        <name>DeactivateFreelanceInterpreter</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>HOT_Config</name>
     </customPermissions>
     <customPermissions>

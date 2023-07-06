@@ -556,4 +556,164 @@ private class HOT_RequestHandlerTest {
             System.AssertEquals(expectedException, true);
         }
     }
+    @isTest
+    public static void dispatcherOnThreadChangeRequest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        Profile adminProfile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
+        insert admin;
+
+        Thread__c thread = new Thread__c();
+        thread.CRM_Related_Object__c=request.Id;
+        thread.HOT_Request__c=request.Id;
+        insert thread; 
+           
+        Test.startTest();
+            request.Dispatcher__c=admin.Id;
+            update request;
+        Test.stopTest();
+        Thread__c t=[SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id=:thread.Id];
+        System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
+    }
+    @isTest
+    public static void dispatcherOnThreadChangeWorkOrder() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder1 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder1;
+        Profile adminProfile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
+        insert admin;
+
+        Thread__c thread = new Thread__c();
+        thread.CRM_Related_Object__c=workOrder1.Id;
+        thread.HOT_WorkOrder__c=workOrder1.Id;
+        insert thread; 
+           
+        Test.startTest();
+            request.Dispatcher__c=admin.Id;
+            update request;
+        Test.stopTest();
+        Thread__c t=[SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id=:thread.Id];
+        System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
+    }
+     @isTest
+    public static void dispatcherOnThreadChangeSA() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        //sa.HOT_Request__c = request.Id;
+        insert sa;
+        Profile adminProfile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
+        insert admin;
+
+        Thread__c thread = new Thread__c();
+        thread.CRM_Related_Object__c=sa.Id;
+        thread.HOT_ServiceAppointment__c=sa.Id;
+        insert thread; 
+           
+        Test.startTest();
+            request.Dispatcher__c=admin.Id;
+            update request;
+        Test.stopTest();
+        Thread__c t=[SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id=:thread.Id];
+        System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
+    }
+     @isTest
+    public static void dispatcherOnThreadChangeIR() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        insert sa;
+        Profile profile = [SELECT Id FROM Profile WHERE Name='System Administrator'];
+        User user1 = new User(alias = 'TestUser', email='HOT_testaccount@nav.hot.no',
+        emailencodingkey='UTF-8', lastname='Testing', languagelocalekey='en_US',
+        localesidkey='en_US', profileid = profile.Id , country='Norway',IsActive =true, timezonesidkey='Europe/Paris', username='HOT_testaccount@nav.hot.no');
+        insert user1;
+        ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
+        insert resource1;
+        HOT_InterestedResource__c interestedResource=HOT_TestDataFactory.createInterestedResource(sa.Id, resource1.Id);
+        insert interestedResource;
+
+        Profile adminProfile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
+        insert admin;
+
+        Thread__c thread = new Thread__c();
+        thread.CRM_Related_Object__c=interestedResource.Id;
+        thread.HOT_InterestedResource__c=interestedResource.Id;
+        insert thread; 
+           
+        Test.startTest();
+            request.Dispatcher__c=admin.Id;
+            update request;
+        Test.stopTest();
+        Thread__c t=[SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id=:thread.Id];
+        System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
+    }
+    @isTest
+    public static void updateWorkOrderSubjectOnRequestChange() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        
+        Test.startTest();
+            request.Subject__c='Ny subject';
+            update request;
+        Test.stopTest();
+        WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:workOrder.Id];
+        System.AssertEquals('Ny subject', wo.Subject);
+    }
+    @isTest
+    public static void resetNotifyDispatcher() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        
+        request.IsNotifyDispatcher__c=true;
+        
+        Test.startTest();
+            update request;
+        Test.stopTest();
+        HOT_Request__c requestToCheck=[SELECT IsNotifyDispatcher__c FROM HOT_Request__c WHERE Id=:request.Id];
+        System.AssertEquals(false, requestToCheck.IsNotifyDispatcher__c);
+    }
 }

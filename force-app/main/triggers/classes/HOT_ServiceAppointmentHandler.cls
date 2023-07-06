@@ -310,6 +310,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 retractedServiceAppointments.add(serviceAppointment);
             }
             if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'Annul' || serviceAppointment.Status == 'Cannot Complete'
+            ) {
+                retractedServiceAppointments.add(serviceAppointment);
+            }
+            if (
                 serviceAppointment.HOT_AddressFormated__c !=
                 triggerOldMap.get(serviceAppointment.Id).get('HOT_AddressFormated__c')
             ) {
@@ -902,7 +908,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
             if (newStatus == 'Service Appointment Retracted') {
                 if (
-                    interestedResource.ServiceAppointment__r.Status == 'None' &&
+                    interestedResource.ServiceAppointment__r.Status == 'None' || interestedResource.ServiceAppointment__r.Status== 'Annul' || interestedResource.ServiceAppointment__r.Status == 'Cannot Complete'&&
                     interestedResource.Status__c == 'Interested'
                 ) {
                     interestedResource.Status__c = newStatus;
