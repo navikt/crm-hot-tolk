@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
     <assignments>
         <name>DeactivateFreelance</name>
         <label>DeactivateFreelance</label>
-        <locationX>885</locationX>
-        <locationY>1262</locationY>
+        <locationX>710</locationX>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>CurrentResource.IsActive</assignToReference>
             <operator>Assign</operator>
@@ -20,8 +20,8 @@
     <assignments>
         <name>setUserProfile</name>
         <label>setUserProfile</label>
-        <locationX>1017</locationX>
-        <locationY>1862</locationY>
+        <locationX>842</locationX>
+        <locationY>1214</locationY>
         <assignmentItems>
             <assignToReference>getUser.ProfileId</assignToReference>
             <operator>Assign</operator>
@@ -36,8 +36,8 @@
     <decisions>
         <name>CheckIfFoundResource</name>
         <label>CheckIfFoundResource</label>
-        <locationX>456</locationX>
-        <locationY>1022</locationY>
+        <locationX>281</locationX>
+        <locationY>458</locationY>
         <defaultConnector>
             <targetReference>checkIfFreelance</targetReference>
         </defaultConnector>
@@ -49,7 +49,7 @@
                 <leftValueReference>CurrentResource.Id</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue />
+                    <stringValue></stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -61,8 +61,8 @@
     <decisions>
         <name>checkIfFoundUser</name>
         <label>checkIfFoundUser</label>
-        <locationX>885</locationX>
-        <locationY>1502</locationY>
+        <locationX>710</locationX>
+        <locationY>890</locationY>
         <defaultConnector>
             <targetReference>getProfile</targetReference>
         </defaultConnector>
@@ -74,7 +74,7 @@
                 <leftValueReference>getUser.Id</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue />
+                    <stringValue></stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -86,8 +86,8 @@
     <decisions>
         <name>checkIfFreelance</name>
         <label>checkIfFreelance</label>
-        <locationX>687</locationX>
-        <locationY>1142</locationY>
+        <locationX>512</locationX>
+        <locationY>566</locationY>
         <defaultConnector>
             <targetReference>DeactivateFreelance</targetReference>
         </defaultConnector>
@@ -111,8 +111,8 @@
     <decisions>
         <name>CheckPermission</name>
         <label>CheckPermission</label>
-        <locationX>448</locationX>
-        <locationY>267</locationY>
+        <locationX>693</locationX>
+        <locationY>134</locationY>
         <defaultConnector>
             <targetReference>No_Access_Screen</targetReference>
         </defaultConnector>
@@ -133,6 +133,7 @@
             <label>Has Permisson</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <formulas>
         <name>currentUser</name>
         <dataType>String</dataType>
@@ -149,7 +150,7 @@
     <processMetadataValues>
         <name>CanvasMode</name>
         <value>
-            <stringValue>FREE_FORM_CANVAS</stringValue>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -162,10 +163,10 @@
     <recordCreates>
         <name>assignPermissionSet</name>
         <label>assignPermissionSet</label>
-        <locationX>1017</locationX>
-        <locationY>2342</locationY>
+        <locationX>842</locationX>
+        <locationY>1646</locationY>
         <connector>
-            <targetReference>SuccessScreen</targetReference>
+            <targetReference>getFieldServiceMobilePsl</targetReference>
         </connector>
         <inputAssignments>
             <field>AssigneeId</field>
@@ -182,11 +183,43 @@
         <object>PermissionSetAssignment</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
+    <recordDeletes>
+        <name>deleteLicense</name>
+        <label>deleteLicense</label>
+        <locationX>842</locationX>
+        <locationY>1970</locationY>
+        <connector>
+            <targetReference>SuccessScreen</targetReference>
+        </connector>
+        <filterLogic>1 AND (2 OR 3)</filterLogic>
+        <filters>
+            <field>AssigneeId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getUser.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>PermissionSetLicenseId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getFieldServiceSchedulingPsl.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>PermissionSetLicenseId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getFieldServiceMobilePsl.Id</elementReference>
+            </value>
+        </filters>
+        <object>PermissionSetLicenseAssign</object>
+    </recordDeletes>
     <recordLookups>
         <name>GetCurrentResource</name>
         <label>GetCurrentResource</label>
-        <locationX>456</locationX>
-        <locationY>902</locationY>
+        <locationX>281</locationX>
+        <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>CheckIfFoundResource</targetReference>
@@ -210,10 +243,56 @@
         <sortOrder>Asc</sortOrder>
     </recordLookups>
     <recordLookups>
+        <name>getFieldServiceMobilePsl</name>
+        <label>getFieldServiceMobilePsl</label>
+        <locationX>842</locationX>
+        <locationY>1754</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>getFieldServiceSchedulingPsl</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>FieldServiceMobilePsl</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>PermissionSetLicense</object>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>getFieldServiceSchedulingPsl</name>
+        <label>getFieldServiceSchedulingPsl</label>
+        <locationX>842</locationX>
+        <locationY>1862</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>deleteLicense</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>FieldServiceSchedulingPsl</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>PermissionSetLicense</object>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>getPermissonSet</name>
         <label>getPermissonSet</label>
-        <locationX>1017</locationX>
-        <locationY>1742</locationY>
+        <locationX>842</locationX>
+        <locationY>1106</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>setUserProfile</targetReference>
@@ -233,8 +312,8 @@
     <recordLookups>
         <name>getProfile</name>
         <label>getProfile</label>
-        <locationX>1017</locationX>
-        <locationY>1622</locationY>
+        <locationX>842</locationX>
+        <locationY>998</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>getPermissonSet</targetReference>
@@ -254,8 +333,8 @@
     <recordLookups>
         <name>getUser</name>
         <label>getUser</label>
-        <locationX>885</locationX>
-        <locationY>1382</locationY>
+        <locationX>710</locationX>
+        <locationY>782</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>checkIfFoundUser</targetReference>
@@ -275,8 +354,8 @@
     <recordUpdates>
         <name>updateResource</name>
         <label>updateResource</label>
-        <locationX>1017</locationX>
-        <locationY>1982</locationY>
+        <locationX>842</locationX>
+        <locationY>1322</locationY>
         <connector>
             <targetReference>breakTrans</targetReference>
         </connector>
@@ -285,18 +364,19 @@
     <recordUpdates>
         <name>updateUser</name>
         <label>updateUser</label>
-        <locationX>1017</locationX>
-        <locationY>2222</locationY>
+        <locationX>842</locationX>
+        <locationY>1538</locationY>
         <connector>
             <targetReference>assignPermissionSet</targetReference>
         </connector>
         <inputReference>getUser</inputReference>
     </recordUpdates>
+    <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>breakTrans</name>
         <label>breakTrans</label>
-        <locationX>1017</locationX>
-        <locationY>2102</locationY>
+        <locationX>842</locationX>
+        <locationY>1430</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -314,15 +394,14 @@
     <screens>
         <name>No_Access_Screen</name>
         <label>No Access</label>
-        <locationX>256</locationX>
-        <locationY>265</locationY>
+        <locationX>1106</locationX>
+        <locationY>242</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
             <name>No_Access_Text</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt;Du har ikke tilgang til denne funksjonen.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt;Du har ikke tilgang til denne funksjonen.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -331,15 +410,14 @@
     <screens>
         <name>RecordNOTfoundScreen</name>
         <label>RecordNOTfoundScreen</label>
-        <locationX>225</locationX>
-        <locationY>1142</locationY>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>CloseWindowText</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14.6667px; font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; color: rgb(23, 43, 77);&quot;&gt;En feil oppstod! Fant ikke tjenesteressursen. &lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14.6667px; font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; color: rgb(23, 43, 77);&quot;&gt;En feil oppstod! Fant ikke tjenesteressursen. &lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -348,8 +426,8 @@
     <screens>
         <name>RecordNotFreelanceScreen</name>
         <label>RecordNotFreelanceScreen</label>
-        <locationX>489</locationX>
-        <locationY>1262</locationY>
+        <locationX>314</locationX>
+        <locationY>674</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -364,8 +442,8 @@
     <screens>
         <name>RecordUserNotFoundScreen</name>
         <label>RecordUserNotFoundScreen</label>
-        <locationX>753</locationX>
-        <locationY>1622</locationY>
+        <locationX>578</locationX>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -380,8 +458,8 @@
     <screens>
         <name>StartScreen</name>
         <label>StartScreen</label>
-        <locationX>456</locationX>
-        <locationY>782</locationY>
+        <locationX>281</locationX>
+        <locationY>242</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -399,8 +477,8 @@
     <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>1017</locationX>
-        <locationY>2462</locationY>
+        <locationX>842</locationX>
+        <locationY>2078</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -413,8 +491,8 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>330</locationX>
-        <locationY>48</locationY>
+        <locationX>567</locationX>
+        <locationY>0</locationY>
         <connector>
             <targetReference>CheckPermission</targetReference>
         </connector>

@@ -12,19 +12,10 @@ public without sharing class HOT_ReminderSMSService {
             sms.WorkOrder__c = workOrder.Id;
             sms.Recipient__c = workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id));
-            smsList.add(sms);
-            // smsList.add(
-            //     SMSService.createSMSRecord(
-            //         'HOT',
-            //         '24 Hour Scheduled Reminder',
-            //         workOrder.AccountId,
-            //         workOrder.Id,
-            //         workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c,
-            //         constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id)),
-            //         ''
-            //     )
-            // );
-            workOrder.HOT_IsReminderSMSSendt__c = true;
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+                workOrder.HOT_IsReminderSMSSendt__c = true;
+                } 
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrders.values());
@@ -121,9 +112,7 @@ public without sharing class HOT_ReminderSMSService {
 
     @Future
     public static void sendSMSOnNewMessage(Set<Id> threadIds) {
-        Map<Id,String> ordererPhoneOnRequest = new Map<Id, String>();
         List<SMS__c> smsList = new List<SMS__c>();
-        Set<Id> requestIds = new Set<Id>();
         List<Thread__c> threadList = [
             SELECT CRM_Account__c, CRM_Thread_Type__c, CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c, CRM_Related_Object__c
             FROM Thread__c
@@ -131,28 +120,17 @@ public without sharing class HOT_ReminderSMSService {
             AND CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c != NULL
         ];
 
-
-        for(Thread__c thread : threadList) {
-            if(thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
-                requestIds.add(thread.CRM_Related_Object__c);
-            } 
-        }
-
-        List<HOT_Request__c> requestList = [SELECT Id, OrdererPhone__c FROM HOT_Request__c WHERE Id = :requestIds AND OrdererPhone__c != null]; 
-
-        for (HOT_Request__c request : requestList) {
-            ordererPhoneOnRequest.put(request.Id, request.OrdererPhone__c);
-        }
-
         for (Thread__c thread : threadList) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Message';
             sms.Account__c = thread.CRM_Account__c;
             sms.Thread__c = thread.Id;
-            sms.Recipient__c = (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' && ordererPhoneOnRequest.get(thread.CRM_Related_Object__c) != null) ? ordererPhoneOnRequest.get(thread.CRM_Related_Object__c) : thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Recipient__c = getRecipientOnThread(thread);
             sms.Message__c = constructOnNewMessage();
-            smsList.add(sms);
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+                } 
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -187,18 +165,9 @@ public without sharing class HOT_ReminderSMSService {
             sms.WorkOrder__c = wo.Id;
             sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructOnOrdererMessage(wo);
-            smsList.add(sms);
-            // smsList.add(
-            //     SMSService.createSMSRecord(
-            //         'HOT',
-            //         'Orderer On Status Update',
-            //         wo.AccountId,
-            //         wo.Id,
-            //         wo.Account.CRM_Person__r.INT_KrrMobilePhone__c,
-            //         constructOnOrdererMessage(wo),
-            //         ''
-            //     )
-            // );
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+                } 
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -236,18 +205,9 @@ public without sharing class HOT_ReminderSMSService {
             sms.WorkOrder__c = wo.Id;
             sms.Recipient__c = getRecipient(wo);
             sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
-            smsList.add(sms);
-            // smsList.add(
-            //     SMSService.createSMSRecord(
-            //         'HOT',
-            //         'Orderer On Status Update',
-            //         wo.HOT_Request__r.Orderer__c,
-            //         wo.Id,
-            //         getRecipient(wo),
-            //         constructInterpreterChangedMessage(wo, interpreterName),
-            //         ''
-            //     )
-            // );
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+            } 
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -289,6 +249,21 @@ public without sharing class HOT_ReminderSMSService {
             return workOrder.HOT_Request__r.OrdererPhone__c;
         }
         return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+    }
+
+    private static String getRecipientOnThread(Thread__c thread) {
+        if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
+            return thread?.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+        }
+        else if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
+            ServiceResource sr = [SELECT AccountId, HOT_MobilePhone__c FROM ServiceResource WHERE AccountId = :thread.CRM_Account__c];
+            return sr?.HOT_MobilePhone__c;
+        } 
+        else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
+            HOT_Request__c request = [SELECT Id, OrdererPhone__c FROM HOT_Request__c WHERE Id = :thread.CRM_Related_Object__c]; 
+            return request?.OrdererPhone__c;
+        }
+        return '';
     }
 
     public static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {

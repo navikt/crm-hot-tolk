@@ -54,6 +54,10 @@
     </classAccesses>
     <customPermissions>
         <enabled>true</enabled>
+        <name>DeactivateFreelanceInterpreter</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>HOT_Config</name>
     </customPermissions>
     <customPermissions>
@@ -964,6 +968,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Person__c.HOT_IsReservationAgainstNotifications__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Person__c.HOT_IsReservationAgainstReminderSMS__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -990,11 +999,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_RemoteInterpreter__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Person__c.HOT_IsReservationAgainstNotifications__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
