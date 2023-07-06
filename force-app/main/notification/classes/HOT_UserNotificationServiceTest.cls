@@ -108,7 +108,7 @@ public class HOT_UserNotificationServiceTest {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        Thread__c t = [SELECT Id, CRM_Thread_Type__c FROM Thread__c LIMIT 1];
+        Thread__c t = [SELECT Id, CRM_Thread_Type__c, HOT_IsEmployeeThread__c FROM Thread__c LIMIT 1];
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         Test.startTest();
