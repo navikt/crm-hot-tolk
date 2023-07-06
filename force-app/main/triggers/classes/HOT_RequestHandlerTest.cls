@@ -701,4 +701,19 @@ private class HOT_RequestHandlerTest {
         WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:workOrder.Id];
         System.AssertEquals('Ny subject', wo.Subject);
     }
+    @isTest
+    public static void resetNotifyDispatcher() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        
+        request.IsNotifyDispatcher__c=true;
+        
+        Test.startTest();
+            update request;
+        Test.stopTest();
+        HOT_Request__c requestToCheck=[SELECT IsNotifyDispatcher__c FROM HOT_Request__c WHERE Id=:request.Id];
+        System.AssertEquals(false, requestToCheck.IsNotifyDispatcher__c);
+    }
 }
