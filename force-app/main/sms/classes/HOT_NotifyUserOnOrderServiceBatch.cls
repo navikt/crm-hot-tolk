@@ -60,7 +60,7 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
                     if (userIdByAccountId.get(request.Account__r.Id) != null) {
                         Set<String> recipients = new Set<String>();
                         recipients.add(userIdByAccountId.get(request.Account__r.Id));
-                        HOT_UserNotificationService.newWorkOrderNotification(notificationTypePush, wo, recipients);
+                        HOT_UserNotificationService.newRequestNotification(notificationTypePush, request, recipients);
                         request.IsNotifyUserOnOrder__c = false;
                     }
                 }

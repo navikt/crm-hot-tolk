@@ -28,6 +28,35 @@ public without sharing class HOT_UserNotificationService {
         }
     }
 
+    public static void newRequestNotification(
+        CustomNotificationType notificationType,
+        HOT_Request__c request,
+        Set<String> recipients
+    ) {
+        String title = 'Andre har lagt inn en bestilling for deg';
+        String body =
+            'Det er bestilt tolk til deg. Dato: ' +
+            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            ' - ' +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        String targetPageRef = getTargetPageRef(workOrder.Id, 'R');
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
     public static void sendNotificationToOrdererOnStatusUpdate(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
