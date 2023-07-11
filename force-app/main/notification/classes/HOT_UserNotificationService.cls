@@ -35,14 +35,14 @@ public without sharing class HOT_UserNotificationService {
     ) {
         String title = 'Andre har lagt inn en bestilling for deg';
         String body;
-        if(request.HOT_IsSerieoppdrag__c) {
+        if(request.IsSerieoppdrag__c) {
             body = 'Det er bestilt tolk til deg i perioden ' + request.SeriesStartDate__c + '-' + request.SeriesEndDate__c; 
         } else {
             body =
             'Det er bestilt tolk til deg. Dato: ' +
-            request.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            request.StartTime__c?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
-            request.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
             '.';
         }
         Id notificationTypeId = notificationType.Id;
