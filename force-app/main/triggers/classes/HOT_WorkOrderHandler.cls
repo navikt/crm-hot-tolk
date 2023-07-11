@@ -396,4 +396,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 ((Double) workOrder.EndDate.getTime() - (Double) workOrder.StartDate.getTime()) / 3600000;
         }
     }
+
+    public static WorkOrder getWorkOrder(HOT_Request__c request) {
+        return [SELECT Id, HOT_Request__c FROM WorkOrder WHERE HOT_Request__c = :request.Id LIMIT 1];
+    }
 }

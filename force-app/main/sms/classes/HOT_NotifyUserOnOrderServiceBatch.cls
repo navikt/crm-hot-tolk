@@ -11,14 +11,14 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
             horizonDate = Date.today().addDays(4);
         }
         String query = 'SELECT ';
-        query += 'Id, Account__c, Account__r.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate, Account__r.CRM_Person__r.HOT_NotificationChannel__c ';
+        query += 'Id, Account__c, Account__r.CRM_Person__r.INT_KrrMobilePhone__c, IsSerieoppdrag__c, SeriesStartDate__c, SeriesEndDate__c, StartTime__c, EndTime__c, Account__r.CRM_Person__r.HOT_NotificationChannel__c ';
         query += 'FROM HOT_Request__c ';
         query += 'WHERE Status = \'Godkjent\' ';
         query += 'AND (Account__r.CRM_Person__r.INT_KrrMobilePhone__c != null ';
         query += 'AND Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\') ';
         query += 'OR Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\' ';
         query += 'AND Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE ';
-        query += 'AND HOT_Request__r.IsNotNotifyAccount__c = FALSE ';  
+        query += 'AND IsNotNotifyAccount__c = FALSE ';  
         query += 'AND IsNotifyUserOnOrder__c = TRUE'; 
 
         return Database.getQueryLocator(query);

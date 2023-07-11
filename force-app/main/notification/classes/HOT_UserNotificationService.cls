@@ -34,15 +34,19 @@ public without sharing class HOT_UserNotificationService {
         Set<String> recipients
     ) {
         String title = 'Andre har lagt inn en bestilling for deg';
-        String body =
+        String body;
+        if(request.HOT_IsSerieoppdrag__c) {
+            body = 'Det er bestilt tolk til deg i perioden ' + request.SeriesStartDate__c + '-' + request.SeriesEndDate__c; 
+        } else {
+            body =
             'Det er bestilt tolk til deg. Dato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            request.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            request.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
-
+        }
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRef(workOrder.Id, 'R');
+        String targetPageRef = getTargetPageRef(HOT_WorkOrderHandler.getWorkOrder(request).Id, 'R');
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
