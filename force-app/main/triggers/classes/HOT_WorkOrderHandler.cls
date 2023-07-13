@@ -400,4 +400,3 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     public static WorkOrder getWorkOrder(HOT_Request__c request) {
         return [SELECT Id, HOT_Request__c FROM WorkOrder WHERE HOT_Request__c = :request.Id LIMIT 1];
     }
-}

@@ -233,7 +233,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             WHERE HOT_Request__c IN :godkjentRequests AND Status = 'New'
         ];
         if (workOrders.size() > 0) {
-            HOT_WorkOrderHandler.notifyOnOrderer(workorders);
             HOT_WorkOrderHandler.updateWorkOrders(workOrders);
             HOT_WorkOrderHandler.createChildRecords(workOrders);
         } else {
