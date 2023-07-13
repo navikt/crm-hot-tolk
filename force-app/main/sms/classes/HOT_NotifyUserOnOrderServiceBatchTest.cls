@@ -1,5 +1,5 @@
 @isTest
-private class HOT_ReminderSMSBatchTest {
+private class HOT_NotifyUserOnOrderServiceBatchTest {
     @TestSetup
     static void setup() {
     }
@@ -22,7 +22,7 @@ private class HOT_ReminderSMSBatchTest {
         workOrder.StartDate = workOrder.StartDate.addDays(-3);
         workOrder.EndDate = workOrder.EndDate.addDays(-3);
         //update workOrder;
-        HOT_ReminderSMSBatch instance = new HOT_ReminderSMSBatch();
+        HOT_NotifyUserOnOrderServiceBatch instance = new HOT_NotifyUserOnOrderServiceBatch();
         Test.startTest();
         database.executebatch(instance);
         Test.stopTest();
@@ -32,7 +32,7 @@ private class HOT_ReminderSMSBatchTest {
     static void schedulableTest() {
         String cron_exp = '0 0 0 3 9 ? 2024';
         Test.startTest();
-        String jobId = System.schedule('HOT_ReminderSMSBatch', cron_exp, new HOT_ReminderSMSBatch());
+        String jobId = System.schedule('HOT_NotifyUserOnOrderServiceBatch', cron_exp, new HOT_NotifyUserOnOrderServiceBatch());
         Test.stopTest();
         System.assert(jobId != null);
     }
