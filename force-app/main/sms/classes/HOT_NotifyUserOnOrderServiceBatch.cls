@@ -52,7 +52,7 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
 
         try {
             if (!smsNotifications.isEmpty()) {
-                //HOT_ReminderSMSService.reminderSMS(records);
+                HOT_ReminderSMSService.notifyUserOnOrderSMS(records);
             }
 
             if (!pushNotifications.isEmpty()) {

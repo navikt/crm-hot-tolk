@@ -21,6 +21,27 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.updateRecords(workOrders.values());
     }
 
+    public static void notifyUserOnOrderSMS(List<HOT_Request__c> requestList) {
+        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(requestList);
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (HOT_Request__c request : requests.values()) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = '24 Hour Scheduled Reminder';
+            sms.Account__c = workOrder.AccountId;
+            sms.WorkOrder__c = workOrder.Id;
+            sms.Recipient__c = workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Message__c = constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id));
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+                workOrder.HOT_IsReminderSMSSendt__c = true;
+                } 
+        }
+        HOT_DatabaseOperations.insertRecords(smsList);
+        HOT_DatabaseOperations.updateRecords(workOrders.values());
+    }
+
     private static Map<Id, List<ServiceAppointment>> dispatchedServiceAppointmentsByWorkOrderId(
         List<WorkOrder> workOrders
     ) {
