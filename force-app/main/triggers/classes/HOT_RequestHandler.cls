@@ -472,3 +472,4 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
 }
+}
