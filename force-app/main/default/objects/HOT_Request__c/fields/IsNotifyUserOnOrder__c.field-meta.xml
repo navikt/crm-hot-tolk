@@ -4,7 +4,7 @@
     <defaultValue>false</defaultValue>
     <description>Brukes til å sjekke om bruker skal varsles om bestilling</description>
     <externalId>false</externalId>
-    <label>IsNotifyUserOnOrder__c</label>
+    <label>Notify User On Order?</label>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
