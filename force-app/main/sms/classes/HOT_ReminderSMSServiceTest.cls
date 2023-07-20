@@ -54,6 +54,17 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
+    static void notifyUserOnOrderSMSTest() {
+        List<HOT_Request__c> requests = [
+            SELECT Id, Account_c, Account__r.CRM_Person__r.INT_KrrMobilePhone__c, IsNotifyUserOnOrder__c, StartTime__c, EndTime__c
+            FROM HOT_Request__c
+        ];
+        HOT_ReminderSMSService.notifyUserOnOrderSMS(requests);
+        List<SMS__c> smsList = [SELECT Id FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
+
+    @isTest
     static void sendSMSToOrdererOnStatusUpdateTest() {
         List<WorkOrder> workOrders = [
             SELECT
