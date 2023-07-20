@@ -13,7 +13,7 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
         String query = 'SELECT ';
         query += 'Id, Account__c, Account__r.CRM_Person__r.INT_KrrMobilePhone__c, IsSerieoppdrag__c, SeriesStartDate__c, SeriesEndDate__c, StartTime__c, EndTime__c, Account__r.CRM_Person__r.HOT_NotificationChannel__c ';
         query += 'FROM HOT_Request__c ';
-        query += 'WHERE Status = \'Godkjent\' ';
+        query += 'WHERE Status__c = \'Godkjent\' ';
         query += 'AND ((Account__r.CRM_Person__r.INT_KrrMobilePhone__c != null ';
         query += 'AND Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\') ';
         query += 'OR Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\') ';
