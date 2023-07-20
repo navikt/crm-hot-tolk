@@ -454,6 +454,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     public static void setNotifyOnUser(List<HOT_Request__c> requests) {
         for (HOT_Request__C request : requests) {
             request.IsNotifyUserOnOrder__c = true;
+        }
     }
 
     public static void setMeetingStreet(List<HOT_Request__c> requests) {
@@ -471,5 +472,4 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
-}
 }
