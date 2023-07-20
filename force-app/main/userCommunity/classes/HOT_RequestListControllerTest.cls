@@ -49,10 +49,10 @@ private class HOT_RequestListControllerTest {
         request3.StartTime__c = request3.StartTime__c.addDays(-8);
         request3.EndTime__c = request3.EndTime__c.addDays(-8);
         insert request3;
+        Test.startTest();
         request3.Status__c = 'Godkjent';
         update request3;
 
-        Test.startTest();
         Profile communityProfile = [
             SELECT Name
             FROM Profile
