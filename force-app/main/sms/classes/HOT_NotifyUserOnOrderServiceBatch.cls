@@ -14,9 +14,9 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
         query += 'Id, Account__c, Account__r.CRM_Person__r.INT_KrrMobilePhone__c, IsSerieoppdrag__c, SeriesStartDate__c, SeriesEndDate__c, StartTime__c, EndTime__c, Account__r.CRM_Person__r.HOT_NotificationChannel__c ';
         query += 'FROM HOT_Request__c ';
         query += 'WHERE Status = \'Godkjent\' ';
-        query += 'AND (Account__r.CRM_Person__r.INT_KrrMobilePhone__c != null ';
+        query += 'AND ((Account__r.CRM_Person__r.INT_KrrMobilePhone__c != null ';
         query += 'AND Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\') ';
-        query += 'OR Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\' ';
+        query += 'OR Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\') ';
         query += 'AND Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE ';
         query += 'AND IsNotNotifyAccount__c = FALSE ';  
         query += 'AND IsNotifyUserOnOrder__c = TRUE'; 
