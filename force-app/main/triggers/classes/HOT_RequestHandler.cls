@@ -453,7 +453,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     public static void setNotifyOnUser(List<HOT_Request__c> requests) {
         for (HOT_Request__C request : requests) {
-            request.IsNotifyUserOnOrder__c = true;
+            //request.IsNotifyUserOnOrder__c = true;
         }
     }
 
