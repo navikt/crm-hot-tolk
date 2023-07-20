@@ -40,7 +40,7 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
                 smsNotifications.add(request);
             } else {
                 pushNotifications.add(request);
-                accountIds.add(request.Account__r.Id);
+                accountIds.add(request.Account__c);
             }
         }
 
@@ -57,9 +57,9 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
 
             if (!pushNotifications.isEmpty()) {
                 for (HOT_Request__c request : pushNotifications) {
-                    if (userIdByAccountId.get(request.Account__r.Id) != null) {
+                    if (userIdByAccountId.get(request.Account__c) != null) {
                         Set<String> recipients = new Set<String>();
-                        recipients.add(userIdByAccountId.get(request.Account__r.Id));
+                        recipients.add(userIdByAccountId.get(request.Account__c));
                         HOT_UserNotificationService.newRequestNotification(notificationTypePush, request, recipients);
                         request.IsNotifyUserOnOrder__c = false;
                     }
