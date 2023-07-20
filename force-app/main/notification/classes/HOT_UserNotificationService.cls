@@ -1,7 +1,7 @@
 public without sharing class HOT_UserNotificationService {
     public static void newWorkOrderNotification(
         CustomNotificationType notificationType,
-        HOT_Request__c request,
+        workOrder workOrder,
         Set<String> recipients
     ) {
         String title = 'Andre har lagt inn en bestilling for deg';
