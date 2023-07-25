@@ -1,19 +1,23 @@
 public without sharing class HOT_UserNotificationService {
-    public static void newWorkOrderNotification(
+    public static void newRequestNotification(
         CustomNotificationType notificationType,
-        WorkOrder workOrder,
+        HOT_Request__c request,
         Set<String> recipients
     ) {
         String title = 'Andre har lagt inn en bestilling for deg';
-        String body =
+        String body;
+        if(request.IsSerieoppdrag__c) {
+            body = 'Det er bestilt tolk til deg i perioden ' + request.SeriesPeriod__c; 
+        } else {
+            body =
             'Det er bestilt tolk til deg. Dato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            request.StartTime__c?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
             '.';
-
+        }
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRef(workOrder.Id, 'R');
+        String targetPageRef = getTargetPageRef(HOT_WorkOrderHandler.getWorkOrder(request).Id, 'R');
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
