@@ -1,7 +1,7 @@
  #!/bin/bash
 
 # Oppretter scratch org
-sfdx force:org:create -f config/project-scratch-def.json --setalias $1 --durationdays $2 --setdefaultusername --json --loglevel fatal  --wait 10
+sfdx org:create:scratch -f config/project-scratch-def.json --setalias $1 --durationdays $2 --setdefaultusername --json --loglevel fatal  --wait 10
 
 # Installer crm-platform-base ver. 0.195
 sfdx package:install --package 04t7U0000000Rf8QAE -r -k $3 --wait 10 --publish-wait 10

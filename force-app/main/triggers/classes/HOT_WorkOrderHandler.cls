@@ -46,8 +46,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             accountIds.add(workOrder.AccountId);
         }
 
-        notifyOnOrderer((List<WorkOrder>) records);
-
         List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
             [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
@@ -399,58 +397,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         }
     }
 
-    public static void notifyOnOrderer(List<workOrder> records) {
-        List<Id> accountIds = new List<Id>();
-        List<Id> requestIds = new List<Id>();
-
-        for (WorkOrder workOrder : records) {
-            requestIds.add(workOrder.HOT_Request__c);
-            accountIds.add(workOrder.AccountId);
-        }
-
-        List<WorkOrder> workordersList = [
-            SELECT Id, StartDate, EndDate, AccountId, HOT_Request__r.IsNotNotifyAccount__c, HOT_Request__c, Account.CRM_Person__r.HOT_NotificationChannel__c
-            FROM WorkOrder
-            WHERE HOT_Request__c IN :requestIds AND HOT_Request__r.Type__c = 'User'
-        ];
-
-        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
-
-        Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
-        for (User user : users) {
-            userIdByAccountId.put(user.AccountId, user.Id);
-        }
-
-        if (!workordersList.isEmpty()) {
-            for (WorkOrder wo : workordersList) {
-                Set<String> recipients = new Set<String>();
-                // Added check for if account should not recieve notification on order
-                if (userIdByAccountId.get(wo.AccountId) != null && wo.Account.CRM_Person__r.HOT_NotificationChannel__c != null && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
-                    recipients.add(userIdByAccountId.get(wo.AccountId));
-                }
-                if (recipients.size() != 0) {
-                    if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
-                        HOT_UserNotificationService.newWorkOrderNotification(
-                            getCustomNotificationType('HOT_NotifyUser'),
-                            wo,
-                            recipients
-                        );
-                    } else {
-                        Set<Id> workOrderIds = new Set<Id>();
-                        workOrderIds.add(wo.Id);
-                        HOT_ReminderSMSService.sendSMSOnOrderer(workOrderIds);
-                    }
-                }
-            }
-        }
-    }
-
-    public static CustomNotificationType getCustomNotificationType(String devName) {
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = :devName
-        ];
-        return notificationType;
+    public static WorkOrder getWorkOrder(HOT_Request__c request) {
+        return [SELECT Id, HOT_Request__c FROM WorkOrder WHERE HOT_Request__c = :request.Id LIMIT 1];
     }
 }
