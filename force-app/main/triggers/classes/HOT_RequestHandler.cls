@@ -63,6 +63,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> ownerChangedRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
+        List<HOT_Request__c> notifyDispatcherRequests2 = new List<HOT_Request__c>();
         List<HOT_Request__c> requestsToChangeOwnerToArchive = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
