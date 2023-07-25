@@ -36,7 +36,7 @@ public without sharing class HOT_UserNotificationService {
         String title = 'Andre har lagt inn en bestilling for deg';
         String body;
         if(request.IsSerieoppdrag__c) {
-            body = 'Det er bestilt tolk til deg i perioden ' + request.SeriesStartDate__c + '-' + request.SeriesEndDate__c; 
+            body = 'Det er bestilt tolk til deg i perioden ' + request.SeriesPeriod__c; 
         } else {
             body =
             'Det er bestilt tolk til deg. Dato: ' +

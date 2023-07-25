@@ -247,7 +247,11 @@ public without sharing class HOT_ReminderSMSService {
 
     public static String constructOnOrdererMessage(HOT_Request__c request) {
         String message = 'INFO\nAndre har lagt inn en bestilling for deg:\n';
-        message += '\nDato: ' + formatTimePeriod(request.StartTime__c, request.EndTime__c);
+        if (request.IsSerieoppdrag__c) {
+            message += '\nPeriode: ' + request.SeriesPeriod__c;
+        } else {
+            message += '\nDato: ' + formatTimePeriod(request.StartTime__c, request.EndTime__c);
+        }
         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
         message += '\nMvh tolketjenesten i NAV';
         return message;
