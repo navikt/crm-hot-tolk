@@ -99,74 +99,82 @@ private class HOT_WorkOrderListControllerTest {
         }
     }
 
-    // @isTest
-    // static void getWorkOrdersFromRequestTest() {
-    //     User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+    @isTest
+    static void getWorkOrdersFromRequestTest() {
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
-    //     Person__c person = HOT_TestDataFactory.createPerson();
-    //     person.INT_KrrEmail__c = 'getPersonTest@nav.no';
-    //     person.HOT_WorkplaceInterpreter__c = true;
-    //     person.INT_Confidential__c = 'Ugradert';
-    //     person.INT_FirstName__c = 'Tolk';
-    //     person.INT_LastName__c = 'Bruker';
-    //     insert person;
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.INT_KrrEmail__c = 'getPersonTest@nav.no';
+        person.HOT_WorkplaceInterpreter__c = true;
+        person.INT_Confidential__c = 'Ugradert';
+        person.INT_FirstName__c = 'Tolk';
+        person.INT_LastName__c = 'Bruker';
+        insert person;
 
-    //     Account account = [
-    //         SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
-    //         FROM Account
-    //         WHERE LastName = :'Bruker'
-    //     ];
-    //     account.OwnerId = admin.Id;
-    //     update account;
+        Account account = [
+            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
+            FROM Account
+            WHERE LastName = :'Bruker'
+        ];
+        account.OwnerId = admin.Id;
+        update account;
 
-    //     WorkType workType = HOT_TestDataFactory.createWorkType();
-    //     insert workType;
-    //     HOT_Request__c request = HOT_TestDataFactory.createRequest('WorkOrderListController', workType);
-    //     request.Account__c = account.Id;
-    //     request.Orderer__c = account.Id;
-    //     insert request;
-    //     request.Status__c = 'Godkjent';
-    //     update request;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('WorkOrderListController', workType);
+        request.Account__c = account.Id;
+        request.Orderer__c = account.Id;
+        insert request;
+        request.Status__c = 'Godkjent';
+        update request;
 
-    //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
+        insert serviceResource;
 
-    //     insert serviceResource;
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
 
-    //     ServiceAppointment serviceAppointment = [
-    //         SELECT Id
-    //         FROM ServiceAppointment
-    //         WHERE HOT_Request__c = :request.Id
-    //         LIMIT 1
-    //     ];
-    //     AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
-    //         serviceAppointment.Id,
-    //         serviceResource.Id
-    //     );
-    //     insert assignedResource;
-    //     serviceAppointment.Status = 'Dispatched';
-    //     update serviceAppointment;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
 
-    //     Test.startTest();
-    //     Profile communityProfile = [
-    //         SELECT Name
-    //         FROM Profile
-    //         WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User' OR Name = 'Customer Community User'
-    //         LIMIT 1
-    //     ];
-    //     User user = HOT_TestDataFactory.createUser(communityProfile, account);
-    //     user.Alias = 'userTest';
-    //     user.Username = 'HOT_testuser1@nav.hot.no';
-    //     user.CommunityNickname = 'userTest';
-    //     insert user;
-    //     Test.stopTest();
+        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory);
+        insert serviceTerritoryMember;
 
-    //     user = [SELECT Id, AccountId FROM User WHERE Alias = 'userTest'];
-    //     request = [SELECT Id, Name FROM HOT_Request__c WHERE Account__c = :user.AccountId LIMIT 1];
-    //     System.runAs(user) {
-    //         List<WorkOrder> workOrders = HOT_WorkOrderListController.getWorkOrdersFromRequest((String) request.Name);
-    //         System.assertEquals(1, workOrders.size(), 'Could not get workOrders from Request');
-    //     }
-    // }
+        ServiceAppointment serviceAppointment = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        Test.startTest();
+        Profile communityProfile = [
+            SELECT Name
+            FROM Profile
+            WHERE Name = 'Personbruker Login' OR Name = 'Trial Customer Portal User' OR Name = 'Customer Community User'
+            LIMIT 1
+        ];
+        User user = HOT_TestDataFactory.createUser(communityProfile, account);
+        user.Alias = 'userTest';
+        user.Username = 'HOT_testuser1@nav.hot.no';
+        user.CommunityNickname = 'userTest';
+        insert user;
+        Test.stopTest();
+
+        user = [SELECT Id, AccountId FROM User WHERE Alias = 'userTest'];
+        request = [SELECT Id, Name FROM HOT_Request__c WHERE Account__c = :user.AccountId LIMIT 1];
+        System.runAs(user) {
+            List<WorkOrder> workOrders = HOT_WorkOrderListController.getWorkOrdersFromRequest((String) request.Name);
+            System.assertEquals(1, workOrders.size(), 'Could not get workOrders from Request');
+        }
+    }
     @isTest
     static void getThreadInterpreterIdTest() {
         Test.startTest();
