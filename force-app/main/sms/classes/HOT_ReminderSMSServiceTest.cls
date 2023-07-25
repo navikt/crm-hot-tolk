@@ -56,7 +56,7 @@ private class HOT_ReminderSMSServiceTest {
     @isTest
     static void notifyUserOnOrderSMSTest() {
         List<HOT_Request__c> requests = [
-            SELECT Id, Account__c, Account__r.CRM_Person__r.INT_KrrMobilePhone__c, IsNotifyUserOnOrder__c, StartTime__c, EndTime__c
+            SELECT Id, Account__c, IsSerieoppdrag__c, SeriesPeriod__c, Account__r.CRM_Person__r.INT_KrrMobilePhone__c, IsNotifyUserOnOrder__c, StartTime__c, EndTime__c
             FROM HOT_Request__c
         ];
         HOT_ReminderSMSService.notifyUserOnOrderSMS(requests);
