@@ -34,7 +34,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Message__c = constructOnOrdererMessage(request);
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
-                request.IsNotifyUserOnOrder__c = true;
+                request.IsNotifyUserOnOrder__c = false;
             } 
         }
         HOT_DatabaseOperations.insertRecords(smsList);
