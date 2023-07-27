@@ -104,6 +104,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_HapticCommunication__c,
                 HOT_TotalNumberOfInterpreters__c,
                 HOT_Escort__c,
+                HOT_Interpreters__c,
                 HOT_AssignmentType__c,
                 HOT_FreelanceSubject__c,
                 HOT_DelPol_IsHideFilesFromFreelance__c,
