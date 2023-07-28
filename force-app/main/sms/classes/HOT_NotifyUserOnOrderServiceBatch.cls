@@ -6,10 +6,6 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
-        Date horizonDate = Date.today().addDays(2);
-        if (now.format('EEEE') == 'Friday') {
-            horizonDate = Date.today().addDays(4);
-        }
         String query = 'SELECT ';
         query += 'Id, Account__c, Account__r.CRM_Person__r.INT_KrrMobilePhone__c, IsSerieoppdrag__c, SeriesPeriod__c, StartTime__c, EndTime__c, Account__r.CRM_Person__r.HOT_NotificationChannel__c ';
         query += 'FROM HOT_Request__c ';
