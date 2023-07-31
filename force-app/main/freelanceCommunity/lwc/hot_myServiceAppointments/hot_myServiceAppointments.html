@@ -58,7 +58,7 @@
                                 Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
                             </p>
                             <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                            <p if:true={interestedResource}>
+                            <p if:true={interestedResourc.HOT_TermsOfAgreement__c}>
                                 Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
                             </p>
                             <p if:true={serviceAppointment.HOT_Interpreters__c}>
