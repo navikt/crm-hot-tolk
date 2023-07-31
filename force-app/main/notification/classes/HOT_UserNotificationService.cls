@@ -48,7 +48,8 @@ public without sharing class HOT_UserNotificationService {
             body = 'Ikke ledig tolk.';
         }
         body += '\nDato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' + workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
             workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
@@ -81,7 +82,8 @@ public without sharing class HOT_UserNotificationService {
             body = 'Ikke ledig tolk';
         }
         body += '\nDato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' + workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
             workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
@@ -131,7 +133,8 @@ public without sharing class HOT_UserNotificationService {
         String body =
             'Tolk på din bestilling er endret. \nTolk er: ' + interpreters +
             '\nDato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' + workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
             workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
