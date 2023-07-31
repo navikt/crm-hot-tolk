@@ -11,7 +11,8 @@ public without sharing class HOT_UserNotificationService {
         } else {
             body =
             'Det er bestilt tolk til deg. Dato: ' +
-            request.StartTime__c?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            request.StartTime__c?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' + request.StartTime__c?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
             request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
             '.';
