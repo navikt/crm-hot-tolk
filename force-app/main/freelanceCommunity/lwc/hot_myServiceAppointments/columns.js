@@ -32,11 +32,11 @@ export let mobileColumns = [
         name: 'StartAndEndDate',
         type: 'Datetime'
     },
-    // {
-    //     label: 'Poststed',
-    //     name: 'City',
-    //     type: 'String'
-    // },
+    {
+        label: 'Poststed',
+        name: 'City',
+        type: 'String'
+    },
     // {
     //     label: 'Tolkemetode',
     //     name: 'HOT_WorkTypeName__c',
