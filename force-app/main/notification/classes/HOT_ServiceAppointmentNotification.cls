@@ -246,8 +246,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
         ServiceAppointment serviceAppointment,
         Set<String> recipients
     ) {
-        Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRef(serviceAppointment.Id);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle('Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber);
         notification.setBody(
@@ -257,15 +255,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
             serviceAppointment.DueDate?.format('HH:mm') +
             '.'
         );
-        notification.setNotificationTypeId(notificationTypeId);
-        notification.setTargetPageRef(targetPageRef);
-        try {
-            notification.send(recipients);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
+        notification.setNotificationTypeId(notificationType.Id);
+        notification.setTargetId(serviceAppointment.Id);
+
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
     public static void resourceChanged(
@@ -287,17 +280,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' som skulle starte ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
         );
-        Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRef(serviceAppointment.Id);
-
+        notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
-        notification.setTargetPageRef(targetPageRef);
-        notification.setNotificationTypeId(notificationTypeId);
-        notification.send(recipients);
 
-
-
-
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
     public static void screenInterpreterChanged(
@@ -460,12 +446,5 @@ public without sharing class HOT_ServiceAppointmentNotification {
             WHERE DeveloperName = :devName
         ];
         return notificationType;
-    }
-
-    private static String getTargetPageRef(Id targetId) {
-        String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {recordId: "' +
-            targetId + '"}}';
-        return pageRef;
     }
 }
