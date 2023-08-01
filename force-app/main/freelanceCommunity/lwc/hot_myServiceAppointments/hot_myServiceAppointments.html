@@ -59,11 +59,11 @@
                             </p>
                             <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                             <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
-                            <p if:true={interestedResource}>
+                            <p if:true={interestedResourc.HOT_TermsOfAgreement__c}>
                                 Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
                             </p>
                             <p if:true={serviceAppointment.HOT_Interpreters__c}>
-                                Medtolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
+                                (Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
                             </p>
                             <p if:true={serviceAppointment.Description}>
                                 Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>

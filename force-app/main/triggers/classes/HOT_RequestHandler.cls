@@ -90,8 +90,10 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
             // Notify user on order
             if (
+                triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' &&
                 triggerOldMap.get(request.Id).get('Status__c') !==
-                request.Status__c && request.Status__c == 'Godkjent' && !request.IsAccountEqualOrderer__c
+                request.Status__c && request.Status__c == 'Godkjent' && 
+                !request.IsAccountEqualOrderer__c
             ) {
                 ordererRequestsToNotifyUsers.add(request);
             }
