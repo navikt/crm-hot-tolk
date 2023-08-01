@@ -38,11 +38,6 @@ export let mobileColumns = [
         type: 'Datetime'
     },
     {
-        label: 'Region',
-        name: 'ServiceTerritoryName__c',
-        type: 'String'
-    },
-    {
         label: 'Oppdrag',
         name: 'ServiceAppointmentName__c',
         type: 'String'

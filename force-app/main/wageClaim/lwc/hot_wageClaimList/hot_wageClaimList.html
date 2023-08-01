@@ -29,8 +29,11 @@
                             <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
                             <p>Tid: <span>{wageClaim.weekday} {wageClaim.StartAndEndDate}</span></p>
                             <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
-                            <p>Status: <span>{Status}</span></p>
                             <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                            <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
+                            <p>Region: <span>{wageClaim.ServiceTerritoryName__c}</span></p>
+                            <p>Døv/døvblind: <span>{wageClaim.WorkTypeName__c}</span></p>
+                            <p>Status: <span>{Status}</span></p>
                         </div>
                         <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
                             <c-button
