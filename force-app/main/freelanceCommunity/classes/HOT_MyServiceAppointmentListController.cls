@@ -47,7 +47,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_TermsOfAgreement__c,
                 HOT_Escort__c,
                 HOT_ReleasedBy__c,
-                HOT_ReleasedDate__c,
+                HOT_ReleaseDate__c,
                 HOT_AssignmentType__c,
                 HOT_FreelanceSubject__c,
                 HOT_DelPol_IsHideFilesFromFreelance__c,
