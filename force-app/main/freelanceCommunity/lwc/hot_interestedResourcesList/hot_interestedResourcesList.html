@@ -38,6 +38,7 @@
                             <p>Status: <span>{interestedResource.Status__c}</span></p>
                             <p>Antall påmeldte: <span>{interestedResource.NumberOfInterestedResources__c}</span></p>
                             <p>Frist dato: <span>{interestedResource.AppointmentDeadlineDate__c}</span></p>
+                            <p>Frigitt av: <span>{interestedResource.ServiceAppointment__r.HOT_ReleasedBy__c}</span></p>
                             <p>Region: <span>{interestedResource.AppointmentServiceTerritory__c}</span></p>
                             <p>Tema: <span>{interestedResource.ServiceAppointmentFreelanceSubject__c}</span></p>
                             <p if:true={interestedResource.WorkOrderCanceledDate__c}>
