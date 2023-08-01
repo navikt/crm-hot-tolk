@@ -7,6 +7,7 @@ public without sharing class HOT_WageClaimListController {
                 StartTime__c,
                 EndTime__c,
                 AssignmentType__c,
+                ServiceAppointmentName__c,
                 WorkTypeName__c,
                 toLabel(Status__c),
                 ServiceTerritoryName__c,
