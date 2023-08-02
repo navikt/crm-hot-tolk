@@ -4,6 +4,7 @@ import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentList
 import getOrdererInformation from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOrdererInformation';
 import getAccountPhonenumber from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountPhonenumber';
 import getAccountName from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountName';
+import getOwnerName from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOwnerName';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
 import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
@@ -157,6 +158,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     @track ordererPhoneNumber;
     @track accountPhoneNumber;
     @track accountName;
+    @track ownerName;
     isDetails = false;
     isflow = false;
     isSeries = false;
@@ -176,13 +178,20 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             .catch((error) => {
                 this.accountPhoneNumber = '';
             });
-        getAccountName({ serviceAppointmentId: result.detail.Id })
+            getAccountName({ serviceAppointmentId: result.detail.Id })
             .then((name) => {
                 this.accountName = name;
             })
             .catch((error) => {
                 this.accountName = '';
             });
+            getOwnerName({ serviceAppointmentId: result.detail.Id })
+                .then((owner) => {
+                    this.ownerName = owner;
+                })
+                .catch((error) => {
+                    this.ownerName = '';
+                });
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
         this.template.querySelector('.serviceAppointmentDetails').focus();
         let today = new Date();

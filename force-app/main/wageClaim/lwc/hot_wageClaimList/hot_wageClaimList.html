@@ -31,7 +31,7 @@
                             <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
                             <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
                             <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
-                            <p>Region: <span>{wageClaim.ServiceTerritoryName__c}</span></p>
+                            <p>Eier: <span>{wageClaim.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span></p>
                             <p>Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span></p>
                             <p>Status: <span>{Status}</span></p>
                         </div>

@@ -28,6 +28,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_RequestNumber__c,
                 ServiceAppointment__r.HOT_ReleaseDate__c,
                 ServiceAppointment__r.HOT_ReleasedBy__c,
+                ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 AssignmentType__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
