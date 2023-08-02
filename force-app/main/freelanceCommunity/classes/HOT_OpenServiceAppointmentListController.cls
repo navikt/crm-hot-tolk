@@ -63,7 +63,8 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 HOT_AssignmentCategory__c,
                 HOT_Information__c,
                 HOT_IsScreenInterpreterNew__c,
-                HOT_Request__r.IsFellesOppdrag__c
+                HOT_Request__r.IsFellesOppdrag__c,
+                HOT_Request__r.OwnerName__c
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToFreelance__c = TRUE
