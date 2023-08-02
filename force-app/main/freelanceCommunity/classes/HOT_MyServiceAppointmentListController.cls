@@ -50,6 +50,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
                 HOT_Request__r.Account__r.Name,
                 HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                HOT_Request__r.OwnerName__c,
                 HOT_RequestNumber__c,
                 HOT_ServiceTerritoryDeveloperName__c,
                 HOT_ServiceTerritoryName__c,
@@ -183,6 +184,15 @@ public without sharing class HOT_MyServiceAppointmentListController {
             phonenumber=sa.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
         }
         return phoneNumber;
+    }
+    @AuraEnabled
+    public static String getOwnerName(String serviceAppointmentId){
+        String ownerName = '';
+        ServiceAppointment sa=[SELECT HOT_Request__r.OwnerName__c FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        if(sa.HOT_Request__r.OwnerName__c!=null){
+            ownerName=sa.HOT_Request__r.OwnerName__c;
+        }
+        return ownerName;
     }
     @AuraEnabled
     public static String getAccountName(String serviceAppointmentId){
