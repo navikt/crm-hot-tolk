@@ -1,8 +1,5 @@
 .mainContent {
     margin-bottom: 3.5rem;
-    max-width: 100vw;
-    margin: 0 auto;
-    overflow-x: hidden;
 }
 
 .thread-wrapper {
@@ -81,6 +78,18 @@ span {
     }
     .navigation-container {
         display: block;
+    }
+    .mainContent {
+        margin-bottom: 3.5rem;
+        max-width: 100vw;
+        margin: 0 auto;
+        overflow-x: hidden;
+    }
+    .thread-wrapper {
+        background-color: #fff;
+        border-radius: 0.5rem;
+        margin: 0 auto;
+        width: 100%;
     }
 }
 .tab-button {
