@@ -72,6 +72,7 @@ span {
     }
     .record-details-container {
         margin: 5vw 0;
+        padding: 1rem;
     }
     .navigation-container {
         display: block;
@@ -86,6 +87,7 @@ span {
         background-color: #fff;
         border-radius: 0.5rem;
         margin: 0 auto;
+        padding: 0;
         max-width: 100vw;
     }
 }

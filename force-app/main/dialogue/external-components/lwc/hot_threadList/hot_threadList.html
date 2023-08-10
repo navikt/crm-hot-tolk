@@ -27,9 +27,6 @@
                     </button>
                 </template>
             </div>
-            <div class="tabset mobile-only">
-                <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
-            </div>
             <div if:true={showMythreads}>
                 <div class="record-details-container" if:false={noThreads}>
                     <c-table
