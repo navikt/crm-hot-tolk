@@ -32,7 +32,6 @@ sf org assign permset --name HOT_Config
 sf community publish --name Tolketjenesten
 
 # Opprett testdata
-#sfdx apex run -f scripts/apex/createTestData.apex
 sf apex run --file scripts/apex/createTestData.apex
 
 # done
