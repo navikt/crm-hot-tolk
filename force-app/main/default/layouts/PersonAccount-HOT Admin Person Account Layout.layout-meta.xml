@@ -136,7 +136,7 @@
         <fields>HOT_ServiceResource__c</fields>
         <fields>HOT_Request__c</fields>
         <relatedList>ServiceAppointment.HOT_Account__c</relatedList>
-        <sortField>Name</sortField>
+        <sortField>SchedStartTime</sortField>
         <sortOrder>Desc</sortOrder>
     </relatedLists>
     <relatedLists>
