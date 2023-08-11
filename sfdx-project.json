@@ -1,14 +1,14 @@
 {
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "56.0",
+    "sourceApiVersion": "58.0",
     "packageDirectories": [
         {
             "path": "force-app",
             "default": true,
             "package": "crm-hot",
             "versionName": "ver 0.1",
-            "versionNumber": "1.225.0.NEXT",
+            "versionNumber": "1.227.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",

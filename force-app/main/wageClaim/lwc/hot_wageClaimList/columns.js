@@ -5,8 +5,13 @@ export let columns = [
         type: 'Datetime'
     },
     {
-        label: 'Døv/Døvblind',
-        name: 'DegreeOfHearingAndVisualImpairment__c',
+        label: 'Poststed',
+        name: 'ServiceAppointmentCity__c',
+        type: 'String'
+    },
+    {
+        label: 'Oppdragsnummer',
+        name: 'ServiceAppointmentName__c',
         type: 'String'
     },
     {
@@ -15,12 +20,7 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Poststed',
-        name: 'ServiceAppointmentCity__c',
-        type: 'String'
-    },
-    {
-        label: 'Arbeidstype',
+        label: 'Tolkemetode',
         name: 'WorkTypeName__c',
         type: 'String'
     },
@@ -36,11 +36,6 @@ export let mobileColumns = [
         label: 'Tid',
         name: 'StartAndEndDate',
         type: 'Datetime'
-    },
-    {
-        label: 'Region',
-        name: 'ServiceTerritoryName__c',
-        type: 'String'
     },
     {
         label: 'Oppdrag',

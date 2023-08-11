@@ -64,6 +64,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> avlystRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> requestsToChangeOwnerToArchive = new List<HOT_Request__c>();
+        List<HOT_Request__c> ordererRequestsToNotifyUsers = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
@@ -87,6 +88,15 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             ) {
                 requestsToChangeOwnerToArchive.add(request);
             }
+            // Notify user on order
+            if (
+                triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' &&
+                triggerOldMap.get(request.Id).get('Status__c') !==
+                request.Status__c && request.Status__c == 'Godkjent' && 
+                !request.IsAccountEqualOrderer__c
+            ) {
+                ordererRequestsToNotifyUsers.add(request);
+            }
         }
         if (ownerChangedRequests.size() > 0) {
             setServiceTerritory(ownerChangedRequests);
@@ -100,6 +110,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
         if (requestsToChangeOwnerToArchive.size() > 0) {
             HOT_Utility.setArchiveAsOwner(requestsToChangeOwnerToArchive);
+        }
+        if (ordererRequestsToNotifyUsers.size() > 0) {
+            setNotifyOnUser(ordererRequestsToNotifyUsers);
         }
     }
 
@@ -202,6 +215,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
+                AccountId,
                 HOT_Request__c,
                 Subject,
                 Description,
@@ -367,11 +381,13 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
+
     public static void setStatusDefault(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
             request.Status__c = 'Åpen';
         }
     }
+
     public static void setOrdererField(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
             if (request.Type__c == 'Me' && request.Orderer__c == null && request.Account__c != null) {
@@ -379,6 +395,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
+
     public static void setFieldsToBlank(List<HOT_Request__c> requests, List<String> fields) {
         for (HOT_Request__c request : requests) {
             for (String field : fields) {
@@ -388,6 +405,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
+
     // If Request is cloned we can assume it is Formidler since users can't clone
     public static void setSourceFieldOnClone(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
@@ -396,11 +414,13 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
+
     public static void resetNotifyDispatcher(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
             request.IsNotifyDispatcher__c = false;
         }
     }
+
     public static void setImageInterpreterFields(List<HOT_Request__c> requests) {
         WorkType imageInterpretationMethod = [
             SELECT Id, HOT_DeveloperName__c
@@ -414,6 +434,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
+
     public static void setInterpretationMethod(List<HOT_Request__c> requests) {
         List<String> userInterpretationMethodList = new List<String>();
         for (HOT_Request__c request : requests) {
@@ -429,6 +450,12 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
         for (HOT_Request__c request : requests) {
             request.InterpretationMethod__c = workTypeIdByDeveloperName.get(request.UserInterpretationMethod__c);
+        }
+    }
+
+    public static void setNotifyOnUser(List<HOT_Request__c> requests) {
+        for (HOT_Request__C request : requests) {
+            request.IsNotifyUserOnOrder__c = true;
         }
     }
 

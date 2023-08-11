@@ -1,36 +1,37 @@
  #!/bin/bash
 
 # Oppretter scratch org
-sfdx force:org:create -f config/project-scratch-def.json --setalias $1 --durationdays $2 --setdefaultusername --json --loglevel fatal  --wait 10
+sf org create scratch --definition-file config/project-scratch-def.json --alias $1 --duration-days $2 --set-default --json --wait 30
 
 # Installer crm-platform-base ver. 0.195
-sfdx package:install --package 04t7U0000000Rf8QAE -r -k $3 --wait 10 --publish-wait 10
+sf package install --package 04t7U0000000Rf8QAE --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-henvendelse-base ver. 0.16
-sfdx package:install --package 04t7U0000000RX4QAM -r -k $3 --wait 10 --publish-wait 10
+sf package install --package 04t7U0000000RX4QAM --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-platform-integration ver. 0.100
-sfdx package:install --package 04t7U0000000RhYQAU -r -k $3 --wait 10 --publish-wait 10
+sf package install --package 04t7U0000000RhYQAU --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-platform-access-control ver. 0.113
-sfdx package:install --package 04t7U0000004e8tQAA -r -k $3 --wait 10 --publish-wait 10
+sf package install --package 04t7U0000004e8tQAA --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-community-base ver. 0.86
-sfdx package:install --package 04t7U0000004duXQAQ -r -k $3 --wait 10 --publish-wait 10
+sf package install --package 04t7U0000004duXQAQ --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-platform-reporting ver. 0.31
-sfdx package:install --package 04t7U0000008rBAQAY -r -k $3 --wait 10 --publish-wait 10
+sf package install --package 04t7U0000008rBAQAY --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Dytt kildekoden til scratch org'en
-sfdx force:source:push
+sf project deploy start
 
 # Tildel tilatelsessett til brukeren
-sfdx force:user:permset:assign --perm-set-name "HOT_admin, HOT_Config"
+sf org assign permset --name HOT_Admin
+sf org assign permset --name HOT_Config
 
 # Publish Experience Site
-sfdx community:publish --name Tolketjenesten
+sf community publish --name Tolketjenesten
 
 # Opprett testdata
-sfdx apex run -f scripts/apex/createTestData.apex
+sf apex run --file scripts/apex/createTestData.apex
 
 # done

@@ -33,13 +33,18 @@ export let mobileColumns = [
         type: 'Datetime'
     },
     {
-        label: 'Tema',
-        name: 'Subject',
+        label: 'Poststed',
+        name: 'City',
         type: 'String'
     },
+    // {
+    //     label: 'Tolkemetode',
+    //     name: 'HOT_WorkTypeName__c',
+    //     type: 'String'
+    // },
     {
-        label: 'Status',
-        name: 'Status',
+        label: 'Tema',
+        name: 'Subject',
         type: 'String'
     }
 ];
