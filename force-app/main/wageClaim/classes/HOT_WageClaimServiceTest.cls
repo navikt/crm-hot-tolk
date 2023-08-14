@@ -31,38 +31,6 @@ private class HOT_WageClaimServiceTest {
         update new ServiceAppointment(Id = serviceAppointmentId, Status = 'Dispatched');
     }
 
-    // @isTest
-    // static void assignTest() {
-    //     AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
-    //     delete assignedResource;
-
-    //     List<AssignedResource> arList = [SELECT Id FROM AssignedResource WHERE Id = :assignedResource.Id];
-    //     System.assertEquals(0, arList.size(), 'Assigned resource not deleted');
-
-    //     update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
-
-    //     HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
-    //     Test.startTest();
-
-    //     HOT_WageClaimService.assign(wageClaim.Id, assignedResource.serviceAppointmentId);
-
-    //     List<AssignedResource> assignedResources = [
-    //         SELECT Id
-    //         FROM AssignedResource
-    //         WHERE
-    //         ServiceAppointmentId = :assignedResource.ServiceAppointmentId
-    //         AND ServiceResourceId = :wageClaim.ServiceResource__c
-    //         ];
-
-    //     Test.stopTest();
-
-    //     System.assertEquals(
-    //         1,
-    //         assignedResources.size(),
-    //         'Could not assign resource to service appointment from Wage Claim'
-    //     );
-    // }
-
     @isTest
     static void getServiceAppointmentsTest() {
         Test.startTest();
@@ -123,7 +91,7 @@ private class HOT_WageClaimServiceTest {
     static void SAWithARTimesChangedAndIsAgreement() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         update new ServiceResource(Id = assignedResource.ServiceResourceId, HOT_AgreementFreelance__c = true);
-
+        Test.startTest();
         HOT_Request__c request = [SELECT Id, ServiceResourceWithAgreement1__c FROM HOT_Request__c];
         request.ServiceResourceWithAgreement1__c = assignedResource.ServiceResourceId;
         update request;
@@ -144,7 +112,7 @@ private class HOT_WageClaimServiceTest {
         serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime.addMinutes(15);
         serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
         serviceAppointment.Status = 'Completed';
-        Test.startTest();
+
         update serviceAppointment;
         Test.stopTest();
 

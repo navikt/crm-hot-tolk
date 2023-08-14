@@ -118,10 +118,10 @@ private class HOT_CreateWageClaimTest {
 
     @isTest
     static void createWageClaimTest_negative_duplicates() {
+        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
         delete assignedResource;
 
-        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
         Test.stopTest();
 

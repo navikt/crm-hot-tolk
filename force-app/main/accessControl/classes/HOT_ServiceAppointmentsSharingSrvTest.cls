@@ -320,6 +320,7 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         ];
         serviceAppointment.HOT_IsRecalculateManualSharing__c = true;
         serviceAppointment.HOT_ServiceResource__c = null;
+        serviceAppointment.Status = 'Dispatched';
         update serviceAppointment;
 
         serviceAppointment = [

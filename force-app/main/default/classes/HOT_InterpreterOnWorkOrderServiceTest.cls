@@ -294,7 +294,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         resource2.Name = 'resource2';
         resource3.Name = 'resource3';
         update new List<ServiceResource>{ resource1, resource2, resource3 };
-
+        Test.startTest();
         // Add assigned resources
         AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment1.Id,
@@ -318,7 +318,6 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         workOrder.Status = 'Dispatched';
         update workOrder;
 
-        Test.startTest();
         delete assignedResource2;
         Test.stopTest();
 
@@ -453,7 +452,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         ];
         workOrder.Status = 'Dispatched';
         update workOrder;
-
+        Test.startTest();
         // Add assigned resources
         AssignedResource assignedResource1 = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment1.Id,
@@ -466,7 +465,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         insert new List<AssignedResource>{ assignedResource1, assignedResource2 };
 
         assignedResource2.ServiceResourceId = resource3.Id;
-        Test.startTest();
+
         update assignedResource2;
         Test.stopTest();
 
