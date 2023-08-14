@@ -32,27 +32,49 @@
                             <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
                             <p>Tema: <span>{serviceAppointment.Subject}</span></p>
                             <p>Tid: <span>{serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
-                            <p>Faktisk start: <span>{serviceAppointment.ActualStartTime}</span></p>
-                            <p>Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span></p>
-                            <p>Navn til bruker: <span>{accountName}</span></p>
-                            <p>Telefonnummer til bruker: <span>{accountPhoneNumber}</span></p>
-                            <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
-                            <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                            <p if:true={serviceAppointment.HOT_AddressFormated__c}>
+                                Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span>
+                            </p>
+                            <p if:true={serviceAppointment.ActualStartTime}>
+                                Faktisk start: <span>{serviceAppointment.ActualStartTime}</span>
+                            </p>
+                            <p if:true={serviceAppointment.ActualEndTime}>
+                                Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span>
+                            </p>
+                            <p if:true={accountName}>
+                                Navn til bruker: <span>{accountName}</span>
+                            </p>
+                            <p if:true={accountPhoneNumber}>
+                                Telefonnummer til bruker: <span>{accountPhoneNumber}</span>
+                            </p>
+                            <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d17896.11113266603!2d8.48195!3d59.8763379!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x463f4310498ee947%3A0x47cda75400ea9893!2sHeroes%20of%20Telemark%20view!5e1!3m2!1sen!2sno!4v1690488422572!5m2!1sen!2sno" width="250" height="225" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> -->
+                            <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                            <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+                            <p>Eier: <span>{ownerName}</span></p>
                             <p>Status: <span>{serviceAppointment.Status}</span></p>
                             <p>Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span></p>
                             <p if:true={serviceAppointment.HOT_Escort__c}>
                                 Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
                             </p>
+                            <p></p>
                             <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
                                 Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
                             </p>
-                            <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                            <p if:true={interestedResource}>
+                            <p if:true={interestedResource.HOT_TermsOfAgreement__c}>
                                 Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
                             </p>
-                            <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
-                            <p>Telefonnummer til bestiller: <span>{ordererPhoneNumber}</span></p>
-                            <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
+                            <p if:true={serviceAppointment.HOT_Interpreters__c}>
+                                (Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
+                            </p>
+                            <p if:true={serviceAppointment.Description}>
+                                Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>
+                            </p>
+                            <p if:true={ordererPhoneNumber}>
+                                Telefonnummer til bestiller: <span>{ordererPhoneNumber}</span>
+                            </p>
+                            <p if:true={serviceAppointment.HOT_Dispatcher__c}>
+                                Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span>
+                            </p>
                             <div class="files-container">
                                 <c-record-files-with-sharing
                                     record-id={serviceAppointment.Id}

@@ -1,19 +1,24 @@
 public without sharing class HOT_UserNotificationService {
-    public static void newWorkOrderNotification(
+    public static void newRequestNotification(
         CustomNotificationType notificationType,
-        WorkOrder workOrder,
+        HOT_Request__c request,
         Set<String> recipients
     ) {
         String title = 'Andre har lagt inn en bestilling for deg';
-        String body =
+        String body;
+        if(request.IsSerieoppdrag__c) {
+            body = 'Det er bestilt tolk til deg i perioden ' + request.SeriesPeriod__c; 
+        } else {
+            body =
             'Det er bestilt tolk til deg. Dato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            request.StartTime__c?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' + request.StartTime__c?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
             '.';
-
+        }
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRef(workOrder.Id, 'R');
+        String targetPageRef = getTargetPageRef(HOT_WorkOrderHandler.getWorkOrder(request).Id, 'R');
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
@@ -44,7 +49,8 @@ public without sharing class HOT_UserNotificationService {
             body = 'Ikke ledig tolk.';
         }
         body += '\nDato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' + workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
             workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
@@ -77,7 +83,8 @@ public without sharing class HOT_UserNotificationService {
             body = 'Ikke ledig tolk';
         }
         body += '\nDato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' + workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
             workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
@@ -127,7 +134,8 @@ public without sharing class HOT_UserNotificationService {
         String body =
             'Tolk på din bestilling er endret. \nTolk er: ' + interpreters +
             '\nDato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+            workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' + workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
             workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
@@ -152,7 +160,7 @@ public without sharing class HOT_UserNotificationService {
         String body = 'Du har fått en melding fra Tolketjenesten.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRefThread(thread.Id);
+        String targetPageRef = getTargetPageRefThread(thread);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
@@ -173,6 +181,7 @@ public without sharing class HOT_UserNotificationService {
 
         return pageRef;
     }
+
     private static String getTargetPageRefOrderer(Id targetId, String level) {
         String pageRef =
             '{type: "comm__namedPage",attributes: {pageName: "mine-bestillinger-andre"}, state: {id: "' +
@@ -184,11 +193,17 @@ public without sharing class HOT_UserNotificationService {
         return pageRef;
     }
 
-    private static String getTargetPageRefThread(Id targetId) {
-        String pageRef =
-            '{type: "standard__recordPage",attributes: {recordId: "' +
-            targetId +
-            '", objectApiName: "Thread__c", actionName: "view"}}';
-        return pageRef;
+    private static String getTargetPageRefThread(Thread__c target) {
+        if(target.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !target.HOT_IsEmployeeThread__c) {
+            String pageRef =
+            '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {recordId: "' +
+            target.Id + '"}}';
+            return pageRef;
+        } else {
+            String pageRef =
+            '{type: "comm__namedPage",attributes: {pageName: "mine-samtaler"}, state: {recordId: "' +
+            target.Id +'"}}';
+            return pageRef;
+        }
     }
 }

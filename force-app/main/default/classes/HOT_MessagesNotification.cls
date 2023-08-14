@@ -32,9 +32,11 @@ public without sharing class HOT_MessagesNotification {
         List<Thread__c> threads = [
             SELECT
                 CRM_Account__c,
+                CRM_Thread_Type__c,
+                HOT_IsEmployeeThread__c,
                 CRM_Account__r.INT_KrrMobilePhone__c,
-                CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c,
-                CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c
+                CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c,
+                CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
             FROM Thread__c
             WHERE
                 Id IN :threadIds

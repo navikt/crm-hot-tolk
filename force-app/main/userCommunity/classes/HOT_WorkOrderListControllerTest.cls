@@ -43,6 +43,15 @@ private class HOT_WorkOrderListControllerTest {
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
         insert serviceResource;
 
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
+        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory);
+        insert serviceTerritoryMember;
+
         List<AssignedResource> assignedResources = new List<AssignedResource>();
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, Status, SchedStartTime, SchedEndTime
@@ -89,6 +98,7 @@ private class HOT_WorkOrderListControllerTest {
             System.assertEquals(1, workOrders.size(), 'Could not get all my workOrders');
         }
     }
+
     @isTest
     static void getWorkOrdersFromRequestTest() {
         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
@@ -120,6 +130,15 @@ private class HOT_WorkOrderListControllerTest {
 
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
         insert serviceResource;
+
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
+        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory);
+        insert serviceTerritoryMember;
 
         ServiceAppointment serviceAppointment = [
             SELECT Id
@@ -156,6 +175,7 @@ private class HOT_WorkOrderListControllerTest {
             System.assertEquals(1, workOrders.size(), 'Could not get workOrders from Request');
         }
     }
+    
     @isTest
     static void getThreadInterpreterIdTest() {
         Test.startTest();

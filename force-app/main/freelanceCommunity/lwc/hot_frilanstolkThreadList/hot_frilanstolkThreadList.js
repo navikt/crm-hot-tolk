@@ -122,10 +122,6 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
         return formattedTime;
     }
 
-    setActiveTabMobile(event) {
-        this.setActiveTab({ target: { dataset: { id: event.detail.name } } });
-    }
-
     setActiveTab(event) {
         this.updateTab(event);
     }

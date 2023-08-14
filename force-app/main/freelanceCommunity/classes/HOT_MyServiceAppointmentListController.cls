@@ -30,33 +30,36 @@ public without sharing class HOT_MyServiceAppointmentListController {
     public static ServiceAppointment getServiceAppointmentDetails(String recordId) {
       ServiceAppointment serviceAppointment= [
             SELECT  AppointmentNumber,
-                Subject,
-                SchedStartTime,
-                SchedEndTime,
-                EarliestStartTime,
-                DueDate,
-                ActualStartTime,
                 ActualEndTime,
+                ActualStartTime,
+                Description,
+                DueDate,
+                EarliestStartTime,
                 HOT_AddressFormated__c,
-                HOT_ServiceTerritoryName__c,
-                Status,
-                HOT_HapticCommunication__c,
-                HOT_ServiceTerritoryDeveloperName__c,
-                HOT_DegreeOfHearingAndVisualImpairment__c,
-                HOT_WorkTypeName__c,
-                HOT_TermsOfAgreement__c,
-                HOT_Escort__c,
                 HOT_AssignmentType__c,
-                HOT_FreelanceSubject__c,
+                HOT_DegreeOfHearingAndVisualImpairment__c,
                 HOT_DelPol_IsHideFilesFromFreelance__c,
                 HOT_DelPol_ToHideRecord__c,
                 HOT_Dispatcher__c,
-                Description,
-                HOT_RequestNumber__c,
+                HOT_Escort__c,
+                HOT_FreelanceSubject__c,
+                HOT_HapticCommunication__c,
                 HOT_IsSerieoppdrag__c,
+                HOT_ReleaseDate__c,
+                HOT_ReleasedBy__c,
+                HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
                 HOT_Request__r.Account__r.Name,
                 HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c,
-                HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c
+                HOT_Request__r.OwnerName__c,
+                HOT_RequestNumber__c,
+                HOT_ServiceTerritoryDeveloperName__c,
+                HOT_ServiceTerritoryName__c,
+                HOT_TermsOfAgreement__c,
+                HOT_WorkTypeName__c,
+                SchedEndTime,
+                SchedStartTime,
+                Status,
+                Subject
             FROM ServiceAppointment
             WHERE Id=:recordId
         ];
@@ -81,37 +84,40 @@ public without sharing class HOT_MyServiceAppointmentListController {
         }
         List<ServiceAppointment> serviceAppointments = [
             SELECT
-                AppointmentNumber,
-                Subject,
-                Description,
-                toLabel(Status),
-                ParentRecordId,
-                HOT_AddressFormated__c,
-                EarliestStartTime,
-                DueDate,
-                HOT_AssignedResourceId__c,
-                HOT_WorkTypeName__c,
-                SchedStartTime,
-                SchedEndTime,
-                ActualStartTime,
                 ActualEndTime,
-                HOT_TermsOfAgreement__c,
+                ActualStartTime,
+                AppointmentNumber,
                 City,
-                ServiceTerritory.Name,
-                HOT_ServiceTerritoryName__c,
-                HOT_ServiceTerritoryDeveloperName__c,
-                HOT_DegreeOfHearingAndVisualImpairment__c,
-                HOT_HapticCommunication__c,
-                HOT_TotalNumberOfInterpreters__c,
-                HOT_Escort__c,
+                Description,
+                DueDate,
+                EarliestStartTime,
+                HOT_AddressFormated__c,
+                HOT_AssignedResourceId__c,
                 HOT_AssignmentType__c,
-                HOT_FreelanceSubject__c,
+                HOT_DegreeOfHearingAndVisualImpairment__c,
                 HOT_DelPol_IsHideFilesFromFreelance__c,
                 HOT_DelPol_ToHideRecord__c,
                 HOT_Dispatcher__c,
-                HOT_RequestNumber__c,
+                HOT_Escort__c,
+                HOT_FreelanceSubject__c,
+                HOT_HapticCommunication__c,
+                HOT_Interpreters__c,
                 HOT_IsSerieoppdrag__c,
+                HOT_ReleaseDate__c,
+                HOT_ReleasedBy__c,
                 HOT_Request__r.IsNotNotifyAccount__c,
+                HOT_RequestNumber__c,
+                HOT_ServiceTerritoryDeveloperName__c,
+                HOT_ServiceTerritoryName__c,
+                HOT_TermsOfAgreement__c,
+                HOT_TotalNumberOfInterpreters__c,
+                HOT_WorkTypeName__c,
+                ParentRecordId,
+                SchedEndTime,
+                SchedStartTime,
+                ServiceTerritory.Name,
+                Subject,
+                toLabel(Status),
                 (
                     SELECT Id, HOT_TermsOfAgreement__c
                     FROM ServiceAppointment.InterestedResources__r
@@ -178,6 +184,15 @@ public without sharing class HOT_MyServiceAppointmentListController {
             phonenumber=sa.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
         }
         return phoneNumber;
+    }
+    @AuraEnabled
+    public static String getOwnerName(String serviceAppointmentId){
+        String ownerName = '';
+        ServiceAppointment sa=[SELECT HOT_Request__r.OwnerName__c FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
+        if(sa.HOT_Request__r.OwnerName__c!=null){
+            ownerName=sa.HOT_Request__r.OwnerName__c;
+        }
+        return ownerName;
     }
     @AuraEnabled
     public static String getAccountName(String serviceAppointmentId){
