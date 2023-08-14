@@ -20,15 +20,12 @@
                 </div>
                 <div class="empty"></div>
             </div>
-            <div class="tabset desktop-only">
+            <div class="tabset">
                 <template for:each={tabs} for:item="tab">
                     <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
                         {tab.label} <c-icon if:true={tab.hasUnread} icon="Information"></c-icon>
                     </button>
                 </template>
-            </div>
-            <div class="tabset mobile-only">
-                <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
             </div>
             <div if:true={showMythreads}>
                 <div class="record-details-container" if:false={noThreads}>

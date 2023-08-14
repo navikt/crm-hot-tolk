@@ -47,6 +47,12 @@ export let mobileColumns = [
         label: 'Tema',
         name: 'ServiceAppointmentFreelanceSubject__c',
         type: 'String'
+    },
+    {
+        name: 'IsUnreadMessage',
+        label: '',
+        type: 'String',
+        svg: true
     }
 ];
 
