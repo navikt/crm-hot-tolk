@@ -1,0 +1,153 @@
+<template>
+    <div class="main-content">
+        <div if:false={noServiceAppointments}>
+            <c-table
+                if:false={noServiceAppointments}
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                icon-by-value={iconByValue}
+            ></c-table>
+        </div>
+        <div if:true={noServiceAppointments} style="text-align: center">
+            <br />
+            Det er ingen oppdrag her.
+        </div>
+    </div>
+
+    <div
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay commentPage hidden"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+        tabindex="-1"
+        aria-label="Legg inn kommentarer til oppdragene"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            role="dialog"
+            aria-labelledby="comment-header-id"
+        >
+            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
+                <span class="text-hide">Lukk</span>
+            </button>
+        </div>
+    </div>
+    <div
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay serviceAppointmentDetails hidden"
+        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+        tabindex="-1"
+        aria-label="Informasjon om oppdrag"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+            role="dialog"
+            aria-labelledby="comment-header-id"
+        >
+            <section>
+                <div if:true={isDetails}>
+                    <div class="record-details-container">
+                        <div>
+                            <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
+                        </div>
+                        <p>Oppdragsnummer: <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span></p>
+                        <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
+                        <p>Tid: <span> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
+                        <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
+                        <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                        <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+                        <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
+                        <p>Frigitt dato: <span>{serviceAppointment.ReleaseDate}</span></p>
+                        <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
+                        <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
+                        <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
+                        <br />
+                        <p>
+                            Du er ønsket til dette oppdraget. Om du ønsker å ta oppdraget blir det automatisk tildelt
+                            deg.
+                        </p>
+                        <div style="display: inline-block; padding-bottom: 1vw; padding-top: 1vw">
+                            <c-button
+                                button-styling="primary"
+                                button-label="Jeg tar oppdraget"
+                                aria-label="Jeg tar oppdraget"
+                                title="Jeg tar oppdraget"
+                                style="margin-right: 1vw"
+                                onbuttonclick={acceptInterest}
+                            >
+                            </c-button>
+                            <c-button
+                                button-styling="danger"
+                                button-label="Avslå interesse"
+                                aria-label="Avslå interesse"
+                                title="Avslå interesse"
+                                style="margin-right: 1vw"
+                                onbuttonclick={declineInterest}
+                            >
+                            </c-button>
+                        </div>
+                        <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
+                            <span class="text-hide">Lukk</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <div class="submit">
+                <div class="submitted-true hidden">
+                    <lightning-icon
+                        icon-name="utility:success"
+                        alternative-text="Suksess"
+                        title="Suksess"
+                        variant="success"
+                        size="large"
+                    >
+                    </lightning-icon>
+                    <br />
+                    <h2
+                        class="typo-undertittel h2-successMessage"
+                        id="successMessage"
+                        tabindex="-1"
+                        role="alert"
+                        aria-live="polite"
+                    >
+                        {processMessageResult}
+                    </h2>
+                    <br />
+                    <c-button
+                        button-styling="primary"
+                        button-label="OK"
+                        onbuttonclick={closeModal}
+                        desktop-style="width: 8rem; justify-content: center"
+                        mobile-style="width: 8rem; justify-content: center"
+                    ></c-button>
+                </div>
+                <div class="submitted-loading hidden">
+                    <h2
+                        class="typo-undertittel h2-loadingMessage"
+                        id="loadingMessage"
+                        tabindex="-1"
+                        role="alert"
+                        aria-live="polite"
+                    >
+                        {processMessage}
+                    </h2>
+                    <br />
+                    <div if:true={spin} class="loader"></div>
+                    <br />
+                </div>
+                <div class="submitted-error hidden">
+                    <h2
+                        class="typo-undertittel h2-loadingMessage"
+                        id="errorMessage"
+                        tabindex="-1"
+                        role="alert"
+                        aria-live="polite"
+                    >
+                        Noe gikk galt.
+                    </h2>
+                    <br />
+                    <h3>Feilmelding: {errorMessage}</h3>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

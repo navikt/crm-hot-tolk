@@ -1,0 +1,143 @@
+.main-content {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    width: 100%;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    align-items: center;
+    padding-top: 0.5rem;
+    text-align: end;
+}
+
+.submit,
+.submitted-error,
+.submitted-loading,
+.submitted-true {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.loader {
+    border: 16px solid #f3f3f3;
+    /* Light grey */
+    border-top: 16px solid #3498db;
+    /* Blue */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 1s linear infinite;
+    justify-content: center;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.record-details-container {
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+p {
+    font-weight: bold;
+}
+
+span {
+    font-weight: normal;
+}
+
+lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:after {
+    content: ' (ingen sensitive opplysninger)';
+}
+
+.no-padding form {
+    padding: 0;
+}
+
+.comment-form > form {
+    padding: 25px 0;
+}
+
+.comments-dialog-container {
+    all: unset;
+    background-color: #fff;
+    display: block;
+    padding: 5rem;
+    border-radius: 4px;
+    position: relative;
+    flex-grow: 0;
+    overflow-x: auto;
+    max-height: 100%;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    z-index: 1010;
+    max-width: 432px;
+    max-height: 75%;
+    width: 100%;
+}
+@media (max-width: 576px) {
+    .record-details-container {
+        margin: 5vw 0;
+    }
+    .comments-dialog-container {
+        all: unset;
+        background-color: #fff;
+        display: block;
+        padding: 3rem;
+        border-radius: 4px;
+        position: relative;
+        flex-grow: 0;
+        overflow-x: auto;
+        max-height: 100%;
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+        z-index: 1010;
+        max-width: 432px;
+        max-height: 75%;
+        width: 100%;
+    }
+    .main-content {
+        background-color: #fff;
+        border-radius: 0.5rem;
+        max-width: 100vw;
+        margin: 0 auto;
+        overflow-x: hidden;
+        font-family: 'Source Sans Pro', Arial, sans-serif;
+        align-items: center;
+        padding-top: 0.5rem;
+        text-align: end;
+    }
+}
+
+.meld-interesse-overlay {
+    position: fixed;
+    height: 100px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    border-top: 2px solid #2c2c2c8e;
+    z-index: 1;
+
+    background-color: white;
+}
+.meld-interesse-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding-right: 2rem;
+}
+
+.hidden {
+    display: none;
+}
