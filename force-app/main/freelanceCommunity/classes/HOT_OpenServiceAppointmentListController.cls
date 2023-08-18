@@ -173,7 +173,16 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 }
 
                 insert assignedResourcesList;
+
+                Set<Id> serviceAppointmentIdsToUpdate = new Set<Id>(interpreterToAssignResourceMap.values());
+                List<ServiceAppointment> serviceAppointmentsToUpdate = [SELECT Id, Status FROM ServiceAppointment WHERE Id IN :serviceAppointmentIdsToUpdate];
+
+                for (ServiceAppointment sa : serviceAppointmentsToUpdate) {
+                    sa.Status = 'Dispatched';
+                    update serviceAppointmentsToUpdate;
+                }
             }
+
 
         //When its a new interested resource
 

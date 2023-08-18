@@ -2,7 +2,6 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getWantedServiceAppointments from '@salesforce/apex/HOT_wantedSRListController.getWantedServiceAppointments';
 import updateInterestedResource from '@salesforce/apex/HOT_wantedSRListController.updateInterestedResource';
 import declineInterestedResource from '@salesforce/apex/HOT_wantedSRListController.declineInterestedResource';
-import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
@@ -190,7 +189,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         if (result.data) {
             this.serviceResource = result.data;
             this.serviceResourceId = this.serviceResource.Id;
-            console.log('fant sr: ' + this.serviceResourceId);
             this.filters = setDefaultFilters(this.serviceResource.HOT_PreferredRegions__c);
             if (this.wiredAllServiceAppointmentsResult !== null) {
                 this.refresh();
@@ -206,7 +204,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     wiredAllServiceAppointmentsWired(result) {
         this.wiredAllServiceAppointmentsResult = result;
         if (result.data) {
-            console.log('result: ' + result.data);
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
