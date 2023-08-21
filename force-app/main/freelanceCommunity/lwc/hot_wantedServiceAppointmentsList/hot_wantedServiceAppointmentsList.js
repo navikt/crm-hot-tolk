@@ -102,13 +102,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
         this.dispatchEvent(eventToSend);
     }
-    sendCheckedRows() {
-        this.showSendInterest = this.checkedServiceAppointments.length > 0;
-        this.sendInterestButtonLabel = 'Meld interesse til ' + this.checkedServiceAppointments.length + ' oppdrag';
-        const eventToSend = new CustomEvent('sendcheckedrows', { detail: this.checkedServiceAppointments });
-        this.dispatchEvent(eventToSend);
-    }
-    sendInterestButtonLabel = '';
 
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('openfilters2')) {
@@ -120,34 +113,17 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
 
         this.sendFilters();
     }
-    setCheckedRowsOnRefresh() {
-        if (sessionStorage.getItem('checkedrows') && !this.isDetails) {
-            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrows'));
-            sessionStorage.removeItem('checkedrows');
-        }
-        this.sendCheckedRows();
-    }
 
-    disconnectedCallback() {
-        // Going back with browser back or back button on mouse forces page refresh and a disconnect
-        // Save filters on disconnect to exist only within the current browser tab
-        sessionStorage.setItem('checkedrows', JSON.stringify(this.checkedServiceAppointments));
-    }
+    disconnectedCallback() {}
 
     renderedCallback() {
         this.setPreviousFiltersOnRefresh();
-        this.setCheckedRowsOnRefresh();
-        sessionStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
     }
 
     @track filters = [];
     numberTimesCalled = 0;
     connectedCallback() {
         this.updateURL();
-        if (sessionStorage.getItem('checkedrowsSavedForRefresh')) {
-            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsSavedForRefresh'));
-            sessionStorage.removeItem('checkedrowsSavedForRefresh');
-        }
         this.setColumns();
         refreshApex(this.wiredAllServiceAppointmentsResult);
     }
@@ -232,7 +208,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
 
         this.sendRecords();
         this.sendFilters();
-        this.sendCheckedRows();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
@@ -244,8 +219,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
 
     @track serviceAppointment;
     isDetails = false;
-    isSeries = false;
-    seriesRecords = [];
     showTable = true;
     goToRecordDetails(result) {
         this.serviceAppointment = undefined;
@@ -256,16 +229,9 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
-                this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
                 this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
             }
         }
-        for (let serviceAppointment of this.records) {
-            if (this.serviceAppointment?.HOT_Request__c === serviceAppointment?.HOT_Request__c) {
-                this.seriesRecords.push(serviceAppointment);
-            }
-        }
-        this.isSeries = this.seriesRecords.length <= 1 ? false : true;
         this.showServiceAppointmentDetails();
     }
     showServiceAppointmentDetails() {
@@ -294,55 +260,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
 
     errorMessage = '';
     spin = false;
-    @track checkedServiceAppointments = [];
-
-    handleRowChecked(event) {
-        this.checkedServiceAppointments = event.detail.checkedRows;
-        this.sendCheckedRows();
-    }
-
-    showSendInterest = false;
-    @track serviceAppointmentCommentDetails = [];
-    sendInterest() {
-        this.hideSubmitIndicators();
-        this.showCommentSection();
-        this.checkedServiceAppointments = [];
-        this.serviceAppointmentCommentDetails = [];
-        try {
-            this.template
-                .querySelector('c-table')
-                .getCheckedRows()
-                .forEach((row) => {
-                    this.checkedServiceAppointments.push(row);
-                    this.serviceAppointmentCommentDetails.push(this.getRecord(row));
-                });
-        } catch (error) {
-            console.log(error);
-        }
-        if (this.checkedServiceAppointments.length === 0) {
-            this.showSendInterest = false;
-            return;
-        }
-        this.showSendInterest = false;
-        this.showCommentPage();
-    }
-
-    sendInterestAllComplete = false;
-    sendInterestAll = false;
-    sendInterestSeries() {
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
-        this.hideSubmitIndicators();
-        this.showCommentSection();
-        this.serviceAppointmentCommentDetails = [];
-        this.sendInterestAll = true;
-        this.serviceAppointmentCommentDetails.push(...this.seriesRecords);
-        this.showCommentPage();
-    }
-
-    showCommentPage() {
-        this.template.querySelector('.commentPage').classList.remove('hidden');
-        this.template.querySelector('.commentPage').focus();
-    }
 
     hideSubmitIndicators() {
         this.template.querySelector('.submitted-error').classList.add('hidden');
@@ -351,23 +268,9 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     }
 
     closeModal() {
-        if (this.sendInterestAllComplete) {
-            refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
-                // Apply previous filter
-                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-            });
-            this.goBack();
-        }
-        this.sendInterestAllComplete = false;
         this.sendInterestAll = false;
         this.template.querySelector('.commentPage').classList.add('hidden');
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
-    }
-
-    showCommentSection() {
-        this.template.querySelector('.comment-details').classList.remove('hidden');
-        this.template.querySelector('.send-inn-button').classList.remove('hidden');
     }
 
     getRecord(id) {
@@ -414,9 +317,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             if (setRecords) {
                 this.records = filteredRecords;
             }
-            this.checkedServiceAppointmentsFromSession = JSON.parse(
-                sessionStorage.getItem('checkedrowsSavedForRefresh')
-            );
         } else {
             let filteredRecords = [];
             let records = this.initialServiceAppointments;
@@ -433,15 +333,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
 
             if (setRecords) {
                 this.records = filteredRecords;
-            }
-            this.checkedServiceAppointmentsFromSession = JSON.parse(
-                sessionStorage.getItem('checkedrowsSavedForRefresh')
-            );
-            if (
-                this.filteredRecordsLength != this.checkedServiceAppointmentsFromSession.length &&
-                this.numberTimesCalled > 2
-            ) {
-                this.checkedServiceAppointments = [];
             }
         }
         return this.filteredRecordsLength;
