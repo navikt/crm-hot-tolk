@@ -406,9 +406,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
         let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilter'));
-        sessionStorage.setItem('openSessionFilter', JSON.stringify(this.filters));
         let sameValues = true;
-        if (this.filters.length !== filterFromSessionStorage.length) {
+        let sessionUndefined = false;
+        if (filterFromSessionStorage === null || filterFromSessionStorage === undefined) {
+            sessionUndefined = true;
+        } else if (this.filters.length !== filterFromSessionStorage.length && sessionUndefined == false) {
             sameValues = false;
         } else {
             for (let i = 0; i < this.filters.length; i++) {
@@ -418,6 +420,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 }
             }
         }
+        sessionStorage.setItem('openSessionFilter', JSON.stringify(this.filters));
         if (sameValues) {
             let filteredRecords = [];
             let records = this.initialServiceAppointments;
