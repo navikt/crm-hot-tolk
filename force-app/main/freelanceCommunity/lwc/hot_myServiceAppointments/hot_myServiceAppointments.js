@@ -178,20 +178,25 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             .catch((error) => {
                 this.accountPhoneNumber = '';
             });
-            getAccountName({ serviceAppointmentId: result.detail.Id })
+        getAccountName({ serviceAppointmentId: result.detail.Id })
             .then((name) => {
                 this.accountName = name;
+                if (this.accountName == null || this.accountName == '') {
+                    this.isGoToThreadButtonDisabled = true;
+                } else {
+                    this.isGoToThreadButtonDisabled = false;
+                }
             })
             .catch((error) => {
                 this.accountName = '';
             });
-            getOwnerName({ serviceAppointmentId: result.detail.Id })
-                .then((owner) => {
-                    this.ownerName = owner;
-                })
-                .catch((error) => {
-                    this.ownerName = '';
-                });
+        getOwnerName({ serviceAppointmentId: result.detail.Id })
+            .then((owner) => {
+                this.ownerName = owner;
+            })
+            .catch((error) => {
+                this.ownerName = '';
+            });
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
         this.template.querySelector('.serviceAppointmentDetails').focus();
         let today = new Date();
