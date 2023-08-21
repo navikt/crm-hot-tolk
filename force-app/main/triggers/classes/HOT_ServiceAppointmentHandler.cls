@@ -142,6 +142,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 (serviceAppointment.Status == null ||
                 serviceAppointment.Status == 'Canceled' ||
                 serviceAppointment.Status == 'Annul' ||
+                serviceAppointment.Status == 'Scheduled' ||
                 serviceAppointment.Status == 'None') &&
                 serviceAppointment.HOT_CanceledByInterpreter__c == false
             ) {
