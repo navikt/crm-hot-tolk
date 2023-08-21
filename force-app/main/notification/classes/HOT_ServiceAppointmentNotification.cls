@@ -82,6 +82,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     oldServiceAppointment.Status == 'Dispatched' ||
                     oldServiceAppointment.Status == 'In Progress') &&
                     (serviceAppointment.Status == null ||
+                    serviceAppointment.Status == 'Scheduled' ||
                     serviceAppointment.Status == 'None') &&
                     serviceAppointment.HOT_CanceledByInterpreter__c == false
                 ) {
