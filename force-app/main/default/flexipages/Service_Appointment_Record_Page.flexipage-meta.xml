@@ -68,7 +68,7 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
-                            <value>ServiceAppointment.registrerWantedServiceResource</value>
+                            <value>ServiceAppointment.HOT_registrerWantedServiceResource</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
