@@ -5,7 +5,7 @@
         <name>change_status</name>
         <label>change status</label>
         <locationX>50</locationX>
-        <locationY>458</locationY>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>get_IR.Status__c</assignToReference>
             <operator>Assign</operator>
@@ -18,10 +18,35 @@
         </connector>
     </assignments>
     <decisions>
+        <name>check_if_sr_is_freelance</name>
+        <label>check if sr is freelance</label>
+        <locationX>380</locationX>
+        <locationY>350</locationY>
+        <defaultConnector>
+            <targetReference>Is_not_freelance_message</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Is not freelance</defaultConnectorLabel>
+        <rules>
+            <name>Is_freelance</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>check_if_freelance.HOT_IsFreelanceInterpreter__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>get_IR</targetReference>
+            </connector>
+            <label>Is freelance</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>if_IR_not_exist</name>
         <label>if IR not exist</label>
         <locationX>182</locationX>
-        <locationY>350</locationY>
+        <locationY>566</locationY>
         <defaultConnector>
             <targetReference>New_wanted_interested_resource</targetReference>
         </defaultConnector>
@@ -68,7 +93,7 @@
         <name>New_wanted_interested_resource</name>
         <label>New wanted interested resource</label>
         <locationX>314</locationX>
-        <locationY>458</locationY>
+        <locationY>674</locationY>
         <inputAssignments>
             <field>ServiceAppointment__c</field>
             <value>
@@ -91,10 +116,31 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordLookups>
+        <name>check_if_freelance</name>
+        <label>check if freelance</label>
+        <locationX>380</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>check_if_sr_is_freelance</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>wantedSR.recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceResource</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>get_IR</name>
         <label>get IR</label>
         <locationX>182</locationX>
-        <locationY>242</locationY>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>if_IR_not_exist</targetReference>
@@ -122,19 +168,35 @@
         <name>update_IR</name>
         <label>update IR</label>
         <locationX>50</locationX>
-        <locationY>566</locationY>
+        <locationY>782</locationY>
         <inputReference>get_IR</inputReference>
     </recordUpdates>
     <screens>
+        <name>Is_not_freelance_message</name>
+        <label>Is not freelance message</label>
+        <locationX>578</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>false</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>NoFreelanceMessage</name>
+            <fieldText>&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>registerWanterSr</name>
         <label>Register Wanter ServiceResource</label>
-        <locationX>182</locationX>
+        <locationX>380</locationX>
         <locationY>134</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>get_IR</targetReference>
+            <targetReference>check_if_freelance</targetReference>
         </connector>
         <fields>
             <name>infotext</name>
@@ -177,7 +239,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
+        <locationX>254</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>registerWanterSr</targetReference>
