@@ -128,4 +128,30 @@ private class HOT_CreateWageClaimTest {
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
         System.assertEquals(1, wageClaims.size(), 'Wrongly created Wage Claims');
     }
+
+    @isTest
+    static void createWageClaimTest_timeChanges1() {
+        ServiceAppointment serviceAppointment = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment];
+        Test.startTest();
+        serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addHours(1);
+        serviceAppointment.SchedEndTime = serviceAppointment.SchedEndTime.addHours(1);
+        update serviceAppointment;
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id FROM HOT_WageClaim__c LIMIT 1];
+        System.assertEquals(1, wageClaims.size(), 'Did not create Wage Claim as expected');
+    }
+
+    @isTest
+    static void createWageClaimTest_timeChanges2() {
+        ServiceAppointment serviceAppointment = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment];
+        Test.startTest();
+        serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addHours(2);
+        serviceAppointment.SchedEndTime = serviceAppointment.SchedEndTime.addHours(2);
+        update serviceAppointment;
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaims = [SELECT Id FROM HOT_WageClaim__c LIMIT 1];
+        System.assertEquals(1, wageClaims.size(), 'Did not create Wage Claim as expected');
+    }
 }
