@@ -1,0 +1,81 @@
+.table-wrapper {
+    width: 100%;
+}
+
+tr.row {
+    height: 60px;
+    border-top: 1px solid #2c2c2c8e;
+    transition: transform 0.1s;
+}
+tr.row:last-child {
+    border-bottom: 1px solid #2c2c2c8e;
+}
+
+.iconPadding {
+    padding-left: 10px;
+}
+
+td,
+th {
+    /* width: 15%; */
+}
+
+@media (max-width: 576px) {
+    .iconPadding {
+        padding-right: 10px;
+    }
+    .icon {
+        width: 5%;
+    }
+    th {
+        /* Overwrite experience cloud default styling */
+        padding-left: 0;
+        border-bottom: unset;
+    }
+}
+
+tr.row:hover {
+    cursor: pointer;
+    background-color: #f1f1f1;
+}
+
+.first-column {
+    font-weight: normal;
+}
+
+.arrow {
+    width: 5%;
+    text-align: right;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    bottom: 100%;
+    left: 50%;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    margin-left: -55px;
+    margin-bottom: 5px;
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.checkbox-column {
+    width: 5%;
+}
+.StartAndEndDateWeekday {
+    font-weight: bold;
+}
