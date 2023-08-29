@@ -1,12 +1,13 @@
 <template>
     <div class="main-content">
         <div if:false={noServiceAppointments}>
-            <c-table
-                if:false={noServiceAppointments}
+            <c-table if:false={isMobile} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
+            <c-hot_freelance-table-list-mobile
+                if:true={isMobile}
                 records={records}
                 columns={columns}
                 onrowclick={goToRecordDetails}
-            ></c-table>
+            ></c-hot_freelance-table-list-mobile>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
             <br />
@@ -41,9 +42,7 @@
                             <p if:true={serviceAppointment.ActualEndTime}>
                                 Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span>
                             </p>
-                            <p if:true={accountName}>
-                                Navn til bruker: <span>{accountName}</span>
-                            </p>
+                            <p if:true={accountName}>Navn til bruker: <span>{accountName}</span></p>
                             <p if:true={accountPhoneNumber}>
                                 Telefonnummer til bruker: <span>{accountPhoneNumber}</span>
                             </p>
