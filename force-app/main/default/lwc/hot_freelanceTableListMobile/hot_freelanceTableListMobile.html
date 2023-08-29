@@ -52,10 +52,72 @@
                             <template if:false={field.value.svg}>
                                 <p tabindex="0" key={field.value.name} class={field.value.name}>{field.value.value}</p>
                             </template>
+                            <!-- <template if:false={checkbox}>
+                                <template if:true={field.value.svg}>
+                                    <span
+                                        key={field.value.name}
+                                        class="icon"
+                                        tabindex="0"
+                                        aria-label="Ingen status"
+                                        if:false={field.value.svg.icon}
+                                    ></span>
+                                    <span
+                                        key={field.value.name}
+                                        class="icon"
+                                        tabindex="0"
+                                        if:true={field.value.svg.icon}
+                                    >
+                                        <div class="tooltip">
+                                            <c-icon
+                                                icon={field.value.svg.icon}
+                                                fill={field.value.svg.fill}
+                                                aria-label={field.value.svg.ariaLabel}
+                                                role="text"
+                                                class="iconPadding"
+                                            ></c-icon>
+                                            <span if:true={field.value.svg.ariaLabel} class="tooltiptext"
+                                                >{field.value.svg.ariaLabel}</span
+                                            >
+                                        </div>
+                                    </span>
+                                </template> -->
+                            <!-- </template> -->
                         </template>
                     </td>
                     <td class="arrow" aria-hidden="true">
-                        <c-icon key={record.value.id} icon="Next"></c-icon>
+                        <template iterator:field={record.value.fields}>
+                            <template if:false={checkbox}>
+                                <template if:true={field.value.svg}>
+                                    <span
+                                        key={field.value.name}
+                                        class="icon"
+                                        tabindex="0"
+                                        aria-label="Ingen status"
+                                        if:false={field.value.svg.icon}
+                                    ></span>
+                                    <span
+                                        key={field.value.name}
+                                        class="icon"
+                                        tabindex="0"
+                                        if:true={field.value.svg.icon}
+                                    >
+                                        <div class="tooltip">
+                                            <c-icon
+                                                icon={field.value.svg.icon}
+                                                fill={field.value.svg.fill}
+                                                aria-label={field.value.svg.ariaLabel}
+                                                role="text"
+                                                class="iconPadding"
+                                            ></c-icon>
+                                            <span if:true={field.value.svg.ariaLabel} class="tooltiptext"
+                                                >{field.value.svg.ariaLabel}</span
+                                            >
+                                        </div>
+                                    </span>
+                                </template>
+                            </template>
+                        </template>
+                        <c-icon key={record.value.id} class="tooltip" icon="Next"></c-icon>
                     </td>
                 </tr>
             </template>
