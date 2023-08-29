@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -1375,13 +1375,6 @@
                 </componentInstanceProperties>
                 <componentName>hot_messagingMessageComponent</componentName>
                 <identifier>c_hot_messagingMessageComponent2</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.IsAccountNotNull__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-b51365dd-25e9-44e3-991e-fc458952e0b2</name>
@@ -1489,28 +1482,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tabset</componentName>
                 <identifier>flexipage_tabset</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value
-                    >&lt;p&gt;Forespørselen er ikke koblet til en bruker, og det kan derfor ikke føres en samtale.&lt;/p&gt;</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-                <identifier>flexipage_richText1</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.IsAccountNotNull__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>false</rightValue>
-                    </criteria>
-                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>
