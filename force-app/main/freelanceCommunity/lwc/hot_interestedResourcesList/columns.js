@@ -35,8 +35,8 @@ export let columns = [
 export let mobileColumns = [
     {
         label: 'Tid',
-        name: 'StartAndEndDate',
-        type: 'Datetime'
+        name: 'startAndEndDateWeekday',
+        type: 'String'
     },
     {
         label: 'Tolkemetode',
@@ -44,9 +44,25 @@ export let mobileColumns = [
         type: 'String'
     },
     {
+        label: 'Poststed',
+        name: 'ServiceAppointmentCity__c',
+        type: 'String'
+    },
+    {
         label: 'Tema',
         name: 'ServiceAppointmentFreelanceSubject__c',
         type: 'String'
+    },
+    {
+        label: 'Status',
+        name: 'StatusMobile',
+        type: 'String'
+    },
+    {
+        name: 'IsUnreadMessage',
+        label: '',
+        type: 'String',
+        svg: true
     }
 ];
 

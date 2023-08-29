@@ -6,7 +6,7 @@ export let columns = [
     },
     {
         label: 'Dag',
-        name: 'weekdayDesktop',
+        name: 'weekday',
         type: 'String'
     },
     {
@@ -50,11 +50,6 @@ export let mobileColumns = [
         name: 'startAndEndDateWeekday',
         type: 'String',
         bold: true
-    },
-    {
-        label: 'Dag',
-        name: 'weekday',
-        type: 'String'
     },
     {
         label: 'Info',

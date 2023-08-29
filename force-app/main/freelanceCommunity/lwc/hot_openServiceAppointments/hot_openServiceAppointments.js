@@ -171,7 +171,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday:
                     this.formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + this.getDayOfWeek(x.EarliestStartTime),
-                weekdayDesktop: this.getDayOfWeek(x.EarliestStartTime)
+                weekday: this.getDayOfWeek(x.EarliestStartTime)
             }));
 
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
