@@ -1,0 +1,13 @@
+{
+  "componentVariants" : [ {
+    "id" : "37400b65-81d1-4ca9-aaa0-493cbadba85e",
+    "propertyOverrides" : {
+      "activeViewId" : "23a96844-2ef2-48ae-837c-22964f4c48d8"
+    },
+    "targetId" : "f6d2082f-b177-4f37-a93b-cb7ab89ac531",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Mine_samtaler_frilanstolk_Mine_samtaler_frilanstolk_Page",
+  "id" : "9ff87a42-1706-4ba3-88a4-65ae86816529",
+  "type" : "experienceVariation"
+}
