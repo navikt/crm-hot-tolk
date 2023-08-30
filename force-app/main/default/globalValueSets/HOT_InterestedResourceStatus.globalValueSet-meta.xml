@@ -40,6 +40,16 @@
         <default>false</default>
         <label>Withdrawn</label>
     </customValue>
+    <customValue>
+        <fullName>Wanted</fullName>
+        <default>false</default>
+        <label>Wanted</label>
+    </customValue>
+    <customValue>
+        <fullName>Declined</fullName>
+        <default>false</default>
+        <label>Declined</label>
+    </customValue>
     <masterLabel>Interested Resource Status</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>

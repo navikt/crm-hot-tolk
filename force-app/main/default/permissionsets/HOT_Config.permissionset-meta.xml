@@ -548,6 +548,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsFutureRequest__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.IsNotNotifyAccount__c</field>
         <readable>true</readable>
@@ -849,12 +854,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>SMS__c.Type__c</field>
+        <field>SMS__c.Thread__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>SMS__c.Thread__c</field>
+        <field>SMS__c.Type__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1169,12 +1174,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Thread__c.CRM_Thread_Type__c</field>
+        <field>Thread__c.CRM_Thread_Name_Formula__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Thread__c.CRM_Thread_Name_Formula__c</field>
+        <field>Thread__c.CRM_Thread_Type__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

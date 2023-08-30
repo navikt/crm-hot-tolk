@@ -67,6 +67,16 @@
                 >
                 </c-hot_wage-claim-list>
             </div>
+            <div if:true={tabMap.wanted} class="tab-content">
+                <c-hot_wanted-service-appointments-list
+                    record-id={recordId}
+                    data-name="wanted"
+                    onsendfilters={handleFilters}
+                    onsendrecords={handleRecords}
+                    onsenddetail={handleDetails}
+                >
+                </c-hot_wanted-service-appointments-list>
+            </div>
         </div>
     </div>
 </template>

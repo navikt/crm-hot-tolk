@@ -37,7 +37,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 HOT_TermsOfAgreement__c,
                 HOT_DelPol_ToHideRecord__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c IN :serviceResource AND HOT_DelPol_ToHideRecord__c = FALSE
+            WHERE ServiceResource__c IN :serviceResource AND HOT_DelPol_ToHideRecord__c = FALSE AND Status__c!='Wanted'
             ORDER BY ServiceAppointmentStartTime__c ASC
         ];
         return interestedResources;

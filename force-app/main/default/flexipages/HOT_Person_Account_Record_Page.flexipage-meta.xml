@@ -51,7 +51,7 @@
                     <name>adminFilters</name>
                     <valueList>
                         <valueListItems>
-                            <value>SeriesEndDate__c|GREATER_OR_EQUAL|TODAY</value>
+                            <value>IsFutureRequest__c|EQUALS|true</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -134,7 +134,7 @@
                     <name>adminFilters</name>
                     <valueList>
                         <valueListItems>
-                            <value>SeriesEndDate__c|LESS_THAN|TODAY</value>
+                            <value>IsFutureRequest__c|EQUALS|false</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>

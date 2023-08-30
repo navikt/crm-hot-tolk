@@ -5,6 +5,11 @@ export let columns = [
         type: 'Datetime'
     },
     {
+        label: 'Oppdragsnummer',
+        name: 'AppointmentNumber',
+        type: 'String'
+    },
+    {
         label: 'Poststed',
         name: 'City',
         type: 'String'
