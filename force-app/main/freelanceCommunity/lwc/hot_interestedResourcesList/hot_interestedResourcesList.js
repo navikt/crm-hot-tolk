@@ -164,7 +164,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                                 ) +
                                 ' ' +
                                 this.getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
-                            StatusMobile: 'Status: ' + appointment.Status__c
+                            statusMobile: 'Status: ' + appointment.Status__c
                         };
                     });
                     let tempRecords = [];

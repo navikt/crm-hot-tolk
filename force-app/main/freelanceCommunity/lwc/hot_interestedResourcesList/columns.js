@@ -55,7 +55,7 @@ export let mobileColumns = [
     },
     {
         label: 'Status',
-        name: 'StatusMobile',
+        name: 'statusMobile',
         type: 'String'
     },
     {
