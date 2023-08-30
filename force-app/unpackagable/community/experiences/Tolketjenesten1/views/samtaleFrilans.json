@@ -1,0 +1,79 @@
+{
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "752ca6d2-03f7-461a-ba84-3ca7206daa61",
+  "label" : "Samtale Frilans",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "NAVarea" : "Privatperson",
+        "navareapicklist" : "Privatperson"
+      },
+      "componentName" : "c:globalCommunityHeader",
+      "id" : "8464dd6c-cd33-4130-b244-e9cd31afe949",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "54740c90-91c1-4138-8804-347c08d6767e",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:hot_tolketjenestenHovedBanner",
+      "id" : "097ec07c-ad46-4e9e-a5c7-3e5ec8666841",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "alertopen" : "",
+        "alerttext" : "Dialogen er lukket",
+        "maxLength" : 0
+      },
+      "componentName" : "c:hot_messagingCommunityThreadViewer",
+      "id" : "5cf3cbfa-73dc-453c-a566-0ad1e6659c2a",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "839c9063-e941-4868-9990-e01d79a5ca2d",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "NAVarea" : "Privatperson",
+        "navareapicklist" : "Privatperson"
+      },
+      "componentName" : "c:globalCommunityFooter",
+      "id" : "60037686-ed64-4117-973a-85d0534600dc",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "38000fef-bd48-43f3-bd44-d2fa05cbbac3",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Samtale Frilans"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "67cfcc44-37e1-48f3-bb9d-ed25e62bac21",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "6e089ad5-5e06-4dca-9eba-39d07422c629",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-samtale-frilans"
+}
