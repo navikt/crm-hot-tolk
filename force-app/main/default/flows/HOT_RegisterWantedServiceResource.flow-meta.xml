@@ -4,8 +4,8 @@
     <assignments>
         <name>change_status</name>
         <label>change status</label>
-        <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationX>314</locationX>
+        <locationY>1214</locationY>
         <assignmentItems>
             <assignToReference>get_IR.Status__c</assignToReference>
             <operator>Assign</operator>
@@ -17,11 +17,27 @@
             <targetReference>update_IR</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>setCountWantedExistingIr</name>
+        <label>setCountWantedExistingIr</label>
+        <locationX>347</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>existingWantedIRCount</assignToReference>
+            <operator>AssignCount</operator>
+            <value>
+                <elementReference>checkIfAlreadyWanted</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>ifThereAlreadyIsAWanterInterpreter</targetReference>
+        </connector>
+    </assignments>
     <decisions>
         <name>check_if_sr_is_freelance</name>
         <label>check if sr is freelance</label>
-        <locationX>380</locationX>
-        <locationY>350</locationY>
+        <locationX>644</locationX>
+        <locationY>890</locationY>
         <defaultConnector>
             <targetReference>Is_not_freelance_message</targetReference>
         </defaultConnector>
@@ -43,10 +59,35 @@
         </rules>
     </decisions>
     <decisions>
+        <name>checkSAReleasedToFreelance</name>
+        <label>checkSAReleasedToFreelance</label>
+        <locationX>726</locationX>
+        <locationY>242</locationY>
+        <defaultConnector>
+            <targetReference>notReleasedScreen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not released to freelance</defaultConnectorLabel>
+        <rules>
+            <name>Is_released_to_freelance</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>getSA.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Released to Freelance</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>checkIfAlreadyWanted</targetReference>
+            </connector>
+            <label>Is released to freelance</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>if_IR_not_exist</name>
         <label>if IR not exist</label>
-        <locationX>182</locationX>
-        <locationY>566</locationY>
+        <locationX>446</locationX>
+        <locationY>1106</locationY>
         <defaultConnector>
             <targetReference>New_wanted_interested_resource</targetReference>
         </defaultConnector>
@@ -65,6 +106,31 @@
                 <targetReference>change_status</targetReference>
             </connector>
             <label>Change status on IR</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>ifThereAlreadyIsAWanterInterpreter</name>
+        <label>ifThereAlreadyIsAWanterInterpreter</label>
+        <locationX>347</locationX>
+        <locationY>566</locationY>
+        <defaultConnector>
+            <targetReference>registerWanterSr</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>There is no existing wanted</defaultConnectorLabel>
+        <rules>
+            <name>There_is_a_wanted_interpreter</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>existingWantedIRCount</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>existingWanterIrScreen</targetReference>
+            </connector>
+            <label>There is a wanted interpreter</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -92,8 +158,8 @@
     <recordCreates>
         <name>New_wanted_interested_resource</name>
         <label>New wanted interested resource</label>
-        <locationX>314</locationX>
-        <locationY>674</locationY>
+        <locationX>578</locationX>
+        <locationY>1214</locationY>
         <inputAssignments>
             <field>ServiceAppointment__c</field>
             <value>
@@ -118,8 +184,8 @@
     <recordLookups>
         <name>check_if_freelance</name>
         <label>check if freelance</label>
-        <locationX>380</locationX>
-        <locationY>242</locationY>
+        <locationX>644</locationX>
+        <locationY>782</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>check_if_sr_is_freelance</targetReference>
@@ -137,10 +203,39 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
+        <description>There should be only one wanted interpreter at a time</description>
+        <name>checkIfAlreadyWanted</name>
+        <label>checkIfAlreadyWanted</label>
+        <locationX>347</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>setCountWantedExistingIr</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ServiceAppointment__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Wanted</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>HOT_InterestedResource__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>get_IR</name>
         <label>get IR</label>
-        <locationX>182</locationX>
-        <locationY>458</locationY>
+        <locationX>446</locationX>
+        <locationY>998</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>if_IR_not_exist</targetReference>
@@ -164,18 +259,55 @@
         <object>HOT_InterestedResource__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>getSA</name>
+        <label>getSA</label>
+        <locationX>726</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>checkSAReleasedToFreelance</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceAppointment</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>update_IR</name>
         <label>update IR</label>
-        <locationX>50</locationX>
-        <locationY>782</locationY>
+        <locationX>314</locationX>
+        <locationY>1322</locationY>
         <inputReference>get_IR</inputReference>
     </recordUpdates>
     <screens>
+        <name>existingWanterIrScreen</name>
+        <label>existingWanterIrScreen</label>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>existingWantedText</name>
+            <fieldText>&lt;p&gt;Det kan kun være én ønsket frilanstolk på et oppdrag av gangen.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Is_not_freelance_message</name>
         <label>Is not freelance message</label>
-        <locationX>578</locationX>
-        <locationY>458</locationY>
+        <locationX>842</locationX>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>false</allowFinish>
         <allowPause>false</allowPause>
@@ -188,10 +320,26 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>notReleasedScreen</name>
+        <label>notReleasedScreen</label>
+        <locationX>1106</locationX>
+        <locationY>350</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>notReleasedText</name>
+            <fieldText>&lt;p&gt;Oppdraget må være frigitt til frilans før du kan registrere ønsket frilanstolk.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>registerWanterSr</name>
         <label>Register Wanter ServiceResource</label>
-        <locationX>380</locationX>
-        <locationY>134</locationY>
+        <locationX>644</locationX>
+        <locationY>674</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -239,13 +387,24 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>254</locationX>
+        <locationX>600</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>registerWanterSr</targetReference>
+            <targetReference>getSA</targetReference>
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>existingWantedIRCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>2</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>
