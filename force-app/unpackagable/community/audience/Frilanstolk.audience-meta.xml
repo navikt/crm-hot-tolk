@@ -41,5 +41,17 @@
             <targetType>ExperienceVariation</targetType>
             <targetValue>Frilanstolk_min_side_Frilanstolk_min_side_Page</targetValue>
         </target>
+        <target>
+            <groupName>ab514961-bce6-4b1c-b6b0-358c34521f93</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Samtale_Frilans_Samtale_Frilans_Page</targetValue>
+        </target>
+        <target>
+            <groupName>f6d2082f-b177-4f37-a93b-cb7ab89ac531</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Mine_samtaler_frilanstolk_Mine_samtaler_frilanstolk_Page</targetValue>
+        </target>
     </targets>
 </Audience>

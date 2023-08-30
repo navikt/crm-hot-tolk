@@ -277,6 +277,14 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                     this.showUserThreadbutton = true;
                     this.showOrderThreadbutton = false;
                     this.showUserOrdererThreadbutton = false;
+                } else if (result[0].Account__c == null && result[0].Orderer__c != null) {
+                    this.showUserThreadbutton = false;
+                    this.showOrderThreadbutton = true;
+                    this.showUserOrdererThreadbutton = false;
+                } else if (result[0].Account__c != null && result[0].Orderer__c == null) {
+                    this.showUserThreadbutton = true;
+                    this.showOrderThreadbutton = false;
+                    this.showUserOrdererThreadbutton = false;
                 } else {
                     this.showUserThreadbutton = true;
                     this.showOrderThreadbutton = true;
