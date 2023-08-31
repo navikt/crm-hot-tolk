@@ -155,4 +155,71 @@ public without sharing class HOT_wantedSRListController {
 
         }
     }
+    @InvocableMethod(label='Check if wanted SR has overlapping SA' description='return based on result' category='check')
+    public static List<String> checkForOverlap (List<Request> ids){
+
+           List<String> accountNames = new List<String>();
+          
+
+    List<ServiceAppointment> sa = [SELECT Id,EarliestStartTime,DueDate FROM ServiceAppointment WHERE Id=:ids[0].saId];
+           
+    ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE Id = :ids[0].srId];
+
+    List<HOT_InterestedResource__c> assignedInterestedResources = [
+        SELECT ServiceResource__c, ServiceAppointment__c, ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c
+        FROM HOT_InterestedResource__c
+        WHERE ServiceResource__c = :serviceResource.Id
+        AND Status__c = 'Assigned'
+    ];
+
+    Map<Id, List<DateTime>> existingAppointments = new Map<Id, List<DateTime>>();
+    for (HOT_InterestedResource__c assignedResource : assignedInterestedResources) {
+        Id serviceAppointmentId = assignedResource.ServiceAppointment__c;
+        DateTime startTime = assignedResource.ServiceAppointmentStartTime__c;
+        DateTime endTime = assignedResource.ServiceAppointmentEndTime__c;
+        existingAppointments.put(serviceAppointmentId, new List<DateTime>());
+       
+        if (!existingAppointments.containsKey(serviceAppointmentId)) {
+                existingAppointments.put(serviceAppointmentId, new List<DateTime>());
+        }
+            
+        existingAppointments.get(serviceAppointmentId).add(startTime);
+        existingAppointments.get(serviceAppointmentId).add(endTime);
+    }
+
+    List<ServiceAppointment> nonOverlappingAppointments = new List<ServiceAppointment>();
+    Integer overlapCount=0;
+    for (ServiceAppointment potentialAppointment : sa) {
+        DateTime potentialServiceAppointmentStart=potentialAppointment.EarliestStartTime;
+        DateTime potentialServiceAppointmentEnd=potentialAppointment.DueDate;
+
+
+        for (Id serviceAppointmentId : existingAppointments.keySet()) {
+            List<DateTime> appointmentTimes = existingAppointments.get(serviceAppointmentId);
+            DateTime startTime = appointmentTimes[0]; 
+            DateTime endTime = appointmentTimes[1];   
+            if(potentialServiceAppointmentStart <= endTime && potentialServiceAppointmentEnd>=startTime){
+                overlapCount++;
+                 break;
+            }
+            else{
+            }
+        }
+         if (overlapCount>0) {
+            accountNames.add('overlap');
+        }
+        else{
+            accountNames.add('no overlap');
+        }
+    }
+         return accountNames;
+    }
+    
+    public class Request {
+    @InvocableVariable(label='sa Id' description='returns true if overlap' required=false)
+    public String saID;
+     @InvocableVariable(label='sr Id' description='returns true if overlap' required=false)
+    public String srID;
+    
+    }
 }
