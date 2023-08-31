@@ -307,6 +307,9 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     else if(interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
                         interestedResource.Status__c == 'Declined'){
                     }
+                    else if(interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
+                        interestedResource.Status__c == 'Wanted'){
+                    }
                     else if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
                         interestedResource.Status__c != 'Not Assigned'
