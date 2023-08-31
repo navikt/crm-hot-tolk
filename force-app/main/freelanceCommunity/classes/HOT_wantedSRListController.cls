@@ -1,6 +1,6 @@
 public without sharing class HOT_wantedSRListController {
       @AuraEnabled(cacheable=true)
-    public static List<ServiceAppointment> getWantedServiceAppointments() {
+    public static List<ServiceAppointment>  getWantedServiceAppointments() {
         Id userId = UserInfo.getUserId();
         List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
 
@@ -58,8 +58,63 @@ public without sharing class HOT_wantedSRListController {
                 AND ServiceTerritoryId != NULL
             ORDER BY EarliestStartTime ASC
         ];
-        return serviceAppointments;
+        return checkForOverlap(serviceAppointments);
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<ServiceAppointment> checkForOverlap(List<ServiceAppointment> serviceAppointments) {
+    Id userId = UserInfo.getUserId();
+    ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
+
+    List<HOT_InterestedResource__c> assignedInterestedResources = [
+        SELECT ServiceResource__c, ServiceAppointment__c, ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c
+        FROM HOT_InterestedResource__c
+        WHERE ServiceResource__c = :serviceResource.Id
+        AND Status__c = 'Assigned'
+    ];
+
+    Map<Id, List<DateTime>> existingAppointments = new Map<Id, List<DateTime>>();
+    for (HOT_InterestedResource__c assignedResource : assignedInterestedResources) {
+        Id serviceAppointmentId = assignedResource.ServiceAppointment__c;
+        DateTime startTime = assignedResource.ServiceAppointmentStartTime__c;
+        DateTime endTime = assignedResource.ServiceAppointmentEndTime__c;
+        existingAppointments.put(serviceAppointmentId, new List<DateTime>());
+       
+        if (!existingAppointments.containsKey(serviceAppointmentId)) {
+                existingAppointments.put(serviceAppointmentId, new List<DateTime>());
+        }
+            
+        existingAppointments.get(serviceAppointmentId).add(startTime);
+        existingAppointments.get(serviceAppointmentId).add(endTime);
+    }
+
+    List<ServiceAppointment> nonOverlappingAppointments = new List<ServiceAppointment>();
+    for (ServiceAppointment potentialAppointment : serviceAppointments) {
+        Boolean overlaps = false;
+        DateTime potentialServiceAppointmentStart=potentialAppointment.EarliestStartTime;
+        DateTime potentialServiceAppointmentEnd=potentialAppointment.DueDate;
+
+
+        for (Id serviceAppointmentId : existingAppointments.keySet()) {
+            List<DateTime> appointmentTimes = existingAppointments.get(serviceAppointmentId);
+            DateTime startTime = appointmentTimes[0]; 
+            DateTime endTime = appointmentTimes[1];   
+            if(potentialServiceAppointmentStart <= endTime && potentialServiceAppointmentEnd>=startTime){
+                overlaps = true;
+                 break;
+            }
+            else{
+                overlaps = false;
+            }
+        }
+         if (!overlaps) {
+            nonOverlappingAppointments.add(potentialAppointment);
+        }
+    }
+
+    return nonOverlappingAppointments;
+}
+
     @AuraEnabled
     public static void updateInterestedResource(Id saId, Id srId) {
      HOT_InterestedResource__c interestedResource = [
