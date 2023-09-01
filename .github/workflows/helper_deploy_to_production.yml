@@ -11,6 +11,8 @@ jobs:
   deploy-to-production:
     name: Deploy to Production
     uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@master
+    permissions:
+      contents: read
     with:
       packageId: ${{ inputs.packageId }}
       org: prod
