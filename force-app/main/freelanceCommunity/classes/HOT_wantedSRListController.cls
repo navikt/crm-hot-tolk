@@ -158,8 +158,7 @@ public without sharing class HOT_wantedSRListController {
     @InvocableMethod(label='Check if wanted SR has overlapping SA' description='return based on result' category='check')
     public static List<String> checkForOverlap (List<Request> ids){
 
-           List<String> accountNames = new List<String>();
-          
+    List<String> overLaps = new List<String>();
 
     List<ServiceAppointment> sa = [SELECT Id,EarliestStartTime,DueDate FROM ServiceAppointment WHERE Id=:ids[0].saId];
            
@@ -206,13 +205,13 @@ public without sharing class HOT_wantedSRListController {
             }
         }
          if (overlapCount>0) {
-            accountNames.add('overlap');
+            overLaps.add('overlap');
         }
         else{
-            accountNames.add('no overlap');
+            overLaps.add('no overlap');
         }
     }
-         return accountNames;
+         return overLaps;
     }
     
     public class Request {
