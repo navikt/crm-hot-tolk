@@ -10,12 +10,16 @@ jobs:
   create-package:
     name: Run Package Creation
     uses: navikt/crm-workflows-base/.github/workflows/packageCreate.yml@master
+    permissions:
+      contents: write
     secrets: inherit
 
   install-in-uat:
     name: Install in UAT
     needs: [create-package]
     uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@master
+    permissions:
+      contents: read
     with:
       packageId: ${{ needs.create-package.outputs.packageId }}
       org: uat
