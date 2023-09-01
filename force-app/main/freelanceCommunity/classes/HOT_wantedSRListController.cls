@@ -215,9 +215,9 @@ public without sharing class HOT_wantedSRListController {
     }
     
     public class Request {
-    @InvocableVariable(label='sa Id' description='returns true if overlap' required=false)
+    @InvocableVariable(label='sa Id' description='return based on result' required=false)
     public String saID;
-     @InvocableVariable(label='sr Id' description='returns true if overlap' required=false)
+     @InvocableVariable(label='sr Id' description='return based on result' required=false)
     public String srID;
     
     }
