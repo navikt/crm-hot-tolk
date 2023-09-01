@@ -24,18 +24,10 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             FROM HOT_InterestedResource__c
             WHERE ServiceResource__c IN :serviceResource
         ];
-        List<HOT_InterestedResource__c> wantedServiceResources = [
-            SELECT ServiceAppointment__c
-            FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c IN :serviceResource AND Status__c='Wanted'
-        ];
+        
         List<Id> interestedServiceAppointmentIds = new List<Id>();
-        List<Id> wantedServiceAppointmentIds = new List<Id>();
         for (HOT_InterestedResource__c ir : interestedResources) {
             interestedServiceAppointmentIds.add(ir.ServiceAppointment__c);
-        }
-        for (HOT_InterestedResource__c ir2 : wantedServiceResources) {
-            wantedServiceAppointmentIds.add(ir2.ServiceAppointment__c);
         }
 
         //Getting ServiceAppointments, filtered by isRealeased, Status, DeadlineDate
@@ -79,7 +71,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 HOT_IsReleasedToFreelance__c = TRUE
                 AND Status = 'Released To Freelance'
                 AND HOT_DeadlineDate__c >= :DATE.TODAY()
-                AND (Id NOT IN :interestedServiceAppointmentIds OR Id IN :wantedServiceAppointmentIds)
+                AND (Id NOT IN :interestedServiceAppointmentIds)
                 AND ServiceTerritoryId != NULL
             ORDER BY EarliestStartTime ASC
         ];
@@ -128,68 +120,11 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         Id userId = UserInfo.getUserId();
 
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
-        Set<String> serviceAppointmentIdsSet = new Set<String>(serviceAppointmentIds);
-        List<String> serviceAppointmentIdsToRemove = new List<String>();
-
-        //Checking if its existing interested resources object meaning the interpreter is wanted
-        List<HOT_InterestedResource__c> existingWantedIr = [SELECT Id, ServiceAppointment__c,Status__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE ServiceResource__c=:serviceResource.Id AND ServiceAppointment__c IN :serviceAppointmentIds AND Status__c='Wanted'];
-        Set<Id> wantedSaIds = new Set<Id>();
-        for (HOT_InterestedResource__c ir : existingWantedIr) {
-            serviceAppointmentIdsToRemove.add(ir.ServiceAppointment__c);
-            wantedSaIds.add(ir.ServiceAppointment__c);
-        }
-        serviceAppointmentIdsSet.removeAll(serviceAppointmentIdsToRemove);
-        List<String> updatedServiceAppointmentIds = new List<String>(serviceAppointmentIdsSet);
-
-        //If interpreter is wanter for the serviceappointment. Its automaticly assigned
-        if(existingWantedIr.size()>0){
-            List<AssignedResource> assignedresources =[SELECT Id from AssignedResource WHERE ServiceAppointmentId IN : wantedSaIds];
-            Set<Id> assignedServiceAppointmentIds = new Set<Id>();
-                for (AssignedResource assignedResource : assignedresources) {
-                    assignedServiceAppointmentIds.add(assignedResource.ServiceAppointmentId);
-                }
-
-                Map<Id,Id> interpreterToAssignResourceMap=new Map<Id,Id>();
-
-                for (HOT_InterestedResource__c ir : existingWantedIr) {
-                    if (!assignedServiceAppointmentIds.contains(ir.ServiceAppointment__c)) {
-                        ir.Status__c='Assigned';
-                        interpreterToAssignResourceMap.put(ir.ServiceResource__c, ir.ServiceAppointment__c);
-                    }
-                }
-                update existingWantedIr;
-
-                List<AssignedResource> assignedResourcesList = new List<AssignedResource>();
-
-                for (Id serviceResourceId : interpreterToAssignResourceMap.keySet()) {
-                    Id serviceAppointmentId = interpreterToAssignResourceMap.get(serviceResourceId);
-
-                    AssignedResource assignedResource = new AssignedResource(
-                        ServiceAppointmentId = serviceAppointmentId,
-                        ServiceResourceId = serviceResourceId
-                    );
-
-                    assignedResourcesList.add(assignedResource);
-                }
-
-                insert assignedResourcesList;
-
-                Set<Id> serviceAppointmentIdsToUpdate = new Set<Id>(interpreterToAssignResourceMap.values());
-                List<ServiceAppointment> serviceAppointmentsToUpdate = [SELECT Id, Status FROM ServiceAppointment WHERE Id IN :serviceAppointmentIdsToUpdate];
-
-                for (ServiceAppointment sa : serviceAppointmentsToUpdate) {
-                    sa.Status = 'Dispatched';
-                    update serviceAppointmentsToUpdate;
-                }
-            }
-
-
-        //When its a new interested resource
-
+        
         List<HOT_InterestedResource__c> interestedResources = new List<Hot_InterestedResource__c>();
-        for (Integer i = 0; i < updatedServiceAppointmentIds.size(); i++) {
+        for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
             HOT_InterestedResource__c IR = new HOT_InterestedResource__c(
-                ServiceAppointment__c = updatedServiceAppointmentIds[i],
+                ServiceAppointment__c = serviceAppointmentIds[i],
                 ServiceResource__c = serviceResource.Id,
                 Status__c = 'Interested'
             );
@@ -197,7 +132,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         }
         insert interestedResources;
 
-        for (Integer i = 0; i < updatedServiceAppointmentIds.size(); i++) {
+        for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
             if(!String.isEmpty(comments[i])) {
                 HOT_InterestedResourcesListController.startAThreadAndAddComment(interestedResources[i].Id, comments[i]);
             }

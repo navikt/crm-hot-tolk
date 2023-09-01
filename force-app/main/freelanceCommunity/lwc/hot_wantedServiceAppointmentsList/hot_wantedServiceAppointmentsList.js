@@ -235,6 +235,10 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         this.showServiceAppointmentDetails();
     }
     showServiceAppointmentDetails() {
+        this.template.querySelector('.record-details-container').classList.remove('hidden');
+        this.template.querySelector('.submitted-error').classList.add('hidden');
+        this.template.querySelector('.submitted-loading').classList.add('hidden');
+        this.template.querySelector('.submitted-true').classList.add('hidden');
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
         this.template.querySelector('.serviceAppointmentDetails').focus();
     }
