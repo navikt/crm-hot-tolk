@@ -2,6 +2,7 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
     public override void onAfterInsert() {
         updateInterestedResourceNamesOnServiceAppointments(records, null, false);
         updateInterestedResourceStatus(records);
+        notifyOnWantedSR(records);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
@@ -98,4 +99,12 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
         update recordsToUpdate;
     }
     }
+     public void notifyOnWantedSR(List<SObject> records) {
+        List<HOT_InterestedResource__c> interestedResourceToNotifyUser = new List<HOT_InterestedResource__c>();
+         for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
+            if(interestedResource.Status__c=='Wanted'){
+                interestedResourceToNotifyUser.add(interestedResource);
+            }
+         }
+     }
 }
