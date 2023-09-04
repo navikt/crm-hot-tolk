@@ -120,13 +120,15 @@ public without sharing class HOT_InterestedResourcesListController {
     @AuraEnabled
      public static void startAThreadAndAddComment(Id interestedResourceId, String newComment) {
         if(newComment!=''){
-            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:interestedResourceId];
+            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceAppointment__r.HOT_Request__c, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:interestedResourceId];
+            HOT_Request__c request=[SELECT Dispatcher__c FROM HOT_Request__c WHERE Id=:ir.ServiceAppointment__r.HOT_Request__c];
             Thread__c thread = new Thread__c();
             thread.CRM_Related_Object__c = interestedResourceId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
             thread.HOT_InterestedResource__c=interestedResourceId;
             thread.HOT_Title__c=ir.ServiceAppointment__r.Subject;
+            thread.HOT_Dispatcher__c=request.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
 
             //legg inn meldingen i comment
