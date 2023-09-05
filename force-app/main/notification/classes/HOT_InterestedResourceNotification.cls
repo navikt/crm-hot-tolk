@@ -1,10 +1,10 @@
 public without sharing class HOT_InterestedResourceNotification {
     public static void newWantedServiceResource(List<Id> wantedIrIds) {
         List<HOT_InterestedResource__c> interestedResources = [
-            SELECT ServiceResource__r.AccountId, ServiceResource__r.Account.INT_KrrMobilePhone__c, ServiceResource__r.Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c, ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c
+            SELECT ServiceResource__r.AccountId, ServiceResource__r.Account.INT_KrrMobilePhone__c, ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c
             FROM HOT_InterestedResource__c
             WHERE
-                Id IN :wantedIrIds AND ServiceAppointment__r.Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE];
+                Id IN :wantedIrIds];
 
         if (!interestedResources.isEmpty()) {
         List<Id> accountIds = new List<Id>();
