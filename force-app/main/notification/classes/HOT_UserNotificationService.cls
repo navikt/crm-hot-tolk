@@ -230,10 +230,10 @@ public without sharing class HOT_UserNotificationService {
             return pageRef;
         }
     }
-     private static String getTargetPageRefWanted(String level) {
+     private static String getTargetPageRefWanted(String liste) {
         String pageRef =
             '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {liste: "' +
-            level+
+            liste+
             '"}}';
 
         return pageRef;
