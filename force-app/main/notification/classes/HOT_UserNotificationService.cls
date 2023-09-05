@@ -188,7 +188,7 @@ public without sharing class HOT_UserNotificationService {
         Set<String> recipients
     ) {
         String title = 'Du er ønsket til et oppdrag';
-        String body;
+        String body='Du kan tildele deg selv oppdraget eller avslå interesse';
 
         Id notificationTypeId = notificationType.Id;
         String liste='wanted';
