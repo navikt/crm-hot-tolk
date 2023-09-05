@@ -21,7 +21,7 @@ public without sharing class HOT_InterestedResourceNotification {
         }
             for (HOT_InterestedResource__c wantedIr : interestedResources) {
                 Set<String> recipients = new Set<String>();
-                if(userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId != null)) {
+                if(userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId)!= null) {
                     recipients.add(userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId));
                 }
                 if(recipients.size() != 0 && wantedIr.ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')){
