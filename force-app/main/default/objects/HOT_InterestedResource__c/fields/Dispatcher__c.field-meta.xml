@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Dispatcher__c</fullName>
     <externalId>false</externalId>
-    <formula>ServiceAppointment__r.HOT_DispatcherNew__c</formula>
+    <formula>HYPERLINK(&apos;/lightning/r/&apos;+ServiceAppointment__r.HOT_DispatcherNew__c+&apos;/view&apos;,ServiceAppointment__r.HOT_Request__r.Dispatcher__r.NKS_FullName__c)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Dispatcher</label>
     <required>false</required>
