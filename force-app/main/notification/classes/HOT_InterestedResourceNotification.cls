@@ -21,8 +21,10 @@ public without sharing class HOT_InterestedResourceNotification {
         }
             for (HOT_InterestedResource__c wantedIr : interestedResources) {
                 Set<String> recipients = new Set<String>();
-                recipients.add(userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId));
-                if(wantedIr.ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')){
+                if(userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId != null) {
+                    recipients.add(userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId));
+                }
+                if(recipients.size() != 0 && wantedIr.ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')){
                     //PUSH
                       HOT_UserNotificationService.newWanterSRNotification(getCustomNotificationType('HOT_Wanted_ServiceResource'),wantedIr,recipients);
                 }
