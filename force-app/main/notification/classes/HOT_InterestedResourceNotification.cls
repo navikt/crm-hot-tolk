@@ -6,6 +6,7 @@ public without sharing class HOT_InterestedResourceNotification {
             WHERE
                 Id IN :wantedIrIds AND ServiceAppointment__r.Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE];
 
+        if (!interestedResources.isEmpty()) {
         List<Id> accountIds = new List<Id>();
 
          for (HOT_InterestedResource__c ir : interestedResources) {
@@ -18,7 +19,6 @@ public without sharing class HOT_InterestedResourceNotification {
         for (User user : users) {
             userIdByAccountId.put(user.AccountId, user.Id);
         }
-        if (!interestedResources.isEmpty()) {
             for (HOT_InterestedResource__c wantedIr : interestedResources) {
                 Set<String> recipients = new Set<String>();
                 recipients.add(userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId));
