@@ -100,11 +100,16 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
     }
     }
      public void notifyOnWantedSR(List<SObject> records) {
-        List<HOT_InterestedResource__c> interestedResourceToNotifyUser = new List<HOT_InterestedResource__c>();
-         for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
+        List<Id> wantedInterestedResourceIds = new List<Id>();
+        for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
             if(interestedResource.Status__c=='Wanted'){
-                interestedResourceToNotifyUser.add(interestedResource);
+                wantedInterestedResourceIds.add(interestedResource.Id);
             }
-         }
+        }  
+        if(wantedInterestedResourceIds.size()>0){
+            HOT_InterestedResourceNotification.newWantedServiceResource(
+                    wantedInterestedResourceIds
+                );
+        }
      }
 }
