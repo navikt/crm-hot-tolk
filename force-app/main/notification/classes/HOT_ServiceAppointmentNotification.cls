@@ -289,7 +289,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' som skulle starte ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
         );
-        String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
+        String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id); 
+        //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
         notification.setTargetPageRef(targetPageRef);
