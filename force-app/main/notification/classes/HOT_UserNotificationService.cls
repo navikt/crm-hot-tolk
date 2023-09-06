@@ -202,19 +202,18 @@ public without sharing class HOT_UserNotificationService {
 
       public static void newWantedSRNotification(
         CustomNotificationType notificationType,
-        Id target,
         Set<String> recipients
     ) {
         String title = 'Du er ønsket til et oppdrag';
         String body = 'Du kan tildele deg selv oppdraget eller avslå interesse.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRefWanted(target);
+        String targetPageRef = getTargetPageRefWanted();
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
-        notification.setTargetId('a151j00000AlU6mAAF');
-        //notification.setTargetPageRef(targetPageRef);
+        //notification.setTargetId('a151j00000AlU6mAAF');
+        notification.setTargetPageRef(targetPageRef);
         notification.setNotificationTypeId(notificationTypeId);
         
         try {
@@ -261,10 +260,10 @@ public without sharing class HOT_UserNotificationService {
             return pageRef;
         }
     }
-     private static String getTargetPageRefWanted(Id targetId) {
+     private static String getTargetPageRefWanted() {
         String pageRef =
-        '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {recordId: "' +
-        targetId + '"}}';
+        '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
+        'Wanted' + '"}}';
         return pageRef;
     }
 }
