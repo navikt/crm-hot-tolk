@@ -63,7 +63,13 @@ public without sharing class HOT_UserNotificationService {
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void statusChangeNotification(
@@ -97,7 +103,13 @@ public without sharing class HOT_UserNotificationService {
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void reminderNotification(
@@ -121,7 +133,13 @@ public without sharing class HOT_UserNotificationService {
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void interpreterChangeNotification(
@@ -148,7 +166,13 @@ public without sharing class HOT_UserNotificationService {
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void newMessageNotification(
@@ -168,7 +192,13 @@ public without sharing class HOT_UserNotificationService {
         //notification.setTargetId('a0T1X000004EOdMUAW');
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
       public static void newWantedSRNotification(
@@ -186,7 +216,13 @@ public without sharing class HOT_UserNotificationService {
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
         
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     private static String getTargetPageRef(Id targetId, String level) {
