@@ -212,7 +212,6 @@ public without sharing class HOT_UserNotificationService {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
-        //notification.setTargetId('a151j00000AlU6mAAF');
         notification.setTargetPageRef(targetPageRef);
         notification.setNotificationTypeId(notificationTypeId);
         
