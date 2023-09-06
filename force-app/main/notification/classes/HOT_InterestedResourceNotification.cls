@@ -2,7 +2,6 @@ public without sharing class HOT_InterestedResourceNotification {
     public static void newWantedServiceResource(List<Id> wantedIrIds) {
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT 
-            ServiceAppointment__c,
             ServiceResource__r.AccountId, 
             ServiceResource__r.Account.INT_KrrMobilePhone__c, 
             ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c 
@@ -30,7 +29,7 @@ public without sharing class HOT_InterestedResourceNotification {
                     recipients.add(userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId));
                 }
                 if (recipients.size() != 0 && wantedIr.ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')){
-                    HOT_UserNotificationService.newWantedSRNotification(getCustomNotificationType('HOT_NotifyWantedSR'), wantedIr.ServiceAppointment__c, recipients);
+                    HOT_UserNotificationService.newWantedSRNotification(getCustomNotificationType('HOT_NotifyWantedSR'), recipients);
                 }
                 else {
                     Set<Id> wantedIRList = new Set<Id>();
