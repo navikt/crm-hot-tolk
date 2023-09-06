@@ -182,6 +182,30 @@ public without sharing class HOT_UserNotificationService {
         return pageRef;
     }
 
+      public static void newWanterSRNotification(
+        CustomNotificationType notificationType,
+        HOT_InterestedResource__c ir,
+        Set<String> recipients
+    ) {
+        String title = 'Du er ønsket til et oppdrag';
+        String body='Du kan tildele deg selv oppdraget eller avslå interesse.';
+
+        Id notificationTypeId = notificationType.Id;
+        String liste='wanted';
+
+        String targetPageRef = getTargetPageRefWanted(liste);
+        
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        notification.send(recipients);
+    }
+
+    
+
     private static String getTargetPageRefOrderer(Id targetId, String level) {
         String pageRef =
             '{type: "comm__namedPage",attributes: {pageName: "mine-bestillinger-andre"}, state: {id: "' +
@@ -205,5 +229,13 @@ public without sharing class HOT_UserNotificationService {
             target.Id +'"}}';
             return pageRef;
         }
+    }
+     private static String getTargetPageRefWanted(String liste) {
+        String pageRef =
+            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {liste: "' +
+            liste+
+            '"}}';
+
+        return pageRef;
     }
 }

@@ -7,7 +7,17 @@ private class HOT_WantedSRListControllerTest {
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
         insert serviceTerritory;
 
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+
+
         Serviceresource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+        serviceResource.AccountId=personAccount.Id;
         insert serviceResource;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -91,6 +101,7 @@ private class HOT_WantedSRListControllerTest {
 
         WorkOrder workOrder= HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
+        Test.startTest(); 
         WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder,workType);
         insert WorkOrderLineItem;
         ServiceAppointment ServiceAppointment =HOT_TestDataFactory.createServiceAppointment(WorkOrderLineItem);
@@ -106,7 +117,6 @@ private class HOT_WantedSRListControllerTest {
 
         HOT_Request__c request2 = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request2;
-        Test.startTest(); 
         WorkOrder workOrder2= HOT_TestDataFactory.createWorkOrder(request2, workType);
         insert workOrder2;
         WorkOrderLineItem WorkOrderLineItem2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder2,workType);
