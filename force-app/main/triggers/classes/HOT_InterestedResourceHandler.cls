@@ -104,9 +104,11 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
         for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
             if(interestedResource.Status__c=='Wanted'){
                 wantedInterestedResourceIds.add(interestedResource.Id);
+                System.debug('Status er wanted');
             }
         }  
         if(wantedInterestedResourceIds.size()>0){
+            System.debug('Listen større enn');
             HOT_InterestedResourceNotification.newWantedServiceResource(
                     wantedInterestedResourceIds
                 );

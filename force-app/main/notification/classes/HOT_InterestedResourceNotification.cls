@@ -7,7 +7,7 @@ public without sharing class HOT_InterestedResourceNotification {
                 Id IN :wantedIrIds];
 
         if (!interestedResources.isEmpty()) {
-        List<Id> accountIds = new List<Id>();
+            List<Id> accountIds = new List<Id>();
 
          for (HOT_InterestedResource__c ir : interestedResources) {
              accountIds.add(ir.ServiceResource__r.AccountId);
@@ -26,7 +26,7 @@ public without sharing class HOT_InterestedResourceNotification {
                 }
                 if(recipients.size() != 0 && wantedIr.ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')){
                     //PUSH
-                      HOT_UserNotificationService.newWanterSRNotification(getCustomNotificationType('HOT_Wanted_ServiceResource'),wantedIr,recipients);
+                      HOT_UserNotificationService.newWantedSRNotification(getCustomNotificationType('HOT_NotifyWantedSR'), wantedIr, recipients);
                 }
                 else{
                     //SMS
@@ -46,7 +46,7 @@ public without sharing class HOT_InterestedResourceNotification {
             SELECT Id, DeveloperName
             FROM CustomNotificationType
             WHERE DeveloperName = :devName
-        ];
+            ];
         return notificationType;
     }
 }
