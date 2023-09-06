@@ -263,7 +263,8 @@ public without sharing class HOT_UserNotificationService {
      private static String getTargetPageRefWanted() {
         String pageRef =
         '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
-        'Wanted' + '"}}';
+        'wanted' +
+        '"}}';
         return pageRef;
     }
 }
