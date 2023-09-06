@@ -32,7 +32,7 @@
 	</values>
 	<values>
 		<field>Order__c</field>
-		<value xsi:type="xsd:double">0.0</value>
+		<value xsi:type="xsd:double">300.0</value>
 	</values>
 	<values>
 		<field>sObjectAPIName__c</field>
