@@ -106,6 +106,7 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
                 wantedInterestedResourceIds.add(interestedResource.Id);
             }
         }  
+        
         if(wantedInterestedResourceIds.size()>0){
             HOT_InterestedResourceNotification.newWantedServiceResource(
                     wantedInterestedResourceIds

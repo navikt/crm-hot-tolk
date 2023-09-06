@@ -63,7 +63,13 @@ public without sharing class HOT_UserNotificationService {
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void statusChangeNotification(
@@ -97,7 +103,13 @@ public without sharing class HOT_UserNotificationService {
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void reminderNotification(
@@ -121,7 +133,13 @@ public without sharing class HOT_UserNotificationService {
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void interpreterChangeNotification(
@@ -148,7 +166,13 @@ public without sharing class HOT_UserNotificationService {
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static void newMessageNotification(
@@ -165,10 +189,39 @@ public without sharing class HOT_UserNotificationService {
         notification.setTitle(title);
         notification.setBody(body);
         notification.setNotificationTypeId(notificationTypeId);
-        //notification.setTargetId('a0T1X000004EOdMUAW');
         notification.setTargetPageRef(targetPageRef);
 
-        notification.send(recipients);
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+      public static void newWantedSRNotification(
+        CustomNotificationType notificationType,
+        Set<String> recipients
+    ) {
+        String title = 'Du er ønsket til et oppdrag';
+        String body = 'Du kan tildele deg selv oppdraget eller avslå interesse.';
+
+        Id notificationTypeId = notificationType.Id;
+        String targetPageRef = getTargetPageRefWanted();
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setTargetPageRef(targetPageRef);
+        notification.setNotificationTypeId(notificationTypeId);
+        
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     private static String getTargetPageRef(Id targetId, String level) {
@@ -181,30 +234,6 @@ public without sharing class HOT_UserNotificationService {
 
         return pageRef;
     }
-
-      public static void newWanterSRNotification(
-        CustomNotificationType notificationType,
-        HOT_InterestedResource__c ir,
-        Set<String> recipients
-    ) {
-        String title = 'Du er ønsket til et oppdrag';
-        String body='Du kan tildele deg selv oppdraget eller avslå interesse.';
-
-        Id notificationTypeId = notificationType.Id;
-        String liste='wanted';
-
-        String targetPageRef = getTargetPageRefWanted(liste);
-        
-        Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle(title);
-        notification.setBody(body);
-        notification.setNotificationTypeId(notificationTypeId);
-        notification.setTargetPageRef(targetPageRef);
-
-        notification.send(recipients);
-    }
-
-    
 
     private static String getTargetPageRefOrderer(Id targetId, String level) {
         String pageRef =
@@ -230,12 +259,11 @@ public without sharing class HOT_UserNotificationService {
             return pageRef;
         }
     }
-     private static String getTargetPageRefWanted(String liste) {
+     private static String getTargetPageRefWanted() {
         String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {liste: "' +
-            liste+
-            '"}}';
-
+        '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
+        'wanted' +
+        '"}}';
         return pageRef;
     }
 }
