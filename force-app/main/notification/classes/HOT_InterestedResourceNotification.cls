@@ -26,7 +26,7 @@ public without sharing class HOT_InterestedResourceNotification {
                     recipients.add(userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId));
                 }
                 if (recipients.size() != 0 && wantedIr.ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')){
-                    HOT_UserNotificationService.newWantedSRNotification(getCustomNotificationType('HOT_NotifyWantedSR'), wantedIr, recipients);
+                    HOT_UserNotificationService.newWantedSRNotification(getCustomNotificationType('HOT_NotifyWantedSR'), recipients);
                 }
                 else {
                     Set<Id> wantedIRList = new Set<Id>();
