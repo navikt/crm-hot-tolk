@@ -189,7 +189,6 @@ public without sharing class HOT_UserNotificationService {
         notification.setTitle(title);
         notification.setBody(body);
         notification.setNotificationTypeId(notificationTypeId);
-        //notification.setTargetId('a0T1X000004EOdMUAW');
         notification.setTargetPageRef(targetPageRef);
 
         try {
@@ -203,18 +202,20 @@ public without sharing class HOT_UserNotificationService {
 
       public static void newWantedSRNotification(
         CustomNotificationType notificationType,
+        Id sa,
         Set<String> recipients
     ) {
         String title = 'Du er ønsket til et oppdrag';
-        String body='Du kan tildele deg selv oppdraget eller avslå interesse.';
+        String body = 'Du kan tildele deg selv oppdraget eller avslå interesse.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRefWanted();
+        String targetPageRef = getTargetPageRefWanted(sa);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
-        notification.setNotificationTypeId(notificationTypeId);
+        //notification.setTargetId('a151j00000AlU6mAAF');
         notification.setTargetPageRef(targetPageRef);
+        notification.setNotificationTypeId(notificationTypeId);
         
         try {
             notification.send(recipients);
@@ -260,11 +261,10 @@ public without sharing class HOT_UserNotificationService {
             return pageRef;
         }
     }
-     private static String getTargetPageRefWanted() {
+     private static String getTargetPageRefWanted(Id targetId) {
         String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
-            'wanted'+
-            '"}}';
+        '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {Id: "' +
+        targetId + '"}}';
 
         return pageRef;
     }
