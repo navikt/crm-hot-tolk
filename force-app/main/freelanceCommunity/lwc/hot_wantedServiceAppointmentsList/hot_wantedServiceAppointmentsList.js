@@ -36,7 +36,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     };
 
     acceptInterest() {
-        this.processMessage = 'Tildeler deg oppdraget';
+        this.processMessage = 'Melder interesse for oppdraget';
         this.spin = true;
         this.template.querySelector('.record-details-container').classList.add('hidden');
         this.template.querySelector('.submitted-loading').classList.remove('hidden');
@@ -48,7 +48,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.spin = false;
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
-                this.processMessageResult = 'Du ble tildelt oppdraget.';
+                this.processMessageResult = 'Interesse er meldt';
                 let currentFilters = this.filters;
                 refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
                     this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
