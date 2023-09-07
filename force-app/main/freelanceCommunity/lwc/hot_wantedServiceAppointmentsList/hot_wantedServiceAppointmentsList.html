@@ -60,16 +60,13 @@
                         <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
                         <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
                         <br />
-                        <p>
-                            Du er ønsket til dette oppdraget. Om du ønsker å ta oppdraget blir det automatisk tildelt
-                            deg.
-                        </p>
+                        <p>Du er ønsket til dette oppdraget.</p>
                         <div style="display: inline-block; padding-bottom: 1vw; padding-top: 1vw">
                             <c-button
                                 button-styling="primary"
-                                button-label="Jeg tar oppdraget"
-                                aria-label="Jeg tar oppdraget"
-                                title="Jeg tar oppdraget"
+                                button-label="Meld interesse"
+                                aria-label="Meld interesse"
+                                title="Meld interesse"
                                 style="margin-right: 1vw"
                                 onbuttonclick={acceptInterest}
                             >
