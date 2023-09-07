@@ -123,20 +123,9 @@ public without sharing class HOT_wantedSRListController {
             WHERE ServiceResource__c =:srId AND Status__c='Wanted' AND ServiceAppointment__c=:saId LIMIT 1];
         
         if(interestedResource!=null){
-        interestedResource.Status__c = 'Assigned';
+        interestedResource.Status__c = 'Interested';
         
         update interestedResource;
-
-        AssignedResource assignedResource = new AssignedResource(
-                        ServiceAppointmentId = interestedResource.ServiceAppointment__c,
-                        ServiceResourceId = interestedResource.ServiceResource__c
-                    );
-        insert assignedResource;
-
-        ServiceAppointment sa=[SELECT Id, Status FROM ServiceAppointment WHERE Id = :saId];
-        sa.Status='Dispatched';
-        update sa;
-
 
         }
     }
