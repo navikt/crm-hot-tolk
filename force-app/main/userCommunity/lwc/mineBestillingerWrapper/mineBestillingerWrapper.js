@@ -238,7 +238,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.copyButtonLabel = 'Kopier';
             this.cancelButtonLabel = 'Avlys';
             this.isThreadButtonDisabled = false;
-            this.isInterpreterThreadButtonDisabled = false;
+            if (this.workOrder.HOT_Interpreters__c != null) {
+                this.isInterpreterThreadButtonDisabled = false;
+            } else {
+                this.isInterpreterThreadButtonDisabled = true;
+            }
         }
         if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
             this.threadOrdererUserButtonLabel = 'Samtale med bruker';
