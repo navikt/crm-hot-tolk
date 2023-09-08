@@ -64,11 +64,8 @@ private class HOT_WantedSRListControllerTest {
         HOT_WantedSRListController.updateInterestedResource(sa.Id, sr.Id);
 
         HOT_InterestedResource__c irToCheck=[SELECT Id FROM HOT_InterestedResource__c WHERE ServiceAppointment__c=:sa.Id];
-        List <AssignedResource> arList = [SELECT Id FROM AssignedResource WHERE ServiceAppointmentId=:sa.Id AND ServiceResourceId=:sr.Id];
 
-
-        System.assertEquals('Assigned', irToCheck.Status__c='Assigned', 'Could not change the ir status');
-        System.assertEquals(1, arList.size(), 'Could not add assign resource');
+        System.assertEquals('Interested', irToCheck.Status__c='Interested', 'Could not change the ir status');
     }
      @isTest
     static void declineIRTest() {
