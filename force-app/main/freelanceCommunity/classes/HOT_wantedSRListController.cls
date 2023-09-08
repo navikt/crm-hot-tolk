@@ -118,7 +118,7 @@ public without sharing class HOT_wantedSRListController {
     @AuraEnabled
     public static void updateInterestedResource(Id saId, Id srId) {
      HOT_InterestedResource__c interestedResource = [
-            SELECT Id, ServiceAppointment__c, ServiceResource__c
+            SELECT Id, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId, ServiceResource__c
             FROM HOT_InterestedResource__c
             WHERE ServiceResource__c =:srId AND Status__c='Wanted' AND ServiceAppointment__c=:saId LIMIT 1];
         
@@ -127,6 +127,35 @@ public without sharing class HOT_wantedSRListController {
         
         update interestedResource;
 
+        List<ServiceAppointment> sa = [SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_WorkOrderLineItem__r.WorkOrderId=:interestedResource.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId];
+           
+        //Check if there is IR on SA with same WO 
+        if(sa.size()>1){
+            Set<Id> saIds = new Set<Id>();
+            for(ServiceAppointment serviceAppointmentId : sa){
+                saIds.add(serviceAppointmentId.Id);
+            }
+            //Finding existing IR on SA
+            List<HOT_InterestedResource__c> existingIr=[SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__c IN :saIds AND ServiceResource__c=:srId];
+            
+            List<HOT_InterestedResource__c> newIR = new List<HOT_InterestedResource__c>();
+
+                for(ServiceAppointment serviceAppointment : sa){
+                    for(HOT_InterestedResource__c ir : existingIr){
+                        if(ir.ServiceAppointment__c == serviceAppointment.Id){
+                            //finnes IR fra før
+                        }
+                        else{
+                            HOT_InterestedResource__c newInterestedResource = new HOT_InterestedResource__c(
+                                ServiceAppointment__c = serviceAppointment.Id,
+                                ServiceResource__c = srId
+                            );
+                            newIr.add(newInterestedResource);
+                            }
+                         }
+                }
+                insert newIr;
+            }
         }
     }
      @AuraEnabled
