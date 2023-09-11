@@ -36,6 +36,40 @@
                             <p if:true={serviceAppointment.HOT_AddressFormated__c}>
                                 Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span>
                             </p>
+                            <div
+                                if:true={serviceAppointment.HOT_AddressFormated__c}
+                                style="display: inline-block; padding-right: 1vw"
+                            >
+                                <p>Åpne adressen i en karttjeneste (ekstern):</p>
+                                <div
+                                    style="
+                                        display: inline-block;
+                                        padding-right: 1vw;
+                                        padding-bottom: 1vw;
+                                        padding-top: 1vw;
+                                    "
+                                >
+                                    <c-button
+                                        button-styling="secondary"
+                                        button-label="Google maps"
+                                        onbuttonclick={openGoogleMaps}
+                                    ></c-button>
+                                </div>
+                                <div
+                                    style="
+                                        display: inline-block;
+                                        padding-right: 1vw;
+                                        padding-bottom: 1vw;
+                                        padding-top: 1vw;
+                                    "
+                                >
+                                    <c-button
+                                        button-styling="secondary"
+                                        button-label="Apple maps"
+                                        onbuttonclick={openAppleMaps}
+                                    ></c-button>
+                                </div>
+                            </div>
                             <p if:true={serviceAppointment.ActualStartTime}>
                                 Faktisk start: <span>{serviceAppointment.ActualStartTime}</span>
                             </p>
@@ -46,7 +80,6 @@
                             <p if:true={accountPhoneNumber}>
                                 Telefonnummer til bruker: <span>{accountPhoneNumber}</span>
                             </p>
-                            <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d17896.11113266603!2d8.48195!3d59.8763379!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x463f4310498ee947%3A0x47cda75400ea9893!2sHeroes%20of%20Telemark%20view!5e1!3m2!1sen!2sno!4v1690488422572!5m2!1sen!2sno" width="250" height="225" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> -->
                             <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                             <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
                             <p>Eier: <span>{ownerName}</span></p>

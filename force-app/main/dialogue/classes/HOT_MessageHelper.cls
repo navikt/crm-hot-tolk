@@ -83,7 +83,7 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=true)
     public static List<HOT_Request__c> getRequestInformation(Id recordId) {
         List<HOT_Request__c> request= [
-                SELECT Id, IsAccountEqualOrderer__c
+                SELECT Id, IsAccountEqualOrderer__c, Account__c, Orderer__c
                 FROM HOT_Request__c
                 WHERE Id= :recordId
             ];

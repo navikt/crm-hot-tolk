@@ -159,6 +159,34 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
+      @Future
+    public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
+        List<SMS__c> smsList = new List<SMS__c>();
+        List<HOT_InterestedResource__c> wantedIRList = [
+            SELECT ServiceResource__r.Account.Id, ServiceResource__r.Account.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM HOT_InterestedResource__c
+            WHERE Id IN :wantedIRIds
+        ];
+
+        for (HOT_InterestedResource__c ir : wantedIRList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Message';
+            sms.Account__c = ir.ServiceResource__r.Account.Id;
+            sms.Recipient__c = ir.ServiceResource__r.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Message__c = constructOnNewWantedSR();
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+                } 
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
 
     // @Future
     // public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
@@ -235,6 +263,13 @@ public without sharing class HOT_ReminderSMSService {
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
         }
+    }
+    public static String constructOnNewWantedSR() {
+        String message = 'INFO\nDu er ønsket til et oppdrag.\n\n';
+        message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
+        message += 'Du kan ikke svare på denne meldingen.\n';
+        message += 'Mvh tolketjenesten i NAV';
+        return message;
     }
 
     public static String constructOnNewMessage() {

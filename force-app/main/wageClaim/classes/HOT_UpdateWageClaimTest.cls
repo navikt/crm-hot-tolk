@@ -373,4 +373,34 @@ private class HOT_UpdateWageClaimTest {
         wageClaims = [SELECT Id, Status__c, StartTime__c, EndTime__c FROM HOT_WageClaim__c WHERE Status__c = 'Covered'];
         System.assertEquals(2, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
     }
+
+    @isTest
+    static void updateWageClaimsFutureTest_TimeChanged() {
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, SchedStartTime, SchedEndTime, Status
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        HOT_WageClaim__c wageClaim = HOT_TestDataFactory.createWageClaim(serviceResource);
+        wageClaim.StartTime__c = serviceAppointment.SchedStartTime.addHours(1);
+        wageClaim.EndTime__c = serviceAppointment.SchedEndTime.addHours(1);
+        insert wageClaim;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+        Test.startTest();
+        List<HOT_WageClaim__c> wageClaimsBefore = [SELECT Id, Status__c FROM HOT_WageClaim__c];
+
+        serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addHours(1);
+        serviceAppointment.SchedEndTime = serviceAppointment.SchedEndTime.addHours(1);
+        update serviceAppointment;
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaimsAfter = [SELECT Id, Status__c FROM HOT_WageClaim__c];
+        System.assertEquals(1, wageClaimsBefore.size(), 'Not correct number of Wage Claims');
+        System.assertEquals(1, wageClaimsAfter.size(), 'Not correct number of Wage Claims');
+        System.assertEquals('Open', wageClaimsBefore[0].Status__c, 'Should be Open before time is changed');
+        System.assertEquals('Covered', wageClaimsAfter[0].Status__c, 'Should be Covered after time is changed');
+    }
 }

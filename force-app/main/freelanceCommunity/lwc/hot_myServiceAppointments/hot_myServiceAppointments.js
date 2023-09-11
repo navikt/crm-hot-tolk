@@ -144,6 +144,12 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         { name: 'HOT_DeadlineDate__c', type: 'date' },
         { name: 'HOT_ReleaseDate__c', type: 'date' }
     ];
+    openGoogleMaps() {
+        window.open('https://www.google.com/maps/search/?api=1&query=' + this.address);
+    }
+    openAppleMaps() {
+        window.open('http://maps.apple.com/?q=' + this.address);
+    }
     getDayOfWeek(date) {
         var jsDate = new Date(date);
         var dayOfWeek = jsDate.getDay();
@@ -181,6 +187,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     @track accountPhoneNumber;
     @track accountName;
     @track ownerName;
+    @track address;
+
     isDetails = false;
     isflow = false;
     isSeries = false;
@@ -235,6 +243,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                 this.serviceAppointment = serviceAppointment;
                 this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
+                this.address = serviceAppointment.HOT_AddressFormated__c;
+
                 let duedate = new Date(this.serviceAppointment.DueDate);
                 if (this.serviceAppointment.Status == 'Completed') {
                     this.isEditButtonDisabled = true;

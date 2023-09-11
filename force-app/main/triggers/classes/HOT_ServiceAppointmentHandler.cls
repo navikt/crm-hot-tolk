@@ -407,6 +407,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceResources
             );
             HOT_WageClaimService.updateWageClaims(newServiceAppointmentsSchedTimeChanged, wageClaims, false);
+            HOT_WageClaimService.updateWageClaimsFuture(serviceResourceByServiceAppointmentSchedTimeChanged.keySet());
         }
 
         HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
@@ -909,7 +910,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
             if (newStatus == 'Service Appointment Retracted') {
                 if (
-                    interestedResource.ServiceAppointment__r.Status == 'None' || interestedResource.ServiceAppointment__r.Status== 'Annul' || interestedResource.ServiceAppointment__r.Status == 'Cannot Complete'&&
+                    interestedResource.ServiceAppointment__r.Status == 'None' ||
+                    interestedResource.ServiceAppointment__r.Status == 'Annul' ||
+                    interestedResource.ServiceAppointment__r.Status == 'Cannot Complete' &&
                     interestedResource.Status__c == 'Interested'
                 ) {
                     interestedResource.Status__c = newStatus;
