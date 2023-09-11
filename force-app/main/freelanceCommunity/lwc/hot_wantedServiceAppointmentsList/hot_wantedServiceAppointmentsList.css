@@ -120,3 +120,22 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
 .hidden {
     display: none;
 }
+.meld-interesse-eller-avlsaa--overlay {
+    position: fixed;
+    height: 100px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    border-top: 2px solid #2c2c2c8e;
+    z-index: 1;
+
+    background-color: white;
+}
+.meld-interesse-eller-avslaa-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding-right: 2rem;
+}

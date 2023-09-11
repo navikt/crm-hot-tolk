@@ -7,6 +7,9 @@
                 columns={columns}
                 onrowclick={goToRecordDetails}
                 icon-by-value={iconByValue}
+                checkbox="true"
+                checked-rows={checkedServiceAppointments}
+                oncheckedrows={handleRowChecked}
             ></c-table>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
@@ -145,6 +148,30 @@
                     <br />
                 </div>
             </div>
+        </div>
+    </div>
+    <div if:true={showSendInterestOrDecline} class="meld-interesse-eller-avlsaa--overlay">
+        <div class="meld-interesse-eller-avslaa-content">
+            <c-button
+                button-styling="primary"
+                button-label={sendInterestButtonLabel}
+                aria-label="Meld interesse"
+                onbuttonclick={registerInterestChecked}
+                desktop-style=" justify-content: center; margin: 1vw"
+                mobile-style="justify-content: center; margin: 1vw"
+                title="Merk sjekkboks i listen for å melde interesse"
+            >
+            </c-button>
+            <c-button
+                button-styling="danger"
+                button-label={declineInterestButtonLabel}
+                aria-label="Avslå interesse"
+                onbuttonclick={declineInterestChecked}
+                desktop-style=" justify-content: center;"
+                mobile-style="justify-content: center;"
+                title="Merk sjekkboks i listen for å melde interesse"
+            >
+            </c-button>
         </div>
     </div>
 </template>

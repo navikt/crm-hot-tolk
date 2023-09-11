@@ -173,6 +173,90 @@ public without sharing class HOT_wantedSRListController {
         }
     }
     @AuraEnabled
+    public static void updateInterestedResourceChecked(List<Id> saIdsList, Id srId) {
+        List<HOT_InterestedResource__c> interestedResources = [
+            SELECT Id, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId, ServiceResource__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceResource__c = :srId AND Status__c = 'Wanted' AND ServiceAppointment__c IN :saIdsList
+        ];
+        if (interestedResources.size() != 0) {
+            List<Id> workorderIds = new List<Id>();
+
+            for (HOT_InterestedResource__c ir : interestedResources) {
+                ir.Status__c = 'Interested';
+                workorderIds.add(ir.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId);
+            }
+
+            update interestedResources;
+
+            List<ServiceAppointment> sa = [
+                SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId, Status
+                FROM ServiceAppointment
+                WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :workorderIds AND Status = 'Released to Freelance'
+            ];
+
+            //Check if there is IR on SA with same WO
+            if (sa.size() > 1) {
+                Set<Id> saIds = new Set<Id>();
+                for (ServiceAppointment serviceAppointmentId : sa) {
+                    saIds.add(serviceAppointmentId.Id);
+                }
+                //     //Finding existing IR on SA
+                List<HOT_InterestedResource__c> existingIr = [
+                    SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c
+                    FROM HOT_InterestedResource__c
+                    WHERE ServiceAppointment__c IN :saIds AND ServiceResource__c = :srId
+                ];
+
+                List<HOT_InterestedResource__c> newIR = new List<HOT_InterestedResource__c>();
+
+                Map<Id, Id> SAWithoutIR = new Map<Id, Id>();
+
+                for (ServiceAppointment serviceAppointment : sa) {
+                    for (HOT_InterestedResource__c ir : existingIr) {
+                        if (ir.ServiceAppointment__c == serviceAppointment.Id) {
+                            ir.Status__c = 'Interested';
+                        } else {
+                            SAWithoutIR.put(serviceAppointment.Id, srId);
+                        }
+                    }
+                }
+                for (Id saToCreateIR : SAWithoutIR.keySet()) {
+                    if (saIdsList.contains(saToCreateIR)) {
+                    } else {
+                        Id sr = SAWithoutIR.get(saToCreateIR);
+                        HOT_InterestedResource__c newInterestedResource = new HOT_InterestedResource__c(
+                            ServiceAppointment__c = saToCreateIR,
+                            ServiceResource__c = sr,
+                            Status__c = 'Interested'
+                        );
+                        newIr.add(newInterestedResource);
+                    }
+                }
+
+                insert newIr;
+            }
+        }
+    }
+    @AuraEnabled
+    public static void declineInterestedResourceChecked(List<Id> saIdsList, Id srId) {
+        List<HOT_InterestedResource__c> interestedResources = [
+            SELECT Id, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId, ServiceResource__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceResource__c = :srId AND Status__c = 'Wanted' AND ServiceAppointment__c IN :saIdsList
+        ];
+        if (interestedResources.size() != 0) {
+            List<Id> workorderIds = new List<Id>();
+
+            for (HOT_InterestedResource__c ir : interestedResources) {
+                ir.Status__c = 'Declined';
+                workorderIds.add(ir.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId);
+            }
+
+            update interestedResources;
+        }
+    }
+    @AuraEnabled
     public static void declineInterestedResource(Id saId, Id srId) {
         HOT_InterestedResource__c interestedResource = [
             SELECT Id, ServiceAppointment__c, ServiceResource__c
