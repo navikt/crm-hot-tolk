@@ -1,6 +1,6 @@
 public without sharing class HOT_wantedSRListController {
-      @AuraEnabled(cacheable=true)
-    public static List<ServiceAppointment>  getWantedServiceAppointments() {
+    @AuraEnabled(cacheable=true)
+    public static List<ServiceAppointment> getWantedServiceAppointments() {
         Id userId = UserInfo.getUserId();
         List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
 
@@ -8,9 +8,10 @@ public without sharing class HOT_wantedSRListController {
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT Id, ServiceAppointment__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c IN :serviceResource AND Status__c='Wanted'];
+            WHERE ServiceResource__c IN :serviceResource AND Status__c = 'Wanted'
+        ];
 
-        Set<Id> saIds=new Set<Id>();
+        Set<Id> saIds = new Set<Id>();
         for (HOT_InterestedResource__c ir : interestedResources) {
             saIds.add(ir.ServiceAppointment__c);
         }
@@ -63,180 +64,199 @@ public without sharing class HOT_wantedSRListController {
 
     @AuraEnabled(cacheable=true)
     public static List<ServiceAppointment> checkForOverlap(List<ServiceAppointment> serviceAppointments) {
-    Id userId = UserInfo.getUserId();
-    ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
+        Id userId = UserInfo.getUserId();
+        ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
 
-    List<HOT_InterestedResource__c> assignedInterestedResources = [
-        SELECT ServiceResource__c, ServiceAppointment__c, ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c
-        FROM HOT_InterestedResource__c
-        WHERE ServiceResource__c = :serviceResource.Id
-        AND Status__c = 'Assigned'
-    ];
+        List<HOT_InterestedResource__c> assignedInterestedResources = [
+            SELECT
+                ServiceResource__c,
+                ServiceAppointment__c,
+                ServiceAppointmentStartTime__c,
+                ServiceAppointmentEndTime__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceResource__c = :serviceResource.Id AND Status__c = 'Assigned'
+        ];
 
-    Map<Id, List<DateTime>> existingAppointments = new Map<Id, List<DateTime>>();
-    for (HOT_InterestedResource__c assignedResource : assignedInterestedResources) {
-        Id serviceAppointmentId = assignedResource.ServiceAppointment__c;
-        DateTime startTime = assignedResource.ServiceAppointmentStartTime__c;
-        DateTime endTime = assignedResource.ServiceAppointmentEndTime__c;
-        existingAppointments.put(serviceAppointmentId, new List<DateTime>());
-       
-        if (!existingAppointments.containsKey(serviceAppointmentId)) {
+        Map<Id, List<DateTime>> existingAppointments = new Map<Id, List<DateTime>>();
+        for (HOT_InterestedResource__c assignedResource : assignedInterestedResources) {
+            Id serviceAppointmentId = assignedResource.ServiceAppointment__c;
+            DateTime startTime = assignedResource.ServiceAppointmentStartTime__c;
+            DateTime endTime = assignedResource.ServiceAppointmentEndTime__c;
+            existingAppointments.put(serviceAppointmentId, new List<DateTime>());
+
+            if (!existingAppointments.containsKey(serviceAppointmentId)) {
                 existingAppointments.put(serviceAppointmentId, new List<DateTime>());
-        }
-            
-        existingAppointments.get(serviceAppointmentId).add(startTime);
-        existingAppointments.get(serviceAppointmentId).add(endTime);
-    }
-
-    List<ServiceAppointment> nonOverlappingAppointments = new List<ServiceAppointment>();
-    for (ServiceAppointment potentialAppointment : serviceAppointments) {
-        Boolean overlaps = false;
-        DateTime potentialServiceAppointmentStart=potentialAppointment.EarliestStartTime;
-        DateTime potentialServiceAppointmentEnd=potentialAppointment.DueDate;
-
-
-        for (Id serviceAppointmentId : existingAppointments.keySet()) {
-            List<DateTime> appointmentTimes = existingAppointments.get(serviceAppointmentId);
-            DateTime startTime = appointmentTimes[0]; 
-            DateTime endTime = appointmentTimes[1];   
-            if(potentialServiceAppointmentStart <= endTime && potentialServiceAppointmentEnd>=startTime){
-                overlaps = true;
-                 break;
             }
-            else{
-                overlaps = false;
+
+            existingAppointments.get(serviceAppointmentId).add(startTime);
+            existingAppointments.get(serviceAppointmentId).add(endTime);
+        }
+
+        List<ServiceAppointment> nonOverlappingAppointments = new List<ServiceAppointment>();
+        for (ServiceAppointment potentialAppointment : serviceAppointments) {
+            Boolean overlaps = false;
+            DateTime potentialServiceAppointmentStart = potentialAppointment.EarliestStartTime;
+            DateTime potentialServiceAppointmentEnd = potentialAppointment.DueDate;
+
+            for (Id serviceAppointmentId : existingAppointments.keySet()) {
+                List<DateTime> appointmentTimes = existingAppointments.get(serviceAppointmentId);
+                DateTime startTime = appointmentTimes[0];
+                DateTime endTime = appointmentTimes[1];
+                if (potentialServiceAppointmentStart <= endTime && potentialServiceAppointmentEnd >= startTime) {
+                    overlaps = true;
+                    break;
+                } else {
+                    overlaps = false;
+                }
+            }
+            if (!overlaps) {
+                nonOverlappingAppointments.add(potentialAppointment);
             }
         }
-         if (!overlaps) {
-            nonOverlappingAppointments.add(potentialAppointment);
-        }
-    }
 
-    return nonOverlappingAppointments;
-}
+        return nonOverlappingAppointments;
+    }
 
     @AuraEnabled
     public static void updateInterestedResource(Id saId, Id srId) {
-     HOT_InterestedResource__c interestedResource = [
+        HOT_InterestedResource__c interestedResource = [
             SELECT Id, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId, ServiceResource__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c =:srId AND Status__c='Wanted' AND ServiceAppointment__c=:saId LIMIT 1];
-        
-        if(interestedResource!=null){
-        interestedResource.Status__c = 'Interested';
-        
-        update interestedResource;
+            WHERE ServiceResource__c = :srId AND Status__c = 'Wanted' AND ServiceAppointment__c = :saId
+            LIMIT 1
+        ];
 
-        List<ServiceAppointment> sa = [SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE HOT_WorkOrderLineItem__r.WorkOrderId=:interestedResource.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId];
-           
-        //Check if there is IR on SA with same WO 
-        if(sa.size()>1){
-            Set<Id> saIds = new Set<Id>();
-            for(ServiceAppointment serviceAppointmentId : sa){
-                saIds.add(serviceAppointmentId.Id);
-            }
-            //Finding existing IR on SA
-            List<HOT_InterestedResource__c> existingIr=[SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__c IN :saIds AND ServiceResource__c=:srId];
-            
-            List<HOT_InterestedResource__c> newIR = new List<HOT_InterestedResource__c>();
+        if (interestedResource != null) {
+            interestedResource.Status__c = 'Interested';
 
-                for(ServiceAppointment serviceAppointment : sa){
-                    for(HOT_InterestedResource__c ir : existingIr){
-                        if(ir.ServiceAppointment__c == serviceAppointment.Id){
-                            //finnes IR fra før
-                        }
-                        else{
+            update interestedResource;
+
+            List<ServiceAppointment> sa = [
+                SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId, Status
+                FROM ServiceAppointment
+                WHERE
+                    HOT_WorkOrderLineItem__r.WorkOrderId = :interestedResource.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
+                    AND Status = 'Released to Freelance'
+            ];
+
+            //Check if there is IR on SA with same WO
+            if (sa.size() > 1) {
+                Set<Id> saIds = new Set<Id>();
+                for (ServiceAppointment serviceAppointmentId : sa) {
+                    saIds.add(serviceAppointmentId.Id);
+                }
+                //Finding existing IR on SA
+                List<HOT_InterestedResource__c> existingIr = [
+                    SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__c
+                    FROM HOT_InterestedResource__c
+                    WHERE ServiceAppointment__c IN :saIds AND ServiceResource__c = :srId
+                ];
+
+                List<HOT_InterestedResource__c> newIR = new List<HOT_InterestedResource__c>();
+
+                for (ServiceAppointment serviceAppointment : sa) {
+                    for (HOT_InterestedResource__c ir : existingIr) {
+                        if (ir.ServiceAppointment__c == serviceAppointment.Id) {
+                            ir.Status__c = 'Interested';
+                        } else {
                             HOT_InterestedResource__c newInterestedResource = new HOT_InterestedResource__c(
                                 ServiceAppointment__c = serviceAppointment.Id,
-                                ServiceResource__c = srId
+                                ServiceResource__c = srId,
+                                Status__c = 'Interested'
                             );
                             newIr.add(newInterestedResource);
-                            }
-                         }
+                        }
+                    }
                 }
                 insert newIr;
             }
         }
     }
-     @AuraEnabled
+    @AuraEnabled
     public static void declineInterestedResource(Id saId, Id srId) {
-
         HOT_InterestedResource__c interestedResource = [
             SELECT Id, ServiceAppointment__c, ServiceResource__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c =:srId AND Status__c='Wanted' AND ServiceAppointment__c=:saId LIMIT 1];
-        
-        if(interestedResource!=null){
-        interestedResource.Status__c = 'Declined';
-        
-        update interestedResource;
+            WHERE ServiceResource__c = :srId AND Status__c = 'Wanted' AND ServiceAppointment__c = :saId
+            LIMIT 1
+        ];
 
+        if (interestedResource != null) {
+            interestedResource.Status__c = 'Declined';
+
+            update interestedResource;
         }
     }
-    @InvocableMethod(label='Check if wanted SR has overlapping SA' description='return based on result' category='check')
-    public static List<String> checkForOverlap (List<Request> ids){
+    @InvocableMethod(
+        label='Check if wanted SR has overlapping SA'
+        description='return based on result'
+        category='check'
+    )
+    public static List<String> checkForOverlap(List<Request> ids) {
+        List<String> overLaps = new List<String>();
 
-    List<String> overLaps = new List<String>();
+        List<ServiceAppointment> sa = [
+            SELECT Id, EarliestStartTime, DueDate
+            FROM ServiceAppointment
+            WHERE Id = :ids[0].saId
+        ];
 
-    List<ServiceAppointment> sa = [SELECT Id,EarliestStartTime,DueDate FROM ServiceAppointment WHERE Id=:ids[0].saId];
-           
-    ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE Id = :ids[0].srId];
+        ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE Id = :ids[0].srId];
 
-    List<HOT_InterestedResource__c> assignedInterestedResources = [
-        SELECT ServiceResource__c, ServiceAppointment__c, ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c
-        FROM HOT_InterestedResource__c
-        WHERE ServiceResource__c = :serviceResource.Id
-        AND Status__c = 'Assigned'
-    ];
+        List<HOT_InterestedResource__c> assignedInterestedResources = [
+            SELECT
+                ServiceResource__c,
+                ServiceAppointment__c,
+                ServiceAppointmentStartTime__c,
+                ServiceAppointmentEndTime__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceResource__c = :serviceResource.Id AND Status__c = 'Assigned'
+        ];
 
-    Map<Id, List<DateTime>> existingAppointments = new Map<Id, List<DateTime>>();
-    for (HOT_InterestedResource__c assignedResource : assignedInterestedResources) {
-        Id serviceAppointmentId = assignedResource.ServiceAppointment__c;
-        DateTime startTime = assignedResource.ServiceAppointmentStartTime__c;
-        DateTime endTime = assignedResource.ServiceAppointmentEndTime__c;
-        existingAppointments.put(serviceAppointmentId, new List<DateTime>());
-       
-        if (!existingAppointments.containsKey(serviceAppointmentId)) {
+        Map<Id, List<DateTime>> existingAppointments = new Map<Id, List<DateTime>>();
+        for (HOT_InterestedResource__c assignedResource : assignedInterestedResources) {
+            Id serviceAppointmentId = assignedResource.ServiceAppointment__c;
+            DateTime startTime = assignedResource.ServiceAppointmentStartTime__c;
+            DateTime endTime = assignedResource.ServiceAppointmentEndTime__c;
+            existingAppointments.put(serviceAppointmentId, new List<DateTime>());
+
+            if (!existingAppointments.containsKey(serviceAppointmentId)) {
                 existingAppointments.put(serviceAppointmentId, new List<DateTime>());
-        }
-            
-        existingAppointments.get(serviceAppointmentId).add(startTime);
-        existingAppointments.get(serviceAppointmentId).add(endTime);
-    }
-
-    List<ServiceAppointment> nonOverlappingAppointments = new List<ServiceAppointment>();
-    Integer overlapCount=0;
-    for (ServiceAppointment potentialAppointment : sa) {
-        DateTime potentialServiceAppointmentStart=potentialAppointment.EarliestStartTime;
-        DateTime potentialServiceAppointmentEnd=potentialAppointment.DueDate;
-
-
-        for (Id serviceAppointmentId : existingAppointments.keySet()) {
-            List<DateTime> appointmentTimes = existingAppointments.get(serviceAppointmentId);
-            DateTime startTime = appointmentTimes[0]; 
-            DateTime endTime = appointmentTimes[1];   
-            if(potentialServiceAppointmentStart <= endTime && potentialServiceAppointmentEnd>=startTime){
-                overlapCount++;
-                 break;
             }
-            else{
+
+            existingAppointments.get(serviceAppointmentId).add(startTime);
+            existingAppointments.get(serviceAppointmentId).add(endTime);
+        }
+
+        List<ServiceAppointment> nonOverlappingAppointments = new List<ServiceAppointment>();
+        Integer overlapCount = 0;
+        for (ServiceAppointment potentialAppointment : sa) {
+            DateTime potentialServiceAppointmentStart = potentialAppointment.EarliestStartTime;
+            DateTime potentialServiceAppointmentEnd = potentialAppointment.DueDate;
+
+            for (Id serviceAppointmentId : existingAppointments.keySet()) {
+                List<DateTime> appointmentTimes = existingAppointments.get(serviceAppointmentId);
+                DateTime startTime = appointmentTimes[0];
+                DateTime endTime = appointmentTimes[1];
+                if (potentialServiceAppointmentStart <= endTime && potentialServiceAppointmentEnd >= startTime) {
+                    overlapCount++;
+                    break;
+                } else {
+                }
+            }
+            if (overlapCount > 0) {
+                overLaps.add('overlap');
+            } else {
+                overLaps.add('no overlap');
             }
         }
-         if (overlapCount>0) {
-            overLaps.add('overlap');
-        }
-        else{
-            overLaps.add('no overlap');
-        }
+        return overLaps;
     }
-         return overLaps;
-    }
-    
+
     public class Request {
-    @InvocableVariable(label='sa Id' description='return based on result' required=false)
-    public String saID;
-     @InvocableVariable(label='sr Id' description='return based on result' required=false)
-    public String srID;
-    
+        @InvocableVariable(label='sa Id' description='return based on result' required=false)
+        public String saID;
+        @InvocableVariable(label='sr Id' description='return based on result' required=false)
+        public String srID;
     }
 }
