@@ -48,7 +48,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.spin = false;
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
-                this.processMessageResult = 'Interesse er meldt';
+                this.processMessageResult = 'Interesse er meldt.';
                 let currentFilters = this.filters;
                 refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
                     this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
