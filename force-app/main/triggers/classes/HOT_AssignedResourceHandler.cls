@@ -303,14 +303,15 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
                         interestedResource.Status__c == 'Withdrawn'
                     ) {
-                    } 
-                    else if(interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
-                        interestedResource.Status__c == 'Declined'){
-                    }
-                    else if(interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
-                        interestedResource.Status__c == 'Wanted'){
-                    }
-                    else if (
+                    } else if (
+                        interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
+                        interestedResource.Status__c == 'Declined'
+                    ) {
+                    } else if (
+                        interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
+                        interestedResource.Status__c == 'Wanted'
+                    ) {
+                    } else if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
                         interestedResource.Status__c != 'Not Assigned'
                     ) {
@@ -487,7 +488,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         );
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, AppointmentNumber, EarliestStartTime, Status
+                SELECT Id, AppointmentNumber, EarliestStartTime, Status, HOT_IsEmployedInterpreter__c
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
