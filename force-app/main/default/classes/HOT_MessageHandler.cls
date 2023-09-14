@@ -9,10 +9,7 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
                 message.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' ||
                 message.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER'
             ) {
-                if (
-                    !message.HOT_UserRole__c.contains(', Formidler') &&
-                    !message.HOT_UserRole__c.contains(', Administrator')
-                ) {
+                if (!message.HOT_UserRole__c.contains(', Formidler')) {
                     threadIdsToNotifyDispatcherOnNewMessage.add(message.CRM_Thread__c);
                 } else {
                     threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
