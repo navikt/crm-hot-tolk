@@ -205,7 +205,7 @@ public without sharing class HOT_UserNotificationService {
         Set<String> recipients
     ) {
         String title = 'Du er ønsket til et oppdrag';
-        String body = 'Du kan tildele deg selv oppdraget eller avslå interesse.';
+        String body = 'Du kan melde interesse for oppdraget eller avslå.';
 
         Id notificationTypeId = notificationType.Id;
         String targetPageRef = getTargetPageRefWanted();

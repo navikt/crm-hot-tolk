@@ -1,6 +1,8 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getWantedServiceAppointments from '@salesforce/apex/HOT_wantedSRListController.getWantedServiceAppointments';
 import updateInterestedResource from '@salesforce/apex/HOT_wantedSRListController.updateInterestedResource';
+import updateInterestedResourceChecked from '@salesforce/apex/HOT_wantedSRListController.updateInterestedResourceChecked';
+import declineInterestedResourceChecked from '@salesforce/apex/HOT_wantedSRListController.declineInterestedResourceChecked';
 import declineInterestedResource from '@salesforce/apex/HOT_wantedSRListController.declineInterestedResource';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { columns, inDetailsColumns, mobileColumns } from './columns';
@@ -36,7 +38,9 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     };
 
     acceptInterest() {
-        this.processMessage = 'Tildeler deg oppdraget';
+        this.isDetails = false;
+        this.checkedServiceAppointments = [];
+        this.processMessage = 'Melder interesse for oppdraget';
         this.spin = true;
         this.template.querySelector('.record-details-container').classList.add('hidden');
         this.template.querySelector('.submitted-loading').classList.remove('hidden');
@@ -48,7 +52,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.spin = false;
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
-                this.processMessageResult = 'Du ble tildelt oppdraget.';
+                this.processMessageResult = 'Interesse er meldt.';
                 let currentFilters = this.filters;
                 refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
                     this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
@@ -63,6 +67,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             });
     }
     declineInterest() {
+        this.isDetails = false;
+        this.checkedServiceAppointments = [];
         this.processMessage = 'Avslår interesse for oppdrag';
         this.spin = true;
         this.template.querySelector('.record-details-container').classList.add('hidden');
@@ -102,6 +108,16 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
         this.dispatchEvent(eventToSend);
     }
+    showSendInterestOrDecline = false;
+    sendCheckedRows() {
+        this.showSendInterestOrDecline = this.checkedServiceAppointments.length > 0;
+        this.sendInterestButtonLabel = 'Meld interesse til ' + this.checkedServiceAppointments.length + ' oppdrag';
+        this.declineInterestButtonLabel = 'Avslå interesse til ' + this.checkedServiceAppointments.length + ' oppdrag';
+        const eventToSend = new CustomEvent('sendcheckedrows', { detail: this.checkedServiceAppointments });
+        this.dispatchEvent(eventToSend);
+    }
+    sendInterestButtonLabel = '';
+    declineInterestButtonLabel = '';
 
     setPreviousFiltersOnRefresh() {
         if (sessionStorage.getItem('openfilters2')) {
@@ -113,11 +129,20 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
 
         this.sendFilters();
     }
+    setCheckedRowsOnRefresh() {
+        if (sessionStorage.getItem('checkedrowsWanted') && !this.isDetails) {
+            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsWanted'));
+            sessionStorage.removeItem('checkedrowsWanted');
+        }
+        this.sendCheckedRows();
+    }
 
     disconnectedCallback() {}
 
     renderedCallback() {
         this.setPreviousFiltersOnRefresh();
+        this.setCheckedRowsOnRefresh();
+        sessionStorage.setItem('checkedrowsSavedForRefreshWanted', JSON.stringify(this.checkedServiceAppointments));
     }
 
     @track filters = [];
@@ -125,6 +150,10 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     connectedCallback() {
         this.updateURL();
         this.setColumns();
+        if (sessionStorage.getItem('checkedrowsSavedForRefreshWanted')) {
+            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsSavedForRefreshWanted'));
+            sessionStorage.removeItem('checkedrowsSavedForRefreshWanted');
+        }
         refreshApex(this.wiredAllServiceAppointmentsResult);
     }
     getDayOfWeek(date) {
@@ -208,6 +237,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
 
         this.sendRecords();
         this.sendFilters();
+        this.sendCheckedRows();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
@@ -264,6 +294,12 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
 
     errorMessage = '';
     spin = false;
+    @track checkedServiceAppointments = [];
+
+    handleRowChecked(event) {
+        this.checkedServiceAppointments = event.detail.checkedRows;
+        this.sendCheckedRows();
+    }
 
     hideSubmitIndicators() {
         this.template.querySelector('.submitted-error').classList.add('hidden');
@@ -330,6 +366,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                     includeRecord *= compare(filter, record);
                 }
                 if (includeRecord) {
+                    submit;
                     filteredRecords.push(record);
                 }
             }
@@ -340,5 +377,86 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             }
         }
         return this.filteredRecordsLength;
+    }
+    registerInterestChecked() {
+        this.template.querySelector('.submitted-true').classList.add('hidden');
+        this.isDetails = false;
+        this.processMessage = 'Melder interesse...';
+        this.spin = true;
+        this.template.querySelector('.comments-dialog-container').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.submitted-loading').classList.remove('hidden');
+        this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
+        console.log('7');
+
+        if (this.checkedServiceAppointments.length === 0) {
+            this.closeModal();
+            return;
+        }
+        updateInterestedResourceChecked({
+            saIdsList: this.checkedServiceAppointments,
+            srId: this.serviceResourceId
+        })
+            .then(() => {
+                this.processMessageResult = 'Interesse er meldt.';
+                this.spin = false;
+                this.template.querySelector('.submitted-loading').classList.add('hidden');
+                this.template.querySelector('.submitted-true').classList.remove('hidden');
+                this.template.querySelector('c-table').unsetCheckboxes();
+                this.checkedServiceAppointments = [];
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
+                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
+                });
+            })
+            .catch((error) => {
+                this.spin = false;
+                this.showSendInterest = true;
+                this.template.querySelector('.submitted-loading').classList.add('hidden');
+                this.template.querySelector('.submitted-error').classList.remove('hidden');
+                this.errorMessage = JSON.stringify(error);
+                this.processMessage = this.errorMessage;
+            });
+    }
+    declineInterestChecked() {
+        this.template.querySelector('.submitted-true').classList.add('hidden');
+        this.isDetails = false;
+        console.log('yees');
+        this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
+
+        if (this.checkedServiceAppointments.length === 0) {
+            this.closeModal();
+            return;
+        }
+        this.processMessage = 'Avslår interesse...';
+        this.spin = true;
+        this.template.querySelector('.comments-dialog-container').classList.remove('hidden');
+        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+        this.template.querySelector('.submitted-loading').classList.remove('hidden');
+        this.checkedServiceAppointments.forEach((element) => {
+            console.log(element);
+        });
+        declineInterestedResourceChecked({
+            saIdsList: this.checkedServiceAppointments,
+            srId: this.serviceResourceId
+        })
+            .then(() => {
+                this.processMessageResult = 'Avslått interesse.';
+                this.spin = false;
+                this.template.querySelector('.submitted-loading').classList.add('hidden');
+                this.template.querySelector('.submitted-true').classList.remove('hidden');
+                this.template.querySelector('c-table').unsetCheckboxes();
+                this.checkedServiceAppointments = [];
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
+                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
+                });
+            })
+            .catch((error) => {
+                this.spin = false;
+                this.showSendInterest = true;
+                this.template.querySelector('.submitted-loading').classList.add('hidden');
+                this.template.querySelector('.submitted-error').classList.remove('hidden');
+                this.errorMessage = JSON.stringify(error);
+                this.processMessage = this.errorMessage;
+            });
     }
 }
