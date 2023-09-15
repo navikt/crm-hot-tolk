@@ -78,6 +78,71 @@ public without sharing class HOT_MessagesNotification {
             }
         }
     }
+    public static void NotifyInterpreter(List<Id> threadIds) {
+        List<Thread__c> threads = [
+            SELECT Id, HOT_Participants__c
+            FROM Thread__c
+            WHERE Id IN :threadIds
+        ];
+        if (!threads.isEmpty()) {
+            Map<Id, Thread__c> interpretersOnThreadMap = new Map<Id, Thread__c>();
+
+            for (Thread__c t : threads) {
+                String[] participantIds = t.HOT_Participants__c.split(', ');
+
+                for (String participantId : participantIds) {
+                    participantId = participantId.trim();
+
+                    if (participantId != '') {
+                        interpretersOnThreadMap.put(participantId, t);
+                    }
+                }
+            }
+
+            //Loop igjennom alle key i mappen for å finne user og legg den til i ny map med thread
+
+            Set<Id> accountIds = new Set<Id>();
+            for (Id participantId : interpretersOnThreadMap.keySet()) {
+                accountIds.add(participantId);
+            }
+
+            List<User> users = [
+                SELECT Id, AccountId, Account.CRM_Person__r.HOT_NotificationChannel__c
+                FROM User
+                WHERE AccountId IN :accountIds
+            ];
+
+            Map<User, Thread__c> userIdToThreadMap = new Map<User, Thread__c>();
+            for (Id participantId : interpretersOnThreadMap.keySet()) {
+                Thread__c threadId = interpretersOnThreadMap.get(participantId);
+                for (User user : users) {
+                    if (participantId == user.AccountId) {
+                        userIdToThreadMap.put(User, threadId);
+                    }
+                }
+            }
+            for (User user : userIdToThreadMap.keySet()) {
+                Set<String> recipients = new Set<String>();
+                String notificationChannel = user.Account.CRM_Person__r.HOT_NotificationChannel__c;
+                Thread__c thread = userIdToThreadMap.get(user);
+                recipients.add(user.Id);
+
+                if (recipients.size() > 0) {
+                    if (notificationChannel.contains('Push')) {
+                        HOT_UserNotificationService.newMessageNotification(
+                            getCustomNotificationType('HOT_NotifyUser'),
+                            thread,
+                            recipients
+                        );
+                    } else {
+                        Set<Id> threadList = new Set<Id>();
+                        threadList.add(thread.Id);
+                        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(user.AccountId, thread.Id);
+                    }
+                }
+            }
+        }
+    }
 
     public static CustomNotificationType getCustomNotificationType(String devName) {
         CustomNotificationType notificationType = [
