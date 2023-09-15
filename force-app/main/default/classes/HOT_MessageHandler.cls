@@ -2,6 +2,7 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
     public override void onAfterInsert() {
         List<Id> threadIdsToNotifyDispatcherOnNewMessage = new List<Id>();
         List<Id> threadIdsToNotifyUserOnNewMessage = new List<Id>();
+        List<Id> threadIdsToNotifyInterpretersOnNewMessage = new List<Id>();
 
         for (Message__c message : (List<Message__c>) records) {
             if (
@@ -15,6 +16,9 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
                     threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
                 }
             }
+            if (message.CRM_Thread_Type__c == 'HOT_TOLK-TOLK') {
+                threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
+            }
         }
 
         if (!threadIdsToNotifyDispatcherOnNewMessage.isEmpty()) {
@@ -22,6 +26,9 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
         }
 
         if (!threadIdsToNotifyUserOnNewMessage.isEmpty()) {
+            HOT_MessagesNotification.NotifyUser(threadIdsToNotifyUserOnNewMessage);
+        }
+        if (!threadIdsToNotifyInterpretersOnNewMessage.isEmpty()) {
             HOT_MessagesNotification.NotifyUser(threadIdsToNotifyUserOnNewMessage);
         }
     }
