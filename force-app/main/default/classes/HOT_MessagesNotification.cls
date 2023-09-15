@@ -80,7 +80,7 @@ public without sharing class HOT_MessagesNotification {
     }
     public static void NotifyInterpreter(List<Id> threadIds) {
         List<Thread__c> threads = [
-            SELECT Id, HOT_Participants__c
+            SELECT Id, HOT_Participants__c, HOT_Last_message_from__c
             FROM Thread__c
             WHERE Id IN :threadIds
         ];
@@ -107,7 +107,7 @@ public without sharing class HOT_MessagesNotification {
             }
 
             List<User> users = [
-                SELECT Id, AccountId, Account.CRM_Person__r.HOT_NotificationChannel__c
+                SELECT Id, AccountId, Account.CRM_Person__r.HOT_NotificationChannel__c, ContactId
                 FROM User
                 WHERE AccountId IN :accountIds
             ];
@@ -125,7 +125,9 @@ public without sharing class HOT_MessagesNotification {
                 Set<String> recipients = new Set<String>();
                 String notificationChannel = user.Account.CRM_Person__r.HOT_NotificationChannel__c;
                 Thread__c thread = userIdToThreadMap.get(user);
-                recipients.add(user.Id);
+                if (thread.HOT_Last_message_from__c != user.ContactId) {
+                    recipients.add(user.Id);
+                }
 
                 if (recipients.size() > 0) {
                     if (notificationChannel.contains('Push')) {
