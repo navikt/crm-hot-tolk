@@ -21,7 +21,8 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
             }
             if (message.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
                 threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
-                //legg inn varsling til frilanstolk her..
+
+                threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
             }
         }
 

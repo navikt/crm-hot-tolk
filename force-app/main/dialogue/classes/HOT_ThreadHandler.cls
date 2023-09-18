@@ -20,6 +20,16 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         }
     }
     public override void onAfterInsert() {
+        Set<Id> workOrderIds = new Set<Id>();
+        for (Thread__c t : [
+            SELECT Id, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE Id IN :records AND (CRM_Thread_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Thread_Type__c = 'HOT_TOLK-TOLK')
+        ]) {
+            workOrderIds.add(t.CRM_Related_Object__c);
+        }
+        //kjør den her
+        setInterpreterThread(workOrderIds);
     }
 
     public static String threadSubjectMaker(String subject) {
@@ -147,7 +157,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = getServiceAppointmentsByWorkOrderId(
             workOrderIds
         );
-        //List<WorkOrder> workOrders = [SELECT Id, HOT_Interpreters__c, Status FROM WorkOrder WHERE Id IN :workOrderIds];
+
         List<Thread__c> threads = [
             SELECT Id, CRM_Related_Object__c, HOT_Participants__c
             FROM Thread__c
@@ -162,10 +172,8 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                     )
                 ) {
                     thread = appendInterpreterName(thread, serviceAppointment);
-                    //thread.HOT_Participants__c = 'lllllll';
                 }
             }
-            //thread.HOT_Participants__c = '999';
         }
         HOT_DatabaseOperations.updateRecords(threads);
     }
