@@ -180,7 +180,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
     private static Map<Id, List<ServiceAppointment>> getServiceAppointmentsByWorkOrderId(Set<Id> workOrderIds) {
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = new Map<Id, List<ServiceAppointment>>();
         List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, Status, HOT_ServiceResource__r.AccountId, HOT_WorkOrderLineItem__r.WorkOrderId
+            SELECT Id, Status, HOT_ServiceResource__r.RelatedRecordId, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
             WHERE
                 HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds
@@ -206,9 +206,9 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         String oldInterpreters = thread.HOT_Participants__c;
 
         if (thread.HOT_Participants__c != '') {
-            thread.HOT_Participants__c += ', ' + serviceAppointment.HOT_ServiceResource__r?.AccountId;
+            thread.HOT_Participants__c += ', ' + serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
         } else {
-            thread.HOT_Participants__c = serviceAppointment.HOT_ServiceResource__r?.AccountId;
+            thread.HOT_Participants__c = serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
         }
         return thread;
     }
