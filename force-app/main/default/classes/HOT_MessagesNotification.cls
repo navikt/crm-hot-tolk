@@ -101,34 +101,34 @@ public without sharing class HOT_MessagesNotification {
                 }
             }
             List<ServiceResource> employeeServiceresource = [
-                SELECT Id, AccountId
+                SELECT Id, RelatedRecordId
                 FROM ServiceResource
-                WHERE AccountId IN :participantIdsSet AND HOT_IsEmployedInterpreter__c = TRUE
+                WHERE RelatedRecordId IN :participantIdsSet AND HOT_IsEmployedInterpreter__c = TRUE
             ];
             List<ServiceResource> freelanceServiceresource = [
                 SELECT Id, AccountId
                 FROM ServiceResource
-                WHERE AccountId IN :participantIdsSet AND HOT_IsFreelanceInterpreter__c = TRUE
+                WHERE RelatedRecordId IN :participantIdsSet AND HOT_IsFreelanceInterpreter__c = TRUE
             ];
 
             //ANSATTOLKER VARSEL
             if (!employeeServiceresource.isEmpty()) {
-                Set<Id> employeeAccountIds = new Set<Id>();
+                Set<Id> employeeUserIds = new Set<Id>();
                 for (ServiceResource sr : employeeServiceresource) {
-                    employeeAccountIds.add(sr.AccountId);
+                    employeeUserIds.add(sr.RelatedRecordId);
                 }
 
                 List<User> users = [
                     SELECT Id, AccountId
                     FROM User
-                    WHERE AccountId IN :employeeAccountIds
+                    WHERE Id IN :employeeUserIds
                 ];
 
                 Map<User, Thread__c> userIdToThreadMap = new Map<User, Thread__c>();
                 for (Id participantId : interpretersOnThreadMap.keySet()) {
                     Thread__c threadId = interpretersOnThreadMap.get(participantId);
                     for (User user : users) {
-                        if (participantId == user.AccountId) {
+                        if (participantId == user.Id) {
                             userIdToThreadMap.put(User, threadId);
                         }
                     }
