@@ -28,7 +28,6 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         ]) {
             workOrderIds.add(t.CRM_Related_Object__c);
         }
-        //kjør den her
         setInterpreterThread(workOrderIds);
     }
 
