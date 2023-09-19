@@ -78,6 +78,121 @@ public without sharing class HOT_MessagesNotification {
             }
         }
     }
+    public static void NotifyInterpreter(List<Id> threadIds) {
+        List<Thread__c> threads = [
+            SELECT Id, HOT_Participants__c, HOT_Last_message_from__c, HOT_Subject__c
+            FROM Thread__c
+            WHERE Id IN :threadIds
+        ];
+        Set<Id> participantIdsSet = new Set<Id>();
+        if (!threads.isEmpty()) {
+            Map<Id, Thread__c> interpretersOnThreadMap = new Map<Id, Thread__c>();
+
+            for (Thread__c t : threads) {
+                String[] participantIds = t.HOT_Participants__c.split(', ');
+
+                for (String participantId : participantIds) {
+                    participantId = participantId.trim();
+
+                    if (participantId != '') {
+                        interpretersOnThreadMap.put(participantId, t);
+                    }
+                    participantIdsSet.add(participantId);
+                }
+            }
+            List<ServiceResource> employeeServiceresource = [
+                SELECT Id, RelatedRecordId
+                FROM ServiceResource
+                WHERE RelatedRecordId IN :participantIdsSet AND HOT_IsEmployedInterpreter__c = TRUE
+            ];
+            List<ServiceResource> freelanceServiceresource = [
+                SELECT Id, AccountId
+                FROM ServiceResource
+                WHERE RelatedRecordId IN :participantIdsSet AND HOT_IsFreelanceInterpreter__c = TRUE
+            ];
+
+            //ANSATTOLKER VARSEL
+            if (!employeeServiceresource.isEmpty()) {
+                Set<Id> employeeUserIds = new Set<Id>();
+                for (ServiceResource sr : employeeServiceresource) {
+                    employeeUserIds.add(sr.RelatedRecordId);
+                }
+
+                List<User> users = [
+                    SELECT Id, AccountId
+                    FROM User
+                    WHERE Id IN :employeeUserIds
+                ];
+
+                Map<User, Thread__c> userIdToThreadMap = new Map<User, Thread__c>();
+                for (Id participantId : interpretersOnThreadMap.keySet()) {
+                    Thread__c threadId = interpretersOnThreadMap.get(participantId);
+                    for (User user : users) {
+                        if (participantId == user.Id) {
+                            userIdToThreadMap.put(User, threadId);
+                        }
+                    }
+                }
+                for (User user : userIdToThreadMap.keySet()) {
+                    Set<String> recipients = new Set<String>();
+                    recipients.add(user.Id);
+                    Thread__c thread = userIdToThreadMap.get(user);
+                    Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                    notification.setTitle('Ny melding');
+                    notification.setBody(thread.HOT_Subject__c); // send med parameter for denne
+                    notification.setNotificationTypeId(getCustomNotificationType('HOT_Service_Appointment_Changed').Id); // send med parameter for denne
+                    notification.setTargetId(thread.Id); // send med parameter for denne
+                    HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread); // send med parameter for denne
+                }
+            }
+            //FRILANSTOLKER VARSEL
+
+            if (!freelanceServiceresource.isEmpty()) {
+                Set<Id> freelanceAccountIds = new Set<Id>();
+                for (ServiceResource sr : freelanceServiceresource) {
+                    freelanceAccountIds.add(sr.AccountId);
+                }
+
+                List<User> users = [
+                    SELECT Id, AccountId, Account.CRM_Person__r.HOT_NotificationChannel__c, ContactId
+                    FROM User
+                    WHERE AccountId IN :freelanceAccountIds
+                ];
+
+                Map<User, Thread__c> userIdToThreadMap = new Map<User, Thread__c>();
+                for (Id participantId : interpretersOnThreadMap.keySet()) {
+                    Thread__c threadId = interpretersOnThreadMap.get(participantId);
+                    for (User user : users) {
+                        if (participantId == user.AccountId) {
+                            userIdToThreadMap.put(User, threadId);
+                        }
+                    }
+                }
+                for (User user : userIdToThreadMap.keySet()) {
+                    Set<String> recipients = new Set<String>();
+                    String notificationChannel = user.Account.CRM_Person__r.HOT_NotificationChannel__c;
+                    Thread__c thread = userIdToThreadMap.get(user);
+                    if (thread.HOT_Last_message_from__c != user.ContactId) {
+                        recipients.add(user.Id);
+                    }
+
+                    if (recipients.size() > 0) {
+                        if (notificationChannel.contains('Push')) {
+                            HOT_UserNotificationService.newMessageNotification(
+                                getCustomNotificationType('HOT_NotifyUser'),
+                                thread,
+                                recipients
+                            );
+                        } else {
+                            Set<Id> threadList = new Set<Id>();
+                            threadList.add(thread.Id);
+                            HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(user.AccountId, thread.Id);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public static CustomNotificationType getCustomNotificationType(String devName) {
         CustomNotificationType notificationType = [
