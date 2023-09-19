@@ -191,10 +191,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
             ' er avlyst.'
         );
-        String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id);
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
-        notification.setTargetPageRef(targetPageRef);
 
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
@@ -218,10 +216,13 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' - ' +
             serviceAppointment.DueDate?.format('HH:mm')
         );
-        String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
+        if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
+            String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
+            notification.setTargetPageRef(targetPageRef);
+        }
+        //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
-        notification.setTargetPageRef(targetPageRef);
 
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
@@ -240,10 +241,13 @@ public without sharing class HOT_ServiceAppointmentNotification {
             'endret adresse'
         );
         notification.setBody('Ny adresse er ' + serviceAppointment.HOT_AddressFormated__c);
-        String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
+        if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
+            String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
+            notification.setTargetPageRef(targetPageRef);
+        }
+        //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
-        notification.setTargetPageRef(targetPageRef);
 
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
@@ -262,10 +266,13 @@ public without sharing class HOT_ServiceAppointmentNotification {
             serviceAppointment.DueDate?.format('HH:mm') +
             '.'
         );
-        String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
+        if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
+            String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
+            notification.setTargetPageRef(targetPageRef);
+        }
+        //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
-        notification.setTargetPageRef(targetPageRef);
 
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
@@ -289,11 +296,13 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ' som skulle starte ' +
             serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
         );
-        String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id); 
+        if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
+            String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id);
+            notification.setTargetPageRef(targetPageRef);
+        }
         //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
-        notification.setTargetPageRef(targetPageRef);
 
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
@@ -460,13 +469,13 @@ public without sharing class HOT_ServiceAppointmentNotification {
         return notificationType;
     }
 
-     private static String getTargetPageRefInterpreter(String targetList, Id targetId) {
+    private static String getTargetPageRefInterpreter(String targetList, Id targetId) {
         String pageRef =
-        '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
-        targetList +
-        '", id: "' +
-        targetId +
-        '"}}';
+            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
+            targetList +
+            '", id: "' +
+            targetId +
+            '"}}';
         return pageRef;
     }
 }
