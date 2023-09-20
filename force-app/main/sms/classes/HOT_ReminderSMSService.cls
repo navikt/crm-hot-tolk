@@ -164,15 +164,15 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
     @Future
-    public static void sendSMSOnNewMessageInterpreter(String accountId, String threadId) {
+    public static void sendSMSOnNewMessageInterpreter(String userId, String threadId) {
         List<SMS__c> smsList = new List<SMS__c>();
 
         SMS__c sms = new SMS__c();
         sms.Domain__c = 'HOT';
         sms.Type__c = 'Message';
-        sms.Account__c = accountId;
+        //sms.Account__c = accountId;
         sms.Thread__c = threadId;
-        sms.Recipient__c = getRecipientPhoneNumberInterpreter(accountId);
+        sms.Recipient__c = getRecipientPhoneNumberInterpreter(userId);
         sms.Message__c = constructOnNewMessage();
         if (SMS.Recipient__c != null) {
             smsList.add(sms);
@@ -356,11 +356,11 @@ public without sharing class HOT_ReminderSMSService {
         }
         return '';
     }
-    private static String getRecipientPhoneNumberInterpreter(String accountId) {
+    private static String getRecipientPhoneNumberInterpreter(String userId) {
         ServiceResource sr = [
-            SELECT AccountId, HOT_MobilePhone__c
+            SELECT RelatedRecordId, HOT_MobilePhone__c
             FROM ServiceResource
-            WHERE AccountId = :accountId
+            WHERE RelatedRecordId = :userId
         ];
         return sr.HOT_MobilePhone__c;
     }

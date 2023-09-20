@@ -163,7 +163,7 @@ public without sharing class HOT_MessagesNotification {
                 for (Id participantId : interpretersOnThreadMap.keySet()) {
                     Thread__c threadId = interpretersOnThreadMap.get(participantId);
                     for (User user : users) {
-                        if (participantId == user.AccountId) {
+                        if (participantId == user.Id) {
                             userIdToThreadMap.put(User, threadId);
                         }
                     }
@@ -186,7 +186,7 @@ public without sharing class HOT_MessagesNotification {
                         } else {
                             Set<Id> threadList = new Set<Id>();
                             threadList.add(thread.Id);
-                            HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(user.AccountId, thread.Id);
+                            HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(user.Id, thread.Id);
                         }
                     }
                 }
