@@ -172,7 +172,9 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             : new Date(this.workOrder.EndDate);
         this.isRequestEditButtonDisabled = this.request.Status__c === 'Åpen' ? false : true;
         this.isRequestCancelButtonDisabled =
-            this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() ? true : false;
+            this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() || this.isTheOrderer == false
+                ? true
+                : false;
         this.isRequestAddFilesButtonDisabled = this.request.Status__c !== 'Avlyst' ? false : true;
         this.isWOEditButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Åpen' ? false : true;
         this.isWOCancelButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst' ? true : false;
@@ -224,6 +226,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     threadOrdererUserButtonLabel;
     isThreadButtonDisabled = false;
     isInterpreterThreadButtonDisabled = false;
+    isTheOrderer = true;
 
     setButtonLabels() {
         if (this.urlStateParameters.level === 'R') {
@@ -251,6 +254,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.request.Account__c === this.userRecord.AccountId
         ) {
             this.threadOrdererUserButtonLabel = 'Samtale med bestiller';
+            this.isTheOrderer = false;
         }
     }
 
