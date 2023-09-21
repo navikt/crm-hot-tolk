@@ -121,7 +121,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     disconnectedCallback() {}
 
     renderedCallback() {
-        // this.setPreviousFiltersOnRefresh();
         this.setCheckedRowsOnRefresh();
         sessionStorage.setItem('checkedrowsSavedForRefreshWanted', JSON.stringify(this.checkedServiceAppointments));
     }
