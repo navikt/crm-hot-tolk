@@ -54,9 +54,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
                 this.processMessageResult = 'Interesse er meldt.';
                 let currentFilters = this.filters;
-                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                    //this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-                });
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {});
             })
             .catch((error) => {
                 this.spin = false;
@@ -83,9 +81,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
                 this.processMessageResult = 'Avslått interesse for oppdraget';
                 let currentFilters = this.filters;
-                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                    //this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-                });
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {});
             })
             .catch((error) => {
                 this.spin = false;
