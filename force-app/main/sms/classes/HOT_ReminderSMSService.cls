@@ -166,7 +166,7 @@ public without sharing class HOT_ReminderSMSService {
     @Future
     public static void sendSMSOnNewMessageInterpreter(String userId, String threadId) {
         User user = [
-            SELECT Id, AccountId, Account.CRM_Person__r.HOT_NotificationChannel__c, ContactId
+            SELECT Id, AccountId
             FROM User
             WHERE Id = :userId
         ];
