@@ -165,12 +165,17 @@ public without sharing class HOT_ReminderSMSService {
     }
     @Future
     public static void sendSMSOnNewMessageInterpreter(String userId, String threadId) {
+        User user = [
+            SELECT Id, AccountId
+            FROM User
+            WHERE Id = :userId
+        ];
         List<SMS__c> smsList = new List<SMS__c>();
 
         SMS__c sms = new SMS__c();
         sms.Domain__c = 'HOT';
         sms.Type__c = 'Message';
-        //sms.Account__c = accountId;
+        sms.Account__c = user.AccountId;
         sms.Thread__c = threadId;
         sms.Recipient__c = getRecipientPhoneNumberInterpreter(userId);
         sms.Message__c = constructOnNewMessage();
