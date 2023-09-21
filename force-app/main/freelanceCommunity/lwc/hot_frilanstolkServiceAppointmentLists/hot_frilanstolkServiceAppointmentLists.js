@@ -5,6 +5,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     @track filters = [];
     @track records = [];
     @track checkedRows = [];
+    @track isWantedList = false;
 
     handleFilters(event) {
         this.filters = event.detail;
@@ -49,6 +50,11 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
                 this.activeTab = tab.name;
                 sessionStorage.setItem('activeTabFreelanceHome', this.activeTab);
                 this.tabMap[tab.name] = true;
+                if (this.activeTab == 'wanted') {
+                    this.isWantedList = true;
+                } else {
+                    this.isWantedList = false;
+                }
             }
         }
         this.updateTabStyle();
