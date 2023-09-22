@@ -6,13 +6,16 @@
                 <p style="margin-left: 0.25rem">Tilbake</p>
             </a>
             <h2 class="header" tabindex="-1" autofocus>Oppdrag</h2>
-            <c-list-filters-button
-                if:false={isDetails}
-                header="Filtrer søket"
-                filters={filters}
-                onapplyfilter={applyFilter}
-                ongetfilteredrecordslength={sendFilteredRecordsLength}
-            ></c-list-filters-button>
+            <div if:false={isWantedList}>
+                <c-list-filters-button
+                    if:false={isDetails}
+                    header="Filtrer søket"
+                    filters={filters}
+                    onapplyfilter={applyFilter}
+                    ongetfilteredrecordslength={sendFilteredRecordsLength}
+                    disabled="true"
+                ></c-list-filters-button>
+            </div>
         </div>
         <div if:false={isDetails} class="tabset desktop-only">
             <template for:each={tabs} for:item="tab">

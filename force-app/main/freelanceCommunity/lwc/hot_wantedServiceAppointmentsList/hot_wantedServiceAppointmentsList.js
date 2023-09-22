@@ -54,9 +54,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
                 this.processMessageResult = 'Interesse er meldt.';
                 let currentFilters = this.filters;
-                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-                });
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {});
             })
             .catch((error) => {
                 this.spin = false;
@@ -83,9 +81,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
                 this.processMessageResult = 'Avslått interesse for oppdraget';
                 let currentFilters = this.filters;
-                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-                });
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {});
             })
             .catch((error) => {
                 this.spin = false;
@@ -94,11 +90,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.errorMessage = JSON.stringify(error);
                 this.sendInterestAll = false;
             });
-    }
-
-    sendFilters() {
-        const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
-        this.dispatchEvent(eventToSend);
     }
     sendRecords() {
         const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
@@ -119,16 +110,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     sendInterestButtonLabel = '';
     declineInterestButtonLabel = '';
 
-    setPreviousFiltersOnRefresh() {
-        if (sessionStorage.getItem('openfilters2')) {
-            this.applyFilter({
-                detail: { filterArray: JSON.parse(sessionStorage.getItem('openfilters2')), setRecords: true }
-            });
-            sessionStorage.removeItem('openfilters2');
-        }
-
-        this.sendFilters();
-    }
     setCheckedRowsOnRefresh() {
         if (sessionStorage.getItem('checkedrowsWanted') && !this.isDetails) {
             this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsWanted'));
@@ -140,7 +121,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     disconnectedCallback() {}
 
     renderedCallback() {
-        this.setPreviousFiltersOnRefresh();
         this.setCheckedRowsOnRefresh();
         sessionStorage.setItem('checkedrowsSavedForRefreshWanted', JSON.stringify(this.checkedServiceAppointments));
     }
@@ -232,13 +212,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     }
 
     refresh() {
-        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilter'));
-        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
-
         this.sendRecords();
-        this.sendFilters();
         this.sendCheckedRows();
-        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
     datetimeFields = [
@@ -322,62 +297,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         return null;
     }
     filteredRecordsLength = 0;
-    @api
-    applyFilter(event) {
-        this.numberTimesCalled = this.numberTimesCalled + 1;
-        let setRecords = event.detail.setRecords;
-        this.filters = event.detail.filterArray;
-        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilter'));
-        sessionStorage.setItem('openSessionFilter', JSON.stringify(this.filters));
-        let sameValues = true;
-        if (this.filters.length !== filterFromSessionStorage.length) {
-            sameValues = false;
-        } else {
-            for (let i = 0; i < this.filters.length; i++) {
-                if (JSON.stringify(this.filters[i]) !== JSON.stringify(filterFromSessionStorage[i])) {
-                    sameValues = false;
-                    break;
-                }
-            }
-        }
-        if (sameValues) {
-            let filteredRecords = [];
-            let records = this.initialServiceAppointments;
-            for (let record of records) {
-                let includeRecord = true;
-                for (let filter of this.filters) {
-                    includeRecord *= compare(filter, record);
-                }
-                if (includeRecord) {
-                    filteredRecords.push(record);
-                }
-            }
-            this.filteredRecordsLength = filteredRecords.length;
-
-            if (setRecords) {
-                this.records = filteredRecords;
-            }
-        } else {
-            let filteredRecords = [];
-            let records = this.initialServiceAppointments;
-            for (let record of records) {
-                let includeRecord = true;
-                for (let filter of this.filters) {
-                    includeRecord *= compare(filter, record);
-                }
-                if (includeRecord) {
-                    submit;
-                    filteredRecords.push(record);
-                }
-            }
-            this.filteredRecordsLength = filteredRecords.length;
-
-            if (setRecords) {
-                this.records = filteredRecords;
-            }
-        }
-        return this.filteredRecordsLength;
-    }
     registerInterestChecked() {
         this.template.querySelector('.submitted-true').classList.add('hidden');
         this.isDetails = false;
@@ -404,9 +323,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
                 this.template.querySelector('c-table').unsetCheckboxes();
                 this.checkedServiceAppointments = [];
-                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-                });
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {});
             })
             .catch((error) => {
                 this.spin = false;
@@ -446,9 +363,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
                 this.template.querySelector('c-table').unsetCheckboxes();
                 this.checkedServiceAppointments = [];
-                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-                });
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {});
             })
             .catch((error) => {
                 this.spin = false;
