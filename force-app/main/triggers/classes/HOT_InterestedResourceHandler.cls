@@ -71,46 +71,45 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
         }
         update serviceAppointmentsToUpdate;
     }
-          public void updateInterestedResourceStatus(List<SObject> records) {
-    Set<Id> serviceAppointmentIds = new Set<Id>();
+    public void updateInterestedResourceStatus(List<SObject> records) {
+        Set<Id> serviceAppointmentIds = new Set<Id>();
 
-     for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
-        serviceAppointmentIds.add(interestedResource.ServiceAppointment__c);
-     }
+        for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
+            serviceAppointmentIds.add(interestedResource.ServiceAppointment__c);
+        }
         List<HOT_InterestedResource__c> existingInterestedResources = [
-        SELECT Id, ServiceAppointment__c
-        FROM HOT_InterestedResource__c
-        WHERE ServiceAppointment__c IN :serviceAppointmentIds
-        AND Status__c = 'Assigned'
-    ];
-    Map<Id,Id> irMap = new Map<Id,Id>();
-    for (HOT_InterestedResource__c existingInterestedResource : existingInterestedResources) {
-        irMap.put(existingInterestedResource.ServiceAppointment__c,existingInterestedResource.Id);
-    }
-    List<HOT_InterestedResource__c> recordsToUpdate = new List<HOT_InterestedResource__c>();
-    for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
-        if (irMap.containsKey(interestedResource.ServiceAppointment__c)) {
-            HOT_InterestedResource__c irToUpdate=new HOT_InterestedResource__c(Id=interestedResource.Id, Status__c='Not Assigned');
+            SELECT Id, ServiceAppointment__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__c IN :serviceAppointmentIds AND Status__c = 'Assigned'
+        ];
+        Map<Id, Id> irMap = new Map<Id, Id>();
+        for (HOT_InterestedResource__c existingInterestedResource : existingInterestedResources) {
+            irMap.put(existingInterestedResource.ServiceAppointment__c, existingInterestedResource.Id);
+        }
+        List<HOT_InterestedResource__c> recordsToUpdate = new List<HOT_InterestedResource__c>();
+        for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
+            if (irMap.containsKey(interestedResource.ServiceAppointment__c)) {
+                HOT_InterestedResource__c irToUpdate = new HOT_InterestedResource__c(
+                    Id = interestedResource.Id,
+                    Status__c = 'Not Assigned'
+                );
                 recordsToUpdate.add(irToUpdate);
-
-        } 
+            }
+        }
+        if (recordsToUpdate.size() > 0) {
+            update recordsToUpdate;
+        }
     }
-    if (recordsToUpdate.size() > 0) {
-        update recordsToUpdate;
-    }
-    }
-     public void notifyOnWantedSR(List<SObject> records) {
+    public void notifyOnWantedSR(List<SObject> records) {
         List<Id> wantedInterestedResourceIds = new List<Id>();
         for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
-            if(interestedResource.Status__c=='Wanted'){
+            if (interestedResource.Status__c == 'Wanted') {
                 wantedInterestedResourceIds.add(interestedResource.Id);
             }
-        }  
-        
-        if(wantedInterestedResourceIds.size()>0){
-            HOT_InterestedResourceNotification.newWantedServiceResource(
-                    wantedInterestedResourceIds
-                );
         }
-     }
+
+        if (wantedInterestedResourceIds.size() > 0) {
+            HOT_InterestedResourceNotification.newWantedServiceResource(wantedInterestedResourceIds);
+        }
+    }
 }
