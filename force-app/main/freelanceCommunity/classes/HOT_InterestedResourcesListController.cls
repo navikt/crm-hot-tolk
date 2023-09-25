@@ -37,7 +37,10 @@ public without sharing class HOT_InterestedResourcesListController {
                 HOT_TermsOfAgreement__c,
                 HOT_DelPol_ToHideRecord__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c IN :serviceResource AND HOT_DelPol_ToHideRecord__c = FALSE AND Status__c!='Wanted'
+            WHERE
+                ServiceResource__c IN :serviceResource
+                AND HOT_DelPol_ToHideRecord__c = FALSE
+                AND Status__c != 'Wanted'
             ORDER BY ServiceAppointmentStartTime__c ASC
         ];
         return interestedResources;
@@ -79,12 +82,10 @@ public without sharing class HOT_InterestedResourcesListController {
         interestedResource.Status__c = 'Interested';
         update interestedResource;
     }
-       @AuraEnabled
+    @AuraEnabled
     public static void addComment(Id interestedResourceId, String newComment) {
         Datetime now = Datetime.now();
-        String osloTimeZone = 
-  now.format('yyyy-MM-dd-HH:mm:ss', 
-                 'Europe/Oslo');
+        String osloTimeZone = now.format('yyyy-MM-dd-HH:mm:ss', 'Europe/Oslo');
         if (newComment != null && newComment != '') {
             newComment =
                 UserInfo.getFirstName() +
@@ -118,24 +119,32 @@ public without sharing class HOT_InterestedResourcesListController {
         }
     }
     @AuraEnabled
-     public static void startAThreadAndAddComment(Id interestedResourceId, String newComment) {
-        if(newComment!=''){
-            HOT_InterestedResource__c ir=[SELECT Id, ServiceAppointment__r.Subject, ServiceAppointment__r.HOT_Request__r.Dispatcher__c, ServiceResource__r.AccountId FROM HOT_InterestedResource__c WHERE Id=:interestedResourceId];
+    public static void startAThreadAndAddComment(Id interestedResourceId, String newComment) {
+        if (newComment != '') {
+            HOT_InterestedResource__c ir = [
+                SELECT
+                    Id,
+                    ServiceAppointment__r.Subject,
+                    ServiceAppointment__r.HOT_Request__r.Dispatcher__c,
+                    ServiceResource__r.AccountId
+                FROM HOT_InterestedResource__c
+                WHERE Id = :interestedResourceId
+            ];
             Thread__c thread = new Thread__c();
             thread.CRM_Related_Object__c = interestedResourceId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
             thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
-            thread.HOT_InterestedResource__c=interestedResourceId;
-            thread.HOT_Title__c=ir.ServiceAppointment__r.Subject;
-            thread.HOT_Dispatcher__c=ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+            thread.HOT_InterestedResource__c = interestedResourceId;
+            thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
+            thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
             HOT_DatabaseOperations.insertRecords(thread);
 
             //legg inn meldingen i comment
-            Id userContactId=HOT_MessageHelper.getUserContactId();
-            HOT_MessageHelper.createMessage(thread.Id, newComment, userContactId);
-
-            //legg til read by
-            HOT_MessageHelper.setLastMessageFrom(thread.Id, userContactId);
+            Id userContactId = HOT_MessageHelper.getUserContactId();
+            if (userContactId != null) {
+                HOT_MessageHelper.createMessage(thread.Id, newComment, userContactId);
+                HOT_MessageHelper.setLastMessageFrom(thread.Id, userContactId);
+            }
         }
     }
     @AuraEnabled
@@ -160,47 +169,58 @@ public without sharing class HOT_InterestedResourcesListController {
     public static void addComment(List<HOT_InterestedResourcesListController> inputVariables) {
         HOT_InterestedResourcesListController.addComment(inputVariables[0].recordId, inputVariables[0].newComment);
     }
-    
+
     @AuraEnabled
     public static String getThreadDispatcherId(String interestedResourceId) {
-         String Id='';
-        try{
+        String Id = '';
+        try {
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :interestedResourceId LIMIT 1];
+            if (thread.Id != null) {
+                Id = thread.Id;
+                return Id;
+            }
 
-            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:interestedResourceId LIMIT 1];
-             if (thread.Id != null) {
-               Id=thread.Id;
-               return Id;
-             }
-             
             return Id;
-        }catch(Exception E){
-
+        } catch (Exception E) {
         }
         return Id;
     }
-     @AuraEnabled
+    @AuraEnabled
     public static String getThreadDispatcherIdSA(String saId) {
-         String Id='';
-        try{
+        String Id = '';
+        try {
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :saId LIMIT 1];
+            if (thread.Id != null) {
+                Id = thread.Id;
+                return Id;
+            }
 
-            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:saId LIMIT 1];
-             if (thread.Id != null) {
-               Id=thread.Id;
-               return Id;
-             }
-             
             return Id;
-        }catch(Exception E){
-
+        } catch (Exception E) {
         }
         return Id;
     }
-     @AuraEnabled
+    @AuraEnabled
     public static HOT_InterestedResource__c getInterestedResourceDetails(String recordId) {
-    User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
-      HOT_InterestedResource__c interestedResource= [
-            SELECT  Id, HOT_TermsOfAgreement__c, AppointmentNumber__c, ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c, ServiceAppointmentAddress__c, WorkTypeName__c, AssignmentType__c, Status__c, NumberOfInterestedResources__c, AppointmentDeadlineDate__c, AppointmentServiceTerritory__c, ServiceAppointmentFreelanceSubject__c, WorkOrderCanceledDate__c FROM HOT_InterestedResource__c
-            WHERE ServiceAppointment__c=:recordId AND ServiceResource__r.AccountId=:currentUser.AccountId
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+        HOT_InterestedResource__c interestedResource = [
+            SELECT
+                Id,
+                HOT_TermsOfAgreement__c,
+                AppointmentNumber__c,
+                ServiceAppointmentStartTime__c,
+                ServiceAppointmentEndTime__c,
+                ServiceAppointmentAddress__c,
+                WorkTypeName__c,
+                AssignmentType__c,
+                Status__c,
+                NumberOfInterestedResources__c,
+                AppointmentDeadlineDate__c,
+                AppointmentServiceTerritory__c,
+                ServiceAppointmentFreelanceSubject__c,
+                WorkOrderCanceledDate__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__c = :recordId AND ServiceResource__r.AccountId = :currentUser.AccountId
         ];
         return interestedResource;
     }

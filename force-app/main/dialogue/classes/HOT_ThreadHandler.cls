@@ -152,6 +152,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         }
         setInterpreterThread(workOrderIds);
     }
+
     public static void setInterpreterThread(Set<Id> workOrderIds) {
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = getServiceAppointmentsByWorkOrderId(
             workOrderIds
