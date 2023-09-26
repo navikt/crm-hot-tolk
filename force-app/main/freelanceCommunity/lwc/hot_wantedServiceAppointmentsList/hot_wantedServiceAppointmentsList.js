@@ -327,7 +327,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
         this.template.querySelector('.submitted-loading').classList.remove('hidden');
         this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
-        console.log('7');
 
         if (this.checkedServiceAppointments.length === 0) {
             this.closeModal();
@@ -358,7 +357,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     declineInterestChecked() {
         this.template.querySelector('.submitted-true').classList.add('hidden');
         this.isDetails = false;
-        console.log('yees');
         this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
 
         if (this.checkedServiceAppointments.length === 0) {
