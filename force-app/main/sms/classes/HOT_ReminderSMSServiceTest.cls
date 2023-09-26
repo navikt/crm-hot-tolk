@@ -39,7 +39,7 @@ private class HOT_ReminderSMSServiceTest {
         insert user;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
-        serviceResource.HOT_MobilePhone__c = '12345678';
+        serviceResource.HOT_MobilePhoneOverride__c = '12345678';
         insert serviceResource;
     }
 

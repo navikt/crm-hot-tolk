@@ -80,6 +80,7 @@ public class HOT_TestDataFactory {
         serviceResource.RelatedRecordId = userId;
         serviceResource.IsActive = true;
         serviceResource.ResourceType = 'T';
+        serviceResource.HOT_MobilePhoneOverride__c = '12345678';
         return serviceResource;
     }
 
