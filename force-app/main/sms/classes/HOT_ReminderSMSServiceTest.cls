@@ -126,14 +126,13 @@ private class HOT_ReminderSMSServiceTest {
 
     @isTest
     static void sendSMSOnNewMessageInterpreterTest() {
-        List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder];
+        List<User> user = [SELECT Id FROM User];
 
-        Set<Id> workOrderIds = new Set<Id>();
-        for (WorkOrder wo : workOrders) {
-            workOrderIds.add(wo.Id);
-        }
+        Thread__c thread = new HOT_TestDataFactory.createThread();
+        insert thread;
+
         Test.startTest();
-        HOT_ReminderSMSService.sendSMSOnInterpreterChange(workOrderIds, 'Tolk Tolkersen');
+        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(user.Id, thread.Id);
         Test.stopTest();
 
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
