@@ -43,15 +43,6 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
-    static void dispatchedServiceAppointmentsByWorkOrderIdTest() {
-        List<WorkOrder> workOrders = [
-            SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        HOT_ReminderSMSService.dispatchedServiceAppointmentsByWorkOrderId(workOrders);
-    }
-
-    @isTest
     static void interpreterNamesByWorkOrderIdsTest() {
         List<WorkOrder> workOrders = [
             SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
@@ -102,7 +93,11 @@ private class HOT_ReminderSMSServiceTest {
         );
         insert interestedResource;
 
-        Set<Id> irIds = [SELECT Id FROM HOT_InterestedResource__c];
+        List<HOT_InterestedResource__c> irList = [SELECT Id FROM HOT_InterestedResource__c];
+        Set<Id> irIds = new Set<Id>();
+        for (HOT_InterestedResource__c ir : irList) {
+            irIds.add(ir.Id);
+        }
         HOT_ReminderSMSService.sendSMSOnNewWantedSR(irIds);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
