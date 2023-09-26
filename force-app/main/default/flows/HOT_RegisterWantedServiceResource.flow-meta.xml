@@ -297,8 +297,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>existingText</name>
-            <fieldText>&lt;p&gt;Tolken har allerede en interessert ressurs på oppdrag som tilhører
-                samme arbeidsordre.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Tolken har allerede en interessert ressurs på oppdrag som tilhører samme arbeidsordre.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -314,8 +314,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>NoFreelanceMessage</name>
-            <fieldText>&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk.
-                Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -331,8 +331,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>notReleasedText</name>
-            <fieldText>&lt;p&gt;Oppdraget må være frigitt til frilans før du kan registrere ønsket
-                frilanstolk.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Oppdraget må være frigitt til frilans før du kan registrere ønsket frilanstolk.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -348,8 +348,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>textoverlap</name>
-            <fieldText>&lt;p&gt;Tolken har overlappende oppdrag og kan derfor ikke registreres som
-                ønsket på dette oppdraget.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Tolken har overlappende oppdrag og kan derfor ikke registreres som ønsket på dette oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -368,8 +368,8 @@
         </connector>
         <fields>
             <name>infotext</name>
-            <fieldText>&lt;p&gt;Når en ønsket tolk er registrert vil tolken få mulighet til å avslå
-                eller automatisk tildele seg selv oppdraget.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Når en ønsket tolk er registrert vil tolken få mulighet til å avslå eller melde interesse for oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
