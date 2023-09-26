@@ -15,7 +15,7 @@ public without sharing class HOT_ReminderSMSService {
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
                 workOrder.HOT_IsReminderSMSSendt__c = true;
-                } 
+            }
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrders.values());
@@ -35,7 +35,7 @@ public without sharing class HOT_ReminderSMSService {
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
                 request.IsNotifyUserOnOrder__c = false;
-            } 
+            }
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(requests.values());
@@ -134,7 +134,11 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSOnNewMessage(Set<Id> threadIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<Thread__c> threadList = [
-            SELECT CRM_Account__c, CRM_Thread_Type__c, CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c, CRM_Related_Object__c
+            SELECT
+                CRM_Account__c,
+                CRM_Thread_Type__c,
+                CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                CRM_Related_Object__c
             FROM Thread__c
             WHERE Id IN :threadIds
         ];
@@ -149,7 +153,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Message__c = constructOnNewMessage();
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
-                } 
+            }
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -159,7 +163,35 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
-      @Future
+    @Future
+    public static void sendSMSOnNewMessageInterpreter(String userId, String threadId) {
+        User user = [
+            SELECT Id, AccountId
+            FROM User
+            WHERE Id = :userId
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        SMS__c sms = new SMS__c();
+        sms.Domain__c = 'HOT';
+        sms.Type__c = 'Message';
+        sms.Account__c = user.AccountId;
+        sms.Thread__c = threadId;
+        sms.Recipient__c = getRecipientPhoneNumberInterpreter(userId);
+        sms.Message__c = constructOnNewMessage();
+        if (SMS.Recipient__c != null) {
+            smsList.add(sms);
+        }
+
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+    @Future
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
@@ -177,7 +209,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Message__c = constructOnNewWantedSR();
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
-                } 
+            }
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -214,7 +246,7 @@ public without sharing class HOT_ReminderSMSService {
     //         sms.Message__c = constructOnOrdererMessage(wo);
     //         if (SMS.Recipient__c != null) {
     //             smsList.add(sms);
-    //             } 
+    //             }
     //     }
     //     try {
     //         HOT_DatabaseOperations.insertRecords(smsList);
@@ -254,7 +286,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
-            } 
+            }
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
@@ -310,18 +342,32 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     private static String getRecipientOnThread(Thread__c thread) {
-        if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
+        if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
             return thread?.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-        }
-        else if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
-            ServiceResource sr = [SELECT AccountId, HOT_MobilePhone__c FROM ServiceResource WHERE AccountId = :thread.CRM_Account__c];
+        } else if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
+            ServiceResource sr = [
+                SELECT AccountId, HOT_MobilePhone__c
+                FROM ServiceResource
+                WHERE AccountId = :thread.CRM_Account__c
+            ];
             return sr?.HOT_MobilePhone__c;
-        } 
-        else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
-            HOT_Request__c request = [SELECT Id, OrdererPhone__c FROM HOT_Request__c WHERE Id = :thread.CRM_Related_Object__c]; 
+        } else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
+            HOT_Request__c request = [
+                SELECT Id, OrdererPhone__c
+                FROM HOT_Request__c
+                WHERE Id = :thread.CRM_Related_Object__c
+            ];
             return request?.OrdererPhone__c;
         }
         return '';
+    }
+    private static String getRecipientPhoneNumberInterpreter(String userId) {
+        ServiceResource sr = [
+            SELECT RelatedRecordId, HOT_MobilePhone__c
+            FROM ServiceResource
+            WHERE RelatedRecordId = :userId
+        ];
+        return sr.HOT_MobilePhone__c;
     }
 
     public static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
