@@ -52,6 +52,15 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
+    static void interpreterNamesByWorkOrderIdsTest() {
+        List<WorkOrder> workOrders = [
+            SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
+            FROM WorkOrder
+        ];
+        HOT_ReminderSMSService.interpreterNamesByWorkOrderIds(workOrders);
+    }
+
+    @isTest
     static void reminderSMSTest() {
         List<WorkOrder> workOrders = [
             SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
@@ -77,6 +86,14 @@ private class HOT_ReminderSMSServiceTest {
             FROM HOT_Request__c
         ];
         HOT_ReminderSMSService.notifyUserOnOrderSMS(requests);
+        List<SMS__c> smsList = [SELECT Id FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
+
+    @isTest
+    static void sendSMSOnNewWantedSRTest() {
+        Set<Id> irIds = [SELECT Id FROM HOT_InterestedResource__c];
+        HOT_ReminderSMSService.sendSMSOnNewWantedSR(irIds);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }

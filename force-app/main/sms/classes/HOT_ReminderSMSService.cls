@@ -165,11 +165,7 @@ public without sharing class HOT_ReminderSMSService {
     }
     @Future
     public static void sendSMSOnNewMessageInterpreter(String userId, String threadId) {
-        User user = [
-            SELECT Id, AccountId
-            FROM User
-            WHERE Id = :userId
-        ];
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :userId];
         List<SMS__c> smsList = new List<SMS__c>();
 
         SMS__c sms = new SMS__c();
@@ -191,6 +187,7 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
+
     @Future
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
