@@ -14,9 +14,12 @@
             <c-hot_freelance-table-list-mobile
                 if:true={isMobile}
                 records={records}
+                checkbox="true"
                 columns={columns}
                 onrowclick={goToRecordDetails}
                 icon-by-value={iconByValue}
+                checked-rows={checkedServiceAppointments}
+                oncheckedrows={handleRowChecked}
             ></c-hot_freelance-table-list-mobile>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
