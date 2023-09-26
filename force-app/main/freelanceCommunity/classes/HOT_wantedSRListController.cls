@@ -272,20 +272,29 @@ public without sharing class HOT_wantedSRListController {
         }
     }
     @InvocableMethod(
-        label='Check if wanted SR has overlapping SA'
+        label='Check if wanted SR has overlapping SA and interested IR'
         description='return based on result'
         category='check'
     )
-    public static List<String> checkForOverlap(List<Request> ids) {
-        List<String> overLaps = new List<String>();
+    public static List<String> checkForOverlapOrExisting(List<Request> ids) {
+        List<String> status = new List<String>();
 
         List<ServiceAppointment> sa = [
-            SELECT Id, EarliestStartTime, DueDate
+            SELECT Id, EarliestStartTime, DueDate, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
             WHERE Id = :ids[0].saId
         ];
 
         ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE Id = :ids[0].srId];
+
+        List<HOT_InterestedResource__c> existingInterestedIR = [
+            SELECT Id, ServiceResource__c, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE
+                ServiceResource__c = :serviceResource.Id
+                AND ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId = :sa[0]
+                    .HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
 
         List<HOT_InterestedResource__c> assignedInterestedResources = [
             SELECT
@@ -328,13 +337,17 @@ public without sharing class HOT_wantedSRListController {
                 } else {
                 }
             }
-            if (overlapCount > 0) {
-                overLaps.add('overlap');
+            if (existingInterestedIR.size() > 0) {
+                status.add('existing');
             } else {
-                overLaps.add('no overlap');
+                if (overlapCount > 0) {
+                    status.add('overlap');
+                } else {
+                    status.add('no overlap');
+                }
             }
         }
-        return overLaps;
+        return status;
     }
 
     public class Request {
