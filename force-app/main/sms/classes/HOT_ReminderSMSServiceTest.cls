@@ -125,6 +125,22 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
+    static void sendSMSOnNewMessageInterpreterTest() {
+        List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder];
+
+        Set<Id> workOrderIds = new Set<Id>();
+        for (WorkOrder wo : workOrders) {
+            workOrderIds.add(wo.Id);
+        }
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSOnInterpreterChange(workOrderIds, 'Tolk Tolkersen');
+        Test.stopTest();
+
+        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
+
+    @isTest
     static void sendSMSOnInterpreterChangeTest() {
         List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder];
 
