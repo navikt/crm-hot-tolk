@@ -126,7 +126,7 @@ private class HOT_ReminderSMSServiceTest {
 
     @isTest
     static void sendSMSOnNewMessageInterpreterTest() {
-        List<User> user = [SELECT Id FROM User];
+        User user = [SELECT Id FROM User LIMIT 1];
 
         Thread__c thread = HOT_TestDataFactory.createThread();
         insert thread;
