@@ -165,7 +165,7 @@ private class HOT_ServiceAppointmentNotificationTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         Test.startTest();
-        HOT_ServiceAppointmentNotification.resourceCanceledUser(notificationType, serviceAppointment, recipients);
+        HOT_ServiceAppointmentNotification.resourceCanceled(notificationType, serviceAppointment, recipients);
         Test.stopTest();
     }
 
@@ -220,7 +220,7 @@ private class HOT_ServiceAppointmentNotificationTest {
                 Id,
                 HOT_ServiceResource__c,
                 HOT_AssignedResourceId__c,
-                HOT_AddressFormated__c,
+                HOT_InterpretationStreet__c,
                 HOT_IsEmployedInterpreter__c,
                 EarliestStartTime
             FROM ServiceAppointment
@@ -228,7 +228,7 @@ private class HOT_ServiceAppointmentNotificationTest {
             LIMIT 1
         ];
 
-        serviceAppointment.HOT_AddressFormated__c = 'Testveien 123';
+        serviceAppointment.HOT_InterpretationStreet__c = 'Tolkeveien 123';
         update serviceAppointment;
 
         CustomNotificationType notificationType = [
