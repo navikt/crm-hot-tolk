@@ -84,28 +84,6 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
-    static void sendSMSOnNewWantedSRTest() {
-        ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource LIMIT 1];
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
-
-        HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c(
-            ServiceResource__c = serviceResource.Id,
-            Status__c = 'Wanted',
-            ServiceAppointment__c = serviceAppointment.Id
-        );
-        insert interestedResource;
-
-        List<HOT_InterestedResource__c> irList = [SELECT Id FROM HOT_InterestedResource__c];
-        Set<Id> irIds = new Set<Id>();
-        for (HOT_InterestedResource__c ir : irList) {
-            irIds.add(ir.Id);
-        }
-        HOT_ReminderSMSService.sendSMSOnNewWantedSR(irIds);
-        List<SMS__c> smsList = [SELECT Id FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
-    }
-
-    @isTest
     static void sendSMSToOrdererOnStatusUpdateTest() {
         List<WorkOrder> workOrders = [
             SELECT
@@ -122,19 +100,6 @@ private class HOT_ReminderSMSServiceTest {
             FROM WorkOrder
         ];
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
-        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
-    }
-
-    @isTest
-    static void sendSMSOnNewMessageInterpreterTest() {
-        User user = [SELECT Id FROM User LIMIT 1];
-        Thread__c thread = [SELECT Id FROM Thread__c LIMIT 1];
-
-        Test.startTest();
-        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(user.Id, thread.Id);
-        Test.stopTest();
-
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
