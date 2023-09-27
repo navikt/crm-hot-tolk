@@ -22,7 +22,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT ServiceAppointment__c, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrder.Id
             FROM HOT_InterestedResource__c
-            WHERE Status__c = 'Wanted' AND ServiceResource__c IN :serviceResource
+            WHERE ServiceResource__c IN :serviceResource
         ];
 
         List<Id> interestedServiceAppointmentIds = new List<Id>();
