@@ -17,8 +17,18 @@
             ></c-button>
         </div>
         <div if:false={noServiceAppointments}>
+            <c-hot_freelance-table-list-mobile
+                if:true={isMobile}
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                checkbox="true"
+                checked-rows={checkedServiceAppointments}
+                oncheckedrows={handleRowChecked}
+                icon-by-value={iconByValue}
+            ></c-hot_freelance-table-list-mobile>
             <c-table
-                if:false={noServiceAppointments}
+                if:false={isMobile}
                 records={records}
                 columns={columns}
                 onrowclick={goToRecordDetails}
