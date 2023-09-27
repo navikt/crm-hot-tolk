@@ -20,14 +20,16 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
         //Getting ServiceAppointments of interest
         List<HOT_InterestedResource__c> interestedResources = [
-            SELECT ServiceAppointment__c
+            SELECT ServiceAppointment__c, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrder.Id
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c IN :serviceResource
+            WHERE Status__c = 'Wanted' AND ServiceResource__c IN :serviceResource
         ];
-        
+
         List<Id> interestedServiceAppointmentIds = new List<Id>();
+        List<Id> interestedWOIds = new List<Id>();
         for (HOT_InterestedResource__c ir : interestedResources) {
             interestedServiceAppointmentIds.add(ir.ServiceAppointment__c);
+            interestedWOIds.add(ir.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrder.Id);
         }
 
         //Getting ServiceAppointments, filtered by isRealeased, Status, DeadlineDate
@@ -36,6 +38,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             SELECT
                 Id,
                 HOT_ServiceAppointmentNumber__c,
+                HOT_WorkOrderLineItem__r.WorkOrder.Id,
                 ServiceTerritoryId,
                 EarliestStartTime,
                 DueDate,
@@ -71,7 +74,8 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 HOT_IsReleasedToFreelance__c = TRUE
                 AND Status = 'Released To Freelance'
                 AND HOT_DeadlineDate__c >= :DATE.TODAY()
-                AND (Id NOT IN :interestedServiceAppointmentIds)
+                AND Id NOT IN :interestedServiceAppointmentIds
+                AND HOT_WorkOrderLineItem__r.WorkOrder.Id NOT IN :interestedWOIds
                 AND ServiceTerritoryId != NULL
             ORDER BY EarliestStartTime ASC
         ];
@@ -120,7 +124,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         Id userId = UserInfo.getUserId();
 
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
-        
+
         List<HOT_InterestedResource__c> interestedResources = new List<Hot_InterestedResource__c>();
         for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
             HOT_InterestedResource__c IR = new HOT_InterestedResource__c(
@@ -133,7 +137,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         insert interestedResources;
 
         for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
-            if(!String.isEmpty(comments[i])) {
+            if (!String.isEmpty(comments[i])) {
                 HOT_InterestedResourcesListController.startAThreadAndAddComment(interestedResources[i].Id, comments[i]);
             }
         }
