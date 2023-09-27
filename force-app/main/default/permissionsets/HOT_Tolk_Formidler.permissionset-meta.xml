@@ -1546,7 +1546,7 @@
         <field>Shift.ServiceResourceId</field>
         <readable>true</readable>
     </fieldPermissions>
-        <fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Shift.ServiceTerritoryId</field>
         <readable>true</readable>
