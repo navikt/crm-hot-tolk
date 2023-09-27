@@ -147,4 +147,97 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         Test.stopTest();
     }
+
+    @isTest
+    private static void resourceCanceledTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        Test.startTest();
+        HOT_ServiceAppointmentNotification.resourceCanceledUser(notificationType, serviceAppointment, recipients);
+        Test.stopTest();
+    }
+
+    @isTest
+    private static void canceledByUserTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        Test.startTest();
+        HOT_ServiceAppointmentNotification.canceledByUser(notificationType, serviceAppointment, recipients);
+        Test.stopTest();
+    }
+
+    @isTest
+    private static void timeChangedTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        Test.startTest();
+        HOT_ServiceAppointmentNotification.timeChanged(notificationType, serviceAppointment, recipients);
+        Test.stopTest();
+    }
+
+    @isTest
+    private static void addressChangedTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        ServiceAppointment serviceAppointment = [
+            SELECT
+                Id,
+                HOT_ServiceResource__c,
+                HOT_AssignedResourceId__c,
+                HOT_AddressFormated__c,
+                HOT_IsEmployedInterpreter__c,
+                EarliestStartTime
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+
+        serviceAppointment.HOT_AddressFormated__c = 'Testveien 123';
+        update serviceAppointment;
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        Test.startTest();
+        HOT_ServiceAppointmentNotification.timeChanged(notificationType, serviceAppointment, recipients);
+        Test.stopTest();
+    }
 }
