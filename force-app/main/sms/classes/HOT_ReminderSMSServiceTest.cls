@@ -40,6 +40,8 @@ private class HOT_ReminderSMSServiceTest {
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
         insert serviceResource;
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        insert thread;
     }
 
     @isTest
@@ -127,9 +129,7 @@ private class HOT_ReminderSMSServiceTest {
     @isTest
     static void sendSMSOnNewMessageInterpreterTest() {
         User user = [SELECT Id FROM User LIMIT 1];
-
-        Thread__c thread = HOT_TestDataFactory.createThread();
-        insert thread;
+        Thread__c thread = [SELECT Id FROM Thread__c LIMIT 1];
 
         Test.startTest();
         HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(user.Id, thread.Id);
