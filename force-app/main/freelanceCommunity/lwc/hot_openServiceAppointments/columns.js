@@ -47,8 +47,9 @@ export let inDetailsColumns = [
 export let mobileColumns = [
     {
         label: 'Tid',
-        name: 'StartAndEndDate',
-        type: 'Datetime'
+        name: 'startAndEndDateWeekday',
+        type: 'String',
+        bold: true
     },
     {
         label: 'Info',
@@ -56,14 +57,14 @@ export let mobileColumns = [
         type: 'String'
     },
     {
-        label: 'Tema',
-        name: 'HOT_FreelanceSubject__c',
-        type: 'String'
-    },
-    {
         label: '',
         name: 'isUrgent',
         type: 'boolean',
         svg: true
+    },
+    {
+        label: 'Tema',
+        name: 'HOT_FreelanceSubject__c',
+        type: 'String'
     }
 ];

@@ -10,13 +10,16 @@ import { formatRecord } from 'c/datetimeFormatter';
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
     @track inDetailsColumns = [];
+    @track isMobile;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
             this.inDetailsColumns = inDetailsColumns;
+            this.isMobile = false;
         } else {
             this.columns = mobileColumns;
             this.inDetailsColumns = inDetailsColumns;
+            this.isMobile = true;
         }
     }
     iconByValue = {
@@ -137,10 +140,26 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
     }
+    formatDatetime(Start, DueDate) {
+        const datetimeStart = new Date(Start);
+        const dayStart = datetimeStart.getDate().toString().padStart(2, '0');
+        const monthStart = (datetimeStart.getMonth() + 1).toString().padStart(2, '0');
+        const yearStart = datetimeStart.getFullYear();
+        const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
+        const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
+
+        const datetimeEnd = new Date(DueDate);
+        const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
+        const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
+
+        const formattedDatetime = `${dayStart}.${monthStart}.${yearStart} ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
+        return formattedDatetime;
+    }
     noServiceAppointments = false;
     initialServiceAppointments = [];
     @track records = [];
     @track allServiceAppointmentsWired = [];
+    @track allServiceAppointmentsWiredMobile = [];
     wiredAllServiceAppointmentsResult;
     @wire(getOpenServiceAppointments)
     wiredAllServiceAppointmentsWired(result) {
@@ -149,9 +168,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                weekday: this.getDayOfWeek(x.EarliestStartTime),
-                isUrgent: x.HOT_IsUrgent__c
+                isUrgent: x.HOT_IsUrgent__c,
+                startAndEndDateWeekday:
+                    this.formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + this.getDayOfWeek(x.EarliestStartTime),
+                weekday: this.getDayOfWeek(x.EarliestStartTime)
             }));
+
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
             for (let record of this.allServiceAppointmentsWired) {
@@ -243,7 +265,13 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 this.checkedServiceAppointments.push(element.Id);
             });
         } else {
-            this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
+            if (this.isMobile) {
+                this.checkedServiceAppointments = this.template
+                    .querySelector('c-hot_freelance-table-list-mobile')
+                    .getCheckedRows();
+            } else {
+                this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
+            }
         }
         if (this.checkedServiceAppointments.length === 0) {
             this.closeModal();
@@ -265,7 +293,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 this.spin = false;
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
-                this.template.querySelector('c-table').unsetCheckboxes();
+                if (this.isMobile) {
+                    this.template.querySelector('c-hot_freelance-table-list-mobile').unsetCheckboxes();
+                } else {
+                    this.template.querySelector('c-table').unsetCheckboxes();
+                }
                 this.checkedServiceAppointments = [];
                 this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
                 let currentFilters = this.filters;
@@ -303,13 +335,23 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.checkedServiceAppointments = [];
         this.serviceAppointmentCommentDetails = [];
         try {
-            this.template
-                .querySelector('c-table')
-                .getCheckedRows()
-                .forEach((row) => {
-                    this.checkedServiceAppointments.push(row);
-                    this.serviceAppointmentCommentDetails.push(this.getRecord(row));
-                });
+            if (this.isMobile) {
+                this.template
+                    .querySelector('c-hot_freelance-table-list-mobile')
+                    .getCheckedRows()
+                    .forEach((row) => {
+                        this.checkedServiceAppointments.push(row);
+                        this.serviceAppointmentCommentDetails.push(this.getRecord(row));
+                    });
+            } else {
+                this.template
+                    .querySelector('c-table')
+                    .getCheckedRows()
+                    .forEach((row) => {
+                        this.checkedServiceAppointments.push(row);
+                        this.serviceAppointmentCommentDetails.push(this.getRecord(row));
+                    });
+            }
         } catch (error) {
             console.log(error);
         }
