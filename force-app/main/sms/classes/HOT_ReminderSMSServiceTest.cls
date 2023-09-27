@@ -43,15 +43,6 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
-    static void interpreterNamesByWorkOrderIdsTest() {
-        List<WorkOrder> workOrders = [
-            SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
-            FROM WorkOrder
-        ];
-        HOT_ReminderSMSService.interpreterNamesByWorkOrderIds(workOrders);
-    }
-
-    @isTest
     static void reminderSMSTest() {
         List<WorkOrder> workOrders = [
             SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
