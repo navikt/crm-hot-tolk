@@ -109,7 +109,6 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
             shift.EndTime = wageClaim.EndTime__c;
             shift.ServiceResourceId = wageClaim.ServiceResource__c;
             shift.Label = 'Ledig på lønn: ' + wageClaim?.Name;
-            shift.ServiceTerritoryId = wageClaim.ServiceTerritory__c;
             shift.HOT_WageClaim__c = wageClaim.Id;
             shifts.add(shift);
         }
