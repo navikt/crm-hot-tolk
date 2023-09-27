@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>56.0</apiVersion>
     <environments>Default</environments>
@@ -23,15 +23,44 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>getServiceResourceTerritory</name>
+        <label>getServiceResourceTerritory</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Update_Shift</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ServiceResourceId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceResource</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>HOT_ServiceTerritory__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>Update_Shift</name>
         <label>Update Shift</label>
         <locationX>176</locationX>
-        <locationY>311</locationY>
+        <locationY>395</locationY>
         <inputAssignments>
             <field>BackgroundColor</field>
             <value>
                 <stringValue>#8AFF8A</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ServiceTerritoryId</field>
+            <value>
+                <elementReference>getServiceResourceTerritory.HOT_ServiceTerritory__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -46,7 +75,7 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Update_Shift</targetReference>
+            <targetReference>getServiceResourceTerritory</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
