@@ -1522,6 +1522,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Shift.CRM_Domain__c	</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Shift.CRM_ServiceResourceDomain__c</field>
         <readable>true</readable>
