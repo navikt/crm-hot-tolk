@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>checkForOverlapSA</name>
-        <label>checkForOverlapSA</label>
-        <locationX>248</locationX>
+        <name>check_for_overlap_and_interested_ir</name>
+        <label>check for overlap and interested ir</label>
+        <locationX>380</locationX>
         <locationY>674</locationY>
         <actionName>HOT_wantedSRListController</actionName>
         <actionType>apex</actionType>
@@ -34,7 +34,7 @@
     <assignments>
         <name>change_status</name>
         <label>change status</label>
-        <locationX>314</locationX>
+        <locationX>578</locationX>
         <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>get_IR.Status__c</assignToReference>
@@ -50,7 +50,7 @@
     <decisions>
         <name>check_if_sr_is_freelance</name>
         <label>check if sr is freelance</label>
-        <locationX>545</locationX>
+        <locationX>743</locationX>
         <locationY>566</locationY>
         <defaultConnector>
             <targetReference>Is_not_freelance_message</targetReference>
@@ -67,7 +67,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>checkForOverlapSA</targetReference>
+                <targetReference>check_for_overlap_and_interested_ir</targetReference>
             </connector>
             <label>Is freelance</label>
         </rules>
@@ -75,7 +75,7 @@
     <decisions>
         <name>checkSAReleasedToFreelance</name>
         <label>checkSAReleasedToFreelance</label>
-        <locationX>825</locationX>
+        <locationX>1056</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>notReleasedScreen</targetReference>
@@ -100,7 +100,7 @@
     <decisions>
         <name>if_IR_not_exist</name>
         <label>if IR not exist</label>
-        <locationX>446</locationX>
+        <locationX>710</locationX>
         <locationY>998</locationY>
         <defaultConnector>
             <targetReference>New_wanted_interested_resource</targetReference>
@@ -125,7 +125,7 @@
     <decisions>
         <name>overlapDecision</name>
         <label>overlapDecision</label>
-        <locationX>248</locationX>
+        <locationX>380</locationX>
         <locationY>782</locationY>
         <defaultConnector>
             <targetReference>get_IR</targetReference>
@@ -144,7 +144,22 @@
             <connector>
                 <targetReference>overlapScreen</targetReference>
             </connector>
-            <label>Overlap</label>
+            <label>Overlap or existing ir on WO</label>
+        </rules>
+        <rules>
+            <name>existing_IR</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>overlappingSA</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>existing</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>existing</targetReference>
+            </connector>
+            <label>existing IR</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -172,7 +187,7 @@
     <recordCreates>
         <name>New_wanted_interested_resource</name>
         <label>New wanted interested resource</label>
-        <locationX>578</locationX>
+        <locationX>842</locationX>
         <locationY>1106</locationY>
         <inputAssignments>
             <field>ServiceAppointment__c</field>
@@ -198,7 +213,7 @@
     <recordLookups>
         <name>check_if_freelance</name>
         <label>check if freelance</label>
-        <locationX>545</locationX>
+        <locationX>743</locationX>
         <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -219,7 +234,7 @@
     <recordLookups>
         <name>get_IR</name>
         <label>get IR</label>
-        <locationX>446</locationX>
+        <locationX>710</locationX>
         <locationY>890</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -247,7 +262,7 @@
     <recordLookups>
         <name>getSA</name>
         <label>getSA</label>
-        <locationX>825</locationX>
+        <locationX>1056</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -268,21 +283,39 @@
     <recordUpdates>
         <name>update_IR</name>
         <label>update IR</label>
-        <locationX>314</locationX>
+        <locationX>578</locationX>
         <locationY>1214</locationY>
         <inputReference>get_IR</inputReference>
     </recordUpdates>
     <screens>
+        <name>existing</name>
+        <label>existing</label>
+        <locationX>314</locationX>
+        <locationY>890</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>existingText</name>
+            <fieldText
+            >&lt;p&gt;Tolken har allerede en interessert ressurs på oppdrag som tilhører samme arbeidsordre.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Is_not_freelance_message</name>
         <label>Is not freelance message</label>
-        <locationX>842</locationX>
+        <locationX>1106</locationX>
         <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>false</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>NoFreelanceMessage</name>
-            <fieldText>&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -291,14 +324,15 @@
     <screens>
         <name>notReleasedScreen</name>
         <label>notReleasedScreen</label>
-        <locationX>1106</locationX>
+        <locationX>1370</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>notReleasedText</name>
-            <fieldText>&lt;p&gt;Oppdraget må være frigitt til frilans før du kan registrere ønsket frilanstolk.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Oppdraget må være frigitt til frilans før du kan registrere ønsket frilanstolk.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -314,7 +348,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>textoverlap</name>
-            <fieldText>&lt;p&gt;Tolken har overlappende oppdrag og kan derfor ikke registreres som ønsket på dette oppdraget.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Tolken har overlappende oppdrag og kan derfor ikke registreres som ønsket på dette oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -323,7 +358,7 @@
     <screens>
         <name>registerWanterSr</name>
         <label>Register Wanter ServiceResource</label>
-        <locationX>545</locationX>
+        <locationX>743</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -333,7 +368,8 @@
         </connector>
         <fields>
             <name>infotext</name>
-            <fieldText>&lt;p&gt;Når en ønsket tolk er registrert vil tolken få mulighet til å avslå eller automatisk tildele seg selv oppdraget.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Når en ønsket tolk er registrert vil tolken få mulighet til å avslå eller melde interesse for oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -372,7 +408,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>699</locationX>
+        <locationX>930</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>getSA</targetReference>

@@ -23,6 +23,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     @track isEditButtonDisabled = false;
     @track isCancelButtonHidden = true;
     @track isEditButtonHidden = false;
+    @track isMobile;
     freelanceThreadId;
     isGoToThreadButtonDisabled = false;
     isGoToThreadServiceAppointmentButtonDisabled = false;
@@ -30,8 +31,10 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
+            this.isMobile = false;
         } else {
             this.columns = mobileColumns;
+            this.isMobile = true;
         }
     }
 
@@ -98,7 +101,11 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             this.allMyServiceAppointmentsWired = tempRecords;
             this.noServiceAppointments = this.allMyServiceAppointmentsWired.length === 0;
             this.error = undefined;
-            this.records = tempRecords;
+            this.records = tempRecords.map((x) => ({
+                ...x,
+                startAndEndDateWeekday:
+                    this.formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + this.getDayOfWeek(x.EarliestStartTime)
+            }));
             this.initialServiceAppointments = [...this.records];
             this.refresh();
         } else if (result.error) {
@@ -113,6 +120,21 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+    }
+    formatDatetime(Start, DueDate) {
+        const datetimeStart = new Date(Start);
+        const dayStart = datetimeStart.getDate().toString().padStart(2, '0');
+        const monthStart = (datetimeStart.getMonth() + 1).toString().padStart(2, '0');
+        const yearStart = datetimeStart.getFullYear();
+        const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
+        const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
+
+        const datetimeEnd = new Date(DueDate);
+        const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
+        const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
+
+        const formattedDatetime = `${dayStart}.${monthStart}.${yearStart} ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
+        return formattedDatetime;
     }
 
     datetimeFields = [
