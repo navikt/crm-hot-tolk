@@ -20,7 +20,7 @@ public class HOT_RequestNotificationTest {
         ];
 
         HOT_Request__c request = [
-            SELECT Id, StartTime__c, EndTime__c, IsSerieoppdrag__c, SeriesEndDate__c, SeriesStartDate__c
+            SELECT Id, StartTime__c, EndTime__c, IsSerieoppdrag__c, SeriesEndDate__c, SeriesStartDate__c, Name
             FROM HOT_Request__c
             LIMIT 1
         ];
