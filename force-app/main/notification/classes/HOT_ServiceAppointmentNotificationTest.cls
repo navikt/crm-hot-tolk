@@ -222,6 +222,7 @@ private class HOT_ServiceAppointmentNotificationTest {
                 HOT_AddressFormated__c,
                 HOT_InterpretationStreet__c,
                 HOT_IsEmployedInterpreter__c,
+                DueDate,
                 EarliestStartTime
             FROM ServiceAppointment
             WHERE Subject = 'subject'
