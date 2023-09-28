@@ -153,7 +153,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            SELECT Id, AppointmentNumber, Subject
             FROM ServiceAppointment
             WHERE Subject = 'subject'
             LIMIT 1
@@ -174,7 +174,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            SELECT Id, AppointmentNumber, EarliestStartTime
             FROM ServiceAppointment
             WHERE Subject = 'subject'
             LIMIT 1
@@ -195,7 +195,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            SELECT Id, HOT_IsEmployedInterpreter__c, AppointmentNumber, EarliestStartTime, DueDate
             FROM ServiceAppointment
             WHERE Subject = 'subject'
             LIMIT 1
@@ -218,8 +218,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         ServiceAppointment serviceAppointment = [
             SELECT
                 Id,
-                HOT_ServiceResource__c,
-                HOT_AssignedResourceId__c,
+                AppointmentNumber,
+                HOT_AddressFormated__c,
                 HOT_InterpretationStreet__c,
                 HOT_IsEmployedInterpreter__c,
                 EarliestStartTime
