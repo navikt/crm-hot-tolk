@@ -34,8 +34,8 @@ export let columns = [
 export let mobileColumns = [
     {
         label: 'Bestilt tid',
-        name: 'StartAndEndDate',
-        type: 'Datetime'
+        name: 'startAndEndDateWeekday',
+        type: 'String'
     },
     {
         label: 'Poststed',
