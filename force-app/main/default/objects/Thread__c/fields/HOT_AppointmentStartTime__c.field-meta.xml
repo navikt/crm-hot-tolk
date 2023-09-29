@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_AppointmentStartTime__c</fullName>
+    <description
+    >This field shows when the related appointment are supposed to start. To be used for sorting threads in lists.</description>
+    <externalId>false</externalId>
+    <formula>IF(
+    NOT(ISBLANK(HOT_WageClaim__c)),
+    HOT_WageClaim__r.StartTime__c,
+    IF(
+        NOT(ISBLANK(HOT_ServiceAppointment__c)),
+        HOT_ServiceAppointment__r.SchedStartTime,
+        IF(
+            NOT(ISBLANK(HOT_Request__c)),
+            HOT_Request__r.StartTime__c,
+            IF(
+                NOT(ISBLANK(HOT_WorkOrder__c)),
+                HOT_WorkOrder__r.StartDate,
+                IF(
+                    NOT(ISBLANK(HOT_InterestedResource__c)),
+                    HOT_InterestedResource__r.ServiceAppointmentStartTime__c,
+                    NULL
+                )
+            )
+        )
+    )
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>AppointmentStartTime</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

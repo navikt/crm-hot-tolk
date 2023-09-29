@@ -235,22 +235,26 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
                     this.threads = this.unmappedThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
                     this.interpreterThreads = this.unmappedInterpreterThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
                     this.wageClaimThreads = this.unmappedWageClaimThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
                     this.interpreterInterpreterThreads = this.unmappedInterpreterInterpreterThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
 
                     this.noThreads = this.threads.length === 0;
@@ -261,39 +265,27 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
                     //sorting, unread first
                     this.threads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return 0;
+                            return a.appointmentDate.localeCompare(b.appointmentDate);
                         }
-                        if (a.read === false) {
-                            return -1;
-                        }
-                        return 1;
+                        return a.read ? 1 : -1;
                     });
                     this.interpreterThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return 0;
+                            return a.appointmentDate.localeCompare(b.appointmentDate);
                         }
-                        if (a.read === false) {
-                            return -1;
-                        }
-                        return 1;
+                        return a.read ? 1 : -1;
                     });
                     this.wageClaimThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return 0;
+                            return a.appointmentDate.localeCompare(b.appointmentDate);
                         }
-                        if (a.read === false) {
-                            return -1;
-                        }
-                        return 1;
+                        return a.read ? 1 : -1;
                     });
                     this.interpreterInterpreterThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return 0;
+                            return a.appointmentDate.localeCompare(b.appointmentDate);
                         }
-                        if (a.read === false) {
-                            return -1;
-                        }
-                        return 1;
+                        return a.read ? 1 : -1;
                     });
 
                     //List 1 unread messages
