@@ -122,7 +122,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 Integer numberOfNew = 0;
                 Integer numberOfScheduled = 0;
                 Integer numberOfDispatched = 0;
-                Integer numberOfInProgress = 0;
                 Integer numberOfCompleted = 0;
                 Integer numberOfPartiallyComplete = 0;
                 Integer numberOfCannotComplete = 0;
@@ -137,9 +136,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                     }
                     if (workOrderLineItem.Status == 'Dispatched') {
                         numberOfDispatched++;
-                    }
-                    if (workOrderLineItem.Status == 'In Progress') {
-                        numberOfInProgress++;
                     }
                     if (workOrderLineItem.Status == 'Completed') {
                         numberOfCompleted++;
@@ -159,7 +155,6 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 System.debug('numberOfNew: ' + numberOfNew);
                 System.debug('numberOfScheduled: ' + numberOfScheduled);
                 System.debug('numberOfDispatched: ' + numberOfDispatched);
-                System.debug('numberOfInProgress: ' + numberOfInProgress);
                 System.debug('numberOfCompleted: ' + numberOfCompleted);
                 System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
                 System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
@@ -185,11 +180,10 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                     workOrder.Status = 'Dispatched';
                     continue;
                 }
-                if (numberOfInProgress == numberOfWorkOrderLineItem) {
-                    workOrder.Status = 'In Progress';
-                    continue;
-                }
-                if (numberOfCompleted > 0 && numberOfCompleted + numberOfDispatched + numberOfCanceled == numberOfWorkOrderLineItem) {
+                if (
+                    numberOfCompleted > 0 &&
+                    numberOfCompleted + numberOfDispatched + numberOfCanceled == numberOfWorkOrderLineItem
+                ) {
                     workOrder.Status = 'Completed';
                     continue;
                 }
@@ -204,10 +198,11 @@ public without sharing class HOT_WorkOrderStatusHandler extends MyTriggers {
                 if (
                     (numberOfCompleted > 0 &&
                     numberOfCannotComplete > 0 &&
-                    numberOfCompleted + numberOfCannotComplete + numberOfDispatched + numberOfCanceled== numberOfWorkOrderLineItem) ||
+                    numberOfCompleted + numberOfCannotComplete + numberOfDispatched + numberOfCanceled ==
+                    numberOfWorkOrderLineItem) ||
                     (numberOfPartiallyComplete > 0 &&
-                    numberOfPartiallyComplete + numberOfCompleted + numberOfCannotComplete + numberOfDispatched + numberOfCanceled ==
-                    numberOfWorkOrderLineItem)
+                    numberOfPartiallyComplete + numberOfCompleted + numberOfCannotComplete + numberOfDispatched +
+                    numberOfCanceled == numberOfWorkOrderLineItem)
                 ) {
                     workOrder.Status = 'Partially Complete';
                     continue;

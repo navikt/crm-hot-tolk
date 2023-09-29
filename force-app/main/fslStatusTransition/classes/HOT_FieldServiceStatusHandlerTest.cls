@@ -168,18 +168,6 @@ private class HOT_FieldServiceStatusHandlerTest {
             'Status on the work order did not update to correct value'
         );
 
-        workOrderLineItem_1.Status = 'In Progress';
-        update workOrderLineItem_1;
-        workOrderLineItem_2.Status = 'In Progress';
-        update workOrderLineItem_2;
-
-        workOrder = [SELECT Status FROM WorkOrder WHERE Id = :workOrder.Id];
-        System.assertEquals(
-            'In Progress',
-            workOrder.Status,
-            'Status on the work order did not update to correct value'
-        );
-
         workOrderLineItem_1.Status = 'Completed';
         update workOrderLineItem_1;
         workOrderLineItem_2.Status = 'Completed';
@@ -262,18 +250,6 @@ private class HOT_FieldServiceStatusHandlerTest {
         workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
         System.assertEquals(
             'Partially Complete',
-            workOrderLineItem.Status,
-            'Status on the work order line item did not update to correct value'
-        );
-
-        serviceAppointment_1.Status = 'In Progress';
-        update serviceAppointment_1;
-        serviceAppointment_2.Status = 'In Progress';
-        update serviceAppointment_2;
-
-        workOrderLineItem = [SELECT Status FROM WorkOrderLineItem WHERE Id = :workOrderLineItem.Id];
-        System.assertEquals(
-            'In Progress',
             workOrderLineItem.Status,
             'Status on the work order line item did not update to correct value'
         );

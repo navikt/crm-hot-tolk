@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_ExternalWorkOrderStatus__c</fullName>
     <externalId>false</externalId>
     <formula>CASE(TEXT(Status),
-&quot;New&quot;, IF(TEXT(HOT_Request__r.Status__c) = &quot;Åpen&quot;, &quot;Åpen&quot;, &quot;Under behandling&quot;),
-&quot;Scheduled&quot;, &quot;Under behandling&quot;,
-&quot;Dispatched&quot;, &quot;Du har fått tolk&quot;,
-&quot;Partially Complete&quot;, &quot;Ferdig&quot;,
-&quot;In Progress&quot;, &quot;Pågår&quot;,
-&quot;Cannot Complete&quot;, &quot;Ikke ledig tolk&quot;,
-&quot;Canceled&quot;, &quot;Avlyst&quot;,
-&quot;Completed&quot;, &quot;Ferdig&quot;,
-&quot;Denied&quot;, &quot;Avslått&quot;,
-&quot;Ukjent&quot;)</formula>
+        &quot;New&quot;, IF(TEXT(HOT_Request__r.Status__c) = &quot;Åpen&quot;, &quot;Åpen&quot;,
+        &quot;Under behandling&quot;),
+        &quot;Scheduled&quot;, &quot;Under behandling&quot;,
+        &quot;Dispatched&quot;, &quot;Du har fått tolk&quot;,
+        &quot;Partially Complete&quot;, &quot;Ferdig&quot;,
+        &quot;Cannot Complete&quot;, &quot;Ikke ledig tolk&quot;,
+        &quot;Canceled&quot;, &quot;Avlyst&quot;,
+        &quot;Completed&quot;, &quot;Ferdig&quot;,
+        &quot;Denied&quot;, &quot;Avslått&quot;,
+        &quot;Ukjent&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <inlineHelpText>Status som vises for bruker på nav.no</inlineHelpText>
     <label>External WorkOrder Status</label>

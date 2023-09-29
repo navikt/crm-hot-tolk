@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <groupingStringEnum>WorkStatusCategory</groupingStringEnum>
     <sorted>false</sorted>
@@ -18,12 +18,6 @@
         <fullName>Dispatched</fullName>
         <default>false</default>
         <label>Dispatched</label>
-        <groupingString>InProgress</groupingString>
-    </standardValue>
-    <standardValue>
-        <fullName>In Progress</fullName>
-        <default>false</default>
-        <label>In Progress</label>
         <groupingString>InProgress</groupingString>
     </standardValue>
     <standardValue>

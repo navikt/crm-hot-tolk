@@ -110,7 +110,6 @@ export let iconByValue = {
         fill: '',
         ariaLabel: 'Under behandling'
     },
-    Pågår: {},
     Ukjent: {},
     Åpen: {
         icon: 'Open',

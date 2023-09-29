@@ -91,7 +91,6 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                 Integer numberOfNone = 0;
                 Integer numberOfScheduled = 0;
                 Integer numberOfDispatched = 0;
-                Integer numberOfInProgress = 0;
                 Integer numberOfCompleted = 0;
                 Integer numberOfCannotComplete = 0;
                 Integer numberOfCanceled = 0;
@@ -105,9 +104,6 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                     }
                     if (serviceAppointment.Status == 'Dispatched') {
                         numberOfDispatched++;
-                    }
-                    if (serviceAppointment.Status == 'In Progress') {
-                        numberOfInProgress++;
                     }
                     if (serviceAppointment.Status == 'Completed') {
                         numberOfCompleted++;
@@ -124,7 +120,6 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                 System.debug('numberOfNone: ' + numberOfNone);
                 System.debug('numberOfScheduled: ' + numberOfScheduled);
                 System.debug('numberOfDispatched: ' + numberOfDispatched);
-                System.debug('numberOfInProgress: ' + numberOfInProgress);
                 System.debug('numberOfCompleted: ' + numberOfCompleted);
                 System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
                 System.debug('numberOfCanceled: ' + numberOfCanceled);
@@ -147,10 +142,6 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                     numberOfDispatched > 0
                 ) {
                     workOrderLineItem.Status = 'Dispatched';
-                    continue;
-                }
-                if (numberOfInProgress == numberOfServiceAppointments) {
-                    workOrderLineItem.Status = 'In Progress';
                     continue;
                 }
                 if (
@@ -177,7 +168,10 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                     workOrderLineItem.Status = 'Partially Complete';
                     continue;
                 }
-                if (numberOfServiceAppointments > 1 && numberOfCanceled + numberOfCannotComplete == numberOfServiceAppointments) {
+                if (
+                    numberOfServiceAppointments > 1 &&
+                    numberOfCanceled + numberOfCannotComplete == numberOfServiceAppointments
+                ) {
                     workOrderLineItem.Status = 'Cannot Complete';
                     continue;
                 }

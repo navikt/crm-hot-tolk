@@ -1,18 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>ExternalRequestStatus__c</fullName>
     <externalId>false</externalId>
     <formula>CASE(TEXT(Status__c),
-&quot;Åpen&quot;, &quot;Åpen&quot;,
-&quot;Godkjent&quot;, &quot;Under behandling&quot;,
-&quot;Tildelt&quot;, &quot;Du har fått tolk&quot;,
-&quot;Delvis dekket&quot;, &quot;Ferdig&quot;,
-&quot;Pågår&quot;, &quot;Pågår&quot;,
-&quot;Udekket&quot;, &quot;Ikke ledig tolk&quot;,
-&quot;Avlyst&quot;, &quot;Avlyst&quot;,
-&quot;Avslått&quot;, &quot;Avslått&quot;,
-&quot;Dekket&quot;, &quot;Ferdig&quot;,
-&quot;Ukjent&quot;)</formula>
+        &quot;Åpen&quot;, &quot;Åpen&quot;,
+        &quot;Godkjent&quot;, &quot;Under behandling&quot;,
+        &quot;Tildelt&quot;, &quot;Du har fått tolk&quot;,
+        &quot;Delvis dekket&quot;, &quot;Ferdig&quot;,
+        &quot;Udekket&quot;, &quot;Ikke ledig tolk&quot;,
+        &quot;Avlyst&quot;, &quot;Avlyst&quot;,
+        &quot;Avslått&quot;, &quot;Avslått&quot;,
+        &quot;Dekket&quot;, &quot;Ferdig&quot;,
+        &quot;Ukjent&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <inlineHelpText>Status som vises for bruker på nav.no</inlineHelpText>
     <label>External Request Status</label>

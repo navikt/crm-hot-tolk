@@ -145,7 +145,7 @@ private class HOT_RequestListControllerTest {
 
         System.assertEquals(workOrdersCancelled.size(), 3, 'Ikke riktig avlyst');
     }
-      @isTest
+    @isTest
     static void getThreadRequestIdTest() {
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -156,29 +156,28 @@ private class HOT_RequestListControllerTest {
         insert request;
 
         Thread__c t = HOT_TestDataFactory.createThread();
-        t.CRM_Related_Object__c=request.Id;
-        t.CRM_Thread_Type__c='HOT_BRUKER-FORMIDLER';
+        t.CRM_Related_Object__c = request.Id;
+        t.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
         insert t;
         Test.stopTest();
-           String threadId= HOT_RequestListController.getThreadRequestId(request.Id,'HOT_BRUKER-FORMIDLER');
-            System.assertEquals(t.Id,threadId, 'Could not find the thread Id');
-        
+        String threadId = HOT_RequestListController.getThreadRequestId(request.Id, 'HOT_BRUKER-FORMIDLER');
+        System.assertEquals(t.Id, threadId, 'Could not find the thread Id');
     }
-      @isTest
+    @isTest
     static void getRequestStatusTest() {
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Status__c='Åpen';
+        request.Status__c = 'Åpen';
         insert request;
 
         Test.stopTest();
-           String status= HOT_RequestListController.getRequestStatus(request.Id);
-            System.assertEquals('Åpen',status, 'Could not get correct status');
-        
+        String status = HOT_RequestListController.getRequestStatus(request.Id);
+        System.assertEquals('Åpen', status, 'Could not get correct status');
     }
-      @isTest static void testGetTimesNew() {
+    @isTest
+    static void testGetTimesNew() {
         List<WorkOrder> workOrders = new List<WorkOrder>();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -186,27 +185,26 @@ private class HOT_RequestListControllerTest {
         insert account;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-        for(Integer i=1; i<=3; i++) {
+        for (Integer i = 1; i <= 3; i++) {
             WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
             workOrder.AccountId = account.Id;
             workOrder.StartDate = DateTime.now().addDays(i);
             workOrder.EndDate = workOrder.StartDate.addHours(2);
-            workOrder.Status = 'In Progress';
             workOrders.add(workOrder);
         }
         insert workOrders;
-        
+
         List<String> requestIds = new List<String>();
-        for(WorkOrder wo : workOrders) {
+        for (WorkOrder wo : workOrders) {
             requestIds.add(wo.HOT_Request__c);
         }
         List<Map<String, String>> result = HOT_RequestListController.getTimesNew(requestIds);
-        
+
         System.assertEquals(result.size(), 3);
-        for(Integer i=0; i<result.size(); i++) {
+        for (Integer i = 0; i < result.size(); i++) {
             Map<String, String> timeMap = result[i];
             WorkOrder wo = workOrders[i];
             System.assertEquals(timeMap.get('id'), wo.Id);
+        }
     }
-}
 }

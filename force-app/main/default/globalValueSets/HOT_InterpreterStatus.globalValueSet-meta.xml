@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <customValue>
         <fullName>Åpen</fullName>
@@ -14,11 +14,6 @@
         <fullName>Tildelt</fullName>
         <default>false</default>
         <label>Tildelt</label>
-    </customValue>
-    <customValue>
-        <fullName>Pågår</fullName>
-        <default>false</default>
-        <label>Pågår</label>
     </customValue>
     <customValue>
         <fullName>Dekket</fullName>

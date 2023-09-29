@@ -486,7 +486,6 @@ private class HOT_ServiceAppointmentHandlerTest {
         correctStatuses.put('Cannot Complete', 'Udekket');
         correctStatuses.put('Completed', 'Dekket');
         correctStatuses.put('Dispatched', 'Tildelt');
-        correctStatuses.put('In Progress', 'Pågår');
         correctStatuses.put('None', 'Åpen');
         correctStatuses.put('Released to Freelance', 'Frigitt til frilanstolker');
         correctStatuses.put('Scheduled', 'Reservert');
@@ -914,16 +913,17 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @isTest
-    public static void actualStartTimesShouldBeSchedStartTimesTest(){
+    public static void actualStartTimesShouldBeSchedStartTimesTest() {
         ServiceAppointment serviceAppointment = [
-            SELECT Id, AccountId, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, Status 
-            FROM ServiceAppointment 
-            LIMIT 1];
+            SELECT Id, AccountId, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, Status
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
 
         serviceAppointment.ActualStartTime = null;
         serviceAppointment.ActualEndTime = null;
         serviceAppointment.Status = 'Completed';
-        
+
         Test.startTest();
         update serviceAppointment;
         Test.stopTest();
@@ -933,17 +933,16 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM serviceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
-        
+
         System.assertEquals(
-            serviceAppointment.SchedStartTime, 
-            serviceAppointment.ActualStartTime, 
+            serviceAppointment.SchedStartTime,
+            serviceAppointment.ActualStartTime,
             'Expected SchedStartTime and ActualStartTime to be the same'
         );
         System.assertEquals(
-            serviceAppointment.SchedEndTime, 
-            serviceAppointment.ActualEndTime, 
+            serviceAppointment.SchedEndTime,
+            serviceAppointment.ActualEndTime,
             'Expected SchedEndTime and ActualEndTime to be the same'
         );
-
     }
 }

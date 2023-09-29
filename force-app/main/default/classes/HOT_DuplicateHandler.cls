@@ -1,5 +1,5 @@
 public without sharing class HOT_DuplicateHandler {
-    public static List<String> statuses = new List<String>{ 'New', 'Scheduled', 'Dispatched', 'In Progress'};
+    public static List<String> statuses = new List<String>{ 'New', 'Scheduled', 'Dispatched' };
 
     @AuraEnabled
     public static List<HOT_Request__c> getOverlappingRecordsFromRequestId(Id accountId, Id requestId) {

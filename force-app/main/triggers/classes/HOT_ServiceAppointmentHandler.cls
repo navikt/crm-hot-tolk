@@ -784,8 +784,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             return 'Dekket';
         if (status == 'Dispatched')
             return 'Tildelt';
-        if (status == 'In Progress')
-            return 'Pågår';
         if (status == 'None')
             return 'Åpen';
         if (status == 'Released to Freelance')

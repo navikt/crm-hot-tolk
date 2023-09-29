@@ -61,7 +61,6 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
         statusMap.put('New', 'Godkjent');
         statusMap.put('Scheduled', 'Godkjent');
         statusMap.put('Dispatched', 'Tildelt');
-        statusMap.put('In Progress', 'Pågår');
         statusMap.put('Completed', 'Dekket');
         statusMap.put('Partially Complete', 'Delvis dekket');
         statusMap.put('Cannot Complete', 'Udekket');
@@ -92,7 +91,6 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                 Integer numberOfNew = 0;
                 Integer numberOfScheduled = 0;
                 Integer numberOfDispatched = 0;
-                Integer numberOfInProgress = 0;
                 Integer numberOfCompleted = 0;
                 Integer numberOfPartiallyComplete = 0;
                 Integer numberOfCannotComplete = 0;
@@ -107,9 +105,6 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                     }
                     if (workOrder.Status == 'Dispatched') {
                         numberOfDispatched++;
-                    }
-                    if (workOrder.Status == 'In Progress') {
-                        numberOfInProgress++;
                     }
                     if (workOrder.Status == 'Completed') {
                         numberOfCompleted++;
@@ -129,7 +124,6 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                 System.debug('numberOfNew: ' + numberOfNew);
                 System.debug('numberOfScheduled: ' + numberOfScheduled);
                 System.debug('numberOfDispatched: ' + numberOfDispatched);
-                System.debug('numberOfInProgress: ' + numberOfInProgress);
                 System.debug('numberOfCompleted: ' + numberOfCompleted);
                 System.debug('numberOfPartiallyComplete: ' + numberOfPartiallyComplete);
                 System.debug('numberOfCannotComplete: ' + numberOfCannotComplete);
@@ -149,10 +143,6 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
                         numberOfPartiallyComplete == numberOfWorkOrder)
                     ) {
                         request.Status__c = statusMap.get('Dispatched');
-                        continue;
-                    }
-                    if (numberOfInProgress == numberOfWorkOrder) {
-                        request.Status__c = statusMap.get('In Progress');
                         continue;
                     }
                     if (numberOfCompleted > 0 && (numberOfCompleted + numberOfCanceled == numberOfWorkOrder)) {
