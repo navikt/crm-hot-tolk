@@ -252,22 +252,26 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     this.threads = this.unmappedThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
                     this.interpreterThreads = this.unmappedInterpreterThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
                     this.orderThreads = this.unmapperOrderThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
                     this.ordererUserThreads = this.unmappedOrdererUserTreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c)
+                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
 
                     this.noThreads = this.threads.length === 0;
@@ -278,39 +282,27 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     //sorting, unread first
                     this.threads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return 0;
+                            return a.appointmentDate.localeCompare(b.appointmentDate);
                         }
-                        if (a.read === false) {
-                            return -1;
-                        }
-                        return 1;
+                        return a.read ? 1 : -1;
                     });
                     this.interpreterThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return 0;
+                            return a.appointmentDate.localeCompare(b.appointmentDate);
                         }
-                        if (a.read === false) {
-                            return -1;
-                        }
-                        return 1;
+                        return a.read ? 1 : -1;
                     });
                     this.orderThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return 0;
+                            return a.appointmentDate.localeCompare(b.appointmentDate);
                         }
-                        if (a.read === false) {
-                            return -1;
-                        }
-                        return 1;
+                        return a.read ? 1 : -1;
                     });
                     this.ordererUserThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return 0;
+                            return a.appointmentDate.localeCompare(b.appointmentDate);
                         }
-                        if (a.read === false) {
-                            return -1;
-                        }
-                        return 1;
+                        return a.read ? 1 : -1;
                     });
 
                     //List 1 unread messages
