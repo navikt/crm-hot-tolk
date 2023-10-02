@@ -56,11 +56,6 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
             label: 'Siste melding',
             name: 'lastMessage',
             type: 'text'
-        },
-        {
-            label: 'Oppdragsstart',
-            name: 'appointmentStart',
-            type: 'text'
         }
     ];
     @track mobileColumns = [
@@ -80,12 +75,6 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
         {
             label: 'Siste melding',
             name: 'lastMessage',
-            type: 'text',
-            bold: true
-        },
-        {
-            label: 'Oppdragsstart',
-            name: 'appointmentStart',
             type: 'text',
             bold: true
         }
@@ -252,29 +241,25 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
                         lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
-                        appointmentDate: x.HOT_AppointmentStartTime__c,
-                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
                     this.interpreterThreads = this.unmappedInterpreterThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
                         lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
-                        appointmentDate: x.HOT_AppointmentStartTime__c,
-                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
                     this.orderThreads = this.unmapperOrderThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
                         lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
-                        appointmentDate: x.HOT_AppointmentStartTime__c,
-                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
                     this.ordererUserThreads = this.unmappedOrdererUserTreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
                         lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
-                        appointmentDate: x.HOT_AppointmentStartTime__c,
-                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
+                        appointmentDate: x.HOT_AppointmentStartTime__c
                     }));
 
                     this.noThreads = this.threads.length === 0;
@@ -285,27 +270,31 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     //sorting, unread first
                     this.threads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return a.appointmentDate.localeCompare(b.appointmentDate);
+                            return new Date(b.lastMessage) - new Date(a.lastMessage);
+                        } else {
+                            return a.read ? 1 : -1;
                         }
-                        return a.read ? 1 : -1;
                     });
                     this.interpreterThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return a.appointmentDate.localeCompare(b.appointmentDate);
+                            return new Date(b.lastMessage) - new Date(a.lastMessage);
+                        } else {
+                            return a.read ? 1 : -1;
                         }
-                        return a.read ? 1 : -1;
                     });
                     this.orderThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return a.appointmentDate.localeCompare(b.appointmentDate);
+                            return new Date(b.lastMessage) - new Date(a.lastMessage);
+                        } else {
+                            return a.read ? 1 : -1;
                         }
-                        return a.read ? 1 : -1;
                     });
                     this.ordererUserThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return a.appointmentDate.localeCompare(b.appointmentDate);
+                            return new Date(b.lastMessage) - new Date(a.lastMessage);
+                        } else {
+                            return a.read ? 1 : -1;
                         }
-                        return a.read ? 1 : -1;
                     });
 
                     //List 1 unread messages
