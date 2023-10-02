@@ -57,7 +57,7 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
             type: 'text'
         },
         {
-            label: 'Oppdrags start',
+            label: 'Oppdragsstart',
             name: 'appointmentStart',
             type: 'text'
         }
@@ -83,7 +83,7 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
             bold: true
         },
         {
-            label: 'Oppdrags start',
+            label: 'Oppdragsstart',
             name: 'appointmentStart',
             type: 'text',
             bold: true
