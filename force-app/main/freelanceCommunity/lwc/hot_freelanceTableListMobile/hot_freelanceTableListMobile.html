@@ -50,7 +50,17 @@
                     <td>
                         <template iterator:field={record.value.fields}>
                             <template if:false={field.value.svg}>
-                                <p tabindex="0" key={field.value.name} class={field.value.name}>{field.value.value}</p>
+                                <template if:false={field.value.bold}>
+                                    <p tabindex="0" key={field.value.name} class={field.value.name}>
+                                        {field.value.value}
+                                    </p>
+                                </template>
+                                <template if:true={field.value.bold}>
+                                    <p tabindex="0" key={field.value.name} class={field.value.name}>
+                                        <strong>{field.value.label}: </strong>
+                                        {field.value.value}
+                                    </p>
+                                </template>
                             </template>
                         </template>
                     </td>
