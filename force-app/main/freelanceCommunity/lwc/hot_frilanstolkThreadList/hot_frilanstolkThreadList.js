@@ -6,6 +6,15 @@ import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_frilanstolkThreadList extends NavigationMixin(LightningElement) {
     @track userContactId;
+    @track isMobile;
+    @track columns = [];
+    setTable() {
+        if (window.screen.width > 576) {
+            this.isMobile = false;
+        } else {
+            this.isMobile = true;
+        }
+    }
     breadcrumbs = [
         {
             label: 'Tolketjenesten',
@@ -44,8 +53,40 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
         },
         {
             label: 'Siste melding',
-            name: 'LastMessage',
+            name: 'lastMessage',
             type: 'text'
+        },
+        {
+            label: 'Oppdragsstart',
+            name: 'appointmentStart',
+            type: 'text'
+        }
+    ];
+    @track mobileColumns = [
+        {
+            label: 'Tema',
+            name: 'HOT_Subject__c',
+            type: 'text',
+            bold: false
+        },
+        {
+            label: 'Status',
+            name: 'read',
+            type: 'boolean',
+            svg: true,
+            bold: false
+        },
+        {
+            label: 'Siste melding',
+            name: 'lastMessage',
+            type: 'text',
+            bold: true
+        },
+        {
+            label: 'Oppdragsstart',
+            name: 'appointmentStart',
+            type: 'text',
+            bold: true
         }
     ];
     @track tabs = [
@@ -64,58 +105,16 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
 
     formatDateTime(date) {
         let unformatted = new Date(date);
-        var month = unformatted.getMonth();
-        var monthString;
-        switch (month) {
-            case 0:
-                monthString = 'Januar';
-                break;
-            case 1:
-                monthString = 'Februar';
-                break;
-            case 2:
-                monthString = 'Mars';
-                break;
-            case 3:
-                monthString = 'April';
-                break;
-            case 4:
-                monthString = 'Mai';
-                break;
-            case 5:
-                monthString = 'Juni';
-                break;
-            case 6:
-                monthString = 'Juli';
-                break;
-            case 7:
-                monthString = 'August';
-                break;
-            case 8:
-                monthString = 'September';
-                break;
-            case 9:
-                monthString = 'Oktober';
-                break;
-            case 10:
-                monthString = 'November';
-                break;
-            case 11:
-                monthString = 'Desember';
-                break;
-            default:
-                monthString = '';
-        }
         let formattedTime =
-            unformatted.getDate() +
-            ' ' +
-            monthString +
-            ' ' +
+            ('0' + unformatted.getDate()).slice(-2) +
+            '.' +
+            ('0' + (unformatted.getMonth() + 1)).slice(-2) +
+            '.' +
             unformatted.getFullYear() +
             ', Kl ' +
-            ('0' + unformatted.getHours()).substr(-2) +
+            ('0' + unformatted.getHours()).slice(-2) +
             ':' +
-            ('0' + unformatted.getMinutes()).substr(-2);
+            ('0' + unformatted.getMinutes()).slice(-2);
         if (formattedTime.includes('NaN')) {
             formattedTime = '';
         }
@@ -235,26 +234,30 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
                     this.threads = this.unmappedThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
-                        appointmentDate: x.HOT_AppointmentStartTime__c
+                        lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c,
+                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
                     }));
                     this.interpreterThreads = this.unmappedInterpreterThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
-                        appointmentDate: x.HOT_AppointmentStartTime__c
+                        lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c,
+                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
                     }));
                     this.wageClaimThreads = this.unmappedWageClaimThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
-                        appointmentDate: x.HOT_AppointmentStartTime__c
+                        lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c,
+                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
                     }));
                     this.interpreterInterpreterThreads = this.unmappedInterpreterInterpreterThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
-                        LastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
-                        appointmentDate: x.HOT_AppointmentStartTime__c
+                        lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
+                        appointmentDate: x.HOT_AppointmentStartTime__c,
+                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
                     }));
 
                     this.noThreads = this.threads.length === 0;
@@ -404,6 +407,7 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
     }
 
     connectedCallback() {
+        this.setTable();
         refreshApex(this.wiredThreadsResult);
     }
     renderedCallback() {

@@ -5,6 +5,7 @@
     font-family: 'Source Sans Pro', Arial, sans-serif;
     align-items: center;
     padding-top: 0.5rem;
+    overflow: hidden;
 }
 
 .record-details-container {
