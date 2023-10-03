@@ -270,28 +270,28 @@ export default class Hot_threadList extends NavigationMixin(LightningElement) {
                     //sorting, unread first
                     this.threads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return new Date(b.lastMessage) - new Date(a.lastMessage);
+                            return b.CRM_Latest_Message_Datetime__c.localeCompare(a.CRM_Latest_Message_Datetime__c);
                         } else {
                             return a.read ? 1 : -1;
                         }
                     });
                     this.interpreterThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return new Date(b.lastMessage) - new Date(a.lastMessage);
+                            return b.CRM_Latest_Message_Datetime__c.localeCompare(a.CRM_Latest_Message_Datetime__c);
                         } else {
                             return a.read ? 1 : -1;
                         }
                     });
                     this.orderThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return new Date(b.lastMessage) - new Date(a.lastMessage);
+                            return b.CRM_Latest_Message_Datetime__c.localeCompare(a.CRM_Latest_Message_Datetime__c);
                         } else {
                             return a.read ? 1 : -1;
                         }
                     });
                     this.ordererUserThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return new Date(b.lastMessage) - new Date(a.lastMessage);
+                            return b.CRM_Latest_Message_Datetime__c.localeCompare(a.CRM_Latest_Message_Datetime__c);
                         } else {
                             return a.read ? 1 : -1;
                         }
