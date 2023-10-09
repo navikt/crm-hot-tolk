@@ -63,12 +63,11 @@ public without sharing class HOT_MessagesNotification {
                     recipients.add(userIdByAccountId.get(thread.CRM_Account__c));
                 }
                 if (recipients.size() > 0) {
-                    Boolean isFreelanceInterpreter = true;
                     if (thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
                         HOT_UserNotificationService.newMessageNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             thread,
-                            isFreelanceInterpreter,
+                            false,
                             recipients
                         );
                     } else {
@@ -184,12 +183,11 @@ public without sharing class HOT_MessagesNotification {
                     }
 
                     if (recipients.size() > 0) {
-                        Boolean isFreelanceInterpreter = true;
                         if (notificationChannel.contains('Push')) {
                             HOT_UserNotificationService.newMessageNotification(
                                 getCustomNotificationType('HOT_NotifyUser'),
                                 thread,
-                                isFreelanceInterpreter,
+                                true,
                                 recipients
                             );
                         } else {
