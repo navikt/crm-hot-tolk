@@ -199,7 +199,6 @@ public without sharing class HOT_UserNotificationService {
         notification.setBody(body);
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
-
         try {
             notification.send(recipients);
         } catch (Exception e) {
