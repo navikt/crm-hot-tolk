@@ -34,7 +34,8 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
             HOT_MessagesNotification.NotifyUser(threadIdsToNotifyUserOnNewMessage);
         }
         if (!threadIdsToNotifyInterpretersOnNewMessage.isEmpty()) {
-            HOT_MessagesNotification.NotifyInterpreter(threadIdsToNotifyUserOnNewMessage);
+            System.debug(threadIdsToNotifyInterpretersOnNewMessage);
+            HOT_MessagesNotification.NotifyInterpreter(threadIdsToNotifyInterpretersOnNewMessage);
         }
     }
 }
