@@ -16,14 +16,13 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
                     threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
                 }
             }
-            // if (message.CRM_Thread_Type__c == 'HOT_TOLK-TOLK') {
-            //     threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
-            // }
-            // if (message.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
-            //     threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
-
-            //     threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
-            // }
+            if (message.CRM_Thread_Type__c == 'HOT_TOLK-TOLK') {
+                threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
+            }
+            if (message.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
+                threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
+                threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
+            }
         }
 
         if (!threadIdsToNotifyDispatcherOnNewMessage.isEmpty()) {
@@ -34,7 +33,6 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
             HOT_MessagesNotification.NotifyUser(threadIdsToNotifyUserOnNewMessage);
         }
         if (!threadIdsToNotifyInterpretersOnNewMessage.isEmpty()) {
-            System.debug(threadIdsToNotifyInterpretersOnNewMessage);
             HOT_MessagesNotification.NotifyInterpreter(threadIdsToNotifyInterpretersOnNewMessage);
         }
     }
