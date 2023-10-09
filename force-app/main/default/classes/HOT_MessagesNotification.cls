@@ -182,10 +182,12 @@ public without sharing class HOT_MessagesNotification {
                     }
 
                     if (recipients.size() > 0) {
+                        Boolean isFreelanceInterpreter = true;
                         if (notificationChannel.contains('Push')) {
                             HOT_UserNotificationService.newMessageNotification(
                                 getCustomNotificationType('HOT_NotifyUser'),
                                 thread,
+                                isFreelanceInterpreter,
                                 recipients
                             );
                         } else {
