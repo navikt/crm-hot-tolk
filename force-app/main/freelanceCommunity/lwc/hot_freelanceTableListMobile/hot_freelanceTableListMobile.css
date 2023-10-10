@@ -1,5 +1,5 @@
 .table-wrapper {
-    max-width: 100vw;
+    max-width: 100%;
 }
 
 tr.row {
@@ -31,6 +31,9 @@ th {
         /* Overwrite experience cloud default styling */
         padding-left: 0;
         border-bottom: unset;
+    }
+    .table-wrapper {
+        max-width: 100vw;
     }
 }
 
