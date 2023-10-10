@@ -8,6 +8,7 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
             if (
                 message.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
                 message.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' ||
+                message.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
                 message.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER'
             ) {
                 if (!message.HOT_UserRole__c.contains(', Formidler')) {
