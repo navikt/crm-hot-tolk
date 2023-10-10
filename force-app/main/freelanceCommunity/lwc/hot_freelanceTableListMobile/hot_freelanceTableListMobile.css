@@ -33,7 +33,7 @@ th {
         border-bottom: unset;
     }
     .table-wrapper {
-        max-width: 100vw;
+        max-width: 100%;
     }
 }
 
