@@ -116,9 +116,6 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
         padding-top: 0.5rem;
         text-align: end;
     }
-    .contentWrapper {
-        max-width: 100vw;
-    }
 }
 
 .meld-interesse-overlay {
