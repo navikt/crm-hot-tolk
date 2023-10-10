@@ -135,11 +135,27 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             interestedResources.add(IR);
         }
         insert interestedResources;
-
+        List<Thread__c> threadListToInsert = new List<Thread__c>();
+        List<Message__c> messageListToInsert = new List<Message__c>();
+        Map<Thread__c, String> stringToThreadMap = new Map<Thread__c, String>();
+        Id userContactId = HOT_MessageHelper.getUserContactId();
         for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
             if (!String.isEmpty(comments[i])) {
-                HOT_InterestedResourcesListController.startAThreadAndAddComment(interestedResources[i].Id, comments[i]);
+                Thread__c thread = HOT_InterestedResourcesListController.startAThreadAndAddComment(
+                    interestedResources[i].Id,
+                    comments[i],
+                    userContactId
+                );
+                threadListToInsert.add(thread);
+                stringToThreadMap.put(thread, comments[i]);
             }
         }
+        insert threadListToInsert;
+        for (Thread__c thread : stringToThreadMap.keySet()) {
+            String comment = stringToThreadMap.get(thread);
+            Message__c message = HOT_MessageHelper.createMessages(thread.Id, comment, userContactId);
+            messageListToInsert.add(message);
+        }
+        insert messageListToInsert;
     }
 }

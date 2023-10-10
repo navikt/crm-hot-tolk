@@ -30,11 +30,19 @@
             <div if:true={showMythreads}>
                 <div class="record-details-container" if:false={noThreads}>
                     <c-table
+                        if:false={isMobile}
                         records={threads}
                         columns={columns}
                         onrowclick={openThread}
                         icon-by-value={iconByValue}
                     ></c-table>
+                    <c-hot_freelance-table-list-mobile
+                        if:true={isMobile}
+                        records={threads}
+                        columns={mobileColumns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-hot_freelance-table-list-mobile>
                 </div>
                 <div if:true={noThreads} style="text-align: center">
                     <br />
@@ -44,11 +52,19 @@
             <div if:true={showInterpreterthreads}>
                 <div class="record-details-container" if:false={noInterpreterThreads}>
                     <c-table
+                        if:false={isMobile}
                         records={interpreterThreads}
                         columns={columns}
                         onrowclick={openThread}
                         icon-by-value={iconByValue}
                     ></c-table>
+                    <c-hot_freelance-table-list-mobile
+                        if:true={isMobile}
+                        records={interpreterThreads}
+                        columns={mobileColumns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-hot_freelance-table-list-mobile>
                 </div>
                 <div if:true={noInterpreterThreads} style="text-align: center">
                     <br />
@@ -58,11 +74,19 @@
             <div if:true={showOrderthreads}>
                 <div class="record-details-container" if:false={noOrderThreads}>
                     <c-table
+                        if:false={isMobile}
                         records={orderThreads}
                         columns={columns}
                         onrowclick={openThread}
                         icon-by-value={iconByValue}
                     ></c-table>
+                    <c-hot_freelance-table-list-mobile
+                        if:true={isMobile}
+                        records={orderThreads}
+                        columns={mobileColumns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-hot_freelance-table-list-mobile>
                 </div>
                 <div if:true={noOrderThreads} style="text-align: center">
                     <br />
@@ -72,11 +96,19 @@
             <div if:true={showOrdererUserThreads}>
                 <div class="record-details-container" if:false={noOrdererUserThreads}>
                     <c-table
+                        if:false={isMobile}
                         records={ordererUserThreads}
                         columns={columns}
                         onrowclick={openThread}
                         icon-by-value={iconByValue}
                     ></c-table>
+                    <c-hot_freelance-table-list-mobile
+                        if:true={isMobile}
+                        records={ordererUserThreads}
+                        columns={mobileColumns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-hot_freelance-table-list-mobile>
                 </div>
                 <div if:true={noOrdererUserThreads} style="text-align: center">
                     <br />

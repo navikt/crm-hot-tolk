@@ -26,6 +26,12 @@ export default class Table extends LightningElement {
                     if (column.svg !== undefined && this.iconByValue[record[column.name]] !== undefined) {
                         field.svg = this.iconByValue[record[column.name]];
                     }
+                    if (column.bold !== undefined) {
+                        field.bold = column.bold;
+                    }
+                    if (column.label !== undefined) {
+                        field.label = column.label;
+                    }
                     fields.push(field);
                 }
                 records.push({
