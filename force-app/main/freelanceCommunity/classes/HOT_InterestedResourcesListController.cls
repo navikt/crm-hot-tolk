@@ -119,33 +119,30 @@ public without sharing class HOT_InterestedResourcesListController {
         }
     }
     @AuraEnabled
-    public static void startAThreadAndAddComment(Id interestedResourceId, String newComment) {
-        if (newComment != '') {
-            HOT_InterestedResource__c ir = [
-                SELECT
-                    Id,
-                    ServiceAppointment__r.Subject,
-                    ServiceAppointment__r.HOT_Request__r.Dispatcher__c,
-                    ServiceResource__r.AccountId
-                FROM HOT_InterestedResource__c
-                WHERE Id = :interestedResourceId
-            ];
-            Thread__c thread = new Thread__c();
-            thread.CRM_Related_Object__c = interestedResourceId;
-            thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
-            thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
-            thread.HOT_InterestedResource__c = interestedResourceId;
-            thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
-            thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
-            HOT_DatabaseOperations.insertRecords(thread);
-
-            //legg inn meldingen i comment
-            Id userContactId = HOT_MessageHelper.getUserContactId();
-            if (userContactId != null) {
-                HOT_MessageHelper.createMessage(thread.Id, newComment, userContactId);
-                HOT_MessageHelper.setLastMessageFrom(thread.Id, userContactId);
-            }
+    public static Thread__c startAThreadAndAddComment(Id interestedResourceId, String newComment, Id userContactId) {
+        HOT_InterestedResource__c ir = [
+            SELECT
+                Id,
+                ServiceAppointment__r.Subject,
+                ServiceAppointment__r.HOT_Request__r.Dispatcher__c,
+                ServiceResource__r.AccountId
+            FROM HOT_InterestedResource__c
+            WHERE Id = :interestedResourceId
+        ];
+        Thread__c thread = new Thread__c();
+        thread.CRM_Related_Object__c = interestedResourceId;
+        thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+        thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
+        thread.HOT_InterestedResource__c = interestedResourceId;
+        thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
+        thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+        if (userContactId != null) {
+            thread.HOT_Last_message_from__c = userContactId;
+            thread.HOT_Last_message_from__c = userContactId;
+            thread.HOT_Thread_read_by__c = userContactId;
+            thread.CRM_Latest_Message_Datetime__c = Datetime.now();
         }
+        return thread;
     }
     @AuraEnabled
     public static void dispatcherReadComment(Id recordId) {
