@@ -67,6 +67,7 @@ public without sharing class HOT_MessagesNotification {
                         HOT_UserNotificationService.newMessageNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             thread,
+                            false,
                             recipients
                         );
                     } else {
@@ -78,6 +79,7 @@ public without sharing class HOT_MessagesNotification {
             }
         }
     }
+
     public static void NotifyInterpreter(List<Id> threadIds) {
         List<Thread__c> threads = [
             SELECT
@@ -86,10 +88,12 @@ public without sharing class HOT_MessagesNotification {
                 HOT_Last_message_from__c,
                 HOT_Last_message_from__r.AccountId,
                 HOT_Subject__c,
+                CRM_Thread_Type__c,
                 LastModifiedById
             FROM Thread__c
             WHERE Id IN :threadIds
         ];
+
         Set<Id> participantIdsSet = new Set<Id>();
         if (!threads.isEmpty()) {
             Map<Id, Thread__c> interpretersOnThreadMap = new Map<Id, Thread__c>();
@@ -124,11 +128,7 @@ public without sharing class HOT_MessagesNotification {
                     employeeUserIds.add(sr.RelatedRecordId);
                 }
 
-                List<User> users = [
-                    SELECT Id, AccountId
-                    FROM User
-                    WHERE Id IN :employeeUserIds
-                ];
+                List<User> users = [SELECT Id, AccountId FROM User WHERE Id IN :employeeUserIds];
 
                 Map<User, Thread__c> userIdToThreadMap = new Map<User, Thread__c>();
                 for (Id participantId : interpretersOnThreadMap.keySet()) {
@@ -151,8 +151,8 @@ public without sharing class HOT_MessagesNotification {
                     HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread); // send med parameter for denne
                 }
             }
-            //FRILANSTOLKER VARSEL
 
+            //FRILANSTOLKER VARSEL
             if (!freelanceServiceresource.isEmpty()) {
                 Set<Id> freelanceAccountIds = new Set<Id>();
                 for (ServiceResource sr : freelanceServiceresource) {
@@ -187,6 +187,7 @@ public without sharing class HOT_MessagesNotification {
                             HOT_UserNotificationService.newMessageNotification(
                                 getCustomNotificationType('HOT_NotifyUser'),
                                 thread,
+                                true,
                                 recipients
                             );
                         } else {

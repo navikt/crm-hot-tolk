@@ -6,16 +6,17 @@ public without sharing class HOT_UserNotificationService {
     ) {
         String title = 'Andre har lagt inn en bestilling for deg';
         String body;
-        if(request.IsSerieoppdrag__c) {
-            body = 'Det er bestilt tolk til deg i perioden ' + request.SeriesPeriod__c; 
+        if (request.IsSerieoppdrag__c) {
+            body = 'Det er bestilt tolk til deg i perioden ' + request.SeriesPeriod__c;
         } else {
             body =
-            'Det er bestilt tolk til deg. Dato: ' +
-            request.StartTime__c?.format('dd.MM.yyyy', 'Europe/Oslo') +
-            ', kl: ' + request.StartTime__c?.format('HH:mm', 'Europe/Oslo') +
-            ' - ' +
-            request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
-            '.';
+                'Det er bestilt tolk til deg. Dato: ' +
+                request.StartTime__c?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                ', kl: ' +
+                request.StartTime__c?.format('HH:mm', 'Europe/Oslo') +
+                ' - ' +
+                request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
+                '.';
         }
         Id notificationTypeId = notificationType.Id;
         String targetPageRef = getTargetPageRef(HOT_WorkOrderHandler.getWorkOrder(request).Id, 'R');
@@ -42,21 +43,24 @@ public without sharing class HOT_UserNotificationService {
         String title = 'Status på din bestilling er endret';
         String body;
         if (workOrder.Status == 'Dispatched') {
-            body =
-                'Du har fått tolk. Tolk er ' + interpreters;
+            body = 'Du har fått tolk. Tolk er ' + interpreters;
         }
         if (workOrder.Status == 'Cannot Complete') {
             body = 'Ikke ledig tolk.';
         }
-        body += '\nDato: ' +
+        body +=
+            '\nDato: ' +
             workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
-            ', kl: ' + workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
+            ', kl: ' +
+            workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
             workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = workOrder.HOT_Request__r.Type__c == 'Me' ? getTargetPageRef(workOrder.Id, 'WO') : getTargetPageRefOrderer(workOrder.Id, 'WO');
+        String targetPageRef = workOrder.HOT_Request__r.Type__c == 'Me'
+            ? getTargetPageRef(workOrder.Id, 'WO')
+            : getTargetPageRefOrderer(workOrder.Id, 'WO');
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
@@ -88,9 +92,11 @@ public without sharing class HOT_UserNotificationService {
         if (workOrder.Status == 'Cannot Complete') {
             body = 'Ikke ledig tolk';
         }
-        body += '\nDato: ' +
+        body +=
+            '\nDato: ' +
             workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
-            ', kl: ' + workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
+            ', kl: ' +
+            workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
             workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
@@ -150,10 +156,12 @@ public without sharing class HOT_UserNotificationService {
     ) {
         String title = 'Endring av tolk';
         String body =
-            'Tolk på din bestilling er endret. \nTolk er: ' + interpreters +
+            'Tolk på din bestilling er endret. \nTolk er: ' +
+            interpreters +
             '\nDato: ' +
             workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
-            ', kl: ' + workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
+            ', kl: ' +
+            workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
             workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
             '.';
@@ -178,19 +186,19 @@ public without sharing class HOT_UserNotificationService {
     public static void newMessageNotification(
         CustomNotificationType notificationType,
         Thread__c thread,
+        Boolean isFreelanceInterpreter,
         Set<String> recipients
     ) {
         String title = 'Ny melding fra Tolketjenesten';
         String body = 'Du har fått en melding fra Tolketjenesten.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRefThread(thread);
+        String targetPageRef = getTargetPageRefThread(thread, isFreelanceInterpreter);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
         notification.setNotificationTypeId(notificationTypeId);
         notification.setTargetPageRef(targetPageRef);
-
         try {
             notification.send(recipients);
         } catch (Exception e) {
@@ -200,10 +208,7 @@ public without sharing class HOT_UserNotificationService {
         }
     }
 
-      public static void newWantedSRNotification(
-        CustomNotificationType notificationType,
-        Set<String> recipients
-    ) {
+    public static void newWantedSRNotification(CustomNotificationType notificationType, Set<String> recipients) {
         String title = 'Du er ønsket til et oppdrag';
         String body = 'Du kan melde interesse for oppdraget eller avslå.';
 
@@ -214,7 +219,7 @@ public without sharing class HOT_UserNotificationService {
         notification.setBody(body);
         notification.setTargetPageRef(targetPageRef);
         notification.setNotificationTypeId(notificationTypeId);
-        
+
         try {
             notification.send(recipients);
         } catch (Exception e) {
@@ -246,24 +251,30 @@ public without sharing class HOT_UserNotificationService {
         return pageRef;
     }
 
-    private static String getTargetPageRefThread(Thread__c target) {
-        if(target.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !target.HOT_IsEmployeeThread__c) {
+    private static String getTargetPageRefThread(Thread__c target, Boolean isFreelanceInterpreter) {
+        if (
+            target.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !target.HOT_IsEmployeeThread__c ||
+            (target.CRM_Thread_Type__c == 'HOT_TOLK-TOLK' || target.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') &&
+            isFreelanceInterpreter
+        ) {
             String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {recordId: "' +
-            target.Id + '"}}';
+                '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {recordId: "' +
+                target.Id +
+                '"}}';
             return pageRef;
         } else {
             String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "mine-samtaler"}, state: {recordId: "' +
-            target.Id +'"}}';
+                '{type: "comm__namedPage",attributes: {pageName: "mine-samtaler"}, state: {recordId: "' +
+                target.Id +
+                '"}}';
             return pageRef;
         }
     }
-     private static String getTargetPageRefWanted() {
+    private static String getTargetPageRefWanted() {
         String pageRef =
-        '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
-        'wanted' +
-        '"}}';
+            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
+            'wanted' +
+            '"}}';
         return pageRef;
     }
 }

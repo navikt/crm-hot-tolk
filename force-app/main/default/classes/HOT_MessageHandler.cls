@@ -8,6 +8,7 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
             if (
                 message.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
                 message.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' ||
+                message.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
                 message.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER'
             ) {
                 if (!message.HOT_UserRole__c.contains(', Formidler')) {
@@ -16,14 +17,13 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
                     threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
                 }
             }
-            // if (message.CRM_Thread_Type__c == 'HOT_TOLK-TOLK') {
-            //     threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
-            // }
-            // if (message.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
-            //     threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
-
-            //     threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
-            // }
+            if (message.CRM_Thread_Type__c == 'HOT_TOLK-TOLK') {
+                threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
+            }
+            if (message.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
+                threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
+                threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
+            }
         }
 
         if (!threadIdsToNotifyDispatcherOnNewMessage.isEmpty()) {
@@ -34,7 +34,7 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
             HOT_MessagesNotification.NotifyUser(threadIdsToNotifyUserOnNewMessage);
         }
         if (!threadIdsToNotifyInterpretersOnNewMessage.isEmpty()) {
-            HOT_MessagesNotification.NotifyInterpreter(threadIdsToNotifyUserOnNewMessage);
+            HOT_MessagesNotification.NotifyInterpreter(threadIdsToNotifyInterpretersOnNewMessage);
         }
     }
 }
