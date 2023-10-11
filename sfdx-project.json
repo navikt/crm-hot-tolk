@@ -8,7 +8,7 @@
             "default": true,
             "package": "crm-hot",
             "versionName": "ver 0.1",
-            "versionNumber": "1.239.0.NEXT",
+            "versionNumber": "1.240.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
