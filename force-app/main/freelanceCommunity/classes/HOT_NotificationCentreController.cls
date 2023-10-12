@@ -11,6 +11,7 @@ public without sharing class HOT_NotificationCentreController {
                 HOT_Subject__c,
                 HOT_NotificationText__c,
                 HOT_RelatedObject__c,
+                HOT_RelatedObjectType__c,
                 CreatedDate
             FROM HOT_Notification__c
             WHERE HOT_Account__c = :currentUser.AccountId
@@ -22,16 +23,5 @@ public without sharing class HOT_NotificationCentreController {
         if (!notificationsToInsert.isEmpty()) {
             insert notificationsToInsert;
         }
-        // List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-        // HOT_Notification__c notification= new HOT_Notification__c();
-        // notification.HOT_Account__c
-        // notification.HOT_NotificationChannel__c
-        // notification.HOT_Subject__c
-        // notification.HOT_NotificationText__c
-        // notification.HOT_RelatedObject__c
-
-        // notificationList.add(notification);
-
-        // HOT_NotificationCentreController.createNotification(notificationList);
     }
 }

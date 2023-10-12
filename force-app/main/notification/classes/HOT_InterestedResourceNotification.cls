@@ -47,6 +47,7 @@ public without sharing class HOT_InterestedResourceNotification {
                     notification.HOT_Subject__c = 'Du er ønsket til et oppdrag';
                     notification.HOT_NotificationText__c = 'Du kan melde interesse for oppdraget eller avslå.';
                     notification.HOT_RelatedObject__c = wantedIr.Id;
+                    notification.HOT_RelatedObjectType__c = 'wanted';
 
                     notificationList.add(notification);
                 } else {
