@@ -58,6 +58,7 @@ public without sharing class HOT_MessagesNotification {
 
         if (!threads.isEmpty()) {
             for (Thread__c thread : threads) {
+                Boolean isInterpreter = thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ? true : false;
                 Set<String> recipients = new Set<String>();
                 if (userIdByAccountId.get(thread.CRM_Account__c) != null) {
                     recipients.add(userIdByAccountId.get(thread.CRM_Account__c));
@@ -67,7 +68,7 @@ public without sharing class HOT_MessagesNotification {
                         HOT_UserNotificationService.newMessageNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             thread,
-                            false,
+                            isInterpreter,
                             recipients
                         );
                     } else {
