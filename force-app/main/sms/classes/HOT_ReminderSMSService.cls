@@ -192,10 +192,12 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
-            SELECT ServiceResource__r.Account.Id, ServiceResource__r.Account.CRM_Person__r.INT_KrrMobilePhone__c
+            SELECT Id, ServiceResource__r.Account.Id, ServiceResource__r.Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM HOT_InterestedResource__c
             WHERE Id IN :wantedIRIds
         ];
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
         for (HOT_InterestedResource__c ir : wantedIRList) {
             SMS__c sms = new SMS__c();
@@ -207,9 +209,21 @@ public without sharing class HOT_ReminderSMSService {
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
             }
+
+            //creating notification object
+            HOT_Notification__c notification = new HOT_Notification__c();
+            notification.HOT_Account__c = ir.ServiceResource__r.Account.Id;
+            notification.HOT_NotificationChannel__c = 'SMS';
+            notification.HOT_Subject__c = 'Du er ønsket til et oppdrag';
+            notification.HOT_NotificationText__c = constructOnNewWantedSR();
+            notification.HOT_RelatedObject__c = ir.Id;
+
+            notificationList.add(notification);
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
+            //inserting notifications
+            HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
