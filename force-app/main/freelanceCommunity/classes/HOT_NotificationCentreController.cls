@@ -10,7 +10,8 @@ public without sharing class HOT_NotificationCentreController {
                 HOT_NotificationChannel__c,
                 HOT_Subject__c,
                 HOT_NotificationText__c,
-                HOT_RelatedObject__c
+                HOT_RelatedObject__c,
+                CreatedDate
             FROM HOT_Notification__c
             WHERE HOT_Account__c = :currentUser.AccountId
         ];

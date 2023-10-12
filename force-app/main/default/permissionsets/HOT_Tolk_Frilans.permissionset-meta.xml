@@ -256,6 +256,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Notification__c.HOT_RelatedObjectType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Notification__c.HOT_RelatedObject__c</field>
         <readable>true</readable>
     </fieldPermissions>
