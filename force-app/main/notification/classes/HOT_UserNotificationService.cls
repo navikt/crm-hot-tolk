@@ -253,7 +253,7 @@ public without sharing class HOT_UserNotificationService {
 
     private static String getTargetPageRefThread(Thread__c target, Boolean isFreelanceInterpreter) {
         if (
-            target.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !target.HOT_IsEmployeeThread__c ||
+            (target.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !target.HOT_IsEmployeeThread__c) ||
             (target.CRM_Thread_Type__c == 'HOT_TOLK-TOLK' ||
             target.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK' ||
             target.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' && isFreelanceInterpreter)
