@@ -261,7 +261,7 @@ public without sharing class HOT_UserNotificationService {
             String pageRef =
                 '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {recordId: "' +
                 target.Id +
-                '"}}';
+                '", from: "mine-samtaler-frilanstolk"}}';
             return pageRef;
         } else {
             String pageRef =
