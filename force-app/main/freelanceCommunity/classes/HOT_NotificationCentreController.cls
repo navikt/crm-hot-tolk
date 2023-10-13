@@ -24,4 +24,13 @@ public without sharing class HOT_NotificationCentreController {
             insert notificationsToInsert;
         }
     }
+    @AuraEnabled
+    public static HOT_Notification__c getNotificationType(String notificationId) {
+        HOT_Notification__c notification = [
+            SELECT Id, HOT_RelatedObjectType__c, HOT_RelatedObject__c
+            FROM HOT_Notification__c
+            WHERE Id = :notificationId
+        ];
+        return notification;
+    }
 }

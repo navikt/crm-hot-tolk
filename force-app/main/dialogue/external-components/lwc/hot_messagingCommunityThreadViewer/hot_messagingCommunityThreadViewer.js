@@ -498,6 +498,9 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         } else if (parsed_params.from == 'mine-samtaler-frilanstolk') {
             this.navigationBaseUrl = 'mine-samtaler-frilanstolk';
             this.isFreelance = true;
+        } else if (parsed_params.from == 'mine-varsler') {
+            this.navigationBaseUrl = 'mine-varsler';
+            this.isFreelance = true;
         } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = parsed_params.recordId;

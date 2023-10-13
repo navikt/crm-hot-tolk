@@ -1,0 +1,48 @@
+<template>
+    <div class="brodsmulesti">
+        <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
+    </div>
+    <main class="mainContent">
+        <div class="notification-wrapper">
+            <div class="navigation-container">
+                <div if:false={isMobile} class="back-link-div">
+                    <a class="back-link" onclick={goBack}>
+                        <c-icon icon="Back"></c-icon>
+                        <p style="margin-left: 0.25rem">Tilbake</p>
+                    </a>
+                </div>
+                <h2 class="header">Mine varsler</h2>
+                <div if:true={isMobile} class="back-link-div">
+                    <a class="back-link" onclick={goBack}>
+                        <c-icon icon="Back"></c-icon>
+                        <p style="margin-left: 0.25rem">Tilbake</p>
+                    </a>
+                </div>
+                <div class="empty"></div>
+            </div>
+            <div if:true={showMyNotifications} class="notificationlist">
+                <div>
+                    <template for:each={notifications} for:item="notification">
+                        <button
+                            key={notification.Id}
+                            class="notification-single"
+                            data-id={notification.Id}
+                            onclick={goToNotification}
+                        >
+                            <div class="container">
+                                <h2>{notification.HOT_Subject__c}</h2>
+                                <p class="cursive">{notification.created} {notification.HOT_NotificationChannel__c}</p>
+                            </div>
+                            <br />
+                            <p>{notification.HOT_NotificationText__c}</p>
+                        </button>
+                    </template>
+                </div>
+                <div if:true={noNotifications} style="text-align: center">
+                    <br />
+                    Du har ingen varsler enda. Når du får varsler vil de vises her.
+                </div>
+            </div>
+        </div>
+    </main>
+</template>

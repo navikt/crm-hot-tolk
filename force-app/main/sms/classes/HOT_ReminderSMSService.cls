@@ -217,6 +217,7 @@ public without sharing class HOT_ReminderSMSService {
             notification.HOT_Subject__c = 'Du er ønsket til et oppdrag';
             notification.HOT_NotificationText__c = constructOnNewWantedSR();
             notification.HOT_RelatedObject__c = ir.Id;
+            notification.HOT_RelatedObjectType__c = 'wanted';
 
             notificationList.add(notification);
         }
