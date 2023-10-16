@@ -8,6 +8,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
         ];
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
@@ -23,6 +25,22 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 if (serviceAppointment.HOT_AssignedResourceId__c != null) {
                     resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
+                    //creating notification object
+                    User user = [SELECT AccountId FROM User WHERE Id = :serviceAppointment.HOT_AssignedResourceId__c];
+                    HOT_Notification__c notification = new HOT_Notification__c();
+                    notification.HOT_Account__c = user.AccountId;
+                    notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                    notification.HOT_Subject__c = 'Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber;
+                    notification.HOT_NotificationText__c =
+                        'Tidspunkt for oppdraget er ' +
+                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                        ' - ' +
+                        serviceAppointment.DueDate?.format('HH:mm') +
+                        '.';
+                    notification.HOT_RelatedObject__c = serviceAppointment.Id;
+                    notification.HOT_RelatedObjectType__c = 'serviceAppointment';
+
+                    notificationList.add(notification);
                 }
             }
 
@@ -87,6 +105,25 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.HOT_CanceledByInterpreter__c == false
                 ) {
                     resourceChanged(notificationType, serviceAppointment, recipients);
+                    //creating notification object
+                    User user = [
+                        SELECT AccountId
+                        FROM User
+                        WHERE Id = :oldServiceAppointment.HOT_AssignedResourceId__c
+                    ];
+                    HOT_Notification__c notification = new HOT_Notification__c();
+                    notification.HOT_Account__c = user.AccountId;
+                    notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                    notification.HOT_Subject__c = 'Tatt av oppdraget';
+                    notification.HOT_NotificationText__c =
+                        'Du er tatt av oppdraget ' +
+                        serviceAppointment.AppointmentNumber +
+                        ' som skulle starte ' +
+                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm');
+                    notification.HOT_RelatedObject__c = '';
+                    notification.HOT_RelatedObjectType__c = 'noServiceAppointment';
+
+                    notificationList.add(notification);
                 }
 
                 // Varsel ved endring av skjermtolk/oppmøtetolk
@@ -107,6 +144,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 }
             }
         }
+        //inserting notifications
+        HOT_NotificationCentreController.createNotification(notificationList);
     }
 
     public static void dispatcherServiceAppointmentChanged(
@@ -159,11 +198,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setTitle('Avlyst av tolk: ' + serviceAppointment.AppointmentNumber);
         notification.setBody(
             'Tolken meldte seg av ' +
-            serviceAppointment.AppointmentNumber +
-            ' ' +
-            serviceAppointment.Subject +
-            ' den ' +
-            Datetime.now().format('d.M.yyyy HH:mm')
+                serviceAppointment.AppointmentNumber +
+                ' ' +
+                serviceAppointment.Subject +
+                ' den ' +
+                Datetime.now().format('d.M.yyyy HH:mm')
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
@@ -179,17 +218,17 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(
             serviceAppointment.AppointmentNumber +
-            ' - ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-            ' - ' +
-            ' Avlyst'
+                ' - ' +
+                serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+                ' - ' +
+                ' Avlyst'
         );
         notification.setBody(
             'Oppdraget ' +
-            serviceAppointment.AppointmentNumber +
-            ' som skulle vært gjennomført ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-            ' er avlyst.'
+                serviceAppointment.AppointmentNumber +
+                ' som skulle vært gjennomført ' +
+                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                ' er avlyst.'
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
@@ -205,16 +244,16 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(
             serviceAppointment.AppointmentNumber +
-            ' - ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-            ' - ' +
-            'endret tidspunkt'
+                ' - ' +
+                serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+                ' - ' +
+                'endret tidspunkt'
         );
         notification.setBody(
             'Nytt tidspunkt er ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-            ' - ' +
-            serviceAppointment.DueDate?.format('HH:mm')
+                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                ' - ' +
+                serviceAppointment.DueDate?.format('HH:mm')
         );
         if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
             String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
@@ -235,10 +274,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(
             serviceAppointment.AppointmentNumber +
-            ' - ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-            ' - ' +
-            'endret adresse'
+                ' - ' +
+                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                ' - ' +
+                'endret adresse'
         );
         notification.setBody('Ny adresse er ' + serviceAppointment.HOT_AddressFormated__c);
         if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
@@ -261,10 +300,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setTitle('Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber);
         notification.setBody(
             'Tidspunkt for oppdraget er ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-            ' - ' +
-            serviceAppointment.DueDate?.format('HH:mm') +
-            '.'
+                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                ' - ' +
+                serviceAppointment.DueDate?.format('HH:mm') +
+                '.'
         );
         if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
             String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
@@ -285,16 +324,16 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(
             serviceAppointment.AppointmentNumber +
-            ' - ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-            ' - ' +
-            'Tatt av oppdraget'
+                ' - ' +
+                serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+                ' - ' +
+                'Tatt av oppdraget'
         );
         notification.setBody(
             'Du er tatt av oppdraget ' +
-            serviceAppointment.AppointmentNumber +
-            ' som skulle starte ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
+                serviceAppointment.AppointmentNumber +
+                ' som skulle starte ' +
+                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
         );
         if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
             String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id);
@@ -316,21 +355,21 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(
             serviceAppointment.AppointmentNumber +
-            ' - ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-            ' - ' +
-            'endret til ' +
-            isScreenInterpreterString
+                ' - ' +
+                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                ' - ' +
+                'endret til ' +
+                isScreenInterpreterString
         );
         notification.setBody(
             'Oppdraget ' +
-            serviceAppointment.AppointmentNumber +
-            ', ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-            ' - ' +
-            serviceAppointment.DueDate?.format('HH:mm') +
-            ' ble endret til ' +
-            isScreenInterpreterString
+                serviceAppointment.AppointmentNumber +
+                ', ' +
+                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                ' - ' +
+                serviceAppointment.DueDate?.format('HH:mm') +
+                ' ble endret til ' +
+                isScreenInterpreterString
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);

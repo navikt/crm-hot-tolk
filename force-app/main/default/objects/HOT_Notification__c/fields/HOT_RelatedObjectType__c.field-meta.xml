@@ -17,14 +17,24 @@
                 <label>wanted</label>
             </value>
             <value>
-                <fullName>thread</fullName>
-                <default>false</default>
-                <label>thread</label>
-            </value>
-            <value>
                 <fullName>serviceAppointment</fullName>
                 <default>false</default>
                 <label>serviceAppointment</label>
+            </value>
+            <value>
+                <fullName>threadUser</fullName>
+                <default>false</default>
+                <label>threadUser</label>
+            </value>
+            <value>
+                <fullName>threadInterpreter</fullName>
+                <default>false</default>
+                <label>threadInterpreter</label>
+            </value>
+            <value>
+                <fullName>noServiceAppointment</fullName>
+                <default>false</default>
+                <label>noServiceAppointment</label>
             </value>
         </valueSetDefinition>
     </valueSet>
