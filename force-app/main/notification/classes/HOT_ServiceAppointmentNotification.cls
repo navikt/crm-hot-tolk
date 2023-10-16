@@ -60,7 +60,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.HOT_CancelComment__c == null
                 ) {
                     Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
-                    canceledByUser(notificationType, saIds, recipients);
+                    //canceledByUser(notificationType, saIds, recipients);
                 }
 
                 // Varsel ved endring av tidspunkt
@@ -154,7 +154,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
             // Varsel ved avlyst på vegne av bruker
             if (serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled') {
-                canceledByUser(notificationType, serviceAppointment, recipients);
+                //canceledByUser(notificationType, serviceAppointment, recipients);
             }
         }
     }

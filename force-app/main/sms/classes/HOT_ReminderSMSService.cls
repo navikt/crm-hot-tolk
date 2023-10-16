@@ -315,7 +315,42 @@ public without sharing class HOT_ReminderSMSService {
             sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
             sms.ServiceAppointment__c = sa.Id;
             sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
-            sms.Message__c = constructInterpreterAddedOrChangedMessage(sa);
+            sms.Message__c = constructMessageToInterpreter(sa, 'Dispatched');
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    @Future
+    public static void sendSMSToInterpreterOnResourceChanged(Set<Id> saIds) {
+        List<ServiceAppointment> saList = [
+            SELECT
+                Status,
+                AppointmentNumber,
+                HOT_ServiceResource__c,
+                HOT_ServiceResource__r.AccountId,
+                HOT_ServiceResource__r.HOT_MobilePhone__c
+            FROM ServiceAppointment
+            WHERE Id IN :saIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (ServiceAppointment sa : saList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.ServiceAppointment__c = sa.Id;
+            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Message__c = constructMessageToInterpreter(sa, 'Removed');
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
             }
@@ -336,10 +371,13 @@ public without sharing class HOT_ReminderSMSService {
         return message;
     }
 
-    public static String constructInterpreterAddedOrChangedMessage(ServiceAppointment sa) {
-        String message = sa.Status == 'Dispatched'
-            ? 'INFO\nDu er tildelt oppdraget '
-            : 'INFO\nDu er tatt av oppdraget ';
+    public static String constructMessageToInterpreter(ServiceAppointment sa, String saEvent) {
+        String message;
+        if (saEvent == 'Dispatched') {
+            message = sa.Status == 'Dispatched' ? 'INFO\nDu er tildelt oppdraget ' : 'INFO\nDu er tatt av oppdraget ';
+        } else if (saEvent == 'Removed') {
+            message = 'INFO\nDu er tatt av oppdraget ';
+        }
         message += sa.AppointmentNumber + '.\n\n';
         message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
