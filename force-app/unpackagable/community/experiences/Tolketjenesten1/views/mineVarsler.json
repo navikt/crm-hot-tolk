@@ -1,0 +1,89 @@
+{
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:sldsOneColLayout",
+    "dataProviders": [],
+    "id": "ee2a4e9d-7248-499c-97dd-5e93588d7b77",
+    "label": "Mine varsler",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "NAVarea": "Privatperson",
+                        "navareapicklist": "Privatperson"
+                    },
+                    "componentName": "c:globalCommunityHeader",
+                    "id": "eef81be4-eeab-4933-b69a-ab7606e957fd",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "416dbaa3-5274-4950-b979-2c69e5f6accb",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_tolketjenestenHovedBanner",
+                    "id": "2584d4a8-77ae-41d9-83e1-4d12cd9e1812",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_notificationList",
+                    "id": "b323d59c-dbf1-47d6-88d8-ef4b10fe526e",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "55da4e34-07cc-4768-86a0-eb032950b01c",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "NAVarea": "Privatperson",
+                        "navareapicklist": "Privatperson"
+                    },
+                    "componentName": "c:globalCommunityFooter",
+                    "id": "b62d4e10-6d54-4674-aeae-06ab3bf59399",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "df6db3e8-b8ca-4e77-83a3-10d16ae47cb9",
+            "regionName": "footer",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Mine varsler"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "ff1009fc-bfd4-4804-8a43-355a224b2bca",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "9372f39e-1bad-4663-aa87-32a795e92c1b",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-mine-varsler"
+}
