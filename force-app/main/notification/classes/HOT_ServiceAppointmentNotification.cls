@@ -3,6 +3,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
+        Set<Id> saIdsToSendSMS = new List<ServiceAppointment>();
+        //Map<Id, Account> srAccountIdToAccount = new Map<Id, Account>();
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
@@ -22,7 +24,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 if (serviceAppointment.HOT_AssignedResourceId__c != null) {
-                    resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
+                    if (serviceAppointment.HOT_ServiceResource__r.NotificationChannel__c == 'Push-varsel i appen') {
+                        resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
+                    } else {
+                        saIdsToSendSMS.add(serviceAppointment.Id);
+                    }
                 }
             }
 
