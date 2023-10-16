@@ -293,6 +293,36 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
+
+    @Future
+    public static void sendSMSToInterpreterOnAdded(Set<Id> saIds) {
+        List<ServiceAppointment> saList = [
+            SELECT Status, AppointmentNumber, HOT_ServiceResource__c, HOT_DateTimeFormated__c
+            FROM ServiceAppointment
+            WHERE Id IN :saIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (ServiceAppointment sa : saList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Orderer On Status Update';
+            sms.Account__c = wo.HOT_Request__r.Orderer__c;
+            sms.WorkOrder__c = wo.Id;
+            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Message__c = constructInterpreterAddedMessage(sa);
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
     public static String constructOnNewWantedSR() {
         String message = 'INFO\nDu er ønsket til et oppdrag.\n\n';
         message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
