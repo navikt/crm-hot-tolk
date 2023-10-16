@@ -81,7 +81,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                     serviceAppointment.Status != 'Scheduled'
                 ) {
-                    addressChanged(notificationType, serviceAppointment, recipients);
+                    Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
+                    addressChanged(notificationType, saIds, recipients);
                 }
 
                 // Varsel ved fjerning av tolk
@@ -236,29 +237,49 @@ public without sharing class HOT_ServiceAppointmentNotification {
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
-    public static void addressChanged(
-        CustomNotificationType notificationType,
-        ServiceAppointment serviceAppointment,
-        Set<String> recipients
-    ) {
-        Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle(
-            serviceAppointment.AppointmentNumber +
-            ' - ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-            ' - ' +
-            'endret adresse'
-        );
-        notification.setBody('Ny adresse er ' + serviceAppointment.HOT_AddressFormated__c);
-        if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
-            String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
-            notification.setTargetPageRef(targetPageRef);
-        }
-        //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
-        notification.setNotificationTypeId(notificationType.Id);
-        notification.setTargetId(serviceAppointment.Id);
+    public static void addressChanged(CustomNotificationType notificationType, Set<Id> saIds, Set<String> recipients) {
+        Set<Id> saSMS = new Set<Id>();
+        List<ServiceAppointment> saList = [
+            SELECT
+                AppointmentNumber,
+                EarliestStartTime,
+                HOT_AddressFormated__c,
+                HOT_IsEmployedInterpreter__c,
+                HOT_ServiceResource__r.HOT_NotificationChannel__c
+            FROM ServiceAppointment
+            WHERE Id IN :saIds
+        ];
 
-        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+        for (ServiceAppointment serviceAppointment : saList) {
+            if (
+                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
+                serviceAppointment.HOT_IsEmployedInterpreter__c
+            ) {
+                Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                notification.setTitle(
+                    serviceAppointment.AppointmentNumber +
+                    ' - ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                    ' - ' +
+                    'endret adresse'
+                );
+                notification.setBody('Ny adresse er ' + serviceAppointment.HOT_AddressFormated__c);
+                if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
+                    String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
+                    notification.setTargetPageRef(targetPageRef);
+                }
+                //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
+                notification.setNotificationTypeId(notificationType.Id);
+                notification.setTargetId(serviceAppointment.Id);
+
+                HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+            } else {
+                saSMS.add(serviceAppointment.Id);
+            }
+        }
+        if (saSMS.size() > 0) {
+            HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(saSMS);
+        }
     }
 
     public static void resourceAdded(CustomNotificationType notificationType, Set<Id> saIds, Set<String> recipients) {
