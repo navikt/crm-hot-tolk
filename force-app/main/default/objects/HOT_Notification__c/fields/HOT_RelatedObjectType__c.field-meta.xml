@@ -36,6 +36,16 @@
                 <default>false</default>
                 <label>noServiceAppointment</label>
             </value>
+            <value>
+                <fullName>workOrder</fullName>
+                <default>false</default>
+                <label>workOrder</label>
+            </value>
+            <value>
+                <fullName>request</fullName>
+                <default>false</default>
+                <label>request</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
