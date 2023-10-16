@@ -1084,6 +1084,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>ServiceResource.HOT_NotificationChannel__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>ServiceResource.HOT_PreferredRegions__c</field>
         <readable>true</readable>
     </fieldPermissions>
