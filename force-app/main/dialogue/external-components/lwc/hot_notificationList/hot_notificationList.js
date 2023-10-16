@@ -95,6 +95,19 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
                         state: { list: 'interested', from: 'mine-varsler', id: result.HOT_RelatedObject__c }
                     });
                 }
+                if (result.HOT_RelatedObjectType__c == 'workOrder') {
+                    this[NavigationMixin.Navigate]({
+                        type: 'comm__namedPage',
+                        attributes: {
+                            pageName: 'mine-bestillinger'
+                        },
+                        state: {
+                            id: result.HOT_RelatedObject__c,
+                            level: 'WO',
+                            from: 'mine-varsler'
+                        }
+                    });
+                }
                 // if (result.HOT_RelatedObjectType__c == 'threadUser') {
                 //     this[NavigationMixin.Navigate]({
                 //         type: 'standard__recordPage',

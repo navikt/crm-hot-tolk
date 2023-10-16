@@ -286,6 +286,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goBack() {
+        if (this.urlStateParameters.from == 'mine-varsler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-varsler'
+                }
+            });
+        }
         let currentLevel = this.urlStateParameters.level;
         if (currentLevel === undefined || currentLevel === '') {
             this[NavigationMixin.Navigate]({
