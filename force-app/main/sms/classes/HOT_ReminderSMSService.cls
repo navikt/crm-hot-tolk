@@ -295,9 +295,9 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     @Future
-    public static void sendSMSToInterpreterOnAdded(Set<Id> saIds) {
+    public static void sendSMSToInterpreterOnAddedOrChanged(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
-            SELECT Status, AppointmentNumber, HOT_ServiceResource__c, HOT_DateTimeFormated__c
+            SELECT Status, AppointmentNumber, HOT_ServiceResource__c
             FROM ServiceAppointment
             WHERE Id IN :saIds
         ];
@@ -306,11 +306,11 @@ public without sharing class HOT_ReminderSMSService {
         for (ServiceAppointment sa : saList) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
-            sms.Type__c = 'Orderer On Status Update';
-            sms.Account__c = wo.HOT_Request__r.Orderer__c;
-            sms.WorkOrder__c = wo.Id;
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.ServiceAppointment__c = sa.Id;
             sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
-            sms.Message__c = constructInterpreterAddedMessage(sa);
+            sms.Message__c = constructInterpreterAddedOrChangedMessage(sa);
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
             }
@@ -325,6 +325,17 @@ public without sharing class HOT_ReminderSMSService {
     }
     public static String constructOnNewWantedSR() {
         String message = 'INFO\nDu er ønsket til et oppdrag.\n\n';
+        message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
+        message += 'Du kan ikke svare på denne meldingen.\n';
+        message += 'Mvh tolketjenesten i NAV';
+        return message;
+    }
+
+    public static String constructInterpreterAddedOrChangedMessage(ServiceAppointment sa) {
+        String message = sa.Status == 'Dispatched'
+            ? 'INFO\nDu er tildelt oppdraget '
+            : 'INFO\nDu er tatt av oppdraget ';
+        message += sa.AppointmentNumber + '.\n\n';
         message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
         message += 'Mvh tolketjenesten i NAV';
