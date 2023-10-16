@@ -27,20 +27,22 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
                     //creating notification object
                     User user = [SELECT AccountId FROM User WHERE Id = :serviceAppointment.HOT_AssignedResourceId__c];
-                    HOT_Notification__c notification = new HOT_Notification__c();
-                    notification.HOT_Account__c = user.AccountId;
-                    notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                    notification.HOT_Subject__c = 'Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber;
-                    notification.HOT_NotificationText__c =
-                        'Tidspunkt for oppdraget er ' +
-                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                        ' - ' +
-                        serviceAppointment.DueDate?.format('HH:mm') +
-                        '.';
-                    notification.HOT_RelatedObject__c = serviceAppointment.Id;
-                    notification.HOT_RelatedObjectType__c = 'serviceAppointment';
+                    if (user.AccountId != null) {
+                        HOT_Notification__c notification = new HOT_Notification__c();
+                        notification.HOT_Account__c = user.AccountId;
+                        notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                        notification.HOT_Subject__c = 'Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber;
+                        notification.HOT_NotificationText__c =
+                            'Tidspunkt for oppdraget er ' +
+                            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                            ' - ' +
+                            serviceAppointment.DueDate?.format('HH:mm') +
+                            '.';
+                        notification.HOT_RelatedObject__c = serviceAppointment.Id;
+                        notification.HOT_RelatedObjectType__c = 'serviceAppointment';
 
-                    notificationList.add(notification);
+                        notificationList.add(notification);
+                    }
                 }
             }
 
@@ -111,19 +113,21 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         FROM User
                         WHERE Id = :oldServiceAppointment.HOT_AssignedResourceId__c
                     ];
-                    HOT_Notification__c notification = new HOT_Notification__c();
-                    notification.HOT_Account__c = user.AccountId;
-                    notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                    notification.HOT_Subject__c = 'Tatt av oppdraget';
-                    notification.HOT_NotificationText__c =
-                        'Du er tatt av oppdraget ' +
-                        serviceAppointment.AppointmentNumber +
-                        ' som skulle starte ' +
-                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm');
-                    notification.HOT_RelatedObject__c = '';
-                    notification.HOT_RelatedObjectType__c = 'noServiceAppointment';
+                    if (user.AccountId != null) {
+                        HOT_Notification__c notification = new HOT_Notification__c();
+                        notification.HOT_Account__c = user.AccountId;
+                        notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                        notification.HOT_Subject__c = 'Tatt av oppdraget';
+                        notification.HOT_NotificationText__c =
+                            'Du er tatt av oppdraget ' +
+                            serviceAppointment.AppointmentNumber +
+                            ' som skulle starte ' +
+                            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm');
+                        notification.HOT_RelatedObject__c = '';
+                        notification.HOT_RelatedObjectType__c = 'noServiceAppointment';
 
-                    notificationList.add(notification);
+                        notificationList.add(notification);
+                    }
                 }
 
                 // Varsel ved endring av skjermtolk/oppmøtetolk
