@@ -26,6 +26,26 @@ public without sharing class HOT_MyServiceAppointmentListController {
         ];
         return sa;
     }
+    @AuraEnabled(cacheable=true)
+    public static Boolean checkAccessToSA(String saId) {
+        Boolean hasAccess = false;
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        if (serviceResource.Id != null) {
+            List<AssignedResource> ar = [
+                SELECT Id
+                FROM AssignedResource
+                WHERE ServiceAppointmentId = :saId AND ServiceResourceId = :serviceResource.Id
+            ];
+            if (ar.size() > 0) {
+                hasAccess = true;
+            }
+        }
+        return hasAccess;
+    }
     @AuraEnabled
     public static ServiceAppointment getServiceAppointmentDetails(String recordId) {
         ServiceAppointment serviceAppointment = [

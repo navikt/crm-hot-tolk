@@ -2,6 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
 import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
+import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 import getOrdererInformation from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOrdererInformation';
 import getAccountPhonenumber from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountPhonenumber';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
@@ -27,6 +28,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     @track isCancelButtonHidden = true;
     @track isEditButtonHidden = false;
     @track isMobile;
+    @track hasAccess = true;
     freelanceThreadId;
     isGoToThreadButtonDisabled = false;
     isGoToThreadServiceAppointmentButtonDisabled = false;
@@ -266,110 +268,119 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.updateURL();
         //this.sendDetail();
     }
-    goToRecordDetails2(saId) {
-        getServiceAppointmentDetails({ recordId: saId }).then((result) => {
-            this.serviceAppointment = result;
-            console.log(this.serviceAppointment.AppointmentNumber);
-            let startTimeFormatted = new Date(result.EarliestStartTime);
-            let endTimeFormatted = new Date(result.DueDate);
-            this.serviceAppointment.StartAndEndDate =
-                startTimeFormatted.getDate() +
-                '.' +
-                (startTimeFormatted.getMonth() + 1) +
-                '.' +
-                startTimeFormatted.getFullYear() +
-                ', ' +
-                ('0' + startTimeFormatted.getHours()).substr(-2) +
-                ':' +
-                ('0' + startTimeFormatted.getMinutes()).substr(-2) +
-                ' - ' +
-                ('0' + endTimeFormatted.getHours()).substr(-2) +
-                ':' +
-                ('0' + endTimeFormatted.getMinutes()).substr(-2);
-            let actualstartTimeFormatted = new Date(result.ActualStartTime);
-            let actualendTimeFormatted = new Date(result.ActualEndTime);
-            this.serviceAppointment.ActualStartTime =
-                actualstartTimeFormatted.getDate() +
-                '.' +
-                (actualstartTimeFormatted.getMonth() + 1) +
-                '.' +
-                actualstartTimeFormatted.getFullYear() +
-                ' ' +
-                ('0' + actualstartTimeFormatted.getHours()).substr(-2) +
-                ':' +
-                ('0' + actualstartTimeFormatted.getMinutes()).substr(-2);
-            this.serviceAppointment.ActualEndTime =
-                actualendTimeFormatted.getDate() +
-                '.' +
-                (actualendTimeFormatted.getMonth() + 1) +
-                '.' +
-                actualendTimeFormatted.getFullYear() +
-                ' ' +
-                ('0' + actualendTimeFormatted.getHours()).substr(-2) +
-                ':' +
-                ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
-            if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
-                this.serviceAppointment.ActualStartTime = '';
-            }
-            if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
-                this.serviceAppointment.ActualEndTime = '';
-            }
-            getOrdererInformation({ serviceAppointmentId: saId })
-                .then((phonenumber) => {
-                    this.ordererPhoneNumber = phonenumber;
-                })
-                .catch((error) => {
-                    this.ordererPhoneNumber = '';
-                });
-            getAccountPhonenumber({ serviceAppointmentId: saId })
-                .then((phonenumber) => {
-                    this.accountPhoneNumber = phonenumber;
-                })
-                .catch((error) => {
-                    this.accountPhoneNumber = '';
-                });
-            getAccountName({ serviceAppointmentId: saId })
-                .then((name) => {
-                    this.accountName = name;
-                    if (this.accountName == null || this.accountName == '') {
-                        this.isGoToThreadButtonDisabled = true;
-                    } else {
-                        this.isGoToThreadButtonDisabled = false;
+    goToRecordDetailsFromNotification(saId) {
+        checkAccessToSA({ saId: saId }).then((result) => {
+            if (result != false) {
+                getServiceAppointmentDetails({ recordId: saId }).then((result) => {
+                    this.serviceAppointment = result;
+                    console.log(this.serviceAppointment.AppointmentNumber);
+                    let startTimeFormatted = new Date(result.EarliestStartTime);
+                    let endTimeFormatted = new Date(result.DueDate);
+                    this.serviceAppointment.StartAndEndDate =
+                        startTimeFormatted.getDate() +
+                        '.' +
+                        (startTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        startTimeFormatted.getFullYear() +
+                        ', ' +
+                        ('0' + startTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + startTimeFormatted.getMinutes()).substr(-2) +
+                        ' - ' +
+                        ('0' + endTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                    let actualstartTimeFormatted = new Date(result.ActualStartTime);
+                    let actualendTimeFormatted = new Date(result.ActualEndTime);
+                    this.serviceAppointment.ActualStartTime =
+                        actualstartTimeFormatted.getDate() +
+                        '.' +
+                        (actualstartTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        actualstartTimeFormatted.getFullYear() +
+                        ' ' +
+                        ('0' + actualstartTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + actualstartTimeFormatted.getMinutes()).substr(-2);
+                    this.serviceAppointment.ActualEndTime =
+                        actualendTimeFormatted.getDate() +
+                        '.' +
+                        (actualendTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        actualendTimeFormatted.getFullYear() +
+                        ' ' +
+                        ('0' + actualendTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
+                    if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
+                        this.serviceAppointment.ActualStartTime = '';
                     }
-                })
-                .catch((error) => {
-                    this.accountName = '';
+                    if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
+                        this.serviceAppointment.ActualEndTime = '';
+                    }
+                    getOrdererInformation({ serviceAppointmentId: saId })
+                        .then((phonenumber) => {
+                            this.ordererPhoneNumber = phonenumber;
+                        })
+                        .catch((error) => {
+                            this.ordererPhoneNumber = '';
+                        });
+                    getAccountPhonenumber({ serviceAppointmentId: saId })
+                        .then((phonenumber) => {
+                            this.accountPhoneNumber = phonenumber;
+                        })
+                        .catch((error) => {
+                            this.accountPhoneNumber = '';
+                        });
+                    getAccountName({ serviceAppointmentId: saId })
+                        .then((name) => {
+                            this.accountName = name;
+                            if (this.accountName == null || this.accountName == '') {
+                                this.isGoToThreadButtonDisabled = true;
+                            } else {
+                                this.isGoToThreadButtonDisabled = false;
+                            }
+                        })
+                        .catch((error) => {
+                            this.accountName = '';
+                        });
+                    getOwnerName({ serviceAppointmentId: saId })
+                        .then((owner) => {
+                            this.ownerName = owner;
+                        })
+                        .catch((error) => {
+                            this.ownerName = '';
+                        });
+                    getInterestedResourceDetails({ recordId: saId }).then((result) => {
+                        this.interestedResource = result;
+                        this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
+                    });
+
+                    this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                    this.template.querySelector('.serviceAppointmentDetails').focus();
+
+                    this.isEditButtonHidden = false;
+                    this.isCancelButtonHidden = true;
+                    this.isEditButtonDisabled = false;
+                    this.isDetails = true;
+                    this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
+                    this.recordId = saId;
+                    let recordId = saId;
+                    let duedate = new Date(this.serviceAppointment.DueDate);
+                    if (this.serviceAppointment.Status == 'Completed') {
+                        this.isEditButtonDisabled = true;
+                    }
+                    if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
+                        this.isGoToThreadInterpretersButtonDisabled = true;
+                    }
+                    if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
+                        this.isGoToThreadButtonDisabled = true;
+                    }
                 });
-            getOwnerName({ serviceAppointmentId: saId })
-                .then((owner) => {
-                    this.ownerName = owner;
-                })
-                .catch((error) => {
-                    this.ownerName = '';
-                });
-            getInterestedResourceDetails({ recordId: saId }).then((result) => {
-                this.interestedResource = result;
-                this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-            });
-
-            this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-            this.template.querySelector('.serviceAppointmentDetails').focus();
-
-            this.isEditButtonHidden = false;
-            this.isCancelButtonHidden = true;
-            this.isEditButtonDisabled = false;
-            this.isDetails = true;
-            this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-
-            let duedate = new Date(this.serviceAppointment.DueDate);
-            if (this.serviceAppointment.Status == 'Completed') {
-                this.isEditButtonDisabled = true;
-            }
-            if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
-                this.isGoToThreadInterpretersButtonDisabled = true;
-            }
-            if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
-                this.isGoToThreadButtonDisabled = true;
+            } else {
+                this.hasAccess = false;
+                this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                this.template.querySelector('.serviceAppointmentDetails').focus();
             }
         });
     }
@@ -389,9 +400,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
         if (parsed_params.from == 'mine-varsler' && parsed_params.id != '') {
-            console.log('oooo');
-            this.goToRecordDetails2(parsed_params.id);
-            console.log('0000000');
+            this.goToRecordDetailsFromNotification(parsed_params.id);
         }
     }
 

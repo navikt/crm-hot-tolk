@@ -16,7 +16,7 @@
 }
 .notification-single:hover {
     cursor: pointer;
-    background-color: #fff;
+    background-color: #eeefeb;
 }
 .notification-single p {
     font-weight: normal;
