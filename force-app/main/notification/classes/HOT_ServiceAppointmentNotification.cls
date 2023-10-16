@@ -123,7 +123,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                             serviceAppointment.AppointmentNumber +
                             ' som skulle starte ' +
                             serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm');
-                        notification.HOT_RelatedObject__c = '';
+                        notification.HOT_RelatedObject__c = serviceAppointment.Id;
                         notification.HOT_RelatedObjectType__c = 'noServiceAppointment';
 
                         notificationList.add(notification);
