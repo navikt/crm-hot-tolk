@@ -59,7 +59,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     !recipients.contains(serviceAppointment.LastModifiedById) &&
                     serviceAppointment.HOT_CancelComment__c == null
                 ) {
-                    canceledByUser(notificationType, serviceAppointment, recipients);
+                    Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
+                    canceledByUser(notificationType, saIds, recipients);
                 }
 
                 // Varsel ved endring av tidspunkt
@@ -93,7 +94,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.Status == 'None') &&
                     serviceAppointment.HOT_CanceledByInterpreter__c == false
                 ) {
-                    resourceChanged(notificationType, serviceAppointment, recipients);
+                    Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
+                    resourceChanged(notificationType, saIds, recipients);
                 }
 
                 // Varsel ved endring av skjermtolk/oppmøtetolk
@@ -259,13 +261,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
-    public static void resourceAdded(
-        //CustomNotificationType notificationType,
-        CustomNotificationType notificationType,
-        //ServiceAppointment serviceAppointment,
-        Set<Id> saIds,
-        Set<String> recipients
-    ) {
+    public static void resourceAdded(CustomNotificationType notificationType, Set<Id> saIds, Set<String> recipients) {
         Set<Id> saSMS = new Set<Id>();
         List<ServiceAppointment> saList = [
             SELECT
@@ -310,34 +306,53 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
     }
 
-    public static void resourceChanged(
-        CustomNotificationType notificationType,
-        ServiceAppointment serviceAppointment,
-        Set<String> recipients
-    ) {
-        Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle(
-            serviceAppointment.AppointmentNumber +
-            ' - ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-            ' - ' +
-            'Tatt av oppdraget'
-        );
-        notification.setBody(
-            'Du er tatt av oppdraget ' +
-            serviceAppointment.AppointmentNumber +
-            ' som skulle starte ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
-        );
-        if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
-            String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id);
-            notification.setTargetPageRef(targetPageRef);
-        }
-        //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
-        notification.setNotificationTypeId(notificationType.Id);
-        notification.setTargetId(serviceAppointment.Id);
+    public static void resourceChanged(CustomNotificationType notificationType, Set<Id> saIds, Set<String> recipients) {
+        Set<Id> saSMS = new Set<Id>();
+        List<ServiceAppointment> saList = [
+            SELECT
+                AppointmentNumber,
+                HOT_IsEmployedInterpreter__c,
+                EarliestStartTime,
+                HOT_ServiceResource__r.HOT_NotificationChannel__c
+            FROM ServiceAppointment
+            WHERE Id IN :saIds
+        ];
 
-        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+        for (ServiceAppointment serviceAppointment : saList) {
+            if (
+                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
+                serviceAppointment.HOT_IsEmployedInterpreter__c
+            ) {
+                Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                notification.setTitle(
+                    serviceAppointment.AppointmentNumber +
+                    ' - ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+                    ' - ' +
+                    'Tatt av oppdraget'
+                );
+                notification.setBody(
+                    'Du er tatt av oppdraget ' +
+                    serviceAppointment.AppointmentNumber +
+                    ' som skulle starte ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
+                );
+                if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
+                    String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id);
+                    notification.setTargetPageRef(targetPageRef);
+                }
+                //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
+                notification.setNotificationTypeId(notificationType.Id);
+                notification.setTargetId(serviceAppointment.Id);
+
+                HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+            } else {
+                saSMS.add(serviceAppointment.Id);
+            }
+        }
+        if (saSMS.size() > 0) {
+            HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(saSMS);
+        }
     }
 
     public static void screenInterpreterChanged(
