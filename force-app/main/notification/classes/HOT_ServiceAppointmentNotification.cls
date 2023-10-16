@@ -3,7 +3,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        Set<Id> saIdsToSendSMS = new List<ServiceAppointment>();
+        //Set<Id> saIdsToSendSMSOnResourceAddedOrChanged = new Set<Id>();
         //Map<Id, Account> srAccountIdToAccount = new Map<Id, Account>();
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -23,12 +23,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.Status == 'Cannot Complete')
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
+                Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
                 if (serviceAppointment.HOT_AssignedResourceId__c != null) {
-                    if (serviceAppointment.HOT_ServiceResource__r.NotificationChannel__c == 'Push-varsel i appen') {
-                        resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
-                    } else {
-                        saIdsToSendSMS.add(serviceAppointment.Id);
-                    }
+                    //resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
+                    resourceAdded(notificationType, saIds, interpreterRecipients);
                 }
             }
 
@@ -40,7 +38,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.Status == 'Dispatched'
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
-                resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
+                Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
+                //resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
+                //resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
+                resourceAdded(notificationType, saIds, interpreterRecipients);
 
                 notifyUserOnChangedResource(serviceAppointment);
             }
@@ -259,28 +260,54 @@ public without sharing class HOT_ServiceAppointmentNotification {
     }
 
     public static void resourceAdded(
+        //CustomNotificationType notificationType,
         CustomNotificationType notificationType,
-        ServiceAppointment serviceAppointment,
+        //ServiceAppointment serviceAppointment,
+        Set<Id> saIds,
         Set<String> recipients
     ) {
-        Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle('Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber);
-        notification.setBody(
-            'Tidspunkt for oppdraget er ' +
-            serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-            ' - ' +
-            serviceAppointment.DueDate?.format('HH:mm') +
-            '.'
-        );
-        if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
-            String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
-            notification.setTargetPageRef(targetPageRef);
-        }
-        //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
-        notification.setNotificationTypeId(notificationType.Id);
-        notification.setTargetId(serviceAppointment.Id);
+        Set<Id> saSMS = new Set<Id>();
+        List<ServiceAppointment> saList = [
+            SELECT
+                AppointmentNumber,
+                HOT_IsEmployedInterpreter__c,
+                EarliestStartTime,
+                DueDate,
+                HOT_ServiceResource__r.HOT_NotificationChannel__c
+            FROM ServiceAppointment
+            WHERE Id IN :saIds
+        ];
 
-        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+        for (ServiceAppointment serviceAppointment : saList) {
+            if (
+                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
+                serviceAppointment.HOT_IsEmployedInterpreter__c
+            ) {
+                Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                notification.setTitle('Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber);
+                notification.setBody(
+                    'Tidspunkt for oppdraget er ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                    ' - ' +
+                    serviceAppointment.DueDate?.format('HH:mm') +
+                    '.'
+                );
+                if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
+                    String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
+                    notification.setTargetPageRef(targetPageRef);
+                }
+                //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
+                notification.setNotificationTypeId(notificationType.Id);
+                notification.setTargetId(serviceAppointment.Id);
+
+                HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+            } else {
+                saSMS.add(serviceAppointment.Id);
+            }
+        }
+        if (saSMS.size() > 0) {
+            HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(saSMS);
+        }
     }
 
     public static void resourceChanged(

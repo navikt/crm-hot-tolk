@@ -297,7 +297,12 @@ public without sharing class HOT_ReminderSMSService {
     @Future
     public static void sendSMSToInterpreterOnAddedOrChanged(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
-            SELECT Status, AppointmentNumber, HOT_ServiceResource__c
+            SELECT
+                Status,
+                AppointmentNumber,
+                HOT_ServiceResource__c,
+                HOT_ServiceResource__r.AccountId,
+                HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
             WHERE Id IN :saIds
         ];
