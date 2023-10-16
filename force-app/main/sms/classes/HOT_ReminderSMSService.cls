@@ -3,7 +3,8 @@ public without sharing class HOT_ReminderSMSService {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(workOrderList);
         Map<Id, String> interpreterNames = interpreterNamesByWorkOrderIds(workOrderList);
         List<SMS__c> smsList = new List<SMS__c>();
-
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (WorkOrder workOrder : workOrders.values()) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
@@ -15,10 +16,30 @@ public without sharing class HOT_ReminderSMSService {
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
                 workOrder.HOT_IsReminderSMSSendt__c = true;
+                //creating notification object
+                HOT_Notification__c notification = new HOT_Notification__c();
+                notification.HOT_Account__c = workOrder.AccountId;
+                notification.HOT_NotificationChannel__c = 'SMS';
+                notification.HOT_Subject__c = 'Påminnelse om tolkebestilling';
+                notification.HOT_NotificationText__c =
+                    'PÅMINNELSE\nVi minner om tolkebestilling:\n' +
+                    'Dato: ' +
+                    formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
+                    '\n' +
+                    'Tolk er: ' +
+                    interpreterNames.get(workOrder.Id) +
+                    '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.' +
+                    '\nMvh tolketjenesten i NAV';
+                notification.HOT_RelatedObject__c = workOrder.Id;
+                notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                notificationList.add(notification);
             }
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrders.values());
+        //inserting notifications
+        HOT_NotificationCentreController.createNotification(notificationList);
     }
 
     public static void notifyUserOnOrderSMS(List<HOT_Request__c> requestList) {
