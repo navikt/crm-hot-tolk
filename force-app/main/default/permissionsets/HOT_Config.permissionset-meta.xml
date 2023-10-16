@@ -849,6 +849,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>SMS__c.ServiceAppointment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>SMS__c.Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
