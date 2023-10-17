@@ -295,6 +295,43 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     @Future
+    public static void sendSMSToInterpreterOnScreenInterpretation(Set<Id> saIds) {
+        List<ServiceAppointment> saList = [
+            SELECT
+                Status,
+                AppointmentNumber,
+                HOT_ServiceResource__c,
+                EarliestStartTime,
+                DueDate,
+                HOT_ServiceResource__r.AccountId,
+                HOT_ServiceResource__r.HOT_MobilePhone__c
+            FROM ServiceAppointment
+            WHERE Id IN :saIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (ServiceAppointment sa : saList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.ServiceAppointment__c = sa.Id;
+            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Message__c = constructMessageToInterpreter(sa, 'Screen');
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    @Future
     public static void sendSMSToInterpreterOnTimeChanged(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
             SELECT
@@ -493,6 +530,9 @@ public without sharing class HOT_ReminderSMSService {
         }
         if (saEvent == 'CancelledByUser') {
             message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' er avlyst';
+        }
+        if (saEvent == 'Screen') {
+            message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' er endret';
         }
         message += '.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
