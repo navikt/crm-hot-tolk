@@ -192,7 +192,7 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
-            SELECT ServiceResource__r.Account.Id, ServiceResource__r.Account.CRM_Person__r.INT_KrrMobilePhone__c
+            SELECT ServiceResource__r.Account.Id, ServiceResource__r.HOT_MobilePhone__c
             FROM HOT_InterestedResource__c
             WHERE Id IN :wantedIRIds
         ];
@@ -202,7 +202,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Message';
             sms.Account__c = ir.ServiceResource__r.Account.Id;
-            sms.Recipient__c = ir.ServiceResource__r.Account.CRM_Person__r.INT_KrrMobilePhone__c;
+            sms.Recipient__c = ir.ServiceResource__r.HOT_MobilePhone__c;
             sms.Message__c = constructOnNewWantedSR();
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
@@ -331,7 +331,7 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     @Future
-    public static void sendSMSToInterpreterOnCancelledByUser(Set<Id> saIds) {
+    public static void sendSMSToInterpreterOnCanceledByUser(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
             SELECT
                 Status,
@@ -484,10 +484,10 @@ public without sharing class HOT_ReminderSMSService {
     public static String constructMessageToInterpreter(ServiceAppointment sa, String saEvent) {
         String message = 'INFO\n';
         if (saEvent == 'Dispatched') {
-            message = sa.Status == 'Dispatched' ? 'Du er tildelt oppdraget ' : 'Du er tatt av oppdraget ';
+            message += sa.Status == 'Dispatched' ? 'Du er tildelt oppdraget ' : 'Du er tatt av oppdraget ';
         }
         if (saEvent == 'Removed') {
-            message = 'Du er tatt av oppdraget ';
+            message += 'Du er tatt av oppdraget ';
         }
         message += sa.AppointmentNumber;
         if (saEvent == 'Address') {
