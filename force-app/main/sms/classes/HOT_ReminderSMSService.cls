@@ -404,7 +404,6 @@ public without sharing class HOT_ReminderSMSService {
                 Status,
                 AppointmentNumber,
                 HOT_ServiceResource__c,
-                HOT_DateTimeFormated__c,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
@@ -440,7 +439,6 @@ public without sharing class HOT_ReminderSMSService {
                 Status,
                 AppointmentNumber,
                 HOT_ServiceResource__c,
-                HOT_DateTimeFormated__c,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
@@ -476,7 +474,6 @@ public without sharing class HOT_ReminderSMSService {
                 Status,
                 AppointmentNumber,
                 HOT_ServiceResource__c,
-                HOT_DateTimeFormated__c,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
@@ -527,7 +524,7 @@ public without sharing class HOT_ReminderSMSService {
         if (saEvent == 'Time') {
             message += ' har endret tidspunkt';
         }
-        if (saEvent == 'CancelledByUser') {
+        if (saEvent == 'CanceledByUser') {
             message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' er avlyst';
         }
         if (saEvent == 'Screen') {
