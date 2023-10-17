@@ -478,7 +478,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
         ];
 
         Map<Id, String> interpreterNames = HOT_ReminderSMSService.interpreterNamesByWorkOrderIds(workordersList);
-
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         if (!workordersList.isEmpty()) {
             for (WorkOrder wo : workordersList) {
                 Set<String> recipients = new Set<String>();
@@ -493,12 +494,34 @@ public without sharing class HOT_ServiceAppointmentNotification {
                             interpreterNames.get(wo.Id),
                             recipients
                         );
+                        //creating notification object
+                        HOT_Notification__c notification = new HOT_Notification__c();
+                        notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
+                        notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                        notification.HOT_Subject__c = 'Endring av tolk';
+                        String message =
+                            'Tolk på din bestilling er endret. \nTolk er: ' +
+                            wo.HOT_Interpreters__c +
+                            '\nDato: ' +
+                            wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                            ', kl: ' +
+                            wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
+                            ' - ' +
+                            wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
+                            '.';
+                        notification.HOT_NotificationText__c = message;
+                        notification.HOT_RelatedObject__c = wo.Id;
+                        notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                        notificationList.add(notification);
                     } else {
                         Set<Id> workOrderIds = new Set<Id>();
                         workOrderIds.add(wo.Id);
                         HOT_ReminderSMSService.sendSMSOnInterpreterChange(workOrderIds, interpreterNames.get(wo.Id));
                     }
                 }
+                //inserting notifications
+                HOT_NotificationCentreController.createNotification(notificationList);
             }
         }
     }

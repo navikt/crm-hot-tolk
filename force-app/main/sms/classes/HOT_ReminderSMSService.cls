@@ -199,6 +199,8 @@ public without sharing class HOT_ReminderSMSService {
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrderList);
+        //inserting notifications
+        HOT_NotificationCentreController.createNotification(notificationList);
     }
 
     @Future
@@ -358,7 +360,8 @@ public without sharing class HOT_ReminderSMSService {
             WHERE Id IN :workOrderIds
         ];
         List<SMS__c> smsList = new List<SMS__c>();
-
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (WorkOrder wo : workOrderList) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
@@ -369,10 +372,28 @@ public without sharing class HOT_ReminderSMSService {
             sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
+                //creating notification object
+                HOT_Notification__c notification = new HOT_Notification__c();
+                notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
+                notification.HOT_NotificationChannel__c = 'SMS';
+                notification.HOT_Subject__c = 'INFO\nTolk på din bestilling er endret:\n';
+                String message = 'INFO\nTolk på din bestilling er endret:\n';
+                message += 'Tolk er: ';
+                message += wo.HOT_Interpreters__c;
+                message += '\nDato: ' + formatTimePeriod(wo.StartDate, wo.EndDate);
+                message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+                message += '\nMvh tolketjenesten i NAV';
+                notification.HOT_NotificationText__c = message;
+                notification.HOT_RelatedObject__c = wo.Id;
+                notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                notificationList.add(notification);
             }
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
+            //inserting notifications
+            HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
