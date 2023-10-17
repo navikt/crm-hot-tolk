@@ -229,6 +229,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             SELECT
                 AppointmentNumber,
                 EarliestStartTime,
+                DueDate,
                 HOT_IsEmployedInterpreter__c,
                 HOT_ServiceResource__r.HOT_NotificationChannel__c
             FROM ServiceAppointment

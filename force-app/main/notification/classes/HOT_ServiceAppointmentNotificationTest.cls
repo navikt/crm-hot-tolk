@@ -180,13 +180,15 @@ private class HOT_ServiceAppointmentNotificationTest {
             LIMIT 1
         ];
 
+        Set<Id> srIds = new Set<Id>([SELECT Id FROM ServiceResource LIMIT 1]);
+
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         Test.startTest();
-        HOT_ServiceAppointmentNotification.canceledByUser(notificationType, serviceAppointment, recipients);
+        HOT_ServiceAppointmentNotification.canceledByUser(notificationType, serviceAppointment, srIds, recipients);
         Test.stopTest();
     }
 
@@ -194,12 +196,7 @@ private class HOT_ServiceAppointmentNotificationTest {
     private static void timeChangedTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_IsEmployedInterpreter__c, AppointmentNumber, EarliestStartTime, DueDate
-            FROM ServiceAppointment
-            WHERE Subject = 'subject'
-            LIMIT 1
-        ];
+        Set<Id> saIds = new Set<Id>([SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]);
 
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -207,7 +204,7 @@ private class HOT_ServiceAppointmentNotificationTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         Test.startTest();
-        HOT_ServiceAppointmentNotification.timeChanged(notificationType, serviceAppointment, recipients);
+        HOT_ServiceAppointmentNotification.timeChanged(notificationType, saIds, recipients);
         Test.stopTest();
     }
 
@@ -215,19 +212,9 @@ private class HOT_ServiceAppointmentNotificationTest {
     private static void addressChangedTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
-        ServiceAppointment serviceAppointment = [
-            SELECT
-                Id,
-                AppointmentNumber,
-                HOT_AddressFormated__c,
-                HOT_InterpretationStreet__c,
-                HOT_IsEmployedInterpreter__c,
-                DueDate,
-                EarliestStartTime
-            FROM ServiceAppointment
-            WHERE Subject = 'subject'
-            LIMIT 1
-        ];
+        Set<Id> saIds = new Set<Id>(
+            [SELECT Id, HOT_InterpretationStreet__c FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
+        );
 
         serviceAppointment.HOT_InterpretationStreet__c = 'Tolkeveien 123';
         update serviceAppointment;
@@ -238,7 +225,7 @@ private class HOT_ServiceAppointmentNotificationTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         Test.startTest();
-        HOT_ServiceAppointmentNotification.timeChanged(notificationType, serviceAppointment, recipients);
+        HOT_ServiceAppointmentNotification.timeChanged(notificationType, saIds, recipients);
         Test.stopTest();
     }
 }
