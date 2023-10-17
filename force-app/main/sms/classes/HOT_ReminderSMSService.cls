@@ -352,6 +352,7 @@ public without sharing class HOT_ReminderSMSService {
                 StartDate,
                 EndDate,
                 HOT_Request__c,
+                HOT_Interpreters__c,
                 HOT_Request__r.Type__c,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,

@@ -15,6 +15,7 @@ private class HOT_ReminderSMSServiceTest {
         request.EndTime__c = request.EndTime__c.addDays(3);
         request.OrdererPhone__c = '00000000';
         request.IsOrdererWantStatusUpdateOnSMS__c = true;
+        request.Orderer__c = account.Id;
         insert request;
         // To create child records
         request.Status__c = 'Godkjent';
@@ -178,8 +179,11 @@ private class HOT_ReminderSMSServiceTest {
 
     @isTest
     static void sendSMSToOrdererOnStatusUpdateSMSToAccountTest() {
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
         HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c][0];
         request.Type__c = 'Me';
+        request.Orderer__c = account.Id;
         update request;
         List<WorkOrder> workOrders = [
             SELECT
@@ -207,7 +211,10 @@ private class HOT_ReminderSMSServiceTest {
 
     @isTest
     static void sendSMSToOrdererOnStatusUpdateSMSToOtherOrdererTest() {
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
         HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c][0];
+        request.Orderer__c = account.Id;
         update request;
         List<WorkOrder> workOrders = [
             SELECT
