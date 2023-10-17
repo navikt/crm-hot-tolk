@@ -482,12 +482,12 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     public static String constructMessageToInterpreter(ServiceAppointment sa, String saEvent) {
-        String message = '';
+        String message = 'INFO\n';
         if (saEvent == 'Dispatched') {
-            message = sa.Status == 'Dispatched' ? 'INFO\nDu er tildelt oppdraget ' : 'INFO\nDu er tatt av oppdraget ';
+            message = sa.Status == 'Dispatched' ? 'Du er tildelt oppdraget ' : 'Du er tatt av oppdraget ';
         }
         if (saEvent == 'Removed') {
-            message = 'INFO\nDu er tatt av oppdraget ';
+            message = 'Du er tatt av oppdraget ';
         }
         message += sa.AppointmentNumber;
         if (saEvent == 'Address') {
