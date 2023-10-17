@@ -188,7 +188,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         ServiceResource serviceResource = [
             SELECT HOT_NotificationChannel__c
             FROM ServiceResource
-            WHERE Id IN :srIds
+            WHERE Id IN :srIds AND HOT_NotificationChannel__c != NULL
             LIMIT 1
         ];
         Set<Id> saSMS = new Set<Id>();
@@ -233,7 +233,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_IsEmployedInterpreter__c,
                 HOT_ServiceResource__r.HOT_NotificationChannel__c
             FROM ServiceAppointment
-            WHERE Id IN :saIds
+            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
         ];
 
         for (ServiceAppointment serviceAppointment : saList) {
@@ -283,7 +283,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_IsEmployedInterpreter__c,
                 HOT_ServiceResource__r.HOT_NotificationChannel__c
             FROM ServiceAppointment
-            WHERE Id IN :saIds
+            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
         ];
 
         for (ServiceAppointment serviceAppointment : saList) {
@@ -328,7 +328,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 DueDate,
                 HOT_ServiceResource__r.HOT_NotificationChannel__c
             FROM ServiceAppointment
-            WHERE Id IN :saIds
+            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
         ];
 
         for (ServiceAppointment serviceAppointment : saList) {
@@ -372,7 +372,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 EarliestStartTime,
                 HOT_ServiceResource__r.HOT_NotificationChannel__c
             FROM ServiceAppointment
-            WHERE Id IN :saIds
+            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
         ];
 
         for (ServiceAppointment serviceAppointment : saList) {
@@ -427,7 +427,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_IsEmployedInterpreter__c,
                 HOT_ServiceResource__r.HOT_NotificationChannel__c
             FROM ServiceAppointment
-            WHERE Id IN :saIds
+            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
         ];
 
         for (ServiceAppointment serviceAppointment : saList) {
