@@ -73,8 +73,13 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
                             ' - ' +
                             request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
                             '.';
-                        notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
-                        notification.HOT_RelatedObjectType__c = 'workOrder';
+                        if (request.IsSerieoppdrag__c) {
+                            notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
+                            notification.HOT_RelatedObjectType__c = 'request';
+                        } else {
+                            notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
+                            notification.HOT_RelatedObjectType__c = 'workOrder';
+                        }
 
                         notificationList.add(notification);
                     }

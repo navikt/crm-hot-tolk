@@ -108,19 +108,19 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
                         }
                     });
                 }
-                // if (result.HOT_RelatedObjectType__c == 'request') {
-                //     this[NavigationMixin.Navigate]({
-                //         type: 'comm__namedPage',
-                //         attributes: {
-                //             pageName: 'mine-bestillinger'
-                //         },
-                //         state: {
-                //             id: result.HOT_RelatedObject__c,
-                //             level: 'R',
-                //             from: 'mine-varsler'
-                //         }
-                //     });
-                // }
+                if (result.HOT_RelatedObjectType__c == 'request') {
+                    this[NavigationMixin.Navigate]({
+                        type: 'comm__namedPage',
+                        attributes: {
+                            pageName: 'mine-bestillinger'
+                        },
+                        state: {
+                            id: result.HOT_RelatedObject__c,
+                            level: 'R',
+                            from: 'mine-varsler'
+                        }
+                    });
+                }
                 if (result.HOT_RelatedObjectType__c == 'threadUser') {
                     this[NavigationMixin.Navigate]({
                         type: 'standard__recordPage',
