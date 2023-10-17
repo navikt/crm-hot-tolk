@@ -331,27 +331,22 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     @Future
-    public static void sendSMSToInterpreterOnCanceledByUser(Set<Id> saIds) {
+    public static void sendSMSToInterpreterOnCanceledByUser(Set<Id> saIds, Set<Id> srIds) {
         List<ServiceAppointment> saList = [
-            SELECT
-                Status,
-                AppointmentNumber,
-                HOT_ServiceResource__c,
-                HOT_DateTimeFormated__c,
-                HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_MobilePhone__c
+            SELECT Status, AppointmentNumber, HOT_DateTimeFormated__c
             FROM ServiceAppointment
             WHERE Id IN :saIds
         ];
+        List<ServiceResource> srList = [SELECT AccountId, HOT_MobilePhone__c FROM ServiceResource WHERE Id IN :srIds];
         List<SMS__c> smsList = new List<SMS__c>();
 
         for (ServiceAppointment sa : saList) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.Account__c = srList[0].AccountId;
             sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Recipient__c = srList[0].HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'CancelledByUser');
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);

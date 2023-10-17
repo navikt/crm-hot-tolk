@@ -59,7 +59,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     !recipients.contains(serviceAppointment.LastModifiedById) &&
                     serviceAppointment.HOT_CancelComment__c == null
                 ) {
-                    canceledByUser(notificationType, serviceAppointment, recipients);
+                    Set<Id> srIds = new Set<Id>{ oldServiceAppointment.HOT_ServiceResource__c };
+                    canceledByUser(notificationType, serviceAppointment, srIds, recipients);
                 }
 
                 // Varsel ved endring av tidspunkt
@@ -155,7 +156,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
             // Varsel ved avlyst på vegne av bruker
             if (serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled') {
-                canceledByUser(notificationType, oldServiceAppointment, recipients);
+                Set<Id> srIds = new Set<Id>{ oldServiceAppointment.HOT_ServiceResource__c };
+                canceledByUser(notificationType, serviceAppointment, srIds, recipients);
             }
         }
     }
@@ -184,20 +186,18 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public static void canceledByUser(
         CustomNotificationType notificationType,
         ServiceAppointment serviceAppointment,
+        Set<Id> srIds,
         Set<String> recipients
     ) {
-        serviceAppointment = [
-            SELECT
-                AppointmentNumber,
-                EarliestStartTime,
-                HOT_IsEmployedInterpreter__c,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c
-            FROM ServiceAppointment
-            WHERE Id = :serviceAppointment.Id
+        ServiceResource serviceResource = [
+            SELECT HOT_NotificationChannel__c
+            FROM ServiceResource
+            WHERE Id IN :srIds
+            LIMIT 1
         ];
         Set<Id> saSMS = new Set<Id>();
         if (
-            serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
+            serviceResource.HOT_NotificationChannel__c.contains('Push') ||
             serviceAppointment.HOT_IsEmployedInterpreter__c
         ) {
             Messaging.CustomNotification notification = new Messaging.CustomNotification();
@@ -223,7 +223,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             saSMS.add(serviceAppointment.Id);
         }
         if (saSMS.size() > 0) {
-            HOT_ReminderSMSService.sendSMSToInterpreterOnCanceledByUser(saSMS);
+            HOT_ReminderSMSService.sendSMSToInterpreterOnCanceledByUser(saSMS, srIds);
         }
     }
 
