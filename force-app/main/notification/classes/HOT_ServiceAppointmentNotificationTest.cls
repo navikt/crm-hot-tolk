@@ -180,7 +180,7 @@ private class HOT_ServiceAppointmentNotificationTest {
             LIMIT 1
         ];
 
-        Set<Id> srIds = new Set<Id>([SELECT Id FROM ServiceResource LIMIT 1]);
+        Set<Id> srIds = new Set<Id>([SELECT Id FROM ServiceResource LIMIT 1].Id);
 
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -196,7 +196,7 @@ private class HOT_ServiceAppointmentNotificationTest {
     private static void timeChangedTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
-        Set<Id> saIds = new Set<Id>([SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]);
+        Set<Id> saIds = new Set<Id>([SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id);
 
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -212,13 +212,19 @@ private class HOT_ServiceAppointmentNotificationTest {
     private static void addressChangedTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
-        Set<Id> saIds = new Set<Id>(
-            [SELECT Id, HOT_InterpretationStreet__c FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
-        );
-
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_InterpretationStreet__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
         serviceAppointment.HOT_InterpretationStreet__c = 'Tolkeveien 123';
         update serviceAppointment;
 
+        Set<Id> saIds = new Set<Id>(
+            [SELECT Id, HOT_InterpretationStreet__c FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
+            .Id
+        );
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType

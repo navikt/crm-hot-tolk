@@ -338,7 +338,6 @@ public without sharing class HOT_ReminderSMSService {
                 Status,
                 AppointmentNumber,
                 HOT_ServiceResource__c,
-                HOT_DateTimeFormated__c,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
