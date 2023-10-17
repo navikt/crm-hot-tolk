@@ -72,13 +72,8 @@ public without sharing class HOT_ReminderSMSService {
                 message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
                 message += '\nMvh tolketjenesten i NAV';
                 notification.HOT_NotificationText__c = message;
-                if (request.IsSerieoppdrag__c) {
-                    notification.HOT_RelatedObject__c = request.Id;
-                    notification.HOT_RelatedObjectType__c = 'request';
-                } else {
-                    notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
-                    notification.HOT_RelatedObjectType__c = 'workOrder';
-                }
+                notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
+                notification.HOT_RelatedObjectType__c = 'workOrder';
 
                 notificationList.add(notification);
             }
