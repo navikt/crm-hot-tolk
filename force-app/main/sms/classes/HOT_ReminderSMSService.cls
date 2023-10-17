@@ -170,7 +170,7 @@ public without sharing class HOT_ReminderSMSService {
 
         SMS__c sms = new SMS__c();
         sms.Domain__c = 'HOT';
-        sms.Type__c = 'Interpreter';
+        sms.Type__c = 'Message';
         sms.Account__c = user.AccountId;
         sms.Thread__c = threadId;
         sms.Recipient__c = getRecipientPhoneNumberInterpreter(userId);
