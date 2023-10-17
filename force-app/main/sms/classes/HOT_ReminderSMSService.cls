@@ -333,7 +333,7 @@ public without sharing class HOT_ReminderSMSService {
     @Future
     public static void sendSMSToInterpreterOnCanceledByUser(Set<Id> saIds, Set<Id> srIds) {
         List<ServiceAppointment> saList = [
-            SELECT Status, AppointmentNumber, HOT_DateTimeFormated__c
+            SELECT Status, AppointmentNumber, EarliestStartTime, DueDate
             FROM ServiceAppointment
             WHERE Id IN :saIds
         ];
@@ -492,7 +492,7 @@ public without sharing class HOT_ReminderSMSService {
             message += ' har endret tidspunkt';
         }
         if (saEvent == 'CancelledByUser') {
-            message += ' ' + sa.HOT_DateTimeFormated__c + ' er avlyst';
+            message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' er avlyst';
         }
         message += '.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
