@@ -27,6 +27,12 @@ private class HOT_IRListControllerTest {
         System.assertEquals(1, interestedResources.size(), 'Could not get list of interested resources');
     }
     @isTest
+    static void checkAccessToSA() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
+        Boolean access = HOT_InterestedResourcesListController.checkAccessToSA(serviceAppointment.Id);
+        System.assertEquals(true, access, 'Should have access to this sa');
+    }
+    @isTest
     static void dispatcherReadCommentTest() {
         HOT_InterestedResource__c interestedResource = [
             SELECT Id, IsDispatcherNewComment__c
