@@ -154,6 +154,8 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSToOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
         Map<Id, String> interpreterNames = interpreterNamesByWorkOrderIds(workOrderList);
         List<SMS__c> smsList = new List<SMS__c>();
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (WorkOrder workOrder : workOrderList) {
             String phoneNumber = getRecipient(workOrder);
             if (
@@ -171,6 +173,27 @@ public without sharing class HOT_ReminderSMSService {
                 sms.Recipient__c = phoneNumber;
                 sms.Message__c = constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id));
                 smsList.add(sms);
+                //creating notification object
+                HOT_Notification__c notification = new HOT_Notification__c();
+                notification.HOT_Account__c = workOrder.HOT_Request__r.Orderer__c;
+                notification.HOT_NotificationChannel__c = 'SMS';
+                notification.HOT_Subject__c = 'INFO\nStatus på din bestilling er:\n';
+                String message = '';
+                if (workOrder.Status == 'Dispatched') {
+                    message += 'Du har fått tolk. ';
+                    message += 'Tolk er: ';
+                    message += interpreterNames;
+                } else if (workOrder.Status == 'Cannot Complete') {
+                    message += 'Ikke ledig tolk';
+                }
+                message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+                message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+                message += '\nMvh tolketjenesten i NAV';
+                notification.HOT_NotificationText__c = message;
+                notification.HOT_RelatedObject__c = workOrder.Id;
+                notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                notificationList.add(notification);
             }
             workOrder.HOT_SendSMSNotificationOnStatusChanged__c = false;
         }
