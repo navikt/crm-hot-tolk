@@ -170,7 +170,7 @@ public without sharing class HOT_ReminderSMSService {
 
         SMS__c sms = new SMS__c();
         sms.Domain__c = 'HOT';
-        sms.Type__c = 'Message';
+        sms.Type__c = 'Interpreter';
         sms.Account__c = user.AccountId;
         sms.Thread__c = threadId;
         sms.Recipient__c = getRecipientPhoneNumberInterpreter(userId);
@@ -295,12 +295,85 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     @Future
+    public static void sendSMSToInterpreterOnTimeChanged(Set<Id> saIds) {
+        List<ServiceAppointment> saList = [
+            SELECT
+                Status,
+                AppointmentNumber,
+                HOT_ServiceResource__c,
+                HOT_DateTimeFormated__c,
+                HOT_ServiceResource__r.AccountId,
+                HOT_ServiceResource__r.HOT_MobilePhone__c
+            FROM ServiceAppointment
+            WHERE Id IN :saIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (ServiceAppointment sa : saList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.ServiceAppointment__c = sa.Id;
+            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Message__c = constructMessageToInterpreter(sa, 'Time');
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    @Future
+    public static void sendSMSToInterpreterOnCancelledByUser(Set<Id> saIds) {
+        List<ServiceAppointment> saList = [
+            SELECT
+                Status,
+                AppointmentNumber,
+                HOT_ServiceResource__c,
+                HOT_DateTimeFormated__c,
+                HOT_ServiceResource__r.AccountId,
+                HOT_ServiceResource__r.HOT_MobilePhone__c
+            FROM ServiceAppointment
+            WHERE Id IN :saIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (ServiceAppointment sa : saList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.ServiceAppointment__c = sa.Id;
+            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Message__c = constructMessageToInterpreter(sa, 'CancelledByUser');
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
+    @Future
     public static void sendSMSToInterpreterOnAddressChanged(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
             SELECT
                 Status,
                 AppointmentNumber,
                 HOT_ServiceResource__c,
+                HOT_DateTimeFormated__c,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
@@ -336,6 +409,7 @@ public without sharing class HOT_ReminderSMSService {
                 Status,
                 AppointmentNumber,
                 HOT_ServiceResource__c,
+                HOT_DateTimeFormated__c,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
@@ -371,6 +445,7 @@ public without sharing class HOT_ReminderSMSService {
                 Status,
                 AppointmentNumber,
                 HOT_ServiceResource__c,
+                HOT_DateTimeFormated__c,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
@@ -417,6 +492,12 @@ public without sharing class HOT_ReminderSMSService {
         message += sa.AppointmentNumber;
         if (saEvent == 'Address') {
             message += ' har endret adresse';
+        }
+        if (saEvent == 'Time') {
+            message += ' har endret tidspunkt';
+        }
+        if (saEvent == 'CancelledByUser') {
+            message += ' ' + sa.HOT_DateTimeFormated__c + ' er avlyst';
         }
         message += '.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
