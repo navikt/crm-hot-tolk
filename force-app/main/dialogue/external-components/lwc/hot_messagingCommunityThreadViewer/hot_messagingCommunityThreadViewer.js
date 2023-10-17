@@ -283,6 +283,14 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     id: this.navigationId
                 }
             });
+        } else if ((this.navigationBaseUrl = 'mine-varsler')) {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-varsler'
+                },
+                state: {}
+            });
         } else {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',

@@ -108,19 +108,32 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
                         }
                     });
                 }
-                // if (result.HOT_RelatedObjectType__c == 'threadUser') {
+                // if (result.HOT_RelatedObjectType__c == 'request') {
                 //     this[NavigationMixin.Navigate]({
-                //         type: 'standard__recordPage',
+                //         type: 'comm__namedPage',
                 //         attributes: {
-                //             recordId: result.HOT_RelatedObject__c,
-                //             objectApiName: 'Thread__c',
-                //             actionName: 'view'
+                //             pageName: 'mine-bestillinger'
                 //         },
                 //         state: {
-                //             from: 'mine-samtaler'
+                //             id: result.HOT_RelatedObject__c,
+                //             level: 'WO',
+                //             from: 'mine-varsler'
                 //         }
                 //     });
                 // }
+                if (result.HOT_RelatedObjectType__c == 'threadUser') {
+                    this[NavigationMixin.Navigate]({
+                        type: 'standard__recordPage',
+                        attributes: {
+                            recordId: result.HOT_RelatedObject__c,
+                            objectApiName: 'Thread__c',
+                            actionName: 'view'
+                        },
+                        state: {
+                            from: 'mine-samtaler'
+                        }
+                    });
+                }
                 if (result.HOT_RelatedObjectType__c == 'threadInterpreter') {
                     const baseUrl = '/samtale-frilans';
                     const attributes = `recordId=${result.HOT_RelatedObject__c}&from=mine-varsler`;

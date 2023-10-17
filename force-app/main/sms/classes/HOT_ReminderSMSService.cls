@@ -43,6 +43,8 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     public static void notifyUserOnOrderSMS(List<HOT_Request__c> requestList) {
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(requestList);
         List<SMS__c> smsList = new List<SMS__c>();
 
@@ -56,10 +58,30 @@ public without sharing class HOT_ReminderSMSService {
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
                 request.IsNotifyUserOnOrder__c = false;
+                //creating notification object
+                HOT_Notification__c notification = new HOT_Notification__c();
+                notification.HOT_Account__c = request.Account__c;
+                notification.HOT_NotificationChannel__c = 'SMS';
+                notification.HOT_Subject__c = 'INFO\nDet er bestilt tolk til deg';
+                String message = '';
+                if (request.IsSerieoppdrag__c) {
+                    message += ' i perioden: ' + request.SeriesPeriod__c;
+                } else {
+                    message += ':\nDato: ' + formatTimePeriod(request.StartTime__c, request.EndTime__c);
+                }
+                message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+                message += '\nMvh tolketjenesten i NAV';
+                notification.HOT_NotificationText__c = message;
+                notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
+                notification.HOT_RelatedObjectType__c = 'request';
+
+                notificationList.add(notification);
             }
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(requests.values());
+        //inserting notifications
+        HOT_NotificationCentreController.createNotification(notificationList);
     }
 
     private static Map<Id, List<ServiceAppointment>> dispatchedServiceAppointmentsByWorkOrderId(

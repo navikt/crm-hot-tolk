@@ -14,8 +14,8 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
         query += 'AND Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\') ';
         query += 'OR Account__r.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\') ';
         query += 'AND Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE ';
-        query += 'AND IsNotNotifyAccount__c = FALSE ';  
-        query += 'AND IsNotifyUserOnOrder__c = TRUE'; 
+        query += 'AND IsNotNotifyAccount__c = FALSE ';
+        query += 'AND IsNotifyUserOnOrder__c = TRUE';
 
         return Database.getQueryLocator(query);
     }
@@ -52,15 +52,36 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
             }
 
             if (!pushNotifications.isEmpty()) {
+                //creating notification object list
+                List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
                 for (HOT_Request__c request : pushNotifications) {
                     if (userIdByAccountId.get(request.Account__c) != null) {
                         Set<String> recipients = new Set<String>();
                         recipients.add(userIdByAccountId.get(request.Account__c));
                         HOT_UserNotificationService.newRequestNotification(notificationTypePush, request, recipients);
                         request.IsNotifyUserOnOrder__c = false;
+                        //creating notification object
+                        HOT_Notification__c notification = new HOT_Notification__c();
+                        notification.HOT_Account__c = request.Account__c;
+                        notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                        notification.HOT_Subject__c = 'Andre har lagt inn en bestilling for deg';
+                        notification.HOT_NotificationText__c =
+                            'Det er bestilt tolk til deg. Dato: ' +
+                            request.StartTime__c?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                            ', kl: ' +
+                            request.StartTime__c?.format('HH:mm', 'Europe/Oslo') +
+                            ' - ' +
+                            request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
+                            '.';
+                        notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
+                        notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                        notificationList.add(notification);
                     }
                 }
                 HOT_DatabaseOperations.updateRecords(pushNotifications);
+                //inserting notifications
+                HOT_NotificationCentreController.createNotification(notificationList);
             }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
@@ -73,7 +94,12 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
         Long minutes = HOT_Utility.getMinutesUntilNextSMSBatch();
         if (!Test.isRunningTest()) {
             try {
-                System.scheduleBatch(new HOT_NotifyUserOnOrderServiceBatch(), 'HOT_NotifyUserOnOrderServiceBatch', (Integer) minutes, 10);
+                System.scheduleBatch(
+                    new HOT_NotifyUserOnOrderServiceBatch(),
+                    'HOT_NotifyUserOnOrderServiceBatch',
+                    (Integer) minutes,
+                    10
+                );
             } catch (Exception e) {
                 LoggerUtility logger = new LoggerUtility();
                 logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
