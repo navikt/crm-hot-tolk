@@ -66,8 +66,6 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
 
         getNotificationType({ notificationId: notificationId })
             .then((result) => {
-                console.log(result.HOT_RelatedObjectType__c);
-                console.log(result.HOT_RelatedObject__c);
                 if (result.HOT_RelatedObjectType__c == 'wanted') {
                     this[NavigationMixin.Navigate]({
                         type: 'comm__namedPage',
