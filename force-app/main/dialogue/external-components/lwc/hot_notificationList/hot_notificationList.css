@@ -9,7 +9,7 @@
     background-color: #f1f1f1;
     border: none;
     /* border-bottom: 1px solid black; */
-    padding-top: 1rem;
+    padding: 1rem;
     margin-top: 1rem;
     border-radius: 0.5rem;
     width: 100%;
@@ -88,18 +88,10 @@ span {
     flex-grow: 3;
     flex-basis: 33%;
 }
-
-.record-details-container {
-    margin: 2rem 0;
-}
-
 @media (max-width: 576px) {
     .header {
         font-size: 1.4rem;
         margin-bottom: 1rem;
-    }
-    .record-details-container {
-        margin: 5vw 0;
     }
     .navigation-container {
         display: block;
