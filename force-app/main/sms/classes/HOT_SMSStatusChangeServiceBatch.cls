@@ -53,15 +53,48 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
             }
 
             if (!workorderListPush.isEmpty()) {
+                List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
                 for (WorkOrder wo : workorderListPush) {
                     if (userIdByOrdererAccountId.get(wo.HOT_Request__r.Orderer__c) != null) {
                         Set<String> recipients = new Set<String>();
                         recipients.add(userIdByOrdererAccountId.get(wo.HOT_Request__r.Orderer__c));
-                        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(notificationTypePush, wo, interpreterNames.get(wo.Id), recipients);
+                        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(
+                            notificationTypePush,
+                            wo,
+                            interpreterNames.get(wo.Id),
+                            recipients
+                        );
                         wo.HOT_SendSMSNotificationOnStatusChanged__c = false;
+                        //creating notification object
+                        HOT_Notification__c notification = new HOT_Notification__c();
+                        notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
+                        notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                        notification.HOT_Subject__c = 'Status på din bestilling er endret';
+                        String message;
+                        if (wo.Status == 'Dispatched') {
+                            message = 'Du har fått tolk. Tolk er ' + wo.HOT_Interpreters__c;
+                        }
+                        if (wo.Status == 'Cannot Complete') {
+                            message = 'Ikke ledig tolk.';
+                        }
+                        message +=
+                            '\nDato: ' +
+                            wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                            ', kl: ' +
+                            wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
+                            ' - ' +
+                            wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
+                            '.';
+                        notification.HOT_NotificationText__c = message;
+                        notification.HOT_RelatedObject__c = wo.Id;
+                        notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                        notificationList.add(notification);
                     }
                 }
                 HOT_DatabaseOperations.updateRecords(workorderListPush);
+                //inserting notifications
+                HOT_NotificationCentreController.createNotification(notificationList);
             }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
