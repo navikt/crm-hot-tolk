@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Create_Community_Plus_User</name>
@@ -22,11 +22,11 @@
         <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
-        <description
-        >Creates a service resource for the user depending on the choice from previous screen flow</description>
+        <description>Creates a service resource for the user depending on the choice from previous
+            screen flow</description>
         <name>HOT_Create_Service_Resource_Invocable</name>
         <label>Create Service Resource Invocable</label>
-        <locationX>2054</locationX>
+        <locationX>2154</locationX>
         <locationY>407</locationY>
         <actionName>HOT_ServiceResourceHandler</actionName>
         <actionType>apex</actionType>
@@ -50,7 +50,23 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
         <versionSegment>1</versionSegment>
     </actionCalls>
-    <apiVersion>49.0</apiVersion>
+    <apiVersion>59.0</apiVersion>
+    <choices>
+        <name>Agder</name>
+        <choiceText>Agder</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Agder</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Innlandet</name>
+        <choiceText>Innlandet</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Innlandet</stringValue>
+        </value>
+    </choices>
     <decisions>
         <name>Access</name>
         <label>Access?</label>
@@ -173,8 +189,8 @@
         <dataType>String</dataType>
         <expression>{!$User.Id}</expression>
     </formulas>
-    <interviewLabel>Create Community Plus User {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Create Community Plus User</label>
+    <interviewLabel>HOT_CreateFreelanceUser {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Create Freelance User</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -395,6 +411,7 @@
         </inputAssignments>
         <object>ServiceResource</object>
     </recordUpdates>
+    <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Already_added_as_user_screen</name>
         <label>Already added as user</label>
@@ -405,7 +422,8 @@
         <allowPause>true</allowPause>
         <fields>
             <name>Already_added_as_user_text</name>
-            <fieldText>&lt;p&gt;Tjenesteressursen eksisterte fra før og har blitt satt til aktiv.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Tjenesteressursen eksisterte fra før og har blitt satt til
+                aktiv.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -414,41 +432,21 @@
     <screens>
         <name>End_Screen</name>
         <label>End Screen</label>
-        <locationX>2313</locationX>
+        <locationX>2288</locationX>
         <locationY>407</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
             <name>Success_Message</name>
-            <fieldText
-            >&lt;p&gt;Bruker er nå lagt til som frilanstolk og tjenesteressurs er opprettet. &lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Bruker er nå lagt til som frilanstolk og tjenesteressurs er
+                opprettet. &lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>HOT_Create_Service_Resource_Invocable.Success</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>true</booleanValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
         </fields>
         <fields>
-            <name>HOT_Fail_Message</name>
-            <fieldText>&lt;p&gt;{!HOT_Create_Service_Resource_Invocable.ErrorMessage}&lt;/p&gt;</fieldText>
+            <name>HOT_HokusPokus</name>
+            <fieldText>&lt;p&gt;{!HOT_Create_Service_Resource_Invocable.ErrorMessage}&lt;/p&gt;&lt;p&gt;{!HOT_Create_Service_Resource_Invocable.Success}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>HOT_Create_Service_Resource_Invocable.Success</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>false</booleanValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -464,15 +462,16 @@
         <allowPause>true</allowPause>
         <fields>
             <name>HOT_AlreadyActiveServiceResource</name>
-            <fieldText>&lt;p&gt;Tjenesteressursen er allerede aktiv. Ingen endring er utført.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Tjenesteressursen er allerede aktiv. Ingen endring er
+                utført.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <description
-        >Lets the user decide which service territory the freelance interpreter is operating in</description>
+        <description>Lets the user decide which service territory the freelance interpreter is
+            operating in</description>
         <name>HOT_Service_Territory_picker</name>
         <label>Service Territory picker</label>
         <locationX>1875</locationX>
@@ -489,8 +488,8 @@
             <dataType>String</dataType>
             <fieldText>Service Territory Picklist</fieldText>
             <fieldType>DropdownBox</fieldType>
-            <helpText
-            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Her velger du hvilket område frilanstolken skal være tilgjengelig i.&lt;/span&gt;&lt;/p&gt;</helpText>
+            <helpText>&lt;p&gt;Her velger du hvilket område frilanstolken skal være tilgjengelig i.
+                &lt;/p&gt;</helpText>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
